@@ -1,0 +1,256 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Microscopy Image Browser System Requirements</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="im_browser_system_requirements.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Microscopy Image Browser System Requirements</h1><!--introduction--><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Computer</a></li><li><a href="#2">MATLAB</a></li><li><a href="#3">Toolboxes</a></li><li><a href="#5">Bio-Formats</a></li><li><a href="#6">Compiled Frangi mask filter</a></li><li><a href="#8">Connection to OMERO server</a></li><li><a href="#9">Fiji: volume rendering and connection</a></li><li><a href="#10">Membrane Click Tracker</a></li><li><a href="#12">Read NRRD format</a></li><li><a href="#13">Connection to Imaris</a></li><li><a href="#14">SLIC superpixels, supervoxels and maxflow the Brush tool with supervoxels and for Graph-cut and Classifier</a></li><li><a href="#16">Random Forest Classifier</a></li><li><a href="#18">Software Volume Rendering in MIB</a></li></ul></div><h2 id="1">Computer</h2><p>Microscopy Image Browser is a program written under Matlab environment and it was tested to work under Windows/Linux/Mac installation of Matlab.</p><p>In addition compiled (standalone) versions of MIB are available for Windows and Mac 64-bit OS. The standalone versions of MIB may not have complete functionality of the original program but do not require to purchase Matlab license. The standalone MIB requires <a href="http://www.mathworks.se/products/compiler/mcr/">MATLAB Compiler Runtime (MCR)</a> that will be automatically installed during installation.</p><p>It is highly recommended to use 64-bit operating system with sufficient amount of memory.</p><h2 id="2">MATLAB</h2><p><b>MATLAB, Release 2014b</b>, (<i>and later</i>). MIB was tested with Matlab R2014b - R2017a.</p><h2 id="3">Toolboxes</h2><div><ul><li><a href="http://www.mathworks.com/products/image/"><b>Matlab Image Processing Toolbox</b></a>, V7.0 (R2010a) or newer is <i><b>REQUIRED</b></i></li><li><a href="http://se.mathworks.com/products/statistics/">Statistics and Machine Learning Toolbox</a> (<i>optional</i>) for alternative to the Random Forest classifiers</li><li><a href="http://se.mathworks.com/products/statistics/">Statistics Toolbox</a> (<i>optional</i>) for alternative to the Random Forest classifiers</li><li><a href="http://se.mathworks.com/products/optimization/">Optimization Toolbox</a> (<i>optional</i>) for alternative to the Random Forest classifiers</li></ul></div><h2 id="5">Bio-Formats</h2><p>The Bio-Formats library brings support of multiple microscopy image formats. To use the library check the Bio checkbox in the Directory Contents panel of MIB.</p><p><b><a href="http://openmicroscopy.org/info/bio-formats">Bio-formats</a></b> java library (<i>optional</i>) is provided in the <tt>ImportExportTools/BioFormats</tt> folder.</p><h2 id="6">Compiled Frangi mask filter</h2><p>Compiled Frangi Mask filter is recommended for faster run. Please compile it for your OS. Most of C-functions can be compiled using a single script:</p><div><ul><li>In Matlab command window change directory to <i>mib\Tools\</i>, where <i>mib</i> is the path where MIB was installed,   for example <i>c:\MATLAB\Scripts\mib</i></li><li>To compile, type in Matlab command window <i>mib_compile_c_files</i></li></ul></div><p><b>Note!</b> These files should be already pre-compiled for win32, win64 and mac64.</p><h2 id="8">Connection to OMERO server</h2><p>Connection to <a href="http://www.openmicroscopy.org/site">OMERO server</a> requires the download of OMERO API bindings for Matlab.</p><div><ul><li>Download Matlab plugin for OMERO <a href="http://www.openmicroscopy.org/site/products/omero/">from here</a>. It should be listed in the <b>OMERO-&gt;OMERO Downloads, Plugins/Matlab</b> section. (<b>Note!</b> Make sure that the version of Matlab plugin corresponds to the version of OMERO server you are going to login. Old OMERO downloads are listed in the <i>Previous versions</i> section at the bottom of the page.</li><li>Unzip the file to your scripts directory, for example <tt>C:\Matlab\Scripts\OMERO_5</tt></li><li><b>FOR MATLAB VERSION</b> Add this directory (<tt>C:\Matlab\Scripts\OMERO_5</tt>) with subfolders to Matlab path (<tt>Matlab-&gt;Home tab-&gt;Set Path...-&gt;Add with Subfolders...</tt>) or run <tt>pathtool</tt> in Matlab command window</li><li><b>FOR DEPLOYED VERSION</b> Add path to the OMERO installation using the MIB Preferences dialog: <tt>MIB-&gt;Menu-&gt;Preferences-&gt;External dirs</tt>. For example, <i><tt>C:\Matlab\Scripts\OMERO_5\libs\</tt></i> for Omero version 5, or <i><tt>C:\Matlab\Scripts\OMERO_4\libs\</tt></i> for Omero verison 4</li></ul></div><p>When using Omero, MIB stores servers and ports in <i>mib_omero.mat</i> file located in 'c:\temp\mib_omero.mat' or in the system <tt>temp</tt> folder.</p><h2 id="9">Fiji: volume rendering and connection</h2><p>Microscopy Image Browser can use Fiji 3D Viewer plugin for visualization of volumes and models. In addition, there is a <a href="ug_panel_fiji_connect.html">Fiji Connect panel</a> that allows interaction between <tt>MIB</tt> and Fiji.</p><p><b>!!! Warning !!!</b></p><p>It seems that Fiji 3D viewer is not compatible with Matlab on MacOS, please do not change write permission for the <tt>sys\java\jre\win64\jre\lib\ext</tt> on the MacOS</p><p>Below are the datails of the installation process.</p><div><ul><li>Download Fiji, <b>Please use the Fiji Life-Line version, 2015 December 22</b>  <a href="http://fiji.sc/wiki/index.php/Downloads">[link]</a></li><li>Unzip and start Fiji  (fiji-win32.exe or fiji-win64.exe)</li><li>Update Fiji: Fiji-&gt;Menu-&gt;Help-&gt;Update Fiji  (it may be required to repeat this step one more time after restart of Fiji)</li><li>In the Fiji folder should appear a folder <tt>scripts</tt> with the <tt>Miji.m</tt> file</li><li>The <tt>scripts</tt> sub-folder containing <tt>Miji.m</tt> should appear within the Fiji folder</li><li>Start Matlab</li><li>Start MIB and open the Preferences Window: <tt>MIB-&gt;Menu-&gt;Preferences-&gt;External dir</tt>. Add path to the Fiji installation folder there, for example as <i>C:\Tools\Fiji.app</i> for Windows or <i>/Applications/Fiji.app/</i> for Mac OS</li></ul></div><p><b>Note 1</b>, the following Matlab path should be open for writing:</p><p><tt>...\Matlab\sys\java\jre\win64\jre\lib\ext</tt> and <tt>...\Matlab\sys\java\jre\win64\jre\bin</tt></p><p><b>Note 2</b>, if the <tt>Failed to retrieve Exception Message</tt> error appears, please increase the heap space for the Java VM in Matlab, <a href="http://www.mathworks.se/support/solutions/en/data/1-18I2C/index.html">see details here</a>. For example, rendering of 1818x1022x717 volume requires 4Gb heap size.</p><p><b>Note 3</b>, the Fiji 3D viewer may not work when started for the first time. In this case, Matlab should be restarted.</p><h2 id="10">Membrane Click Tracker</h2><p>Compiled files are required to use Membrane Click Tracker tool. Please compile them for your OS. Most of C-functions can be compiled using a single script:</p><div><ul><li>In Matlab command window change directory to <i>mib\Tools\</i>, where <i>mib</i> is the path where MIB was installed,   for example <i>c:\MATLAB\Scripts\mib</i></li><li>To compile, type in Matlab command window <i>mib_compile_c_files</i></li></ul></div><p><b>Note!</b> These files should be already pre-compiled for win32, win64 and mac64.</p><h2 id="12">Read NRRD format</h2><p>Microscopy Image Browser uses an own function for saving data in the NRRD format, but relies on <a href="http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule"><b>Projects:MATLABSlicerExampleModule</b></a> by John Melonakos for reading it. On Windows OS the files should be already pre-compiled, but for Linux it may be needed to compile them.</p><p>Please refer to details in <tt>im_browser\ImportExportTools\nrrd\compilethis.m</tt>.</p><h2 id="13">Connection to Imaris</h2><p>Microscopy Image Browser can be used together with <a href="http://www.bitplane.com/imaris">Imaris</a>. This functionality is achieved with <a href="http://www.scs2.net/next/index.php?id=110">IceImarisConnector</a> written by Aaron C. Ponti, ETH Zurich.</p><p><b>Requirements:</b></p><div><ol><li>Installed Imaris and ImarisXT</li><li>Add path of Imaris installation to a system environment variable <b>IMARISPATH</b>. <i>Start-&gt;Computer-&gt;right mouse click-&gt;Properties-&gt;Advanced system settings-&gt;Environment Variables...-&gt;New...</i>. For example, <tt>IMARISPATH = c:\Tools\Science\Imaris\</tt></li><li>Restart Matlab</li></ol></div><p><b>Note:</b> it is recommended to put <tt>ImarisLib.jar</tt> to the static Java path of Matlab. To do that:</p><div><ol><li>Start Matlab and note the start-up (home) directory. For example: <i>c:\Users\UserName\Documents\MATLAB</i></li><li>Create <tt>javaclasspath.txt</tt> in this home directory and add path to <tt>ImarisLib.jar</tt> to this file (for example, <i>c:\Program Files\Bitplane\Imaris x64 8.0.2\XT\matlab\ImarisLib.jar</i>). One way to do that (Windows) is to type in the Matlab command prompt: <tt>system('notepad javaclasspath.txt')</tt>; add the path; and save the file</li><li>Restart Matlab</li></ol></div><h2 id="14">SLIC superpixels, supervoxels and maxflow the Brush tool with supervoxels and for Graph-cut and Classifier</h2><p>The brush tool can be used to select not individual pixels but rather groups of pixels (superpixels). This functionality is implemented using the <a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html">SLIC (Simple Linear Iterative Clustering)</a> algorithm written by Radhakrishna Achanta et al., 2015. In addition the SLIC superpixels and supervoxels are used for the Graph-cut segmentation and Classifier.</p><p>For the Graph-cut segmentation MIB is utilizing <a href="http://pub.ist.ac.at/~vnk/software.html">maxflow 2.22</a> written by Yuri Boykov and Vladimir Kolmogorov.</p><div><ul><li>In Matlab command window change directory to <i>mib\Tools\</i>, where <i>mib</i> is the path where MIB was installed,   for example <i>c:\MATLAB\Scripts\mib</i></li><li>To compile, type in Matlab command window <i>mib_compile_c_files</i></li></ul></div><p><b>Note!</b> These files should be already pre-compiled for win32, win64 and mac64.</p><h2 id="16">Random Forest Classifier</h2><p>Compiled files are required to use Random Forest Classifier. Microscopy Image Browser uses <a href="https://code.google.com/p/randomforest-matlab/">randomforest-matlab</a> by Abhishek Jaiantilal which is already compiled for win32, win64.</p><p>For all other OS the files have to be compiled manually: Please refer to details in</p><div><ul><li><i>mib\Tools\RandomForest\RF_Class_C\README.txt</i></li><li><i>mib\Tools\RandomForest\RF_Reg_C\README.txt</i></li></ul></div><h2 id="18">Software Volume Rendering in MIB</h2><p>Compiled <tt>affine_transform_2d_double.c</tt> function is required for volume rendering. Please compile it for your OS. Most of C-functions can be compiled using a single script:</p><div><ul><li>In Matlab command window change directory to <i>mib\Tools\</i>, where <i>mib</i> is the path where MIB was installed,   for example <i>c:\MATLAB\Scripts\mib</i></li><li>To compile, type in Matlab command window <i>mib_compile_c_files</i></li></ul></div><p><b>Note!</b> This file is already pre-compiled for win64.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Microscopy Image Browser System Requirements
+%
+% *Back to* <im_browser_product_page.html *Index*>
+%
+%% Computer
+% Microscopy Image Browser is a program written under Matlab environment and it
+% was tested to work under Windows/Linux/Mac installation of Matlab.
+%
+%
+% In addition compiled (standalone) versions of MIB are available for Windows and Mac 64-bit OS. 
+% The standalone versions of MIB may not have complete functionality of the original program but do not require to purchase Matlab license. 
+% The standalone MIB requires
+% <http://www.mathworks.se/products/compiler/mcr/ MATLAB Compiler Runtime
+% (MCR)> that will be automatically installed during installation. 
+%
+% It is highly recommended to use 64-bit operating system with sufficient amount of memory.
+%% MATLAB
+% *MATLAB, Release 2014b*, (_and later_). MIB was tested with Matlab R2014b - R2017a.
+% 
+%% Toolboxes
+%%
+%
+% * <http://www.mathworks.com/products/image/ *Matlab Image Processing
+% Toolbox*>, V7.0 (R2010a) or newer is _*REQUIRED*_
+% * <http://se.mathworks.com/products/statistics/ Statistics and Machine Learning Toolbox> (_optional_) for alternative to the Random Forest classifiers
+% * <http://se.mathworks.com/products/statistics/ Statistics Toolbox> (_optional_) for alternative to the Random Forest classifiers
+% * <http://se.mathworks.com/products/optimization/ Optimization Toolbox> (_optional_) for alternative to the Random Forest classifiers
+% 
+%% Bio-Formats
+% The Bio-Formats library brings support of multiple microscopy image formats. To use the library check the Bio checkbox in the Directory Contents panel of MIB.
+%
+% *<http://openmicroscopy.org/info/bio-formats Bio-formats>* java library (_optional_) is provided in the
+% |ImportExportTools/BioFormats| folder.
+%
+%% Compiled Frangi mask filter
+% Compiled Frangi Mask filter is recommended for faster run. Please compile it for your OS.
+% Most of C-functions can be compiled using a single script:
+%%
+% 
+% * In Matlab command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
+%   for example _c:\MATLAB\Scripts\mib_
+% * To compile, type in Matlab command window _mib_compile_c_files_
+%
+% *Note!* These files should be already pre-compiled for win32, win64 and mac64.
+%
+%% Connection to OMERO server
+% Connection to <http://www.openmicroscopy.org/site OMERO server> requires the download of OMERO API bindings for
+% Matlab.
+%
+% * Download Matlab plugin for OMERO 
+% <http://www.openmicroscopy.org/site/products/omero/ from here>.
+% It should be listed in the *OMERO->OMERO Downloads, Plugins/Matlab*
+% section. (*Note!* Make sure that the version of Matlab plugin corresponds
+% to the version of OMERO server you are going to login. Old OMERO
+% downloads are listed in the _Previous versions_ section at the bottom of
+% the page.
+% * Unzip the file to your scripts directory, for example
+% |C:\Matlab\Scripts\OMERO_5|
+% * *FOR MATLAB VERSION* Add this directory (|C:\Matlab\Scripts\OMERO_5|) with subfolders to Matlab path (|Matlab->Home tab->Set Path...->Add with Subfolders...|) or run
+% |pathtool| in Matlab command window
+% * *FOR DEPLOYED VERSION* Add path to the OMERO installation using the MIB Preferences dialog: |MIB->Menu->Preferences->External dirs|. For example,
+% _|C:\Matlab\Scripts\OMERO_5\libs\|_ for Omero version 5, or
+% _|C:\Matlab\Scripts\OMERO_4\libs\|_ for Omero verison 4
+%
+%
+% When using Omero, MIB stores servers and ports in _mib_omero.mat_ file
+% located in 'c:\temp\mib_omero.mat' or in the system |temp| folder.
+%
+%% Fiji: volume rendering and connection
+% Microscopy Image Browser can use Fiji 3D Viewer plugin for visualization
+% of volumes and models. In addition, there is a <ug_panel_fiji_connect.html Fiji Connect panel> that allows interaction between |MIB| and Fiji.
+%
+% *!!! Warning !!!*
+%
+% It seems that Fiji 3D viewer is not compatible with Matlab on MacOS, please do not change write permission for the |sys\java\jre\win64\jre\lib\ext| on the MacOS
+%
+% Below are the datails of the installation process.
+%
+% * Download Fiji, *Please use the Fiji Life-Line version, 2015 December 22*  <http://fiji.sc/wiki/index.php/Downloads [link]>
+% * Unzip and start Fiji  (fiji-win32.exe or fiji-win64.exe) 
+% * Update Fiji: Fiji->Menu->Help->Update Fiji  (it may be required to repeat this step one more time after restart of Fiji)
+% * In the Fiji folder should appear a folder |scripts| with the |Miji.m| file
+% * The |scripts| sub-folder containing |Miji.m| should appear within the Fiji folder
+% * Start Matlab
+% * Start MIB and open the Preferences Window:
+% |MIB->Menu->Preferences->External dir|. Add path to the Fiji installation
+% folder there, for example as _C:\Tools\Fiji.app_ for Windows or _/Applications/Fiji.app/_ for Mac OS
+% 
+% *Note 1*, the following Matlab path should be open for writing:
+%
+% |...\Matlab\sys\java\jre\win64\jre\lib\ext| and |...\Matlab\sys\java\jre\win64\jre\bin|
+%
+% *Note 2*, if the |Failed to retrieve Exception Message| error appears,
+% please increase the heap space for the Java VM in Matlab,
+% <http://www.mathworks.se/support/solutions/en/data/1-18I2C/index.html see
+% details here>. For example, rendering of 1818x1022x717 volume requires
+% 4Gb heap size.
+%
+% *Note 3*, the Fiji 3D viewer may not work when started for the first
+% time. In this case, Matlab should be restarted.
+%
+%% Membrane Click Tracker
+% Compiled files are required to use Membrane Click Tracker tool. Please compile them for your OS. Most of C-functions can be compiled using a single script:
+%%
+% 
+% * In Matlab command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
+%   for example _c:\MATLAB\Scripts\mib_
+% * To compile, type in Matlab command window _mib_compile_c_files_
+%
+% *Note!* These files should be already pre-compiled for win32, win64 and mac64.
+%
+%% Read NRRD format
+% Microscopy Image Browser uses an own function for saving data in the NRRD
+% format, but relies on <http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule
+% *Projects:MATLABSlicerExampleModule*> by John Melonakos for reading it.
+% On Windows OS the files should be already pre-compiled, but for Linux it
+% may be needed to compile them. 
+%
+% Please refer to details in |im_browser\ImportExportTools\nrrd\compilethis.m|.
+%
+%% Connection to Imaris
+% Microscopy Image Browser can be used together with
+% <http://www.bitplane.com/imaris Imaris>. This functionality is achieved
+% with <http://www.scs2.net/next/index.php?id=110 IceImarisConnector>
+% written by Aaron C. Ponti, ETH Zurich. 
+% 
+% *Requirements:*
+%
+% # Installed Imaris and ImarisXT
+% # Add path of Imaris installation to a system environment variable
+% *IMARISPATH*. _Start->Computer->right mouse click->Properties->Advanced
+% system settings->Environment Variables...->New..._. For example,
+% |IMARISPATH = c:\Tools\Science\Imaris\|
+% # Restart Matlab
+%
+% *Note:* it is recommended to put |ImarisLib.jar| to the static Java
+% path of Matlab. To do that:
+%
+% # Start Matlab and note the start-up (home) directory. For example: _c:\Users\UserName\Documents\MATLAB_
+% # Create |javaclasspath.txt| in this home directory and add path to
+% |ImarisLib.jar| to this file (for example, _c:\Program Files\Bitplane\Imaris x64 8.0.2\XT\matlab\ImarisLib.jar_). 
+% One way to do that (Windows) is to type in the Matlab command prompt:
+% |system('notepad javaclasspath.txt')|; add the path; and save the file
+% # Restart Matlab
+%
+%% SLIC superpixels, supervoxels and maxflow the Brush tool with supervoxels and for Graph-cut and Classifier
+% The brush tool can be used to select not individual pixels but rather groups of pixels (superpixels). 
+% This functionality is implemented using the <http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html SLIC (Simple Linear Iterative Clustering)> 
+% algorithm written by Radhakrishna Achanta et al., 2015. In addition the SLIC superpixels and supervoxels 
+% are used for the Graph-cut segmentation and Classifier.
+%
+% For the Graph-cut segmentation MIB is utilizing <http://pub.ist.ac.at/~vnk/software.html maxflow 2.22> written by Yuri Boykov and Vladimir Kolmogorov. 
+%
+%%
+% 
+% * In Matlab command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
+%   for example _c:\MATLAB\Scripts\mib_
+% * To compile, type in Matlab command window _mib_compile_c_files_
+%
+% *Note!* These files should be already pre-compiled for win32, win64 and mac64.
+%
+%% Random Forest Classifier
+% Compiled files are required to use Random Forest Classifier. Microscopy Image Browser uses 
+% <https://code.google.com/p/randomforest-matlab/ randomforest-matlab> by Abhishek Jaiantilal which is already compiled for win32, win64. 
+%
+% For all other OS the files have to be compiled manually: 
+% Please refer to details in 
+%%
+% 
+% * _mib\Tools\RandomForest\RF_Class_C\README.txt_
+% * _mib\Tools\RandomForest\RF_Reg_C\README.txt_
+% 
+%
+%% Software Volume Rendering in MIB
+% Compiled |affine_transform_2d_double.c| function is required for volume rendering. Please compile it for your OS.
+% Most of C-functions can be compiled using a single script:
+% 
+% * In Matlab command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
+%   for example _c:\MATLAB\Scripts\mib_
+% * To compile, type in Matlab command window _mib_compile_c_files_
+%
+% *Note!* This file is already pre-compiled for win64.
+%
+% *Back to* <im_browser_product_page.html *Index*>
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,339 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Microscopy Image Browser Measure Tool</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_gui_menu_tools_measure.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Microscopy Image Browser Measure Tool</h1><!--introduction--><p>Measure Tool of MIB is based on <a href="http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility">Image Measurement Utility</a> written by Jan Neggers, Eindhoven University of Technology. Using this tool it is possible to perform number of different length measurements and generate intensity profiles that correspond to these measurements.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Overview</a></li><li><a href="#2">Measure panel</a></li><li><a href="#4">Plot panel</a></li><li><a href="#5">Volel sizes panel</a></li><li><a href="#6">Results panel</a></li><li><a href="#8">Buttons at the bottom of the window</a></li><li><a href="#10">Reference</a></li></ul></div><h2 id="1">Overview</h2><p><img vspace="5" hspace="5" src="images\MenuToolsMeasureTool.png" alt=""> </p><p><b>Note</b>: the measurements can be switched on and off using the <tt>Annotation checkbox</tt> in the <tt>View Settings panel</tt>.</p><h2 id="2">Measure panel</h2><p>Define type of the measurement to perform, each measurement is started using the <b>Add</b> button. The color channel for intensity profile calculation can be specified using the <tt>Color channel</tt> combo box.</p><p>
+<table style="width: 800px; border: 0px">
+<tr>
+<td style="border: 0px">
+  <img src = "images\MenuToolsMeasureOverviewAngle.jpg">
+</td>
+<td style="border: 0px">
+<b>1. Angle</b>: the angle of the intersection of two lines<br>
+a) place the intersection point;<br>
+b) place the second point that together with the intersection point form the first line; <br>
+c) place the third point that together with the intersection point form the second line; <br>
+d) adjust if needed; and double click above the line to accept<br>
+</td>
+</tr>
+<tr>
+<td style="border: 0px">
+  <img src = "images\MenuToolsMeasureOverviewCaliper.jpg">
+</td>
+<td style="border: 0px">
+<b>2. Caliper</b>: the perpendicular distance between a line and a point <br>
+a) place two points that define the line;<br>
+b) adjust if needed; and double click above the line to accept;<br>
+c) place the point; <br>
+d) adjust if needed; and double click above the point to accept;<br>
+</td>
+</tr>
+<tr>
+<td style="border: 0px">
+  <img src = "images\MenuToolsMeasureOverviewCircle.jpg">
+</td>
+<td style="border: 0px">
+<b>3. Circle</b>: the radius of the circle<br>
+a) place a point at the center of a circle;<br>
+b) place a point at the edge of the circle;<br>
+c) adjust if needed; and double click above the circle to accept; <br>
+</td>
+</tr>
+<tr>
+<td style="border: 0px">
+  <img src = "images\MenuToolsMeasureOverviewFreehand.jpg">
+</td>
+<td style="border: 0px">
+<b>4. Distance (freehand)</b>: the length of a path<br>
+a) define type of interpolation using the <b>Interpolation</b> combo box;<br>
+b) press the <b>Add</b> button;<br>
+c) draw a path that should be measured;<br>
+d) convert path to a polyline; provide a factor to reduce number of vertices;<br>
+e) adjust if needed; and double click above the path to accept; <br>
+</td>
+</tr>
+<tr>
+<td style="border: 0px">
+  <img src = "images\MenuToolsMeasureOverviewLinear.jpg">
+</td>
+<td style="border: 0px">
+<b>5. Distance (linear)</b>: the between two points<br>
+a) place the first point;<br>
+b) place the second point;<br>
+c) adjust if needed; and double click above the line to accept; <br>
+</td>
+</tr>
+<tr>
+<td style="border: 0px">
+  <img src = "images\MenuToolsMeasureOverviewFreehand.jpg">
+</td>
+<td style="border: 0px">
+<b>5. Distance (polyline)</b>:  the length of a path defined with predefined number of vertices<br>
+a) define number of vertices using the <b>Number of points</b> edit box;<br>
+b) define type of interpolation using the <b>Interpolation</b> combo box;<br>
+c) press the <b>Add</b> button;<br>
+d) place defined number of points; <br>
+e) adjust the path if needed; press the "a" key and use the left mouse button to add a vertice to the path. Finally double click above the path to accept;<br>
+</td>
+</tr>
+<tr>
+<td style="border: 0px">
+  <img src = "images\MenuToolsMeasureOverviewPoint.jpg">
+</td>
+<td style="border: 0px">
+<b>6. Point (polyline)</b>:  place a point<br>
+a) place a point; <br>
+b) adjust the point if needed; double click above the point to accept;<br>
+</td>
+</tr>
+</table>
+</p><div><ul><li>The <b>fine-tuning</b> checkbox: when selected positions of the measurements can be adjusted during the placement</li><li><b>Preview intenity (only for Distance, linear)</b> - instantly shows an intensity profile while placing the measurements</li><li><b>Integrate (only for Distance, linear)</b> - allows to use integration of several points for calculation of intensity profile</li></ul></div><h2 id="4">Plot panel</h2><p>The <tt>Plot panel</tt> defines which parts of measurements should be displayed in the <tt>Image View panel</tt>. Using the <tt>Options</tt> button look of these lines and markers can be specified.</p><h2 id="5">Volel sizes panel</h2><p>The <tt>Voxel sizes panel</tt> shows dimensions of voxels of the opened dataset. The voxels can be adjusted by pressing the <tt>Update</tt> button.</p><h2 id="6">Results panel</h2><p>This panel displays results of measurements. It is possible to filter types of the displayed measurements using the <tt>Filter combo box</tt>. The intensity profiles for the selected measurements are shown in a plot under the table. When the <tt>Jump on selection</tt> checkbox is selected the view in the <tt>Image View panel</tt> is automatically shifted to put selected measurement into the center of the panel.</p><p>Right click above the selected item starts a context menu with following options:</p><p><img vspace="5" hspace="5" src="images\MenuToolsMeasureContext.png" alt=""> </p><div><ul><li><b>Jump to measurement</b>, select to shift the shown image so that the selected measurement is centered in the <tt>Image View panel</tt>;</li><li><b>Modify measurement</b>, select to trigger the edit mode to modify the shape and size of the measurement;</li><li><b>Recalculate selected measurements...</b>, recalculate distances and intensity profiles for the selected measurements, in case if the pixel size or selection of color channels was changed</li><li><b>Duplicate measurement</b>, select to duplicate the measurement;</li><li><b>Plot intensity profile</b>, select to plot profile of intensities in a new figure.</li><li><b>Delete measurement</b>, select to remove measurement from the list</li></ul></div><h2 id="8">Buttons at the bottom of the window</h2><div><ul><li><b>Load</b> - press to load from a file or import from the main Matlab workspace a structure with measurements;</li><li><b>Save</b> - press to save to a file (Matlab or Excel format) or export to the main Matlab workspace results of the measurements. The saved results contain both the measurements and intensity profiles;</li><li><b>Refresh table</b> - press to refresh the table with measurements;</li><li><b>Delete all</b> - press to remove all measurements;</li><li><b>?</b> - press to call this help page</li><li><b>Add</b> - press to add a new measurement of the selected in the <tt>Measure panel</tt> type;</li><li><b>Close</b> - close the tool</li></ul></div><h2 id="10">Reference</h2><div><ul><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility/">Image Measurement Utility by Jan Neggers</a></li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Microscopy Image Browser Measure Tool
+% Measure Tool of MIB is based on <http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility Image Measurement Utility>
+% written by Jan Neggers, Eindhoven University of Technology. Using this
+% tool it is possible to perform number of different length measurements and generate intensity profiles that correspond to these measurements.
+%
+%
+% 
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools.html *Tools Menu*>
+% 
+%
+%% Overview
+% <<images\MenuToolsMeasureTool.png>>
+% 
+% *Note*: the measurements can be switched on and off using the
+% |Annotation checkbox| in the |View Settings panel|.
+%
+%% Measure panel
+% Define type of the measurement to perform, each measurement is started
+% using the *Add* button. The color channel for intensity profile
+% calculation can be specified using the |Color channel| combo box.
+%%
+% 
+% <html>
+% <table style="width: 800px; border: 0px">
+% <tr>
+% <td style="border: 0px">
+%   <img src = "images\MenuToolsMeasureOverviewAngle.jpg">
+% </td>
+% <td style="border: 0px">
+% <b>1. Angle</b>: the angle of the intersection of two lines<br>
+% a) place the intersection point;<br>
+% b) place the second point that together with the intersection point form the first line; <br>
+% c) place the third point that together with the intersection point form the second line; <br>
+% d) adjust if needed; and double click above the line to accept<br>
+% </td>
+% </tr>
+% <tr>
+% <td style="border: 0px">
+%   <img src = "images\MenuToolsMeasureOverviewCaliper.jpg">
+% </td>
+% <td style="border: 0px">
+% <b>2. Caliper</b>: the perpendicular distance between a line and a point <br>
+% a) place two points that define the line;<br>
+% b) adjust if needed; and double click above the line to accept;<br>
+% c) place the point; <br>
+% d) adjust if needed; and double click above the point to accept;<br>
+% </td>
+% </tr>
+% <tr>
+% <td style="border: 0px">
+%   <img src = "images\MenuToolsMeasureOverviewCircle.jpg">
+% </td>
+% <td style="border: 0px">
+% <b>3. Circle</b>: the radius of the circle<br>
+% a) place a point at the center of a circle;<br>
+% b) place a point at the edge of the circle;<br>
+% c) adjust if needed; and double click above the circle to accept; <br>
+% </td>
+% </tr>
+% <tr>
+% <td style="border: 0px">
+%   <img src = "images\MenuToolsMeasureOverviewFreehand.jpg">
+% </td>
+% <td style="border: 0px">
+% <b>4. Distance (freehand)</b>: the length of a path<br>
+% a) define type of interpolation using the <b>Interpolation</b> combo box;<br>
+% b) press the <b>Add</b> button;<br>
+% c) draw a path that should be measured;<br>
+% d) convert path to a polyline; provide a factor to reduce number of vertices;<br>
+% e) adjust if needed; and double click above the path to accept; <br>
+% </td>
+% </tr>
+% <tr>
+% <td style="border: 0px">
+%   <img src = "images\MenuToolsMeasureOverviewLinear.jpg">
+% </td>
+% <td style="border: 0px">
+% <b>5. Distance (linear)</b>: the between two points<br>
+% a) place the first point;<br>
+% b) place the second point;<br>
+% c) adjust if needed; and double click above the line to accept; <br>
+% </td>
+% </tr>
+% <tr>
+% <td style="border: 0px">
+%   <img src = "images\MenuToolsMeasureOverviewFreehand.jpg">
+% </td>
+% <td style="border: 0px">
+% <b>5. Distance (polyline)</b>:  the length of a path defined with predefined number of vertices<br>
+% a) define number of vertices using the <b>Number of points</b> edit box;<br>
+% b) define type of interpolation using the <b>Interpolation</b> combo box;<br>
+% c) press the <b>Add</b> button;<br>
+% d) place defined number of points; <br>
+% e) adjust the path if needed; press the "a" key and use the left mouse button to add a vertice to the path. Finally double click above the path to accept;<br>
+% </td>
+% </tr>
+% <tr>
+% <td style="border: 0px">
+%   <img src = "images\MenuToolsMeasureOverviewPoint.jpg">
+% </td>
+% <td style="border: 0px">
+% <b>6. Point (polyline)</b>:  place a point<br>
+% a) place a point; <br>
+% b) adjust the point if needed; double click above the point to accept;<br>
+% </td>
+% </tr>
+% </table>
+% </html>
+% 
+% 
+% 
+% * The *fine-tuning* checkbox: when selected positions of the measurements can be
+% adjusted during the placement
+% * *Preview intenity (only for Distance, linear)* - instantly shows an
+% intensity profile while placing the measurements
+% * *Integrate (only for Distance, linear)* - allows to use integration of
+% several points for calculation of intensity profile
+% 
+%
+%% Plot panel
+% The |Plot panel| defines which parts of measurements should be displayed
+% in the |Image View panel|. Using the |Options| button look of these lines
+% and markers can be specified.
+%
+%% Volel sizes panel
+% The |Voxel sizes panel| shows dimensions of voxels of the opened dataset.
+% The voxels can be adjusted by pressing the |Update| button.
+%
+%% Results panel
+% This panel displays results of measurements. It is possible to filter
+% types of the displayed measurements using the |Filter combo box|.
+% The intensity profiles for the selected measurements are shown in a plot
+% under the table. When the |Jump on selection| checkbox is selected the
+% view in the |Image View panel| is automatically shifted to put selected
+% measurement into the center of the panel.
+%
+% Right click above the selected item starts a context menu with following options:
+%
+% 
+% <<images\MenuToolsMeasureContext.png>>
+% 
+%%
+% 
+% * *Jump to measurement*, select to shift the shown image so that the selected
+% measurement is centered in the |Image View panel|;
+% * *Modify measurement*, select to trigger the edit mode to modify the shape and size of
+% the measurement;
+% * *Recalculate selected measurements...*, recalculate distances and
+% intensity profiles for the selected measurements, in case if the pixel
+% size or selection of color channels was changed
+% * *Duplicate measurement*, select to duplicate the measurement;
+% * *Plot intensity profile*, select to plot profile of intensities in a
+% new figure.
+% * *Delete measurement*, select to remove measurement from the list
+% 
+%% Buttons at the bottom of the window
+%
+%%
+% 
+% * *Load* - press to load from a file or import from the main Matlab
+% workspace a structure with measurements;
+% * *Save* - press to save to a file (Matlab or Excel format) or export to
+% the main Matlab workspace results of the measurements. The saved results
+% contain both the measurements and intensity profiles;
+% * *Refresh table* - press to refresh the table with measurements;
+% * *Delete all* - press to remove all measurements;
+% * *?* - press to call this help page
+% * *Add* - press to add a new measurement of the selected in the |Measure
+% panel| type;
+% * *Close* - close the tool
+% 
+%
+%
+%% Reference
+% 
+% * <http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility/ Image Measurement Utility by Jan Neggers>
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools.html *Tools Menu*>
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,391 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Statistics for Mask or Model objects</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_gui_menu_mask_statistics.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Statistics for Mask or Model objects</h1><!--introduction--><p>This dialog provides access to statistic values for shapes and intensities for model and mask objects.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_models.html"><b>Models Menu</b></a> <b>---</b> <a href="ug_gui_menu_mask.html"><b>Mask Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Parameters and Options</a></li><li><a href="#2">Statistical properties of 3D objects</a></li><li><a href="#3">Statistical properties of 2D objects</a></li><li><a href="#4">Statistical properties of intensities of 2D/3D objects</a></li></ul></div><h2 id="1">Parameters and Options</h2><p>
+<table style="width: 800px; border: 0px">
+<tr>
+<td style="border: 0px">
+  <img src = "images\MenuMaskStatistics.png">
+</td>
+<td style="border: 0px">
+<ul>
+<li><b>1. The Objects panel</b> - using combo boxes of this panel it is possible to select material for analysis and type of the dataset:
+current slice (<em>2D Slice</em>), current Z-stack (<em>3D Stack</em>) or for the whole volume (<em>4D Dataset</em>)</li>
+<li><b>2. The Shape panel</b> - allows selection of type of objects to detect: |2D| or |3D|</li>
+<li><b>3. The Mode panel</b> - when the <em>Object mode</em> is selected the dialog returns
+statistic that is based on shape properties of objects, otherwise (<em>Intensity mode</em>) based
+on image intensities behind the objects</li>
+<li><b>4. Select properties to detect</b>. *Note!* The <em>EndpointsLength</em> requires the objects to be lines with diameter of 1 pixel; in
+addition, the 8/26 connectivity should be selected. See below for available properties to measure</li>
+<li><b>5.</b> Define <b>connectivity parameter</b> that will be used for separation of
+objects. The connectivity |4/6| means that the objects that are touching
+eachother at the corners will be separated into two individual objects</li>
+<li><b>6. The first color channel combobox </b> is used to specify color channel for image intensity analysis</li>
+<li><b>7. The second color channel combobox</b> for correlation intensity analysis</li>
+<li><b>8. The multiple properties checkbox</b> allows detection of several object properties at the same time. The properties can be selected using <b>the Define properties button</b>
+<img src="images\MenuMaskStatisticsMultiple.png"></li>
+<li><b>9. The Statistics table</b> contains calculated values. The objects in this window may be sorted
+(*16.*) or selected. Please press the right mouse button button for a
+context menu with selection parameters:</li>
+</ul>
+<table style="width: 600px; text-align: center; border: 0px;">
+<tr style="font-weight: bold; background-color: #FF9258;">
+  <td style="border: 0px;">Context menu entry</td>
+  <td style="border: 0px;">Description</td>
+</tr>
+<tr style="font-weight: normal;background-color: #FFF4BE;">
+  <td style="font-weight: bold; border: 0px">New selection<br></td>
+  <td style="border: 0px">Makes new selection based on the highlighted objects<br></td>
+</tr>
+<tr style="font-weight: normal;background-color: #FFF4BE;">
+  <td style="font-weight: bold; border: 0px">Add to selection<br></td>
+  <td style="border: 0px">Adds highlighted objects to the selection<br></td>
+</tr>
+<tr style="font-weight: normal;background-color: #FFF4BE;">
+  <td style="font-weight: bold; border: 0px">Remove from selection<br></td>
+  <td style="border: 0px">Removes highlighted objects from the selection<br></td>
+</tr>
+<tr style="font-weight: normal;background-color: #FFE4BE;">
+  <td style="font-weight: bold; border: 0px">New annotations<br></td>
+  <td style="border: 0px">Makes a new annotation list: adds a label to the selected objects. The annotations can be accessed via <a href="ug_gui_menu_models.html#12">Menu->Models->Annotations</a> or <a href="ug_panel_segm_tools.html#3">Segmentation panel->Selection type->Annotations</a><br></td>
+</tr>
+<tr style="font-weight: normal;background-color: #FFE4BE;">
+  <td style="font-weight: bold; border: 0px">Add to selection<br></td>
+  <td style="border: 0px">Adds highlighted objects to the annotation list<br></td>
+</tr>
+<tr style="font-weight: normal;background-color: #FFE4BE;">
+  <td style="font-weight: bold; border: 0px">Remove from annotations<br></td>
+  <td style="border: 0px">Removes highlighted objects from the annotation list<br><br></td>
+</tr>
+<tr style="font-weight: normal;background-color: #FFF4BE;">
+  <td style="font-weight: bold; border: 0px">Calculate Mean<br></td>
+  <td style="border: 0px">Calculates average value of the highlighted objects and copy it into clipboard<br></td>
+</tr>
+<tr style="font-weight: normal;background-color: #FFF4BE;">
+  <td style="font-weight: bold; border: 0px">Calculate Sum<br></td>
+  <td style="border: 0px">Calculates sum of the highlighted objects and copy it into clipboard<br></td>
+</tr>
+<tr style="font-weight: normal; background-color: #FFF4BE;">
+  <td style="font-weight: bold; border: 0px">Calculate Min<br></td>
+  <td style="border: 0px">Calculates minimal value of the highlighted objects and copy it into clipboard<br></td>
+</tr>
+<tr style="font-weight: normal;background-color: #FFF4BE;">
+  <td style="font-weight: bold; border: 0px">Calculate Max<br></td>
+  <td style="border: 0px">Calculates maximal value of the highlighted objects and copy it into clipboard<br></td>
+</tr>
+<tr style="font-weight: normal;background-color: #FFE4BE;">
+  <td style="font-weight: bold; border: 0px">Crop to a file/matlab<br></td>
+  <td style="border: 0px">Crops the dataset based on detected 3D objects. It is possible to add margins during the crop and crop both Model and Mask layers. The results can be saved to a file or exported to Matlab<br>
+  <img src="images/MenuMaskStatisticsCropObj.png"><br>
+  <ul>The data is exported to Matlab as a structure
+  [Filename_IndexOfTheObject] with the following fields:
+  <li><b>.img</b> - cropped image [1:height, 1:width, 1:colors, 1:stacks]</li>
+  <li><b>.meta</b> - meta data for the cropped image [1:height, 1:width, 1:colors, 1:stacks]</li>
+  <li><b>.Model</b> - a structure with the Model, including <em>.model, .modelMaterialNames, .modelMaterialColors</em> fields</li>
+  <li><b>.labelText</b> - cell array with annotations</li>
+  <li><b>.labelPosition</b> - a matrix with coordinates for the annotations [z, x, y]</li>
+  <li><b>.Mask</b> - a matrix with the Mask layer [1:height, 1:width, 1:stacks] that corresponds to the cropped image</li>
+  </ul>
+  The exported data can be imported back to MIB using the
+  Menu->File->Import image from...->Matlab and providing variables to
+  import, for example <em>Filename_IndexOfTheObject.img</em> and
+  <em>Filename_IndexOfTheObject.meta</em>.<br>
+  Or for the Model:
+  Menu->Models->Import model from Matlab-> and providing variable with
+  the model, for example <em>Filename_IndexOfTheObject.Model</em>.
+  </td>
+</tr>
+<tr style="font-weight: normal;background-color: #FFE4BE;">
+  <td style="font-weight: bold; border: 0px">Objects to a new model<br></td>
+  <td style="border: 0px">Generate a new model, where each of the selected objects will be assigned to an own index<br>
+      <a href="https://youtu.be/xZhuv659JrY"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/xZhuv659JrY</a>
+</td>
+</tr>
+<tr style="font-weight: normal;background-color: #FFE4BE;">
+  <td style="font-weight: bold; border: 0px">Plot histogram<br></td>
+  <td style="border: 0px">Draws a histogram bar plot from the selected data<br></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</p><div><ul><li><b>10. A histogram plot</b> that shows distribution of statistic parameters from <b>8.</b>. The plot may be shown on a normal or logarithmic scale depending on selection of the <tt>Log scale</tt> check box (<b>13.</b>). Clicks with the left and right mouse allows to make selections.</li><li><b>11. The Auto highlight on a click checkbox</b> - when checked, each time the object in the table (<b>8.</b>) is selected it is highlighted in the Image View panel.</li><li><b>12. The Log scale checkbox</b> is for showing the histogram (<b>8.</b>) in the logarithmic scale.</li><li><b>13.</b> Two edit boxes are used to provides minimal and maximal values for highlighting after press of the <tt>Do</tt> button.</li><li><b>14. The Run button</b> starts quantification.</li><li><b>15. The Details panel</b> defines a way of object selection: the selected objects may be added, removed or used for replacement of the <tt>Selection</tt> layer.</li><li><b>16. The Export button</b> allows export of the statistic values to Excel or Matlab.</li><li><b>17. The Sort button</b> sorts the main table values; use a popup menu via the right mouse button to define a column to be sorted.</li></ul></div><h2 id="2">Statistical properties of 3D objects</h2><p>Calculate properties of 3D objects of the dataset.</p><div><ul><li><b>Area</b> - calculates total number of pixels (~volume) within the 3D objects.</li><li><b>Endpoints Length</b> - calculates the distance between two end points of a <b>line</b> segment. Please note that the width of the line should be 1. It is recommended to use <a href="ug_panel_segm_tools.html">Membrane ClickTracker tool</a> in the <a href="ug_panel_segm.html">Segmentation panel</a> with the option <tt>Straight line</tt> and Width=1. <b>Note!</b> The resulting numbers are calculated in the image units.</li><li><b>EquatorialEccentricity</b> - returns the Equatorial Eccentricity, defined as the eccentricity of the section through the second longest and the shortest axes. The resulted values between 1 (line) and 0 (sphere)</li><li><b>FilledArea</b> - calculates total number of pixels (~volume) within the filled 3D objects.</li><li><b>Holes Area</b> - finds cavities within 3D objects and calculate their total number of pixels (~volume).</li><li><b>MajorAxisLength</b> - returns the length of the major axis in pixels</li><li><b>MeridionalEccentricity</b> - returns Meriodional Eccentricity, defined as the eccentricity of the section through the longest and the shortest axes</li><li><b>SecondAxisLength</b> - returns the length of the second major axis in pixels</li><li><b>ThirdAxisLength</b> - returns the length of the minor axis in pixels</li></ul></div><h2 id="3">Statistical properties of 2D objects</h2><p>Calculate properties of 3D objects of the dataset.</p><div><ul><li><b>Area</b> - calculates total number of pixels within the 2D objects.</li><li><b>ConvexArea</b> - calculates total number of pixels of the smallest convex polygon that can contain the object.</li><li><b>CurveLengthInPixels</b> - calculate the length of curve objects in pixels. It is possible to measure the length of both closed and non-closed curves. <b>Please note!</b> It is required that the curves are thinned (<tt>Menu-&gt;Selection-&gt;Morphological operations</tt>) and the branch points are removed (The branch points may be found by selecting material and run <tt>branch point</tt> detection, Menu-&gt;Selection-&gt;Morphological operations|).</li><li><b>CurveLengthInUnits</b> - calculates the length of curved objects in physical units of the dataset. It is possible to measure the length of both closed and non-closed curves. <b>Please note!</b> It is required that the curves are thinned (<tt>Menu-&gt;Selection-&gt;Morphological operations</tt>) and the branch points are removed (The branch points may be found by selecting material and run <tt>branch point</tt> detection, Menu-&gt;Selection-&gt;Morphological operations|).</li><li><b>Eccentricity</b> - calculates eccentricity of the ellipse that has the same second-moments as the object. The eccentricity is the ratio of the distance between the foci of the ellipse and its major axis length. The value is between 0 and 1. (0 and 1 are degenerate cases; an ellipse whose eccentricityis 0 is actually a circle, while an ellipse whose eccentricity is 1 is a line segment.)</li><li><b>Endpoints Length</b> - calculates the distance between two end points of a <b>line</b> segment. Please note that the width of the line should be 1. It is recommended to use <a href="ug_panel_segm_tools.html">Membrane ClickTracker tool</a> in the <a href="ug_panel_segm.html">Segmentation panel</a> with the option <tt>Straight line</tt> and Width=1. If the lines were drawn with the <tt>Brush</tt> tool they have to be thinned. The thinning may be achieved with the <tt>Brush tool</tt> size 1 or/and Thinning the objects using <tt>Menu-&gt;Selection-&gt;Morphological 2D operations-&gt;Thin</tt>. <b>Note!</b> The resulting numbers are calculated in the image units.</li><li><b>EquivDiameter</b> - calculates the diameter of a circle with the same area as the object. Computed as <tt>sqrt(4*Area/pi)</tt>.</li><li><b>EulerNumber</b> - calculates the number of objects in the region minus the number of holes in those objects, <i>i.e.</i> the object with 1 hole has the Euler number 0, while the object with 2 holes has the Euler number -1.</li><li><b>Extent</b> - calculates the ratio of pixels in the object to pixels in the total bounding box. Computed as the Area divided by the area of the bounding box.</li><li><b>FirstAxisLength</b> - length of the major 2D axis of the object, in contrast to <tt>MajorAxisLength</tt> this property returns the real length of the object rather than that for the ellipse</li><li><b>FilledArea</b> - calculates the number of pixels of the filled object.</li><li><b>Holes Area</b> - finds holes and calculates total number of pixels within them.</li><li><b>MajorAxisLength</b> - calculates the length (in pixels) of the major axis of the ellipse that has the same normalized second central moments as the object.</li><li><b>MinorAxisLength</b> - calculate the length (in pixels) of the minor axis of the ellipse that has the same normalized second central moments as the object.</li><li><b>Orientation</b> - calculates the angle (in degrees ranging from -90 to +90 degrees) between the x-axis and the major axis of the ellipse that has the same second-moments as the object.</li><li><b>Perimeter</b> - calculates the distance around the boundary of the object. It is computed as the perimeter by calculating the distance between each adjoining pair of pixels around the border of the region</li><li><b>SecondAxisLength</b> - length of the minor 2D axis of the object, in contrast to <tt>MinorAxisLength</tt> this property returns the real length of the object rather than that for the ellipse</li><li><b>Solidity</b> - calculates the proportion of the pixels in the convex hull that are also in the object. Computed as <tt>Area/ConvexArea</tt>.</li></ul></div><h2 id="4">Statistical properties of intensities of 2D/3D objects</h2><p>These properties are calculated when the Intensity radio button in the Mode panel (<b>3.</b>) is selected.</p><div><ul><li><b>MinIntensity</b> - detects minimal value of the image intensity within 2D or 3D objects.</li><li><b>MaxIntensity</b> - detects maximal value of the image intensity within 2D or 3D objects.</li><li><b>MeanIntensity</b> - calculates average intensity of the image within 2D or 3D objects.</li><li><b>StdIntensity</b> - calculates standard deviation intensity of the image within 2D or 3D objects.</li><li><b>SumIntensity</b> - calculates sum of the image intensities within 2D or 3D objects.</li><li><b>Correlation</b> - calculates correlation between image intensities of the two selected color channels. See more in the help of Matlab <tt>corr2</tt> function.</li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_models.html"><b>Models Menu</b></a> <b>---</b> <a href="ug_gui_menu_mask.html"><b>Mask Menu</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Statistics for Mask or Model objects 
+% This dialog provides access to statistic values for shapes and intensities for model and mask objects.
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_models.html *Models Menu*> *REPLACE_WITH_DASH_DASH-* <ug_gui_menu_mask.html *Mask Menu*>
+% 
+%% Parameters and Options
+%
+%
+% <html>
+% <table style="width: 800px; border: 0px">
+% <tr>
+% <td style="border: 0px">
+%   <img src = "images\MenuMaskStatistics.png">
+% </td>
+% <td style="border: 0px">
+% <ul>
+% <li><b>1. The Objects panel</b> - using combo boxes of this panel it is possible to select material for analysis and type of the dataset: 
+% current slice (<em>2D Slice</em>), current Z-stack (<em>3D Stack</em>) or for the whole volume (<em>4D Dataset</em>)</li>
+% <li><b>2. The Shape panel</b> - allows selection of type of objects to detect: |2D| or |3D|</li>
+% <li><b>3. The Mode panel</b> - when the <em>Object mode</em> is selected the dialog returns
+% statistic that is based on shape properties of objects, otherwise (<em>Intensity mode</em>) based
+% on image intensities behind the objects</li>
+% <li><b>4. Select properties to detect</b>. *Note!* The <em>EndpointsLength</em> requires the objects to be lines with diameter of 1 pixel; in
+% addition, the 8/26 connectivity should be selected. See below for available properties to measure</li>
+% <li><b>5.</b> Define <b>connectivity parameter</b> that will be used for separation of
+% objects. The connectivity |4/6| means that the objects that are touching
+% eachother at the corners will be separated into two individual objects</li>
+% <li><b>6. The first color channel combobox </b> is used to specify color channel for image intensity analysis</li>
+% <li><b>7. The second color channel combobox</b> for correlation intensity analysis</li>
+% <li><b>8. The multiple properties checkbox</b> allows detection of several object properties at the same time. The properties can be selected using <b>the Define properties button</b>
+% <img src="images\MenuMaskStatisticsMultiple.png"></li>
+% <li><b>9. The Statistics table</b> contains calculated values. The objects in this window may be sorted
+% (*16.*) or selected. Please press the right mouse button button for a
+% context menu with selection parameters:</li>
+% </ul>
+% <table style="width: 600px; text-align: center; border: 0px;">
+% <tr style="font-weight: bold; background-color: #FF9258;">
+%   <td style="border: 0px;">Context menu entry</td>
+%   <td style="border: 0px;">Description</td>
+% </tr>
+% <tr style="font-weight: normal;background-color: #FFF4BE;">
+%   <td style="font-weight: bold; border: 0px">New selection<br></td>
+%   <td style="border: 0px">Makes new selection based on the highlighted objects<br></td>
+% </tr>
+% <tr style="font-weight: normal;background-color: #FFF4BE;">
+%   <td style="font-weight: bold; border: 0px">Add to selection<br></td>
+%   <td style="border: 0px">Adds highlighted objects to the selection<br></td>
+% </tr>
+% <tr style="font-weight: normal;background-color: #FFF4BE;">
+%   <td style="font-weight: bold; border: 0px">Remove from selection<br></td>
+%   <td style="border: 0px">Removes highlighted objects from the selection<br></td>
+% </tr>
+% <tr style="font-weight: normal;background-color: #FFE4BE;">
+%   <td style="font-weight: bold; border: 0px">New annotations<br></td>
+%   <td style="border: 0px">Makes a new annotation list: adds a label to the selected objects. The annotations can be accessed via <a href="ug_gui_menu_models.html#12">Menu->Models->Annotations</a> or <a href="ug_panel_segm_tools.html#3">Segmentation panel->Selection type->Annotations</a><br></td>
+% </tr>
+% <tr style="font-weight: normal;background-color: #FFE4BE;">
+%   <td style="font-weight: bold; border: 0px">Add to selection<br></td>
+%   <td style="border: 0px">Adds highlighted objects to the annotation list<br></td>
+% </tr>
+% <tr style="font-weight: normal;background-color: #FFE4BE;">
+%   <td style="font-weight: bold; border: 0px">Remove from annotations<br></td>
+%   <td style="border: 0px">Removes highlighted objects from the annotation list<br><br></td>
+% </tr>
+% <tr style="font-weight: normal;background-color: #FFF4BE;">
+%   <td style="font-weight: bold; border: 0px">Calculate Mean<br></td>
+%   <td style="border: 0px">Calculates average value of the highlighted objects and copy it into clipboard<br></td>
+% </tr>
+% <tr style="font-weight: normal;background-color: #FFF4BE;">
+%   <td style="font-weight: bold; border: 0px">Calculate Sum<br></td>
+%   <td style="border: 0px">Calculates sum of the highlighted objects and copy it into clipboard<br></td>
+% </tr>
+% <tr style="font-weight: normal; background-color: #FFF4BE;">
+%   <td style="font-weight: bold; border: 0px">Calculate Min<br></td>
+%   <td style="border: 0px">Calculates minimal value of the highlighted objects and copy it into clipboard<br></td>
+% </tr>
+% <tr style="font-weight: normal;background-color: #FFF4BE;">
+%   <td style="font-weight: bold; border: 0px">Calculate Max<br></td>
+%   <td style="border: 0px">Calculates maximal value of the highlighted objects and copy it into clipboard<br></td>
+% </tr>
+% <tr style="font-weight: normal;background-color: #FFE4BE;">
+%   <td style="font-weight: bold; border: 0px">Crop to a file/matlab<br></td>
+%   <td style="border: 0px">Crops the dataset based on detected 3D objects. It is possible to add margins during the crop and crop both Model and Mask layers. The results can be saved to a file or exported to Matlab<br>
+%   <img src="images/MenuMaskStatisticsCropObj.png"><br>
+%   <ul>The data is exported to Matlab as a structure
+%   [Filename_IndexOfTheObject] with the following fields:
+%   <li><b>.img</b> - cropped image [1:height, 1:width, 1:colors, 1:stacks]</li>
+%   <li><b>.meta</b> - meta data for the cropped image [1:height, 1:width, 1:colors, 1:stacks]</li>
+%   <li><b>.Model</b> - a structure with the Model, including <em>.model, .modelMaterialNames, .modelMaterialColors</em> fields</li>
+%   <li><b>.labelText</b> - cell array with annotations</li>
+%   <li><b>.labelPosition</b> - a matrix with coordinates for the annotations [z, x, y]</li>
+%   <li><b>.Mask</b> - a matrix with the Mask layer [1:height, 1:width, 1:stacks] that corresponds to the cropped image</li>
+%   </ul>
+%   The exported data can be imported back to MIB using the
+%   Menu->File->Import image from...->Matlab and providing variables to
+%   import, for example <em>Filename_IndexOfTheObject.img</em> and
+%   <em>Filename_IndexOfTheObject.meta</em>.<br>
+%   Or for the Model:
+%   Menu->Models->Import model from Matlab-> and providing variable with
+%   the model, for example <em>Filename_IndexOfTheObject.Model</em>.
+%   </td>
+% </tr>
+% <tr style="font-weight: normal;background-color: #FFE4BE;">
+%   <td style="font-weight: bold; border: 0px">Objects to a new model<br></td>
+%   <td style="border: 0px">Generate a new model, where each of the selected objects will be assigned to an own index<br>
+%       <a href="https://youtu.be/xZhuv659JrY"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/xZhuv659JrY</a>
+% </td>
+% </tr>
+% <tr style="font-weight: normal;background-color: #FFE4BE;">
+%   <td style="font-weight: bold; border: 0px">Plot histogram<br></td>
+%   <td style="border: 0px">Draws a histogram bar plot from the selected data<br></td>
+% </tr>
+% </table>
+% </td>
+% </tr>
+% </table>
+% </html>
+%
+% 
+% * *10. A histogram plot* that shows distribution of statistic parameters
+% from *8.*. The plot may be shown on a normal or logarithmic scale
+% depending on selection of the |Log scale| check box (*13.*). Clicks with the left and
+% right mouse allows to make selections. 
+% * *11. The Auto highlight on a click checkbox* - when checked, each time
+% the object in the table (*8.*) is selected it is highlighted in the Image
+% View panel.
+% * *12. The Log scale checkbox* is for showing the histogram (*8.*) in the logarithmic scale.
+% * *13.* Two edit boxes are used to provides minimal and maximal values for highlighting after press of the |Do| button.
+% * *14. The Run button* starts quantification.
+% * *15. The Details panel* defines a way of object selection: the selected
+% objects may be added, removed or used for replacement of the |Selection|
+% layer.
+% * *16. The Export button* allows export of the statistic values to Excel or
+% Matlab.
+% * *17. The Sort button* sorts the main table values; use a popup menu via the right mouse button to define a column to be sorted.
+%
+%
+%% Statistical properties of 3D objects
+% Calculate properties of 3D objects of the dataset.
+%
+% * *Area* - calculates total number of pixels (~volume) within the 3D objects.
+% * *Endpoints Length* - calculates the distance between two end points of a *line* segment. Please note that the width of the line
+% should be 1. It is recommended to use <ug_panel_segm_tools.html Membrane ClickTracker tool> in the <ug_panel_segm.html Segmentation panel> with the option |Straight line| and Width=1.
+% *Note!* The resulting numbers are calculated in the image units.
+% * *EquatorialEccentricity* - returns the Equatorial Eccentricity, defined
+% as the eccentricity of the section through the second longest and the
+% shortest axes. The resulted values between 1 (line) and 0 (sphere)
+% * *FilledArea* - calculates total number of pixels (~volume) within the filled 3D objects.
+% * *Holes Area* - finds cavities within 3D objects and calculate their total number of pixels (~volume).
+% * *MajorAxisLength* - returns the length of the major axis in pixels
+% * *MeridionalEccentricity* - returns Meriodional Eccentricity, defined as the eccentricity of the section through the longest and the shortest axes
+% * *SecondAxisLength* - returns the length of the second major axis in pixels
+% * *ThirdAxisLength* - returns the length of the minor axis in pixels
+%
+%% Statistical properties of 2D objects
+%
+% Calculate properties of 3D objects of the dataset.
+%
+% * *Area* - calculates total number of pixels within the 2D objects.
+% * *ConvexArea* - calculates total number of pixels of the smallest convex polygon that can contain the object.
+% * *CurveLengthInPixels* - calculate the length of curve objects in pixels. It is possible to measure the length of both closed and non-closed curves. 
+% *Please note!* It is required that the curves are thinned (|Menu->Selection->Morphological operations|) and the branch
+% points are removed (The branch points may be found by selecting material and run |branch point| detection, Menu->Selection->Morphological operations|).
+% * *CurveLengthInUnits* - calculates the length of curved objects in physical units of the dataset. It is possible to measure the length of both closed and non-closed curves. 
+% *Please note!* It is required that the curves are thinned (|Menu->Selection->Morphological operations|) and the branch
+% points are removed (The branch points may be found by selecting material and run |branch point| detection, Menu->Selection->Morphological operations|). 
+% * *Eccentricity* - calculates eccentricity of the ellipse that has the same second-moments as the object. 
+% The eccentricity is the ratio of the distance between the foci of the ellipse and its major axis length. The value is between 0 and 1.
+% (0 and 1 are degenerate cases; an ellipse whose eccentricityis 0 is actually a circle, while an ellipse whose eccentricity is 1 is a line segment.)
+% * *Endpoints Length* - calculates the distance between two end points of a *line* segment. Please note that the width of the line
+% should be 1. It is recommended to use <ug_panel_segm_tools.html Membrane ClickTracker tool> in the <ug_panel_segm.html Segmentation panel> with the option |Straight line| and Width=1.
+% If the lines were drawn with the |Brush| tool they have to be thinned. The thinning may be achieved with the |Brush tool| size 1 or/and Thinning the objects using
+% |Menu->Selection->Morphological 2D operations->Thin|. *Note!* The resulting numbers are calculated in the image units.
+% * *EquivDiameter* - calculates the diameter of a circle with the same area as the object. Computed as |sqrt(4*Area/pi)|.
+% * *EulerNumber* - calculates the number of objects in the region minus the number of holes in those objects, _i.e._ the
+% object with 1 hole has the Euler number 0, while the object with 2 holes has the Euler number -1.
+% * *Extent* - calculates the ratio of pixels in the object to pixels in the total bounding box. Computed as the Area divided by the area of the bounding box.
+% * *FirstAxisLength* - length of the major 2D axis of the object, in contrast to |MajorAxisLength| this property returns the real length of the object rather than that for the ellipse
+% * *FilledArea* - calculates the number of pixels of the filled object.
+% * *Holes Area* - finds holes and calculates total number of pixels within them.
+% * *MajorAxisLength* - calculates the length (in pixels) of the major axis of the ellipse that has the same normalized second
+% central moments as the object.
+% * *MinorAxisLength* - calculate the length (in pixels) of the minor axis of the ellipse that has the same normalized second central moments as the object. 
+% * *Orientation* - calculates the angle (in degrees ranging from -90 to +90 degrees) between the x-axis and the major axis of
+% the ellipse that has the same second-moments as the object.
+% * *Perimeter* - calculates the distance around the boundary of the object. It is computed as the perimeter by calculating the 
+% distance between each adjoining pair of pixels around the border of the region
+% * *SecondAxisLength* - length of the minor 2D axis of the object, in contrast to |MinorAxisLength| this property returns the real length of the object rather than that for the ellipse
+% * *Solidity* - calculates the proportion of the pixels in the convex hull that are also in the object. Computed as
+% |Area/ConvexArea|.
+%
+%% Statistical properties of intensities of 2D/3D objects
+%
+% These properties are calculated when the Intensity radio button in the Mode panel (*3.*) is selected.
+%
+% * *MinIntensity* - detects minimal value of the image intensity within 2D or 3D objects.
+% * *MaxIntensity* - detects maximal value of the image intensity within 2D or 3D objects.
+% * *MeanIntensity* - calculates average intensity of the image within 2D or 3D objects.
+% * *StdIntensity* - calculates standard deviation intensity of the image within 2D or 3D objects.
+% * *SumIntensity* - calculates sum of the image intensities within 2D or 3D objects.
+% * *Correlation* - calculates correlation between image intensities of the two selected color channels. See more in the help
+% of Matlab |corr2| function.
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_models.html *Models Menu*> *REPLACE_WITH_DASH_DASH-* <ug_gui_menu_mask.html *Mask Menu*>
+%
+
+
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.9.104  (Linux)">
+	<META NAME="CREATED" CONTENT="20050509;10334400">
+	<META NAME="CHANGED" CONTENT="20050511;10294400">
+	<STYLE>
+	<!--
+		@page { size: 8.5in 11in; margin: 1in }
+		P { margin-bottom: 0.08in }
+		P.western { font-family: "Bitstream Vera Sans"; font-size: 11pt }
+		H1 { margin-bottom: 0.08in }
+		H1.western { font-family: "Bitstream Vera Sans"; font-size: 16pt }
+		H1.cjk { font-family: "HG Mincho Light J", "MS Mincho", "HG Mincho J", "HG Mincho L", "HG Mincho", "Mincho", "MS PMincho", "HG Mincho Light J", "MS Gothic", "HG Gothic J", "HG Gothic B", "HG Gothic", "Gothic", "MS PGothic", "Andale Sans UI", "Arial Unicode MS", "Lucida Sans Unicode", "Tahoma"; font-size: 16pt }
+		H1.ctl { font-family: "Tahoma", "Lucidasans", "Lucida Sans", "Arial Unicode MS"; font-size: 16pt }
+		H2 { margin-bottom: 0.08in }
+		H2.western { font-family: "Bitstream Vera Sans"; font-size: 14pt; font-style: italic }
+		H2.cjk { font-family: "HG Mincho Light J", "MS Mincho", "HG Mincho J", "HG Mincho L", "HG Mincho", "Mincho", "MS PMincho", "HG Mincho Light J", "MS Gothic", "HG Gothic J", "HG Gothic B", "HG Gothic", "Gothic", "MS PGothic", "Andale Sans UI", "Arial Unicode MS", "Lucida Sans Unicode", "Tahoma"; font-size: 14pt; font-style: italic }
+		H2.ctl { font-family: "Arial Unicode MS"; font-size: 14pt; font-style: italic }
+		BLOCKQUOTE { margin-left: 0.4in; margin-right: 0.4in; margin-bottom: 0in }
+		BLOCKQUOTE.western { font-family: "Courier", monospace; font-size: 11pt }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<DIV TYPE=HEADER>
+	<P CLASS="western" ALIGN=RIGHT STYLE="margin-bottom: 0.2in"><BR><BR>
+	</P>
+</DIV>
+<P CLASS="western" ALIGN=CENTER STYLE="margin-top: 0.17in; page-break-after: avoid">
+<FONT FACE="Bitstream Vera Sans"><FONT SIZE=5><B>MatTomo Users Guide</B></FONT></FONT></P>
+<P CLASS="western" ALIGN=CENTER STYLE="margin-top: 0.17in; page-break-after: avoid">
+<FONT FACE="Bitstream Vera Sans"><FONT SIZE=3><I>Rick Gaudette</I></FONT></FONT></P>
+<P CLASS="western" ALIGN=CENTER STYLE="margin-top: 0.17in; page-break-after: avoid">
+<FONT FACE="Bitstream Vera Sans"><FONT SIZE=3><I>Boulder Laboratory
+for 3D Electron Microscopy of Cells</I></FONT></FONT></P>
+<P CLASS="western" ALIGN=CENTER STYLE="margin-top: 0.17in; page-break-after: avoid">
+<FONT FACE="Bitstream Vera Sans"><FONT SIZE=3><I>University of
+Colorado, Boulder, CO, 80309</I></FONT></FONT></P>
+<P CLASS="western"><BR><BR>
+</P>
+<H1 CLASS="western">Introduction</H1>
+<P CLASS="western">MatTomo is a set of MATLAB objects that provide
+for the manipulation of IMOD model and MRC image files. Using the
+MatTomo classes the contents of both types of files can be read into
+MATLAB, their data can be examined, both graphically and textually,
+changed, deleted and appended. The meta data (header) can also be
+viewed and modified.<BR><BR><BR>
+</P>
+<H1 CLASS="western">IMOD model files</H1>
+<P CLASS="western">IMOD model files consist of a hierarchy of data
+structures. At the highest level is the IMOD model which contains
+which contains a collection of meta data in the header and is
+followed by an arbitrary number of IMOD Object data structures. Not
+to be confused with the generic term “object” from object
+oriented programming, an IMOD Object is a specific data structure
+that stores information about 3D objects from the 3dmod program. Like
+the IMOD model structure, the IMOD Object structure contains a header
+followed by an arbitrary number of IMOD Contour and possibly IMOD
+Mesh objects that define the contours and meshes associated with the
+object. There are also several additional optional data structures
+that can be associated with the above structures by following them in
+the file. Most of these optional structures are currently ignored by
+the MatTomo methods.</P>
+<P CLASS="western">The MatTomo toolbox manages the data structures in
+an IMOD model file through a set of classes with the obvious names of
+ImodModel, ImodObject, ImodContour and ImodMesh. An ImodObject
+contains a collection of ImodContours and possibly ImodMesh objects,
+and an ImodModel contains collection of ImodObject objects, thus
+enforcing the hierarchy described above. Many of the data
+manipulation methods for the lower level objects are accessible
+through the ImodModel object via pass through methods, although there
+are some instances where a lower level object must be extracted,
+modified, and reinserted.</P>
+<H2 CLASS="western">Creating an IMOD model</H2>
+<P CLASS="western">An ImodModel first needs be instantiated before we
+can operate on, or store any data in the object. This can be
+accomplished with 
+</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">imodModel =
+ImodModel;</BLOCKQUOTE>
+<P CLASS="western">which will create a default ImodModel object
+containing no ImodObjects.</P>
+<H2 CLASS="western">Adding points to a model</H2>
+<P CLASS="western">The empty ImodModel above is not very useful
+without any data, to add an ImodObject containing an ImodContour to
+the model we could execute the following</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">points = [</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">-1 2 5 2 5;</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">-1 4 2 5 6;</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">-1 3 5 2 7
+];</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">imodContour
+= ImodContour(points);</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">imodObject =
+setContour(ImodObject, imodContour, 1);</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">imodModel =
+setObject(imodModel, imodObject, 1);</BLOCKQUOTE>
+<H2 CLASS="western">Appending a new object to a model</H2>
+<P CLASS="western">Since appending an ImodObject to an existing
+ImodModel and appending an ImodContour to an existing ImodObject are
+common operations, methods are available in ImodModel and ImodObject
+that automatically insert the supplied object at the end of the
+object list. We could have accomplished the same result as above with
+the commands</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">imodModel2 =
+ImodModel;</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">points = [</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">-1 2 5 2 5;</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">-1 4 2 5 6;</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">-1 3 5 2 7
+];</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">imodObject =
+appendContour(ImodObject, ImodContour(points));</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">imodModel2 =
+appendObject(imodModel2, imodObject);</BLOCKQUOTE>
+<H2 CLASS="western">Getting points from a model</H2>
+<P CLASS="western">A specific contour, or set of points, can be
+extracted from a model with the <FONT FACE="Courier, monospace">get*</FONT>
+functions. If we wanted to extract the points we just inserted in the
+above example we could use</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">idxObject =
+1; idxContour = 1;</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">objectOut =
+getObject(imodModel2, idxObject);</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">contourOut =
+getContour(objectOut, idxContour);</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">pointsOut =
+getPoints(contourOut);</BLOCKQUOTE>
+<P CLASS="western">Again, because this is such a common operation a
+method at the ImodModel level is available to accomplish the same
+result,</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">pointsOut =
+getPoints(imodModel2, idxObject, idxContour);</BLOCKQUOTE>
+<H2 CLASS="western">Changing the points of specific object and
+contour</H2>
+<P CLASS="western">To modify the data in a model, there are number of
+<FONT FACE="Courier, monospace">get*</FONT> and <FONT FACE="Courier, monospace">set*</FONT>
+methods available. Assume, for example, we want to multiply the
+contour we were working with above by 2. The could be accomplish by
+the following commands</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">idxObject =
+1; idxContour = 1;</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">objectOut =
+getObject(imodModel2, idxObject);</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">contourOut =
+getContour(objectOut, idxContour);</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">pointsOut =
+getPoints(contourOut);</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">pointsIn = 2
+* pointsOut;</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">contourIn =
+setPoints(contourOut, pointsIn);</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">objectIn =
+setContour(objectOut, contourIn, idxContour);</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">imodModel2 =
+setObject(imodModel2, objectIn, idxObject);</BLOCKQUOTE>
+<P CLASS="western">Or, if we wanted to work directly with the
+ImodModel methods, we could use</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">pointsOut =
+getPoints(imodModel2, idxObject, idxContour);</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">pointsIn =
+pointsOut * 2;</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">imodModel2 =
+setPoints(modModel2, idxObject, idxContour, pointsIn);</BLOCKQUOTE>
+<H2 CLASS="western">Reading and writing IMOD models</H2>
+<P CLASS="western">Reading and writing IMOD model files is supported
+through methods in the ImodModel class. The simplest way to read in
+an IMOD model file is to specify the model filename as argument to
+the class constructor, as in</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">modIDA1 =
+ImodModel('input.mod')</BLOCKQUOTE>
+<P CLASS="western">which will read in the IMOD model file named
+'input.mod' in the current directory. The <FONT FACE="Courier, monospace">write</FONT>
+method will write out the ImodModel object as an IMOD model file. For
+example,</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">modOut =
+write(modIDA1, 'newModel.mod');</BLOCKQUOTE>
+<P CLASS="western">will write out the previously read in model to an
+new file called <I>newModel.mod</I>.</P>
+<H2 CLASS="western">ImodModel utilites</H2>
+<P CLASS="western">There are several utility methods available in the
+ImodModel class. For instance, to show the header of the model file,</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">showHeader(modOut);</BLOCKQUOTE>
+<P CLASS="western">will print out the header to the command window.</P>
+<P CLASS="western">Examining the points of the model textually can be
+accomplished using the <FONT FACE="Courier, monospace">get*</FONT>
+commands described above. To view them graphically, the draw command
+is available.</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">draw(modOut)</BLOCKQUOTE>
+<P CLASS="western">will draw the complete model as a 3D point plot.
+Finally, the points in a specific contour can be sorted by their
+2-norm distance from a specified model point. For instance, if we
+wanted to sort the first example starting with the last point</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">imodModel =
+sortPoints(imodModel, 1, 1, 5)</BLOCKQUOTE>
+<P CLASS="western">would result in</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">getPoints(imodModel,1
+,1)</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">ans =</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">5 5 2 2 -1</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">6 2 4 5 -1</BLOCKQUOTE>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">7 5 3 2 -1</BLOCKQUOTE>
+<P CLASS="western">To view a model inside of 3dmod we need to specify
+the range of the model data if we are creating a new model, an
+existing model from 3dmod should already have this specified.  If the
+model is based on an MRC image stack then the range of the model
+should match the size of the MRCImage object.<SPAN STYLE="background: #ffff00">
+ To set the model to the MRCImage range ...............</SPAN></P>
+<H1 CLASS="western">MRC image files</H1>
+<P CLASS="western">MRC image files consist of a 3D data volume
+preceded by a header containing meta data about the data volume. The
+MRCImage object provides for loading, saving, and modifying the
+volume data and meta data. Some simple examples of these operations
+are provided below. 
+</P>
+<H2 CLASS="western">Loading and saving MRC image files</H2>
+<P CLASS="western">Assuming that a MRC image file called 'volume.mrc'
+exists in the current directory. To load this into a MRCImage object
+we can use the constructor</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">mrcImage =
+MRCImage('volume.mrc');</BLOCKQUOTE>
+<P CLASS="western">Since volume data in general, and MRC image files
+in particular, can be extremely large the MRCImage object allows the
+user to specify whether the volume data will be loaded into memory or
+accessed only when needed from the file. By supplying a zero in the
+last argument of the constructor we can tell the MRCImage object to
+load data only when it is needed, such as</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">mrcFile =
+MRCImage('volume.mrc', 0);</BLOCKQUOTE>
+<P CLASS="western">The default behavior is to load the whole dataset.
+Use the <FONT FACE="Courier, monospace">save</FONT> method to save a
+MRCImage object to a MRC image file. For example,</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">mrcFile =
+save(mrcFile);</BLOCKQUOTE>
+<P CLASS="western">will write out the contents of the object to the
+file stored in the filename attribute,</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">mrcFile =
+save(mrcFile, 'newfile.mrc');</BLOCKQUOTE>
+<P CLASS="western">will save the same dataset to a new file called
+'newfile.mrc'.</P>
+<H2 CLASS="western">Accessing and changing data</H2>
+<P CLASS="western">The complete volume of the MRCImage can be
+accessed and modified through the <FONT FACE="Courier, monospace">getVolume</FONT>
+and <FONT FACE="Courier, monospace">setVolume</FONT> methods. For
+example,</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">vol =
+getVolume(mrcFile, [], [], []);</BLOCKQUOTE>
+<P CLASS="western">will return the 3D volume data array stored in
+mrcFile, and</P>
+<BLOCKQUOTE CLASS="western" STYLE="margin-bottom: 0.2in">mrcFile =
+setVolume(mrcFile, vol);</BLOCKQUOTE>
+<P CLASS="western">will replace the volume data in the mrcFile
+object. Arbitrary sub-regions of data can also be extracted or
+replaced using these methods, see the MATLAB help for more
+information. More information about the capabilites of these classes
+can be found in the class directories @ImodContour, @ImodObject,
+@ImodModel, @ImodMesh, and @MRCmage.</P>
+<P CLASS="western"><BR><BR>
+</P>
+<DIV TYPE=FOOTER>
+	<P CLASS="western" ALIGN=RIGHT STYLE="margin-top: 0.2in; margin-bottom: 0in">
+	<BR>
+	</P>
+</DIV>
+</BODY>
+</HTML>

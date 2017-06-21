@@ -1,0 +1,123 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Microscopy Image Browser (MIB) Installation</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="im_browser_installation.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Microscopy Image Browser (MIB) Installation</h1><!--introduction--><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Run Microscopy Image Browser under Matlab environment</a></li><li><a href="#2">Run Microscopy Image Browser as standalone (Windows, x64 bit)</a></li><li><a href="#3">Run Microscopy Image Browser as standalone (MacOS, x64 bit)</a></li><li><a href="#4">Additional info</a></li></ul></div><h2 id="1">Run Microscopy Image Browser under Matlab environment</h2><div><ol><li>Download Matlab distribution of the program (<a href="http://mib.helsinki.fi/web-update/MIB2_Matlab.zip">MIB2_Matlab.zip</a>)</li><li>Unzip and copy MIB files to <tt>MIB</tt> directory in your <tt>Scripts</tt> folder. For example, <tt>c:\Matlab\Scripts\mib\</tt></li><li>Start Matlab</li><li>Add <tt>MIB</tt> starting directory (for example, <tt>c:\Matlab\Scripts\mib\</tt>) into Matlab path <tt>Matlab-&gt;Home tab-&gt;Set path...-&gt;Add folder...-&gt;Save</tt>, or alternatively use the <tt>pathtool</tt> function from Matlab command window</li><li>Type <tt>mib</tt> in the matlab command window and hit the Enter button to start the program</li><li>Check <a href="im_browser_system_requirements.html">System Requirements</a> for further details about optional steps, such as use of <a href="http://fiji.sc/Fiji">Fiji</a>, or <a href="http://www.openmicroscopy.org/site">OMERO</a>&gt;</li><li>Access help and tutorials from the MIB menu: <tt>MIB-&gt;Menu-&gt;Help-&gt;Help</tt></li></ol></div><h2 id="2">Run Microscopy Image Browser as standalone (Windows, x64 bit)</h2><div><ol><li>Download a single executable file that installs MIB (<a href="http://mib.helsinki.fi/web-update/MIB2_Win.exe">MIB2_Win.exe</a>).</li><li>Run <tt>MIB2_Win.exe</tt> to install MIB to your computer (<i>requires administrative privileges</i>). The required MATLAB Compiler Runtime (MCR) environment will be automatically installed during the process. <a href="http://mib.helsinki.fi/downloads_installation_windows.html">Click here for detailed instructions</a> .</li><li>To start, please type MIB in the Start menu</li><li>Check <a href="im_browser_system_requirements.html">System Requirements</a> for further details about optional steps, such as use of <a href="http://fiji.sc/Fiji">Fiji</a>, or <a href="http://www.openmicroscopy.org/site">OMERO</a>&gt;</li><li>Access help and tutorials from the MIB menu: <tt>MIB-&gt;Menu-&gt;Help-&gt;Help</tt></li></ol></div><h2 id="3">Run Microscopy Image Browser as standalone (MacOS, x64 bit)</h2><p><i>Tested with Mac OS X (Yosemite), version 10.10.3 and Matlab R2016a.</i></p><div><ol><li>Download standalone distribution of the program for Mac OS (<a href="http://mib.helsinki.fi/web-update/MIB2_Mac.dmg">MIB2_Mac.dmg</a>).</li><li>Follow the datailed instructions from MIB website <a href="http://mib.helsinki.fi/downloads_installation_macos.html">MIB for Mac OS</a></li></ol></div><h2 id="4">Additional info</h2><p><tt>im_browser</tt> stores its configuration parameters:</p><div><ul><li><b>Windows</b> in <i>c:\temp\mib.mat</i> or when <i>c:\temp</i> is not available then the configuration parameters can be found in <i>C:\Users\User-name\AppData\Local\Temp\mib.mat</i></li><li><b>Linux</b> in the script directory or in the local tmp directory (<i>/tmp</i>)</li></ul></div><p>The configuration file is automatically created/updated when closing <tt>MIB</tt>.</p><p>If <tt>MIB</tt> does not start check Matlab path and/or delete <i>c:\tmp\mib.mat</i> file.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Microscopy Image Browser (MIB) Installation
+% 
+% *Back to* <im_browser_product_page.html *Index*>
+%% Run Microscopy Image Browser under Matlab environment
+% 
+% # Download Matlab distribution of the program (<http://mib.helsinki.fi/web-update/MIB2_Matlab.zip MIB2_Matlab.zip>)
+% # Unzip and copy MIB files to |MIB| directory in your
+% |Scripts| folder. For example, |c:\Matlab\Scripts\mib\|
+% # Start Matlab
+% # Add |MIB| starting directory (for example, |c:\Matlab\Scripts\mib\|) into Matlab path
+% |Matlab->Home tab->Set path...->Add folder...->Save|, or alternatively use the |pathtool| function from Matlab command window
+% # Type |mib| in the matlab command window and hit the Enter button to start the program
+% # Check <im_browser_system_requirements.html System Requirements> for further details about optional
+% steps, such as use of <http://fiji.sc/Fiji Fiji>, or <http://www.openmicroscopy.org/site OMERO>>
+% # Access help and tutorials from the MIB menu: |MIB->Menu->Help->Help| 
+%
+%% Run Microscopy Image Browser as standalone (Windows, x64 bit)
+% 
+% # Download a single executable file that installs MIB (<http://mib.helsinki.fi/web-update/MIB2_Win.exe MIB2_Win.exe>). 
+% # Run |MIB2_Win.exe| to install MIB to your computer (_requires
+% administrative privileges_). The required MATLAB Compiler Runtime
+% (MCR) environment will be automatically installed during the process.
+% <http://mib.helsinki.fi/downloads_installation_windows.html Click here for detailed instructions> .
+% # To start, please type MIB in the Start menu
+% # Check <im_browser_system_requirements.html System Requirements> for further details about optional
+% steps, such as use of <http://fiji.sc/Fiji Fiji>, or <http://www.openmicroscopy.org/site OMERO>>
+% # Access help and tutorials from the MIB menu: |MIB->Menu->Help->Help|
+% 
+%
+%% Run Microscopy Image Browser as standalone (MacOS, x64 bit)
+% _Tested with Mac OS X (Yosemite), version 10.10.3 and Matlab R2016a._
+% 
+% # Download standalone distribution of the program for Mac OS (<http://mib.helsinki.fi/web-update/MIB2_Mac.dmg MIB2_Mac.dmg>). 
+% # Follow the datailed instructions from MIB website
+% <http://mib.helsinki.fi/downloads_installation_macos.html MIB for Mac OS> 
+% 
+%
+%% Additional info
+% |im_browser| stores its configuration parameters:
+%
+% * *Windows* in _c:\temp\mib.mat_ or when _c:\temp_ is not available then the configuration parameters can be found in
+% _C:\Users\User-name\AppData\Local\Temp\mib.mat_
+% * *Linux* in the script directory or in the local tmp directory (_/tmp_)
+%
+% The configuration file is automatically created/updated when closing |MIB|.
+%
+% If |MIB| does not start check Matlab path
+% and/or delete _c:\tmp\mib.mat_ file.
+%
+%
+% *Back to* <im_browser_product_page.html *Index*>
+##### SOURCE END #####
+--></body></html>

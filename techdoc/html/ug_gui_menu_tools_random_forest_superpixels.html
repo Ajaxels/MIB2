@@ -1,0 +1,182 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Classifier of superpixels / supervoxels</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_gui_menu_tools_random_forest_superpixels.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Classifier of superpixels / supervoxels</h1><!--introduction--><p>Classifier of superpixels/supervoxels is a good method for automatic segmentation of images using <i>train</i> and <i>predict</i> scheme.</p><p>This classifier uses the <a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html"><b>SLIC (Simple Linear Iterative Clustering) algorithm</b></a> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S&uuml;sstrunk, Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland to simplify the dataset by clustering of pixels into groups: superpixels for 2D or supervoxels for 3D. Each of these superpixels/voxels is characterized and these characteristics are used for the classification.</p><p>The example of use is presented below.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_tools.html"><b>Tools</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Dataset and the aim of the segmentation</a></li><li><a href="#2">Training the classifier</a></li><li><a href="#3">Wiping the temp directory</a></li></ul></div><h2 id="1">Dataset and the aim of the segmentation</h2><p>Below is a dataset imaged with light microscopy where the aim is to segment the outlines of the cells (in green). The cells have different intensity and can't be directly segemented using the black-and-white thresholding.</p><p><img vspace="5" hspace="5" src="images/superpix_01.jpg" alt=""> </p><h2 id="2">Training the classifier</h2><p>The first part of the classification is to select areas that belong to the object of interest and background.</p><div><ul><li>Start a new model: <tt>Segmentation Panel-&gt;the Create button</tt></li><li>Add two materials for the model: <tt>Segmentation Panel-&gt;the + button</tt></li><li>Rename material 1 to <tt>Object</tt> and material 2 to <tt>Background</tt>. Highlight material in the left list box, press the right mouse button and select <tt>Rename</tt> in the popup menu</li></ul></div><p><img vspace="5" hspace="5" src="images/random_forest_2.jpg" alt=""> </p><div><ul><li>Select the Brush tool and select some profiles of the endoplasmic reticulum and assign them to the <tt>Object</tt> material of the model (<i>select '1' in the 'Add to' list and press the 'A' shortcut</i>)</li><li>Select few areas of the background and add those to the <tt>Background</tt> material of the model (<i>select '2' in the 'Add to' list and press the 'A' shortcut</i>)</li></ul></div><p><img vspace="5" hspace="5" src="images/superpix_02.jpg" alt=""> </p><div><ul><li>Start the Classifier: <tt>Menu-&gt;Tools-&gt;Classifier-&gt;Superpixel classification</tt></li><li>Specify a directory to keep temporary data. By default, MIB offers to use <tt>RF_Temp</tt> located next to the data.</li></ul></div><p><img vspace="5" hspace="5" src="images/superpix_03.jpg" alt=""> </p><div><ul><li>Select the mode to use: <tt>2D</tt> for 2D images and superpixels or 3D for 3D datasets and supervoxels</li><li>Select the type of superpixels to calculate: <tt>SLIC</tt> for objects with distinct intensity vs background or <tt>Watershed</tt> for objects that have distinct boundaries</li><li>Select the color channel that should be used to generate superpixels/voxels: <tt>Color channel</tt></li><li>Define size for superpixels/voxels and their compactness: <tt>Size</tt> and <tt>Compactness</tt>. For the <tt>Watershed</tt> superpixels the <tt>Size</tt> field defines a factor that regulates size of superpixels (larger number gives bigger superpixels) and the <tt>Black on white</tt> field. When the boundaries of objects are bright over dark background, the <tt>Black on white</tt> should be 0; otherwise any number bigger than 0.</li><li>If needed the area for processing can be modified using the Subarea panel.</li><li>Press the <tt>Calculate superpixels</tt> button to generate SLIC superpixels</li><li>Press the <tt>Preview superpixels</tt> button to see the generated superpixels</li></ul></div><p><img vspace="5" hspace="5" src="images/superpix_04.jpg" alt=""> </p><div><ul><li>If size and quality of superpixels is acceptable press the <tt>Calculate features</tt> button to calculate features for the superpixels.</li><li>Press the <tt>Train &amp; Predict button</tt> to access settings for the classification</li></ul></div><p><img vspace="5" hspace="5" src="images/superpix_05.jpg" alt=""> </p><p>In this window it is possible either load classifier from the training session done earlier (<tt>the Load classifier button</tt>), or train a new one if labels exist.</p><div><ul><li>Select <tt>Object</tt> in the <tt>Object</tt> popup menu</li><li>Select <tt>Background</tt> in the <tt>Background</tt> popup menu</li><li>Choose type of the classifier to use in the <tt>Classifier</tt> popup menu</li><li>Press the <tt>Train classifier</tt> to start the training session</li><li>Press the <tt>Predict dataset</tt> to start the prediction session</li><li>Check results in the <tt>Image View panel</tt>. If needed add more markers for the Object and Background and repeat Training and Prediction.</li></ul></div><p><img vspace="5" hspace="5" src="images/superpix_06.jpg" alt=""> </p><h2 id="3">Wiping the temp directory</h2><p>During the prediction the classifier creates files in the <tt>RF_Temp</tt> directory. This directory can be deleted by pressing the <tt>Wipe Temp dir</tt> button or manually using any file explorer.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_tools.html"><b>Tools</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Classifier of superpixels / supervoxels
+% Classifier of superpixels/supervoxels is a good method for automatic segmentation of images
+% using _train_ and _predict_ scheme. 
+%
+% This classifier uses the <http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html 
+% *SLIC (Simple Linear Iterative Clustering) algorithm*> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, 
+% Pascal Fua, and Sabine Süsstrunk, Ecole Polytechnique Federale de
+% Lausanne (EPFL), Switzerland to simplify the dataset by clustering of
+% pixels into groups: superpixels for 2D or supervoxels for 3D. Each of
+% these superpixels/voxels is characterized and these characteristics are
+% used for the classification.
+% 
+% The example of use is presented below.
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools.html *Tools*>
+%
+%% Dataset and the aim of the segmentation
+% Below is a dataset imaged with light microscopy where the aim is to
+% segment the outlines of the cells (in green). The cells have different
+% intensity and can't be directly segemented using the black-and-white
+% thresholding.
+% 
+% 
+% <<images/superpix_01.jpg>>
+% 
+%
+%% Training the classifier
+% The first part of the classification is to select areas that belong to
+% the object of interest and background.
+% 
+%
+% * Start a new model: |Segmentation Panel->the Create button|
+% * Add two materials for the model: |Segmentation Panel->the + button|
+% * Rename material 1 to |Object| and material 2 to |Background|. Highlight
+% material in the left list box, press the right mouse button and select
+% |Rename| in the popup menu
+% 
+% 
+% <<images/random_forest_2.jpg>>
+% 
+% 
+% * Select the Brush tool and select some profiles of the endoplasmic
+% reticulum and assign them to the |Object| material of the model (_select
+% '1' in the 'Add to' list and press the 'A' shortcut_)
+% * Select few areas of the background and add those to the |Background|
+% material of the model (_select '2' in the 'Add to' list and press the 'A' shortcut_)
+% 
+% 
+% 
+% <<images/superpix_02.jpg>>
+% 
+% * Start the Classifier: |Menu->Tools->Classifier->Superpixel classification|
+% * Specify a directory to keep temporary data. By default, MIB offers to
+% use |RF_Temp| located next to the data.
+% 
+% 
+% <<images/superpix_03.jpg>>
+% 
+%
+% * Select the mode to use: |2D| for 2D images and superpixels or 3D for 3D datasets and supervoxels
+% * Select the type of superpixels to calculate: |SLIC| for objects with
+% distinct intensity vs background or |Watershed| for objects that have
+% distinct boundaries
+% * Select the color channel that should be used to generate superpixels/voxels: |Color channel|
+% * Define size for superpixels/voxels and their compactness: |Size| and
+% |Compactness|. For the |Watershed| superpixels the |Size| field defines a
+% factor that regulates size of superpixels (larger number gives bigger
+% superpixels) and the |Black on white| field. When the boundaries of objects are
+% bright over dark background, the |Black on white| should be 0; otherwise
+% any number bigger than 0.
+% * If needed the area for processing can be modified using the Subarea
+% panel. 
+% * Press the |Calculate superpixels| button to generate SLIC superpixels
+% * Press the |Preview superpixels| button to see the generated superpixels
+% 
+% 
+% <<images/superpix_04.jpg>>
+% 
+%
+%
+% * If size and quality of superpixels is acceptable press the |Calculate
+% features| button to calculate features for the superpixels.
+% * Press the |Train & Predict button| to access settings for the
+% classification
+% 
+% 
+% 
+% <<images/superpix_05.jpg>>
+% 
+% In this window it is possible either load classifier from the training
+% session done earlier (|the Load classifier button|), or train a new one if labels exist.
+% 
+%
+% * Select |Object| in the |Object| popup menu
+% * Select |Background| in the |Background| popup menu
+% * Choose type of the classifier to use in the |Classifier| popup menu
+% * Press the |Train classifier| to start the training session
+% * Press the |Predict dataset| to start the prediction session
+% * Check results in the |Image View panel|. If needed add more markers for
+% the Object and Background and repeat Training and Prediction.
+% 
+% <<images/superpix_06.jpg>>
+% 
+%
+%% Wiping the temp directory
+% During the prediction the classifier creates files
+% in the |RF_Temp| directory. This directory can be deleted by pressing the
+% |Wipe Temp dir| button or manually using any file explorer.
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools.html *Tools*>
+##### SOURCE END #####
+--></body></html>

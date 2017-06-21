@@ -1,0 +1,301 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Dataset Menu</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_gui_menu_dataset.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Dataset Menu</h1><!--introduction--><p>Modify parameters such as voxel sizes and the bounding box for the dataset, start the Alignment tool, or do some other dataset related actions.</p><p><img vspace="5" hspace="5" src="images\menuDataset.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Alignment tool...</a></li><li><a href="#2">Crop dataset...</a></li><li><a href="#3">Resample...</a></li><li><a href="#5">Transform</a></li><li><a href="#6">Slice</a></li><li><a href="#7">Scale bar</a></li><li><a href="#8">Bounding Box...</a></li><li><a href="#9">Parameters</a></li></ul></div><h2 id="1">Alignment tool...</h2><p>Can be used to align the slices of the opened dataset or to align two separate datasets. See details <a href="ug_gui_menu_dataset_alignment.html"><b>here</b></a>.</p><p><img vspace="5" hspace="5" src="images/MenuDatasetAlignment.png" alt=""> </p><h2 id="2">Crop dataset...</h2><p>Crop the image and corresponding Selection, Mask, and Model layers. Cropping can be done in the Interactive, Manual or using ROI mode.</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/PQtpYUuJwG8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PQtpYUuJwG8</a>
+</p><p><img vspace="5" hspace="5" src="images/MenuDatasetCrop.png" alt=""> </p><p>When the interactive mode is selected it is possible to draw (by pressing and holding left mouse button) a rectangle area a top of the image. This area can then be used for cropping.</p><p>The values for cropping may also be provided directly by enabling the <tt>Manual</tt> mode. It is also possible to do cropping based on the selected ROI. Use the <a href="ug_panel_roi.html">ROI panel</a> to make them.</p><p>The dataset can be just cropped (the <tt>Crop</tt> button) or copied to another buffer and cropped (the <tt>Crop to</tt> button). The multiple buffer buttons buttons located at the top of the <a href="ug_panel_dir.html">Directory Contents panel</a>.</p><p>The cropped datasets can be placed back to the original dataset using the <i>Fuse into existing</i> mode of the <i>Chop image tool</i> available at <tt>Menu-&gt;File-&gt;Chop images...-&gt;Import...</tt>. <a href="ug_gui_menu_file_chop.html">See more here.</a></p><h2 id="3">Resample...</h2><p>Resample image in any possible direction.</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/26-HROwg_JM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/26-HROwg_JM</a>
+</p><p><img vspace="5" hspace="5" src="images/MenuDatasetResample.png" alt=""> </p><h2 id="5">Transform</h2><p>Transformation of dataset: image and all other layers. The following modes are possible</p><div><ul><li><b>Flip horizontally</b> - flips dataset left to right, returns the dataset with columns flipped in the left-right direction, that is, about a vertical axis</li><li><b>Flip vertically</b> - flips dataset up to down, returns the dataset with rows flipped in the up-down direction, that is, about a horizontal axis</li><li><b>Flip Z</b> - flips dataset in the Z dimension, returns the dataset with slices flipped in the first-last direction, that is, about a middle slice of the dataset</li><li><b>Flip Y</b> - flips dataset in the T dimension, returns the dataset with time frames flipped in the first-last direction, that is, about a middle frame of the dataset</li><li><b>Rotate 90 degrees</b> - rotates dataset 90 degrees clockwise diirection</li><li><b>Rotate -90 degrees</b> - rotates dataset 90 degrees anti-clockwise diirection</li><li><b>Transpose XY -&gt; ZX</b> - physically transposes the dataset, so that the XY orienation, becomes ZX</li><li><b>Transpose XY -&gt; ZY</b> - physically transposes the dataset, so that the XY orienation, becomes ZY</li><li><b>Transpose ZX -&gt; ZY</b> - physically transposes the dataset, so that the ZX orienation, becomes ZY</li><li><b>Transpose Z <a href="-">-</a> T</b> - physically transposes the dataset, so that the Z orienation, becomes T</li></ul></div><p>
+A brief demonstration is available in the following videos:<br>
+Flip: <a href="https://youtu.be/lGjhB-NJZMk"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/lGjhB-NJZMk</a><br>
+Rotate: <a href="https://youtu.be/WFbZn0rfb5I"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/WFbZn0rfb5I</a><br>
+Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/PyEXX7j6pnc</a><br>
+</p><h2 id="6">Slice</h2><p>Manipulations with individual slices of the dataset. The following actions are possible</p><div><ul><li><b>Copy slice to another position</b> - allows to copy slice from one position to another position within the same dataset</li><li><b>Delete slice(s)...</b> - removes desired slice(s) from a Z-stack of the dataset. <i>For example, type " <tt>5:10</tt> " to delete all slices from slice 5 to slice 10.</i></li><li><b>Delete frame(s)...</b> - removes desired frame(s) from a time series of the dataset.</li></ul></div><h2 id="7">Scale bar</h2><p>Scale bar is a tool that allows to use a scale bar printed on the image to calibrate physical size (X and Y) for pixels in MIB.</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/NZO0HG1d8ys"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/NZO0HG1d8ys</a>
+</p><p>How to use:</p><p><img vspace="5" hspace="5" src="images/menuDatasetScalebar.jpg" alt=""> </p><h2 id="8">Bounding Box...</h2><p>Bounding Box defines position of the dataset in the 3D space; the bounding box information is important for positioning of datasets in the visualization software, such as Amira. The bounding box can be shifted based on its minimal or centeral coordinates. The current coordinates of the bounding box are shown under the <i>Current Bounding Box</i> text.</p><p><b>Attention!</b> For 3D images the bounding box is calculated as the smallest box containing all voxel centers, but not all voxels as is! <i>I.e.</i> it's defined by the voxel centers, which means that a 1/2 voxel on both sides of the bounding box are subtracted, resulting in a bounding box that is 1 voxel smaller in all three directions.</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/lY0XjNy4Dr8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/lY0XjNy4Dr8</a>
+</p><p><img vspace="5" hspace="5" src="images/MenuDatasetBoundingBox.png" alt=""> </p><div><ul><li><b>X, Y, Z, min</b> - defines minimal coordinates of the bounding box</li><li><b>X, Y, center</b> - defines central coordinates of the dataset. When the central coordinates are used the <tt>X, min</tt> and <tt>Y, min</tt> coordinates are going to be recalculated.</li><li><b>*X, Y, Z max</b> - maximal values of the bounding box. When entered together with the <b>X, Y, Z min</b> coordinates - MIB recalculates the voxel sizes.</li><li><b>Stage rotation bias, degrees</b> - implemented only when entering X, Y center coordinates. Allows recalculation of the coordinates for the cases when the stage has some rotation bias, for example, Gatan 3View has 45 degrees stage bias.</li><li><b>Import from Clipboard</b>, parses text in the system clipboard and automatically extracts the following parameters (syntax: <i>[ParameterName] = [ParameterValue]</i>):</li></ul></div><p>
+<table style="width: 550px; text-align: center;" cellspacing=2px cellpadding=2px >
+<tr>
+  <td style="width=150px;"><b>Parameter Name</b></td><td><b>Description</b></td>
+</tr>
+<tr>
+  <td style="width=150px;">ScaleX</td><td>The physical size of pixels in X</td>
+</tr>
+<tr>
+  <td style="width=150px;">ScaleY</td><td>The physical size of pixels in Y</td>
+</tr>
+<tr>
+  <td style="width=150px;">ScaleZ</td><td>The physical size of pixels in Z</td>
+</tr>
+<tr>
+  <td style="width=150px;">xPos</td><td>Central position of the dataset in the X plane</td>
+</tr>
+<tr>
+  <td style="width=150px;">yPos</td><td>Central position of the dataset in the Y plane</td>
+</tr>
+<tr>
+  <td style="width=150px;">Z Position</td><td>Minimal Z coordinate</td>
+</tr>
+<tr>
+  <td style="width=150px;">Rotation</td><td>Rotation BIAS<br><b>Note!</b><br><em>Since it is designed for Gatan 3View system MIB adds 45 degrees to the detected rotation value</em></td>
+</tr>
+</table>
+</p><p>Example of text that can be copied to the system clipboard for automatic detection of paramters:</p><p><img vspace="5" hspace="5" src="images/menuDatasetBoundingBox2.jpg" alt=""> </p><h2 id="9">Parameters</h2><p>Modifies parameters of the dataset: voxels sizes, frame rate for movies and units. Enter of new voxels results in recalculation of the bounding box.</p><p><img vspace="5" hspace="5" src="images/menuDatasetParameters.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Dataset Menu
+% Modify parameters such as voxel sizes and the bounding box for the
+% dataset, start the Alignment tool, or do some other dataset related actions.
+%
+%
+% 
+% <<images\menuDataset.png>>
+% 
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*>
+%
+%% Alignment tool...
+% Can be used to align the slices of the opened dataset or to align two
+% separate datasets. See details <ug_gui_menu_dataset_alignment.html *here*>.
+% 
+% <<images/MenuDatasetAlignment.png>>
+% 
+%
+%
+%% Crop dataset...
+% Crop the image and corresponding Selection, Mask, and Model layers.
+% Cropping can be done in the Interactive, Manual or using ROI mode. 
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/PQtpYUuJwG8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PQtpYUuJwG8</a>
+% </html>
+% 
+% <<images/MenuDatasetCrop.png>>
+% 
+% When the interactive mode is selected it is possible to draw (by pressing and holding left mouse button) a rectangle
+% area a top of the image. This area can then be used for cropping. 
+%
+% The values for cropping may also be provided directly by enabling the
+% |Manual| mode. It is also possible to do cropping based on the selected
+% ROI. Use the <ug_panel_roi.html ROI panel> to make them.
+%
+% The dataset can be just cropped (the |Crop| button) or copied 
+% to another buffer and cropped (the |Crop to| button). The multiple buffer buttons buttons located at
+% the top of the <ug_panel_dir.html Directory Contents panel>.
+%
+% The cropped datasets can be placed back to the original dataset using the
+% _Fuse into existing_ mode of the _Chop image tool_ available at
+% |Menu->File->Chop images...->Import...|. <ug_gui_menu_file_chop.html See more here.>
+% 
+% 
+%% Resample...
+% Resample image in any possible direction. 
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/26-HROwg_JM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/26-HROwg_JM</a>
+% </html>
+%
+%%
+% 
+% <<images/MenuDatasetResample.png>>
+% 
+%
+%% Transform
+% Transformation of dataset: image and all other layers. The following modes are possible
+%
+% 
+% * *Flip horizontally* - flips dataset left to right, returns the dataset with columns flipped in the left-right direction, that is, about a vertical axis
+% * *Flip vertically* - flips dataset up to down, returns the dataset with rows flipped in the up-down direction, that is, about a horizontal axis
+% * *Flip Z* - flips dataset in the Z dimension, returns the dataset with slices flipped in the first-last direction, that is, about a middle slice of the dataset
+% * *Flip Y* - flips dataset in the T dimension, returns the dataset with time frames flipped in the first-last direction, that is, about a middle frame of the dataset
+% * *Rotate 90 degrees* - rotates dataset 90 degrees clockwise diirection
+% * *Rotate -90 degrees* - rotates dataset 90 degrees anti-clockwise diirection
+% * *Transpose XY -> ZX* - physically transposes the dataset, so that the XY orienation, becomes ZX
+% * *Transpose XY -> ZY* - physically transposes the dataset, so that the XY orienation, becomes ZY
+% * *Transpose ZX -> ZY* - physically transposes the dataset, so that the ZX orienation, becomes ZY
+% * *Transpose Z <-> T* - physically transposes the dataset, so that the Z orienation, becomes T
+% 
+% <html>
+% A brief demonstration is available in the following videos:<br>
+% Flip: <a href="https://youtu.be/lGjhB-NJZMk"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/lGjhB-NJZMk</a><br>
+% Rotate: <a href="https://youtu.be/WFbZn0rfb5I"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/WFbZn0rfb5I</a><br>
+% Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/PyEXX7j6pnc</a><br>
+% </html>
+%
+%% Slice
+% Manipulations with individual slices of the dataset. The following actions are possible
+%
+% 
+% * *Copy slice to another position* - allows to copy slice from one
+% position to another position within the same dataset
+% * *Delete slice(s)...* - removes desired slice(s) from a Z-stack of the
+% dataset. _For example, type " |5:10| " to delete all slices from slice 5 to
+% slice 10._
+% * *Delete frame(s)...* - removes desired frame(s) from a time series of the
+% dataset.
+%
+%% Scale bar
+% Scale bar is a tool that allows to use a scale bar printed on the 
+% image to calibrate physical size (X and Y) for pixels in MIB.
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/NZO0HG1d8ys"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/NZO0HG1d8ys</a>
+% </html>
+% 
+% How to use:
+%
+% 
+% <<images/menuDatasetScalebar.jpg>>
+% 
+%% Bounding Box...
+% Bounding Box defines position of the dataset in the 3D space; the
+% bounding box information is important for positioning
+% of datasets in the visualization software, such as Amira.
+% The bounding box can be shifted based
+% on its minimal or centeral coordinates. The current coordinates of the bounding box 
+% are shown under the _Current Bounding Box_ text.
+% 
+% *Attention!* For 3D images the bounding box is calculated as the smallest
+% box containing all voxel centers, but not all voxels as is! _I.e._ it's defined by the voxel centers, which means 
+% that a 1/2 voxel on both sides of the bounding box are subtracted, resulting in a bounding box that is 1 voxel smaller in all three directions.
+% 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/lY0XjNy4Dr8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/lY0XjNy4Dr8</a>
+% </html>
+%
+% <<images/MenuDatasetBoundingBox.png>>
+% 
+% 
+% * *X, Y, Z, min* - defines minimal coordinates of the bounding box
+% * *X, Y, center* - defines central coordinates of the dataset. When the
+% central coordinates are used the |X, min| and |Y, min| coordinates are
+% going to be recalculated.
+% * **X, Y, Z max* - maximal values of the bounding box. When entered
+% together with the *X, Y, Z min* coordinates - MIB recalculates the voxel sizes.
+% * *Stage rotation bias, degrees* - implemented only when entering X, Y center coordinates. Allows recalculation of the
+% coordinates for the cases when the stage has some rotation bias, for example, Gatan 3View has 45 degrees stage bias.
+% * *Import from Clipboard*, parses text in the system clipboard and
+% automatically extracts the following parameters (syntax: _[ParameterName] = [ParameterValue]_): 
+%
+%
+% <html>
+% <table style="width: 550px; text-align: center;" cellspacing=2px cellpadding=2px >
+% <tr>
+%   <td style="width=150px;"><b>Parameter Name</b></td><td><b>Description</b></td>
+% </tr>
+% <tr>
+%   <td style="width=150px;">ScaleX</td><td>The physical size of pixels in X</td>
+% </tr>
+% <tr>
+%   <td style="width=150px;">ScaleY</td><td>The physical size of pixels in Y</td>
+% </tr>
+% <tr>
+%   <td style="width=150px;">ScaleZ</td><td>The physical size of pixels in Z</td>
+% </tr>
+% <tr>
+%   <td style="width=150px;">xPos</td><td>Central position of the dataset in the X plane</td>
+% </tr>
+% <tr>
+%   <td style="width=150px;">yPos</td><td>Central position of the dataset in the Y plane</td>
+% </tr>
+% <tr>
+%   <td style="width=150px;">Z Position</td><td>Minimal Z coordinate</td>
+% </tr>
+% <tr>
+%   <td style="width=150px;">Rotation</td><td>Rotation BIAS<br><b>Note!</b><br><em>Since it is designed for Gatan 3View system MIB adds 45 degrees to the detected rotation value</em></td>
+% </tr>
+% </table>
+% </html>
+%
+% Example of text that can be copied to the system clipboard for automatic
+% detection of paramters:
+% 
+% <<images/menuDatasetBoundingBox2.jpg>>
+% 
+% 
+% 
+%% Parameters
+% Modifies parameters of the dataset: voxels sizes, frame rate for movies and
+% units. Enter of new voxels results in recalculation of the bounding box.
+%%
+% 
+% <<images/menuDatasetParameters.png>>
+% 
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*>
+
+##### SOURCE END #####
+--></body></html>

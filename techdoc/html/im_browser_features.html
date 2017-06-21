@@ -1,0 +1,120 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Microscopy Image Browser Features</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="im_browser_features.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Microscopy Image Browser Features</h1><!--introduction--><p>Microscopy Image Browser is a high-performance software package for advanced image processing, segmentation and visualization of multidimentional (2D-4D) datasets. Microscopy Image Browser is written in Matlab, but has a user friendly graphical interface that does not requre knowledge of Matlab and can be used by anybody.</p><p>Please find a list of main features below</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">List of Key Features:</a></li><li><a href="#3">List of all features</a></li><li><a href="#4">Scheme of Microscopy Image Browser</a></li></ul></div><h2 id="1">List of Key Features:</h2><div><ul><li>Works as a Matlab program under Windows/Linux/MacOS Matlab, or as a standalone application (Windows 64bit)</li><li>Open source, no license/fee required</li><li>Extendable with custom plugins (<a href="tutor_programming.html">tutorials</a>)</li><li>Load/Import multiple image and video formats using standard and custom-made readers, <a href="http://www.mathworks.com">Bio-Formats (LOCI) reader</a>, <a href="http://www.openmicroscopy.org/site">OMERO server</a>, and direct import from <a href="http://fiji.sc/Fiji">Fiji</a> and <a href="http://www.bitplane.com">Imaris</a></li><li>Generation of multidimentional image stacks (3D/4D, width:height:color:depth:time)</li><li>Alignment of multi-dimensional stacks and images within these stacks;</li><li>Brightness, contrast, gamma, image mode adjustments, resize, crop functions, rotate, etc</li><li>Semi-automatic/manual image segmentation with help of filters and interpolation in XY, XZ, or YZ planes</li><li>Quantification and statistics for 2D/3D objects</li><li>Export of images or models to Matlab, <a href="http://www.vsg3d.com/amira/overview">Amira</a> , <a href="http://bio3d.colorado.edu/imod/">IMOD</a>, <a href="https://youtu.be/G6z0pM3xOIk">STL</a>, TIF, <a href="http://www.slicer.org/">NRRD for 3D Slicer</a>, <a href="http://imagej.net/BigDataViewer">Fiji BigDataViewer</a> formats</li><li>Direct 3D visualization using Matlab isosurfaces and volume rendering, <a href="http://fiji.sc/3D_Viewer">Fiji 3D viewer</a>, and <a href="http://www.bitplane.com/">Imaris</a></li><li>Filtering of images with core Matlab and custom functions</li><li>Log of performed actions</li><li>Customizable Undo option</li><li>Customizable Keyboard shortcuts</li><li>Colorblind friendly default color modeling scheme</li></ul></div><h2 id="3">List of all features</h2><p>Please check <a href="http://mib.helsinki.fi/features_all.html">the list of all features page</a> for more detailed description and video examples</p><h2 id="4">Scheme of Microscopy Image Browser</h2><p>Connection diagram of available tools and layers. The opened images may be filtered and adjusted with number of standard/custom functions and further segmented either via the <tt>Mask</tt> route or directly with for example the brush tool and interpolation technique.</p><p><img vspace="5" hspace="5" src="images/im_browser_scheme.jpg" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Microscopy Image Browser Features
+% Microscopy Image Browser is a high-performance software package for
+% advanced image processing, segmentation and visualization of
+% multidimentional (2D-4D) datasets. Microscopy Image Browser is written in
+% Matlab, but has a user friendly graphical interface that does not requre
+% knowledge of Matlab and can be used by anybody.
+%
+% Please find a list of main features below
+% 
+% *Back to* <im_browser_product_page.html *Index*>
+%% List of Key Features:
+%%
+% 
+% * Works as a Matlab program under Windows/Linux/MacOS Matlab, or as a standalone application (Windows 64bit)
+% * Open source, no license/fee required
+% * Extendable with custom plugins (<tutor_programming.html tutorials>)
+% * Load/Import multiple image and video formats using standard and custom-made readers, <http://www.mathworks.com Bio-Formats (LOCI) reader>, 
+% <http://www.openmicroscopy.org/site OMERO server>, and direct import from
+% <http://fiji.sc/Fiji Fiji> and <http://www.bitplane.com Imaris>
+% * Generation of multidimentional image stacks (3D/4D, width:height:color:depth:time)
+% * Alignment of multi-dimensional stacks and images within these stacks;
+% * Brightness, contrast, gamma, image mode adjustments, resize, crop functions, rotate, etc
+% * Semi-automatic/manual image segmentation with help of filters and interpolation in XY, XZ, or YZ planes
+% * Quantification and statistics for 2D/3D objects
+% * Export of images or models to Matlab, <http://www.vsg3d.com/amira/overview Amira> , <http://bio3d.colorado.edu/imod/ IMOD>, <https://youtu.be/G6z0pM3xOIk STL>, TIF, <http://www.slicer.org/ NRRD for 3D Slicer>, <http://imagej.net/BigDataViewer Fiji BigDataViewer> formats
+% * Direct 3D visualization using Matlab isosurfaces and volume rendering, <http://fiji.sc/3D_Viewer Fiji 3D viewer>, and <http://www.bitplane.com/ Imaris>
+% * Filtering of images with core Matlab and custom functions
+% * Log of performed actions 
+% * Customizable Undo option
+% * Customizable Keyboard shortcuts
+% * Colorblind friendly default color modeling scheme
+%
+%% List of all features
+%
+% Please check <http://mib.helsinki.fi/features_all.html the list of all features page> for more detailed description and video examples
+%
+%
+%% Scheme of Microscopy Image Browser
+%
+% Connection diagram of available tools and layers. The opened images may be filtered and adjusted with number of standard/custom 
+% functions and further segmented either via the |Mask| route or directly with for example the brush tool and interpolation technique.
+%
+%%
+% 
+% <<images/im_browser_scheme.jpg>>
+% 
+%
+% *Back to* <im_browser_product_page.html *Index*>
+##### SOURCE END #####
+--></body></html>

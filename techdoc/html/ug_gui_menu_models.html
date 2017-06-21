@@ -1,0 +1,328 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Model Menu</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_gui_menu_models.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Model Menu</h1><!--introduction--><p>Actions that can be applied to the <tt>Model</tt> layers. The <tt>Model layer</tt> is one of three main segmentation layers (<tt>Model, Selection, Mask</tt>) which can be used in combibation with other layer. See more about segmentation layers in <a href="ug_gui_data_layers.html">the Data layers of Microscopy Image Browser section</a>.</p><p><img vspace="5" hspace="5" src="images\menuModel.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Type of the model</a></li><li><a href="#2">New model</a></li><li><a href="#3">Load model</a></li><li><a href="#5">Import model from Matlab</a></li><li><a href="#6">Export model to...</a></li><li><a href="#8">Save model</a></li><li><a href="#10">Save model as...</a></li><li><a href="#12">Render model...</a></li><li><a href="#18">Annotations...</a></li><li><a href="#20">Model Statistics...</a></li></ul></div><h2 id="1">Type of the model</h2><p>Display type of the current model:</p><div><ul><li><b>63 materials</b>, [_default_], allows to store Models, Selection and Mask layers in a single memory container,   reduces memory requirements and improves performance, but limits the   number of materials to 63</li><li><b>255 materials</b>, allows to have up to 255 materials in the model, but requires additional computer memory to keep   Selection and Mask layers, which doubles memory requirements</li><li><b>65535 materials</b>, allows to have up to 65535 materials in the model, requres ~1.25 times more memory than models with 255 materials. <b>Please note</b> that when using this mode the look of the <a href="ug_panel_segm.html">segmentation panel</a> will be different. <a href="https://youtu.be/r3lpmWyvrJU">Click here to see a short demonstration.</a></li></ul></div><p><b>Work with models with more than 255 materials</b></p><p>Materials should be named with numbers that represent the index of the current working material. For example, in the image below the current working material for the brush tool is 11555.</p><p><img vspace="5" hspace="5" src="images\PanelsSegmentation_65535materials.png" alt=""> </p><p>Selection of material for work can be done either by the right mouse click over the segmentation table and seletion of the <tt>Rename...</tt> entry in the menu; or by moving the mouse over the desired object in the Image View panel and press the <tt>Ctrl + F</tt> shortcut.</p><h2 id="2">New model</h2><p>Allocates space for a new model. Use this entry when you want to start a new model or to delete the existing one. Alternatively it is possible to use the <tt>Create</tt> button in the <a href="ug_panel_segm.html">Segmentation Panel</a>.</p><h2 id="3">Load model</h2><p>Load model from the disk. By default <tt>MIB</tt> tries to read the models in the Matlab format (.model), but it is also possible to specify other formats as well:</p><div><ul><li><b>.AM, Amira Mesh</b> - as Amira Mesh label field for models saved in <a href="http://www.vsg3d.com/amira/overview">Amira</a> format</li><li><b>.NRRD, Nearly Raw Raster Data</b> - a data format compatible with <a href="www.slicer.org">3D slicer</a>.</li><li><b>.MRC, Medical Research Council format</b> - a data format compatible with IMOD <a href="http://bio3d.colorado.edu/imod">http://bio3d.colorado.edu/imod</a>. When using this mode, it is possible to provide a list of MRC files, where each object is encoded using its number in a separate MRC-file; after that MIB will assemble and merge all these individual objects together into a single model.</li><li><b>.TIF, TIF format</b></li></ul></div><p><b>Note!</b> almost any standard image format can be loaded as a model, please choose <i>All files (_*.*)</i> filter in the Open model dialog.</p><p>Alternatively it is possible to use the <tt>Load</tt> button in the <a href="ug_panel_segm.html">Segmentation Panel</a>.</p><h2 id="5">Import model from Matlab</h2><p>Imports model from the main Matlab workspace. Please provide a variable name from the main Matlab workspace with the model. The variable could be either a matrix with dimensions similar to those of the loaded dataset <tt>[1:height, 1:width, 1:no-slices]</tt> of the <tt>uint8</tt> class or a structure with the following fields:</p><div><ul><li><b>.model</b> - the field <tt>model</tt> is a matrix with dimensions similar to those of the loaded dataset <tt>[1:height, 1:width, 1:depth, 1:time]</tt> of the <tt>uint8</tt> class</li><li><b>.modelMaterialNames</b> - [_optional_] the field <tt>materials</tt> a cell array with names of the materials used in the model</li><li><b>.modelMaterialColors</b> - [_optional_] a matrix with colors (0-1) for the materials of the model, [1:materialIndex, Red Green Blue]</li><li><b>.labelText</b> - [_optional_] a cell array containing labels for the annotations</li><li><b>.labelPosition</b> - [_optional_] a matrix containing positions for the annotations [1:annotationIndex, x y z]</li></ul></div><h2 id="6">Export model to...</h2><p>Exports model from MIB to other programs:</p><div><ul><li><b>Matlab</b>, export to the main Matlab workspace, as a structure (see above). The exported models may be later imported back to <tt>im_browser</tt> using the <i>Import model from Matlab</i> menu entry.</li><li><b>Imaris as volume</b>, export model to Imaris (if it is available, please see <a href="im_browser_system_requirements.html#16">System Requirements section</a> for details.</li></ul></div><h2 id="8">Save model</h2><p>Saves model to a file in the Matlab format. The file name is not asked, which means that the <tt>MIB</tt> will use:</p><div><ul><li>Default template such as <tt>Labels_NAME_OF_THE_DATASET.model</tt></li><li>the name that was provided from the <i>Save model as...</i> entry</li><li>the name that was obtained during the <i>Load model</i> action. The models can be saved also using the corresponding <i>Save model</i> button in <a href="ug_gui_toolbar.html">Toolbar</a></li></ul></div><h2 id="10">Save model as...</h2><p>Saves model in a number of formats:</p><div><ul><li><b>.AM, Amira Mesh</b> - as Amira Mesh label field in RAW, RAW-ASCII and RLE compressed formats. (<b>Note!</b> the RLE compression is very slow).</li><li><b>.MAT, Matlab format</b> - Matlab native data format for MIB version 1</li><li><b>.MODEL, Matlab format</b> - <i>[default]</i>, Matlab native data format for MIB version 2</li><li><b>.MOD, IMOD format</b> - contours for IMOD</li><li><b>.MRC, IMOD format</b> - volume for IMOD</li><li><b>.NRRD, Nearly Raw Raster Data</b> - a data format compatible with <a href="www.slicer.org">3D slicer</a>.</li><li><b>.STL, STL format</b> - triangulated mesh for use with visualization programs such as Blender.</li><li><b>.TIF, TIF format</b></li></ul></div><h2 id="12">Render model...</h2><p>The segmented models can be rendered directly from MIB using one of the following methods:</p><div><ul><li><b>Matlab isosurfaces</b>, MIB uses Matlab engine to generate isosurfaces from the models and visualize those using a modification of the <a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">view3d</a> function written by Torsten Vogel.</li></ul></div><p>
+<table style="width: 600px; text-align: left; margin-left: 60pt" cellspacing=2px cellpadding=2px >
+<tr style="font-weight: bold; background: #ff6600;">
+  <td colspan=2><b>The following controls are implemented:</b></td>
+</tr>
+<tr>
+  <td>Double click to restore the original view</td>
+  <td></td>
+</tr>
+<tr>
+  <td>Hit 'z' key over the figure to switch from <em>ROTATION</em> to <em>ZOOM</em></td>
+  <td>
+  <ul>In the <em>ZOOM</em> mode
+      <li>press and hold left mouse button to zoom in and out</li>
+      <li>press and hold middle mouse button to move the plot</li>
+  </ul>
+</td>
+</tr>
+<tr>
+  <td>Hit 'r' key over the figure to switch from <em>ZOOM</em> to <em>ROTATION</em></td>
+  <td>
+  <ul style="margin-left: 50pt">In the <em>ROTATION</em> mode
+      <li>press and hold left mouse button to rotate about screen xy axis</li>
+      <li>press and hold middle mouse button to rotate about screen z axis</li>
+  </ul>
+</td>
+</tr>
+<tr>
+<td colspan=2><img src="images\render_in_matlab.jpg"</img>
+</tr>
+<tr>
+<td colspan=2>A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/dMeoIZPaDS4?t=16m56s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/dMeoIZPaDS4?t=16m56s</a>
+</tr>
+</table>
+</p><div><ul><li><b>Fiji volume...</b>, uses Fiji 3D viewer for visualization of the model as a volume (<a href="http://mib.helsinki.fi/tutorials/VisualizationOverview.html">click here for details</a>. (requires Fiji to be installed, <a href="im_browser_system_requirements.html">see here</a>).</li></ul></div><p>
+A demonstration is available in the following video:<br>
+<a href="https://youtu.be/DZ1Tj3Fh2HM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/DZ1Tj3Fh2HM</a>
+</p><p><img vspace="5" hspace="5" src="images\MenuModelsRenderFiji.jpg" alt=""> </p><div><ul><li><b>Imaris surface</b>, render the model in Imaris; requires Imaris and ImarisXT to be installed, <a href="im_browser_system_requirements.html">see here</a></li></ul></div><p>
+A demonstration is available in the following video:<br>
+Without ImarisXT <a href="https://youtu.be/MbK2JcTrZFw"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/MbK2JcTrZFw</a><br>
+With ImarisXT <a href="https://youtu.be/yODGYJUzTr0"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/yODGYJUzTr0</a><br>
+</p><p><img vspace="5" hspace="5" src="images\MenuModelsRenderImarisLarge.jpg" alt=""> </p><p>The rendered material is specified in the Material list of the <a href="ug_panel_segm.html">Segmentation Panel</a>.</p><h2 id="18">Annotations...</h2><p>Use this menu to modify the <tt>Annotations</tt> layer</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+</p><div><ul><li><b>List of annotations...</b> - starts an auxiliary window with a list of existing annotations, <a href="ug_panel_segm_tools.html">see more here</a> .</li><li><b>Remove all annotations...</b> - deletes all annotations stored with the model.</li></ul></div><h2 id="20">Model Statistics...</h2><p>Get statistics for the selected material of the model. Statistical results may be used to filter the model based on properties of its objects. The statistics dialog can also be reached from the <a href="ug_panel_segm.html">Segmentation Panel</a> -&gt;Materials List-&gt;Right mouse click-&gt;Get statistics... See more <a href="ug_gui_menu_mask_statistics.html">here</a></p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Model Menu
+% Actions that can be applied to the |Model| layers. The |Model layer| is one
+% of three main segmentation layers (|Model, Selection, Mask|) which can be
+% used in combibation with other layer. See more about segmentation layers
+% in <ug_gui_data_layers.html the Data layers of Microscopy Image Browser section>.
+%
+%
+% 
+% <<images\menuModel.png>>
+% 
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*>
+%
+%% Type of the model
+% Display type of the current model:
+%
+% * *63 materials*, [_default_], allows to store Models, Selection and Mask layers in a single memory container, 
+%   reduces memory requirements and improves performance, but limits the
+%   number of materials to 63
+% * *255 materials*, allows to have up to 255 materials in the model, but requires additional computer memory to keep
+%   Selection and Mask layers, which doubles memory requirements
+% * *65535 materials*, allows to have up to 65535 materials in the model,
+% requres ~1.25 times more memory than models with 255 materials. *Please
+% note* that when using this mode the look of the <ug_panel_segm.html segmentation panel> will
+% be different. <https://youtu.be/r3lpmWyvrJU Click here to see a short demonstration.>
+% 
+% 
+% *Work with models with more than 255 materials*
+%
+% Materials should be named with numbers that represent the index of the
+% current working material. For example, in the image below the current
+% working material for the brush tool is 11555.
+%  
+% <<images\PanelsSegmentation_65535materials.png>>
+%
+% Selection of material for work can be done either by the right mouse
+% click over the segmentation table and seletion of the |Rename...| entry in
+% the menu; or by moving the mouse over the desired object in the Image
+% View panel and press the |Ctrl + F| shortcut.
+%
+%% New model
+% Allocates space for a new model. Use this entry when you want to start a new model or to delete the existing one.
+% Alternatively it is possible to use the |Create| button in the <ug_panel_segm.html Segmentation Panel>.
+%
+%% Load model
+% Load model from the disk. By default |MIB| tries to read the models in the Matlab format (.model), but it is also
+% possible to specify other formats as well:
+%
+%%
+% 
+% * *.AM, Amira Mesh* - as Amira Mesh label field for models saved in <http://www.vsg3d.com/amira/overview Amira> format
+% * *.NRRD, Nearly Raw Raster Data* - a data format compatible with <www.slicer.org 3D slicer>.
+% * *.MRC, Medical Research Council format* - a data format compatible with
+% IMOD <http://bio3d.colorado.edu/imod>. When using this mode, it is
+% possible to provide a list of MRC files, where each object is encoded
+% using its number in a separate MRC-file; after that MIB will assemble and merge all these
+% individual objects together into a single model.
+% * *.TIF, TIF format*
+% 
+% *Note!* almost any standard image format can be loaded as a model, please
+% choose _All files (_*.*)_ filter in the Open model dialog.
+%
+% Alternatively it is possible to use the |Load| button in the <ug_panel_segm.html Segmentation Panel>.
+%
+%% Import model from Matlab
+% Imports model from the main Matlab workspace. Please provide a variable name from the main Matlab workspace with the model.
+% The variable could be either a matrix with dimensions similar to those of
+% the loaded dataset |[1:height, 1:width, 1:no-slices]| of the |uint8|
+% class or a structure with the following fields:
+% 
+% * *.model* - the field |model| is a matrix with dimensions similar to those of the loaded dataset |[1:height,
+% 1:width, 1:depth, 1:time]| of the |uint8| class
+% * *.modelMaterialNames* - [_optional_] the field |materials| a cell array with names of the materials used in the model
+% * *.modelMaterialColors* - [_optional_] a matrix with colors (0-1) for the materials of the model, [1:materialIndex, Red Green Blue]
+% * *.labelText* - [_optional_] a cell array containing labels for the annotations
+% * *.labelPosition* - [_optional_] a matrix containing positions for the annotations [1:annotationIndex, x y z]
+%
+%
+%% Export model to...
+% Exports model from MIB to other programs:
+%%
+% 
+% * *Matlab*, export to the main Matlab workspace, as a structure (see above). The exported models may be later imported back to |im_browser| using the _Import model
+% from Matlab_ menu entry. 
+% * *Imaris as volume*, export model to Imaris (if it is available, please
+% see <im_browser_system_requirements.html#16 System Requirements
+% section> for details.
+% 
+%% Save model
+% Saves model to a file in the Matlab format. The file name is not asked, which means that the |MIB| will use:
+%%
+% 
+% * Default template such as |Labels_NAME_OF_THE_DATASET.model|
+% * the name that was provided from the _Save model as..._ entry
+% * the name that was obtained during the _Load model_ action.
+% The models can be saved also using the corresponding _Save model_ button in <ug_gui_toolbar.html Toolbar>
+%
+%% Save model as...
+% Saves model in a number of formats:
+%%
+% 
+% * *.AM, Amira Mesh* - as Amira Mesh label field in RAW, RAW-ASCII and RLE
+% compressed formats. (*Note!* the RLE compression is very slow).
+% * *.MAT, Matlab format* - Matlab native data format for MIB version 1
+% * *.MODEL, Matlab format* - _[default]_, Matlab native data format for MIB version 2
+% * *.MOD, IMOD format* - contours for IMOD 
+% * *.MRC, IMOD format* - volume for IMOD 
+% * *.NRRD, Nearly Raw Raster Data* - a data format compatible with <www.slicer.org 3D slicer>.
+% * *.STL, STL format* - triangulated mesh for use with visualization
+% programs such as Blender.
+% * *.TIF, TIF format*
+%
+%% Render model...
+% The segmented models can be rendered directly from MIB using one of the
+% following methods:
+%
+%%
+% 
+% * *Matlab isosurfaces*, MIB uses Matlab engine to generate isosurfaces
+% from the models and visualize those using a modification of the <http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m view3d> function 
+% written by Torsten Vogel. 
+% 
+%%
+% 
+% <html>
+% <table style="width: 600px; text-align: left; margin-left: 60pt" cellspacing=2px cellpadding=2px >
+% <tr style="font-weight: bold; background: #ff6600;">
+%   <td colspan=2><b>The following controls are implemented:</b></td>
+% </tr>
+% <tr>
+%   <td>Double click to restore the original view</td>
+%   <td></td>
+% </tr>
+% <tr>
+%   <td>Hit 'z' key over the figure to switch from <em>ROTATION</em> to <em>ZOOM</em></td>
+%   <td>
+%   <ul>In the <em>ZOOM</em> mode
+%       <li>press and hold left mouse button to zoom in and out</li>
+%       <li>press and hold middle mouse button to move the plot</li>
+%   </ul>
+% </td>
+% </tr>
+% <tr>
+%   <td>Hit 'r' key over the figure to switch from <em>ZOOM</em> to <em>ROTATION</em></td>
+%   <td>
+%   <ul style="margin-left: 50pt">In the <em>ROTATION</em> mode
+%       <li>press and hold left mouse button to rotate about screen xy axis</li>
+%       <li>press and hold middle mouse button to rotate about screen z axis</li>
+%   </ul>
+% </td>
+% </tr>
+% <tr>
+% <td colspan=2><img src="images\render_in_matlab.jpg"</img>
+% </tr>
+% <tr>
+% <td colspan=2>A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/dMeoIZPaDS4?t=16m56s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/dMeoIZPaDS4?t=16m56s</a>
+% </tr>
+% </table>
+% </html>
+% 
+% * *Fiji volume...*, uses Fiji 3D viewer for visualization of the model as
+% a volume (<http://mib.helsinki.fi/tutorials/VisualizationOverview.html click here for details>. (requires Fiji to be installed,
+% <im_browser_system_requirements.html see here>).
+%
+% <html>
+% A demonstration is available in the following video:<br>
+% <a href="https://youtu.be/DZ1Tj3Fh2HM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/DZ1Tj3Fh2HM</a>
+% </html>
+%
+%%
+% 
+% <<images\MenuModelsRenderFiji.jpg>>
+% 
+%%
+% * *Imaris surface*, render the model in Imaris; requires Imaris and ImarisXT to be installed,
+% <im_browser_system_requirements.html see here>
+%
+% <html>
+% A demonstration is available in the following video:<br>
+% Without ImarisXT <a href="https://youtu.be/MbK2JcTrZFw"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/MbK2JcTrZFw</a><br>
+% With ImarisXT <a href="https://youtu.be/yODGYJUzTr0"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/yODGYJUzTr0</a><br>
+% </html>
+%
+%%
+% 
+% <<images\MenuModelsRenderImarisLarge.jpg>>
+% 
+% The rendered material is specified in the Material list of the
+% <ug_panel_segm.html Segmentation Panel>. 
+%
+%% Annotations...
+% Use this menu to modify the |Annotations| layer
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+% </html>
+%%
+% 
+% * *List of annotations...* - starts an auxiliary window with a list of
+% existing annotations, <ug_panel_segm_tools.html see more here> .
+% * *Remove all annotations...* - deletes all annotations stored with the
+% model.
+%
+%% Model Statistics...
+% Get statistics for the selected material of the model. Statistical results may be used to filter the model based on properties of its objects. 
+% The statistics dialog can also be reached from the <ug_panel_segm.html  Segmentation Panel> ->Materials List->Right mouse click->Get statistics...
+% See more <ug_gui_menu_mask_statistics.html here>
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*>
+##### SOURCE END #####
+--></body></html>

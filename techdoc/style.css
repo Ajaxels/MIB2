@@ -1,0 +1,18 @@
+kbd { 
+    font-family: monospace;
+	border: 1px solid #aaa; 
+	-moz-border-radius: 0.2em; 
+	-webkit-border-radius: 0.2em; 
+	border-radius: 0.2em; 
+	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+	background-color: #f9f9f9; 
+	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+	padding: 0.1em 0.3em; 
+	font-family: inherit; 
+	font-size: 0.95em;
+}

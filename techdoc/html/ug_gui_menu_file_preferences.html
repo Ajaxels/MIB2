@@ -1,0 +1,305 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Microscopy Image Browser Preferences</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_gui_menu_file_preferences.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Microscopy Image Browser Preferences</h1><!--introduction--><p>This dialog provides access to preferences of Microscopy Image Browser. Allows to modify colors of the <tt>Selection</tt>, <tt>Model</tt> and <tt>Mask</tt> layers, default behaviour of the mouse wheel and keys, settings of Undo...</p><p><b>Please note</b>, <tt>MIB</tt> stores its configuration parameters in a file that is automatically generated after closing of <tt>MIB</tt>:</p><div><ul><li><b>for Windows</b> - <i>c:\temp\mib.mat</i> or when <i>c:\temp</i> is unavailable in the Windows TEMP directory (<i>C:\Users\User-name\AppData\Local\Temp\</i>). The TEMP directory can be found and accessed with <tt>Windows-&gt;Start button-&gt;%TEMP%</tt> command</li><li><b>for Linux/MacOS</b> - in a directory where <tt>MIB</tt> is installed, or in the local <tt>tmp</tt> directory (<i>/tmp</i>)</li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_file.html"><b>File Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Preferences</a></li><li><a href="#2">User Interface Tweaks</a></li><li><a href="#3">Program Settings</a></li><li><a href="#4">Segmentation Settings</a></li><li><a href="#5">Colors</a></li></ul></div><h2 id="1">Preferences</h2><p><img vspace="5" hspace="5" src="images\MenuFilePreferences.png" alt=""> </p><h2 id="2">User Interface Tweaks</h2><div><ol><li><b>Mouse Wheel</b> - allows to choose between two possible actions done with the mouse wheel. When <tt>Zoom</tt> is selected, rotation of the mouse wheel will result in zoom in/out action; when <tt>scroll</tt> is selected rotation of the mouse wheel will result in change of the shown slices. <b>Note!</b> the mouse wheel may be used together with <tt>Shift</tt> button to scroll more than one slice at the time, see more in <a href="ug_panel_im_view.html">Image View Panel/Extra parameters for the slider</a></li><li><b>Left Mouse Button</b>. Allows to select action for press of the left mouse button. When <tt>pan</tt> is selected the press and hold of the left mouse button will result in moving of the shown image to left-right and up/down directions. When <tt>select</tt> is selected the left mouse button can be used for making selections. <b>Note!</b> The left and right mouse buttons are mirrored, <tt>i.e.</tt> if one action (<tt>pan</tt> or <tt>select</tt>) is selected for the left mouse button, the right mouse button implements the second available action.</li><li><b>Image Resize Method</b>. Modifies a way how image is resized during on screen zoom in/zoom out action. Use 'nearest' to see unmodified pixels and 'bicubic' for smooth appearance. <b>Note!</b> the <tt>nearest</tt> option gives the fastest and <tt>bicubic</tt> the slowest performance. It is also possible to toggle the this from a dedicated button in <a href="ug_gui_toolbar.html">the MIB toolbar</a>.</li><li><b>Disable Selection</b>. When <tt>Selection</tt> is disabled it is not possible to use the <tt>Selection</tt> layer for segmentation. In this situation memory requirements are lower.</li><li><b>Select Font</b> - this button starts a standard font selection dialog</li><li><b>Font size edit box</b> - modifies default font size for all text panels</li><li><b>Font size for dir contents</b> - modifies the font size for the list of files in the <a href="ug_panel_dir.html">Directory Contents panel</a>.</li><li><b>Shortcuts</b> - shortcuts for keys may be customized using the <b>Define shortcuts for keys</b> dialog that is started with this button. The list of default shortcuts is available from <a href="ug_gui_shortcuts.html"><b>the Key &amp; mouse shortcuts page</b></a>.</li></ol></div><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/qrLyrP9f018"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/qrLyrP9f018</a>
+</p><p><img vspace="5" hspace="5" src="images\MenuFilePreferencesShortcuts.png" alt=""> </p><div><ol><li><b>GUI Scaling</b> - starts an input dialog that allows to tweak scaling of varipous user interface widgets. This may be required when working with MIB on MacOS or Linux. <b>Operating system scaling factor</b> - this number is needed when the text size is increased on the operating system (on Windows: Control Panel\All Control Panel Items\Display\Screen Resolution-&gt;Make text and other items larger or smaller)</li></ol></div><h2 id="3">Program Settings</h2><p><b>Modification of Undo parameters</b></p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/PrY3Eo02gU8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PrY3Eo02gU8</a>
+</p><div><ol><li><b>Enable</b> - enable/disable undo. When the memory is limited it may be recommended to set the <tt>Enable</tt> undo setting to the <tt>no</tt> state.</li><li><b>History Steps</b> - maximal number of history steps to keep in memory. <b>Note!</b> requires restart of Microscopy Image Browser to apply this modification.</li><li><b>3D History</b> - number of 3D datasets that can be stored. When memory is limited it is recommended to set this value to <tt>0</tt>. <b>Note!</b> requires restart of Microscopy Image Browser to apply this modification.</li></ol></div><p><b>External dirs</b>, starts a dialog to specify installation directories for Fiji and Omero.  Please refer to the <a href="im_browser_system_requirements.html">System Requirements</a> pages for details. If there is no need to use any of these programs, remove all text from the path edit box.</p><p><img vspace="5" hspace="5" src="images\MenuFilePreferencesExernalDirs.png" alt=""> </p><h2 id="4">Segmentation Settings</h2><p>
+<ul>
+<li> <b>Type of interpolation</b>, defines type and parameters of the interpolation for the Selection layer to use
+(<em>i</em> - shortcut, or <em>Menu->Selection->Interpolate</em>).<br>
+A brief demonstration is available in the following videos:<br>
+<em>- Shape interpolation</em>: <a href="https://youtu.be/ZcJQb59YzUA?t=4m3s"><img
+style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/ZcJQb59YzUA?t=4m3s</a><br>
+<em>- Line interpolation</em>: <a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
+</li>
+<li><b>Number of points</b> - number of points to use for the interpolation, more points give smoother results, white the less points is faster
+</li>
+<li><b>Line width</b> - defines width of the line after the
+interpolation</li>
+<li><b>Font size for annotations</b> - defines size of annotation text, the annotations may be accessed
+from the menu entry: <em>Menu->Models->Annotations</em><br>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+</li>
+</ul>
+</p><h2 id="5">Colors</h2><p>Modification of default colors of the <tt>Annotations</tt>, <tt>Selection</tt>, <tt>Mask</tt>, <tt>Model</tt> layers and defining color look-up table (LUT). The upper table shows the list of predefined colors for Materials of the <tt>Model</tt> layer. The lower table shows LUT for colors of the color channels to use with the LUT mode (<a href="ug_panel_view_settings.html">View Settings Panel-&gt;LUT checkbox</a>)</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/A5HHVd5bfJ0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/A5HHVd5bfJ0</a>
+</p><div><ol><li><b>Modification of the <tt>Model</tt> and <tt>LUT</tt> colors</b>. The rows in tables represent color in Red:Green:Blue format in range from 0 to 255. The colors may be modified either by updating the numbers in the tables or by clicking on a color bar (fourth column) representing the defined color.</li><li><b>Modification of the <tt>Selection</tt> colors</b>. Press the <b>Selection</b> button to start the color selection dialog.</li><li><b>Modification of the <tt>Mask</tt> colors</b>. Press the <b>Mask</b> button to start the color selection dialog.</li></ol></div><p>
+<table style="width: 800px; border: 0px">
+<tr>
+<td colspan=2 style="border: 0px">
+Some actions are available for the colors of materials. These actions
+are available via a popup menu called using the right mouse button click
+above the upper table.
+</td>
+</tr>
+<tr>
+<td style="border: 0px">
+  <img src = "images\MenuFilePreferencesColorPopup.jpg">
+</td>
+<td style="border: 0px">
+<ul>
+<li><b>Reverse colormap</b> reverses the existing colormap</li>
+<li><b>Insert color</b> inserts a random color to the colormap at position after the one that was selected</li>
+<li><b>Replace with random color</b> replaces the selected color with a random one</li>
+<li><b>Swap two colors</b> swaps two colors between each other</li>
+<li><b>Delete color(s)</b> deletes the selected color from the colormap. Multiple colors could be selected using the Shift+mouse click combination</li>
+<li><b>Import from Matlab</b> imports a colormap from the main Matlab workspace</li>
+<li><b>Export to Matlab</b> exports the colormap to the main Matlab workspace</li>
+<li><b>Load from a file</b> loads a colormap from a file. The colormap should be saved using the matlab format and <em>cmap</em> variable</li>
+<li><b>Save to a file</b> saves the colormap to a file. The colormap is saved using the matlab format and <em>cmap</em> variable</li>
+</ul>
+</td>
+</tr>
+</table>
+</p><p><b>Built-in color palettes</b></p><p>There are several built-in palettes for coloring materials of models are available. The palettes may be selected using the <tt>Palette</tt> and <tt>Number of colors</tt> comboboxes. The Default color palette was selected so that each color appears as a distinctive shade to color-blind users.</p><p><b>Description of palettes:</b></p><p><img vspace="5" hspace="5" src="images\MenuFilePreferencesColorBrewer.jpg" alt=""> </p><p>The color palettes done with help of following sources:</p><div><ul><li><a href="http://jfly.iam.u-tokyo.ac.jp/color/">Yasuyo G. Ichihara, Masataka Okabe, Koichi Iga, Yosuke Tanaka, Kohei Musha, Kei Ito. Color Universal Design - The selection of four easily distinguishahle colors for all color vision types. Proc Spie 6807 (2008)</a></li><li><a href="http://colorbrewer2.org/">Cynthia Brewer, Mark Harrower, Ben Sheesley, Andy Woodruff, David Heyman. ColorBrewer 2.0</a></li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_file.html"><b>File Menu</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Microscopy Image Browser Preferences
+% This dialog provides access to preferences of Microscopy Image Browser. Allows to modify colors of the |Selection|, |Model| and |Mask|
+% layers, default behaviour of the mouse wheel and keys, settings of Undo... 
+%
+% *Please note*, |MIB| stores its configuration parameters in a file that is automatically generated after closing of
+% |MIB|:
+%
+% * *for Windows* - _c:\temp\mib.mat_ or when _c:\temp_ is unavailable in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
+% The TEMP directory can be found and accessed with |Windows->Start button->%TEMP%| command
+% * *for Linux/MacOS* - in a directory where |MIB| is installed, or in the local |tmp| directory (_/tmp_)
+%
+% 
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_file.html *File Menu*>
+%% Preferences
+% 
+% <<images\MenuFilePreferences.png>>
+% 
+%% User Interface Tweaks
+%
+% # *Mouse Wheel* - allows to choose between two possible actions done with the mouse wheel. When |Zoom| is selected,
+% rotation of the mouse wheel will result in zoom in/out action; when |scroll| is selected rotation of the mouse wheel will result in
+% change of the shown slices. *Note!* the mouse wheel may be used together with |Shift| button to scroll more than one slice
+% at the time, see more in <ug_panel_im_view.html Image View Panel/Extra parameters for the slider>
+% # *Left Mouse Button*. Allows to select action for press of the left mouse button. When |pan| is selected the press and
+% hold of the left mouse button will result in moving of the shown image to left-right and up/down directions. When |select| is
+% selected the left mouse button can be used for making selections. *Note!* The left and right mouse buttons are mirrored, |i.e.| if
+% one action (|pan| or |select|) is selected for the left mouse button, the right mouse button implements the second
+% available action.
+% # *Image Resize Method*. Modifies a way how image is resized during on screen zoom in/zoom out action. Use 'nearest' to see
+% unmodified pixels and 'bicubic' for smooth appearance. *Note!* the |nearest| option gives the fastest and |bicubic| the
+% slowest performance. It is also possible to toggle the this from a
+% dedicated button in <ug_gui_toolbar.html the MIB toolbar>.
+% # *Disable Selection*. When |Selection| is disabled it is not possible to use the |Selection| layer for segmentation. In
+% this situation memory requirements are lower.
+% # *Select Font* - this button starts a standard font selection dialog
+% # *Font size edit box* - modifies default font size for all text panels
+% # *Font size for dir contents* - modifies the font size for the list of
+% files in the <ug_panel_dir.html Directory Contents panel>.
+% # *Shortcuts* - shortcuts for keys may be customized using the *Define shortcuts for keys* dialog that
+% is started with this button. The list of default shortcuts is available
+% from <ug_gui_shortcuts.html *the Key & mouse shortcuts page*>.
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/qrLyrP9f018"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/qrLyrP9f018</a>
+% </html>
+% 
+% <<images\MenuFilePreferencesShortcuts.png>>
+% 
+% # *GUI Scaling* - starts an input dialog that allows to tweak scaling of
+% varipous user interface widgets. This may be required when working with
+% MIB on MacOS or Linux. *Operating system scaling factor* - this number is
+% needed when the text size is increased on the operating system 
+% (on Windows: Control Panel\All Control Panel Items\Display\Screen Resolution->Make text and other items larger or smaller)
+% 
+%
+% 
+%
+%% Program Settings
+%
+% *Modification of Undo parameters*
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/PrY3Eo02gU8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PrY3Eo02gU8</a>
+% </html>
+%
+% # *Enable* - enable/disable undo. When the memory is limited it may be recommended to set the |Enable| undo setting to the |no| state.
+% # *History Steps* - maximal number of history steps to keep in memory. *Note!* requires restart of Microscopy Image Browser
+% to apply this modification.
+% # *3D History* - number of 3D datasets that can be stored. When memory is limited it is recommended to set this value to |0|. *Note!* requires restart of Microscopy Image Browser
+% to apply this modification.
+%
+% *External dirs*, starts a dialog to specify installation directories for
+% Fiji and Omero.  Please refer to the <im_browser_system_requirements.html System Requirements> pages for details.
+% If there is no need to use any of these programs, remove all text from the path edit box.
+% 
+% <<images\MenuFilePreferencesExernalDirs.png>>
+% 
+% 
+%
+%% Segmentation Settings
+%
+% <html>
+% <ul>
+% <li> <b>Type of interpolation</b>, defines type and parameters of the interpolation for the Selection layer to use 
+% (<em>i</em> - shortcut, or <em>Menu->Selection->Interpolate</em>).<br>
+% A brief demonstration is available in the following videos:<br>
+% <em>- Shape interpolation</em>: <a href="https://youtu.be/ZcJQb59YzUA?t=4m3s"><img
+% style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/ZcJQb59YzUA?t=4m3s</a><br>
+% <em>- Line interpolation</em>: <a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
+% </li>
+% <li><b>Number of points</b> - number of points to use for the interpolation, more points give smoother results, white the less points is faster
+% </li>
+% <li><b>Line width</b> - defines width of the line after the
+% interpolation</li>
+% <li><b>Font size for annotations</b> - defines size of annotation text, the annotations may be accessed
+% from the menu entry: <em>Menu->Models->Annotations</em><br>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+% </li>
+% </ul>
+% </html>
+% 
+%
+% 
+%% Colors
+%
+% Modification of default colors of the |Annotations|, |Selection|, |Mask|, |Model| layers and defining color look-up table (LUT). 
+% The upper table shows the list of predefined colors for Materials of the |Model| layer. The lower table shows LUT for
+% colors of the color channels to use with the LUT mode (<ug_panel_view_settings.html View Settings Panel->LUT checkbox>)
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/A5HHVd5bfJ0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/A5HHVd5bfJ0</a>
+% </html>
+%
+% # *Modification of the |Model| and |LUT| colors*. The rows in tables represent color in Red:Green:Blue format in range from 0 to 255.
+% The colors may be modified either by updating the numbers in the tables or by clicking on a color bar (fourth column) representing the defined color.
+% # *Modification of the |Selection| colors*. Press the *Selection* button to start the color selection dialog.
+% # *Modification of the |Mask| colors*. Press the *Mask* button to start the color selection dialog.
+%
+% <html>
+% <table style="width: 800px; border: 0px">
+% <tr>
+% <td colspan=2 style="border: 0px">
+% Some actions are available for the colors of materials. These actions
+% are available via a popup menu called using the right mouse button click
+% above the upper table.
+% </td>
+% </tr>
+% <tr>
+% <td style="border: 0px">
+%   <img src = "images\MenuFilePreferencesColorPopup.jpg">
+% </td>
+% <td style="border: 0px">
+% <ul>
+% <li><b>Reverse colormap</b> reverses the existing colormap</li>
+% <li><b>Insert color</b> inserts a random color to the colormap at position after the one that was selected</li>
+% <li><b>Replace with random color</b> replaces the selected color with a random one</li>
+% <li><b>Swap two colors</b> swaps two colors between each other</li>
+% <li><b>Delete color(s)</b> deletes the selected color from the colormap. Multiple colors could be selected using the Shift+mouse click combination</li>
+% <li><b>Import from Matlab</b> imports a colormap from the main Matlab workspace</li>
+% <li><b>Export to Matlab</b> exports the colormap to the main Matlab workspace</li>
+% <li><b>Load from a file</b> loads a colormap from a file. The colormap should be saved using the matlab format and <em>cmap</em> variable</li>
+% <li><b>Save to a file</b> saves the colormap to a file. The colormap is saved using the matlab format and <em>cmap</em> variable</li>
+% </ul>
+% </td>
+% </tr>
+% </table>
+% </html>
+%
+% *Built-in color palettes*
+% 
+% There are several built-in palettes for coloring materials of models are
+% available. The palettes may be selected using the |Palette| and |Number
+% of colors| comboboxes. The Default color palette was selected so that
+% each color appears as a distinctive shade to color-blind users. 
+%
+% *Description of palettes:*
+%
+%
+% 
+% <<images\MenuFilePreferencesColorBrewer.jpg>>
+% 
+% The color palettes done with help of following sources:
+%
+% * <http://jfly.iam.u-tokyo.ac.jp/color/ Yasuyo G. Ichihara, Masataka
+% Okabe, Koichi Iga, Yosuke Tanaka, Kohei Musha, Kei Ito. Color Universal Design - The selection of four
+% easily distinguishahle colors for all color vision types. Proc Spie 6807 (2008)> 
+% * <http://colorbrewer2.org/ Cynthia Brewer, Mark Harrower, Ben Sheesley,
+% Andy Woodruff, David Heyman. ColorBrewer 2.0>
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_file.html *File Menu*>
+##### SOURCE END #####
+--></body></html>

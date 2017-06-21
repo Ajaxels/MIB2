@@ -1,0 +1,196 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>TripleAreaIntensity</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-03-02"><meta name="DC.source" content="TripleAreaIntensity_help.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>TripleAreaIntensity</h1><!--introduction--><p>This plugin can be used to calculate image intensities (mean, min, max or sum) of 3 areas stored under 3 materials of a model.</p><p>The results of the plugin may be seen on the screen of <tt>Microscopy Image Browser</tt> or saved as Excel spreadsheet.</p><p><img vspace="5" hspace="5" src="TripleAreaIntensitySnapshot.jpg" alt=""> </p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">How to Use</a></li><li><a href="#10">Additional Options</a></li><li><a href="#11">Credits</a></li></ul></div><h2 id="1">How to Use</h2><p>This example shows comparison of image intensities between cytosol and nucleus in cells.</p><div><ul><li>1. Load images as 3D/4D stack. Highlight files in the <tt>Directory Contents panel</tt> with the Shift + left mouse button. Press the right mouse button and select <tt>Combine selected datasets</tt>.</li></ul></div><p><img vspace="5" hspace="5" src="Step_01.jpg" alt=""> </p><div><ul><li>2. Create a new model: press the <tt>Create</tt> button in the <tt>Segmentation Panel</tt></li><li>3. Add material to the model: press the <tt>+</tt> button in the <tt>Segmentation Panel</tt>; select <tt>1</tt> in the <tt>Materials</tt> list, press the right mouse button and <tt>Rename</tt> it to <i>Nucleus</i>.</li></ul></div><p><img vspace="5" hspace="5" src="Step_03.jpg" alt=""> </p><div><ul><li>4. Segment the Nuclei. In the simplest case use the <tt>Brush</tt> tool from the the <tt>Segmentation panel</tt>.</li></ul></div><div><ul><li>5. Make sure that the <tt>1</tt> is selected in the <tt>Add to</tt> list and press the <tt>Shift+A</tt> key button to add the drawn areas to the <i>Nucleus</i> material of the model for all slices.</li></ul></div><p><img vspace="5" hspace="5" src="Step_05.jpg" alt=""> </p><div><ul><li>6. Add another material to the model (the <tt>+</tt> button) and rename it to <i>Cytosol</i>.</li><li>7. With the Brush tool draw areas of the cytosol. It is important that number of cytosol objects match the number of nuclei! Add it to the <tt>2</tt> material (<tt>Segmentation panel-&gt;Add to-&gt;2</tt>).</li></ul></div><p><img vspace="5" hspace="5" src="Step_07.jpg" alt=""> </p><div><ul><li>8. Add another material to the model (the <tt>+</tt> button) and rename it to <i>Background</i>.</li><li>9. With the Brush tool draw areas outside of the cells to be used to calculate intensities of the image background <tt>3</tt> material (<tt>Segmentation panel-&gt;Add to-&gt;3</tt>). There should be at least 1 background area at each image. number of ba</li></ul></div><p><img vspace="5" hspace="5" src="Step_09.jpg" alt=""> </p><div><ul><li>10. Start TripleAreaIntensity plugin: Menu-&gt;Plugins-&gt;IntensityAnalysis-&gt;TripleAreaIntensity</li><li>11. Select color channel and parameter to calculate (Mean, Max, Min Sum intensity).</li><li>12. Select materials to analyze: Calculate-&gt;Statistics for material 1: <i>Nucleus</i></li><li>13. Select materials to analyze: Calculate-&gt;Statistics for material 2: <i>Cytosol</i></li><li>14. Check the Background checkbox and select <i>Background</i> in the corresponding combobox. It is also possible to check the <tt>Subtract background</tt> checkbox; in this case the intensities of the background will be subtracted from the intensities of materials to analyse.</li><li>15. Check the <tt>Calculate ratio: Material 1 / Material 2</tt> checkbox to get the ratio.</li><li>16. Define the filename to save the results</li></ul></div><p><img vspace="5" hspace="5" src="Step_16.jpg" alt=""> </p><div><ul><li>17. Press the <tt>Continue</tt> button</li></ul></div><p>The intensities of each object will be calculated and the numbers displayed at the <tt>Image View panel</tt>. For example in the figure below, intensity of the Background, Nucleus and Cytosol are 142.3671, 340.2101 and 99.7331 correspondingly (please note that the intensity of the background was subtracted from the intensities of other objects). The numbers are stored in the Annotation layer available from the <tt>Menu-&gt;Models-&gt;Annotations</tt>. The corresponding objects will also be connected with a line for reference. The line is stored in the <tt>Selection</tt> layer and can be removed using the <tt>Shift+C</tt> shortcut.</p><p><img vspace="5" hspace="5" src="Step_17.jpg" alt=""> </p><p>The results of the analysis are stored in the excel file</p><p><img vspace="5" hspace="5" src="ExcelResults.jpg" alt=""> </p><h2 id="10">Additional Options</h2><div><ul><li>The <tt>Additional thresholding of</tt> allows to define additional thresholding that will be applied to the specified material. When selected, the object is a subject to additional thresholding with a coefficient equal to <i>the intensity of the background + the Threshold shift value</i>.</li><li><b>Plot ratio as histogram</b> - the ratio between intensities will be displayed as a histogram.</li></ul></div><h2 id="11">Credits</h2><p>
+ Written by Ilya Belevich, University of Helsinki<br>
+ version 1.1, 02.03.2017<br>
+ email: <a href="mailto:ilya.belevich @ helsinki.fi">ilya.belevich @ helsinki.fi</a><br>
+ web: <a href="http://www.biocenter.helsinki.fi/~ibelev/">http://www.biocenter.helsinki.fi/~ibelev/</a><br>
+</p><p>Part of the code written by <a href="http://stackoverflow.com/questions/12083467/find-the-nearest-point-pairs-between-two-sets-of-of-matrix">Gunther Struyf</a> was used when writing this function.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% TripleAreaIntensity  
+% This plugin can be used to calculate image intensities (mean, min, max or sum) of 3 areas stored
+% under 3 materials of a model.
+% 
+% The results of the plugin may be seen on the screen of |Microscopy Image
+% Browser| or saved as Excel spreadsheet.
+%
+% 
+% <<TripleAreaIntensitySnapshot.jpg>>
+% 
+%% How to Use
+%
+% This example shows comparison of image intensities between cytosol and
+% nucleus in cells.
+%
+%
+% * 1. Load images as 3D/4D stack. Highlight files in the |Directory
+% Contents panel| with the Shift + left mouse button. Press
+% the right mouse button and select |Combine selected datasets|.
+%%
+% 
+% <<Step_01.jpg>>
+% 
+%
+% * 2. Create a new model: press the |Create| button in the |Segmentation Panel|
+% * 3. Add material to the model: press the |+| button in the |Segmentation
+% Panel|; select |1| in the |Materials| list, press the right mouse button
+% and |Rename| it to _Nucleus_.
+%%
+% 
+% <<Step_03.jpg>>
+% 
+% * 4. Segment the Nuclei. In the simplest case use the |Brush| tool from
+% the the |Segmentation panel|.
+%
+% * 5. Make sure that the |1| is selected in the |Add to| list and press
+% the |Shift+A| key button to add the drawn areas to the _Nucleus_ material of the
+% model for all slices.
+%%
+% 
+% <<Step_05.jpg>>
+%
+% * 6. Add another material to the model (the |+| button) and rename it to
+% _Cytosol_. 
+% * 7. With the Brush tool draw areas of the cytosol. It is important that number of cytosol objects match the
+% number of nuclei! Add it to the |2| material (|Segmentation panel->Add to->2|). 
+%%
+% 
+% <<Step_07.jpg>>
+%
+% * 8. Add another material to the model (the |+| button) and rename it to
+% _Background_. 
+% * 9. With the Brush tool draw areas outside of the cells to be used to calculate intensities of the image background
+% |3| material (|Segmentation panel->Add to->3|). There should be at least 1 background area at each image.
+% number of ba
+%%
+% 
+% <<Step_09.jpg>>
+%
+% * 10. Start TripleAreaIntensity plugin: Menu->Plugins->IntensityAnalysis->TripleAreaIntensity
+% * 11. Select color channel and parameter to calculate (Mean, Max, Min Sum intensity).
+% * 12. Select materials to analyze: Calculate->Statistics for material 1: _Nucleus_
+% * 13. Select materials to analyze: Calculate->Statistics for material 2: _Cytosol_
+% * 14. Check the Background checkbox and select _Background_ in the
+% corresponding combobox. It is also possible to check the |Subtract
+% background| checkbox; in this case the intensities of the background will
+% be subtracted from the intensities of materials to analyse.
+% * 15. Check the |Calculate ratio: Material 1 / Material 2| checkbox to
+% get the ratio.
+% * 16. Define the filename to save the results
+%%
+% 
+% <<Step_16.jpg>>
+%
+% * 17. Press the |Continue| button
+%
+% The intensities of each object will be calculated and the numbers
+% displayed at the |Image View panel|. For example in the figure below, 
+% intensity of the Background, Nucleus and Cytosol are 142.3671, 340.2101 and 99.7331 correspondingly
+% (please note that the intensity of the background was subtracted from the
+% intensities of other objects).
+% The numbers are stored in the Annotation layer available from the
+% |Menu->Models->Annotations|.
+% The corresponding objects will also be connected with a line for reference. The line is stored in the
+% |Selection| layer and can be removed using the |Shift+C| shortcut.
+%%
+% 
+% <<Step_17.jpg>>
+% 
+%
+% The results of the analysis are stored in the excel file
+%%
+% 
+% <<ExcelResults.jpg>>
+% 
+%
+%% Additional Options
+%
+% * The |Additional thresholding of| allows to define additional
+% thresholding that will be applied to the specified material. When
+% selected, the object is a subject to additional thresholding with a
+% coefficient equal to _the intensity of the background + the Threshold
+% shift value_.
+% * *Plot ratio as histogram* - the ratio between intensities will be displayed as a histogram.
+% 
+%% Credits
+%
+% <html>
+%  Written by Ilya Belevich, University of Helsinki<br>
+%  version 1.1, 02.03.2017<br>
+%  email: <a href="mailto:ilya.belevich @ helsinki.fi">ilya.belevich @ helsinki.fi</a><br>
+%  web: <a href="http://www.biocenter.helsinki.fi/~ibelev/">http://www.biocenter.helsinki.fi/~ibelev/</a><br>
+% </html>
+%
+%
+% Part of the code written by
+% <http://stackoverflow.com/questions/12083467/find-the-nearest-point-pairs-between-two-sets-of-of-matrix
+% Gunther Struyf> was used when writing this function.
+
+##### SOURCE END #####
+--></body></html>

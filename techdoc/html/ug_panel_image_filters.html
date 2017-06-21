@@ -1,0 +1,169 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Image Filters Panel</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_panel_image_filters.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Image Filters Panel</h1><!--introduction--><p>Filter image using different image filters.</p><p><img vspace="5" hspace="5" src="images\PanelsImageFilters.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Brief video demonstration</a></li><li><a href="#2">Image Filter combo box.</a></li><li><a href="#3">Mode combobox</a></li><li><a href="#4">Options combobox</a></li><li><a href="#5">Various settings for the filters</a></li><li><a href="#6">The Filter button</a></li></ul></div><h2 id="1">Brief video demonstration</h2><p>
+Use of filters in a brief video demonstration:<br>
+<a
+href="https://youtu.be/VwEPZxObA5U"><img
+src="images\youtube2.png"></a>
+</p><h2 id="2">Image Filter combo box.</h2><p>Allows selection of a filter from a list of 2D and 3D image filters. Depending on the filter type some additional parameters should be specified in the <tt>HSize</tt>, <tt>Sigma</tt>, <tt>lambda</tt>, <tt>Type</tt>, <tt>Angle</tt>, <tt>Iter</tt> edit boxes.</p><p><b>List of available filters:</b></p><div><ul><li><b>Gaussian</b>, (<b>2D</b>) Matlab a rotationally symmetric Gaussian lowpass filter, see more in the Matlab documentation for <tt>fspecial</tt> and <tt>imfilter</tt>.</li><li><b>Gaussian 3D</b>, (<b>3D</b>) is based on <a href="http://www.mathworks.com/matlabcentral/fileexchange/25397-imgaussian">Dirk-Jan Kroon implementation</a> and uses the fact that a Gaussian kernel can be implemented as several 1D kernels.</li><li><b>Perona Malik anisotropic diffusion</b>, (<b>2D</b>) - a filter written by <a href="http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff">Peter Kovesi</a> to perform anisotropic diffusion of an image following Perona and Malik's algorithm. This process smoothes the regions while preserving, and enhancing the contrast at sharp intensity gradients.</li><li><b>Average</b>, (<b>2D</b>) Matlab Averaging filter, see more in the Matlab documentation for <tt>fspecial</tt> and <tt>imfilter</tt>.</li><li><b>Disk</b>, (<b>2D</b>) Matlab circular averaging filter (pillbox), see more in the Matlab documentation for <tt>fspecial</tt> and <tt>imfilter</tt>.</li><li><b>Gradient</b>, (<b>2D</b>) generates gradient image for the shown orientation.</li><li><b>Gradient</b>, (<b>3D</b>) generates gradient image for the whole volume.</li><li><b>Frangi 2D/3D</b>, Hessian based Frangi Vesselness filter. This function uses the eigenvectors of the Hessian to compute the likeliness of an image region to contain vessels or other image ridges , according to the method described by Frangi <a href="http://www.dtic.upf.edu/~afrangi/articles/miccai1998.pdf">1998</a>, <a href="http://www.tecn.upf.es/~afrangi/articles/tmi2001.pdf">2001</a>. Implementation is based on <a href="http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter">Hessian based Frangi Vesselness filter</a>, written by Marc Schrijver and Dirk-Jan Kroon.</li><li><b>Motion</b>, (<b>2D</b>) Matlab filter to approximate the linear motion of a camera, see more in the Matlab documentation for <tt>fspecial</tt> and <tt>imfilter</tt>.</li><li><b>Unsharp</b>, (<b>2D</b>) Matlab sharpens image using unsharp masking (<tt>imsharpen</tt> function, R2013a and above) or unsharpens contrast enhancement filter (<tt>fspecial</tt> and <tt>imfilter</tt>, R2012b and older).</li><li><b>Median 2D</b>, (<b>2D</b>) Matlab 2D median filter. Median filtering is a nonlinear operation often used in image processing to reduce "salt and pepper" noise. The median filter is more effective than convolution when the goal is to simultaneously reduce noise and preserve edges. See more in the Matlab documentation for <tt>medfilt2</tt>.</li><li><b>Median 3D</b>, (<b>3D</b>) Matlab 3D median filter (<i><b>Release 2017a and later</b></i>). Median filtering is a nonlinear operation often used in image processing to reduce "salt and pepper" noise. The median filter is more effective than convolution when the goal is to simultaneously reduce noise and preserve edges. See more in the Matlab documentation for <tt>medfilt3</tt>. <a href="https://youtu.be/7wZbjyVY5s4">A short youtube demo</a></li><li><b>Wiener 2D</b>, (<b>2D</b>) Matlab 2D 2-D adaptive noise-removal filtering (<tt>wiener2</tt> function). <tt>wiener2</tt> lowpass-filters a grayscale image that has been degraded by constant power additive noise. <tt>wiener2</tt> uses a pixel wise adaptive Wiener method based on statistics estimated from a local neighbourhood of each pixel.</li></ul></div><p><b>Note!</b> If <tt>HSize</tt> is specified with a single number then the size of the 3D Kernel is calculated based on pixel size of the dataset <a href="ug_gui_menu_dataset.html">Menu-&gt;Dataset-&gt;Parameters</a>. If <tt>HSize</tt> is specified with 2 numbers (<i>i.e.</i> 3;3) then the Kernel size is [3 x 3 x 3].</p><h2 id="3">Mode combobox</h2><p>The Mode combobox allows to select part of the open dataset to apply the filters.</p><div><ul><li><b>2D, shown slice</b>, apply filter only for the currently shown slice</li><li><b>3D, current stack</b>, apply filter only for the currently shown stack</li><li><b>4D, complete volume</b>, apply filter for complete dataset</li></ul></div><h2 id="4">Options combobox</h2><p>The Options combobox allows to choose what to do with the dataset after filtration</p><div><ul><li><b>Apply filter</b>, just filter the image and show result on the screen</li><li><b>Apply and add to the image</b>, filter the image and add the result to the original image</li><li><b>Apply and subtract from the image</b>, filter the image and subtract the result from the original image</li></ul></div><h2 id="5">Various settings for the filters</h2><p>Here is a set of edit boxes (Type, HSize, lambda, Sigma, beta2, beta3) that define additional parameters for the filters. Depending on the selected filter one or more of these edit boxes may be disabled.</p><h2 id="6">The Filter button</h2><p>Press this button to start the filtering.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Image Filters Panel
+% Filter image using different image filters.
+%
+% <<images\PanelsImageFilters.png>>
+% 
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+%
+%% Brief video demonstration
+%
+% <html>
+% Use of filters in a brief video demonstration:<br>
+% <a
+% href="https://youtu.be/VwEPZxObA5U"><img
+% src="images\youtube2.png"></a>
+% </html>
+%
+%% Image Filter combo box.
+% Allows selection of a filter from a list of 2D and 3D image filters. Depending on the filter type some additional parameters
+% should be specified in the |HSize|, |Sigma|, |lambda|, |Type|, |Angle|, |Iter| edit boxes.
+%
+%
+% *List of available filters:*
+%
+% * *Gaussian*, (*2D*) Matlab a rotationally symmetric Gaussian lowpass filter, see more in the Matlab documentation for |fspecial|
+% and |imfilter|.
+% * *Gaussian 3D*, (*3D*) is based on <http://www.mathworks.com/matlabcentral/fileexchange/25397-imgaussian
+% Dirk-Jan Kroon implementation> and uses the fact that a Gaussian kernel can be 
+% implemented as several 1D kernels. 
+% * *Perona Malik anisotropic diffusion*, (*2D*) - a filter written by
+% <http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff Peter Kovesi> to perform anisotropic diffusion of an 
+% image following Perona and Malik's algorithm. This process smoothes the regions while preserving, and enhancing the contrast 
+% at sharp intensity gradients.
+% * *Average*, (*2D*) Matlab Averaging filter, see more in the Matlab documentation for |fspecial|
+% and |imfilter|.
+% * *Disk*, (*2D*) Matlab circular averaging filter (pillbox), see more in the Matlab documentation for |fspecial|
+% and |imfilter|.
+% * *Gradient*, (*2D*) generates gradient image for the shown orientation.
+% * *Gradient*, (*3D*) generates gradient image for the whole volume.
+% * *Frangi 2D/3D*, Hessian based Frangi Vesselness filter. This function uses the eigenvectors of the Hessian to compute the 
+% likeliness of an image region to contain vessels or other image ridges , according to the method described by Frangi <http://www.dtic.upf.edu/~afrangi/articles/miccai1998.pdf 1998>, <http://www.tecn.upf.es/~afrangi/articles/tmi2001.pdf 2001>.
+% Implementation is based on <http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter
+% Hessian based Frangi Vesselness filter>, written by Marc Schrijver and Dirk-Jan Kroon.
+% * *Motion*, (*2D*) Matlab filter to approximate the linear motion of a camera, see more in the Matlab documentation for |fspecial|
+% and |imfilter|.
+% * *Unsharp*, (*2D*) Matlab sharpens image using unsharp masking (|imsharpen| function, R2013a and above) or unsharpens contrast
+% enhancement filter (|fspecial| and |imfilter|, R2012b and older).
+% * *Median 2D*, (*2D*) Matlab 2D median filter. Median filtering is a nonlinear operation often used in image processing to 
+% reduce "salt and pepper" noise. The median filter is more effective than convolution when the goal is to simultaneously
+% reduce noise and preserve edges. See more in the Matlab documentation for |medfilt2|.
+% * *Median 3D*, (*3D*) Matlab 3D median filter (_*Release 2017a and later*_). Median filtering is a nonlinear operation often used in image processing to 
+% reduce "salt and pepper" noise. The median filter is more effective than convolution when the goal is to simultaneously
+% reduce noise and preserve edges. See more in the Matlab documentation for
+% |medfilt3|. <https://youtu.be/7wZbjyVY5s4 A short youtube demo>
+% * *Wiener 2D*, (*2D*) Matlab 2D 2-D adaptive noise-removal filtering (|wiener2| function). |wiener2| lowpass-filters a grayscale image that 
+% has been degraded by constant power additive noise. |wiener2| uses a pixel wise adaptive Wiener method based on statistics estimated from a local neighbourhood of each pixel.
+%
+%
+% *Note!* If |HSize| is specified with a single number then
+% the size of the 3D Kernel is calculated based on pixel size of the dataset <ug_gui_menu_dataset.html
+% Menu->Dataset->Parameters>. If |HSize| is specified with 2 numbers
+% (_i.e._ 3;3) then the Kernel size is [3 x 3 x 3].
+%
+%% Mode combobox
+% The Mode combobox allows to select part of the open dataset to apply the
+% filters.
+% 
+% 
+% * *2D, shown slice*, apply filter only for the currently shown slice
+% * *3D, current stack*, apply filter only for the currently shown stack
+% * *4D, complete volume*, apply filter for complete dataset
+% 
+%% Options combobox
+% The Options combobox allows to choose what to do with the dataset after
+% filtration
+% 
+% * *Apply filter*, just filter the image and show result on the screen
+% * *Apply and add to the image*, filter the image and add the result to
+% the original image
+% * *Apply and subtract from the image*, filter the image and subtract the
+% result from the original image
+% 
+%
+%% Various settings for the filters
+% Here is a set of edit boxes (Type, HSize, lambda, Sigma, beta2, beta3) that define additional parameters for the filters. Depending on the selected filter one or more of
+% these edit boxes may be disabled.
+%
+%% The Filter button
+% Press this button to start the filtering.
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,352 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Alignment and Drift Correction</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_gui_menu_dataset_alignment.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Alignment and Drift Correction</h1><!--introduction--><p>The Alignment and Drift Correction tool can be used either to align slice of the opened dataset or to align two separate datasets.</p><p>
+A demonstration is available in the following video:<br>
+<a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-qwoO5z02aA</a>
+</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_dataset.html"><b>Dataset</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Current dataset panel</a></li><li><a href="#2">Align panel</a></li><li><a href="#3">Options panel</a></li><li><a href="#4">Second stack panel</a></li><li><a href="#5">Reference and Acknowledgements</a></li></ul></div><h2 id="1">Current dataset panel</h2><p>The <b>Current dataset panel</b> displays details of the currently opened dataset, such as its filename, dimensions and pixel size</p><p><img vspace="5" hspace="5" src="images/menuDatasetAlignTool_1.jpg" alt=""> </p><h2 id="2">Align panel</h2><p>The <b>Align panel</b> allows to select main parameters for the alignment and drift correction.</p><p><img vspace="5" hspace="5" src="images/menuDatasetAlignTool_2.jpg" alt=""> </p><p>
+<ul>
+  <li>
+    <b>The Mode panel</b> - selection of alignment mode:
+      <ul>
+          <li><b>Current dataset</b>, align the opened dataset</li>
+          <li><b>Two stacks</b>, align two stacks. The second stack can either be loaded or imported from Matlab</li>
+      </ul>
+  </li>
+  <li>
+    <b>Algorithm</b> - selection of method to be used for the alignment:
+    <table style="width: 550px; text-align: center; margin-left: 50px;" cellspacing=2px cellpadding=2px >
+    <tr>
+      <td style="width=250px;"><b>Drift correction</b></td>
+      <td>The Drift correction mode is recommended for small shifts or comparably sized images<br>
+          It is recommended for most situations
+      </td>
+    </tr>
+    <tr>
+      <td><b>Template matching</b></td>
+      <td>The Template matching mode is best when aligning two stacks and the second stack is smaller than the main stack.<br>
+          It is <b>not</b> recommended for alignment of the currently opened stack
+      </td>
+      </td>
+    </tr>
+    <tr>
+      <td><b>Single landmark point</b></td>
+      <td>The Single landmark point mode is a manual mode, where user marks
+      corresponding areas on two consequetive slices using the brush tool with
+      a spot. During alignment the images will be translated to align the
+      marked areas
+      </td>
+    </tr>
+    <tr>
+      <td><b>Three landmark points</b></td>
+      <td>Three landmark points mode is another manual mode, where user should mark
+      three corresponding areas on two consequetive slices using the brush tool.
+      During alignment the images will be translated/scaled/rotated to
+      align the marked areas
+    </tr>
+    </table>
+  </li>
+  <li>
+    <b>Correlate with</b> - three different options for the reference slide:
+      <ul>
+          <li><b>Previous slice</b>, align each slice to the previous one</li>
+          <li><b>First slice</b>, align all images to the first Z-slice of the sequence; it is good from fixing drift correction problems, when dataset is not changing much</li>
+          <li><b>Relative to</b>, align each slice to another slice with is earlier in the sequence, the number in the <b>Step</b> edit box defines this shift</li>
+      </ul>
+  </li>
+  <li>
+    <b>Color channel</b> - selection of the color channel to use for the alignment process
+  </li>
+  <li>
+    <b>use intensity gradient</b> sometimes better alignement can be
+    achieved when correlating intensity gradients of the original images.
+    Select this checkbox to use the gradients instad of raw images.
+  </li>
+  <li>
+    <b>Background</b> define type of the background after image alignment
+      <ul>
+          <li><b>White</b>, all background pixels of the aligned dataset will be white</li>
+          <li><b>Black</b>, all background pixels of the aligned dataset will be black</li>
+          <li><b>Mean</b>, all background pixels of the aligned dataset will be calculated as an average value of all pixels of the original dataset</li>
+          <li><b>Custom</b>, provide a custom intensity for the background colors</li>
+      </ul>
+  </li>
+</ul>
+</p><h2 id="3">Options panel</h2><p>The Options panel is shown only during alignment of the currently opened dataset.</p><p><img vspace="5" hspace="5" src="images/menuDatasetAlignTool_3.jpg" alt=""> </p><p>
+<ul>
+  <li>
+    <b>use Mask/Selection</b> check this to force the alignment tool to
+    calculate correlation only from the masked or selected areas of the
+    dataset. To benefit from this mode use the brush tool to select the
+    most distict area on the first and last slices; after that
+    interpolate one area to another using the I-key shortcut (or from the
+    <em>Menu->Selection->Interpolate as Shape</em>)
+  </li>
+  <li>
+    <b>use subwindow</b> for large uniform images use of subwindow can
+    speed up the alignment significantly. Use the <em>minX, minY, maxX,
+    maxY</em> edit boxes or the <em>Get from Selection</em> button to
+    define the subwindow.
+  </li>
+  <li>
+    <b>Save/Load shifts to file</b> using this option it is possible to
+    save and load the translation shifts to a disk
+  </li>
+</ul>
+</p><h2 id="4">Second stack panel</h2><p>The Options panel is shown only during alignment of two stacks</p><p><img vspace="5" hspace="5" src="images/menuDatasetAlignTool_4.jpg" alt=""> </p><p>
+<ul>
+  <li>
+    <b>Directory of images</b> select directory where images of the
+    second stack are located
+  </li>
+  <li>
+    <b>Volume in a single file</b>, use this option when the second stack
+    is embedded into a single file
+  </li>
+  <li>
+    <b>Import from Matlab</b>, if another stack is already open in Matlab
+    it can be imported and aligned with the currently open.
+  </li>
+  <li>
+    <b>Automatic mode</b>, when selected the aligment is done
+    automatically. Alternatively, it is possible to provide parameters
+    manually into the <em>ShiftX</em> and <em>ShiftY</em> edit boxes.
+  </li>
+</ul>
+</p><h2 id="5">Reference and Acknowledgements</h2><p>The alignment algorithm is based on</p><div><ul><li>JC Russ, The image processing handbook, CRC Press, Boca Raton, FL, 1994</li><li>JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free Matlab Script For Spatial Drift Correction, Microscopy Today &#8212; Volume 22, Number 5, 2014 <a href="https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m">https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m</a></li><li><a href="http://onlinedigeditions.com/publication/?i=223321&amp;p=40">&lt;http://onlinedigeditions.com/publication/?i=223321&amp;p=40</a>&gt;</li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_dataset.html"><b>Dataset</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Alignment and Drift Correction
+% The Alignment and Drift Correction tool can be used either to align slice of the opened dataset or to align two
+% separate datasets. 
+% 
+% <html>
+% A demonstration is available in the following video:<br>
+% <a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-qwoO5z02aA</a>
+% </html>
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_dataset.html *Dataset*>
+%
+%% Current dataset panel
+% 
+% The *Current dataset panel* displays details of the currently opened
+% dataset, such as its filename, dimensions and pixel size
+% 
+% <<images/menuDatasetAlignTool_1.jpg>>
+% 
+%
+%% Align panel
+% The *Align panel* allows to select main parameters for the alignment and
+% drift correction.
+% 
+% <<images/menuDatasetAlignTool_2.jpg>>
+%
+%
+% <html>
+% <ul>
+%   <li>
+%     <b>The Mode panel</b> - selection of alignment mode:
+%       <ul>
+%           <li><b>Current dataset</b>, align the opened dataset</li>
+%           <li><b>Two stacks</b>, align two stacks. The second stack can either be loaded or imported from Matlab</li>
+%       </ul>
+%   </li>
+%   <li>
+%     <b>Algorithm</b> - selection of method to be used for the alignment:
+%     <table style="width: 550px; text-align: center; margin-left: 50px;" cellspacing=2px cellpadding=2px >
+%     <tr>
+%       <td style="width=250px;"><b>Drift correction</b></td>
+%       <td>The Drift correction mode is recommended for small shifts or comparably sized images<br>
+%           It is recommended for most situations
+%       </td>
+%     </tr>
+%     <tr>
+%       <td><b>Template matching</b></td>
+%       <td>The Template matching mode is best when aligning two stacks and the second stack is smaller than the main stack.<br>
+%           It is <b>not</b> recommended for alignment of the currently opened stack
+%       </td>
+%       </td>
+%     </tr>
+%     <tr>
+%       <td><b>Single landmark point</b></td>
+%       <td>The Single landmark point mode is a manual mode, where user marks
+%       corresponding areas on two consequetive slices using the brush tool with
+%       a spot. During alignment the images will be translated to align the
+%       marked areas
+%       </td>
+%     </tr>
+%     <tr>
+%       <td><b>Three landmark points</b></td>
+%       <td>Three landmark points mode is another manual mode, where user should mark
+%       three corresponding areas on two consequetive slices using the brush tool. 
+%       During alignment the images will be translated/scaled/rotated to
+%       align the marked areas 
+%     </tr>
+%     </table>
+%   </li>
+%   <li>
+%     <b>Correlate with</b> - three different options for the reference slide:
+%       <ul>
+%           <li><b>Previous slice</b>, align each slice to the previous one</li>
+%           <li><b>First slice</b>, align all images to the first Z-slice of the sequence; it is good from fixing drift correction problems, when dataset is not changing much</li>
+%           <li><b>Relative to</b>, align each slice to another slice with is earlier in the sequence, the number in the <b>Step</b> edit box defines this shift</li>
+%       </ul>
+%   </li>
+%   <li>
+%     <b>Color channel</b> - selection of the color channel to use for the alignment process
+%   </li>
+%   <li>
+%     <b>use intensity gradient</b> sometimes better alignement can be
+%     achieved when correlating intensity gradients of the original images.
+%     Select this checkbox to use the gradients instad of raw images.
+%   </li>
+%   <li>
+%     <b>Background</b> define type of the background after image alignment
+%       <ul>
+%           <li><b>White</b>, all background pixels of the aligned dataset will be white</li>
+%           <li><b>Black</b>, all background pixels of the aligned dataset will be black</li>
+%           <li><b>Mean</b>, all background pixels of the aligned dataset will be calculated as an average value of all pixels of the original dataset</li>
+%           <li><b>Custom</b>, provide a custom intensity for the background colors</li>
+%       </ul>
+%   </li>
+% </ul>
+% </html>
+%
+%
+%% Options panel
+% The Options panel is shown only during alignment of the currently
+% opened dataset.
+%
+% 
+% <<images/menuDatasetAlignTool_3.jpg>>
+%
+%
+% <html>
+% <ul>
+%   <li>
+%     <b>use Mask/Selection</b> check this to force the alignment tool to
+%     calculate correlation only from the masked or selected areas of the
+%     dataset. To benefit from this mode use the brush tool to select the
+%     most distict area on the first and last slices; after that
+%     interpolate one area to another using the I-key shortcut (or from the
+%     <em>Menu->Selection->Interpolate as Shape</em>)
+%   </li>
+%   <li>
+%     <b>use subwindow</b> for large uniform images use of subwindow can
+%     speed up the alignment significantly. Use the <em>minX, minY, maxX,
+%     maxY</em> edit boxes or the <em>Get from Selection</em> button to
+%     define the subwindow. 
+%   </li>
+%   <li>
+%     <b>Save/Load shifts to file</b> using this option it is possible to
+%     save and load the translation shifts to a disk
+%   </li>
+% </ul>
+% </html>
+%
+%
+%% Second stack panel
+% The Options panel is shown only during alignment of two stacks
+% 
+% <<images/menuDatasetAlignTool_4.jpg>>
+%
+%
+% <html>
+% <ul>
+%   <li>
+%     <b>Directory of images</b> select directory where images of the
+%     second stack are located
+%   </li>
+%   <li>
+%     <b>Volume in a single file</b>, use this option when the second stack
+%     is embedded into a single file
+%   </li>
+%   <li>
+%     <b>Import from Matlab</b>, if another stack is already open in Matlab
+%     it can be imported and aligned with the currently open.
+%   </li>
+%   <li>
+%     <b>Automatic mode</b>, when selected the aligment is done
+%     automatically. Alternatively, it is possible to provide parameters
+%     manually into the <em>ShiftX</em> and <em>ShiftY</em> edit boxes.
+%   </li>
+% </ul>
+% </html>
+%
+%% Reference and Acknowledgements
+% The alignment algorithm is based on 
+% 
+% * JC Russ, The image processing handbook, CRC Press, Boca Raton, FL, 1994
+% * JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free Matlab Script For Spatial Drift Correction, Microscopy Today — Volume 22, Number 5, 2014
+% <https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m>
+% * <http://onlinedigeditions.com/publication/?i=223321&p=40 http://onlinedigeditions.com/publication/?i=223321&p=40>
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_dataset.html *Dataset*>
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,10 @@
+* allow all MRCImage methods to handle unloaded volumes
+
+* test out xcorr3d
+
+* create a 3d cross correlation coefficient function
+
+* tubeInterp handle even number of samples
+
+* forward and inverse mappings between cartestion and tube coordinates
+

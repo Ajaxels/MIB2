@@ -1,0 +1,197 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Directory Contents Panel</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_panel_dir.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Directory Contents Panel</h1><!--introduction--><p>This panel provides the listing of files in the selected directory with a possibility to filter them based on known image and video formats.</p><p><img vspace="5" hspace="5" src="images\PanelsDirContents.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">1. Multiple buffer buttons</a></li><li><a href="#3">2. Main list box</a></li><li><a href="#5">3. Filter</a></li><li><a href="#6">4. The Update button</a></li><li><a href="#7">5. Left Interchangeable Panels</a></li><li><a href="#8">6. Right Interchangeable Panels</a></li><li><a href="#9">7. Bio checkbox</a></li><li><a href="#10">8. ?.</a></li></ul></div><h2 id="1">1. Multiple buffer buttons</h2><p>These buttons allow fast access to several datasets stored in the memory. The green color of the button indicates that there is a dataset loaded. When cursor is above the button a tooltip with the full file name appears to help with identification of the loaded dataset. The datasets may be switched using the left mouse button press on the desired button. The left mouse button shows a popup menu with additional options:</p><p><img vspace="5" hspace="5" src="images\PanelsDirContentsBuffers.png" alt=""> </p><div><ul><li><b>Duplicate dataset</b>, creates a duplicate of the currently shown dataset and put it behind one of the available buffers</li><li><b>Sync view, (xy) with...</b>, synchronizes the view with another dataset in the XY coordinates</li><li><b>Sync view, (xyz) with...</b>, synchronizes the view with another dataset in the XYZ coordinates, for 4D-5D datasets</li><li><b>Sync view, (xyzt) with...</b>, synchronizes the view with another dataset in the XYZT coordinates, for 5D datasets</li><li><b>Clear dataset</b>, removes selected dataset from the memory</li><li><b>Clear all stored datasets</b>, removes all stored datasets from the memory</li></ul></div><h2 id="3">2. Main list box</h2><p>The major part of the panel is occupied with this list box that shows list of files in the selected directory (the directory can be selected from the <a href="ug_panel_path.html">Path Panel</a>). The files are filtered with the specified filter (<b>Filter</b>). Value <tt>all known</tt> displays all readable formats.</p><div><ul><li>Double click on a file, loads it into <tt>MIB</tt> and displays it in the <a href="ug_panel_im_view.html">Image View panel</a>. If <tt>sequence</tt> (<b>8</b>) is checked then all shown files are assembled into a single multi-layered dataset</li><li>Double click on the <b>[.]</b> line changes the folder to the top level of the current logical drive</li><li>Double click on the <b>[..]</b> line changes the folder to one level up</li><li>Individual datasets can be selected using <tt>Shift/Ctrl + left mouse button</tt>  and loaded via a context menu accessible with the right mouse button</li><li>The right mouse click above the scroll bar will scroll the list to the top</li><li>The context menu is accessible with the right mouse button:</li></ul></div><p><img vspace="5" hspace="5" src="images\PanelsDirContentsFileList.png" alt=""> </p><p>
+<ul style="padding-left: 30px">
+  <li><b>Combines selected datasets</b>, combine selected datasets into a single 3D stack</li>
+  <li><b>Load part of the dataset (*.am)</b>, loads part of the bigger dataset. It is possible to define starting, ending
+points, z-step and the XY binning. This option is implemented only for Amira Mesh files</li>
+  <li><b>Load each N-th dataset</b>, defines a step to assemble each N-th file into a 3D stack
+  <li><b>Insert into the open dataset...</b>, allows to insert selected
+  files into the open dataset.
+  <li><b>Combine as color channels...</b>, combines selected datasets into a single 2D slice where each dataset is assigned to own color channel.
+  <li><b>Add as a new color channel</b>, adds images as a new color
+  channel to the existig dataset. The color channels to show may be selected in the <a href="ug_panel_view_settings.html">View Settings panel</a>.
+  <li><b>Adds each N-th dataset as a new color channel</b>, add images with N-step as a new color channel to the existing dataset
+  <li><b>Renames selected file</b>, rename selected file
+  <li><b>Deletes selected files</b>, permanently delete selected files from the disk
+  <li><b>File properties</b>, information about the file: date/time and size in bytes.
+</ul>
+</p><h2 id="5">3. Filter</h2><p>Filter list of files with available image type filters.</p><p>am, asf, asx, avi, bmp, cur, fits, fts, gif, hdf, ico, j2c, j2k, jp2, jpeg, jpf, jpg, jpx, mj2, m4v, mj2, mov, mpg, mrc, nrrd, pbm, pcx, pgm, png, pnm, ppm, ras, rec, tif, tiff, wmv, xwd.</p><h2 id="6">4. The Update button</h2><p>Updates the file list in the Directory contents window.</p><h2 id="7">5. Left Interchangeable Panels</h2><p>Selected panel will be shown in the lower left part of <tt>MIB</tt></p><div><ul><li><a href="ug_panel_segm.html">Segmentation panel</a></li><li><a href="ug_panel_roi.html">ROI panel</a></li></ul></div><h2 id="8">6. Right Interchangeable Panels</h2><p>Selected panel will be shown in the right bottom part of <tt>MIB</tt>.</p><div><ul><li><a href="ug_panel_image_filters.html">Image Filters</a></li><li><a href="ug_panel_mask_generators.html">Mask Generators</a></li><li><a href="ug_panel_fiji_connect.html">Fiji Connect</a></li></ul></div><h2 id="9">7. Bio checkbox</h2><p><tt>MIB</tt> can also open some specific biological image formats. Usually these are the native file formats for different microscopes. The reader for these formats is obtained from <a href="http://openmicroscopy.org/info/bio-formats">Bio-formats</a> and is based on connected to <tt>MIB</tt> Bio-formats Java library (the library is stored in the <tt>mib\ImportExportTools\BioFormats</tt> directory). When the <tt>Bio</tt> checkbox is selected the Bio-formats reader is called to select desired datasets.</p><h2 id="10">8. ?.</h2><p>Access to this help page</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Directory Contents Panel
+% This panel provides the listing of files in the selected directory with a
+% possibility to filter them based on known image and video formats. 
+% 
+% <<images\PanelsDirContents.png>>
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+%
+%% 1. Multiple buffer buttons
+% These buttons allow fast access to several datasets stored in the memory. The green color of the button indicates that
+% there is a dataset loaded. When cursor is above the button a tooltip with the full file name appears to help with
+% identification of the loaded dataset. The datasets may be switched using the left mouse button press on the desired button.
+% The left mouse button shows a popup menu with additional options:
+%
+% 
+% <<images\PanelsDirContentsBuffers.png>>
+% 
+%%
+% 
+% * *Duplicate dataset*, creates a duplicate of the currently shown dataset
+% and put it behind one of the available buffers
+% * *Sync view, (xy) with...*, synchronizes the view with another dataset in the XY
+% coordinates
+% * *Sync view, (xyz) with...*, synchronizes the view with another dataset in the
+% XYZ coordinates, for 4D-5D datasets
+% * *Sync view, (xyzt) with...*, synchronizes the view with another dataset in the
+% XYZT coordinates, for 5D datasets
+% * *Clear dataset*, removes selected dataset from the memory
+% * *Clear all stored datasets*, removes all stored datasets from the memory
+% 
+%% 2. Main list box
+% The major part of the panel is occupied with this list box that shows
+% list of files in the selected directory (the directory can be selected from the <ug_panel_path.html Path Panel>). 
+% The files are filtered with the specified filter (*Filter*). Value |all known| displays all readable formats.
+%%
+% 
+% * Double click on a file, loads it into |MIB| and displays it in the
+% <ug_panel_im_view.html Image View panel>. If |sequence| (*8*) is checked then all shown files
+% are assembled into a single multi-layered dataset
+% * Double click on the *[.]* line changes the folder to the top level of the current
+% logical drive
+% * Double click on the *[..]* line changes the folder to one level up
+% * Individual datasets can be selected using |Shift/Ctrl + left mouse
+% button|  and loaded via a context menu accessible with the right mouse button
+% * The right mouse click above the scroll bar will scroll the list to the
+% top
+% * The context menu is accessible with the right mouse button:
+%
+% 
+% <<images\PanelsDirContentsFileList.png>>
+% 
+% <html>
+% <ul style="padding-left: 30px">
+%   <li><b>Combines selected datasets</b>, combine selected datasets into a single 3D stack</li>
+%   <li><b>Load part of the dataset (*.am)</b>, loads part of the bigger dataset. It is possible to define starting, ending 
+% points, z-step and the XY binning. This option is implemented only for Amira Mesh files</li>
+%   <li><b>Load each N-th dataset</b>, defines a step to assemble each N-th file into a 3D stack
+%   <li><b>Insert into the open dataset...</b>, allows to insert selected
+%   files into the open dataset.
+%   <li><b>Combine as color channels...</b>, combines selected datasets into a single 2D slice where each dataset is assigned to own color channel.
+%   <li><b>Add as a new color channel</b>, adds images as a new color
+%   channel to the existig dataset. The color channels to show may be selected in the <a href="ug_panel_view_settings.html">View Settings panel</a>.
+%   <li><b>Adds each N-th dataset as a new color channel</b>, add images with N-step as a new color channel to the existing dataset
+%   <li><b>Renames selected file</b>, rename selected file
+%   <li><b>Deletes selected files</b>, permanently delete selected files from the disk
+%   <li><b>File properties</b>, information about the file: date/time and size in bytes. 
+% </ul>
+% </html>
+%
+%% 3. Filter
+% Filter list of files with available image type filters.
+%
+% am, asf, asx, avi, bmp, cur, fits, fts, gif, hdf, ico, j2c, j2k, jp2,
+% jpeg, jpf, jpg, jpx, mj2, m4v, mj2, mov, mpg, mrc, nrrd, pbm, pcx, pgm, png, pnm, ppm, ras,
+% rec, tif, tiff, wmv, xwd.
+%
+%% 4. The Update button
+% Updates the file list in the Directory contents window.
+%
+%% 5. Left Interchangeable Panels
+% Selected panel will be shown in the lower left part of |MIB|
+%
+% * <ug_panel_segm.html Segmentation panel>
+% * <ug_panel_roi.html ROI panel>
+% 
+%% 6. Right Interchangeable Panels
+% Selected panel will be shown in the right bottom part of |MIB|.
+%
+% * <ug_panel_image_filters.html Image Filters>
+% * <ug_panel_mask_generators.html Mask Generators>
+% * <ug_panel_fiji_connect.html Fiji Connect>
+%
+%
+%% 7. Bio checkbox
+% |MIB| can also open some specific biological image
+% formats. Usually these are the native file formats for different
+% microscopes. The reader for these formats is obtained from 
+% <http://openmicroscopy.org/info/bio-formats Bio-formats>
+% and is based on connected to |MIB| Bio-formats Java library (the library is stored in the 
+% |mib\ImportExportTools\BioFormats| directory). When the |Bio| checkbox is selected the 
+% Bio-formats reader is called to select desired datasets.
+%
+%% 8. ?.
+% Access to this help page
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+%
+
+##### SOURCE END #####
+--></body></html>

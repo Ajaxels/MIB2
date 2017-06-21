@@ -1,0 +1,137 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Image View Panel</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_panel_im_view.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Image View Panel</h1><!--introduction--><p>This panel displays slices of the opened dataset. The shown slices may be in the XY, ZX, or ZY dimension, depending on selected mode in the <a href="ug_gui_toolbar.html">Toolbar</a>. The change of slices is done using the slider/edit box on the left-hand side of the panel. When the opened dataset has only a single slice, the slider and the edit box are not displayed.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">List of possible image layers that may be simultaneously shown in <tt>MIB</tt>:</a></li><li><a href="#2">Mouse actions</a></li><li><a href="#3">Key actions</a></li><li><a href="#4">Extra parameters for the change slices slider.</a></li></ul></div><h2 id="1">List of possible image layers that may be simultaneously shown in <tt>MIB</tt>:</h2><p><img vspace="5" hspace="5" src="images\PanelsImageView.jpg" alt=""> </p><div><ul><li><b>Single or multichannel image</b></li><li><b>Model layer</b> , that contain information about materials of the segmented model, or difference map for correlation analysis. <a href="ug_gui_data_layers.html">Click to see more about the image layers</a></li><li><b>Mask layer</b>, mask layer is a black and white (bitmap) mask that is generated by some of the filters. The mask is a service layer that may be used as a source of shapes for segmentation or as an area for local black-and-white thresholding with the <a href="ug_panel_segm.html">BW Thresholding tool</a>.</li><li><b>Selection layer</b>, is a temporery layer used for segmentation. This layer may be easily modified and in the end should be sent to the <tt>Mask</tt> or <tt>Model</tt> layers.</li><li><b>ROI layer</b>, if ROIs are enabled, they may be also seen in the <tt>Image View panel</tt></li></ul></div><p><img vspace="5" hspace="5" src="images\mib_layers.jpg" alt=""> </p><p>Colors and transparencies of the <tt>Model</tt>, <tt>Mask</tt>, and <tt>Selection</tt> layers may be individually adjusted using the sliders in the <a href="ug_panel_view_settings.html">View Settings panel</a> and in the <a href="ug_gui_menu_file_preferences.html">Preference dialog</a>.</p><h2 id="2">Mouse actions</h2><div><ul><li><b>move mouse around the image</b> to see pixel information and coordinates in the <a href="ug_panel_path.html"><tt>Path Panel</tt></a></li><li><b>Left mouse click</b>, selection of pixels in the image based on specified method in the <a href="ug_panel_segm.html">Segmentation Panel</a></li><li><b>Right mouse press + mouse move</b>, turns on the pan mode to move the image left/right and up/down</li><li><b>Shift + Left mouse click</b>, adds selection to the existing selection</li><li><b>Ctrl + Left mouse click</b>, removes selection to the existing selection</li><li><b>Ctrl + mouse wheel (Ctrl + Shift + mouse wheel)</b> , changes size of the brush and other selection tools</li><li><b>Mouse wheel</b>, changes slices or zooms in/zooms out, depending on the settings in the <a href="ug_gui_menu_file_preferences.html">Preferences dialog</a></li><li><b>Shift + Mouse wheel</b>, jumps to 10 slices, number of slices can be defined from a popup menu that appears during the right mouse click above the slices slider in the <a href="ug_panel_im_view.html">Image View Panel</a></li></ul></div><h2 id="3">Key actions</h2><div><ul><li><b>left</b>, <b>down</b> arrow keys or <b>q</b> key, zooms out or changes to the previous slice</li><li><b>Shift</b> + <b>left</b>, <b>down</b> arrow keys or <b>q</b> key, jumps by 10 slices towards the beginning of the dataset (<i>to change this step, see below</i>)</li><li><b>right</b>, <b>up</b> arrow keys or <b>w</b> key, zooms in or changes to the next slice</li><li><b>Shift</b> + <b>right</b>, <b>up</b> arrow keys or <b>w</b> key, jumps by 10 slices towards the end of the dataset (<i>to change this step, see below</i>)</li></ul></div><h2 id="4">Extra parameters for the change slices slider.</h2><p>This slider is only shown when 3D or 4D datasets are loaded. By default, each iteration of the mouse wheel changes the shown image by 1. It is possible to modify this. Press <i>the right mouse button</i> on the slider to set the desired step.</p><p><img vspace="5" hspace="5" src="images\PanelsImageViewContext.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Image View Panel
+% This panel displays slices of the opened dataset. The shown slices may be in the XY, ZX, or ZY dimension, depending on selected mode in the <ug_gui_toolbar.html Toolbar>.
+% The change of slices is done using the slider/edit box on the left-hand side of the panel. When the opened dataset has only a
+% single slice, the slider and the edit box are not displayed.
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+%
+% 
+%% List of possible image layers that may be simultaneously shown in |MIB|: 
+% 
+% <<images\PanelsImageView.jpg>>
+%
+% * *Single or multichannel image*
+% * *Model layer* , that contain information about materials of the segmented model,
+% or difference map for correlation analysis. <ug_gui_data_layers.html Click to see more about the image layers>
+% * *Mask layer*, mask layer is a black and white (bitmap) mask that is
+% generated by some of the filters. The mask is a service layer that may be used as a source of shapes for
+% segmentation or as an area for local black-and-white thresholding with the <ug_panel_segm.html BW Thresholding tool>.
+% * *Selection layer*, is a temporery layer used for segmentation. This layer may be easily modified and in the end should be sent to the |Mask| or |Model| layers.
+% * *ROI layer*, if ROIs are enabled, they may be also seen in the |Image View
+% panel|
+%
+% 
+% <<images\mib_layers.jpg>>
+% 
+%
+% Colors and transparencies of the |Model|, |Mask|, and |Selection| layers may be
+% individually adjusted using the sliders in the <ug_panel_view_settings.html View Settings panel> and in the <ug_gui_menu_file_preferences.html Preference dialog>.
+%
+%% Mouse actions 
+% 
+% * *move mouse around the image* to see pixel information and coordinates
+% in the <ug_panel_path.html |Path Panel|>
+% * *Left mouse click*, selection of pixels in the image based on
+% specified method in the <ug_panel_segm.html Segmentation Panel>
+% * *Right mouse press + mouse move*, turns on the pan mode to move the image left/right and up/down
+% * *Shift + Left mouse click*, adds selection to the existing selection
+% * *Ctrl + Left mouse click*, removes selection to the existing selection
+% * *Ctrl + mouse wheel (Ctrl + Shift + mouse wheel)* , changes size of the brush and other selection tools
+% * *Mouse wheel*, changes slices or zooms in/zooms out, depending on the settings in the <ug_gui_menu_file_preferences.html Preferences dialog>
+% * *Shift + Mouse wheel*, jumps to 10 slices, number of slices can be defined from a popup menu that appears during the right mouse click above the slices slider in the 
+% <ug_panel_im_view.html Image View Panel>
+%
+%
+%% Key actions
+% * *left*, *down* arrow keys or *q* key, zooms out or changes to the previous slice
+% * *Shift* + *left*, *down* arrow keys or *q* key, jumps by 10 slices towards the beginning of the dataset (_to change this step, see below_)
+% * *right*, *up* arrow keys or *w* key, zooms in or changes to the next slice
+% * *Shift* + *right*, *up* arrow keys or *w* key, jumps by 10 slices towards the end of the dataset (_to change this step, see below_)
+%
+%% Extra parameters for the change slices slider.
+% This slider is only shown when 3D or 4D datasets are loaded. By default,
+% each iteration of the mouse wheel changes the shown image by 1. It is
+% possible to modify this. Press _the right mouse button_ on the slider to
+% set the desired step.
+%
+% 
+% <<images\PanelsImageViewContext.png>>
+% 
+%
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+
+
+##### SOURCE END #####
+--></body></html>

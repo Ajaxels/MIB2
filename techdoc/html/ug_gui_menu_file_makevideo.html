@@ -1,0 +1,143 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Make movie</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_gui_menu_file_makevideo.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Make movie</h1><!--introduction--><p>This dialog provides access to different settings for making video files.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_file.html"><b>File Menu</b></a></p><p><img vspace="5" hspace="5" src="images\menuFileMakeMovie.png" alt=""> </p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Crop</a></li><li><a href="#2">Resize</a></li><li><a href="#4">Extras</a></li><li><a href="#5">Format</a></li><li><a href="#7">Settings</a></li></ul></div><h2 id="1">Crop</h2><div><ul><li><b>Full image</b> - renders video of the whole dataset.</li><li><b>Shown area</b> - renders video of the shown area only.</li><li><b>ROI</b> - use selected ROI (the ROI may be defined using <a href="ug_panel_roi.html">the ROI panel</a> ) as area for the video.</li></ul></div><h2 id="2">Resize</h2><div><ul><li><b>Width</b> - modify width of the video file (the width depends on aspect ratio of the voxels).</li><li><b>Height</b> - modify height of the video file</li><li><b>Resizing method</b> - select one of possible resizing methods.</li></ul></div><p>
+<ul>
+<li><em>nearest</em> - Nearest-neighbor interpolation; the output pixel is assignedthe value of the pixel that the point falls within. No other pixels are considered.
+<li><em>bilinear</em> - Bilinear interpolation; the output pixel value is a weighted average of pixels in the nearest 2-by-2 neighborhood.
+<li><em>bicubic</em> - Bicubic interpolation; the output pixelvalue is a weighted average of pixels in the nearest 4-by-4 neighborhood.
+<li><em>lanczos2</em> - Lanczos-2 kernel.
+<li><em>lanczos3</em> - Lanczos-3 kernel.
+</ul>
+</p><h2 id="4">Extras</h2><div><ul><li><b>Scale bar</b>, select the <tt>Scale bar</tt> check box to add a scale bar to the video file. <b>Note!</b> if the width of the video is too small the scale bar is not rendered.</li><li><b>Direction</b>, (only for 5D datasets), use it to select direction for video generation: "Z-stack" or "Time" for a time series</li></ul></div><h2 id="5">Format</h2><p>Select one of the possible formats</p><div><ul><li><b>Archival</b> - Motion JPEG 2000 file with lossless compression</li><li><b>Motion JPEG AVI</b> - Compressed AVI file using Motion JPEG codec</li><li><b>Motion JPEG 2000</b> - Compressed Motion JPEG 2000 file</li><li><b>MPEG-4</b> - Compressed MPEG-4 file with H.264 encoding (Windows 7 systems only)</li><li><b>Uncompressed AVI</b> - Uncompressed AVI file with RGB24 video</li></ul></div><h2 id="7">Settings</h2><p>Select additional parameters for video rendering</p><div><ul><li><b>Frame rate</b> - Rate of playback for the video in frames per second.</li><li><b>Quality</b> - Number from 0 through 100. Higher quality numbers result in higher video quality and larger file sizes. Lower quality numbers result in lower video quality and smaller file sizes. Only available for objects associated with the MPEG-4 or Motion JPEG AVI profile.</li><li><b>The first frame number editbox</b> - the number of the first frame for the video.</li><li><b>The last frame number editbox</b> - the number of the last frame for the video.</li><li><b>The back and forth checkbox</b> - complement the video with the same video rendered in the reverse direction.</li><li><b>Output filename</b> - name and location of the destination file</li><li><b>back and forth</b> - add reverse direction when rendering the movie</li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_file.html"><b>File Menu</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Make movie
+% This dialog provides access to different settings for making video files. 
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_file.html *File Menu*>
+% 
+% <<images\menuFileMakeMovie.png>>
+% 
+%% Crop
+%
+% * *Full image* - renders video of the whole dataset.
+% * *Shown area* - renders video of the shown area only.
+% * *ROI* - use selected ROI (the ROI may be defined using <ug_panel_roi.html the ROI panel> ) as area for the video.
+%
+%% Resize
+% * *Width* - modify width of the video file (the width depends on aspect ratio of the voxels).
+% * *Height* - modify height of the video file 
+% * *Resizing method* - select one of possible resizing methods.
+%%
+% <html>
+% <ul>
+% <li><em>nearest</em> - Nearest-neighbor interpolation; the output pixel is assignedthe value of the pixel that the point falls within. No other pixels are considered.
+% <li><em>bilinear</em> - Bilinear interpolation; the output pixel value is a weighted average of pixels in the nearest 2-by-2 neighborhood.
+% <li><em>bicubic</em> - Bicubic interpolation; the output pixelvalue is a weighted average of pixels in the nearest 4-by-4 neighborhood.
+% <li><em>lanczos2</em> - Lanczos-2 kernel.
+% <li><em>lanczos3</em> - Lanczos-3 kernel.
+% </ul>
+% </html>
+% 
+%% Extras
+%
+% * *Scale bar*, select the |Scale bar| check box to add a scale bar to the video file. *Note!* if the width of the video is too small the
+% scale bar is not rendered.
+% * *Direction*, (only for 5D datasets), use it to select direction for
+% video generation: "Z-stack" or "Time" for a time series
+%
+%% Format
+% Select one of the possible formats
+%%
+% 
+% * *Archival* - Motion JPEG 2000 file with lossless compression
+% * *Motion JPEG AVI* - Compressed AVI file using Motion JPEG codec 
+% * *Motion JPEG 2000* - Compressed Motion JPEG 2000 file
+% * *MPEG-4* - Compressed MPEG-4 file with H.264 encoding (Windows 7 systems only)
+% * *Uncompressed AVI* - Uncompressed AVI file with RGB24 video
+% 
+%% Settings
+% Select additional parameters for video rendering
+%%
+% 
+% * *Frame rate* - Rate of playback for the video in frames per second. 
+% * *Quality* - Number from 0 through 100. Higher quality numbers result in higher video quality and larger file sizes. Lower quality numbers result in lower video quality and smaller file sizes. 
+% Only available for objects associated with the MPEG-4 or Motion JPEG AVI profile. 
+% * *The first frame number editbox* - the number of the first frame for the video.
+% * *The last frame number editbox* - the number of the last frame for the video.
+% * *The back and forth checkbox* - complement the video with the same video rendered in the reverse direction.
+% * *Output filename* - name and location of the destination file
+% * *back and forth* - add reverse direction when rendering the movie
+%  
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_file.html *File Menu*>
+##### SOURCE END #####
+--></body></html>

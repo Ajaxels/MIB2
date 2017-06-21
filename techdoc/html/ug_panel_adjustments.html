@@ -1,0 +1,127 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>The Adjust display window</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_panel_adjustments.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>The Adjust display window</h1><!--introduction--><p>This window allows to adjust the contrast of the dataset individually for each color channel. The intensity values for the currently shown slice can be checked in the histogram at the bottom of the window.</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/WhpzGMyslZU"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/WhpzGMyslZU</a>
+</p><p><img vspace="5" hspace="5" src="images\PanelsViewSettingsDisplay.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a> <tt><b>--&gt;</b></tt> <a href="ug_panel_view_settings.html"><b>View settings</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Parameters</a></li><li><a href="#2">Histogram at the bottom of the window</a></li></ul></div><h2 id="1">Parameters</h2><p>List of widgets:</p><div><ul><li><b>Color channel combobox</b>, use to select a color channel to adjust.</li><li><b>Min slider and editbox</b>, allow selection of the minimal intensity values. The <tt>right mouse</tt> click above the slider sets this value to 1. <b>Note!</b> it is also possible to set this value using the <tt>left mouse click</tt> on the histogram plot at the bottom of the window</li><li><b>min button</b>, finds minimal value for intensity of the selected color channel and set it as 0</li><li><b>Max slider and editbox</b>, allow selection of the maximal intensity values. The <tt>right mouse</tt> click above the slider sets this value to maximal. <b>Note!</b> it is also possible to set this value using the <tt>right mouse click</tt> on the histogram plot at the bottom of the window</li><li><b>max button</b>, finds maximal value for intensity of the selected color channel and set it as maximal possible value</li><li><b>Gamma</b>, allows modification of gamma parameters. Gamma values &lt; 1 enhance high intensity values, and Gamma values &gt; 1 enhance low intensity values. The <tt>right mouse</tt> click above the slider sets this value to 1</li><li><b>Link checkbox</b>, links all color channel so that changing of the <tt>Min/Max/Gamma</tt> sliders and editboxes affects all color channels at the same time</li><li><b>Log checkbox</b>, defines type of histogram representation in the histogram plot: linear or logarithmic scale</li><li><b>Auto update</b>, switches ON automatic update of the histogram. If enabled the histogram is updated after each slice change.  <b>Warning!</b> Switching on the automatic update of the histogram may significantly decrease rendering of images</li><li><b>Update button</b>, updates the histogram for the currently shown slice</li><li><b>Current button</b>, <i><b>recalculates</b></i> intensities of the selected color channel (the <tt>Channel</tt> combobox) with parameters specified in this dialog for the currently shown slice. The intensities below the <tt>Min</tt> value would become black and the intensities above the <tt>Max</tt> value would become white. The contrast adjustment of a single slice is not logged in the log list (<a href="ug_panel_path.html">see the <b>Log button</b> description</a>)</li><li><b>All slices button</b>, <i><b>recalculates</b></i> intensities of the selected color channel (the <tt>Channel</tt> combobox) with parameters specified in this dialog for all slices. The intensities below the <tt>Min</tt> value would become black and the intensities above the <tt>Max</tt> value would become white</li></ul></div><h2 id="2">Histogram at the bottom of the window</h2><p>The histogram shows the plot with intensity values in the X-axis and number of pixels for each intensity value in the Y-axis. <b>Note!</b> The histogram is calculated from the image shown in the <a href="ug_panel_im_view.html">Image View panel</a> - not from the full slice!</p><p>The adjustments made with <tt>Gamma</tt> are not shown in the histogram plot.</p><p>It is possible to change <tt>Min</tt> and <tt>Max</tt> values for the intensities by manual numerical input, using the slider or with the right and left mouse click within the histogram plot.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a> <tt><b>--&gt;</b></tt> <a href="ug_panel_view_settings.html"><b>View settings</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% The Adjust display window
+% This window allows to adjust the contrast of the dataset individually for each color channel. The intensity values for the 
+% currently shown slice can be checked in the histogram at the bottom of the window.
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/WhpzGMyslZU"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/WhpzGMyslZU</a>
+% </html>
+%
+% <<images\PanelsViewSettingsDisplay.png>>
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*> |*REPLACE_WITH_DASH_DASH>*| <ug_panel_view_settings.html *View settings*>
+%
+%% Parameters
+% List of widgets:
+% 
+% * *Color channel combobox*, use to select a color channel to adjust.
+% * *Min slider and editbox*, allow selection of the minimal intensity
+% values. The |right mouse| click above the slider sets this value to 1. *Note!* it is also possible to set this value using the |left mouse click| on the histogram plot at the bottom of the window
+% * *min button*, finds minimal value for intensity of the selected color channel and set it as 0
+% * *Max slider and editbox*, allow selection of the maximal intensity
+% values. The |right mouse| click above the slider sets this value to maximal. *Note!* it is also possible to set this value using the |right mouse click| on the histogram plot at the bottom of the window
+% * *max button*, finds maximal value for intensity of the selected color channel and set it as maximal possible value
+% * *Gamma*, allows modification of gamma parameters. Gamma values < 1 enhance
+% high intensity values, and Gamma values > 1 enhance low intensity values.
+% The |right mouse| click above the slider sets this value to 1
+% * *Link checkbox*, links all color channel so that changing of the
+% |Min/Max/Gamma| sliders and editboxes affects all color channels at the
+% same time
+% * *Log checkbox*, defines type of histogram representation in the histogram plot: linear or logarithmic scale
+% * *Auto update*, switches ON automatic update of the histogram. If enabled the histogram is updated after each slice change.
+%  *Warning!* Switching on the automatic update of the histogram may significantly decrease rendering of images
+% * *Update button*, updates the histogram for the currently shown slice
+% * *Current button*, _*recalculates*_ intensities of the selected color channel (the |Channel| combobox) with parameters
+% specified in this dialog for the currently shown slice. The intensities below the |Min| value would become black and the intensities above the |Max| value
+% would become white. The contrast adjustment of a single slice is not logged in the log list (<ug_panel_path.html see the *Log button* description>)
+% * *All slices button*, _*recalculates*_ intensities of the selected color channel (the |Channel| combobox) with parameters
+% specified in this dialog for all slices. The intensities below the |Min| value would become black and the intensities above the |Max| value
+% would become white
+%
+%% Histogram at the bottom of the window
+% The histogram shows the plot with intensity values in the X-axis and number of pixels for each intensity value in the
+% Y-axis. *Note!* The histogram is calculated from the image shown in the <ug_panel_im_view.html Image View panel> - not from the full slice!
+%
+% The adjustments made with |Gamma| are not shown in the histogram plot.
+%
+% It is possible to change |Min| and |Max| values for the intensities by
+% manual numerical input, using the slider or with the right and left mouse click within the histogram
+% plot. 
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*> |*REPLACE_WITH_DASH_DASH>*| <ug_panel_view_settings.html *View settings*>
+
+##### SOURCE END #####
+--></body></html>

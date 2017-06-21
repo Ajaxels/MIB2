@@ -1,0 +1,221 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Mask Generators panel</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_panel_mask_generators.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Mask Generators panel</h1><!--introduction--><p>This panel hosts several ways of automatic mask generation. Specific areas of interest from the generated mask may further be selected for segmentation. <a href="ug_gui_data_layers.html">See more about masks</a>.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Common fields</a></li><li><a href="#2">Frangi Filter</a></li><li><a href="#3">Morphological filters</a></li><li><a href="#6">Strel Filter</a></li></ul></div><h2 id="1">Common fields</h2><p>There are several common fields that do not depend on type of the selected mask generator.</p><p><img vspace="5" hspace="5" src="images\PanelsMaskGeneratorCommon.jpg" alt=""> </p><div><ul><li>1. The <b>Filter type</b> combo box, allows to select one of the possible mask generators</li><li>2. The <b>Mode</b> radio buttons:</li></ul></div><p>
+<ul style="position:relative; left:35px;">
+<li><b>current</b>, generate mask for the currently shown slice;</li>
+<li><b>2D all</b>, generate mask for the whole dataset using the 2D mode,
+<em>i.e.</em> slice by slice;</li>
+<li><b>3D</b>, generate mask for the whole dataset using the 3D mode;</li>
+</ul>
+</p><p>the whole dataset in the 2D mode, <i>i.e.</i> slice by slice; <i>3D</i> use the 3D mode for the mask generation</p><p>3. <b>Do it</b> button:</p><p>
+<ul style="position:relative; left:35px;">
+<li>
+-<b>left mouse click</b>, starts the selected generator. The existing mask will be deleted.
+</li>
+<li>
+-<b>right mouse click + Do new mask</b>, starts the selected generator.
+The existing mask will be deleted.
+</li>
+<li>
+-<b>right mouse click + Generate new mask and add it to the existing mask</b>, the generated mask will be added to the existing mask.
+This option may be
+used for multi-dimensional filtering: 1. run Generator for XY; 2. Change
+dimension by pressing |'XZ'| or |'YZ'| button in the Toolbar; 3. Run Generator again with the |Generate new mask and add it to the existing mask| option.
+</li>
+</ul>
+</p><h2 id="2">Frangi Filter</h2><p><a href="http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter">Hessian based Frangi Vesselness filter</a>, written by Marc Schrijver and Dirk-Jan Kroon. This function uses the eigenvectors of the Hessian to compute the likeliness of an image region to contain vessels or other image ridges, according to the method described by Frangi <a href="http://www.dtic.upf.edu/~afrangi/articles/miccai1998.pdf">1998</a>, <a href="http://www.tecn.upf.es/~afrangi/articles/tmi2001.pdf">2001</a>.</p><p><b>Note</b>, to work properly this function should be compiled. See details in <a href="im_browser_system_requirements.html">System Requirements</a></p><p><img vspace="5" hspace="5" src="images\PanelsMaskGeneratorFrangi.png" alt=""> </p><p><b>Parameters:</b></p><div><ul><li><b>Range</b>, the range of sigmas used, default [1-6]</li><li><b>Ratio</b>, step size between sigmas, default [2]</li><li><b>beta1</b>, the Frangi correction constant, default [0.9]</li><li><b>beta2</b>, the Frangi correction constant, default [15]</li><li><b>beta3</b>, the Frangi vesselness constant which gives the threshold between eigenvalues of noise and vessel structure. A thumb rule is dividing the the greyvalues of the vessels by 4 till 6, default [500];</li><li><b>B/W threshold</b>, defines thresholding parameter for generation of the <tt>Mask</tt> layer. When set to 0 results in the filtered instead of binary image.</li><li><b>Object size limit</b>, after the run of the Frangi filter removes all 2D objects that are smaller than this value.</li><li><b>Black on white</b> checkbox, if checked, detects black ridges on white background.</li></ul></div><h2 id="3">Morphological filters</h2><p>Set of Matlab based morphological filters.</p><p><img vspace="5" hspace="5" src="images\PanelsMaskGeneratorMorphFilters.png" alt=""> </p><div><ul><li><b>Extended-maxima transform</b> - based on <tt>imextendedmax</tt> function of Matlab. Computes the extended-maxima transform, which is the regional maxima of the H-maxima transform. Regional maxima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a lower value.</li></ul></div><p><img vspace="5" hspace="5" src="images\PanelsMaskGeneratorMorphFiltersExtMaxTrans.jpg" alt=""> </p><div><ul><li><b>Extended-minima transform</b> - based on <tt>imextendedmin</tt> function of Matlab. Computes the extended-minima transform, which is the regional minima of the H-minima transform. Regional minima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a higher value.</li></ul></div><p><img vspace="5" hspace="5" src="images\PanelsMaskGeneratorMorphFiltersExtMinTrans.jpg" alt=""> </p><div><ul><li><b>Regional maxima</b> - based on <tt>imregionalmax</tt> function of Matlab. Returns the binary mask that identifies the locations of the regional maxima in the image. In mask, pixels that are set to 1 identify regional maxima; all other pixels are set to 0. Regional maxima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a lower value.</li></ul></div><div><ul><li><b>Regional minima</b> - based on <tt>imregionalmin</tt> function of Matlab. The output binary mask has value 1 corresponding to the pixels of the image that belong to regional minima and 0 otherwise. Regional minima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a higher value.</li></ul></div><h2 id="6">Strel Filter</h2><p>Generate mask based on morphological image opening and black-and-white thresholding. The function first performs morphological bottom-hat (<tt>Black on white</tt> is checked) or top-hat (<tt>Black on white</tt> is unchecked) filtering of the image. The top-hat filtering computes the morphological opening of the image (using <tt>imopen</tt>) and then subtracts the result from the original image. The result is then black and white thresholded with parameter in the <tt>B/W threshold</tt> edit box.</p><p><img vspace="5" hspace="5" src="images\PanelsMaskGeneratorStrel.png" alt=""> </p><div><ol><li><b>Strel size</b>, defines size of the structural element (<tt>disk</tt> type) for <tt>imtophat</tt> and <tt>imbothat</tt> filtering.</li><li><b>Fill</b> checkbox, check it to fill holes in the resulted <tt>Mask</tt> image.</li><li><b>B/W threshold</b>, specifies parameter for the black and white thresholding.</li><li><b>Size limit</b>, limits the size of generated 2D objects so that objects smaller than this value are removed from the <tt>Mask</tt> during the filter run.</li><li><b>Black on white</b> checkbox, when checked, the filter will use morphological bottom-hat filtering (<tt>imbothat</tt>). When unchecked - morphological top-hat filtering (<tt>imtophat</tt>).</li></ol></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Mask Generators panel
+% This panel hosts several ways of automatic mask generation. Specific areas of interest from the generated mask may 
+% further be selected for segmentation. <ug_gui_data_layers.html See more about masks>.
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+%% Common fields
+% There are several common fields that do not depend on type of the selected mask
+% generator.
+%
+% <<images\PanelsMaskGeneratorCommon.jpg>>
+% 
+% * 1. The *Filter type* combo box, allows to select one of the possible mask
+% generators
+% * 2. The *Mode* radio buttons:
+%
+%
+% <html>
+% <ul style="position:relative; left:35px;">
+% <li><b>current</b>, generate mask for the currently shown slice;</li>
+% <li><b>2D all</b>, generate mask for the whole dataset using the 2D mode,
+% <em>i.e.</em> slice by slice;</li>
+% <li><b>3D</b>, generate mask for the whole dataset using the 3D mode;</li>
+% </ul>
+% </html>
+%
+% the whole dataset in the 2D mode, _i.e._ slice by slice; _3D_ use the 3D mode for the mask generation
+%
+% 3. *Do it* button:
+%
+%
+% <html>
+% <ul style="position:relative; left:35px;">
+% <li> 
+% -<b>left mouse click</b>, starts the selected generator. The existing mask will be deleted.
+% </li>
+% <li> 
+% -<b>right mouse click + Do new mask</b>, starts the selected generator.
+% The existing mask will be deleted.
+% </li>
+% <li> 
+% -<b>right mouse click + Generate new mask and add it to the existing mask</b>, the generated mask will be added to the existing mask.
+% This option may be
+% used for multi-dimensional filtering: 1. run Generator for XY; 2. Change
+% dimension by pressing |'XZ'| or |'YZ'| button in the Toolbar; 3. Run Generator again with the |Generate new mask and add it to the existing mask| option.
+% </li>
+% </ul>
+% </html>
+%
+%
+%% Frangi Filter
+% <http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter
+% Hessian based Frangi Vesselness filter>, written by Marc Schrijver and Dirk-Jan Kroon. This 
+% function uses the eigenvectors of the Hessian to compute the likeliness 
+% of an image region to contain vessels or other image ridges, 
+% according to the method described by Frangi <http://www.dtic.upf.edu/~afrangi/articles/miccai1998.pdf 1998>, <http://www.tecn.upf.es/~afrangi/articles/tmi2001.pdf 2001>.
+%
+% *Note*, to work properly this function should be compiled. See details in
+% <im_browser_system_requirements.html System Requirements>
+% 
+% <<images\PanelsMaskGeneratorFrangi.png>>
+%
+% *Parameters:*
+%
+% * *Range*, the range of sigmas used, default [1-6]
+% * *Ratio*, step size between sigmas, default [2]
+% * *beta1*, the Frangi correction constant, default [0.9]
+% * *beta2*, the Frangi correction constant, default [15]
+% * *beta3*, the Frangi vesselness constant which gives the threshold between eigenvalues of noise and vessel structure. A thumb rule is dividing the the greyvalues of the vessels by 4 till 6, default [500];
+% * *B/W threshold*, defines thresholding parameter for generation of the
+% |Mask| layer. When set to 0 results in the filtered instead of binary
+% image.
+% * *Object size limit*, after the run of the Frangi filter removes all
+% 2D objects that are smaller than this value.
+% * *Black on white* checkbox, if checked, detects black ridges on white background.
+%
+%% Morphological filters
+% Set of Matlab based morphological filters.
+% 
+% <<images\PanelsMaskGeneratorMorphFilters.png>>
+%
+% * *Extended-maxima transform* - based on |imextendedmax| function of
+% Matlab. Computes the extended-maxima transform, which is the regional maxima of the H-maxima transform. 
+% Regional maxima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a lower value.
+%%
+% 
+% <<images\PanelsMaskGeneratorMorphFiltersExtMaxTrans.jpg>>
+% 
+%
+% * *Extended-minima transform* - based on |imextendedmin| function of
+% Matlab. Computes the extended-minima transform, which is the regional minima of the H-minima transform. Regional minima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a higher value.
+%%
+% 
+% <<images\PanelsMaskGeneratorMorphFiltersExtMinTrans.jpg>>
+% 
+% * *Regional maxima* - based on |imregionalmax| function of Matlab. Returns the binary mask that identifies the locations of the regional 
+% maxima in the image. In mask, pixels that are set to 1 identify regional
+% maxima; all other pixels are set to 0. Regional maxima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a lower value.
+%
+% * *Regional minima* - based on |imregionalmin| function of Matlab. The output binary mask has value 1 corresponding to the pixels of the image
+% that belong to regional minima and 0 otherwise. Regional minima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a higher value. 
+%
+%
+%% Strel Filter
+% Generate mask based on morphological image opening and black-and-white
+% thresholding. The function first performs morphological bottom-hat (|Black on white| is checked)
+% or top-hat (|Black on white| is unchecked) filtering of the image. 
+% The top-hat filtering computes the morphological opening of the image (using |imopen|)
+% and then subtracts the result from the original image. The result is then
+% black and white thresholded with parameter in the |B/W threshold| edit
+% box.
+%
+% <<images\PanelsMaskGeneratorStrel.png>>
+%
+% # *Strel size*, defines size of the structural element (|disk| type) for |imtophat| and |imbothat|
+% filtering. 
+% # *Fill* checkbox, check it to fill holes in the resulted |Mask| image.
+% # *B/W threshold*, specifies parameter for the black and white thresholding.
+% # *Size limit*, limits the size of generated 2D objects so that objects smaller than this value are removed from the |Mask| during the
+% filter run.
+% # *Black on white* checkbox, when checked, the filter will use morphological bottom-hat filtering
+% (|imbothat|). When unchecked - morphological top-hat filtering (|imtophat|).
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+
+##### SOURCE END #####
+--></body></html>

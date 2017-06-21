@@ -1,0 +1,143 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Microscopy Image Browser Troubleshooting</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="im_browser_troubleshooting.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Microscopy Image Browser Troubleshooting</h1><!--introduction--><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1"><tt>MIB</tt> does not start</a></li><li><a href="#3">Out of memory</a></li><li><a href="#5">Fiji: reports Java3D is not installed.</a></li><li><a href="#6">Fiji: Failed to retrieve Exception Message</a></li><li><a href="#7">Hotline</a></li></ul></div><h2 id="1"><tt>MIB</tt> does not start</h2><div><ul><li>Check that <tt>MIB</tt> directory is in Matlab path: <tt>File-&gt;Set path...</tt>. If it is missing, add it with <tt>-&gt;Add with Subfolders-&gt; Save</tt>.</li><li>Delete old configuration file. For Windows: <i>c:\tmp\mib.mat</i>, or <i>C:\Users\User-name\AppData\Local\Temp\mib.mat</i>; for Linux/MacOS in the script or <i>tmp</i> directory.</li></ul></div><h2 id="3">Out of memory</h2><p>When working with large datasets it is normal to experience shortage of available memory. The following recommendations could be considered:</p><div><ul><li>Use 64-bit operating system. The 32-bit operating system can use only up to 3.25 Gb.</li><li>Use 8-bit datasets. Convert from 16-bit to 8-bit via <tt>Menu-&gt;Image-&gt;Mode-&gt;8 bit</tt>.</li><li>Use Models with 63 maximal materials, <tt>Menu-&gt;File-&gt;Preferences-&gt;Models-&gt; Number of materials in a model-&gt;63</tt>.</li><li>Lower number of 3D Undo steps in the <a href="ug_gui_menu_file_preferences.html">Menu-&gt;File-&gt;Preference dialog</a>.</li><li>Lower number of maximal steps to keep in the Undo history <a href="ug_gui_menu_file_preferences.html">Menu-&gt;File-&gt;Preference dialog</a>.</li><li>Completely disable Undo history in the <a href="ug_gui_menu_file_preferences.html">Menu-&gt;File-&gt;Preference dialog</a>.</li><li>Turn off <tt>Selection</tt> layer from the <tt>Disable selection</tt> option of the <a href="ug_gui_menu_file_preferences.html">Menu-&gt;File-&gt;Preference dialog</a>. <b>Note!</b> when the <tt>Selection</tt> layer is switched off it is not possible to do the segmentation.</li></ul></div><h2 id="5">Fiji: reports Java3D is not installed.</h2><p>Most likely there are no write permissions to some folders required for automatic installation of Fiji 3D viewer. Please check carefully the Matlab command window, where Fiji reports required directories.</p><p>For example in standard case the following directories should have write permissions:</p><div><ul><li><i>C:\Program Files\MATLAB\MATLAB Compiler Runtime\v81\sys\java\jre\win64\jre\lib\ext</i></li><li><i>C:\Program Files\MATLAB\MATLAB Compiler Runtime\v81\sys\java\jre\win64\jre\bin</i></li></ul></div><h2 id="6">Fiji: Failed to retrieve Exception Message</h2><p>If the <tt>Failed to retrieve Exception Message</tt> error appears, please increase the heap space for the Java VM in Matlab, <a href="http://www.mathworks.se/support/solutions/en/data/1-18I2C/index.html">see details here</a>.</p><p>For example, rendering of 1818x1022x717 volume requires 4Gb heap size.</p><h2 id="7">Hotline</h2><p>For bug reports please use the im-browser issues system: <a href="https://sourceforge.net/p/im-browser/tickets/">https://sourceforge.net/p/im-browser/tickets/</a>.</p><p>For additional support please use the mailing list: <a href="https://lists.sourceforge.net/lists/listinfo/im-browser-support">https://lists.sourceforge.net/lists/listinfo/im-browser-support</a></p><p>
+Ilya Belevich (<a href="mailto:ilya.belevich -AT- helsinki.fi">ilya.belevich @ helsinki.fi</a>)<br>
+<a href="http://www.biocenter.helsinki.fi/~ibelev/">web site</a><br>
+<i>Institute of Biotechnology<br>
+University of Helsinki</i>
+</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Microscopy Image Browser Troubleshooting
+% 
+% 
+% *Back to* <im_browser_product_page.html *Index*>
+%% |MIB| does not start
+%%
+% 
+% * Check that |MIB| directory is in Matlab path: |File->Set path...|.
+% If it is missing, add it with |->Add with Subfolders-> Save|.
+% * Delete old configuration file. For Windows: _c:\tmp\mib.mat_, or
+% _C:\Users\User-name\AppData\Local\Temp\mib.mat_; for Linux/MacOS in the
+% script or _tmp_ directory.
+% 
+%% Out of memory
+% 
+% When working with large datasets it is normal to experience shortage of available memory. The following recommendations could be
+% considered:
+%%
+% 
+% * Use 64-bit operating system. The 32-bit operating system can use only up to 3.25 Gb.
+% * Use 8-bit datasets. Convert from 16-bit to 8-bit via |Menu->Image->Mode->8 bit|.
+% * Use Models with 63 maximal materials, |Menu->File->Preferences->Models->
+% Number of materials in a model->63|.
+% * Lower number of 3D Undo steps in the <ug_gui_menu_file_preferences.html Menu->File->Preference dialog>.
+% * Lower number of maximal steps to keep in the Undo history <ug_gui_menu_file_preferences.html Menu->File->Preference dialog>.
+% * Completely disable Undo history in the <ug_gui_menu_file_preferences.html Menu->File->Preference dialog>.
+% * Turn off |Selection| layer from the |Disable selection| option of the <ug_gui_menu_file_preferences.html
+% Menu->File->Preference dialog>. *Note!* when the |Selection| layer is switched off it is not possible to do the
+% segmentation.
+%
+%% Fiji: reports Java3D is not installed.
+% Most likely there are no write permissions to some folders required for automatic installation of Fiji 3D viewer. Please
+% check carefully the Matlab command window, where Fiji reports required directories.
+% 
+% For example in standard case the following directories should have write permissions: 
+%
+% * _C:\Program Files\MATLAB\MATLAB Compiler Runtime\v81\sys\java\jre\win64\jre\lib\ext_
+% * _C:\Program Files\MATLAB\MATLAB Compiler Runtime\v81\sys\java\jre\win64\jre\bin_
+%
+%% Fiji: Failed to retrieve Exception Message
+%
+% If the |Failed to retrieve Exception Message| error appears,
+% please increase the heap space for the Java VM in Matlab,
+% <http://www.mathworks.se/support/solutions/en/data/1-18I2C/index.html see
+% details here>. 
+%
+% For example, rendering of 1818x1022x717 volume requires
+% 4Gb heap size.
+% 
+%% Hotline
+% For bug reports please use the im-browser issues system:
+% <https://sourceforge.net/p/im-browser/tickets/ https://sourceforge.net/p/im-browser/tickets/>.
+% 
+% For additional support please use the mailing list: <https://lists.sourceforge.net/lists/listinfo/im-browser-support https://lists.sourceforge.net/lists/listinfo/im-browser-support>
+%%
+% 
+% <html>
+% Ilya Belevich (<a href="mailto:ilya.belevich -AT- helsinki.fi">ilya.belevich @ helsinki.fi</a>)<br>
+% <a href="http://www.biocenter.helsinki.fi/~ibelev/">web site</a><br>
+% <i>Institute of Biotechnology<br>
+% University of Helsinki</i>
+% </html>
+% 
+%
+%
+% *Back to* <im_browser_product_page.html *Index*>
+##### SOURCE END #####
+--></body></html>

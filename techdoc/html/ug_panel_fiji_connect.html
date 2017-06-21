@@ -1,0 +1,155 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Fiji Connect Panel</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_panel_fiji_connect.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Fiji Connect Panel</h1><!--introduction--><p>Allows communication with <a href="http://fiji.sc/Fiji">Fiji</a>. Requires Fiji to be installed, please refer to the <a href="im_browser_system_requirements.html">System Requirements</a> section for details. <b>Fiji Connect</b> uses <a href="http://bigwww.epfl.ch/sage/soft/mij/">MIJ</a> , a Java package for bi-directional communication and data exchange from Matlab to ImageJ/Fiji, developed by Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin. This package should be integrated into Fiji.</p><p><img vspace="5" hspace="5" src="images\PanelsFiji.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Video tutorial</a></li><li><a href="#2">1. The Start Fiji button</a></li><li><a href="#3">2. The Stop Fiji</a></li><li><a href="#4">3. The Image Type combo box</a></li><li><a href="#5">4. The Export button</a></li><li><a href="#6">5. The Import button</a></li><li><a href="#7">6. The Run macro edit box</a></li><li><a href="#8">7. The <tt>Select file...</tt> button</a></li><li><a href="#9">8. The Run button</a></li><li><a href="#10">9. The Help button</a></li><li><a href="#11">Example: Finding Edges using Fiji</a></li></ul></div><h2 id="1">Video tutorial</h2><p>
+Detailed demonstration on data exchange between MIB and Fiji can be seen
+in a video tutorial:<br>
+<a
+href="https://youtu.be/DZ1Tj3Fh2HM?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj">Visualization of datasets and models using Fiji <img
+src="images\youtube2.png"></a>
+</p><h2 id="2">1. The Start Fiji button</h2><p>Start an instance of Fiji by pressing this button. In order for communication between Matlab and Fiji to work, Fiji should be started from Matlab using this button. <b><i>Press this button before doing anything else!</i></b></p><h2 id="3">2. The Stop Fiji</h2><p>After finishing work, Fiji may be stopped using this button. Press it at the end use of Fiji.</p><h2 id="4">3. The Image Type combo box</h2><p>The combo box defines type of the layer that should be exchanged with Fiji. For example, selection of the <tt>image</tt> entry in this menu allows to send the the currently opened image to Fiji after press of the <tt>Export</tt> button (<b>4</b>). See <i>Example: Finding Edges using Fiji</i> below for details.</p><h2 id="5">4. The Export button</h2><p>Press of this button sends the currently opened dataset (<tt>Image</tt>, <tt>Model</tt>, <tt>Mask</tt>, <tt>Selection</tt>, depending on settings in the <tt>Image type</tt> combo box <b>3</b>) to Fiji.</p><h2 id="6">5. The Import button</h2><p>The <tt>Import</tt> button allows to transfer datasets from Fiji to <tt>MIB</tt>. The dataset can be imported as <tt>Image</tt>, <tt>Model</tt>, <tt>Mask</tt>, or <tt>Selection</tt> layer, set the distination using the Image Type combo box (<b>3.</b>). It is important that the size of the <tt>Model</tt>, <tt>Mask</tt>, <tt>Selection</tt> layers should match the size of the opened in <tt>MIB</tt> <tt>Image</tt> layer.</p><h2 id="7">6. The Run macro edit box</h2><p>It is possible to run a macro on Fiji. For that please type a macro command into this edit box. A template for the command is shown in the edit box by default. The command <tt>run('Flip Z')</tt> will Flip the Z-dimension of the selected in Fiji dataset. The execution of the macro is called by pressing the <tt>Run</tt> button (<b>8</b>).</p><p>The syntax for the macro command can be obtained from the corresponding reference page of <a href="http://fiji.sc/Miji">Miji</a>.</p><p>It is also possible to provide a list of macros in a filename in text format. In this case please enter a path to such file into this field. The file can be also selected using the <tt>Select file...</tt> button (<b>7</b>)</p><h2 id="8">7. The <tt>Select file...</tt> button</h2><p>It is possible to provide list of macro commands to use with Fiji. Press of this button allows selecting of such files. The execution of the script is done by pressing the <tt>Run</tt> button (<b>8</b>)</p><h2 id="9">8. The Run button</h2><p>Execute a macro written in the <tt>Run macro</tt> edit box (<b>6</b>). When edit box has a path to a text file with a set of macros the <tt>Run</tt> button loads that file and executes all the macros written in that script file.</p><h2 id="10">9. The Help button</h2><p>Access to the help page.</p><h2 id="11">Example: Finding Edges using Fiji</h2><p>Assuming that Fiji is installed and configured...</p><p>Let's try to use <i>Fiji Find Edges</i> function with a 3D grayscale dataset to find edges and generate a binary mask out of them. The test dataset can be obtained from <a href="http://www.biocenter.helsinki.fi/~ibelev/projects/im_browser/tutorials/3D_Modelling_files/Huh7.tif">here</a></p><div><ol><li>Open a dataset for tests</li><li>Press the <tt>Start Fiji</tt> button to open an instance of Fiji</li><li>If you want to send the opened image to Fiji, select <tt>image</tt> in the <tt>Image Type</tt> combo box and press the <tt>Export</tt> button</li><li>In a appearing dialog enter name for the dataset to be used in Fiji</li><li>Find edges: <tt>Fiji-&gt;Menu-&gt;Process-&gt;Find Edges</tt></li><li>Generate binary image from the edges: <tt>Fiji-&gt;Menu-&gt;Image-&gt;Adjust-&gt;Auto Threshold</tt>, set the <tt>Method</tt> to <tt>Mean</tt>, and check the <tt>Stack</tt> check box. Press <tt>OK</tt> to do thresholding</li><li>In <tt>MIB</tt> select <tt>Fiji Connect-&gt;Image Type-&gt;mask</tt> and press the <tt>Import</tt> button</li><li>Now <tt>MIB</tt> should have a new <tt>Mask</tt> layer imported from Fiji</li></ol></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Fiji Connect Panel
+% Allows communication with <http://fiji.sc/Fiji Fiji>. Requires Fiji to be installed, please refer to the 
+% <im_browser_system_requirements.html System Requirements> section for
+% details. *Fiji Connect* uses
+% <http://bigwww.epfl.ch/sage/soft/mij/ MIJ> , a Java package for bi-directional communication and data exchange from Matlab to ImageJ/Fiji,
+% developed by Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin. This package should be integrated into
+% Fiji.
+% 
+% 
+% <<images\PanelsFiji.png>>
+% 
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+%% Video tutorial
+%
+% <html>
+% Detailed demonstration on data exchange between MIB and Fiji can be seen
+% in a video tutorial:<br>
+% <a
+% href="https://youtu.be/DZ1Tj3Fh2HM?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj">Visualization of datasets and models using Fiji <img
+% src="images\youtube2.png"></a>
+% </html>
+%
+%% 1. The Start Fiji button
+% Start an instance of Fiji by pressing this button. In order for communication between Matlab and Fiji to work, Fiji 
+% should be started from Matlab using this button. *_Press this button before doing anything else!_*
+%
+%% 2. The Stop Fiji 
+% After finishing work, Fiji may be stopped using this button. Press it at the end use of Fiji.
+%% 3. The Image Type combo box
+% The combo box defines type of the layer that should be exchanged with Fiji. For example, selection of the |image| entry in
+% this menu allows to send the the currently opened image to Fiji after press of the |Export| button (*4*). 
+% See _Example: Finding Edges using Fiji_ below for details.
+%% 4. The Export button
+% Press of this button sends the currently opened dataset (|Image|, |Model|, |Mask|, |Selection|, depending on settings in the 
+% |Image type| combo box *3*) to Fiji.
+%% 5. The Import button
+% The |Import| button allows to transfer datasets from Fiji to
+% |MIB|. The dataset can be imported as |Image|, |Model|, |Mask|, or
+% |Selection| layer, set the distination using the Image Type combo box (*3.*). It is important that the size of the |Model|, |Mask|, |Selection| 
+% layers should match the size of the opened in |MIB| |Image| layer.
+%% 6. The Run macro edit box
+% It is possible to run a macro on Fiji. For that please type a macro command into this edit box. A template for the command
+% is shown in the edit box by default. The command |run('Flip Z')| will Flip the Z-dimension of the selected in Fiji dataset.
+% The execution of the macro is called by pressing the |Run| button (*8*).
+%
+% The syntax for the macro command can be obtained from the corresponding reference page of <http://fiji.sc/Miji Miji>.
+%
+% It is also possible to provide a list of macros in a filename in text format. In this case please enter a path to such file
+% into this field. The file can be also selected using the |Select file...| button (*7*)
+%% 7. The |Select file...| button
+% It is possible to provide list of macro commands to use with Fiji. Press of this button allows selecting of such files. The
+% execution of the script is done by pressing the |Run| button (*8*)
+%% 8. The Run button
+% Execute a macro written in the |Run macro| edit box (*6*). When edit box has a path to a text file with a set of macros the
+% |Run| button loads that file and executes all the macros written in that script file.
+%% 9. The Help button
+% Access to the help page.
+%% Example: Finding Edges using Fiji
+% Assuming that Fiji is installed and configured... 
+%
+% Let's try to use _Fiji Find Edges_ function with a 3D grayscale dataset to find edges and generate a binary mask out of
+% them.
+% The test dataset can be obtained from <http://www.biocenter.helsinki.fi/~ibelev/projects/im_browser/tutorials/3D_Modelling_files/Huh7.tif here>
+%
+% # Open a dataset for tests
+% # Press the |Start Fiji| button to open an instance of Fiji
+% # If you want to send the opened image to Fiji, select |image| in the |Image Type| combo box and press the |Export| button
+% # In a appearing dialog enter name for the dataset to be used in Fiji
+% # Find edges: |Fiji->Menu->Process->Find Edges|
+% # Generate binary image from the edges: |Fiji->Menu->Image->Adjust->Auto Threshold|, set the |Method| to |Mean|, and check
+% the |Stack| check box. Press |OK| to do thresholding
+% # In |MIB| select |Fiji Connect->Image Type->mask| and press the |Import| button
+% # Now |MIB| should have a new |Mask| layer imported from Fiji
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+##### SOURCE END #####
+--></body></html>

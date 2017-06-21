@@ -1,0 +1,178 @@
+function varargout = mibAnnotationsGUI(varargin)
+% function varargout = mibAnnotationsGUI(varargin)
+% mibAnnotationsGUI is a GUI tool to show list of labels
+
+% Copyright (C) 16.05.2014, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% 
+% This program is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public License
+% as published by the Free Software Foundation; either version 2
+% of the License, or (at your option) any later version.
+%
+% Updates
+% 25.01.2016, updated for 4D
+
+
+% Edit the above text to modify the response to help mibAnnotationsGUI
+
+% Last Modified by GUIDE v2.5 15-Dec-2016 16:52:53
+
+% Begin initialization code - DO NOT EDIT
+gui_Singleton = 1;
+gui_State = struct('gui_Name',       mfilename, ...
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @mibAnnotationsGUI_OpeningFcn, ...
+                   'gui_OutputFcn',  @mibAnnotationsGUI_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
+if nargin && ischar(varargin{1})
+    gui_State.gui_Callback = str2func(varargin{1});
+end
+
+if nargout
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+else
+    gui_mainfcn(gui_State, varargin{:});
+end
+% End initialization code - DO NOT EDIT
+end
+
+% --- Executes just before mibAnnotationsGUI is made visible.
+function mibAnnotationsGUI_OpeningFcn(hObject, eventdata, handles, varargin)
+% This function has no output args, see OutputFcn.
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% varargin   command line arguments to mibAnnotationsGUI (see VARARGIN)
+
+% obtain controller
+handles.winController = varargin{1};
+
+repositionSwitch = 1; % reposition the figure, when creating a new figure
+
+%updateTable(handles);
+% indeces of the selected rows
+handles.indices = [];
+
+handles.labelsTable_cm = uicontextmenu('Parent',handles.mibAnnotationsGUI);
+uimenu(handles.labelsTable_cm, 'Label', 'Add annotation...', 'Callback', {@tableContextMenu_cb, 'Add'});
+uimenu(handles.labelsTable_cm, 'Label', 'Jump to annotation...', 'Callback', {@tableContextMenu_cb, 'Jump'});
+uimenu(handles.labelsTable_cm, 'Label', 'Delete annotation...', 'Callback', {@tableContextMenu_cb, 'Delete'});
+set(handles.annotationTable,'UIContextMenu',handles.labelsTable_cm);
+
+% update font and size
+global Font;
+if handles.jumpCheck.FontSize ~= Font.FontSize ...
+        || ~strcmp(handles.jumpCheck.FontName, Font.FontName)
+    mibUpdateFontSize(handles.mibAnnotationsGUI, Font);
+end
+% resize all elements x1.25 times for macOS
+mibRescaleWidgets(handles.mibAnnotationsGUI);
+
+% Choose default command line output for mibAnnotationsGUI
+handles.output = hObject;
+
+% Update handles structure
+guidata(hObject, handles);
+
+% Determine the position of the dialog - centered on the callback figure
+% if available, else, centered on the screen
+if repositionSwitch
+    FigPos=get(0,'DefaultFigurePosition');
+    OldUnits = get(hObject, 'Units');
+    set(hObject, 'Units', 'pixels');
+    OldPos = get(hObject,'Position');
+    FigWidth = OldPos(3);
+    FigHeight = OldPos(4);
+    if isempty(gcbf)
+        ScreenUnits=get(0,'Units');
+        set(0,'Units','pixels');
+        ScreenSize=get(0,'ScreenSize');
+        set(0,'Units',ScreenUnits);
+        
+        FigPos(1)=1/2*(ScreenSize(3)-FigWidth);
+        FigPos(2)=2/3*(ScreenSize(4)-FigHeight);
+    else
+        GCBFOldUnits = get(gcbf,'Units');
+        set(gcbf,'Units','pixels');
+        GCBFPos = get(gcbf,'Position');
+        set(gcbf,'Units',GCBFOldUnits);
+        screenSize = get(0,'ScreenSize');
+        if GCBFPos(1)-FigWidth > 0 % put figure on the left side of the main figure
+            FigPos(1:2) = [GCBFPos(1)-FigWidth-16 GCBFPos(2)+GCBFPos(4)-FigHeight+54];
+        elseif GCBFPos(1) + GCBFPos(3) + FigWidth < screenSize(3) % put figure on the right side of the main figure
+            FigPos(1:2) = [GCBFPos(1)+GCBFPos(3)+16 GCBFPos(2)+GCBFPos(4)-FigHeight+54];
+        else
+            FigPos(1:2) = [(GCBFPos(1) + GCBFPos(3) / 2) - FigWidth / 2, ...
+                (GCBFPos(2) + GCBFPos(4) / 2) - FigHeight / 2];
+        end
+    end
+    FigPos(3:4)=[FigWidth FigHeight];
+    set(hObject, 'Position', FigPos);
+    set(hObject, 'Units', OldUnits);
+end
+
+% UIWAIT makes mibAnnotationsGUI wait for user response (see UIRESUME)
+% uiwait(handles.mibAnnotationsGUI);
+end
+
+% --- Outputs from this function are returned to the command line.
+function varargout = mibAnnotationsGUI_OutputFcn(hObject, eventdata, handles) 
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Get default command line output from handles structure
+varargout{1} = handles.output;
+end
+
+
+% --- Executes when user attempts to close mibAnnotationsGUI.
+function mibAnnotationsGUI_CloseRequestFcn(hObject, eventdata, handles)
+handles.winController.closeWindow();
+end
+
+% --- Executes on button press in closeBtn.
+function closeBtn_Callback(hObject, eventdata, handles)
+handles.winController.closeWindow();
+end
+
+function tableContextMenu_cb(hObject, eventdata, parameter)
+handles = guidata(hObject);
+handles.winController.tableContextMenu_cb(parameter);
+end
+
+
+% --- Executes on button press in saveBtn.
+function saveBtn_Callback(hObject, eventdata, handles)
+handles.winController.saveBtn_Callback();
+end
+
+% --- Executes when entered data in editable cell(s) in annotationTable.
+function annotationTable_CellEditCallback(hObject, eventdata, handles)
+Indices = eventdata.Indices;
+handles.winController.annotationTable_CellEditCallback(Indices)
+end
+
+% --- Executes when selected cell(s) is changed in annotationTable.
+function annotationTable_CellSelectionCallback(hObject, eventdata, handles)
+Indices = eventdata.Indices;
+handles.winController.annotationTable_CellSelectionCallback(Indices);
+end
+
+
+% --- Executes on button press in loadBtn.
+function loadBtn_Callback(hObject, eventdata, handles)
+handles.winController.loadBtn_Callback();
+end
+
+% --- Executes on button press in refreshBtn.
+function refreshBtn_Callback(hObject, eventdata, handles)
+handles.winController.updateWidgets();
+end
+
+% --- Executes on button press in deleteBtn.
+function deleteBtn_Callback(hObject, eventdata, handles)
+handles.winController.deleteBtn_Callback();
+end

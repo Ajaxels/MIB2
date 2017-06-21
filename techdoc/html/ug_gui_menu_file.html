@@ -1,0 +1,230 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>File Menu</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_gui_menu_file.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>File Menu</h1><!--introduction--><p>Provides access to some file handling actions for image dataset</p><p><img vspace="5" hspace="5" src="images\menuFile.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Import image from...</a></li><li><a href="#2">OMERO Import</a></li><li><a href="#3">Chopped images...</a></li><li><a href="#4">Export image to</a></li><li><a href="#5">Save image as</a></li><li><a href="#6">Make movie</a></li><li><a href="#7">Make snapshot</a></li><li><a href="#9">Render volume (with Fiji)</a></li><li><a href="#12">Preferences</a></li></ul></div><h2 id="1">Import image from...</h2><div><ul><li><b>Matlab</b>  - import image from the main Matlab workspace into <tt>im_browser</tt>. It is possible to provide image description containers.Map together with the dataset, which allows to maintain parameters of the dataset when using the <tt>Export image</tt> command (see below). <a href="https://youtu.be/zUJ1RUuTLVs">[*brief demo*]</a></li><li><b>Clipboard</b> - paste image from the system clipboard. This functionality is implemented using <a href="http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard"><b>IMCLIPBOARD</b></a> function by  Jiro Doke, MathWorks, 2010. <a href="https://youtu.be/kcN0Na_YC_U">[*brief demo*]</a></li><li><b>Imaris</b> - import dataset from Imaris; requires <a href="http://www.bitplane.com/">Imaris and ImarisXT</a>. This functionality is done with <a href="http://www.scs2.net/next/index.php?id=110">IceImarisConnector</a> written by Aaron C. Ponti, ETH Zurich. <a href="https://youtu.be/MbK2JcTrZFw?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj">[*demo*]</a></li><li><b>URL</b> - open image from provided URL address. The link should contain the protocol type (<i>e.g.</i>, <a href="http://">http://</a>). <a href="https://youtu.be/FNEVgKzbGqQ">[*brief demo*]</a></li></ul></div><h2 id="2">OMERO Import</h2><p>Establish connection and load images from OMERO server. Requires <a href="http://www.openmicroscopy.org/site">OMERO server</a> files to be downloaded. Please refer to the <a href="im_browser_system_requirements.html">System Requirements</a> pages for details of installation.</p><p>Selection of a server (<i>please do not copy/paste the password!</i>):</p><p><img vspace="5" hspace="5" src="images\menuFileImportOmero1.png" alt=""> </p><p>In the following dialog it is possible to select desired dataset and the range to take</p><p><img vspace="5" hspace="5" src="images\menuFileImportOmero2.png" alt=""> </p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/iR7OL0eJGuw"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iR7OL0eJGuw</a>
+</p><h2 id="3">Chopped images...</h2><p>This is a special mode that allows to split a large dataset into defined number of smaller ones and combine them back later. It is also possible to fuse the previously cropped dataset to the bigger one.</p><p>Please refer to the <a href="ug_gui_menu_file_chop.html">Chopped images...</a> section for details.</p><h2 id="4">Export image to</h2><p>Export images to the main Matlab workspace or Imaris.</p><p>
+<b>- Matlab</b><br>
+In addition to the image
+variable, another variable with parameters of the dataset (containers.Map class) is
+automatically created. This |containers.Map| can be imported back to |MIB| later together
+with the modified dataset to restore parameters of the dataset.<br><br>
+A brief demonstration on Import/Export is available in the following video:<br>
+<a href="https://youtu.be/zUJ1RUuTLVs"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/zUJ1RUuTLVs</a>
+<br><br>
+<b>- Imaris</b><br>
+When Imaris is installed, the images can also be exported to Imaris.
+</p><h2 id="5">Save image as</h2><p>Save the open dataset to a disk. The following image formats are implemented:</p><div><ul><li><b>AM, Amira Mesh</b> - as Amira Mesh binary format</li><li><b>JPEG, Joint Photographic Experts Group</b> - a method for saving lossy compressed RGB datasets</li><li><b>HDF5, Hierarchical Data Format</b> - saves images in the Hierarchical Data Format, version 5</li><li><b>MRC, MRC format for IMOD</b> - saves images in the MRC Format compatible with IMOD</li><li><b>NRRD, Nearly Raw Raster Data</b> - a data format compatible with <a href="www.slicer.org">3D slicer</a></li><li><b>PNG, Portable Network Graphics (*.png)</b> - saves images in the Portable Network Graphics format</li><li><b>TIF format, LZW compressed</b>, as a multilayered tif-file (<tt>3D-Tif option</tt>) or as a sequence of tif-files (<tt>Sequence of 2D files</tt>). <b>Please note!</b> the TIF format uses 32-bit offsets, and that, in practice, limits the maximal size of the TIF-files to 2Gb. Matlab can create TIF files larger than 2Gb but those can't be opened later</li><li><b>TIF format, non-compressed</b>, see above for details of saving datasets in the TIF format</li></ul></div><h2 id="6">Make movie</h2><p>Save dataset as a movie file. All objects that are shown in the image view window will be captured. <b>Note!</b> If the image width is too small the scale bar is not rendered. <a href="ug_gui_menu_file_makevideo.html">See more here</a>.</p><p><img vspace="5" hspace="5" src="images\menuFileMakeMovie.png" alt=""> </p><h2 id="7">Make snapshot</h2><p>Make snapshot of the current slice. All objects that are shown in the image view window will be captured.  <a href="ug_gui_menu_file_makesnapshot.html">See more here</a>.</p><p><img vspace="5" hspace="5" src="images/menuFileSnapshot.png" alt=""> </p><h2 id="9">Render volume (with Fiji)</h2><p>Volume rendering of the opened dataset using Fiji 3D image viewer. Please refer to details in the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements Fiji</a> section for installation of Fiji.</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/DZ1Tj3Fh2HM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/DZ1Tj3Fh2HM</a>
+</p><p>Additional dialog prompts for extra parameters for rendering:</p><p><img vspace="5" hspace="5" src="images/menuFileRenderFiji.png" alt=""> </p><div><ul><li><b>Reduce the volume down to, max width pixels</b> - allows to reduce size of the dataset prior the rendering. This reduces memory consumption and improves performance. When this field contains <b>0</b> no volume resizing occurs.</li><li><b>Smoothing 3d kernel, width</b> - smooth the volume with gaussian blur. No smoothing when 0.</li><li><b>Invert? [0-no, 1-yes]</b> - invert the dataset, required for electron microscopy images.</li><li><b>Transparency threshold</b> - all pixels with intensities below the provided value will appear transparent. Comma-separated numbers may be used here to provide specific transparency parameters for each color channel. In addition, the transparency threshold can also be tweaked in the Fiji 3D viewer window: <tt>3D Viewer-&gt;Edit-&gt;Attributes-&gt;Adjust threshold</tt>.</li></ul></div><h2 id="12">Preferences</h2><p>View and edit preferences of Microscopy Image Browser. Allows to modify colors of the <tt>Selection</tt>, <tt>Model</tt> and <tt>Mask</tt> layers, default behaviour of the mouse wheel and keys, settings of Undo. <a href="ug_gui_menu_file_preferences.html"><b>See more...</b></a></p><p><b>Please note</b>, <tt>MIB</tt> stores its configuration parameters in a file that is automatically generated after closing of <tt>MIB</tt>:</p><div><ul><li><b>for Windows</b> - <i>c:\temp\mib.mat</i> or when <i>c:\temp</i> is unavailable in the Windows TEMP directory (<i>C:\Users\User-name\AppData\Local\Temp\</i>). The TEMP directory can be found and accessed with <tt>Windows-&gt;Start button-&gt;%TEMP%</tt> command.</li><li><b>for Linux</b> - in a directory where <tt>MIB</tt> is installed, or in the local tmp directory (<i>/tmp</i>).</li><li><b>for MacOS</b> - in a directory where <tt>MIB</tt> is installed, or in the local tmp directory (<i>/tmp</i>).</li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% File Menu
+% Provides access to some file handling actions for image dataset
+%
+% 
+% <<images\menuFile.png>>
+% 
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*>
+%
+%% Import image from...
+% 
+% 
+% * *Matlab*  - import image from the main Matlab workspace into |im_browser|. It is possible to
+% provide image description containers.Map together with the dataset, which
+% allows to maintain parameters of the dataset when using the |Export
+% image| command (see below). <https://youtu.be/zUJ1RUuTLVs [*brief demo*]>
+% * *Clipboard* - paste image from the system clipboard. This functionality
+% is implemented using <http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard *IMCLIPBOARD*> function
+% by  Jiro Doke, MathWorks, 2010. <https://youtu.be/kcN0Na_YC_U [*brief demo*]>
+% * *Imaris* - import dataset from Imaris; requires <http://www.bitplane.com/ Imaris and ImarisXT>.
+% This functionality is done with
+% <http://www.scs2.net/next/index.php?id=110 IceImarisConnector> written
+% by Aaron C. Ponti, ETH Zurich.
+% <https://youtu.be/MbK2JcTrZFw?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj
+% [*demo*]>
+% * *URL* - open image from provided URL address. The link should contain
+% the protocol type (_e.g._, http://). <https://youtu.be/FNEVgKzbGqQ
+% [*brief demo*]>
+% 
+% 
+%% OMERO Import
+% Establish connection and load images from OMERO server. Requires <http://www.openmicroscopy.org/site OMERO server> files to
+% be downloaded. Please refer to the <im_browser_system_requirements.html System Requirements> pages for details of installation.
+%
+% Selection of a server (_please do not copy/paste the password!_):
+%
+% <<images\menuFileImportOmero1.png>>
+% 
+% In the following dialog it is possible to select desired dataset and the range to take 
+%
+% <<images\menuFileImportOmero2.png>>
+% 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/iR7OL0eJGuw"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iR7OL0eJGuw</a>
+% </html>
+%
+%% Chopped images...
+% This is a special mode that allows to split a large dataset into defined
+% number of smaller ones and combine them back later. It is also possible
+% to fuse the previously cropped dataset to the bigger one.
+%
+% Please refer to the <ug_gui_menu_file_chop.html Chopped images...> section for details.
+%
+%% Export image to 
+% Export images to the main Matlab workspace or Imaris.
+%
+% <html>
+% <b>- Matlab</b><br>
+% In addition to the image
+% variable, another variable with parameters of the dataset (containers.Map class) is
+% automatically created. This |containers.Map| can be imported back to |MIB| later together 
+% with the modified dataset to restore parameters of the dataset.<br><br>
+% A brief demonstration on Import/Export is available in the following video:<br>
+% <a href="https://youtu.be/zUJ1RUuTLVs"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/zUJ1RUuTLVs</a>
+% <br><br>
+% <b>- Imaris</b><br>
+% When Imaris is installed, the images can also be exported to Imaris. 
+% </html>
+%
+%% Save image as
+% Save the open dataset to a disk. The following image formats are implemented:
+% 
+% * *AM, Amira Mesh* - as Amira Mesh binary format
+% * *JPEG, Joint Photographic Experts Group* - a method for saving lossy compressed RGB datasets
+% * *HDF5, Hierarchical Data Format* - saves images in the Hierarchical Data Format, version 5
+% * *MRC, MRC format for IMOD* - saves images in the MRC Format compatible with IMOD
+% * *NRRD, Nearly Raw Raster Data* - a data format compatible with <www.slicer.org 3D slicer>
+% * *PNG, Portable Network Graphics (*.png)* - saves images in the Portable Network Graphics format
+% * *TIF format, LZW compressed*, as a multilayered tif-file (|3D-Tif option|) or as a sequence of tif-files
+% (|Sequence of 2D files|). *Please note!* the TIF format uses 32-bit offsets, and
+% that, in practice, limits the maximal size of the TIF-files to 2Gb. Matlab
+% can create TIF files larger than 2Gb but those can't be opened later
+% * *TIF format, non-compressed*, see above for details of saving datasets in the TIF format
+%
+%% Make movie
+% Save dataset as a movie file. All objects that are shown in the image view window will be captured. *Note!* If the image width is too small the scale bar is not rendered.
+% <ug_gui_menu_file_makevideo.html See more here>. 
+% 
+% <<images\menuFileMakeMovie.png>>
+% 
+%% Make snapshot
+% Make snapshot of the current slice. All objects that are shown in the image view window will be captured.  <ug_gui_menu_file_makesnapshot.html See more here>.
+%%
+% 
+% <<images/menuFileSnapshot.png>>
+% 
+%% Render volume (with Fiji)
+% Volume rendering of the opened dataset using Fiji 3D image viewer. Please refer to details in the 
+% <im_browser_system_requirements.html Microscopy Image Browser System Requirements Fiji> section for installation of Fiji.
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/DZ1Tj3Fh2HM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/DZ1Tj3Fh2HM</a>
+% </html>
+%
+% Additional dialog prompts for extra parameters for rendering:
+%%
+% 
+% <<images/menuFileRenderFiji.png>>
+% 
+%%
+% 
+% * *Reduce the volume down to, max width pixels* - allows to reduce size of the dataset prior the rendering. This
+% reduces memory consumption and improves performance. When this field
+% contains *0* no volume resizing occurs.
+% * *Smoothing 3d kernel, width* - smooth the volume
+% with gaussian blur. No smoothing when 0.
+% * *Invert? [0-no, 1-yes]* - invert the dataset, required for electron
+% microscopy images.
+% * *Transparency threshold* - all pixels with intensities below the
+% provided value will appear transparent. Comma-separated numbers may
+% be used here to provide specific transparency parameters for each color
+% channel. In addition, the transparency threshold can also be tweaked in 
+% the Fiji 3D viewer window: |3D Viewer->Edit->Attributes->Adjust threshold|. 
+% 
+%% Preferences
+% View and edit preferences of Microscopy Image Browser. Allows to modify colors of the |Selection|, |Model| and |Mask|
+% layers, default behaviour of the mouse wheel and keys, settings of Undo.
+% <ug_gui_menu_file_preferences.html *See more...*>
+%
+% *Please note*, |MIB| stores its configuration parameters in a file that is automatically generated after closing of
+% |MIB|:
+%
+% * *for Windows* - _c:\temp\mib.mat_ or when _c:\temp_ is unavailable in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
+% The TEMP directory can be found and accessed with |Windows->Start button->%TEMP%| command. 
+% * *for Linux* - in a directory where |MIB| is installed, or in the local tmp directory (_/tmp_).
+% * *for MacOS* - in a directory where |MIB| is installed, or in the local tmp directory (_/tmp_).
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*>
+
+
+##### SOURCE END #####
+--></body></html>

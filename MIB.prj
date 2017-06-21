@@ -1,0 +1,163 @@
+<deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
+  <configuration build-checksum="2600819471" file="C:\MATLAB\Scripts\MIB2\MIB2_deploy\MIB.prj" location="C:\MATLAB\Scripts\MIB2\MIB2_deploy" name="MIB" preferred-package-location="C:\MATLAB\Scripts\MIB2\MIB2_deploy\MIB\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+    <param.appname>MIB</param.appname>
+    <param.icon>${PROJECT_ROOT}\MIB_resources\icon.ico</param.icon>
+    <param.icons>
+      <file>${PROJECT_ROOT}\MIB_resources\icon_48.png</file>
+      <file>${PROJECT_ROOT}\MIB_resources\icon_32.png</file>
+      <file>${PROJECT_ROOT}\MIB_resources\icon_24.png</file>
+      <file>${PROJECT_ROOT}\MIB_resources\icon_16.png</file>
+    </param.icons>
+    <param.version>2.1</param.version>
+    <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
+    <param.email>ilya.belevich@helsinki.fi</param.email>
+    <param.company>University of Helsinki</param.company>
+    <param.summary>Microscopy Image Browser (MIB) is software for advanced processing, segmentation and visualization of multi-dimensional microscopy datasets</param.summary>
+    <param.description>You are going to install MIB that has been compiled to stand-alone executables (exe-files).
+If you have not previously installed the MATLAB Compiler Runtime (MCR) it will be automatically downloaded and installed during the installation.
+
+Microscopy Image Browser (MIB) a handy tool for image management
+Copyright (c) 2010-2017
+Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
+http://mib.helsinki.fi
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+
+GNU GENERAL PUBLIC LICENSE
+Version 2, June 1991
+
+Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Everyone is permitted to copy and distribute verbatim copies
+of this license document, but changing it is not allowed.</param.description>
+    <param.screenshot>${PROJECT_ROOT}\Resources\mib_about.jpg</param.screenshot>
+    <param.guid />
+    <param.installpath.string>\MIB\</param.installpath.string>
+    <param.installpath.combo>option.installpath.programfiles</param.installpath.combo>
+    <param.logo>${PROJECT_ROOT}\Resources\im_browser_splash_short.jpg</param.logo>
+    <param.install.notes>To configure scaling of widgets (especially on MacOS) please check Menu-&gt;File-&gt;Preferences-&gt;GUI scaling.
+
+To configure path to Fiji and Omero server please add paths to those program in Menu-&gt;File-&gt;Preferences-&gt;External dirs
+
+Further instructions:
+http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
+    <param.target.install.notes />
+    <param.intermediate>${PROJECT_ROOT}\MIB\for_testing</param.intermediate>
+    <param.files.only>${PROJECT_ROOT}\MIB\for_redistribution_files_only</param.files.only>
+    <param.output>${PROJECT_ROOT}\MIB\for_redistribution</param.output>
+    <param.logdir>${PROJECT_ROOT}\MIB</param.logdir>
+    <param.enable.clean.build>false</param.enable.clean.build>
+    <param.user.defined.mcr.options />
+    <param.target.type>subtarget.standalone</param.target.type>
+    <param.support.packages />
+    <param.web.mcr>true</param.web.mcr>
+    <param.package.mcr>false</param.package.mcr>
+    <param.no.mcr>false</param.no.mcr>
+    <param.web.mcr.name>MyAppInstaller_web</param.web.mcr.name>
+    <param.package.mcr.name>MyAppInstaller_mcr</param.package.mcr.name>
+    <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
+    <param.windows.command.prompt>false</param.windows.command.prompt>
+    <param.create.log>false</param.create.log>
+    <param.log.file />
+    <unset>
+      <param.guid />
+      <param.installpath.combo />
+      <param.target.install.notes />
+      <param.intermediate />
+      <param.files.only />
+      <param.output />
+      <param.logdir />
+      <param.enable.clean.build />
+      <param.user.defined.mcr.options />
+      <param.target.type />
+      <param.support.packages />
+      <param.web.mcr />
+      <param.package.mcr />
+      <param.no.mcr />
+      <param.web.mcr.name />
+      <param.package.mcr.name />
+      <param.no.mcr.name />
+      <param.create.log />
+      <param.log.file />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\mib_deploy.m</file>
+    </fileset.main>
+    <fileset.resources>
+      <file>${PROJECT_ROOT}\Classes</file>
+      <file>${PROJECT_ROOT}\GuiTools</file>
+      <file>${PROJECT_ROOT}\ImportExportTools</file>
+      <file>${PROJECT_ROOT}\Plugins</file>
+      <file>${PROJECT_ROOT}\Resources</file>
+      <file>${PROJECT_ROOT}\Tools</file>
+    </fileset.resources>
+    <fileset.package>
+      <file>${PROJECT_ROOT}\Plugins</file>
+      <file>${PROJECT_ROOT}\Resources</file>
+      <file>${PROJECT_ROOT}\techdoc</file>
+    </fileset.package>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}\mib.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_527\connectOmero.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_527\findOmero.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_527\getOmeroJars.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_527\loadOmero.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_527\omeroVersion.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_527\unloadOmero.m</file>
+      <file>C:\Tools\Science\Fiji.app\scripts\InstallJava3D.m</file>
+      <file>C:\Tools\Science\Fiji.app\scripts\IsJava3DInstalled.m</file>
+      <file>C:\Tools\Science\Fiji.app\scripts\Miji.m</file>
+    </fileset.depfun>
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}\MIB\for_testing" name="MIB.exe" optional="false">C:\MATLAB\Scripts\MIB2\MIB2_deploy\MIB\for_testing\MIB.exe</file>
+      <file location="${PROJECT_ROOT}\MIB\for_testing" name="readme.txt" optional="true">C:\MATLAB\Scripts\MIB2\MIB2_deploy\MIB\for_testing\readme.txt</file>
+      <file location="${PROJECT_ROOT}\MIB\for_testing" name="splash.png" optional="false">C:\MATLAB\Scripts\MIB2\MIB2_deploy\MIB\for_testing\splash.png</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\MATLAB\R2017a</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>6.1</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

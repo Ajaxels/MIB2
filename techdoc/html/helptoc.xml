@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding="utf-8"?>
+
+<toc version="2.0">
+<!-- First tocitem specifies top level in Help browser Contents pane -->
+<!-- This can be a roadmap page, as shown below, or a content page -->
+    <tocitem target="im_browser_product_page.html">Microscopy Image Browser
+        <!-- Nest tocitems to create hierarchical entries in  Contents-->
+        <!-- To include icons, use the following syntax for tocitems: -->
+        <!-- <tocitem target="foo.html" image="HelpIcon.NAME"> -->
+        <!-- Title-of-Section </tocitem> -->
+        <!-- where NAME is one of the following (use capital letters): -->
+        <!-- FUNCTION, USER_GUIDE, EXAMPLES, BLOCK, GETTING_STARTED, -->
+        <!-- DEMOS, RELEASE_NOTES --> 
+        <!-- Icon images used for these entries are also stored in -->
+        <!-- matlabroot/toolbox/matlab/icons -->
+        <!-- A Getting Started Guide usually comes first -->
+        <tocitem target="im_browser_getting_started.html" image="HelpIcon.GETTING_STARTED">Microscopy Image Browser
+            <tocitem target="im_browser_features.html">Features
+            </tocitem>
+            <tocitem target="im_browser_getting_started.html">Getting started
+            </tocitem>
+            <tocitem target="im_browser_installation.html">Installation
+            </tocitem>    
+            <tocitem target="im_browser_system_requirements.html">System Requirements
+            </tocitem>
+        </tocitem>
+     <!-- User Guide comes next -->
+        <tocitem target="im_browser_user_guide.html" 
+            image="HelpIcon.USER_GUIDE">User Guide
+            <tocitem target="ug_gui_panels.html">GUI Overview, Panels
+                <tocitem target="ug_panel_dir.html">Directory Contents panel</tocitem>
+                <tocitem target="ug_panel_fiji_connect.html">Fiji Connect panel</tocitem>
+                <tocitem target="ug_panel_image_filters.html">Image Filters panel</tocitem>
+                <tocitem target="ug_panel_im_view.html">Image View panel</tocitem>
+                <tocitem target="ug_panel_mask_generators.html">Mask Generators panel</tocitem>
+                <tocitem target="ug_panel_path.html">Path panel</tocitem>
+                <tocitem target="ug_panel_roi.html">ROI panel</tocitem>
+                <tocitem target="ug_panel_segm.html">Segmentation panel
+                    <tocitem target="ug_panel_segm_tools.html">Segmentation Tools</tocitem>
+                </tocitem>
+                <tocitem target="ug_panel_selection.html">Selection panel</tocitem>
+                <tocitem target="ug_panel_view_settings.html">View Settings panel
+                    <tocitem target="ug_panel_adjustments.html">Display adjustment</tocitem>
+                </tocitem>
+            </tocitem>
+            <tocitem target="ug_gui_toolbar.html">GUI Overview, Toolbar
+            </tocitem>
+            <tocitem target="ug_gui_menu.html">GUI Overview, Menus
+                <tocitem target="ug_gui_menu_file.html">File
+				  <tocitem target="ug_gui_menu_file_chop.html ">File/Chop images...</tocitem>
+                  <tocitem target="ug_gui_menu_file_makevideo.html ">File/Save as movie...</tocitem>
+                  <tocitem target="ug_gui_menu_file_makesnapshot.html ">File/Make snapshot</tocitem>
+                  <tocitem target="ug_gui_menu_file_preferences.html ">File/Preferences</tocitem>
+                </tocitem>
+                <tocitem target="ug_gui_menu_dataset.html">Dataset
+                  <tocitem target="ug_gui_menu_dataset_alignment.html">Alignment...</tocitem>
+                </tocitem>
+                <tocitem target="ug_gui_menu_image.html">Image</tocitem>
+                <tocitem target="ug_gui_menu_models.html">Models
+                  <tocitem target="ug_gui_menu_mask_statistics.html ">Model statistics</tocitem>
+                </tocitem>
+                <tocitem target="ug_gui_menu_mask.html">Mask
+                  <tocitem target="ug_gui_menu_mask_statistics.html ">Mask statistics</tocitem>
+                </tocitem>  
+                <tocitem target="ug_gui_menu_selection.html">Selection</tocitem>
+                <tocitem target="ug_gui_menu_tools.html">Tools
+                    <tocitem target="ug_gui_menu_tools_measure.html">Measure tool</tocitem>
+					<tocitem target="ug_gui_menu_tools_random_forest.html">Classifier->Membrane detection</tocitem>
+					<tocitem target="ug_gui_menu_tools_random_forest_superpixels.html">Classifier->Superpixels classification</tocitem>
+					<tocitem target="ug_gui_menu_tools_watershed.html">Watershed/Graphcut segmentation</tocitem>
+				</tocitem>
+                <tocitem target="ug_gui_menu_plugins.html">Plugins</tocitem>
+                <tocitem target="ug_gui_menu_help.html">Help</tocitem>
+            </tocitem>
+            <tocitem target="ug_gui_data_layers.html">Data layers (Image, Model, Mask, Selection)</tocitem>
+			<tocitem target="ug_gui_shortcuts.html">Key and mouse shortcuts</tocitem>
+			
+        </tocitem>
+     <!-- Tutorials comes next -->		
+		<tocitem target="im_browser_tutorials.html" 
+            image="HelpIcon.EXAMPLES">Tutorials
+            <tocitem target="http://mib.helsinki.fi/tutorials.html">Introduction</tocitem>
+            <tocitem target="http://mib.helsinki.fi/tutorials_segmentation.html">Image segmentation</tocitem>
+            <tocitem target="http://mib.helsinki.fi/tutorials_visualization.html">Visualization</tocitem>
+            <tocitem target="http://mib.helsinki.fi/tutorials_tools.html">Tools</tocitem>
+			<tocitem target="http://mib.helsinki.fi/tutorials_programming.html">Programming</tocitem>
+        </tocitem>		
+     <!-- Function reference next -->
+     <!-- Optional Release Notes file -->
+        <tocitem target="im_browser_release_notes.html" 
+            image="HelpIcon.RELEASE_NOTES">Release Notes
+        </tocitem>   
+        <tocitem target="im_browser_ack.html" 
+            image="HelpIcon.RELEASE_NOTES">Acknowledgements
+        </tocitem>   
+        <tocitem target="im_browser_troubleshooting.html" 
+            image="HelpIcon.RELEASE_NOTES">Troubleshooting
+        </tocitem> 
+        <tocitem target="im_browser_license.html" 
+            image="HelpIcon.RELEASE_NOTES">License
+        </tocitem> 
+        <!-- Optional link or links to your or other Web sites -->
+        <tocitem target="http://mib.helsinki.fi" 
+                 image="$toolbox/matlab/icons/webicon.gif">
+        Microscopy Image Browser home page
+        </tocitem>
+    </tocitem>
+	</toc>

@@ -1,0 +1,170 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Tools Menu</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_gui_menu_tools.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Tools Menu</h1><!--introduction--><p>Additional tools</p><p><img vspace="5" hspace="5" src="images\menuTools.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Measure length</a></li><li><a href="#2">Stereology</a></li><li><a href="#3">Classifiers</a></li><li><a href="#4">Watershed/Graphcut segmentation</a></li></ul></div><h2 id="1">Measure length</h2><p>Allows measuring the length on the image.</p><p><b>Measure Tool</b></p><p>Measure Tool of MIB is based on <a href="http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility">Image Measurement Utility</a> written by Jan Neggers, Eindhoven Univeristy of Technology. Using this tool it is possible to perform number of different length measurements and generate intensity profiles that correspond to these measurements. <a href="ug_gui_menu_tools_measure.html">Press here for details</a>.</p><p><b>Line measure</b></p><p>Measures the linear distance between two points. Press and hold left mouse button to draw a line that connects two object. The result will be shown in the pop-up window and the line that connects the two selected points will be added to the <tt>Selection</tt> layer. Press <tt>Ctrl+Z</tt> to undo the modification of the <tt>Selection</tt> layer or press <tt>C or Shift+C</tt> to clear the <tt>Selection</tt> layer. The linear measuring tool can also be called from the <a href="ug_gui_toolbar.html">toolbar</a>. The pixel sizes are defined in the <a href="ug_gui_menu_dataset.html">Dataset parameters</a>.</p><p><b>Free hand measure</b></p><p>Similar to the line measure tool, except that the measured distance can be drawn arbitrarily.</p><h2 id="2">Stereology</h2><p>The stereology tool of MIB counts number of intersections between materials of the opened model and the grid lines. The spacing between grid lines can be defined in pixels or in the image units. The results of the stereology analysis can be exported to Matlab or Microsoft Excel.</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/5gOiyVNr2vY"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/5gOiyVNr2vY</a>
+</p><p><img vspace="5" hspace="5" src="images\menuToolsStereology.png" alt=""> </p><p>To calculate the grid use the <tt>Generate</tt> button in the <tt>Grid options panel</tt>. The analysis is started by pressing the <tt>Do stereology</tt> button.</p><p>The include annotations checkbox is selected the Stereology tool also calculates occurances of the annotation labels (Segmentation Panel-&gt;Annotations tool)</p><p><b>Important note!</b> When the thickness of the grid is 1 pixel (the <tt>grid extra thickness is 0</tt>) the grid may not be shown properly at the magnifications that are lower than 100%. To see the grid also at low magnification, increase the <tt>extra grid thickness</tt> value.</p><h2 id="3">Classifiers</h2><p>In this section MIB has two classifiers. One is designed for membrane detection but works for other objects as well. The second classifier is based on SLIC superpixels/supervoxels for the classification.</p><div><ul><li><b>Membrane detection</b>, a method for automatic segmentation of images using Random Forest classifier. The current version of the classifier is based on <a href="http://www.kaynig.de/demos.html">Random Forest for Membrane Detection by Verena Kaynig</a> and utilize <a href="https://code.google.com/p/randomforest-matlab/">randomforest-matlab</a> by Abhishek Jaiantilal. Please refer to the <a href="ug_gui_menu_tools_random_forest.html">help section</a> of the corresponding function.</li><li><b>Superpixels classification</b>, is good for objects that have distinct intensity properties. In this method, MIB first calculates SLIC superpixels for 2D or supervoxels for 3D and classify them based on set of provided labels that mark object of interest and the background. <a href="ug_gui_menu_tools_random_forest_superpixels.html">See more in this example</a>.</li></ul></div><h2 id="4">Watershed/Graphcut segmentation</h2><p>Two methods for automated image segmentation and object separation. Both methods available for both 2D and 3D objects.</p><p><a href="ug_gui_menu_tools_watershed.html"><b>SEE DETAILS HERE</b></a></p><p><img vspace="5" hspace="5" src="images/menuToolsWatershed.png" alt=""> </p><p>Example of seeded watersheding of cells:</p><p><img vspace="5" hspace="5" src="images/menuToolsWatershedExample.jpg" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Tools Menu
+% Additional tools 
+% 
+% <<images\menuTools.png>>
+% 
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*>
+%
+%% Measure length
+% Allows measuring the length on the image.
+%
+% *Measure Tool*
+%
+% Measure Tool of MIB is based on <http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility Image Measurement Utility>
+% written by Jan Neggers, Eindhoven Univeristy of Technology. Using this
+% tool it is possible to perform number of different length measurements and generate intensity profiles that correspond to these measurements.
+% <ug_gui_menu_tools_measure.html Press here for details>.
+% 
+%
+% *Line measure*
+%
+% Measures the linear distance between two points. Press and hold left mouse
+% button to draw a line that connects two object. The result will be shown
+% in the pop-up window and the line that connects the two selected points
+% will be added to the |Selection| layer. Press |Ctrl+Z| to undo the
+% modification of the |Selection| layer or press |C or Shift+C| to clear the |Selection| layer.
+% The linear measuring tool can also
+% be called from the <ug_gui_toolbar.html toolbar>. The pixel sizes are
+% defined in the <ug_gui_menu_dataset.html Dataset parameters>.
+%
+% *Free hand measure*
+%
+% Similar to the line measure tool, except that the measured distance can
+% be drawn arbitrarily.
+%
+% 
+%
+%% Stereology
+% The stereology tool of MIB counts number of intersections between materials of the opened
+% model and the grid lines. The spacing between grid lines can be defined
+% in pixels or in the image units. The results of the stereology analysis
+% can be exported to Matlab or Microsoft Excel.
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/5gOiyVNr2vY"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/5gOiyVNr2vY</a>
+% </html>
+% 
+% <<images\menuToolsStereology.png>>
+% 
+% To calculate the grid use the |Generate| button in the |Grid options
+% panel|. The analysis is started by pressing the |Do stereology| button. 
+%
+% The include annotations checkbox is selected the Stereology tool also 
+% calculates occurances of the annotation labels (Segmentation Panel->Annotations tool)
+%
+%
+% *Important note!* When the thickness of the grid is 1 pixel (the |grid extra thickness is
+% 0|) the grid may not be shown properly at the magnifications that are
+% lower than 100%. To see the grid also at low magnification, increase the
+% |extra grid thickness| value.
+%
+%% Classifiers
+% In this section MIB has two classifiers. One is designed for membrane
+% detection but works for other objects as well. The second classifier is
+% based on SLIC superpixels/supervoxels for the classification. 
+%
+% 
+% * *Membrane detection*, a method for automatic segmentation of images using Random Forest
+% classifier. The current version of the classifier is based on 
+% <http://www.kaynig.de/demos.html Random Forest for Membrane Detection by Verena Kaynig> 
+% and utilize <https://code.google.com/p/randomforest-matlab/ randomforest-matlab> by Abhishek Jaiantilal.
+% Please refer to the <ug_gui_menu_tools_random_forest.html help section> of the corresponding
+% function.
+% * *Superpixels classification*, is good for objects that have distinct
+% intensity properties. In this method, MIB first calculates SLIC
+% superpixels for 2D or supervoxels for 3D and classify them based on set
+% of provided labels that mark object of interest and the background. <ug_gui_menu_tools_random_forest_superpixels.html See
+% more in this example>.
+% 
+%% Watershed/Graphcut segmentation
+% Two methods for automated image segmentation and object separation. Both
+% methods available for both 2D and 3D objects.
+%
+% <ug_gui_menu_tools_watershed.html *SEE DETAILS HERE*>
+% 
+% <<images/menuToolsWatershed.png>>
+% 
+% Example of seeded watersheding of cells:
+%
+% 
+% <<images/menuToolsWatershedExample.jpg>>
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*>
+
+##### SOURCE END #####
+--></body></html>

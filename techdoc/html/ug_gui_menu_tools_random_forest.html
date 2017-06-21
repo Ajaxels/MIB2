@@ -1,0 +1,179 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Random Forest Classifier</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-06-01"><meta name="DC.source" content="ug_gui_menu_tools_random_forest.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Random Forest Classifier</h1><!--introduction--><p>Random Forest Classifier is a method for automatic segmentation of images using <i>train</i> and <i>predict</i> scheme.</p><p>The current version of the classifier is based on <a href="http://www.kaynig.de/demos.html">Random Forest for Membrane Detection by Verena Kaynig</a> and utilize <a href="https://code.google.com/p/randomforest-matlab/">randomforest-matlab</a> by Abhishek Jaiantilal.</p><p>The example of use is presented below.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_tools.html"><b>Tools</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Dataset and the aim of the segmentation</a></li><li><a href="#2">Training the classifier</a></li><li><a href="#3">Prediction of the whole dataset</a></li><li><a href="#4">Wiping the temp directory</a></li></ul></div><h2 id="1">Dataset and the aim of the segmentation</h2><p>Here is a dataset (movie) of endoplasmic reticulum taken with wide field light microscopy. The aim is to segment endoplasmic reticulum from the background in the flat areas of the cell. The global black-and-white thresholding will not work in this case due to gradient of the background intensities.</p><p><img vspace="5" hspace="5" src="images/random_forest_1.jpg" alt=""> </p><p>The random forest classifier may be one of the approaches to segment such dataset.</p><h2 id="2">Training the classifier</h2><p>The first part of the classification is to select areas that belong to the object of interest and background.</p><div><ul><li>Start a new model: <tt>Segmentation Panel-&gt;the Create button</tt></li><li>Add two materials for the model: <tt>Segmentation Panel-&gt;the + button</tt></li><li>Rename material 1 to <tt>Object</tt> and material 2 to <tt>Background</tt>. Highlight material in the left list box, press the right mouse button and select <tt>Rename</tt> in the popup menu</li></ul></div><p><img vspace="5" hspace="5" src="images/random_forest_2.jpg" alt=""> </p><div><ul><li>Select the Brush tool and select some profiles of the endoplasmic reticulum and assign them to the <tt>Object</tt> material of the model (<i>select '1' in the 'Add to' list and press the 'A' shortcut</i>)</li><li>Select few areas of the background and add those to the <tt>Background</tt> material of the model (<i>select '2' in the 'Add to' list and press the 'A' shortcut</i>)</li></ul></div><p><img vspace="5" hspace="5" src="images/random_forest_3.jpg" alt=""> </p><div><ul><li>Start Random Forest Classifier: <tt>Menu-&gt;Tools-&gt;Classifier-&gt;Membrane detection</tt></li></ul></div><p><img vspace="5" hspace="5" src="images/random_forest_4.jpg" alt=""> </p><p>By default classifier creates a new directory (<tt>RF_Temp</tt>) next to the data location that will be used to store images processed for classification and classifier itself. The temporary directory name and the classifier name can be changed in the <tt>Temp dir</tt> and <tt>Classifier filename</tt> edit boxes.</p><div><ul><li>Select <tt>Object</tt> in the <tt>Object</tt> popup menu</li><li>Select <tt>Background</tt> in the <tt>Background</tt> popup menu</li><li>Check the <tt>Context size</tt>. In general the short or too much bended membrane profiles require smaller context size.</li><li>Check <tt>Membrane thickness</tt>. Put here approximate thickness (in pixels) of the membrane profile.</li><li>Check parameters of the <tt>Votes</tt> section. This section allows to define threshold value for the votes, export votes to matlab and force to get only closed membrane profiles</li><li>Press the <tt>Train Classifier</tt> button to process the image and train classifier based on the already segmented areas. The classifier will predict the currently shown slice. If results are not good enough, segment more areas. The areas may be segmented on different slices and during the training will be assembled together.</li></ul></div><p><img vspace="5" hspace="5" src="images/random_forest_5.jpg" alt=""> </p><div><ul><li>When the results of the training is good enough go to the second step in the workflow and press the <tt>Save classifier</tt> button.</li></ul></div><h2 id="3">Prediction of the whole dataset</h2><p>When training is done and classificator was saved to a disk go to the 3rd step of the workflow: <tt>Predict dataset...</tt></p><p><img vspace="5" hspace="5" src="images/random_forest_6.jpg" alt=""> </p><p>This dialog is allowing to start prediction either for any currently shown slice or for the whole dataset at once. So one can test results of the prediction on any random slice and if the results are acceptable press the <tt>Predict dataset</tt> button.</p><p>When the prediction is finished the results are assigned to the <tt>Selection</tt> layer. From the <tt>Selection</tt> layer the results should be transferred to the <tt>Model</tt> and <tt>Mask</tt> layer for further polishing and saving to disk.</p><h2 id="4">Wiping the temp directory</h2><p>During the prediction the classifier creates quite many large size files in the <tt>RF_Temp</tt> directory. This directory can be deleted by pressing the <tt>Wipe Temp dir</tt> button or manually using any file explorer.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_tools.html"><b>Tools</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Random Forest Classifier
+% Random Forest Classifier is a method for automatic segmentation of images
+% using _train_ and _predict_ scheme. 
+%
+% The current version of the classifier is based on 
+% <http://www.kaynig.de/demos.html Random Forest for Membrane Detection by Verena Kaynig> 
+% and utilize <https://code.google.com/p/randomforest-matlab/ randomforest-matlab> by Abhishek Jaiantilal.
+% 
+% The example of use is presented below.
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools.html *Tools*>
+%
+%% Dataset and the aim of the segmentation
+% Here is a dataset (movie) of endoplasmic reticulum taken with wide field
+% light microscopy. The aim is to segment endoplasmic reticulum from the
+% background in the flat areas of the cell. 
+% The global black-and-white thresholding will not work in this case due to
+% gradient of the background intensities. 
+% 
+% 
+% <<images/random_forest_1.jpg>>
+% 
+% The random forest classifier may be one of the approaches to segment such
+% dataset.
+%
+%% Training the classifier
+% The first part of the classification is to select areas that belong to
+% the object of interest and background.
+% 
+%
+% * Start a new model: |Segmentation Panel->the Create button|
+% * Add two materials for the model: |Segmentation Panel->the + button|
+% * Rename material 1 to |Object| and material 2 to |Background|. Highlight
+% material in the left list box, press the right mouse button and select
+% |Rename| in the popup menu
+% 
+% 
+% <<images/random_forest_2.jpg>>
+% 
+% 
+% * Select the Brush tool and select some profiles of the endoplasmic
+% reticulum and assign them to the |Object| material of the model (_select
+% '1' in the 'Add to' list and press the 'A' shortcut_)
+% * Select few areas of the background and add those to the |Background|
+% material of the model (_select '2' in the 'Add to' list and press the 'A' shortcut_)
+% 
+% 
+% 
+% <<images/random_forest_3.jpg>>
+% 
+% * Start Random Forest Classifier: |Menu->Tools->Classifier->Membrane detection|
+% 
+% 
+% 
+% <<images/random_forest_4.jpg>>
+% 
+% By default classifier creates a new directory (|RF_Temp|) next to the
+% data location that will be used to store images processed
+% for classification and classifier itself. The temporary directory name and the classifier name can be
+% changed in the |Temp dir| and |Classifier filename| edit boxes.
+%
+% * Select |Object| in the |Object| popup menu
+% * Select |Background| in the |Background| popup menu
+% * Check the |Context size|. In general the short or too much bended membrane profiles
+% require smaller context size.
+% * Check |Membrane thickness|. Put here approximate thickness (in pixels) of the
+% membrane profile. 
+% * Check parameters of the |Votes| section. This section allows to define
+% threshold value for the votes, export votes to matlab and force to get
+% only closed membrane profiles
+% * Press the |Train Classifier| button to process the image and train classifier based on the already
+% segmented areas. The classifier will predict the currently shown slice.
+% If results are not good enough, segment more areas. The areas may be
+% segmented on different slices and during the training will be assembled
+% together.
+%
+% 
+% 
+% <<images/random_forest_5.jpg>>
+% 
+% * When the results of the training is good enough go to the second step
+% in the workflow and press the |Save classifier| button.
+%
+%% Prediction of the whole dataset
+% When training is done and classificator was saved to a disk go to the 3rd
+% step of the workflow: |Predict dataset...|
+% 
+% 
+% 
+% <<images/random_forest_6.jpg>>
+% 
+% This dialog is allowing to start prediction either for any currently
+% shown slice or for the whole dataset at once. So one can test results of
+% the prediction on any random slice and if the results are acceptable
+% press the |Predict dataset| button.
+%
+% When the prediction is finished the results are assigned to the
+% |Selection| layer. From the |Selection| layer the results should be
+% transferred to the |Model| and |Mask| layer for further polishing and
+% saving to disk.
+%
+%% Wiping the temp directory
+% During the prediction the classifier creates quite many large size files
+% in the |RF_Temp| directory. This directory can be deleted by pressing the
+% |Wipe Temp dir| button or manually using any file explorer.
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools.html *Tools*>
+##### SOURCE END #####
+--></body></html>
