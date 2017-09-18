@@ -64,13 +64,13 @@ else
 end
 
 [filename, path, FilterIndex] = uiputfile(Filters, 'Save image...',fn_out); %...
-if isequal(filename,0); return; end; % check for cancel
+if isequal(filename,0); return; end % check for cancel
 
 t1 = 1;
 t2 = obj.mibModel.I{obj.mibModel.Id}.time;
 if obj.mibModel.I{obj.mibModel.Id}.time > 1 && isempty(strfind(Filters{FilterIndex,2}, 'Hierarchical'))
     button = questdlg(sprintf('!!! Warning !!!\nIt is not possible to save 4D dataset into a single file using "%s"\nHowever,\n - it is possible to save a series of 3D files;\n - save the currently shown Z-stack;\n - or save 4D data using the HDF format (press Cancel and select Hierarchical Data Format during saving)', Filters{FilterIndex,2}),'Save image','Save as series of 3D datasets','Save the currently shown Z-stack','Cancel','Save as series of 3D datasets');
-    if strcmp(button, 'Cancel'); return; end;
+    if strcmp(button, 'Cancel'); return; end
     if strcmp(button, 'Save as series of 3D datasets')
         t1 = 1;
         t2 = obj.mibModel.I{obj.mibModel.Id}.time;
@@ -82,7 +82,7 @@ end
 
 [~,filename, ext] = fileparts(filename);
 res = obj.mibModel.updateParameters();
-if res == 0; return; end;   % cancel
+if res == 0; return; end   % cancel
 
 pause(.1);
 showLocalWaitbar = 0;   % switch to show or not wait bar in this function
@@ -230,7 +230,7 @@ for t=t1:t2
                 savingOptions = struct('Resolution', [obj.mibModel.I{obj.mibModel.Id}.meta('XResolution') obj.mibModel.I{obj.mibModel.Id}.meta('YResolution')],...
                     'overwrite', 1, 'Saving3d', NaN, 'cmap', cmap, 'Compression', compression);
                 savingOptions.showWaitbar = ~showLocalWaitbar;
-                if obj.mibModel.I{obj.mibModel.Id}.depth == 1; savingOptions.Saving3d = 'multi'; end;
+                if obj.mibModel.I{obj.mibModel.Id}.depth == 1; savingOptions.Saving3d = 'multi'; end
                 
                 % get list of filenames for slices
                 if isKey(obj.mibModel.I{obj.mibModel.Id}.meta, 'SliceName') && numel(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName')) == obj.mibModel.I{obj.mibModel.Id}.depth && obj.mibModel.I{obj.mibModel.Id}.time == 1
@@ -238,9 +238,9 @@ for t=t1:t2
                 end
             end
             [result, savingOptions] = mibImage2tiff(fullfile(path, fnOut), img, savingOptions, ImageDescription);
-            if isfield(savingOptions, 'SliceName'); savingOptions = rmfield(savingOptions, 'SliceName'); end; % remove SliceName field when saving series of 2D files
+            if isfield(savingOptions, 'SliceName'); savingOptions = rmfield(savingOptions, 'SliceName'); end % remove SliceName field when saving series of 2D files
     end
-    if showLocalWaitbar;        waitbar(t/dT, wb);    end;
+    if showLocalWaitbar;        waitbar(t/dT, wb);    end
 end
 obj.updateFilelist([filename ext]);     % update list of files, use filename to highlight the saved file
 if showLocalWaitbar; delete(wb); end;

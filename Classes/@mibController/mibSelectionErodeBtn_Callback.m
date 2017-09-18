@@ -74,10 +74,13 @@ else                    % when only 1 value - calculate the second from the pixS
     end
 end
 
-if se_size(1) == 0 || se_size(2) == 0
-    msgbox('Strel size should be larger than 0','Wrong strel size','error','modal');
-    return;
-end
+% if se_size(1) == 0 || se_size(2) == 0
+%     msgbox('Strel size should be larger than 0','Wrong strel size','error','modal');
+%     return;
+% end
+
+if se_size(1) < 1; se_size(1) = 1; end
+if se_size(2) < 1; se_size(2) = 1; end  
 
 if switch3d         % do in 3D
     wb = waitbar(0,sprintf('Eroding selection...\nStrel size: XY=%d x Z=%d',se_size(1)*2+1,se_size(2)*2+1),'Name','Eroding...','WindowStyle','modal');
@@ -108,7 +111,7 @@ else    % do in 2d layer by layer
     se = zeros([se_size(1)*2+1 se_size(2)*2+1],'uint8');
     se(se_size(1)+1,se_size(2)+1) = 1;
     se = bwdist(se); 
-    se = uint8(se <= se_size(1));
+    se = uint8(se <= max(se_size));
 
     if strcmp(sel_switch,'2D')
         eroded_img = imerode(cell2mat(obj.mibModel.getData2D('selection')), se);

@@ -41,24 +41,24 @@ function [height, width, color, depth, time] = getDatasetDimensions(obj, type, o
 % Updates
 % 
 
-if nargin < 5; options = struct(); end;
-if nargin < 4; color = NaN; end;
-if nargin < 3; orient = NaN; end;
-if nargin < 2; type = 'image'; end;
+if nargin < 5; options = struct(); end
+if nargin < 4; color = NaN; end
+if nargin < 3; orient = NaN; end
+if nargin < 2; type = 'image'; end
 
-if ~isfield(options, 'blockModeSwitch'); options.blockModeSwitch = obj.blockModeSwitch; end;
+if ~isfield(options, 'blockModeSwitch'); options.blockModeSwitch = obj.blockModeSwitch; end
 if ~isfield(options, 'orientation')     
     options.orientation = obj.orientation; 
-end;
+end
 
-if isnan(orient); orient = options.orientation; end;
+if isnan(orient) || orient == 0; orient = options.orientation; end
 if isnan(color)
     if strcmp(type,'image')
         color = obj.slices{3};
     end
 elseif color==0
     color = 1:obj.colors;   % get vector of all colors
-end;
+end
 
 time = obj.time;
 

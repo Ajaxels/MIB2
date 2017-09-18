@@ -544,7 +544,7 @@ for fn_index = 1:no_files
             xyzZero(3), xyzZero(3)+dz);
         
         for labelId = 1:size(info.labels,1)
-            labelOut = sprintf('%s\t%s', labelOut, regexprep(info.labels(labelId,:), '\s+', ' '));
+            labelOut = sprintf('%s|%s', labelOut, regexprep(info.labels(labelId,:), '\s+', ' '));
         end
         info.ImageDescription = labelOut;
         if isKey(img_info, 'ColorType')

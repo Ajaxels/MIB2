@@ -66,6 +66,8 @@ classdef mibModel < handle
         % loaded or imported a new dataset
         plotImage
         % ask to redraw the image from mibController
+        setData
+        % when the set data method was used
         showMask
         % an event that enables the obj.mibController.mibView.handles.mibMaskShowCheck.Value
         showModel

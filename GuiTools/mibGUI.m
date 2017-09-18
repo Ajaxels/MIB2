@@ -22,7 +22,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 26-Apr-2017 19:36:06
+% Last Modified by GUIDE v2.5 19-Jun-2017 09:20:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -1672,6 +1672,11 @@ handles.mibController.menuImageInvert_Callback(parameter);
 end
 
 % --------------------------------------------------------------------
+function menuImageToolsBorder_Callback(hObject, eventdata, handles)
+handles.mibController.startController('mibImageSelectFrameController');
+end
+
+% --------------------------------------------------------------------
 function menuImageMorph_Callback(hObject, eventdata, handles, parameter)
 handles.mibController.startController('mibImageMorphOpsController', parameter);
 end
@@ -1902,7 +1907,7 @@ global mibPath;
 switch hObject.Tag
     %case 'backRem_panel';            web(fullfile(mibPath, 'techdoc/html/ug_panel_bg_removal.html'), '-helpbrowser');
     case 'menuHelpClassRef'
-        if isdir(fullfile(mibPath, 'techdoc', 'ClassReference'))
+        if exist(fullfile(mibPath, 'techdoc', 'ClassReference','index.html'), 'file')
             web(fullfile(mibPath, 'techdoc/ClassReference/index.html'), '-helpbrowser');
         else
             web('http://mib.helsinki.fi/help/api2/index.html', '-helpbrowser');

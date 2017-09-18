@@ -89,10 +89,12 @@ drawnow;    % set delay
     Item = jImageMenu.getMenuComponent(3);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'invert.png')));
     Item = jImageMenu.getMenuComponent(5);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'tools.png')));
+    Item = jImageMenu.getMenuComponent(6);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'tophat.png')));
-    Item = jImageMenu.getMenuComponent(7);
+    Item = jImageMenu.getMenuComponent(8);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'intensity.png')));
-
+    
 jModelMenu = jMenuBar.getComponent(3);
 jModelMenu.doClick; % open the Models menu
 drawnow;    % set delay

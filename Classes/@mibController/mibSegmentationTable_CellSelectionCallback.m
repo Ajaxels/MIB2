@@ -14,6 +14,7 @@ function mibSegmentationTable_CellSelectionCallback(obj, eventdata)
 %
 % Updates
 % 21.04.2017, IB updated for 65635 type of models
+% 04.08.2017, IB updated to 'e' shortcut use
 
 if isempty(eventdata.Indices); return; end
 if size(eventdata.Indices,1) > 1 && eventdata.Indices(1,1) == 1 % check for Ctrl+A press
@@ -40,15 +41,16 @@ if Indices(2) == 2        % selection of Material
     selectedMaterial = Indices(1);
     obj.mibModel.I{obj.mibModel.Id}.selectedMaterial = selectedMaterial;
     
-    if selectedMaterial > 2
-        obj.mibView.lastSegmSelection = selectedMaterial;
+    if ~ismember(selectedMaterial, obj.mibView.lastSegmSelection)
+        obj.mibView.lastSegmSelection(1) = obj.mibView.lastSegmSelection(2);
+        obj.mibView.lastSegmSelection(2) = selectedMaterial;
     end
     
     if unlink == 0
         obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial = selectedMaterial;
         jTable.setValueAt(java.lang.Boolean(0), prevMaterial-1, 2);
         drawnow;
-        jTable.setValueAt(java.lang.Boolean(1),selectedMaterial-1, 2);
+        jTable.setValueAt(java.lang.Boolean(1), selectedMaterial-1, 2);
     end
     obj.mibView.handles.mibSegmentationTable.UserData = userData;
 elseif Indices(2) == 3    % click on the Add to checkbox
@@ -77,8 +79,9 @@ elseif Indices(2) == 3    % click on the Add to checkbox
     
     if unlink == 0
         obj.mibModel.I{obj.mibModel.Id}.selectedMaterial = selectedMaterial;
-        if selectedMaterial > 2
-            obj.mibView.lastSegmSelection = selectedMaterial;
+        if ~ismember(selectedMaterial, obj.mibView.lastSegmSelection)
+            obj.mibView.lastSegmSelection(1) = obj.mibView.lastSegmSelection(2);
+            obj.mibView.lastSegmSelection(2) = selectedMaterial;
         end
     end
     obj.mibView.handles.mibSegmentationTable.UserData = userData;

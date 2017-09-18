@@ -34,8 +34,8 @@ mypath = obj.mibView.handles.mibPathEdit.String;
     '*.tif;', 'TIF format (*.tif)'; ...
     '*.*', 'All Files (*.*)'}, ...
     'Open mask data...', mypath, 'MultiSelect', 'on');
-if isequal(filename,0); return; end; % check for cancel
-if ischar(filename); filename = cellstr(filename); end;     % convert to cell type
+if isequal(filename,0); return; end % check for cancel
+if ischar(filename); filename = cellstr(filename); end     % convert to cell type
 %warning('off','MATLAB:gui:latexsup:UnableToInterpretTeXString');    % switch off warnings for latex
 curInt = get(0, 'DefaulttextInterpreter'); 
 set(0, 'DefaulttextInterpreter', 'none'); 

@@ -31,3 +31,5 @@ if strcmp(button, 'Cancel'); return; end
 if obj.matlabVersion < 9.2; return; end
 I = obj.mibModel.getData3D('image');
 volumeViewer(squeeze(I{1}));
+return
+       

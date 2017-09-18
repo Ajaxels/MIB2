@@ -17,7 +17,7 @@ function varargout = mibWatershedGUI(varargin)
 
 % Edit the above text to modify the response to help mibWatershedGUI
 
-% Last Modified by GUIDE v2.5 26-Mar-2017 12:10:54
+% Last Modified by GUIDE v2.5 10-Sep-2017 10:46:32
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -49,7 +49,7 @@ function mibWatershedGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % obtain controller
 handles.winController = varargin{1};
-handles.mibWatershedGUI.Position = [389.25 594.0 256 450.75];
+handles.mibWatershedGUI.Position = [389.25 594.0 256 471.75];
 
 % radio button callbacks
 handles.watershedSourcePanel.SelectionChangeFcn = @distanceRadio_Callback;
@@ -67,6 +67,9 @@ handles.output = hObject;
 % Place panels
 pos = handles.imageSegmentationPanel.Position;
 handles.objectSeparationPanel.Position = pos;
+
+% add text
+handles.realtimeText.String = sprintf('Please note that the Auto update mode works only when modifying with the currenly shown slice');
 
 % Determine the position of the dialog - on a side of the main figure
 % if available, else, centered on the main figure
@@ -139,6 +142,8 @@ end
 
 % --- Executes on button press in imageSegmentationToggle.
 function imageSegmentationToggle_Callback(hObject, eventdata, handles)
+handles.realtimeCheck.Visible = 'off';
+handles.realtimeText.Visible = 'off';
 handles.winController.imageSegmentationToggle_Callback();
 end
 
@@ -149,6 +154,8 @@ end
 
 % --- Executes on button press in graphCutToggle.
 function graphCutToggle_Callback(hObject, eventdata, handles)
+handles.realtimeCheck.Visible = 'on';
+handles.realtimeText.Visible = 'on';
 handles.winController.graphCutToggle_Callback();
 end
 
@@ -244,7 +251,7 @@ curVal = hObject.Value;
 if curVal == 0 
     hObject.Value = 1; 
     return; 
-end;
+end
 handles.watSourceTxt1.Visible = 'off';
 handles.watSourceTxt2.Visible = 'off';
 handles.imageIntensityColorCh.Visible = 'off';
@@ -317,13 +324,25 @@ end
 
 % --- Executes on selection change in superpixTypePopup.
 function superpixTypePopup_Callback(hObject, eventdata, handles, parameter)
-if nargin < 4;    parameter = 'keep'; end;
+if nargin < 4;    parameter = 'keep'; end
 handles.winController.superpixTypePopup_Callback(parameter);
 end
 
 
 % --- Executes on button press in recalcGraph.
 function recalcGraph_Callback(hObject, eventdata, handles, showWaitbar)
-if nargin < 4;    showWaitbar = 0; end;
+if nargin < 4;    showWaitbar = 0; end
 handles.winController.recalcGraph_Callback(showWaitbar);
+end
+
+
+% --- Executes on button press in realtimeCheck.
+function realtimeCheck_Callback(hObject, eventdata, handles)
+handles.winController.realtimeSwitch = handles.realtimeCheck.Value;
+end
+
+
+% --- Executes on button press in pixelIdxListCheck.
+function pixelIdxListCheck_Callback(hObject, eventdata, handles)
+handles.winController.pixelIdxListCheck_Callback();
 end

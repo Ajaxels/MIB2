@@ -66,6 +66,8 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'techdoc'));
     addpath(fullfile(func_dir, 'Tools'));
     addpath(fullfile(func_dir, 'Tools','FastMarching'));
+    addpath(fullfile(func_dir, 'Tools','FastMarching','functions'));
+    addpath(fullfile(func_dir, 'Tools','FastMarching','shortestpath'));
     addpath(fullfile(func_dir, 'Tools','Frangi'));
     addpath(fullfile(func_dir, 'Tools','imclipboard'));
     addpath(fullfile(func_dir, 'Tools','RandomForest'));

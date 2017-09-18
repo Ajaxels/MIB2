@@ -43,6 +43,12 @@ end
 
 %slice = bwmorph(slice,'thin','Inf');    % thin the curve as much as possible
 
+STATS = regionprops(CC, 'PixelList','PixelIdxList','FilledArea','Centroid', 'BoundingBox');
+
+
+
+
+
 STATS = regionprops(CC, 'PixelList','PixelIdxList','FilledArea','Centroid');
 for objId = 1:CC.NumObjects
     if numel(STATS(objId).PixelIdxList) == STATS(objId).FilledArea  % non-closed line
@@ -103,7 +109,7 @@ for objId = 1:CC.NumObjects
             end
             if pointId == 1      % for the 1st point
                 nextPnt = nextPnt(1);
-            end;
+            end
             if numel(nextPnt) > 1
                 msgbox(sprintf('Branch point are detected at coordinates X=%d Y=%d\nPlease fix it and try again!', currCoordinates(1), currCoordinates(2)), 'Branch point detected','error');
                 STATS = NaN;

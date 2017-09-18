@@ -16,10 +16,10 @@ function mibSelectionDilateBtn_Callback(obj, sel_switch)
 % of the License, or (at your option) any later version.
 % 
 % Updates
-% 
+% 30.08.2017 IB added clipping with mask
 
 % do nothing is selection is disabled
-if obj.mibModel.preferences.disableSelection == 1; return; end;
+if obj.mibModel.preferences.disableSelection == 1; return; end
 
 if nargin < 2
     modifier = obj.mibView.gui.CurrentModifier;
@@ -40,7 +40,7 @@ end
 switch3d = obj.mibView.handles.mibActions3dCheck.Value;
 if switch3d == 1
     button = questdlg(sprintf('You are going to dilate the image in 3D!\nContinue?'),'Dilate 3D objects','Continue','Cancel','Continue');
-    if strcmp(button, 'Cancel'); return; end;
+    if strcmp(button, 'Cancel'); return; end
 end
 
 if (switch3d && ~strcmp(sel_switch, '4D') ) || strcmp(sel_switch, '3D')
@@ -68,7 +68,9 @@ end
 selected = NaN;
 if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value  % area for dilation is taken only from selected contour
     selected = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
-end;
+end
+
+maskedSw = obj.mibView.handles.mibMaskedAreaCheck.Value;
 
 width = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, 2);
 height = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, 1);
@@ -89,10 +91,13 @@ else                    % when only 1 value - calculate the second from the pixS
     end
 end
 
-if se_size(1) == 0 || se_size(2) == 0
-    msgbox('Strel size should be larger than 0','Wrong strel size','error','modal');
-    return;
-end
+% if se_size(1) == 0 || se_size(2) == 0
+%     msgbox('Strel size should be larger than 0','Wrong strel size','error','modal');
+%     return;
+% end
+
+if se_size(1) < 1; se_size(1) = 1; end
+if se_size(2) < 1; se_size(2) = 1; end    
 
 if switch3d         % do in 3d
     wb = waitbar(0,sprintf('Dilating selection...\nStrel width: XY=%d x Z=%d',se_size(1)*2+1,se_size(2)*2+1),'Name','Dilating...','WindowStyle','modal');
@@ -124,8 +129,8 @@ if switch3d         % do in 3d
             img(~diff_mask) = 0;
             low_limit = mean_val-std_val;%-thres_down;
             high_limit = mean_val+std_val;%+thres_up;
-            if low_limit < 1; low_limit = 1; end;
-            if high_limit > 255; high_limit = 255; end;
+            if low_limit < 1; low_limit = 1; end
+            if high_limit > 255; high_limit = 255; end
             updated_mask(img>=low_limit & img<=high_limit) = 1;
             selection = existingSelection;
             selection(updated_mask==1) = 1;
@@ -137,6 +142,13 @@ if switch3d         % do in 3d
         if diff_switch
             selection = imabsdiff(uint8(selection), cell2mat(obj.mibModel.getData3D('selection', t, 4)));
         end
+        
+        % clip to mask
+        if maskedSw
+            mask = cell2mat(obj.mibModel.getData3D('mask', t, 4));
+            selection = selection & mask;
+        end
+        
         obj.mibModel.setData3D('selection', {selection}, t, 4);
     end
 else                % do in 2d
@@ -146,7 +158,7 @@ else                % do in 2d
     se = zeros([se_size(1)*2+1 se_size(2)*2+1],'uint8');
     se(se_size(1)+1,se_size(2)+1) = 1;
     se = bwdist(se);
-    se = uint8(se <= se_size(1));
+    se = uint8(se <= max(se_size));
     
     connect8 = obj.mibView.handles.mibMagicwandConnectCheck.Value;
     if strcmp(sel_switch,'2D')
@@ -164,9 +176,9 @@ else                % do in 2d
     for t=t1:t2
         options.t = [t, t];
         for layer_id=start_no:end_no
-            if t1 ~= t2 && mod(layer_id, 10)==0; waitbar(index/max_size2, wb); end;
+            if t1 ~= t2 && mod(layer_id, 10)==0; waitbar(index/max_size2, wb); end
             selection = cell2mat(obj.mibModel.getData2D('selection', layer_id, obj.mibModel.I{obj.mibModel.Id}.orientation, 0, options));
-            if max(max(selection)) < 1; continue; end;
+            if max(max(selection)) < 1; continue; end
             if ~isnan(selected)
                 model = cell2mat(obj.mibModel.getData2D('model', layer_id, obj.mibModel.I{obj.mibModel.Id}.orientation, selected, options));
             end
@@ -204,8 +216,8 @@ else                % do in 2d
                     cropImg(~diff_mask) = 0;
                     low_limit = mean_val-std_val;
                     high_limit = mean_val+std_val;
-                    if low_limit < 1; low_limit = 1; end;
-                    if high_limit > 255; high_limit = 255; end;
+                    if low_limit < 1; low_limit = 1; end
+                    if high_limit > 255; high_limit = 255; end
                     newCropSelection = zeros(size(cropRemembered),'uint8');
                     newCropSelection(cropImg>=low_limit & cropImg<=high_limit) = 1;
                     newCropSelection(cropRemembered==1) = 1;    % combine original and new selection
@@ -242,11 +254,17 @@ else                % do in 2d
                     end
                 end
             end
+            
+            % clip to mask
+            if maskedSw
+                mask = cell2mat(obj.mibModel.getData2D('mask', layer_id, obj.mibModel.I{obj.mibModel.Id}.orientation, NaN, options));
+                sel = sel & mask;
+            end
             obj.mibModel.setData2D('selection', {sel}, layer_id, obj.mibModel.I{obj.mibModel.Id}.orientation, 0, options);
         end
     end
 end
-if exist('wb','var'); delete(wb); end;
+if exist('wb','var'); delete(wb); end
 
 obj.plotImage(0);
 end

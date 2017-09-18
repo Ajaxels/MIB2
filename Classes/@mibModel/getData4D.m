@@ -19,9 +19,9 @@ function dataset = getData4D(obj, type, orient, col_channel, options, custom_img
 % @li .blockModeSwitch -> override the block mode switch mibImage.blockModeSwitch; use or not the block mode (@b 0 - return full dataset, @b 1 - return only the shown part)
 % @li .roiId -> use or not the ROI mode (@b when @b missing or less than 0, return full dataset, without ROI; @b 0 - return all ROIs dataset, @b Index - return ROI with the index, @b [] - currently selected) (@b Attention: see also fillBg parameter!)
 % @li .fillBg -> when @em NaN (@b default) -> crops the dataset as a rectangle; when @em a @em number fills the areas out of the ROI area with this intensity number
-% @li .y -> [@em optional], [ymin, ymax] of the part of the dataset to take
-% @li .x -> [@em optional], [xmin, xmax] of the part of the dataset to take
-% @li .z -> [@em optional], [zmin, zmax] of the part of the dataset to take
+% @li .y -> [@em optional], [ymin, ymax] of the part of the dataset to take (sets .blockModeSwitch to 0)
+% @li .x -> [@em optional], [xmin, xmax] of the part of the dataset to take (sets .blockModeSwitch to 0)
+% @li .z -> [@em optional], [zmin, zmax] of the part of the dataset to take (sets .blockModeSwitch to 0)
 % @li .t -> [@em optional], [tmin, tmax] of the part of the dataset to take
 % @li .level -> [@em optional], index of image level from the image pyramid
 % @li .id -> [@em optional], an index dataset from 1 to 9, defalt = currently shown dataset
@@ -46,27 +46,34 @@ function dataset = getData4D(obj, type, orient, col_channel, options, custom_img
 % of the License, or (at your option) any later version.
 % 
 % Updates
-% 
+% 16.08.2017, IB added forcing of the block mode off, when x, y, or z parameter is present in options
+ 
 
-if nargin < 6; custom_img = NaN; end;
-if nargin < 5; options = struct();  end;
-if nargin < 4; col_channel = NaN;   end;
-if nargin < 3; orient = NaN; end;
+if nargin < 6; custom_img = NaN; end
+if nargin < 5; options = struct();  end
+if nargin < 4; col_channel = NaN;   end
+if nargin < 3; orient = NaN; end
 
-if ~isfield(options, 'id'); options.id = obj.Id; end;
-if ~isfield(options, 'fillBg'); options.fillBg = NaN; end;
-if ~isfield(options, 'blockModeSwitch'); options.blockModeSwitch = obj.getImageProperty('blockModeSwitch'); end;
+if ~isfield(options, 'id'); options.id = obj.Id; end
+if ~isfield(options, 'fillBg'); options.fillBg = NaN; end
+if ~isfield(options, 'blockModeSwitch')
+    if isfield(options, 'x') || isfield(options, 'y') || isfield(options, 'z')
+        options.blockModeSwitch = 0; 
+    else
+        options.blockModeSwitch = obj.getImageProperty('blockModeSwitch'); 
+    end
+end
 if ~isfield(options, 'roiId');    options.roiId = -1;  end
 if isempty(options.roiId)
     options.roiId = obj.I{obj.Id}.selectedROI;
 end
-if options.blockModeSwitch == 1; options.roiId = -1; end;   % turn off the ROI mode, when the block mode is on
+if options.blockModeSwitch == 1; options.roiId = -1; end   % turn off the ROI mode, when the block mode is on
 
-if orient == 0 || isnan(orient); orient=obj.I{options.id}.orientation; end;
+if orient == 0 || isnan(orient); orient=obj.I{options.id}.orientation; end
 
 if strcmp(type,'image')
-    if isnan(col_channel); col_channel=obj.I{options.id}.slices{3}; end;
-    if col_channel(1) == 0;  col_channel = 1:obj.I{options.id}.colors; end;
+    if isnan(col_channel); col_channel=obj.I{options.id}.slices{3}; end
+    if col_channel(1) == 0;  col_channel = 1:obj.I{options.id}.colors; end
 end
 
 if isfield(options, 'blockModeSwitch')

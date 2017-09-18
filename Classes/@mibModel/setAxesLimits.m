@@ -30,26 +30,29 @@ if nargin < 3
     errordlg(sprintf('!!! Error !!!\n\nthe axesX, axesY parameters are missing'),'mibModel.setAxesLimits');
     return; 
 end
-obj.I{id}.axesX = axesX;
-obj.I{id}.axesY = axesY;
 
-% update obj.slices
-if obj.I{id}.orientation == 4     % xy
-    obj.I{id}.slices{1}(1) = ceil(max([axesY(1) 1]));
-    obj.I{id}.slices{1}(2) = ceil(min([axesY(2) obj.I{id}.height]));
-    obj.I{id}.slices{2}(1) = ceil(max([axesX(1) 1]));
-    obj.I{id}.slices{2}(2) = ceil(min([axesX(2) obj.I{id}.width]));
-elseif obj.I{id}.orientation == 1     % xz
-    obj.I{id}.slices{2}(1) = ceil(max([axesY(1) 1]));
-    obj.I{id}.slices{2}(2) = ceil(min([axesY(2) obj.I{id}.width]));
-    obj.I{id}.slices{4}(1) = ceil(max([axesX(1) 1]));
-    obj.I{id}.slices{4}(2) = ceil(min([axesX(2) obj.I{id}.depth]));    
-elseif obj.I{id}.orientation == 2     % yz
-    obj.I{id}.slices{1}(1) = ceil(max([axesY(1) 1]));
-    obj.I{id}.slices{1}(2) = ceil(min([axesY(2) obj.I{id}.height]));
-    obj.I{id}.slices{4}(1) = ceil(max([axesX(1) 1]));
-    obj.I{id}.slices{4}(2) = ceil(min([axesX(2) obj.I{id}.depth])); 
-end
+obj.I{id}.updateSlicesStructure(axesX, axesY);
+
+% obj.I{id}.axesX = axesX;
+% obj.I{id}.axesY = axesY;
+% 
+% % update obj.slices
+% if obj.I{id}.orientation == 4     % xy
+%     obj.I{id}.slices{1}(1) = ceil(max([axesY(1) 1]));
+%     obj.I{id}.slices{1}(2) = ceil(min([axesY(2) obj.I{id}.height]));
+%     obj.I{id}.slices{2}(1) = ceil(max([axesX(1) 1]));
+%     obj.I{id}.slices{2}(2) = ceil(min([axesX(2) obj.I{id}.width]));
+% elseif obj.I{id}.orientation == 1     % xz
+%     obj.I{id}.slices{2}(1) = ceil(max([axesY(1) 1]));
+%     obj.I{id}.slices{2}(2) = ceil(min([axesY(2) obj.I{id}.width]));
+%     obj.I{id}.slices{4}(1) = ceil(max([axesX(1) 1]));
+%     obj.I{id}.slices{4}(2) = ceil(min([axesX(2) obj.I{id}.depth]));    
+% elseif obj.I{id}.orientation == 2     % yz
+%     obj.I{id}.slices{1}(1) = ceil(max([axesY(1) 1]));
+%     obj.I{id}.slices{1}(2) = ceil(min([axesY(2) obj.I{id}.height]));
+%     obj.I{id}.slices{4}(1) = ceil(max([axesX(1) 1]));
+%     obj.I{id}.slices{4}(2) = ceil(min([axesX(2) obj.I{id}.depth])); 
+% end
 end
 
 

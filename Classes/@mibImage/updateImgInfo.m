@@ -34,15 +34,19 @@ function updateImgInfo(obj, addText, action, entryIndex)
 %
 
 add_switch = 0;
-if nargin < 3; add_switch = 1; end;     % adding addText to the end of the list
+if nargin < 3; add_switch = 1; end    % adding addText to the end of the list
 
-if isnan(addText) == 1; add_switch = 0; end;
+if isnan(addText) == 1; add_switch = 0; end
 curr_text = obj.meta('ImageDescription');
 if add_switch   % add text
-    if strcmp(curr_text(end),sprintf('|'))
-        obj.meta('ImageDescription') = [curr_text sprintf('MIB(') datestr(now,'yymmddHHMM') '): ' addText];
+    if isempty(curr_text)
+        obj.meta('ImageDescription') = [curr_text sprintf('|MIB(') datestr(now,'yymmddHHMM') '): ' addText];    
     else
-        obj.meta('ImageDescription') = [curr_text sprintf('|MIB(') datestr(now,'yymmddHHMM') '): ' addText];
+        if strcmp(curr_text(end),sprintf('|'))
+            obj.meta('ImageDescription') = [curr_text sprintf('MIB(') datestr(now,'yymmddHHMM') '): ' addText];
+        else
+            obj.meta('ImageDescription') = [curr_text sprintf('|MIB(') datestr(now,'yymmddHHMM') '): ' addText];
+        end
     end
 else            % insert or delete entry
     % generate list of entries

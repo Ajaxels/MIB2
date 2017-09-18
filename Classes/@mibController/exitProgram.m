@@ -43,7 +43,7 @@ mib_pars.lastpath = obj.mibModel.myPath;    % store current path
 mib_pars.preferences = obj.mibModel.preferences; %#ok<STRNU>     % store preferences
 
 os = getenv('OS');
-if strcmp(os,'Windows_NT')
+if strcmp(os, 'Windows_NT')
     if isdir(['c:' filesep 'temp']) == 0; [~, ~, messageid] = mkdir(['c:' filesep 'temp']);        end;    % create a tmp directory for storing im_browser parameters
     try
         save(['c:' filesep 'temp' filesep 'mib.mat'],'mib_pars');

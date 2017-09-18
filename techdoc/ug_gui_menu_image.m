@@ -87,6 +87,26 @@
 % * *Current stack (3D)*, invert the current stack of the dataset
 % * *Complete volume (4D)*, invert complete dataset
 %
+%% Tools for images
+% In this section, MIB has tools that are targeted for manipulation of the
+% image layer.
+%
+% 
+% *Select image frame*
+%
+% 
+% <<images\image_border_detection.png>>
+% 
+% Detects the frame (which is an area of the same intensity that touches edge
+% of the image) of the image. The detected area can be assinged to the
+% |Selection| or |Mask| layers, or that area can be replaced with another
+% color for the |Image| layer.
+% 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/sWjipmeU5eA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/sWjipmeU5eA</a>
+% </html>
+%
 %% Morphological operations
 % This section contains number of morphological operations that can be
 % applied to images. The processed image may be also added or subtracted

@@ -44,7 +44,7 @@ if isempty(modelType)
     if isempty(modelType); return; end
 end
 
-wb = waitbar(0, 'Please wait...', 'Name', 'Crating model', 'WindowStyle', 'modal');
+wb = waitbar(0, 'Please wait...', 'Name', 'Create model', 'WindowStyle', 'modal');
 
 switch modelType
     case {63, 255}
@@ -59,7 +59,7 @@ end
 waitbar(0.9, wb);
 
 % last selected contour for use with the 'e' button
-obj.mibView.lastSegmSelection = 1;
+obj.mibView.lastSegmSelection = [2 1];
 
 obj.updateGuiWidgets();
 waitbar(0.95, wb);

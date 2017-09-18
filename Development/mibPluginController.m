@@ -1,4 +1,4 @@
-classdef mibChildController < handle
+classdef mibPluginController < handle
     properties
         mibModel
         % handles to the model
@@ -37,9 +37,9 @@ classdef mibChildController < handle
     end
     
     methods
-        function obj = mibChildController(mibModel)
+        function obj = mibPluginController(mibModel)
             obj.mibModel = mibModel;    % assign model
-            guiName = 'mibChildGUI';
+            guiName = 'mibPluginGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
             % resize all elements of the GUI
@@ -67,7 +67,7 @@ classdef mibChildController < handle
         end
         
         function closeWindow(obj)
-            % closing mibChildController window
+            % closing mibPluginController window
             if isvalid(obj.View.gui)
                 delete(obj.View.gui);   % delete childController window
             end

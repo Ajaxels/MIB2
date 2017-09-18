@@ -23,8 +23,8 @@ function result = setData2D(obj, type, slice, slice_no, orient, col_channel, opt
 % @li .blockModeSwitch -> override the block mode switch mibImage.blockModeSwitch; use or not the block mode (@b 0 - update full dataset, @b 1 - update only the shown part)
 % @li .roiId -> use or not the ROI mode (@b when @b missing or less than 0, update full dataset, without ROI; @b 0 - update all ROIs of dataset, @b Index - update ROI with the index, @b [] - currently selected) (@b Attention: see also fillBg parameter!)
 % @li .fillBg -> when @b 1 -> keep the background from @b slice; when @b NaN or @b[] [@b default] -> crop @b slice with respect to the ROI shape
-% @li .y -> [@em optional], [ymin, ymax] of the part of the slice to set
-% @li .x -> [@em optional], [xmin, xmax] of the part of the slice to set
+% @li .y -> [@em optional], [ymin, ymax] of the part of the slice to set (sets .blockModeSwitch to 0)
+% @li .x -> [@em optional], [xmin, xmax] of the part of the slice to set (sets .blockModeSwitch to 0)
 % @li .t -> [@em optional], [tmin, tmax] indicate the time point to set, when missing return the currently selected time point
 % @li .level -> [@em optional], index of image level from the image pyramid
 % @li .id -> [@em optional], an index dataset from 1 to 9, defalt = currently shown dataset
@@ -47,7 +47,7 @@ function result = setData2D(obj, type, slice, slice_no, orient, col_channel, opt
 % of the License, or (at your option) any later version.
 % 
 % Updates
-% 
+% 16.08.2017, IB added forcing of the block mode off, when x, y, or z parameter is present in options
 
 if nargin < 7; options = struct();   end
 if nargin < 6; col_channel = NaN;   end
@@ -56,7 +56,13 @@ if nargin < 4; slice_no = NaN; end
 
 if ~isfield(options, 'id'); options.id = obj.Id; end
 if ~isfield(options, 'fillBg'); options.fillBg = NaN; end
-if ~isfield(options, 'blockModeSwitch'); options.blockModeSwitch = obj.getImageProperty('blockModeSwitch'); end
+if ~isfield(options, 'blockModeSwitch')
+    if isfield(options, 'x') || isfield(options, 'y') || isfield(options, 'z')
+        options.blockModeSwitch = 0; 
+    else
+        options.blockModeSwitch = obj.getImageProperty('blockModeSwitch'); 
+    end
+end
 if ~isfield(options, 'roiId');    options.roiId = -1;  end
 if isempty(options.roiId)     
     options.roiId = obj.I{options.id}.selectedROI;
@@ -114,4 +120,11 @@ else
         result = obj.I{options.id}.setData(type, slice, orient, col_channel, options);    
     end
 end
+
+% notify about setData method used
+setDataOpt.type = type;
+setDataOpt.mode = '2D';
+eventdata = ToggleEventData(setDataOpt);
+notify(obj, 'setData', eventdata);
+
 end

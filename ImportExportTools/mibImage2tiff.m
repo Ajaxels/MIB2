@@ -61,13 +61,13 @@ if nargin < 3
     options.cmap = NaN;
 end
 
-if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1; end;
-if ~isfield(options, 'Compression'); options.Compression = 'lzw'; end;
-if ~isfield(options, 'Resolution'); options.Resolution = [72 72]; end;
-if ~isfield(options, 'overwrite'); options.overwrite = 0; end;
-if ~isfield(options, 'Saving3d'); options.Saving3d = NaN; end;
-if ~isfield(options, 'cmap'); options.cmap = NaN; end;
-if isempty(options.Resolution); options.Resolution = [72 72]; end;
+if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1; end
+if ~isfield(options, 'Compression'); options.Compression = 'lzw'; end
+if ~isfield(options, 'Resolution'); options.Resolution = [72 72]; end
+if ~isfield(options, 'overwrite'); options.overwrite = 0; end
+if ~isfield(options, 'Saving3d'); options.Saving3d = NaN; end
+if ~isfield(options, 'cmap'); options.cmap = NaN; end
+if isempty(options.Resolution); options.Resolution = [72 72]; end
 
 if isnan(options.Saving3d)
     choice = questdlg('Would you like to save it as a 3D-tif or as a sequence of 2D-tif files?','Save as...','3D-TIF','Sequence of 2D files','Cancel','3D-TIF');
@@ -86,7 +86,7 @@ if options.overwrite == 0
     if exist(filename,'file') == 2
         reply = input('File exists! Overwrite? [y/N]:','s');
         if ~strcmp(reply,'y'); disp('Cancel, nothing was saved!'); return; end;
-    end;
+    end
 end
 % if numel(size(imageS)) == 3 && size(imageS,3) ~= 3
 %     imageS = reshape(imageS,size(imageS,1), size(imageS,2), 1, size(imageS,3));
@@ -113,23 +113,23 @@ if isnan(options.cmap)  % grayscale or rgb image
 end
 
 files_no = size(imageS,4);
-if options.showWaitbar;
+if options.showWaitbar
     wb = waitbar(0,sprintf('%s\nPlease wait...',filename),'Name','Saving images','WindowStyle','modal');
     set(findall(wb,'type','text'),'Interpreter','none');
     waitbar(0, wb);
-end;
+end
 if strcmp(options.Saving3d,'multi')
     if isnan(options.cmap)  % grayscale or rgb image
         imwrite(squeeze(imageS(:,:,:,1)),filename,'tif','WriteMode','overwrite','Description',cell2mat(ImageDescription(1)),'Resolution',options.Resolution,'Compression',options.Compression);
         for num = 2:files_no
             imwrite(squeeze(imageS(:,:,:,num)),filename,'tif','WriteMode','append','Description',cell2mat(ImageDescription(num)),'Resolution',options.Resolution,'Compression',options.Compression);
-            if options.showWaitbar; waitbar(num/files_no,wb); end;
+            if options.showWaitbar; waitbar(num/files_no,wb); end
         end
     else    % indexed image
         imwrite(imageS(:,:,:,1),options.cmap,filename,'tif','Compression','lzw','WriteMode','overwrite','Description',cell2mat(ImageDescription(1)),'Resolution',options.Resolution,'Compression',options.Compression);
         for num = 2:files_no
             imwrite(imageS(:,:,:,num),options.cmap,filename,'tif','Compression','lzw','WriteMode','append','Description',cell2mat(ImageDescription(num)),'Resolution',options.Resolution,'Compression',options.Compression);
-            if options.showWaitbar; waitbar(num/files_no,wb); end;
+            if options.showWaitbar; waitbar(num/files_no,wb); end
         end
     end
     options.SliceName{1} = filename;
@@ -140,14 +140,13 @@ elseif strcmp(options.Saving3d,'sequence')
         switch choice
             case 'Cancel'
                 disp('Cancelled!')
-                if options.showWaitbar; delete(wb); end;
+                if options.showWaitbar; delete(wb); end
                 return;
             case 'Original'
                 sequentialFn = 0;
             case 'Sequential'
                 sequentialFn = 1;
         end
-    sequentialFn = 0;
     end
     
     [pathstr, name] = fileparts(filename);

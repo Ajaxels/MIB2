@@ -22,7 +22,7 @@ if obj.mibModel.I{obj.mibModel.Id}.maskExist == 0
     obj.mibView.handles.mibMaskShowCheck.Value = 0;
     obj.mibModel.mibMaskShowCheck = 0;
     return;
-end;
+end
 obj.mibModel.mibMaskShowCheck = obj.mibView.handles.mibMaskShowCheck.Value;
 obj.plotImage(0);
 unFocus(obj.mibView.handles.mibMaskShowCheck);   % remove focus from hObject

@@ -22,13 +22,13 @@ function menuFileImportImage_Callback(obj, parameter)
 
 global mibPath;
 
-if nargin < 2;     parameter = 'matlab'; end;
+if nargin < 2;     parameter = 'matlab'; end
 switch parameter
     case 'matlab'
         prompt = {'Image variable (h:w:color:index):','Image meta variable (containers.Map)'};
         options.Resize='on';
         answer = inputdlg(prompt(1:2), 'Import from Matlab', 1, {'I','I_meta'}, options);
-        if size(answer) == 0; return; end;
+        if size(answer) == 0; return; end
         
         try
             img = evalin('base',answer{1});
@@ -36,13 +36,13 @@ switch parameter
             errordlg(sprintf('The variable was not found in the Matlab base workspace:\n\n%s', exception.message),'Misssing variable!','modal');
             return;
         end
-        if isstruct(img); img = img.data; end;  % check for Amira structures
+        if isstruct(img); img = img.data; end  % check for Amira structures
     case 'clipboard'
         img = imclipboard('paste');
         answer{2} = '';
     case 'imaris'
         [img, answer{2}, viewPort, lutColors, obj.connImaris] = mibGetImarisDataset(obj.connImaris);
-        if isnan(img(1)); return; end;
+        if isnan(img(1)); return; end
         obj.mibView.handles.mibLutCheckbox.Value = 1;
         obj.mibModel.useLUT = 1;
     case 'url'
@@ -58,7 +58,7 @@ switch parameter
         %options.Resize='on';
         %answer = inputdlg(prompt,'Open URL',1,{webLink},options);
         answer = mibInputDlg({mibPath}, prompt,'Open URL',webLink);
-        if size(answer) == 0; return; end;
+        if size(answer) == 0; return; end
         answer{2} = containers.Map('URL', answer{1});
         try
             info = imfinfo(answer{1});
@@ -136,7 +136,7 @@ if isa(img, 'double')
     end
     button = questdlg(sprintf('The variable that you have entered is in the double format\n would you like to convert it to %s format and continue?',class_id),...
         'Warning','Proceed','Cancel','Proceed');
-    if strcmp(button,'Cancel');  return; end;
+    if strcmp(button,'Cancel');  return; end
     str2 = ['img = ' class_id '(img);'];
     eval(str2);
 elseif islogical(img)   % convert logical data type to uint8
@@ -147,7 +147,7 @@ if numel(size(img)) == 3 && size(img, 3) > 3    % reshape original dataset to w:
     button = questdlg(sprintf('The layer channel in the imported image is missing!\nWould you like to move the color channel to the layer channel?'),'Convert?','Yes','No','Yes');
     if strcmp(button,'Yes')
         img = reshape(img, size(img,1),size(img,2),1,size(img,3));
-    end;
+    end
 end
 
 if (~isempty(answer{2})) 
@@ -177,7 +177,7 @@ if strcmp(parameter, 'imaris')
     obj.mibModel.I{obj.mibModel.Id}.lutColors = lutColors;
 end
 
-obj.mibView.lastSegmSelection = 1;  % last selected contour for use with the 'e' button
+obj.mibView.lastSegmSelection = [2 1];  % last selected contour for use with the 'e' button
 notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details
 obj.plotImage(1);
 end

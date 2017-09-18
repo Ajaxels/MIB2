@@ -167,11 +167,13 @@ classdef mibImage < matlab.mixin.Copyable
         
         convertModel(obj, type)        % Convert model from obj.modelType==63 to obj.modelType==255 and other way around
         
+        PixelIdxList = convertPixelIdxListCrop2Full(obj, PixelIdxListCrop, options)  % convert PixelIdxList of the cropped dataset to PixelIdxList of the full  dataset, only for 4D datasets (h, w, depth, time)
+        
         copyColorChannel(obj, channel1, channel2)        % Copy intensity from the first color channel (@em channel1) to the position of the second color channel (@em channel2)
         
         result = copySlice(obj, sliceNumberFrom, sliceNumberTo, orient)        % Copy specified slice from one part of the dataset to another
         
-        createModel(obj, model_type)        % Create an empty model: allocate memory for a new model
+        createModel(obj, model_type, modelMaterialNames)        % Create an empty model: allocate memory for a new model
         
         cropDataset(obj, cropF)        % Crop image and all corresponding layers of the opened dataset
         
@@ -183,7 +185,7 @@ classdef mibImage < matlab.mixin.Copyable
         
         bb = getBoundingBox(obj)        % Get Bounding box info as a vector [xmin, width, ymin, height, zmin, thickness]
         
-        [yMin, yMax, xMin, xMax] = getCoordinatesOfShownImage(obj)        % return minimal and maximal coordinates (XY) of the image that is currently shown
+        [yMin, yMax, xMin, xMax, zMin, zMax] = getCoordinatesOfShownImage(obj, transposeTo4)        % return minimal and maximal coordinates (XY) of the image that is currently shown
         
         slice_no = getCurrentSliceNumber(obj)        % Get slice number of the currently shown image
         
@@ -223,6 +225,8 @@ classdef mibImage < matlab.mixin.Copyable
         
         result = setData(obj, type, dataset, orient, col_channel, options)        % update contents of the class
         
+        result = setPixelIdxList(obj, type, dataset, PixelIdxList, options)      % update dataset using a vector of values and pixel ids
+        
         swapColorChannels(obj, channel1, channel2)        % Swap two color channels of the dataset
         
         transpose(obj, new_orient)        % change orientation of the image to the XY, XZ, or YZ plane.
@@ -230,6 +234,8 @@ classdef mibImage < matlab.mixin.Copyable
         updateBoundingBox(obj, newBB, xyzShift, imgDims)        % Update the bounding box info of the dataset
         
         updateDisplayParameters(obj)        % Update display parameters for visualization (mibImage.viewPort structure)
+        
+        updateSlicesStructure(obj, axesX, axesY)        % Update the slices structure of the dataset from current axesX, axesY
         
         updateImgInfo(obj, addText, action, entryIndex)        % Update action log
         

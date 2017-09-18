@@ -18,17 +18,17 @@ function menuFileChoppedImage_Callback(obj, parameter)
 % Updates
 %
 
-if nargin < 2;     parameter = 'import'; end;
+if nargin < 2;     parameter = 'import'; end
 
 switch parameter
     case 'import'
         if ~strcmp(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'), 'none.tif')
             button = questdlg(...
                 sprintf('!!! Warning !!!\n\nIf you select "Generate new stack" and "Images" in the following dialog, the currenly opened in the buffer %d dataset will be replaced!\n\nAre you sure?\n\nAlternatively, select an empty buffer (the buttons in the upper part of the Directory contents panel) and try again...', obj.mibModel.Id),'!! Warning !!','OK','Cancel','Cancel');
-            if strcmp(button, 'Cancel'); return; end;
+            if strcmp(button, 'Cancel'); return; end
         end
         obj.startController('mibRechopDatasetController');
-        obj.mibView.lastSegmSelection = 1;  % last selected contour for use with the 'e' button
+        obj.mibView.lastSegmSelection = [2 1];  % last selected contour for use with the 'e' button
     case 'export'
         obj.startController('mibChopDatasetController');
 end

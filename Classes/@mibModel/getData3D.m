@@ -20,9 +20,9 @@ function dataset = getData3D(obj, type, time, orient, col_channel, options, cust
 % @li .blockModeSwitch -> override the block mode switch mibImage.blockModeSwitch; use or not the block mode (@b 0 - return full dataset, @b 1 - return only the shown part)
 % @li .roiId -> use or not the ROI mode (@b when missing or less than 0, return full dataset; @b 0 - return all shown ROIs dataset, @b Index or [] - return ROI with this index or currently selected)
 % @li .fillBg -> when @em NaN (@b default) -> crops the dataset as a rectangle; when @em a @em number fills the areas out of the ROI area with this intensity number (@b Attention: see also fillBg parameter!)
-% @li .y -> [@em optional], [ymin, ymax] of the part of the dataset to take
-% @li .x -> [@em optional], [xmin, xmax] of the part of the dataset to take
-% @li .z -> [@em optional], [zmin, zmax] of the part of the dataset to take
+% @li .y -> [@em optional], [ymin, ymax] of the part of the dataset to take (sets .blockModeSwitch to 0)
+% @li .x -> [@em optional], [xmin, xmax] of the part of the dataset to take (sets .blockModeSwitch to 0)
+% @li .z -> [@em optional], [zmin, zmax] of the part of the dataset to take (sets .blockModeSwitch to 0)
 % @li .level -> [@em optional], index of image level from the image pyramid
 % @li .id -> [@em optional], an index dataset from 1 to 9, defalt = currently shown dataset
 % custom_img: [@em optional], can be @e NaN; the function return a slice not from the imageData class but from this custom_img, requires to
@@ -46,7 +46,7 @@ function dataset = getData3D(obj, type, time, orient, col_channel, options, cust
 % of the License, or (at your option) any later version.
 % 
 % Updates
-% 
+% 16.08.2017, IB added forcing of the block mode off, when x, y, or z parameter is present in options
 
 if nargin < 7; custom_img = NaN; end
 if nargin < 6; options = struct();  end
@@ -56,7 +56,13 @@ if nargin < 3; time = NaN; end
 
 if ~isfield(options, 'id'); options.id = obj.Id; end
 if ~isfield(options, 'fillBg'); options.fillBg = NaN; end
-if ~isfield(options, 'blockModeSwitch'); options.blockModeSwitch = obj.getImageProperty('blockModeSwitch'); end
+if ~isfield(options, 'blockModeSwitch')
+    if isfield(options, 'x') || isfield(options, 'y') || isfield(options, 'z')
+        options.blockModeSwitch = 0; 
+    else
+        options.blockModeSwitch = obj.getImageProperty('blockModeSwitch'); 
+    end
+end
 if ~isfield(options, 'roiId');    options.roiId = -1;  end
 if isempty(options.roiId)
     options.roiId = obj.I{obj.Id}.selectedROI;  

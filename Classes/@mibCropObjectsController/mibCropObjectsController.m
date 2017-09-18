@@ -135,6 +135,23 @@ classdef mibCropObjectsController < handle
             
             data = obj.mibStatisticsController.View.handles.statTable.Data;
             
+            obj.View.handles.cropBtn.BackgroundColor = [1, 0, 0];
+            
+            % define materials for export
+            if obj.View.handles.cropModelCheck.Value == 1
+                button = questdlg(sprintf('Would you like to export all materials or only selected?'), 'Select material to export', ...
+                    'All materials', sprintf('Material "%s"', obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{obj.mibStatisticsController.sel_model}), 'Cancel', 'All materials');
+                switch button
+                    case 'Cancel'
+                        obj.View.handles.cropBtn.BackgroundColor = [0, 1, 0];
+                        return;
+                    case 'All materials'
+                        material_id = NaN;
+                    otherwise
+                        material_id = obj.mibStatisticsController.sel_model;
+                end
+            end
+            
             dimOpt.blockModeSwitch = 0;
             [h, w, c, z] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, NaN, dimOpt);
             
@@ -170,7 +187,7 @@ classdef mibCropObjectsController < handle
             timeIter = 1;
             for t=uniqueTime'   % has to be a horizontal vector
                 if obj.View.handles.cropModelCheck.Value == 1
-                    modelImg =  cell2mat(obj.mibModel.getData3D('model', t, 4, NaN, dimOpt));
+                    modelImg =  cell2mat(obj.mibModel.getData3D('model', t, 4, material_id, dimOpt));
                 end
                 if obj.View.handles.cropMaskCheck.Value
                     maskImg =  cell2mat(obj.mibModel.getData3D('mask', t, 4, NaN, dimOpt));
@@ -299,6 +316,10 @@ classdef mibCropObjectsController < handle
                         
                         material_list = obj.mibModel.getImageProperty('modelMaterialNames'); %#ok<NASGU>
                         color_list = obj.mibModel.getImageProperty('modelMaterialColors'); %#ok<NASGU>
+                        if material_id > 0
+                            color_list = color_list(material_id, :); %#ok<NASGU>
+                            material_list = material_list(material_id);
+                        end
                         if obj.View.handles.matlabRadio.Value == 1   % export to Matlab
                             matlabVar.Model.model = imOut;
                             matlabVar.Model.materials = material_list;
@@ -437,7 +458,7 @@ classdef mibCropObjectsController < handle
                 end
                 timeIter = timeIter + 1;
             end
-            
+            %obj.View.handles.cropBtn.BackgroundColor = [0 1 0];
             obj.closeWindow();
         end
     end

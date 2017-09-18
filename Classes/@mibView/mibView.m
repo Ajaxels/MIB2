@@ -54,7 +54,7 @@ classdef mibView < handle
         % a property to keep the currently displayed image in RGB format
         % @note 'Ishown' dimensions: @code [1:height, 1:width, 1:colors] @endcode
         lastSegmSelection
-        % last selected contour for use with the 'e' button
+        % a vector with 2 elements of two previously selected materials for use with the 'e' key shortcut
         showBrushCursor
         % a switch (0, 1) to define whether or not show the brush cursor
         trackerYXZ
@@ -109,7 +109,7 @@ classdef mibView < handle
             
             obj.imh = matlab.graphics.primitive.Image('CData', []);   
             obj.ctrlPressed = 0;   % status of the control key (unpressed)
-            obj.lastSegmSelection = 1;  % last selected contour for use with the 'e' button
+            obj.lastSegmSelection = [2 1];  % last selected contours for use with the 'e' button
             
             obj.showBrushCursor = 1;
             

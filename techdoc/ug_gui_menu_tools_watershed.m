@@ -125,7 +125,10 @@
 %   <li><b>Preview</b> shows the result of pre-processing in the Image View panel</li>
 %   <li><b>Import from Matlab</b> imports dataset that will be used for image segmentation from Matlab workspace</li>
 %   <li><b>Pre-process</b> starts the data pre-processing process. When pre-processed data is present the color of the button turns to green</li>
-%   <li><b>Clear</b> removes the pre-processed data from the memory</li>
+%   <li><b>Clear</b> removes the pre-processed data from the memory<br></li>
+%   <li><b>Auto update</b> (<em>only for the Graphcut tool</em>) enables auto update of the segmentation results each time when material is modified. It is mostly useful for relatively small datasets. 
+%       <b><em>Important:</b></em> please do not use the <kbd>Shift+A</kbd> key shortcut, but only <kbd>A</kbd> shortcut. Also, when this mode is used it is recommended to 
+%       recalculate the final segmentation by pressing the Segment button</li>
 %   </ul>
 % </li>
 % </td>

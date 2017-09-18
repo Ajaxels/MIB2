@@ -81,6 +81,11 @@ classdef Labels < matlab.mixin.Copyable
                 labels{i} = strtrim(labels{i});
             end
             
+            % transpose if needed
+            if size(labels,1) < size(labels,2)
+                labels = labels';
+            end
+            
             obj.labelText = [obj.labelText; labels];
             if size(positions,2) == 3   % fix for old position lists with z,x,y coordinates only
                 positions = [positions ones([size(positions,1),1])];
@@ -169,16 +174,16 @@ classdef Labels < matlab.mixin.Copyable
             % @code [labelsList, labelPositions, indices] = LabelsInstance.getLabels(50); // get all labels from slice 50 @endcode
             % @code [labelsList, labelPositions, indices] = getLabels(obj, 50); // Call within the class;  get all labels from slice 50 @endcode
             
-            if nargin < 5; rangeT = NaN; end;
-            if nargin < 4; rangeY = NaN; end;
-            if nargin < 3; rangeX = NaN; end;
-            if nargin < 2; rangeZ = NaN; end;
+            if nargin < 5; rangeT = NaN; end
+            if nargin < 4; rangeY = NaN; end
+            if nargin < 3; rangeX = NaN; end
+            if nargin < 2; rangeZ = NaN; end
             % fetch Z
             labelsList = obj.labelText;
             labelPositions = obj.labelPosition;
             indices = 1:numel(labelsList);
             
-            if isempty(labelsList); return; end;
+            if isempty(labelsList); return; end
 
             if ~isnan(rangeZ(1))   % sort with Z
                 if numel(rangeZ) == 1
@@ -296,10 +301,10 @@ classdef Labels < matlab.mixin.Copyable
             
             if nargin < 2      % remove all labels
                 choice = questdlg('Delete all annotations from the model?', 'Remove annotations', 'Delete', 'Cancel','Cancel');
-                if strcmp(choice, 'Cancel'); return; end;
+                if strcmp(choice, 'Cancel'); return; end
                 obj.clearContents();
                 return;
-            end;
+            end
             
             if iscell(labels)   % remove specified label
                 for i=1:numel(labels)
@@ -343,8 +348,12 @@ classdef Labels < matlab.mixin.Copyable
             % @code LabelsInstance.replaceLabels(labels, positions); // replace labels with a new list @endcode
             % @code replaceLabels(obj, labels, positions); // Call within the class; replace labels with a new list @endcode
             
-            if ~iscell(labels); labels = cellstr(labels); end;
+            if ~iscell(labels); labels = cellstr(labels); end
             if numel(labels) ~= size(positions, 1); error('Labels.replaceLabels: error, number of labels and coordinates mismatch!'); end;
+            
+            if size(labels,1) < size(labels,2)  % transpose labels to a column
+                labels = labels';
+            end
             
             obj.labelText = labels;
             obj.labelPosition = positions;
@@ -371,13 +380,13 @@ classdef Labels < matlab.mixin.Copyable
             % label{1} = 'my label 1';
             % newPosition(1,:) = [50, 75, 1, 5]; // position 1: x=50, y=75; z=1, t=5
             % @endcode
-            % @code LabelsInstance.updateLabels(label, label, newPosition); // update coordinates of a label that has "my label 1" text @endcode
-            % @code updateLabels(obj, label, label, newPosition); // Call within the class; update coordinates of a label that has "my label 1" text @endcode
+            % @code obj.mibModel.I{obj.mibModel.Id}.hLabels.updateLabels(label, label, newPosition); // call from mibController, update coordinates of a label that has "my label 1" text @endcode
+            
             
             result = 0;
-            if nargin < 3;      % check parameters
+            if nargin < 3     % check parameters
                 error('Labels.updateLabels: not enough arguments!');
-            end;
+            end
             
             if ischar(oldLabel); oldLabel = cellstr(oldLabel); end    
             if ischar(newLabelText); newLabelText = cellstr(newLabelText); end    
@@ -397,12 +406,69 @@ classdef Labels < matlab.mixin.Copyable
                 return;
             else    % find and update the specified point
                 indices = ismember(obj.labelPosition, oldLabel, 'rows');
-                if sum(indices) ~= 1; return; end; % no matches were found
+                if sum(indices) ~= 1; return; end % no matches were found
                 obj.labelText(indices) = newLabelText;
                 obj.labelPosition(indices,:) = repmat(newLabelPos, [numel(sum(indices)), 1] );
                 result = 1;
                 return;
             end
+        end
+
+        function sortLabels(obj, sortBy, direction)
+            % function sortLabels(obj, sortBy, direction)
+            % Resort the list of annotation labels
+            %
+            % Parameters:
+            % sortBy: a string with the field to be used for sorting
+            % - 'name', @em default sort by the label name
+            % - 'x', sort by the X coordinate
+            % - 'y', sort by the Y coordinate
+            % - 'z', sort by the Z coordinate
+            % - 't', sort by the T coordinate
+            % direction: a string with sorting direction
+            % - 'ascend', @em default sort in the ascending order
+            % - 'descend', sort in the descending order
+            %
+            % Return values:
+            % 
+            
+            %| 
+			% @b Examples:
+            % @code obj.mibModel.I{obj.mibModel.Id}.hLabels.sortLabels(); // call from mibController, sort the list by the label name @endcode
+            % @code obj.mibModel.I{obj.mibModel.Id}.hLabels.sortLabels('name', 'descend'); // call from mibController, sort the list by the label name using descending order @endcode
+            
+            if nargin < 3; direction = 'ascend'; end
+            if nargin < 2; sortBy = 'name'; end
+            
+            switch sortBy
+                case 'name'     % re-sort by label name
+                    [obj.labelText, indices] = sort(obj.labelText);
+                    if strcmp(direction, 'descend')
+                        obj.labelText = obj.labelText(end:-1:1);
+                        indices = indices(end:-1:1);
+                        obj.labelPosition = obj.labelPosition(indices,:);
+                    else
+                        obj.labelPosition = obj.labelPosition(indices,:);
+                    end
+                case 'x'        % re-sort by x coordinate
+                    [~, indices] = sort(obj.labelPosition(:, 2), direction);
+                    obj.labelPosition = obj.labelPosition(indices,:);
+                    obj.labelText = obj.labelText(indices);
+                case 'y'        % re-sort by y coordinate
+                    [~, indices] = sort(obj.labelPosition(:, 3), direction);
+                    obj.labelPosition = obj.labelPosition(indices,:);
+                    obj.labelText = obj.labelText(indices);
+                case 'z'        % re-sort by z coordinate
+                    [~, indices] = sort(obj.labelPosition(:, 1), direction);
+                    obj.labelPosition = obj.labelPosition(indices,:);
+                    obj.labelText = obj.labelText(indices);
+                case 't'        % re-sort by t coordinate
+                    [~, indices] = sort(obj.labelPosition(:, 4), direction);
+                    obj.labelPosition = obj.labelPosition(indices,:);
+                    obj.labelText = obj.labelText(indices);
+            end
+            
+        
         end
         
     end

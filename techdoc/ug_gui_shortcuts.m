@@ -263,7 +263,7 @@
 % </tr>
 % <tr>
 %   <td><kbd>E</kbd></td>
-%   <td>swap between Exterior and previous material</td>
+%   <td>toggle between two recently selected materials</td>
 % </tr>
 % <tr>
 %   <td><kbd>^ Ctrl</kbd>+<kbd>Z</kbd></td>

@@ -19,6 +19,6 @@ obj.mibView.imh = matlab.graphics.primitive.Image('CData', []);
 obj.updateShownId(str2double(Id));
 
 [path, fn, ext] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
-if ~isempty(path);     obj.mibModel.myPath = path;   end;
+if ~isempty(path);     obj.mibModel.myPath = path;   end
 obj.updateFilelist([fn, ext]);
 end

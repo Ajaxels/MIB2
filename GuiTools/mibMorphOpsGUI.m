@@ -147,10 +147,14 @@ end
 function iterationsRadio_Callback(hObject, eventdata, handles)
 tag = hObject.Tag;
 hObject.Value = 1;
+handles.removeBranchesCheck.Enable = 'off';
 if strcmp(tag,'limitToRadio')
     handles.iterEdit.Enable = 'on';
 else
     handles.iterEdit.Enable = 'off';
+    if handles.morphOpsPopup.Value == 7     % thin
+        handles.removeBranchesCheck.Enable = 'on';
+    end
 end
 end
 

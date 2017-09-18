@@ -23,11 +23,13 @@ function result = setData3D(obj, type, dataset, time, orient, col_channel, optio
 % @li .blockModeSwitch -> override the block mode switch mibImage.blockModeSwitch; use or not the block mode (@b 0 - update full dataset, @b 1 - update only the shown part)
 % @li .roiId -> use or not the ROI mode  (@b when @b missing or less than 0, update full dataset, without ROI; @b 0 - update all ROIs of dataset, @b Index - update ROI with the index, @b [] - currently selected) (@b Attention: see also fillBg parameter!)
 % @li .fillBg -> when @b 1 -> keep the background from @b slice; when @b NaN or @b[] [@b default] -> crop @b slice with respect to the ROI shape
-% @li .y -> [@em optional], [ymin, ymax] of the part of the dataset to take
-% @li .x -> [@em optional], [xmin, xmax] of the part of the dataset to take
-% @li .z -> [@em optional], [zmin, zmax] of the part of the dataset to take
+% @li .y -> [@em optional], [ymin, ymax] of the part of the dataset to take (sets .blockModeSwitch to 0)
+% @li .x -> [@em optional], [xmin, xmax] of the part of the dataset to take (sets .blockModeSwitch to 0)
+% @li .z -> [@em optional], [zmin, zmax] of the part of the dataset to take (sets .blockModeSwitch to 0)
 % @li .level -> [@em optional], index of image level from the image pyramid
 % @li .id -> [@em optional], an index dataset from 1 to 9, defalt = currently shown dataset
+% @li .PixelIdxList -> [@em optional], indices of pixels that have to be updated (calculated for the current 3D stack of the dataset in the XY
+% orientation), when used all other parameters are not considered also in this case @b dataset should be a vector. [@b not @b implemented @b for @b 'images'
 %
 % Return values:
 % result: -> @b 1 - success, @b 0 - error
@@ -49,7 +51,7 @@ function result = setData3D(obj, type, dataset, time, orient, col_channel, optio
 % of the License, or (at your option) any later version.
 % 
 % Updates
-% 
+% 16.08.2017, IB added forcing of the block mode off, when x, y, or z parameter is present in options
 
 if nargin < 7; options = struct();  end
 if nargin < 6; col_channel = NaN;   end
@@ -58,7 +60,13 @@ if nargin < 4; time = NaN; end
 
 if ~isfield(options, 'id'); options.id = obj.Id; end
 if ~isfield(options, 'fillBg'); options.fillBg = NaN; end
-if ~isfield(options, 'blockModeSwitch'); options.blockModeSwitch = obj.getImageProperty('blockModeSwitch'); end; 
+if ~isfield(options, 'blockModeSwitch')
+    if isfield(options, 'x') || isfield(options, 'y') || isfield(options, 'z')
+        options.blockModeSwitch = 0; 
+    else
+        options.blockModeSwitch = obj.getImageProperty('blockModeSwitch'); 
+    end
+end
 if ~isfield(options, 'roiId');    options.roiId = -1;  end
 if isempty(options.roiId)     
     options.roiId = obj.I{obj.Id}.selectedROI;
@@ -66,11 +74,20 @@ end
 if options.blockModeSwitch == 1; options.roiId = -1; end   % turn off the ROI mode, when the block mode is on
 
 if isnan(time); time = obj.I{options.id}.slices{5}(1); end
-if orient == 0 || isnan(orient); orient=obj.I{options.id}.orientation; end;
+if orient == 0 || isnan(orient); orient=obj.I{options.id}.orientation; end
+
+if isfield(options, 'PixelIdxList')
+    if time > 1     % shift the indices to the choosen time point
+        options.PixelIdxList = options.PixelIdxList + ...
+            obj.I{options.id}.width*obj.I{options.id}.height*obj.I{options.id}.depth*(time-1);
+    end
+    result = obj.I{options.id}.setPixelIdxList(type, dataset, options.PixelIdxList);
+    return;
+end
 
 if strcmp(type,'image')
-    if isnan(col_channel); col_channel=obj.I{options.id}.slices{3}; end;
-    if col_channel(1) == 0;  col_channel = 1:obj.I{options.id}.colors; end;
+    if isnan(col_channel); col_channel=obj.I{options.id}.slices{3}; end
+    if col_channel(1) == 0;  col_channel = 1:obj.I{options.id}.colors; end
 end
 
 if isfield(options, 'blockModeSwitch')
@@ -85,7 +102,7 @@ options.t = [time time];   % define the time point
 
 if options.roiId >= 0
     typeIsImage = 0; 
-    if strcmp(type,'image'); typeIsImage = 1; end;
+    if strcmp(type,'image'); typeIsImage = 1; end
     
     % get indices of ROI
     if options.roiId == 0

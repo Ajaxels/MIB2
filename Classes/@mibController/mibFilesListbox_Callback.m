@@ -60,12 +60,12 @@ switch obj.mibView.handles.mibGUI.SelectionType
                 obj.mibModel.I{obj.mibModel.Id}.pixSize = pixSize;
                 notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details
                 
-                obj.mibView.lastSegmSelection = 1;  % last selected contour for use with the 'e' button
+                obj.mibView.lastSegmSelection = [2 1];  % last selected contour for use with the 'e' button
             else
                 %obj.mibView.handles = obj.mibView.handles.Img{obj.mibView.handles.Id}.I.updateAxesLimits(obj.mibView.handles, 'resize');
                 %obj.mibView.handles.Img{obj.mibView.handles.Id}.I.updateDisplayParameters();
                 %obj.mibView.handles = updateGuiWidgets(obj.mibView.handles);
-            end;
+            end
             %obj.mibView.handles = obj.mibView.handles.Img{obj.mibView.handles.Id}.I.plotImage(obj.mibView.handles.imageAxes, obj.mibView.handles, 1);
             obj.plotImage(1);
             unFocus(obj.mibView.handles.mibFilesListbox);   % remove focus from hObject);   % remove focus from hObject

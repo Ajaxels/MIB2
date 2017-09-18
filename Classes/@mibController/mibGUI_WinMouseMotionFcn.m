@@ -30,8 +30,15 @@ y2 = round(position2(1,2));
 separatingPanelPos = obj.mibView.handles.mibSeparatingPanel.Position;
 separatingPanelPos2 = obj.mibView.handles.mibSeparatingPanel2.Position;
 
+% x
+%         if x == -111
+%             
+%             error('dasda')
+%         end
+        
 if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer within the current axes
     obj.mibView.handles.mibGUI.Pointer = 'crosshair';
+    
     if x > 0 && y > 0 && x<=size(obj.mibView.Ishown,2) && y<=size(obj.mibView.Ishown,1) && ~isempty(obj.mibView.imh.CData) % mouse pointer inside the image dimensions
         [x,y,sliceNo] = obj.mibModel.convertMouseToDataCoordinates(x, y, 'shown');
         x = ceil(x);
@@ -69,9 +76,9 @@ if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer with
         gI = NaN;
         bI = NaN;
         extI = NaN;
-        if ~isempty(colorValues); rI = colorValues(1); end;
-        if numel(colorValues) > 1; gI = colorValues(2); end;
-        if numel(colorValues) > 2;  bI = colorValues(3);    end;
+        if ~isempty(colorValues); rI = colorValues(1); end
+        if numel(colorValues) > 1; gI = colorValues(2); end
+        if numel(colorValues) > 2;  bI = colorValues(3);    end
         R = sprintf('%.0f',rI);
         G = sprintf('%.0f',gI);
         B = sprintf('%.0f',bI);
@@ -82,7 +89,7 @@ if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer with
             txt = [num2str(x) ':' num2str(y) '  (' R ':' G ':' B ':' E ') / ' num2str(modelValues)];
         else
             txt = [num2str(x) ':' num2str(y) '  (' R ':' G ':' B ') / ' num2str(modelValues)];
-        end;
+        end
         obj.mibView.handles.mibPixelInfoTxt2.String = txt;
     else
         %set(obj.handles.pixelinfoTxt2,'String','XXXX:YYYY (RRR:GGG:BBB)');
@@ -115,6 +122,6 @@ try
         
         %mean(xv)
     end
-catch err;
+catch err
 end
 end

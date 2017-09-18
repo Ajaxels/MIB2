@@ -160,6 +160,9 @@ classdef mibMorphOpsController < handle
             else
                 switch3d = 1;
             end
+            
+            removeBranchesCheck = obj.View.handles.removeBranchesCheck.Value;   % whether or not remove branches during thinning
+            
             if strcmp(obj.type, 'bwulterode')
                 conn = obj.View.handles.auxPopup1.String;
                 conn = str2double(conn{obj.View.handles.auxPopup1.Value});
@@ -193,16 +196,16 @@ classdef mibMorphOpsController < handle
                         maxVal = numel(selection)*size(selection{1}, 3);
                         for roiId=1:numel(selection)
                             for layer = 1:size(selection{roiId}, 3)
-                                if max(max(selection{roiId}(:,:,layer))) == 0; continue; end;   % tweak to skip inversion, i.e. [0 0 0] -> [1 1 1] during normal use
+                                if max(max(selection{roiId}(:,:,layer))) == 0; continue; end   % tweak to skip inversion, i.e. [0 0 0] -> [1 1 1] during normal use
                                 selection{roiId}(:,:,layer) = bwulterode(selection{roiId}(:,:,layer), method, conn);
-                                if mod(layer, 10)==0; waitbar(layer*roiId/maxVal, wb); end;
+                                if mod(layer, 10)==0; waitbar(layer*roiId/maxVal, wb); end
                             end
                         end
                         obj.mibModel.setData3D('selection', selection, t, 0, NaN, getDataOptions);
                     else                                    % 2D mode, single slice
                         selection = obj.mibModel.getData2D('selection', NaN, NaN, NaN, getDataOptions);
                         for roiId=1:numel(selection)
-                            if max(max(selection{roiId})) == 0; continue; end;   % tweak to skip inversion, i.e. [0 0 0] -> [1 1 1] during normal use
+                            if max(max(selection{roiId})) == 0; continue; end   % tweak to skip inversion, i.e. [0 0 0] -> [1 1 1] during normal use
                             selection{roiId} = bwulterode(selection{roiId}, method, conn);
                             waitbar(roiId/numel(selection), wb);
                         end
@@ -216,7 +219,10 @@ classdef mibMorphOpsController < handle
                             for layer = 1:size(selection{roiId}, 3)
                                 selection{roiId}(:,:,layer) = bwmorph(selection{roiId}(:,:,layer), obj.type, iterNo);
                                 %selection{roiId}(:,:,layer) = gather(bwmorph(gpuArray(logical(selection{roiId}(:,:,layer))),selected, iterNo));     % alternative version to use with GPU
-                                if mod(layer, 10)==0; waitbar(layer*roiId/maxVal, wb); end;
+                                if removeBranchesCheck == 1 && strcmp(obj.type, 'thin')
+                                    selection{roiId}(:,:,layer) = mibRemoveBranches(selection{roiId}(:,:,layer));
+                                end
+                                if mod(layer, 10)==0; waitbar(layer*roiId/maxVal, wb); end
                             end
                         end
                         obj.mibModel.setData3D('selection', selection, t, 0, NaN, getDataOptions);
@@ -224,6 +230,9 @@ classdef mibMorphOpsController < handle
                         selection = obj.mibModel.getData2D('selection', NaN, NaN, NaN, getDataOptions);
                         for roiId=1:numel(selection)
                             selection{roiId} = bwmorph(selection{roiId}, obj.type, iterNo);
+                            if removeBranchesCheck == 1 && strcmp(obj.type, 'thin')
+                                selection{roiId} = mibRemoveBranches(selection{roiId});
+                            end
                             waitbar(roiId/numel(selection), wb);
                         end
                         obj.mibModel.setData2D('selection', selection, NaN, NaN, NaN, getDataOptions);

@@ -27,12 +27,12 @@ function moveView(obj, x, y, orient)
 % of the License, or (at your option) any later version.
 % 
 % Updates
-% 
+% 16.08.2017, IB, updated to use updateSlicesStructure method
 
-if nargin < 4; orient = 0; end;
-if nargin < 3; y = NaN; end;
+if nargin < 4; orient = 0; end
+if nargin < 3; y = NaN; end
     
-if orient == 0; orient = obj.orientation; end;
+if orient == 0; orient = obj.orientation; end
 
 if isnan(y)     % generate y from the point index
     getDataOptions.blockModeSwitch = 0;
@@ -40,7 +40,8 @@ if isnan(y)     % generate y from the point index
     [y, x, ~] = ind2sub([img_height img_width img_depth], x);
 end
 
-obj.axesX = [x - diff(obj.axesX)/2 x + diff(obj.axesX)/2];
-obj.axesY = [y - diff(obj.axesY)/2 y + diff(obj.axesY)/2];
+axesX = [x - diff(obj.axesX)/2 x + diff(obj.axesX)/2];
+axesY = [y - diff(obj.axesY)/2 y + diff(obj.axesY)/2];
+obj.updateSlicesStructure(axesX, axesY);
 
 end

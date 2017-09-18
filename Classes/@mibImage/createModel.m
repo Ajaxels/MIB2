@@ -1,16 +1,17 @@
-function createModel(obj, modelType)
-% function createModel(obj, model_type)
+function createModel(obj, modelType, modelMaterialNames)
+% function createModel(obj, model_type, modelMaterialNames)
 % Create an empty model: allocate memory for a new model
 %
 % This function reinitialize mibImage.model variable (@em NaN when no model present) with an empty matrix
 % [mibImage.height, mibImage.width, mibImage.depth, mibImage.time] of the defined type class
 %
 % Parameters:
-% modelType: a number that defines type of the model,
+% modelType: [@em optional] a number that defines type of the model (when @em NaN - use default model type)
 % - @b 63 - a segmentation model with up to 63 materials; the 'Model', 'Mask' and 'Selection' layers stored in the same matrix, to decrease memory consumption;
 % - @b 255 - a segmentation model with up to 255 materials; the 'Model', 'Mask' and 'Selection' layers stored in separate matrices;
 % - @b 65535 - a segmentation model with up to 65535 materials; the 'Model', 'Mask' and 'Selection' layers stored in separate matrices;
 % - @b 128 - a model layer that has intensities from -128 to 128.
+% modelMaterialNames: [@em optional] a cell array with names of materials, this parameter is not used for modelType > 255
 
 %
 % Return values:
@@ -19,6 +20,7 @@ function createModel(obj, modelType)
 %| 
 % @b Examples:
 % @code obj.mibModel.I{obj.mibModel.Id}.createModel(63);  // call from mibController; allocate space for a new Model layer, type 63 @endcode
+% @code obj.mibModel.I{obj.mibModel.Id}.createModel(NaN, {'Material1','Material2'});  // call from mibController; allocate space for a new Model of the default type and assign 2 materials @endcode
 % @code obj.mibModel.getImageMethod('createModel', NaN, 63); // call from mibController via a wrapper function getImageMethod @endcode
 
 % Copyright (C) 28.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
@@ -31,9 +33,11 @@ function createModel(obj, modelType)
 % Updates
 %
 
+if nargin < 3; modelMaterialNames = []; end
+if nargin < 2; modelType = NaN; end
 
-if nargin < 2; modelType = obj.modelType; end
-    
+if isnan(modelType); modelType = obj.modelType; end
+
 if modelType == 63
     if obj.modelType==63
         obj.model{1} = bitand(obj.model{1}, 192);
@@ -73,11 +77,19 @@ end
 
 obj.modelExist = 1;
 obj.modelVariable = 'mibModel';
-[pathstr, name] = fileparts(obj.meta('Filename'));
+%[pathstr, name] = fileparts(obj.meta('Filename'));
 obj.modelFilename = [];
 obj.modelType = modelType;
 if modelType < 256
-    obj.modelMaterialNames = {};
+    if ~isempty(modelMaterialNames)
+        if size(modelMaterialNames,1) < size(modelMaterialNames,2)
+            obj.modelMaterialNames = modelMaterialNames';
+        else
+            obj.modelMaterialNames = modelMaterialNames;
+        end
+    else
+        obj.modelMaterialNames = {};
+    end
     obj.selectedMaterial = 2;
     obj.selectedAddToMaterial = 2;
 else
@@ -85,5 +97,6 @@ else
     obj.selectedMaterial = 3;
     obj.selectedAddToMaterial = 3;
 end
+
 obj.hLabels.clearContents();    % clear labels
 end

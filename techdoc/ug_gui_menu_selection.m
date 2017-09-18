@@ -30,16 +30,24 @@
 % <<images\MenuSelectionMorphOps.png>>
 %
 % Performs 2D morphological operations on the |Selection| layer. See more in the description of Matlab |bwmorph| function. The following operations are available:
-% 
-% * *Branch points* - find branch points of skeleton;
-% * *Diagonal fill* - (Diag) uses diagonal fill to eliminate 8-connectivity of thebackground;
-% * *Endpoints* - finds end points of skeleton;
-% * *Skeleton* - (Skel) with n = Inf, removes pixels on the boundaries of objects but does not allow objects to break apart. The 
-% remaining pixels make up the image skeleton. This option preserves the Euler number;
-% * *Spur* - removes spur pixels, _i.e._ the pixels that have exactly one 8-connected neighbor. For example, spur essentially removes the endpoints of lines.
-% * *Thin* - with n = Inf, thins objects to lines. It removes pixels so that an object without holes shrinks to a
-% minimally connected stroke, and an object with holes shrinks to a connected ring halfway between each hole and the outer boundary. This option preserves the Euler number;
-% * *Ultimate erosion*, performs ultimate erosion, _i.e._ object -> to point
+%
+% <html>
+% <ul>
+% <li> <b>Branch points</b> - find branch points of skeleton;</li>
+% <li> <b>Diagonal fill</b> - (Diag) uses diagonal fill to eliminate 8-connectivity of thebackground;</li>
+% <li> <b>Endpoints</b> - finds end points of skeleton;</li>
+% <li> <b>Skeleton</b> - (Skel) with n = Inf, removes pixels on the boundaries of objects but does not allow objects to break apart. The 
+% remaining pixels make up the image skeleton. This option preserves the Euler number;</li>
+% <li> <b>Spur</b> - removes spur pixels, <em>i.e.</em> the pixels that have exactly one 8-connected neighbor. For example, spur essentially removes the endpoints of lines</li>
+% <li> <b>Thin</b> - with n = Inf, thins objects to lines. It removes pixels so that an object without holes shrinks to a
+% minimally connected stroke, and an object with holes shrinks to a
+% connected ring halfway between each hole and the outer boundary;
+% this option preserves the Euler number. Use the "remove branches" option
+% to remove small branches from each line profile <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a></li>
+% <li> <b>Ultimate erosion</b>, performs ultimate erosion, <em>i.e.</em> object -> to point</li>
+% </ul>
+% </html>
+%
 %
 %% Expand to mask borders
 % Each selected area will be expanded to match the borders of the mask that

@@ -32,8 +32,8 @@ function mibDoBackup(obj, type, switch3d, getDataOptions)
 % 
 
 % cancel if the undo system is disabled
-if obj.U.enableSwitch == 0; return; end;
-if nargin < 4; getDataOptions = struct(); end;
+if obj.U.enableSwitch == 0; return; end
+if nargin < 4; getDataOptions = struct(); end
 % replace types 'selection','mask','model' to 'everything' for uint6 models
 if obj.I{obj.Id}.modelType == 63
     if strcmp(type, 'selection') || strcmp(type, 'mask') || strcmp(type, 'model')
@@ -41,7 +41,7 @@ if obj.I{obj.Id}.modelType == 63
     end
 end
 % return when no mask
-if strcmp(type, 'mask') && obj.I{obj.Id}.maskExist == 0;  return;   end;
+if strcmp(type, 'mask') && obj.I{obj.Id}.maskExist == 0;  return;   end
 
 [axesX, axesY] = obj.getAxesLimits();
 orientation = obj.I{obj.Id}.orientation;
@@ -54,7 +54,7 @@ if ~isfield(getDataOptions, 'orient')
     else
         getDataOptions.orient = obj.I{obj.Id}.orientation; 
     end
-end;
+end
 
 % disable the block mode for the getData
 getDataOptions.blockModeSwitch = 0;
@@ -63,7 +63,7 @@ getDataOptions.switch3d = switch3d;
 % deal with the ROI mode
 if isfield(getDataOptions, 'roiId') && blockModeSwitch == 0     % roi mode is disabled in when the block mode switch is on
     % populate getDataOptions from roiId
-    if isempty(getDataOptions.roiId); getDataOptions.roiId = obj.I{obj.Id}.selectedROI;  end;
+    if isempty(getDataOptions.roiId); getDataOptions.roiId = obj.I{obj.Id}.selectedROI;  end
     
     %if getDataOptions.roiId == -1
     %    getDataOptions = rmfield(getDataOptions,'roiId');

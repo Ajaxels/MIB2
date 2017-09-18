@@ -146,7 +146,14 @@ if nargin < 2   % model and options were not provided
         end
         
         % check H/W/Z dimensions
-        if size(model, 1) ~= obj.mibModel.I{obj.mibModel.Id}.height || size(model,2) ~= obj.mibModel.I{obj.mibModel.Id}.width %|| size(model,3) ~= obj.mibModel.I{obj.mibModel.Id}.depth
+        if size(model, 1) ~= obj.mibModel.I{obj.mibModel.Id}.height || size(model,2) ~= obj.mibModel.I{obj.mibModel.Id}.width
+            if exist('wb','var'); delete(wb); end
+            msgbox(sprintf('Model and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nModel (HxWxZ) = %d x %d x %d pixels',...
+                obj.mibModel.I{obj.mibModel.Id}.height, obj.mibModel.I{obj.mibModel.Id}.width, obj.mibModel.I{obj.mibModel.Id}.depth, size(model,1), size(model,2), size(model,3)),'Error!','error','modal');
+            return;
+        end
+        
+        if size(model,3) ~= obj.mibModel.I{obj.mibModel.Id}.depth && size(model,3) > 1
             if exist('wb','var'); delete(wb); end
             msgbox(sprintf('Model and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nModel (HxWxZ) = %d x %d x %d pixels',...
                 obj.mibModel.I{obj.mibModel.Id}.height, obj.mibModel.I{obj.mibModel.Id}.width, obj.mibModel.I{obj.mibModel.Id}.depth, size(model,1), size(model,2), size(model,3)),'Error!','error','modal');
@@ -277,6 +284,7 @@ if max_color > size(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors,1)
 end
 % add annotations
 if isfield(options, 'labelText')
+    obj.mibModel.I{obj.mibModel.Id}.hLabels.clearContents();    % clear current labels
     obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(options.labelText, options.labelPosition);
 end
 
@@ -285,7 +293,7 @@ obj.mibModel.I{obj.mibModel.Id}.modelVariable = options.modelVariable;
 
 %obj.updateSegmentationTable();
 obj.updateGuiWidgets();
-obj.mibView.lastSegmSelection = 1;
+obj.mibView.lastSegmSelection = [2 1];
 waitbar(1,wb);
 obj.mibView.handles.mibModelShowCheck.Value = 1;
 obj.mibModelShowCheck_Callback();

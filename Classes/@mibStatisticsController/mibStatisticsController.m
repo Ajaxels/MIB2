@@ -486,7 +486,7 @@ classdef mibStatisticsController < handle
             % 'obj2model' - generate a new model, where each selected object will be assigned to own index
             % sliceNumbers: indices of slices for each selected object
             
-            if nargin < 4; sliceNumbers = []; end;
+            if nargin < 4; sliceNumbers = []; end
             if nargin < 3
                 mode = obj.View.handles.detailsPanel.SelectedObject.String;    % what to do with selected objects: Add, Remove, Replace
             end
@@ -498,6 +498,7 @@ classdef mibStatisticsController < handle
             getDataOptions.blockModeSwitch = 0;
             [img_height, img_width, ~, img_depth] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', NaN, NaN, getDataOptions);
             if strcmp(frame, '2D, Slice') && strcmp(mode2, '2D objects') || (strcmp(mode2, '2D objects') && numel(object_list)==1)
+                tic
                 currentSlice = obj.STATS(object_list(1)).Centroid(3);
                 currentTime = obj.STATS(object_list(1)).TimePnt;
                 getDataOptions.t = [currentTime, currentTime];
@@ -507,13 +508,27 @@ classdef mibStatisticsController < handle
                 for i=1:numel(object_list)
                     selection_mask(obj.STATS(object_list(i)).PixelIdxList-coef) = 1;
                 end
+                
+                % the Add and Remove mode work on the subset of the
+                % dataset, to make it faster
+                if strcmp(mode, 'Add') || strcmp(mode, 'Remove')
+                    % get bounding box for the selected objects
+                    bb = ceil(reshape([obj.STATS(object_list).BoundingBox], [6 numel(object_list)])');    % [index][x y z w h d]
+                    xMin = min(bb(:,1));
+                    xMax = max(bb(:,1)+bb(:,4)-1);
+                    getDataOptions.x = [xMin xMax];
+                    yMin = min(bb(:,2));
+                    yMax = max(bb(:,2)+bb(:,5)-1);
+                    getDataOptions.y = [yMin yMax];
+                end
+                
                 if strcmp(mode,'Add')
                     selection = cell2mat(obj.mibModel.getData2D('selection', currentSlice, NaN, NaN, getDataOptions));
-                    selection = bitor(selection_mask, selection);   % selection_mask | selection;
+                    selection = bitor(selection_mask(yMin:yMax, xMin:xMax), selection);   % selection_mask | selection;
                     obj.mibModel.setData2D('selection', {selection}, currentSlice, NaN, NaN, getDataOptions);
                 elseif strcmp(mode,'Remove')
                     curr_selection = cell2mat(obj.mibModel.getData2D('selection', currentSlice, NaN, NaN, getDataOptions));
-                    curr_selection(selection_mask==1) = 0;
+                    curr_selection(selection_mask(yMin:yMax, xMin:xMax)==1) = 0;
                     obj.mibModel.setData2D('selection', {curr_selection}, currentSlice, NaN, NaN, getDataOptions);
                 elseif strcmp(mode,'Replace')
                     if (strcmp(mode2,'2D objects') && numel(object_list)==1)
@@ -521,6 +536,7 @@ classdef mibStatisticsController < handle
                     end
                     obj.mibModel.setData2D('selection', {selection_mask}, currentSlice, NaN, NaN, getDataOptions);
                 end
+                toc
             else
                 wb = waitbar(0,'Highlighting selected objects...','Name','Highlighting');
                 timePoints = [obj.STATS(object_list).TimePnt];
@@ -581,12 +597,29 @@ classdef mibStatisticsController < handle
                         end
                     end
                     
+                    % the Add and Remove mode work on the subset of the
+                    % dataset, to make it faster
+                    if strcmp(mode, 'Add') || strcmp(mode, 'Remove')
+                        % get bounding box for the selected objects
+                        bb = ceil(reshape([obj.STATS(objects).BoundingBox], [6 numel(objects)])');    % [index][x y z w h d]
+                        xMin = min(bb(:,1));
+                        xMax = max(bb(:,1)+bb(:,4)-1);
+                        getDataOptions.x = [xMin xMax];
+                        yMin = min(bb(:,2));
+                        yMax = max(bb(:,2)+bb(:,5)-1);
+                        getDataOptions.y = [yMin yMax];
+                        zMin = min(bb(:,3));
+                        zMax = max(bb(:,3)+bb(:,6)-1);
+                        getDataOptions.z = [zMin zMax];
+                    end
+                    
                     if strcmp(mode,'Add')
                         selection = cell2mat(obj.mibModel.getData3D('selection', t, NaN, 0, getDataOptions));
-                        obj.mibModel.setData3D('selection', {bitor(selection, selection_mask)}, t, NaN, 0, getDataOptions);    % selection | selection_mask
+                        obj.mibModel.setData3D('selection', {bitor(selection, selection_mask(yMin:yMax, xMin:xMax, zMin:zMax))}, ...
+                            t, NaN, 0, getDataOptions);    % selection | selection_mask
                     elseif strcmp(mode,'Remove')
                         selection = cell2mat(obj.mibModel.getData3D('selection', t, NaN, 0, getDataOptions));
-                        selection(selection_mask==1) = 0;
+                        selection(selection_mask(yMin:yMax, xMin:xMax, zMin:zMax)==1) = 0;
                         obj.mibModel.setData3D('selection', {selection}, t, NaN, 0, getDataOptions);
                     elseif strcmp(mode,'Replace')
                         obj.mibModel.setData3D('selection', {selection_mask}, t, NaN, 0, getDataOptions);
@@ -598,8 +631,8 @@ classdef mibStatisticsController < handle
                 end
                 delete(wb);
             end
-            
             disp(['MaskStatistics: selected ' num2str(numel(object_list)) ' objects']);
+            
             if strcmp(mode, 'obj2model')
                 obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames = strtrim(cellstr(num2str((1:numberOfObjects).')));
                 noColors = size(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors, 1);
@@ -802,7 +835,7 @@ classdef mibStatisticsController < handle
                     '*.mat;',  'Matlab format (*.mat)'; ...
                     '*.*',  'All Files (*.*)'}, ...
                     'Save as...',fn_out);
-                if isequal(filename,0); return; end;
+                if isequal(filename,0); return; end
                 fn = [path filename];
                 wb = waitbar(0,sprintf('%s\nPlease wait...',fn), 'Name', 'Saving the results', 'WindowStyle', 'modal');
                 if exist(fn,'file') == 2
@@ -849,6 +882,7 @@ classdef mibStatisticsController < handle
                     STATS = rmfield(STATS, 'Centroid');
                     STATS = rmfield(STATS, 'PixelIdxList');
                     STATS = rmfield(STATS, 'TimePnt');
+                    STATS = rmfield(STATS, 'BoundingBox');
                     
                     fieldNames = fieldnames(STATS);
                     s(7,6:5+numel(fieldNames)) = fieldNames;
@@ -884,7 +918,8 @@ classdef mibStatisticsController < handle
         function runStatAnalysis_Callback(obj)
             % function runStatAnalysis_Callback(obj)
             % start quantification analysis
-                        
+            tic
+            
             contents = obj.View.handles.propertyCombo.String;
             selectedProperty = contents{obj.View.handles.propertyCombo.Value};
             selectedProperty = strtrim(selectedProperty);
@@ -952,6 +987,7 @@ classdef mibStatisticsController < handle
             property{end+1} = 'PixelIdxList';
             property{end+1} = 'Centroid';
             property{end+1} = 'TimePnt';
+            property{end+1} = 'BoundingBox';
             
             obj.STATS = cell2struct(cell(size(property)), property, 2);
             obj.STATS = orderfields(obj.STATS);
@@ -1007,7 +1043,7 @@ classdef mibStatisticsController < handle
                     waitbar(0.05,wb);
                     
                     % calculate common properties
-                    STATS = regionprops(CC, {'PixelIdxList', 'Centroid'}); %#ok<*PROP>
+                    STATS = regionprops(CC, {'PixelIdxList', 'Centroid', 'BoundingBox'}); %#ok<*PROP>
                     
                     % calculate matlab standard shape properties
                     prop1 = property(ismember(property, {'FilledArea'}));
@@ -1163,7 +1199,7 @@ classdef mibStatisticsController < handle
                         shapeProps3D = {'FirstAxisLength','SecondAxisLength'};     % these properties are calculated by regionprops3
                         intProps = {'SumIntensity','StdIntensity','MeanIntensity','MaxIntensity','MinIntensity'};
                         intCustomProps = 'Correlation';
-                        commonProps = {'PixelIdxList', 'Centroid'};
+                        commonProps = {'PixelIdxList', 'Centroid', 'BoundingBox'};
                         
                         % get objects
                         if ~isempty(property(ismember(property,'HolesArea')))     % calculate curve length in units
@@ -1289,6 +1325,7 @@ classdef mibStatisticsController < handle
                             %             Centroids = reshape([STATS.Centroid],[2, numel(STATS)])';
                             %             Centroids(:,3) = lay_id;
                             STATS = arrayfun(@(s) setfield(s,'Centroid',[s.Centroid lay_id]), STATS);
+                            STATS = arrayfun(@(s) setfield(s, 'BoundingBox', [s.BoundingBox(1) s.BoundingBox(2) lay_id s.BoundingBox(3) s.BoundingBox(4) 1]), STATS);
                         end
                         [STATS.TimePnt] = deal(t);  % add time points
                         obj.STATS = [obj.STATS orderfields(STATS')];
@@ -1300,7 +1337,6 @@ classdef mibStatisticsController < handle
             obj.runId = [obj.mibModel.Id, selectedMaterial + 2];
             obj.enableStatTable();
             
-            tic
             waitbar(.9,wb, sprintf('Reformatting the indices\nPlease wait...'));
             data = zeros(numel(obj.STATS),4);
             if numel(data) ~= 0
@@ -1319,7 +1355,6 @@ classdef mibStatisticsController < handle
                 end
                 data(:,4) = [obj.STATS(data(:,1)).TimePnt]';
             end
-            toc
             
             waitbar(1,wb);
             obj.View.handles.statTable.Data = data;
@@ -1331,6 +1366,7 @@ classdef mibStatisticsController < handle
             obj.histScale_Callback();
             grid(obj.View.handles.histogram);
             delete(wb);
+            toc
         end
         
         function enableStatTable(obj)
@@ -1372,7 +1408,7 @@ classdef mibStatisticsController < handle
             %
             
             id = obj.findChildId(controllerName);        % define/find index for this child controller window
-            if ~isempty(id); return; end;   % return if controller is already opened
+            if ~isempty(id); return; end   % return if controller is already opened
             
             % assign id and populate obj.childControllersIds for a new controller
             id = numel(obj.childControllersIds) + 1;

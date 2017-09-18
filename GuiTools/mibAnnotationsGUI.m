@@ -15,7 +15,7 @@ function varargout = mibAnnotationsGUI(varargin)
 
 % Edit the above text to modify the response to help mibAnnotationsGUI
 
-% Last Modified by GUIDE v2.5 15-Dec-2016 16:52:53
+% Last Modified by GUIDE v2.5 03-Sep-2017 10:36:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,8 +56,10 @@ handles.indices = [];
 
 handles.labelsTable_cm = uicontextmenu('Parent',handles.mibAnnotationsGUI);
 uimenu(handles.labelsTable_cm, 'Label', 'Add annotation...', 'Callback', {@tableContextMenu_cb, 'Add'});
-uimenu(handles.labelsTable_cm, 'Label', 'Jump to annotation...', 'Callback', {@tableContextMenu_cb, 'Jump'});
-uimenu(handles.labelsTable_cm, 'Label', 'Delete annotation...', 'Callback', {@tableContextMenu_cb, 'Delete'});
+uimenu(handles.labelsTable_cm, 'Label', 'Jump to annotation', 'Callback', {@tableContextMenu_cb, 'Jump'});
+uimenu(handles.labelsTable_cm, 'Label', 'Count selected annotations', 'Callback', {@tableContextMenu_cb, 'Count'});
+uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations...', 'Callback', {@tableContextMenu_cb, 'Export'});
+uimenu(handles.labelsTable_cm, 'Label', 'Delete annotation...', 'Separator','on', 'Callback', {@tableContextMenu_cb, 'Delete'});
 set(handles.annotationTable,'UIContextMenu',handles.labelsTable_cm);
 
 % update font and size
@@ -175,4 +177,17 @@ end
 % --- Executes on button press in deleteBtn.
 function deleteBtn_Callback(hObject, eventdata, handles)
 handles.winController.deleteBtn_Callback();
+end
+
+
+% --- Executes on selection change in resortTablePopup.
+function resortTablePopup_Callback(hObject, eventdata, handles)
+handles.winController.resortTablePopup_Callback();
+end
+
+
+% --- Executes on button press in helpBtn.
+function helpBtn_Callback(hObject, eventdata, handles)
+global mibPath;
+web(fullfile(mibPath, 'techdoc/html/ug_panel_segm_tools.html#2'), '-helpbrowser');
 end

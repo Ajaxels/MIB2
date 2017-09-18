@@ -289,12 +289,10 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
         case 'Paste buffered selection to all slices'    % default 'Ctrl + Shift + v'
             obj.menuSelectionBuffer_Callback('pasteall');
         case 'Toggle between the selected material and exterior' % default 'e'
-            if obj.mibModel.I{obj.mibModel.Id}.selectedMaterial == 2
-                eventdata2.Indices = [obj.mibView.lastSegmSelection, 2];
-            else
-                eventdata2.Indices = [2, 2];
-            end
-            obj.mibSegmentationTable_CellSelectionCallback(eventdata2);     % update mibSegmentationTable
+            userData = obj.mibView.handles.mibSegmentationTable.UserData;
+            jTable = userData.jTable;   % jTable is initializaed in the beginning of mibGUI.m
+            jTable.changeSelection(obj.mibView.lastSegmSelection(1)-1, 1, false, false);    % automatically calls mibSegmentationTable_CellSelectionCallback
+            obj.mibView.lastSegmSelection = fliplr(obj.mibView.lastSegmSelection);
         case 'Loop through the list of favourite segmentation tools'    % default 'd'
             if numel(obj.mibModel.preferences.lastSegmTool) == 0
                 errordlg(sprintf('The selection tools for the fast access with the "D" shortcut are not difined!\n\nPlease use the "D" button in the Segmentation panel to select them!'),'No tools defined!');

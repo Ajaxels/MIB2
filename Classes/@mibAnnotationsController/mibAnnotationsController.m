@@ -4,12 +4,12 @@ classdef mibAnnotationsController < handle
     % MIB->Menu->Models->Annotations->List of annotations
     
     % Copyright (C) 26.12.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+    % part of Microscopy Image Browser, http:\\mib.helsinki.fi
     % This program is free software; you can redistribute it and/or
     % modify it under the terms of the GNU General Public License
     % as published by the Free Software Foundation; either version 2
     % of the License, or (at your option) any later version.
-
+    
     
     
     properties
@@ -47,15 +47,15 @@ classdef mibAnnotationsController < handle
             obj.mibModel = mibModel;    % assign model
             guiName = 'mibAnnotationsGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
-			
+            
             % find java object for the segmentation table
             obj.jScroll = findjobj(obj.View.handles.annotationTable);
             obj.jTable = obj.jScroll.getViewport.getComponent(0);
             obj.jTable.setAutoResizeMode(obj.jTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
             
             obj.mibModel.mibShowAnnotationsCheck = 1;
-                    
-			obj.updateWidgets();
+            
+            obj.updateWidgets();
             
             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
             obj.listener{2} = addlistener(obj.mibModel, 'updatedAnnotations', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));   % listen for updated annotations
@@ -79,7 +79,7 @@ classdef mibAnnotationsController < handle
         function updateWidgets(obj)
             % update annotation table
             numberOfLabels = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber();
-
+            
             if numberOfLabels >= 1
                 [labelsText, labelsPos, labelIndices] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
                 data = cell([numel(labelsText), 5]);
@@ -109,7 +109,7 @@ classdef mibAnnotationsController < handle
                     def = {'labelsList', 'labelPositions'};
                     prompt = {'A variable for the annotation labels:','A variable for the annotation coordinates:'};
                     answer = inputdlg(prompt, title, lines, def, 'on');
-                    if size(answer) == 0; return; end;
+                    if size(answer) == 0; return; end
                     obj.mibModel.mibDoBackup('labels', 0);
                     labelsList = evalin('base',answer{1});
                     labelPositions = evalin('base',answer{2});
@@ -122,7 +122,7 @@ classdef mibAnnotationsController < handle
                         {'*.ann;',  'Matlab format (*.ann)'; ...
                         '*.*',  'All Files (*.*)'}, ...
                         'Load annotations...', obj.mibModel.myPath);
-                    if isequal(filename, 0); return; end; % check for cancel
+                    if isequal(filename, 0); return; end % check for cancel
                     obj.mibModel.mibDoBackup('labels', 0);
                     res = load(fullfile(path, filename), '-mat');
                     if size(res.labelPositions,2) == 3  % missing the t
@@ -144,19 +144,19 @@ classdef mibAnnotationsController < handle
             % save annotations to a file or export to Matlab
             
             [labelsList, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
-            if numel(labelsList) == 0; return; end;
+            if numel(labelsList) == 0; return; end
             
             button =  questdlg(sprintf('Would you like to save annotations to a file or export to the main Matlab workspace?'),'Export/Save annotations','Save to a file','Export to Matlab','Cancel','Save to a file');
-            if strcmp(button, 'Cancel'); return; end;
+            if strcmp(button, 'Cancel'); return; end
             if strcmp(button, 'Export to Matlab')
                 title = 'Input variables to export';
                 lines = [1 30];
                 def = {'labelsList', 'labelPositions'};
                 prompt = {'A variable for the annotation labels:','A variable for the annotation coordinates:'};
                 answer = inputdlg(prompt, title, lines, def, 'on');
-                if size(answer) == 0; return; end;
-                assignin('base',answer{1},labelsList);
-                assignin('base',answer{2},labelPositions);
+                if size(answer) == 0; return; end
+                assignin('base', answer{1}, labelsList);
+                assignin('base', answer{2}, labelPositions);
                 fprintf('Export annotations ("%s" and "%s") to Matlab: done!\n', answer{1}, answer{2});
                 return;
             end
@@ -174,10 +174,12 @@ classdef mibAnnotationsController < handle
             end
             
             Filters = {'*.ann;',  'Matlab format (*.ann)';...
-                '*.xls',   'Excel format (*.xls)'; };
+                       '*.landmarksAscii',   'Amira landmarks ASCII (*.landmarksAscii)';...
+                       '*.landmarksBin',   'Amira landmarks BINARY(*.landmarksBin)'    
+                       '*.xls',   'Excel format (*.xls)'; };
             
             [filename, path, FilterIndex] = uiputfile(Filters, 'Save annotations...',fn_out); %...
-            if isequal(filename,0); return; end; % check for cancel
+            if isequal(filename,0); return; end % check for cancel
             fn_out = fullfile(path, filename);
             if strcmp('Matlab format (*.ann)', Filters{FilterIndex,2})    % matlab format
                 save(fn_out, 'labelsList', 'labelPositions', '-mat', '-v7.3');
@@ -203,20 +205,47 @@ classdef mibAnnotationsController < handle
                 xlswrite2(fn_out, s, 'Sheet1', 'A1');
                 waitbar(1, wb);
                 delete(wb);
+            else    % landmarks for Amira
+                button = questdlg(sprintf('!!! Warning !!!\n\nWhen exporting points as landmarks for Amira, the annotation names will be removed and only positions of the annotations are saved!'),...
+                    'Export to Amira', 'Continue', 'Cancel', 'Cancel');
+                if strcmp(button, 'Cancel'); return; end
+                
+                recalcCoordinates = questdlg(sprintf('Recalculate annotations with respect to the current bounding box or save as they are?'),...
+                    'Recalculate coordinates', 'Recalculate', 'Save as they are', 'Recalculate');
+
+                % rearrange to [x, y, z] format from [z, x, y]
+                labelPositionsOut = [labelPositions(:,2) labelPositions(:,3) labelPositions(:,1)];
+                
+                if strcmp(recalcCoordinates, 'Recalculate')     % recalculate annotations to the real world coordinates
+                    bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
+                    pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
+                    labelPositionsOut(:, 1) = labelPositionsOut(:, 1)*pixSize.x + bb(1) - pixSize.x/2;
+                    labelPositionsOut(:, 2) = labelPositionsOut(:, 2)*pixSize.y + bb(3) - pixSize.y/2;
+                    labelPositionsOut(:, 3) = labelPositionsOut(:, 3)*pixSize.z + bb(5) - pixSize.z;
+                end
+                if strcmp(Filters{FilterIndex+numel(Filters)/2}, 'Amira landmarks ASCII (*.landmarksAscii)')
+                    options.format = 'ascii';
+                else
+                    options.format = 'binary';
+                end
+                options.overwrite = 1;
+                
+                points2amiraLandmarks(fn_out, labelPositionsOut, options);
+                
             end
             fprintf('Saving annotations to %s: done!\n', fn_out);
         end
         
         function deleteBtn_Callback(obj)
-        % function deleteBtn_Callback(obj)
-        % delete all annotations
-        obj.mibModel.mibDoBackup('labels', 0);
-        obj.mibModel.I{obj.mibModel.Id}.hLabels.removeLabels();
-        % alternative way to call plot image, via notify listener
-        eventdata = ToggleEventData(0);
-        notify(obj.mibModel, 'plotImage', eventdata);
-        %obj.plotImage(0);
-        obj.updateWidgets();
+            % function deleteBtn_Callback(obj)
+            % delete all annotations
+            obj.mibModel.mibDoBackup('labels', 0);
+            obj.mibModel.I{obj.mibModel.Id}.hLabels.removeLabels();
+            % alternative way to call plot image, via notify listener
+            eventdata = ToggleEventData(0);
+            notify(obj.mibModel, 'plotImage', eventdata);
+            %obj.plotImage(0);
+            obj.updateWidgets();
         end
         
         function annotationTable_CellSelectionCallback(obj, Indices)
@@ -228,10 +257,10 @@ classdef mibAnnotationsController < handle
             % eventdata.Indices structure of GUI
             
             if obj.View.handles.jumpCheck.Value == 1  % jump to the selected annotation
-                if isempty(Indices); return; end;
+                if isempty(Indices); return; end
                 rowId = Indices(1);
                 data = obj.View.handles.annotationTable.Data;    % get table contents
-                if size(data,1) < rowId; return; end;
+                if size(data,1) < rowId; return; end
                 
                 getDim.blockModeSwitch = 0;
                 [imgH, imgW, ~, imgZ] = obj.mibModel.getImageMethod('getDatasetDimensions', NaN, 'image', NaN, NaN, getDim);
@@ -254,7 +283,7 @@ classdef mibAnnotationsController < handle
                 if x>imgW || y>imgH || z>imgZ
                     warndlg('The annotation is outside of the image boundaries!','Wrong coordinates');
                     return;
-                end;
+                end
                 
                 % move image-view to the object
                 obj.mibModel.I{obj.mibModel.Id}.moveView(x, y);
@@ -321,7 +350,7 @@ classdef mibAnnotationsController < handle
                     defaultAnnotationName = obj.mibModel.getImageProperty('defaultAnnotationText');
                     defaultanswer={defaultAnnotationName, zVal, '10', '10', tVal};
                     answer=inputdlg(prompt, name, numlines, defaultanswer);
-                    if isempty(answer); return; end;
+                    if isempty(answer); return; end
                     
                     obj.mibModel.mibDoBackup('labels', 0);
                     labelsText = answer(1);
@@ -335,10 +364,10 @@ classdef mibAnnotationsController < handle
                     obj.updateWidgets();
                     notify(obj.mibModel, 'plotImage');  % notify to plot the image
                 case 'Jump'     % jump to the highlighted annotation
-                    if isempty(obj.indices); return; end;
+                    if isempty(obj.indices); return; end
                     data = obj.View.handles.annotationTable.Data;
-                    if isempty(data); return; end;
-                                        
+                    if isempty(data); return; end
+                    
                     rowId = obj.indices(1);
                     getDim.blockModeSwitch = 0;
                     [imgH, imgW, ~, imgZ] = obj.mibModel.getImageMethod('getDatasetDimensions', NaN, 'image',NaN,NaN,getDim);
@@ -360,7 +389,7 @@ classdef mibAnnotationsController < handle
                     if x>imgW || y>imgH || z>imgZ
                         warndlg('The annotation is outside of the image boundaries!', 'Wrong coordinates');
                         return;
-                    end;
+                    end
                     
                     % move image-view to the object
                     obj.mibModel.I{obj.mibModel.Id}.moveView(x, y);
@@ -377,10 +406,87 @@ classdef mibAnnotationsController < handle
                     else
                         notify(obj.mibModel, 'plotImage');
                     end
-                case 'Delete'   % delete the highlighted annotation
-                    if isempty(obj.indices); return; end;
+                case 'Count'    % count selected annotations
+                    if isempty(obj.indices); return; end
                     data = obj.View.handles.annotationTable.Data;
-                    if isempty(data); return; end;
+                    if isempty(data); return; end
+                    
+                    annIds = obj.indices(:,1);
+                    labelsList = data(annIds,1);
+                    labelsList = strtrim(labelsList);   % remove the blank spaces
+                    uniqLabels = unique(labelsList);
+                    
+                    output = sprintf('Counting annotations:\n');
+                    output = [output sprintf('Total number of selected annotations: %d\n', numel(annIds))];
+                    for labelId=1:numel(uniqLabels)
+                        Occurrence = sum(ismember(labelsList, uniqLabels(labelId)));
+                        output = [output sprintf('%s: %d (%.3f percents)\n', uniqLabels{labelId}, Occurrence, Occurrence/numel(annIds)*100)]; %#ok<AGROW>
+                    end
+                    fprintf(output);
+                    clipboard('copy', output);
+                    msgbox(sprintf('The annotation counts were printed to the Matlab command window and copied to the system clipboard\nYou can paste results using the Ctrl+V key shortcut'), 'Counting annotations');
+                case 'Export'
+                    if isempty(obj.indices); return; end
+                    data = obj.View.handles.annotationTable.Data;
+                    if isempty(data); return; end
+                    
+                    fn_out = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
+                    dotIndex = strfind(fn_out,'.');
+                    if ~isempty(dotIndex);  fn_out = fn_out(1:dotIndex-1);  end
+                    if isempty(strfind(fn_out,'/')) && isempty(strfind(fn_out,'\'))
+                        fn_out = fullfile(obj.mibModel.myPath, fn_out);
+                    end
+                    if isempty(fn_out); fn_out = obj.mibModel.myPath;   end
+                    
+                    Filters = {'*.ann;',  'Matlab format (*.ann)';...
+                               '*.landmarksAscii',   'Amira landmarks ASCII (*.landmarksAscii)';...
+                               '*.landmarksBin',   'Amira landmarks BINARY(*.landmarksBin)'; };
+                    [filename, path, FilterIndex] = uiputfile(Filters, 'Save annotations...', fn_out); %...
+                    if isequal(filename,0); return; end % check for cancel
+                    fn_out = fullfile(path, filename);
+                    if FilterIndex > 1
+                        button = questdlg(sprintf('!!! Warning !!!\n\nWhen exporting points as landmarks for Amira, the annotation names will be removed and only positions of the annotations are saved!'),...
+                            'Export to Amira', 'Continue', 'Cancel', 'Cancel');
+                        if strcmp(button, 'Cancel'); return; end
+                        
+                        recalcCoordinates = questdlg(sprintf('Recalculate annotations with respect to the current bounding box or save as they are?'),...
+                            'Recalculate coordinates', 'Recalculate', 'Save as they are', 'Recalculate');
+                    end
+                    
+                    annIds = obj.indices(:,1);
+                    switch Filters{FilterIndex+numel(Filters)/2}
+                        case 'Matlab format (*.ann)'
+                            labelsList = data(annIds,1); %#ok<NASGU>
+                            labelPositions = data(annIds,2:5);
+                            labelPositions = cellfun(@str2double, labelPositions); %#ok<NASGU>
+                            save(fn_out, 'labelsList', 'labelPositions', '-mat', '-v7.3');
+                            fprintf('Exporting annotations to file: %s\n', fn_out);
+                        case {'Amira landmarks ASCII (*.landmarksAscii)', 'Amira landmarks BINARY(*.landmarksBin)'}
+                            labelPositionsOut = data(annIds,2:4);
+                            labelPositionsOut = cellfun(@str2double, labelPositionsOut);
+                            % rearrange to [x, y, z] format from [z, x, y]
+                            labelPositionsOut = [labelPositionsOut(:,2) labelPositionsOut(:,3) labelPositionsOut(:,1)];     
+                            
+                            if strcmp(recalcCoordinates, 'Recalculate')     % recalculate annotations to the real world coordinates
+                                bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
+                                pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
+                                labelPositionsOut(:, 1) = labelPositionsOut(:, 1)*pixSize.x + bb(1) - pixSize.x/2;
+                                labelPositionsOut(:, 2) = labelPositionsOut(:, 2)*pixSize.y + bb(3) - pixSize.y/2;
+                                labelPositionsOut(:, 3) = labelPositionsOut(:, 3)*pixSize.z + bb(5) - pixSize.z;
+                            end
+                            if strcmp(Filters{FilterIndex+numel(Filters)/2}, 'Amira landmarks ASCII (*.landmarksAscii)')
+                                options.format = 'ascii';
+                            else
+                                options.format = 'binary';
+                            end
+                            options.overwrite = 1;
+                            
+                            points2amiraLandmarks(fn_out, labelPositionsOut, options);
+                    end
+                case 'Delete'   % delete the highlighted annotation
+                    if isempty(obj.indices); return; end
+                    data = obj.View.handles.annotationTable.Data;
+                    if isempty(data); return; end
                     
                     rowId = obj.indices(:, 1);
                     if numel(rowId) == 1
@@ -388,7 +494,7 @@ classdef mibAnnotationsController < handle
                     else
                         button =  questdlg(sprintf('Delete the multiple annotations?'),'Delete annotation','Delete','Cancel','Cancel');
                     end
-                    if strcmp(button, 'Cancel'); return; end;
+                    if strcmp(button, 'Cancel'); return; end
                     
                     obj.mibModel.mibDoBackup('labels', 0);
                     labelIndices = obj.View.handles.annotationTable.RowName;    % get indices of the labels
@@ -397,5 +503,21 @@ classdef mibAnnotationsController < handle
                     notify(obj.mibModel, 'plotImage');  % notify to plot the image
             end
         end
+        
+        function resortTablePopup_Callback(obj)
+            % function resortTablePopup_Callback(obj, sortBy, direction)
+            % Resort the list of annotation labels
+            %
+            % Parameters:
+            %
+            % Return values:
+            %
+            
+            sortingList = obj.View.handles.resortTablePopup.String;
+            sortBy = lower(sortingList{obj.View.handles.resortTablePopup.Value});
+            obj.mibModel.I{obj.mibModel.Id}.hLabels.sortLabels(sortBy);
+            obj.updateWidgets();
+        end
+        
     end
 end

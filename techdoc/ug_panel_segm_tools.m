@@ -69,12 +69,23 @@
 % </td>
 % <td style="border: 0px">
 % <ul>
-% <li>The <b>List of labels</b> table shows a list of annotations. The <em>right
-% mouse button</em> click calls an additional popup menu that allows to <em>add,
-% delete or jump</em> to the highlighted annotation</li>
+% <li>The <b>List of labels</b> table shows a list of annotations. 
+%   <ul>The <em>right mouse button</em></b> click calls an additional popup menu that allows to 
+%       <li><em><b>Add annotation</em></b>, manually add annotation to the list</li>
+%       <li><em><b>Jump to annotation</em></b>, moves the image so that the selected annotation is in the middle of the Image View panel</li>
+%       <li><em><b>Count selected annotations</em></b>, calculate occurance of each annotation in the list of selected annotations. 
+%           The results are displayed in the Matlab command window and
+%           copied to the system clipboard 
+%           <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a>
+%           </li>
+%       <li><em><b>Export selected annotations</em></b>, export selected annotations in the Matlab format or as landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>)</li>
+%       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
+%   </ul>
 % <li>The <b>Auto jump</b> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>
 % <li>The <b>Load</b> button imports annotations from the main Matlab workspace or load them from a file</li>
-% <li>The <b>Save</b> button exports annotations to the main Matlab workspace or to save them as a file in Matlab or Excel formats </li>
+% <li>The <b>Save</b> button exports annotations to the main Matlab workspace or to save them as a file in Matlab, Excel formats or as landmarks for Amira (
+%           <a href="https://youtu.be/wHr6nHpmVMo"><img style="vertical-align:middle;" src="images\youtube.png"></a> <em><b>Note!</em> only the coordinates are exported!</b>)</li>
+% <li>The <b>Sort table</b> allows to resort annotations</li>
 % <li>The <b>Refresh table</b> button updates the list of annotations</li>
 % <li>The <b>Delete all</b> button removes all annotations</li>
 % </ul>

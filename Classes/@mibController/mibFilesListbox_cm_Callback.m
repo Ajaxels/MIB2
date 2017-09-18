@@ -98,7 +98,7 @@ switch parameter
         obj.mibModel.I{obj.mibModel.Id}.clearContents(img, img_info, obj.mibModel.preferences.disableSelection);
         obj.mibModel.I{obj.mibModel.Id}.pixSize = pixSize;
         notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details
-        obj.mibView.lastSegmSelection = 1;  % last selected contour for use with the 'e' button
+        obj.mibView.lastSegmSelection = [2 1];  % last selected contour for use with the 'e' button
         obj.plotImage(1);
         
         % update list of recent directories

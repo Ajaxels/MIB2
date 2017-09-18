@@ -4,6 +4,38 @@
 % <im_browser_product_page.html Back to Index>
 %
 %
+%% 2.12 18.09.2017
+%
+% * Added a new tool to detect a frame around images (Menu->Image->Tools
+% for images->Select image frame...)
+% * Added the auto-update mode for the graphcut segmentation
+% * Added possibility to count annotations in the |List of annotations|
+% window: Segmentation panel->Annotations->Annotation list->Right mouse
+% click over the table with annotations
+% * Added export of selected annotations to Amira as landmark points or to
+% Matlab: Segmentation panel->Annotations->Annotation list->Right mouse
+% click over the table with annotations
+% * Added saving of annotations to Amira landmarks format (Segmentation panel->Annotations->Annotation list->Save)
+% * Added sorting of annotations in the Annotation list window:
+% Segmentation panel->Annotations->Annotation list->Sort table
+% * Added possibility to remove branches during morphological thinning:
+% Menu->Selection->Morphological 2D/3D opetations->Thin
+% * Added clipping with Mask for image dilation
+% * Added shift of annotations during resampling
+% * [Programming] Added material names parameter to call of mibImage.createModel function
+% * Improved performance when selecting objects in the Get Statistics window in the the Add and Replace modes
+% * Improved resizing of the Log List window
+% * Improved update of the graphcut window when switching datasets
+% * Modified use of the 'E' key shortcut, now it toggles between two recently selected materials
+% * Fixed reading of metadata for MRC files
+% * Fixed loading of models when only the z-dimension is mismatched
+% * Fixed use of the block mode, when options .x, .y, .z are present in mibModel.getDataXD/mibModel.setDataXD functions
+% * Fixed erode and dilate for elongated kernels
+% * Fixed backup before interpolation for the YZ and XZ orientations
+% * Fixed access to the Class Reference documentation (Menu->Help->Class Reference)
+% * Fixed import of annotations that are in a wrong orientation
+% * Fixed export of TIF images in the sequential mode
+%
 %% 2.1 01.06.2017
 %
 % * Added materials with 65535 maximal number of materials

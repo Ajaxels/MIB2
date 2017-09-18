@@ -174,3 +174,16 @@ function modifyBtn_Callback(hObject, eventdata, handles)
 % modify selected entry
 handles.winController.modifyBtn_Callback();
 end
+
+
+% --- Executes when mibLogListGUI is resized.
+function mibLogListGUI_SizeChangedFcn(hObject, eventdata, handles)
+winPos = handles.mibLogListGUI.Position;
+lpPos = handles.lowerPanel.Position;
+logPos = handles.logList.Position;
+
+logPos(2) = lpPos(2) + lpPos(4) + winPos(4)/40;
+logPos(4) = winPos(4) - lpPos(4) - winPos(4)/15;
+handles.logList.Position = logPos;
+
+end
