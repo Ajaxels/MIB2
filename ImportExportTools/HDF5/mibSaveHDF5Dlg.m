@@ -61,9 +61,11 @@ handles.output = {};
 % get MIB font size
 global Font;
 % update font and size
-if handles.text1.FontSize ~= Font.FontSize ...
-        || ~strcmp(handles.text1.FontName, Font.FontName)
-    mibUpdateFontSize(handles.mibSaveHDF5Dlg, Font);
+if ~isempty(Font)
+    if handles.text1.FontSize ~= Font.FontSize ...
+            || ~strcmp(handles.text1.FontName, Font.FontName)
+        mibUpdateFontSize(handles.mibSaveHDF5Dlg, Font);
+    end
 end
 
 % rescale widgets for Mac and Linux

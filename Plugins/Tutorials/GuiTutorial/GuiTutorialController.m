@@ -50,9 +50,11 @@ classdef GuiTutorialController < handle
             % update font and size
             % you may need to replace "obj.View.handles" with tag of any text field of your own GUI
             global Font;
-            if obj.View.handles.infoText1.FontSize ~= Font.FontSize ...
-                    || ~strcmp(obj.View.handles.infoText1.FontName, Font.FontName)
-                mibUpdateFontSize(obj.View.gui, Font);
+            if ~isempty(Font)
+                if obj.View.handles.infoText1.FontSize ~= Font.FontSize ...
+                        || ~strcmp(obj.View.handles.infoText1.FontName, Font.FontName)
+                    mibUpdateFontSize(obj.View.gui, Font);
+                end
             end
             
             obj.updateWidgets();

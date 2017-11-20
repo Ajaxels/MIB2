@@ -89,7 +89,7 @@ classdef mibCropObjectsController < handle
             % output directory
             
             folder_name = uigetdir(obj.View.handles.dirEdit.String, 'Select directory');
-            if isequal(folder_name, 0); return; end;
+            if isequal(folder_name, 0); return; end
             obj.View.handles.dirEdit.String = folder_name;
             obj.outputDir = folder_name;
         end
@@ -106,7 +106,7 @@ classdef mibCropObjectsController < handle
                 if strcmp(choice, 'Cancel')
                     obj.View.handles.dirEdit.String = obj.outputDir;
                     return;
-                end;
+                end
                 mkdir(folder_name);
             end
             obj.outputDir = folder_name;

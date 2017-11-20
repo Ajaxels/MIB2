@@ -23,8 +23,10 @@ classdef mibCropController  < handle
         roiPos
         % a cell array with position of the ROI for crop
         % obj.roiPos{1} = [1, width, 1, height, 1, depth, 1, time];
-         mibImageAxes
+        mibImageAxes
         % handle to mibView. mibImageAxes, main image axes of MIB
+        currentMode
+        % a string with the selected crop mode: 'interactiveRadio','manualRadio','roiRadio'
     end
     
     events
@@ -48,7 +50,9 @@ classdef mibCropController  < handle
             obj.mibImageAxes = mibImageAxes;
             guiName = 'mibCropGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
-				
+            
+            obj.currentMode	= 'manualRadio';
+            
 			obj.updateWidgets();
 			
 			% add listner to obj.mibModel and call controller function as a callback
@@ -85,14 +89,7 @@ classdef mibCropController  < handle
             if numberOfROI == 0
                  obj.View.handles.roiRadio.Enable = 'off';
             end
-            obj.radio_Callback(obj.View.handles.manualRadio);
-            
-            if obj.mibModel.preferences.disableSelection == 1
-                obj.View.handles.interactiveRadio.Enable = 'off';
-                obj.View.handles.manualRadio.Value = 1;
-                obj.View.handles.descriptionText.String = ...
-                    'To enable the interactive crop tool please switch on the selection mode. Set the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) to "no"';
-            end
+            obj.radio_Callback(obj.View.handles.(obj.currentMode));
             
             list{1} = 'All';
             i=2;
@@ -133,7 +130,7 @@ classdef mibCropController  < handle
                 obj.View.handles.tEdit.Enable = 'off';
             end
             if strcmp(mode,'interactiveRadio')
-                text = sprintf('Interactive mode allows to draw a rectangle that will be used for cropping\nTo start, press the Continue button and use the left mouse button to draw a rectangle area');
+                text = sprintf('Interactive mode allows to draw a rectangle that will be used for cropping.To start, press the Crop button and use the left mouse button to draw an area, double click over the area to crop');
                 obj.editboxes_Callback();
             elseif strcmp(mode,'manualRadio')
                 obj.View.handles.wEdit.Enable = 'on';
@@ -147,6 +144,8 @@ classdef mibCropController  < handle
                 obj.roiPopup_Callback();
             end
             obj.View.handles.descriptionText.String = text;
+            obj.View.handles.descriptionText.TooltipString = text;
+            obj.currentMode = mode;
         end
         
         function editboxes_Callback(obj)
@@ -227,36 +226,44 @@ classdef mibCropController  < handle
                 
                 %disableSelectionSwitch = obj.mibModel.preferences.disableSelection;
                 obj.mibModel.disableSegmentation = 1;  % disable segmentation
+                
                 h =  imrect(obj.mibImageAxes);
-                selarea = h.createMask;
+                new_position = wait(h);
                 delete(h);
                 obj.mibModel.disableSegmentation = 0;    % re-enable selection switch 
                 
-                obj.mibModel.I{obj.mibModel.Id}.clearSelection(NaN, NaN, obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber, obj.mibModel.I{obj.mibModel.Id}.getCurrentTimePoint);
-                options.blockModeSwitch = 1;
-                [height, width, ~, ~] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('selection', NaN, 0, options);
-                obj.mibModel.setData2D('selection', imresize(uint8(selarea), [height width], 'method', 'nearest'), NaN, NaN, NaN, options);
-                notify(obj.mibModel, 'plotImage');
-                
-                choice2 = questdlg('Do you want to crop the image to selected area?', 'Crop options', 'Yes', 'Cancel', 'Cancel');
-                if strcmp(choice2,'Cancel')
-                    obj.mibModel.I{obj.mibModel.Id}.clearSelection(NaN, NaN, obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber());
-                    notify(obj.mibModel, 'plotImage');
+                if isempty(new_position)
                     obj.View.gui.Visible = 'on';
                     return;
                 end
-                selarea = cell2mat(obj.mibModel.getData2D('selection'));
-                STATS = regionprops(selarea, 'BoundingBox');
                 
+                % [xmin, ymin, width, height]
+                options.blockModeSwitch = 0;
+                [height, width, ~, ~] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('selection', NaN, 0, options);
+
+                % make positive x1 and y1 and convert from [x1, y1 width, height] to [x1, y1, x2, y2]
+                new_position(3) = new_position(3) + new_position(1);    % xMax
+                new_position(4) = new_position(4) + new_position(2);    % yMax
+                if new_position(1) < 0; new_position(1) = max([new_position(1) 0.5]); end             % xMin
+                if new_position(2) < 0; new_position(2) = max([new_position(2) 0.5]); end             % yMin
+                
+                % [xmin, ymin, xmax, ymax]
+                [position(1), position(2)] = obj.mibModel.convertMouseToDataCoordinates(new_position(1), new_position(2), 'shown');  % x1, y1
+                [position(3), position(4)] = obj.mibModel.convertMouseToDataCoordinates(new_position(3), new_position(4), 'shown'); % x2, y2
+                position = ceil(position);
+                
+                % fix x2 and y2
+                if position(3) > width; position(3) = width; end
+                if position(4) > height; position(4) = height; end
+                 
                 if obj.mibModel.I{obj.mibModel.Id}.orientation == 4 % xy plane
-                    crop_factor = [round(STATS.BoundingBox(1:2)) STATS.BoundingBox(3:4) 1 obj.mibModel.I{obj.mibModel.Id}.depth]; % x1, y1, dx, dy, z1, dz
+                    crop_factor = [position(1:2) position(3)-position(1)+1 position(4)-position(2)+1 1 obj.mibModel.I{obj.mibModel.Id}.depth]; % x1, y1, dx, dy, z1, dz
                 elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 1 % xz plane
-                    crop_factor = [round(STATS.BoundingBox(2)) 1 round(STATS.BoundingBox(4)) obj.mibModel.I{obj.mibModel.Id}.height round(STATS.BoundingBox(1)) round(STATS.BoundingBox(3))]; % x1, y1, dx, dy, z1, dz
+                    crop_factor = [position(2) 1 position(4)-position(2)+1 obj.mibModel.I{obj.mibModel.Id}.height position(1) position(3)-position(1)+1]; % x1, y1, dx, dy, z1, dz
                 elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 2 % yz plane
-                    crop_factor = [1 round(STATS.BoundingBox(2)) obj.mibModel.I{obj.mibModel.Id}.width round(STATS.BoundingBox(4)) round(STATS.BoundingBox(1)) round(STATS.BoundingBox(3))]; % x1, y1, dx, dy, z1, dz
+                    crop_factor = [1 position(2) obj.mibModel.I{obj.mibModel.Id}.width position(4)-position(2)+1 position(1) position(3)-position(1)+1]; % x1, y1, dx, dy, z1, dz
                 end
-                obj.mibModel.I{obj.mibModel.Id}.clearSelection(NaN, NaN, obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber());
-                %obj.View.gui.Visible = 'on';
+                obj.View.gui.Visible = 'on';
             elseif ~isnan(obj.roiPos{1})
                 x1 = obj.roiPos{1}(1);
                 x2 = obj.roiPos{1}(2);
@@ -278,8 +285,11 @@ classdef mibCropController  < handle
                         break;
                     end
                 end
-                
-                answer = mibInputDlg({mibPath}, 'Enter destination buffer number (from 1 to 9) to duplicate the dataset:', 'Duplicate', num2str(bufferId));
+                prompts = {'Enter the destination buffer:'};
+                defAns = {arrayfun(@(x) {num2str(x)}, 1:obj.mibModel.maxId)};
+                defAns{1}(end+1) = {bufferId};
+                title = 'Crop dataset to';
+                answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
                 if isempty(answer); return; end
                 bufferId = str2double(answer{1});
                 
@@ -308,9 +318,10 @@ classdef mibCropController  < handle
                 eventdata = ToggleEventData(1);
                 notify(obj.mibModel, 'plotImage', eventdata);
             end
-            obj.closeWindow();
+            
+            %obj.closeWindow();
+            obj.updateWidgets();
         end
-        
         
     end
 end

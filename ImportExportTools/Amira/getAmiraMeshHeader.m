@@ -28,7 +28,7 @@ if nargin < 1
         {'*.am','Amira mesh labels(*.am)';
          '*.*',  'All Files (*.*)'}, ...
          'Pick a file');
-    if filename == 0; return; end;
+    if filename == 0; return; end
     filename = [pathname filename];
 end
 fid = fopen(filename, 'r');
@@ -63,9 +63,9 @@ level = 0;
 parIndex = 1;
 while numel(strfind(tline, 'Lattice')) == 0
     tline = strtrim(fgetl(fid));
-    if numel(strfind(tline, 'Lattice')) ~= 0; break; end;
-    if isempty(tline); continue; end;
-    if level == 0; field = cellstr(''); end;
+    if numel(strfind(tline, 'Lattice')) ~= 0; break; end
+    if isempty(tline); continue; end
+    if level == 0; field = cellstr(''); end
     
     openGroup = strfind(tline, '{');
     closeGroup = strfind(tline, '}');
@@ -78,17 +78,17 @@ while numel(strfind(tline, 'Lattice')) == 0
         end
     elseif isempty(openGroup) & ~isempty(closeGroup)
         level = level - 1;
-        if level == -1; break; end;  % end of the Parameters section
+        if level == -1; break; end  % end of the Parameters section
         field(level+1) = cellstr('');
     else
         spaces = strfind(strtrim(tline), ' ');
         parField = '';
-        for lev = 1:level;
+        for lev = 1:level
             parField = [parField '_' field{lev}];
         end
         parField = [parField '_' tline(1:spaces(1)-1)];
-        if parField(1) == '_'; parField = parField(2:end); end;
-        if parField(1) == '_'; parField = parField(2:end); end;
+        if parField(1) == '_'; parField = parField(2:end); end
+        if parField(1) == '_'; parField = parField(2:end); end
         
         value = tline(spaces(1)+1:end);
         if value(end) ~= ',' && ~strcmp(parField,'CoordType')
@@ -100,17 +100,17 @@ while numel(strfind(tline, 'Lattice')) == 0
             end
         end
         
-        if value(end) == ','; 
+        if value(end) == ','
             value = value(1:end-1); 
-        end;  % remove ending comma 
+        end  % remove ending comma 
 
-        if numel(value)>0 && value(1) == '"' && value(end) == '"'; 
+        if numel(value)>0 && value(1) == '"' && value(end) == '"' 
             value = value(2:end-1); 
         elseif numel(value)>0
             if isempty(strfind(value, ' '))
                 value = str2num(value); 
             end
-        end;   % remove quotation marks from strings 
+        end   % remove quotation marks from strings 
         %par.(parField) = cellstr(value);
         par(parIndex).Name = parField;
         par(parIndex).Value = value;
@@ -181,7 +181,7 @@ if isKey(img_info, 'ImageDescription')
     bb_info_exist = strfind(curr_text,'BoundingBox');
     if bb_info_exist == 1
         spaces = strfind(curr_text,' ');
-        if numel(spaces) < 7; spaces(7) = numel(curr_text); end;
+        if numel(spaces) < 7; spaces(7) = numel(curr_text); end
         tab_pos = strfind(curr_text,sprintf('\t'));
         % 12    14    21    23    28    30
         pos = min([spaces(7) tab_pos]);

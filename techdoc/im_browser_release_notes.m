@@ -4,6 +4,32 @@
 % <im_browser_product_page.html Back to Index>
 %
 %
+%
+%% 2.20 14.11.2017
+% * Added a new 3D Grid mode to the Graphcut tool; when used the fast interactive performance can be achieved even with very large datasets
+% * Added denoise of image using deep neural network (|Image Filters
+% Panel->Filter->DNN Denoise|), requires Matlab R2017b or newer and Neural Network Toolbox
+% * Added export annotations to Imaris (|Menu->Models->Annotations->Export to Imaris as Spots|)
+% * Added possibility to do not calculate intensity profiles for measurements to make measurements faster
+% * Added buttons to magnify snapshots in x2, x4, and x8 times using the Snapshot tool
+% * Added reading of material names and colors when opening AmiraMesh models
+% * Added insert of a dataset as a new time point: (|RMB over the file name -> Insert into the open dataset|)
+% * Added utilization of the block mode for calculation of object properties for the 3D objects in the XY orientation
+% * Rearranged the Graphcut, Watershed and Object separation tools to separate functions under |Menu->Tools|
+% * Updated the Crop tool, the interactive mode allows to modify the selection of the area for cropping before accepting it
+% * Updated calculation of curve lengths in the Get Statistics dialog, now the points are smoothed with average filter of 3
+% * Updated connection to Imaris
+% * Updated BioFormats to 5.7.1
+% * Updated |inputdlg| to customizable |mibInputMultiDlg| function
+% * Updated measure line/freehand length tool (|Menu->Tools->Measure|), now  after use of these tools the selection is not shown
+% * Fixed disabling of the selection mode after modification of measurements
+% * Fixed movement of measurements after their recalculation
+% * Fixed recalculation of voxels after import of images from Matlab
+% * Fixed resampling of a single slice RGB images
+% * Fixed incorrect reading of the AmiraMesh header for the fuse mode of the Chop tool
+% * [Programming] moved mibController.connImaris to mibModel.connImaris
+% * [Programming] updated syntax of mibImage.clearMask
+%
 %% 2.12 18.09.2017
 %
 % * Added a new tool to detect a frame around images (Menu->Image->Tools

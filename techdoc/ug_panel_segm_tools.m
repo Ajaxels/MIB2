@@ -79,6 +79,7 @@
 %           <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a>
 %           </li>
 %       <li><em><b>Export selected annotations</em></b>, export selected annotations in the Matlab format or as landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>)</li>
+%       <li><em><b>Export selected annotations to Imaris</em></b>, export selected annotations to Imaris (<em><b>Note!</em> please first export the dataset!</b>)</li>
 %       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
 %   </ul>
 % <li>The <b>Auto jump</b> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>

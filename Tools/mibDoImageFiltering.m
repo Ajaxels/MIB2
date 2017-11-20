@@ -6,7 +6,7 @@ function [img, logText] = mibDoImageFiltering(img, options)
 % img: -> image stack, [1:height, 1:width, 1:color, 1:layers]
 % options: -> a structure with parameters
 % - .dataType - type of the dataset, ''4D'' - [height, width, color, z], ''3D'' - [height, width, z]
-% - .fitType - type of the filter to use: ''Gaussian 3d'', ''Gaussian'', ''Disk'', ''Motion'', ''Unsharp'',''Median
+% - .fitType - type of the filter to use: ''Gaussian 3d'', ''Gaussian'', ''DNN Denoise'', ''Disk'', ''Motion'', ''Unsharp'',''Median
 % 2D'', ''Median 3D'', ''Wiener 2D'', ''Average'', ''Motion''
 % - .colorChannel - color channel to filter, when @b 0 filter all channels
 % - .hSize - size of the Kernel to use, or Ratio for the Frangi filter
@@ -150,6 +150,9 @@ else    % 2D filters
     
     % generate filter and log_text
     switch options.fitType
+        case {'DNN Denoise'}    % Denoise image using deep neural network
+            log_text = ['ImFilter: ' options.fitType];
+            net = denoisingNetwork('DnCNN');
         case {'Median 2D', 'Wiener 2D'}
             log_text = ['ImFilter: ' options.fitType ', HSize:' num2str(options.hSize) ...
                 ',Orient:' num2str(options.orientation) ',ColCh:' num2str(options.colorChannel)];
@@ -195,6 +198,8 @@ else    % 2D filters
         % with coefficients provided in filter2d
         for color_ch=color_start:color_end
             switch options.fitType
+                case {'DNN Denoise'}    % Denoise image using deep neural network
+                    img(:,:,color_ch,id) = denoiseImage(img(:,:,color_ch,id), net);
                 case 'Median 2D'
                     img(:,:,color_ch,id) = medfilt2(img(:,:,color_ch,id), options.hSize, 'symmetric');
                 case 'Wiener 2D'
@@ -223,7 +228,7 @@ else    % 2D filters
                     img(:,:,color_ch,id) = imfilter(img(:,:,color_ch,id), filter2d, 'replicate');
             end
         end
-        if options.showWaitbar && mod(id, 10)==0; waitbar(id/max_layers,wb); end;
+        if options.showWaitbar && mod(id, 10)==0; waitbar(id/max_layers,wb); end
     end
     logText = log_text;
     

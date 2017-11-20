@@ -3,8 +3,8 @@ function [labelsList, labelPositions, indices] = getSliceLabels(obj, sliceNumber
 % Get list of labels (mibImage.hLabels) shown at the specified slice
 %
 % Parameters:
-% sliceNumber: [@optional], a slice number to get labels
-% timePoint: [@optional], a time point to get the labels
+% sliceNumber: [@em optional], a slice number to get labels
+% timePoint: [@em optional], a time point to get the labels
 %
 % Return values:
 % labelsList:   a cell array with labels

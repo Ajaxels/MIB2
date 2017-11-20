@@ -618,13 +618,18 @@ classdef mibRechopDatasetController < handle
                     for keyId=1:numel(keysList)
                         strfindResult = strfind(keysList{keyId}, 'Materials_');
                         if ~isempty(strfindResult)
+                            % keysList{keyId} for materials returned as
+                            % Materials_NAME-OF-MATERIAL_Color  - color 
+                            % Materials_NAME-OF-MATERIAL_Id     - index of material
+                            matName = keysList{keyId}(11:end);      % 11 due to removal of 'Materials_' text 
                             materialInfo = img_info(keysList{keyId});
-                            dummyIndex = strfind(materialInfo, 'Color');
-                            materialIndex = str2double(materialInfo(1:dummyIndex-1));
-                            materialColor = str2num(materialInfo(dummyIndex+6:end)); %#ok<ST2NM>
-                            R.modelMaterialColors(materialIndex, :) = materialColor(1:3);
-                            dummyIndex = strfind(keysList{keyId}, '_');
-                            R.modelMaterialNames{materialIndex, :} = keysList{keyId}(dummyIndex(1)+1:dummyIndex(2)-1);
+                            if contains(matName, 'Color')
+                                materialColor = str2num(materialInfo); %#ok<ST2NM>   Materials_NAME-OF-MATERIAL_Color
+                                materialIndex = img_info(keysList{keyId+1});  %      Materials_NAME-OF-MATERIAL_Id
+                                R.modelMaterialColors(materialIndex, :) = materialColor(1:3);
+                                R.modelMaterialNames{materialIndex, :} = matName(1:end-6);
+                                keyId = keyId + 1; %#ok<FXSET>
+                            end
                         end
                     end
                     R.imOut = amiraLabels2bitmap(fn);

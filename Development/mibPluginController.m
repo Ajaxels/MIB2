@@ -48,9 +48,11 @@ classdef mibPluginController < handle
             % % update font and size
             % % you may need to replace "obj.View.handles.text1" with tag of any text field of your own GUI
             % global Font;
-            % if obj.View.handles.text1.FontSize ~= Font.FontSize ...
+            % if ~isempty(Font)
+            %   if obj.View.handles.text1.FontSize ~= Font.FontSize ...
             %         || ~strcmp(obj.View.handles.text1.FontName, Font.FontName)
-            %     mibUpdateFontSize(obj.View.gui, Font);
+            %       mibUpdateFontSize(obj.View.gui, Font);
+            %   end
             % end
             
 			obj.updateWidgets();

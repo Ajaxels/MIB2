@@ -19,17 +19,18 @@ choice = questdlg(sprintf('The following procedure allows to define the pixel si
     'Scale bar info', 'Continue', 'Cancel', 'Cancel');
 if strcmp(choice, 'Cancel'); return; end
     
-answer = mibInputDlg({mibPath}, ...
-    sprintf('Please enter length of the scale bar, keep the space character between the number and the unit;\nyou can use the following units:\n m, cm, mm, um, nm'),...
-    'Scale bar lenght', '2 um');
+prompts = {'Length of the scale bar'; 'Units'};
+defAns = {'2'; {'m', 'cm', 'mm', 'um', 'nm', 4}};
+title = 'Scale bar lenght';
+mibInputMultiDlgOptions.Columns = 2;
+mibInputMultiDlgOptions.Title = sprintf('Please enter the length of the scale bar as shown on the image.\nRemember to specify the correct units!');
+mibInputMultiDlgOptions.TitleLines = 3;
+answer = mibInputMultiDlg([], prompts, defAns, title, mibInputMultiDlgOptions);
 
 if isempty(answer) 
     obj.plotImage();
     return;
 end
-
-answer = answer{1};
-spaceChar = strfind(answer, ' ');
 
 obj.mibModel.disableSegmentation = 1;    % disable segmentation while marking the scale bar
 result = obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj); % use Measure class to draw a line above the scale bar
@@ -45,8 +46,8 @@ yCoord = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(end).Y;    % get the Y co
 distPix = sqrt((xCoord(1)-xCoord(2))^2 + (yCoord(1)-yCoord(2))^2);  % calculate the distance between two selected points
 obj.mibModel.I{obj.mibModel.Id}.hMeasure.removeMeasurements(obj.mibModel.I{obj.mibModel.Id}.hMeasure.getNumberOfMeasurements());    % remove this measurement from the list
 
-scaleLength = str2double(answer(1:spaceChar));
-pixSize.units = answer(spaceChar+1:end);
+scaleLength = str2double(answer{1});
+pixSize.units = answer{2};
 pixSize.x = scaleLength / distPix;
 pixSize.y = scaleLength / distPix;
 pixSize.z = scaleLength / distPix;

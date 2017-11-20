@@ -55,9 +55,11 @@ handles.bmpPanel.Parent = handles.tifPanel.Parent;
 
 % update font and size
 global Font;
-if handles.text1.FontSize ~= Font.FontSize ...
-        || ~strcmp(handles.text1.FontName, Font.FontName)
-    mibUpdateFontSize(handles.mibSnapshotGUI, Font);
+if ~isempty(Font)
+    if handles.text1.FontSize ~= Font.FontSize ...
+            || ~strcmp(handles.text1.FontName, Font.FontName)
+        mibUpdateFontSize(handles.mibSnapshotGUI, Font);
+    end
 end
 
 % rescale widgets for Mac and Linux
@@ -200,6 +202,12 @@ function mibSnapshotGUI_KeyPressFcn(hObject, eventdata, handles)
 %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
 % handles    structure with handles and user data (see GUIDATA)
 % Check for "enter" or "escape"
+if strcmp(eventdata.Modifier, 'alt')
+    handles.bin2Btn.String = 'x2';
+    handles.bin4Btn.String = 'x4';
+    handles.bin8Btn.String = 'x8';
+end
+
 if isequal(hObject.CurrentKey, 'escape')
     cancelBtn_Callback(handles.closelBtn, eventdata, handles);
 end    
@@ -208,6 +216,7 @@ if isequal(hObject.CurrentKey, 'return')
     continueBtn_Callback(handles.snapshotBtn, eventdata, handles);
 end   
 end
+
 
 % --- Executes on button press in snapshotBtn.
 function snapshotBtn_Callback(hObject, eventdata, handles)
@@ -247,6 +256,10 @@ switch hObject.Tag
     case 'bin8Btn'
         xFactor = 8;
 end
+if hObject.String(1) == 'm'
+    xFactor = 1/xFactor;
+end
+
 width = str2double(handles.widthEdit.String);
 height = str2double(handles.heightEdit.String);
 width = ceil(width/xFactor);
@@ -265,4 +278,17 @@ end
 % --- Executes on selection change in roiPopup.
 function roiPopup_Callback(hObject, eventdata, handles)
 handles.winController.roiPopup_Callback();
+end
+
+% --- Executes on button press in binCheck.
+function binCheck_Callback(hObject, eventdata, handles)
+if hObject.Value == 1
+    handles.bin2Btn.String = 'bin2';
+    handles.bin4Btn.String = 'bin4';
+    handles.bin8Btn.String = 'bin8';
+else
+    handles.bin2Btn.String = 'mag2';
+    handles.bin4Btn.String = 'mag4';
+    handles.bin8Btn.String = 'mag8';
+end
 end

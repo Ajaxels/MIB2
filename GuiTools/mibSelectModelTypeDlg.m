@@ -68,9 +68,11 @@ handles.output = 63;
 
 % update font and size
 global Font;
-if handles.modelDescriptionText.FontSize ~= Font.FontSize ...
-        || ~strcmp(handles.modelDescriptionText.FontName, Font.FontName)
-    mibUpdateFontSize(handles.mibSelectModelTypeDlg, Font);
+if ~isempty(Font)
+    if handles.modelDescriptionText.FontSize ~= Font.FontSize ...
+            || ~strcmp(handles.modelDescriptionText.FontName, Font.FontName)
+        mibUpdateFontSize(handles.mibSelectModelTypeDlg, Font);
+    end
 end
 
 % rescale widgets for Mac and Linux

@@ -1,6 +1,6 @@
 % --- Executes on key release with focus on im_browser or any of its controls.
 function mibGUI_WindowKeyPressFcn_BrushSuperpixel(obj, eventdata)
-% function mibGUI_WindowKeyPressFcn_BrushSuperpixel(hObject, eventdata, handles)
+% function mibGUI_WindowKeyPressFcn_BrushSuperpixel(obj, eventdata)
 % a function to check key callbacks when using the Brush in the Superpixel mode
 %
 % Parameters:
@@ -23,22 +23,22 @@ function mibGUI_WindowKeyPressFcn_BrushSuperpixel(obj, eventdata)
 %if strcmp(get(get(hObject,'CurrentObject'),'style'), 'edit'); return; end;
 
 char=eventdata.Key;
-if strcmp(char, 'alt'); return; end;
+if strcmp(char, 'alt'); return; end
 modifier = eventdata.Modifier;
 
 % find a shortcut action
 controlSw = 0;
 shiftSw = 0;
 altSw = 0;
-if ismember('control', modifier); controlSw = 1; end;
+if ismember('control', modifier); controlSw = 1; end
 if ismember('shift', modifier) 
     if ismember(char, obj.mibModel.preferences.KeyShortcuts.Key(6:16))   % override the Shift state for actions that work for all slices
         shiftSw = 0;  
     else
         shiftSw = 1; 
     end
-end;
-if ismember('alt', modifier); altSw = 1; end;
+end
+if ismember('alt', modifier); altSw = 1; end
 ActionId = ismember(obj.mibModel.preferences.KeyShortcuts.Key, char) & ismember(obj.mibModel.preferences.KeyShortcuts.control, controlSw) & ...
     ismember(obj.mibModel.preferences.KeyShortcuts.shift, shiftSw) & ismember(obj.mibModel.preferences.KeyShortcuts.alt, altSw);
 ActionId = find(ActionId>0);    % action id is the index of the action, obj.mibModel.preferences.KeyShortcuts.Action(ActionId)

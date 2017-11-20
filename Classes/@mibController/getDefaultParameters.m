@@ -285,6 +285,7 @@ end
 if isdir(obj.mibModel.preferences.lastpath) == 0
     obj.mibModel.preferences.lastpath = start_path;
 end
+
 %% Update libraries
 % update Fiji and Omero folders if they are present in Matlab path already
 if ~isdeployed

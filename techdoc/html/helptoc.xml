@@ -67,7 +67,9 @@
                     <tocitem target="ug_gui_menu_tools_measure.html">Measure tool</tocitem>
 					<tocitem target="ug_gui_menu_tools_random_forest.html">Classifier->Membrane detection</tocitem>
 					<tocitem target="ug_gui_menu_tools_random_forest_superpixels.html">Classifier->Superpixels classification</tocitem>
-					<tocitem target="ug_gui_menu_tools_watershed.html">Watershed/Graphcut segmentation</tocitem>
+					<tocitem target="ug_gui_menu_tools_graphcut.html">Semi-automatic segmentation->Graphcut</tocitem>
+                    <tocitem target="ug_gui_menu_tools_watershed.html">Semi-automatic segmentation->Watershed</tocitem>
+                    <tocitem target="ug_gui_menu_tools_objseparation.html">Object separation</tocitem>
 				</tocitem>
                 <tocitem target="ug_gui_menu_plugins.html">Plugins</tocitem>
                 <tocitem target="ug_gui_menu_help.html">Help</tocitem>

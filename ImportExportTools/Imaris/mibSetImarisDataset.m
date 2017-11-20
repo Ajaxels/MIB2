@@ -36,41 +36,19 @@ function connImaris = mibSetImarisDataset(mibImage, connImaris, options)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 25.09.2017 IB updated connection to Imaris
+
 global mibPath; 
 
-if nargin < 3;     options = struct(); end;
-if nargin < 2;     connImaris = []; end;
+if nargin < 3;     options = struct(); end
+if nargin < 2;     connImaris = []; end
 
-if ~isfield(options, 'type'); options.type = 'image'; end;
-if ~isfield(options, 'modelIndex'); options.modelIndex = NaN; end;
+if ~isfield(options, 'type'); options.type = 'image'; end
+if ~isfield(options, 'modelIndex'); options.modelIndex = NaN; end
 
 % establish connection to Imaris
-wb = waitbar(0, 'Please wait...', 'Name', 'Connecting to Imaris');
-if isempty(connImaris)
-    try
-        connImaris = IceImarisConnector(0);
-        waitbar(0.3, wb);
-    catch exception
-        %if strcmp(exception.message, 'Could not connect to Imaris Server.')
-        errordlg(sprintf('Could not connect to Imaris Server;\nPlease start Imaris and try again!'), ...
-            'Missing Imaris');
-        delete(wb);
-        connImaris = [];
-        return;
-    end
-    waitbar(0.7, wb);
-    if connImaris.isAlive == 0
-        % start Imaris
-        connImaris.startImaris()
-        waitbar(0.95, wb);
-    end
-else
-    if connImaris.isAlive == 0
-        connImaris.startImaris();
-    end
-end
-delete(wb);
+connImaris = mibConnectToImaris(connImaris);
+if isempty(connImaris); return; end
 
 if isfield(options, 'mode')     % mode already provided
     mode = options.mode;
@@ -78,7 +56,7 @@ else
     if mibImage.time > 1
         mode = questdlg(sprintf('Would you like to export currently shown 3D (W:H:C:Z) stack or complete 4D (W:H:C:Z:T) dataset to Imaris?'),...
             'Export to Imaris', '3D', '4D', 'Cancel', '3D');
-        if strcmp(mode, 'Cancel'); return; end;
+        if strcmp(mode, 'Cancel'); return; end
     else
         mode = '3D';
     end

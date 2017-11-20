@@ -37,8 +37,8 @@ function [xOut, yOut, zOut, tOut] = convertMouseToDataCoordinates(obj, x, y, mod
 % 
 
 
-if nargin < 5; permuteSw = 1; end;
-if nargin < 4; mode = 'shown'; end;
+if nargin < 5; permuteSw = 1; end
+if nargin < 4; mode = 'shown'; end
 
 magFactor = obj.getMagFactor();
 [axesX, axesY] = obj.getAxesLimits();

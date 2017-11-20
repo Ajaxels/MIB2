@@ -3,7 +3,7 @@ function mibZoomEdit_Callback(obj)
 % callback function for modification of the handles.mibZoomEdit 
 %
 % Parameters:
-% handles: structure with handles of im_browser.m
+% 
 
 % Copyright (C) 10.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 

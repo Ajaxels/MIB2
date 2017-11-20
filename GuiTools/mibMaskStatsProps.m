@@ -77,10 +77,11 @@ if handles.obj3d
 end
 
 handles.mibMaskStatsProps.Position(3) = handles.uipanel1.Position(3)+handles.uipanel1.Position(1)*2;
-
-if handles.Area.FontSize ~= Font.FontSize ...
-        || ~strcmp(handles.Area.FontName, Font.FontName)
-    mibUpdateFontSize(handles.mibMaskStatsProps, Font);
+if ~isempty(Font)
+    if handles.Area.FontSize ~= Font.FontSize ...
+            || ~strcmp(handles.Area.FontName, Font.FontName)
+        mibUpdateFontSize(handles.mibMaskStatsProps, Font);
+    end
 end
 
 % rescale widgets for Mac and Linux

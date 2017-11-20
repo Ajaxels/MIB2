@@ -178,11 +178,13 @@ drawnow;    % set delay
     Item = jMeasureMenu.getMenuComponent(0);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'linemeasure.png')));     
     Item = jMeasureMenu.getMenuComponent(1);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'stereology.png')));     
-    Item = jMeasureMenu.getMenuComponent(2);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'randomforest.png')));     
+    Item = jMeasureMenu.getMenuComponent(2);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'semiauto.png')));     
     Item = jMeasureMenu.getMenuComponent(3);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'watershed.png')));     
+    Item = jMeasureMenu.getMenuComponent(4);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'stereology.png')));     
     
 jHelpMenu = jMenuBar.getComponent(8);
 jHelpMenu.doClick; % open the Help menu

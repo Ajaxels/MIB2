@@ -18,7 +18,7 @@ function menuModelsRender_Callback(obj, type)
 % Updates
 %
 
-if nargin < 2; type = 'matlab'; end;
+if nargin < 2; type = 'matlab'; end
 
 switch type
     case 'matlab'
@@ -33,5 +33,5 @@ switch type
             options.materialIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
         end
         
-        obj.connImaris = mibRenderModelImaris(obj.mibModel.I{obj.mibModel.Id}, obj.connImaris, options);
+        obj.mibModel.connImaris = mibRenderModelImaris(obj.mibModel.I{obj.mibModel.Id}, obj.mibModel.connImaris, options);
 end

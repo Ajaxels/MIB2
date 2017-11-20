@@ -16,10 +16,12 @@ function varargout = mibInputDlg(varargin)
 %| 
 % @b Examples:
 % @code answer = mibInputDlg({[]}, 'Text of dialog','Title', num2str(defaultValue));
-%       if size(answer) == 0; return; end; @endcode
-% @code global mibPath;
-% @code answer = mibInputDlg({mibPath}, 'Text of dialog','Title', num2str(defaultValue));
-%       if size(answer) == 0; return; end; @endcode
+% if size(answer) == 0; return; end; @endcode
+% @code
+% global mibPath;
+% answer = mibInputDlg({mibPath}, 'Text of dialog','Title', num2str(defaultValue));
+% if size(answer) == 0; return; end; 
+% @endcode
 
 
 % Copyright (C) 04.03.2015, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
@@ -90,9 +92,11 @@ handles.output = {inputStr};
 
 % update font and size
 global Font;
-if handles.textString.FontSize ~= Font.FontSize ...
-        || ~strcmp(handles.textString.FontName, Font.FontName)
-    mibUpdateFontSize(handles.mibInputDlg, Font);
+if ~isempty(Font)
+    if handles.textString.FontSize ~= Font.FontSize ...
+            || ~strcmp(handles.textString.FontName, Font.FontName)
+        mibUpdateFontSize(handles.mibInputDlg, Font);
+    end
 end
 
 % rescale widgets for Mac and Linux

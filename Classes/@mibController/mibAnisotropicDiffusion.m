@@ -3,14 +3,13 @@ function mibAnisotropicDiffusion(obj, filter_type)
 % Filter image with Anisotropic diffusion filters
 % 
 % Parameters:
-% handles: structure with handles of im_browser.m
 % filter_type: type of desired filter:
 %  - ''diplib'', use diplib library to do the filtering (http://www.diplib.org/)
 %  - ''anisodiff'', use anisodiff function by Peter Kovesi (http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff)
 %  - ''coherence_filter'', use Image Edge Enhancing Coherence Filter by Dirk-Jan Kroon and Pascal Getreuer (http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox)
 %
 % Return values:
-% handles: structure with handles of im_browser.m
+% 
 
 % Copyright (C) 21.11.2013, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 

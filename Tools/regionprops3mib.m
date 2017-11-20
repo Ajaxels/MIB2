@@ -1,15 +1,15 @@
-function output = regionprops3( input, varargin )
-% regionprops3 measures the geometric properties of image objects in 
+function output = regionprops3mib( input, varargin )
+% regionprops3mib measures the geometric properties of image objects in 
 %  3D space. Objects are defined as connected pixels in 3D. This function 
 %  uses regionprops to get pixellist from the binary image. If you'd like
 %  to define objects connectivity on our own, use bwlabeln first. 
 % 
-%  output = regionprops3(img,properties) takes 3-D binary image or output 
+%  output = regionprops3mib(img,properties) takes 3-D binary image or output 
 %  from bwlabeln and returns measurement as specified by properties. If no
 %  property is specified, the function will return all measurements by 
 %  default.
 %
-%  output = regionprops3(img,'IsPixList', properties) takes an M x 3 matrix of
+%  output = regionprops3mib(img,'IsPixList', properties) takes an M x 3 matrix of
 %  pixell list as input and returns measurements. 
 %  
 %  Properties can be a comma-separated list of strings such as: 
@@ -39,6 +39,8 @@ function output = regionprops3( input, varargin )
 % situations when object has only a single pixel
 % 14.11.2016, modified by Ilya Belevich, ilya.belevich @ helsinki.fi to add
 % 'FirstAxisLength', 'SecondAxisLength' parameters
+% 08.11.2017, renamed to regionprops3mib to do not overlap with
+% regionprops3 released with Matlab R2017b
 
 if sum(strcmpi(varargin,'IsPixList'));
     if isstruct(input)

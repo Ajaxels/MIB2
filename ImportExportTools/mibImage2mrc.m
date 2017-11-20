@@ -28,7 +28,7 @@ function result = mibImage2mrc(O, Options)
 % 
 
 result = 0;
-if ~isfield(Options, 'showWaitbar'); Options.showWaitbar = 1; end;
+if ~isfield(Options, 'showWaitbar'); Options.showWaitbar = 1; end
 
 if ndims(O) == 3
     O = permute(O, [2 1 3]);

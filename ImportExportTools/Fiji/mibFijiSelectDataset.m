@@ -71,9 +71,11 @@ for i=1:numel(list)
 end
 
 % update font and size
-if get(handles.text1, 'fontsize') ~= Font.FontSize ...
-        || ~strcmp(get(handles.text1, 'fontname'), Font.FontName)
-    mibUpdateFontSize(handles.mibFijiSelectDataset, Font);
+if ~isempty(Font)
+    if get(handles.text1, 'fontsize') ~= Font.FontSize ...
+            || ~strcmp(get(handles.text1, 'fontname'), Font.FontName)
+        mibUpdateFontSize(handles.mibFijiSelectDataset, Font);
+    end
 end
 
 % resize all elements x1.25 times for macOS

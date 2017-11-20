@@ -31,9 +31,13 @@ if nargin < 3
     if nargin < 2
         channel1 = 1;
     end
-    prompt = {sprintf('Swap color channels:\nthe first color channel will be moved to the position of the second color channel, and the second color channel to the position of the first one.\n\nEnter number of the first color channel:'),'Enter number of the second color channel:'};
-    answer = inputdlg(prompt,'Swap color channels',1,{num2str(channel1),'2'});
-    if size(answer) == 0; return; end;
+    prompt = {'nEnter number of the first color channel:'; 'Enter number of the second color channel:'};
+    defAns = {num2str(channel1),'2'};
+    mibInputMultiDlgOptions.Title = sprintf('Swap color channels:\nthe first color channel will be moved to the position of the second color channel, and the second color channel to the position of the first one');
+    mibInputMultiDlgOptions.TitleLines = 5;
+    answer = mibInputMultiDlg([], prompt, defAns, 'Swap color channels', mibInputMultiDlgOptions);
+    if isempty(answer); return; end
+    
     channel1 = str2double(answer{1});
     channel2 = str2double(answer{2});
     if channel1 < 1 || channel1 > obj.colors || channel2 < 1 || channel2 > obj.colors

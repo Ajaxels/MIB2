@@ -107,7 +107,7 @@ classdef mibChopDatasetController < handle
                 if strcmp(choice, 'Cancel')
                     obj.View.handles.dirEdit.String = obj.outputDir;
                     return;
-                end;
+                end
                 mkdir(folder_name);
             end
             obj.outputDir = folder_name;
@@ -214,7 +214,7 @@ classdef mibChopDatasetController < handle
                                 % getting parameters for saving dataset
                                 if index == 1
                                     optionsHDF = mibSaveHDF5Dlg(imgOut2);
-                                    if isempty(optionsHDF); return; end;
+                                    if isempty(optionsHDF); return; end
                                 end
                                 optionsHDF.filename = filename;
                                 ImageDescription = imgOut2.meta('ImageDescription');  % initialize ImageDescription
@@ -303,7 +303,7 @@ classdef mibChopDatasetController < handle
                                     % getting parameters for saving dataset
                                     if index == 1
                                         optionsModelHDF = mibSaveHDF5Dlg(imgOut2);
-                                        if isempty(optionsModelHDF); return; end;
+                                        if isempty(optionsModelHDF); return; end
                                     end
                                     optionsModelHDF.filename = fnModel;
                                     ImageDescription = imgOut2.meta('ImageDescription');  % initialize ImageDescription
@@ -311,7 +311,7 @@ classdef mibChopDatasetController < handle
                                     if strcmp(optionsModelHDF.Format, 'bdv.hdf5')
                                         button = questdlg(sprintf('Export of models in using the Big Data Viewer format is not implemented!\nSave as ordinary HDF5?'),...
                                             'Warning', 'Save as HDF5', 'Cancel', 'Save as HDF5');
-                                        if strcmp(button, 'Cancel'); return; end;
+                                        if strcmp(button, 'Cancel'); return; end
                                         optionsModelHDF.Format = 'matlab.hdf5';
                                     end
                                     

@@ -3,7 +3,7 @@ function setVolrenModeSwitch(obj, volrenModeSwitch)
 % set status of the mibGUI.handles.volrenToolbarSwitch
 %
 % Parameters:
-% blockModeSwitch:
+% volrenModeSwitch:
 % @li @b 1 - or 'on' enabled, show dataset as a volume
 % @li @b 0 - or 'off' disabled, show dataset as a 2D slice
 %

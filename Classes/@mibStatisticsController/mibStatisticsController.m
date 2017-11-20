@@ -569,61 +569,65 @@ classdef mibStatisticsController < handle
                     maskClass = 'uint8';
                 end
                 
-                for t=timePointsUnuque
-                    selection_mask = zeros([img_height, img_width, img_depth], maskClass);
+                for t = timePointsUnuque
                     objects = object_list(ic==index);
                     if ~strcmp(mode, 'obj2model')
-                        objIndex = 1;   % define index of the object to assign in the resulting model
-                        shiftValue = 0; % define the shift
-                    else
+                        getDataOptions.PixelIdxList = vertcat(obj.STATS(objects).PixelIdxList);
+                        
+                        if strcmp(mode,'Add')
+                            dataset = zeros(size(getDataOptions.PixelIdxList), maskClass)+1;
+                            obj.mibModel.setData3D('selection', dataset, ...
+                                t, NaN, 0, getDataOptions);    % selection | selection_mask
+                        elseif strcmp(mode,'Remove')
+                            dataset = zeros(size(getDataOptions.PixelIdxList), maskClass);
+                            obj.mibModel.setData3D('selection', dataset, ...
+                                t, NaN, 0, getDataOptions);    % selection | selection_mask
+                        elseif strcmp(mode,'Replace')
+                            dataset = zeros(size(getDataOptions.PixelIdxList), maskClass)+1;
+                            obj.mibModel.setData3D('selection', dataset, ...
+                                t, NaN, 0, getDataOptions);    % selection | selection_mask
+                        end
+                        
+                    else    % obj2model
+                        selection_mask = zeros([img_height, img_width, img_depth], maskClass);
+                        objects = object_list(ic==index);
+                        
                         if strcmp(mode2, '2D objects')
-                            objIndex = zeros([max(sliceNumbers), 1]);   
-                            shiftValue = 1;
+                            objIndex = zeros([max(sliceNumbers), 1]); % define index of the object to assign in the resulting model
+                            shiftValue = 1;  % define the shift
                         else
-                            objIndex = 0;   
-                            shiftValue = 1;
+                            objIndex = 0;   % define index of the object to assign in the resulting model
+                            shiftValue = 1; % define the shift
                         end
-                    end    
-                    if strcmp(mode, 'obj2model') && strcmp(mode2, '2D objects')
-                        for i=1:numel(objects)
-                            [~, ~, subIdZ] = ind2sub([img_height, img_width, img_depth], obj.STATS(objects(i)).PixelIdxList(1));
-                            objIndex(subIdZ) = objIndex(subIdZ)+shiftValue; %#ok<AGROW>
-                            selection_mask(obj.STATS(objects(i)).PixelIdxList) = objIndex(subIdZ);
+                        
+                        if strcmp(mode, 'obj2model') && strcmp(mode2, '2D objects')
+                            for i=1:numel(objects)
+                                [~, ~, subIdZ] = ind2sub([img_height, img_width, img_depth], obj.STATS(objects(i)).PixelIdxList(1));
+                                objIndex(subIdZ) = objIndex(subIdZ)+shiftValue; %#ok<AGROW>
+                                selection_mask(obj.STATS(objects(i)).PixelIdxList) = objIndex(subIdZ);
+                            end
+                        else
+                            for i=1:numel(objects)
+                                objIndex = objIndex+shiftValue;
+                                selection_mask(obj.STATS(objects(i)).PixelIdxList) = objIndex;
+                            end
                         end
-                    else
-                        for i=1:numel(objects)
-                            objIndex = objIndex+shiftValue;
-                            selection_mask(obj.STATS(objects(i)).PixelIdxList) = objIndex;
+                        
+                        % the Add and Remove mode work on the subset of the
+                        % dataset, to make it faster
+                        if strcmp(mode, 'Add') || strcmp(mode, 'Remove')
+                            % get bounding box for the selected objects
+                            bb = ceil(reshape([obj.STATS(objects).BoundingBox], [6 numel(objects)])');    % [index][x y z w h d]
+                            xMin = min(bb(:,1));
+                            xMax = max(bb(:,1)+bb(:,4)-1);
+                            getDataOptions.x = [xMin xMax];
+                            yMin = min(bb(:,2));
+                            yMax = max(bb(:,2)+bb(:,5)-1);
+                            getDataOptions.y = [yMin yMax];
+                            zMin = min(bb(:,3));
+                            zMax = max(bb(:,3)+bb(:,6)-1);
+                            getDataOptions.z = [zMin zMax];
                         end
-                    end
-                    
-                    % the Add and Remove mode work on the subset of the
-                    % dataset, to make it faster
-                    if strcmp(mode, 'Add') || strcmp(mode, 'Remove')
-                        % get bounding box for the selected objects
-                        bb = ceil(reshape([obj.STATS(objects).BoundingBox], [6 numel(objects)])');    % [index][x y z w h d]
-                        xMin = min(bb(:,1));
-                        xMax = max(bb(:,1)+bb(:,4)-1);
-                        getDataOptions.x = [xMin xMax];
-                        yMin = min(bb(:,2));
-                        yMax = max(bb(:,2)+bb(:,5)-1);
-                        getDataOptions.y = [yMin yMax];
-                        zMin = min(bb(:,3));
-                        zMax = max(bb(:,3)+bb(:,6)-1);
-                        getDataOptions.z = [zMin zMax];
-                    end
-                    
-                    if strcmp(mode,'Add')
-                        selection = cell2mat(obj.mibModel.getData3D('selection', t, NaN, 0, getDataOptions));
-                        obj.mibModel.setData3D('selection', {bitor(selection, selection_mask(yMin:yMax, xMin:xMax, zMin:zMax))}, ...
-                            t, NaN, 0, getDataOptions);    % selection | selection_mask
-                    elseif strcmp(mode,'Remove')
-                        selection = cell2mat(obj.mibModel.getData3D('selection', t, NaN, 0, getDataOptions));
-                        selection(selection_mask(yMin:yMax, xMin:xMax, zMin:zMax)==1) = 0;
-                        obj.mibModel.setData3D('selection', {selection}, t, NaN, 0, getDataOptions);
-                    elseif strcmp(mode,'Replace')
-                        obj.mibModel.setData3D('selection', {selection_mask}, t, NaN, 0, getDataOptions);
-                    elseif strcmp(mode, 'obj2model')
                         obj.mibModel.setData3D('model', {selection_mask}, t, NaN, NaN, getDataOptions);
                     end
                     index = index + 1;
@@ -714,8 +718,8 @@ classdef mibStatisticsController < handle
             xy = obj.View.handles.histogram.CurrentPoint;
             seltype = obj.View.gui.SelectionType;
             ylim = obj.View.handles.histogram.YLim;
-            if xy(1,2) > ylim(2); return; end;   % mouse click was too far from the plot
-            if xy(1,2) < ylim(1); return; end;   % mouse click was too far from the plot
+            if xy(1,2) > ylim(2); return; end   % mouse click was too far from the plot
+            if xy(1,2) < ylim(1); return; end   % mouse click was too far from the plot
             
             switch seltype
                 case 'normal'       % set the min limit
@@ -1024,7 +1028,12 @@ classdef mibStatisticsController < handle
                         conn = 26;
                     end
                     
-                    getDataOptions.blockModeSwitch = 0;
+                    if obj.mibModel.I{obj.mibModel.Id}.orientation ~= 4 && obj.mibModel.I{obj.mibModel.Id}.blockModeSwitch == 1
+                        delete(wb);
+                        warndlg(sprintf('!!! Warning !!!\n\nThe block mode is only compatible with the XY orientation of the dataset\nPlease switch the orientation to XY or disable the block mode'),'Wrong orientation');
+                        return;
+                    end
+                    getDataOptions.blockModeSwitch = obj.mibModel.I{obj.mibModel.Id}.blockModeSwitch;
                     if selectedMaterial == -1
                         img = cell2mat(obj.mibModel.getData3D('mask', t, 4, 0, getDataOptions));
                     else
@@ -1072,7 +1081,7 @@ classdef mibStatisticsController < handle
                     % calculate Eccentricity for 3D objects
                     prop1 = property(ismember(property, {'MeridionalEccentricity', 'EquatorialEccentricity'}));
                     if ~isempty(prop1)
-                        STATS2 = regionprops3(CC, 'Eccentricity');
+                        STATS2 = regionprops3mib(CC, 'Eccentricity');
                         if sum(ismember(property, 'MeridionalEccentricity')) > 0
                             [STATS.MeridionalEccentricity] = deal(STATS2.MeridionalEccentricity);
                         end
@@ -1084,14 +1093,14 @@ classdef mibStatisticsController < handle
                     % calculate MajorAxisLength
                     prop1 = property(ismember(property, 'MajorAxisLength'));
                     if ~isempty(prop1)
-                        STATS2 = regionprops3(CC, 'MajorAxisLength');
+                        STATS2 = regionprops3mib(CC, 'MajorAxisLength');
                         [STATS.MajorAxisLength] = deal(STATS2.MajorAxisLength);
                     end
                     waitbar(0.4,wb);
                     % calculate 'SecondAxisLength', 'ThirdAxisLength'
                     prop1 = property(ismember(property, {'SecondAxisLength', 'ThirdAxisLength'}));
                     if ~isempty(prop1)
-                        STATS2 = regionprops3(CC, 'AllAxes');
+                        STATS2 = regionprops3mib(CC, 'AllAxes');
                         if sum(ismember(property,'SecondAxisLength')) > 0
                             [STATS.SecondAxisLength] = deal(STATS2.SecondAxisLength);
                         end
@@ -1154,15 +1163,33 @@ classdef mibStatisticsController < handle
                     % calculate correlation between channels
                     prop1 = property(ismember(property, 'Correlation'));
                     if ~isempty(prop1)
-                        img = cell2mat(obj.mibModel.getData3D('image', t, 4));
+                        img = cell2mat(obj.mibModel.getData3D('image', t, 4, 0, getDataOptions));
                         img1 = squeeze(img(:,:,colorChannel,:));
                         img2 = squeeze(img(:,:,colorChannel2,:));
                         clear img;
                         for object=1:numel(STATS)
-                            STATS(object).Correlation = corr2(img1(STATS(object).PixelIdxList),img2(STATS(object).PixelIdxList));
+                            STATS(object).Correlation = corr2(img1(STATS(object).PixelIdxList), img2(STATS(object).PixelIdxList));
                         end
                     end
                     [STATS.TimePnt] = deal(t);  % add time points
+                    
+                    % recalculate PixelIdxList to the full dataset
+                    if getDataOptions.blockModeSwitch == 1 
+                        [yMin, yMax, xMin, xMax, zMin, zMax] = obj.mibModel.I{obj.mibModel.Id}.getCoordinatesOfShownImage(4);
+                        convertPixelOpt.y = [yMin yMax]; % y-dimensions of the cropped dataset
+                        convertPixelOpt.x = [xMin xMax]; % x-dimensions of the cropped dataset
+                        convertPixelOpt.z = [zMin, zMax]; % z-dimensions of the cropped dataset
+                        for ooId = 1:CC.NumObjects
+                            STATS(ooId).PixelIdxList = obj.mibModel.I{obj.mibModel.Id}.convertPixelIdxListCrop2Full(STATS(ooId).PixelIdxList, convertPixelOpt);
+                            % recalculate centroids
+                            STATS(ooId).Centroid(1) = STATS(ooId).Centroid(1) + xMin - 1;
+                            STATS(ooId).Centroid(2) = STATS(ooId).Centroid(2) + yMin - 1;
+                            % recalculate bounding boxes
+                            STATS(ooId).BoundingBox(1)= STATS(ooId).BoundingBox(1) + xMin - 1;
+                            STATS(ooId).BoundingBox(2)= STATS(ooId).BoundingBox(2) + yMin - 1;
+                        end
+                    end                    
+                    
                     obj.STATS = [obj.STATS orderfields(STATS')];
                     waitbar(0.95,wb);
                 else    % 2D objects
@@ -1196,7 +1223,7 @@ classdef mibStatisticsController < handle
                         customProps = {'EndpointsLength','CurveLengthInUnits','CurveLengthInPixels','HolesArea'};
                         shapeProps = {'Solidity', 'Perimeter', 'Orientation', 'MinorAxisLength', 'MajorAxisLength', 'FilledArea', 'Extent', 'EulerNumber',...
                             'EquivDiameter', 'Eccentricity', 'ConvexArea', 'Area'};
-                        shapeProps3D = {'FirstAxisLength','SecondAxisLength'};     % these properties are calculated by regionprops3
+                        shapeProps3D = {'FirstAxisLength','SecondAxisLength'};     % these properties are calculated by regionprops3mib
                         intProps = {'SumIntensity','StdIntensity','MeanIntensity','MaxIntensity','MinIntensity'};
                         intCustomProps = 'Correlation';
                         commonProps = {'PixelIdxList', 'Centroid', 'BoundingBox'};
@@ -1227,9 +1254,9 @@ classdef mibStatisticsController < handle
                         prop1 = property(ismember(property, shapeProps3D));
                         if ~isempty(prop1)
                             try
-                                STATS2 = regionprops3(CC, prop1{:});
+                                STATS2 = regionprops3mib(CC, prop1{:});
                             catch err
-                                0
+                                0;
                             end
                             fieldNames = fieldnames(STATS2);
                             for i=1:numel(fieldNames)

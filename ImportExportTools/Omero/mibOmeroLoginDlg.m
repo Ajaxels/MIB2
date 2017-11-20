@@ -49,9 +49,11 @@ handles.output = struct();
 handles.password = '';
 
 % update font and size
-if get(handles.text1, 'fontsize') ~= Font.FontSize ...
-        || ~strcmp(get(handles.text1, 'fontname'), Font.FontName)
-    mibUpdateFontSize(handles.mibOmeroLoginDlg, Font);
+if ~isempty(Font)
+    if get(handles.text1, 'fontsize') ~= Font.FontSize ...
+            || ~strcmp(get(handles.text1, 'fontname'), Font.FontName)
+        mibUpdateFontSize(handles.mibOmeroLoginDlg, Font);
+    end
 end
 % resize all elements x1.25 times for macOS
 mibRescaleWidgets(handles.mibOmeroLoginDlg);
@@ -222,8 +224,8 @@ end
 % --- Executes on button press in addServerBtn.
 function addServerBtn_Callback(hObject, eventdata, handles)
 %answer = inputdlg('Enter server address','Add server',1,{''});
-answer = mib_inputdlg(NaN,'Enter server address','Add server','');
-if isempty(answer); return; end;
+answer = mibInputDlg([],'Enter server address','Add server','');
+if isempty(answer); return; end
 handles.servers = [handles.servers, answer];
 set(handles.serverPopup,'string',handles.servers);
 handles.serverIdx = numel(handles.servers);

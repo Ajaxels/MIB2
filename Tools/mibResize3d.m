@@ -104,6 +104,7 @@ if strcmp(options.algorithm, 'imresize')
     imgOut = zeros([newH, newW, colors, newZ], class(img));   %#ok<ZEROLIKE> % allocate space
     
     if ~isempty(which('imresize3')) && ndims(img)>3     % use imresize3 if it exist, introduced in R2017a, seems to be 30% faster
+        if strcmp(options.method, 'bicubic'); options.method = 'cubic'; end
         for colId=1:colors
             imgOut(:,:,colId,:) = permute(imresize3(squeeze(img(:,:,colId,:)), [newH, newW, newZ], options.method), [1 2 4 3]);
         end 

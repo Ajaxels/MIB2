@@ -66,6 +66,13 @@ end
 [filename, path, FilterIndex] = uiputfile(Filters, 'Save image...',fn_out); %...
 if isequal(filename,0); return; end % check for cancel
 
+% set default for tif format
+if strcmp(Filters{FilterIndex,2}, 'All Files (*.*)')
+    Filters{FilterIndex,2} = find(contains(Filters(:,2), 'TIF format uncompressed (*.tif)'));
+    filename = [filename '.tif'];
+end
+
+
 t1 = 1;
 t2 = obj.mibModel.I{obj.mibModel.Id}.time;
 if obj.mibModel.I{obj.mibModel.Id}.time > 1 && isempty(strfind(Filters{FilterIndex,2}, 'Hierarchical'))
@@ -115,9 +122,9 @@ for t=t1:t2
             if t==t1    % getting parameters for saving dataset
                 options = mibSaveHDF5Dlg(obj.mibModel.I{obj.mibModel.Id});
                 if isempty(options)
-                    if showLocalWaitbar; delete(wb); end;
+                    if showLocalWaitbar; delete(wb); end
                     return; 
-                end;
+                end
                 tic;
                 options.filename = fullfile(path, [filename ext]);
                 ImageDescription = obj.mibModel.I{obj.mibModel.Id}.meta('ImageDescription');  % initialize ImageDescription
@@ -152,7 +159,7 @@ for t=t1:t2
             options.t = t;
             switch options.Format
                 case 'bdv.hdf5'
-                    options.pixSize.units = sprintf('\xB5m'); % 'µm';
+                    options.pixSize.units = sprintf('\xB5m'); % '?m';
                     saveBigDataViewerFormat(options.filename, img, options);
                 case 'matlab.hdf5'
                     image2hdf5(fullfile(path, [filename '.h5']), img, options);
@@ -165,11 +172,13 @@ for t=t1:t2
                 else
                     savingOptions.cmap = NaN;
                 end
-                prompt = {'Compression mode (lossy, lossless):','Quality (0-100):'};
+                prompt = {'Compression mode:'; 'Quality (0-100):'};
                 dlg_title = 'JPG Parameters';
-                def = {'lossy','90'};
-                answer = inputdlg(prompt,dlg_title,1,def);
-                if isempty(answer); return; end;
+                defAns = {{'lossy','lossless'}; '90'};
+                
+                answer = mibInputMultiDlg({obj.mibPath}, prompt, defAns, dlg_title);
+                if isempty(answer); return; end
+                
                 savingOptions.Compression = answer{1};
                 savingOptions.Quality = str2double(answer{2});
                 savingOptions.showWaitbar = ~showLocalWaitbar;
@@ -177,11 +186,11 @@ for t=t1:t2
                 % get list of filenames for slices
                 if isKey(obj.mibModel.I{obj.mibModel.Id}.meta, 'SliceName') && numel(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName')) == obj.mibModel.I{obj.mibModel.Id}.depth
                     choice = questdlg('Would you like to use original or sequential filenaming?','Save as JPEG...','Original','Sequential','Cancel','Sequential');
-                    if strcmp(choice, 'Cancel'); return; end;
+                    if strcmp(choice, 'Cancel'); return; end
                     if strcmp(choice, 'Original'); savingOptions.SliceName = obj.mibModel.I{obj.mibModel.Id}.meta('SliceName'); end;
                 end
             end
-            ib_image2jpg(fullfile(path, fnOut), img, savingOptions);
+            mibImage2jpg(fullfile(path, fnOut), img, savingOptions);
         case 'MRC format for IMOD (*.mrc)'    % MRC format
             if size(img,3) > 1
                 errordlg(sprintf('!!! Error !!!\n\nIt is not possile to save %s images in the MRC format', class(img)),'Wrong image class');
@@ -207,7 +216,7 @@ for t=t1:t2
                 end
                 savingOptions.showWaitbar = ~showLocalWaitbar;
             end
-            ib_image2png(fullfile(path, fnOut), img, savingOptions);
+            mibImage2png(fullfile(path, fnOut), img, savingOptions);
         case 'NRRD Data Format (*.nrrd)'   % PNG format
             savingOptions = struct('overwrite', 1);
             savingOptions.showWaitbar = ~showLocalWaitbar;

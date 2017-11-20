@@ -12,12 +12,12 @@ function varargout = mibWatershedGUI(varargin)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 06.11.2017, taken into a separate function
 
 
 % Edit the above text to modify the response to help mibWatershedGUI
 
-% Last Modified by GUIDE v2.5 10-Sep-2017 10:46:32
+% Last Modified by GUIDE v2.5 06-Nov-2017 20:45:28
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -49,27 +49,13 @@ function mibWatershedGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % obtain controller
 handles.winController = varargin{1};
-handles.mibWatershedGUI.Position = [389.25 594.0 256 471.75];
-
-% radio button callbacks
-handles.watershedSourcePanel.SelectionChangeFcn = @distanceRadio_Callback;
-
-% update parent and position for the superpixelsStepsPanel
-handles.superpixelsStepsPanel.Parent = handles.preprocPanel.Parent;
-handles.superpixelsStepsPanel.Position = handles.preprocPanel.Position;
+%handles.mibWatershedGUI.Position = [389.25 594.0 256 471.75];
 
 % define the current mode
 handles.mode2dCurrentRadio.Value = 1;
 
 % Choose default command line output for mibChildGUI
 handles.output = hObject;
-
-% Place panels
-pos = handles.imageSegmentationPanel.Position;
-handles.objectSeparationPanel.Position = pos;
-
-% add text
-handles.realtimeText.String = sprintf('Please note that the Auto update mode works only when modifying with the currenly shown slice');
 
 % Determine the position of the dialog - on a side of the main figure
 % if available, else, centered on the main figure
@@ -139,26 +125,6 @@ function updateMaterialsBtn_Callback(hObject, eventdata, handles)
 handles.winController.updateMaterialsBtn_Callback();
 end
 
-
-% --- Executes on button press in imageSegmentationToggle.
-function imageSegmentationToggle_Callback(hObject, eventdata, handles)
-handles.realtimeCheck.Visible = 'off';
-handles.realtimeText.Visible = 'off';
-handles.winController.imageSegmentationToggle_Callback();
-end
-
-% --- Executes on button press in objectSeparationToggle.
-function objectSeparationToggle_Callback(hObject, eventdata, handles)
-handles.winController.objectSeparationToggle_Callback();
-end
-
-% --- Executes on button press in graphCutToggle.
-function graphCutToggle_Callback(hObject, eventdata, handles)
-handles.realtimeCheck.Visible = 'on';
-handles.realtimeText.Visible = 'on';
-handles.winController.graphCutToggle_Callback();
-end
-
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
@@ -187,16 +153,13 @@ function xSubareaEdit_Callback(hObject, eventdata, handles)
 handles.winController.checkDimensions(hObject);
 end
 
-
 function ySubareaEdit_Callback(hObject, eventdata, handles)
 handles.winController.checkDimensions(hObject);
 end
 
-
 function zSubareaEdit_Callback(hObject, eventdata, handles)
 handles.winController.checkDimensions(hObject);
 end
-
 
 % --- Executes on button press in resetDimsBtn.
 function resetDimsBtn_Callback(hObject, eventdata, handles)
@@ -208,61 +171,13 @@ function currentViewBtn_Callback(hObject, eventdata, handles)
 handles.winController.currentViewBtn_Callback();
 end
 
-
 % --- Executes on button press in subAreaFromSelectionBtn.
 function subAreaFromSelectionBtn_Callback(hObject, eventdata, handles)
 handles.winController.subAreaFromSelectionBtn_Callback();
 end
 
-
 function binSubareaEdit_Callback(hObject, eventdata, handles)
 handles.winController.binSubareaEdit_Callback(hObject);
-end
-
-% --- Executes on button press in useSeedsCheck.
-function useSeedsCheck_Callback(hObject, eventdata, handles)
-val = handles.useSeedsCheck.Value;
-if val == 1
-    handles.seedsPanel.Visible = 'on';
-    handles.reduiceOversegmCheck.Visible = 'off';
-else
-    handles.seedsPanel.Visible = 'off';
-    handles.reduiceOversegmCheck.Visible = 'on';
-end
-end
-
-% --- Executes on selection change in selectedMaterialPopup.
-function selectedMaterialPopup_Callback(hObject, eventdata, handles)
-handles.modelRadio.Value = 1;
-end
-
-
-% --- Executes on selection change in seedsSelectedMaterialPopup.
-function seedsSelectedMaterialPopup_Callback(hObject, eventdata, handles)
-handles.seedsModelRadio.Value = 1;
-end
-
-% --- Executes on button press in distanceRadio.
-function distanceRadio_Callback(hObject, eventdata, handles)
-handles = guidata(hObject);
-hObject = eventdata.NewValue;
-tagId = hObject.Tag;
-curVal = hObject.Value;
-if curVal == 0 
-    hObject.Value = 1; 
-    return; 
-end
-handles.watSourceTxt1.Visible = 'off';
-handles.watSourceTxt2.Visible = 'off';
-handles.imageIntensityColorCh.Visible = 'off';
-handles.imageIntensityInvert.Visible = 'off';
-
-if strcmp(tagId, 'intensityRadio')
-    handles.watSourceTxt1.Visible = 'on';
-    handles.watSourceTxt2.Visible = 'on';
-    handles.imageIntensityColorCh.Visible = 'on';
-    handles.imageIntensityInvert.Visible = 'on';
-end
 end
 
 % --- Executes on button press in preprocessBtn.
@@ -270,79 +185,12 @@ function preprocessBtn_Callback(hObject, eventdata, handles)
 handles.winController.preprocessBtn_Callback();
 end
 
-
 % --- Executes on button press in watershedBtn.
 function watershedBtn_Callback(hObject, eventdata, handles)
 handles.winController.watershedBtn_Callback();
 end
 
-function doGraphcutSegmentation(handles)
-handles.winController.doGraphcutSegmentation();
-end
-
-function doImageSegmentation(handles)
-handles.winController.doImageSegmentation();
-end
-
-
-function doObjectSeparation(handles)
-handles.winController.doObjectSeparation();
-end
-
-
 % --- Executes on button press in importBtn.
 function importBtn_Callback(hObject, eventdata, handles)
 handles.winController.importBtn_Callback();
-end
-
-
-% --- Executes on button press in superpixelsBtn.
-function superpixelsBtn_Callback(hObject, eventdata, handles)
-handles.winController.superpixelsBtn_Callback();
-end
-
-% --- Executes on button press in exportSuperpixelsBtn.
-function exportSuperpixelsBtn_Callback(hObject, eventdata, handles)
-handles.winController.exportSuperpixelsBtn_Callback();
-end
-
-% --- Executes on button press in importSuperpixelsBtn.
-function importSuperpixelsBtn_Callback(hObject, eventdata, handles)
-handles.winController.importSuperpixelsBtn_Callback();
-end
-
-
-% --- Executes on button press in superpixelsPreviewBtn.
-function superpixelsPreviewBtn_Callback(hObject, eventdata, handles)
-handles.winController.superpixelsPreviewBtn_Callback();
-end
-
-function superpixelEdit_Callback(hObject, eventdata, handles)
-handles.winController.clearPreprocessBtn_Callback();    % clear preprocessed data
-end
-
-
-% --- Executes on selection change in superpixTypePopup.
-function superpixTypePopup_Callback(hObject, eventdata, handles, parameter)
-if nargin < 4;    parameter = 'keep'; end
-handles.winController.superpixTypePopup_Callback(parameter);
-end
-
-
-% --- Executes on button press in recalcGraph.
-function recalcGraph_Callback(hObject, eventdata, handles, showWaitbar)
-if nargin < 4;    showWaitbar = 0; end
-handles.winController.recalcGraph_Callback(showWaitbar);
-end
-
-
-% --- Executes on button press in realtimeCheck.
-function realtimeCheck_Callback(hObject, eventdata, handles)
-handles.winController.realtimeSwitch = handles.realtimeCheck.Value;
-end
-
-
-% --- Executes on button press in pixelIdxListCheck.
-function pixelIdxListCheck_Callback(hObject, eventdata, handles)
-handles.winController.pixelIdxListCheck_Callback();
 end

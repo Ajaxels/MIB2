@@ -25,18 +25,21 @@ end
 max_slice = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation);
 max_time = obj.mibModel.I{obj.mibModel.Id}.time;
 
-prompt = {sprintf('Your are going to replace the *%s* area in the image.\n\nPlease provide intensity of a new color [0-%d]:', ...
-    type, intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1}))), ...
-    sprintf('Time point (1-%d; 0 for all):', max_time), ...
-    sprintf('Slice number (1-%d; 0 for all):', max_slice), ...
+prompt = {sprintf('Please provide intensity of a new color [0-%d]:', ...
+                        intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1}))); ...
+    sprintf('Time point (1-%d; 0 for all):', max_time); ...
+    sprintf('Slice number (1-%d; 0 for all):', max_slice); ...
     'Color channels (0 for all):'};
 title = 'Replace color';
 time_pnt = obj.mibModel.I{obj.mibModel.Id}.getCurrentTimePoint();
 slice_no = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
-def = {repmat('0;', 1, obj.mibModel.I{obj.mibModel.Id}.colors), num2str(time_pnt), num2str(slice_no), '0'};
-
-answer = inputdlg(prompt, title, 1, def, 'on');
-if size(answer) == 0; return; end;
+defAns = {repmat('0;', 1, obj.mibModel.I{obj.mibModel.Id}.colors); num2str(time_pnt); num2str(slice_no); '0'};
+mibInputMultiDlgOptions.PromptLines = [1, 1, 1, 1];
+mibInputMultiDlgOptions.Title = sprintf('Your are going to replace the *%s* area in the image.', type);
+mibInputMultiDlgOptions.TitleLines = 2;
+                    
+answer = mibInputMultiDlg({obj.mibPath}, prompt, defAns, title, mibInputMultiDlgOptions);
+if isempty(answer); return; end
 
 color_id = str2num(answer{1}); %#ok<ST2NM>
 if numel(color_id) ~= obj.mibModel.I{obj.mibModel.Id}.colors

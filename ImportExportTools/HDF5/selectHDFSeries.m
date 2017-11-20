@@ -65,8 +65,8 @@ index=1;
 if ~isempty(info.Datasets)
     for dataset = 1:numel(info.Datasets)
         datasetName = info.Datasets(dataset).Name;
-        if datasetName(1) ~= '/'; datasetName = ['/' datasetName]; end;
-        data(index,1) = {datasetName};
+        if datasetName(1) ~= '/'; datasetName = ['/' datasetName]; end
+        data(index, 1) = {datasetName};
         datadim = info.Datasets(dataset).Dataspace.Size;
         for dim=1:numel(datadim)
             data(index,1+dim) = {num2str(datadim(dim))};
@@ -356,7 +356,7 @@ end
 
 % --- Executes on key press with focus on selectHDFSeries and none of its controls.
 function selectHDFSeries_KeyPressFcn(hObject, eventdata, handles)
-if nargin < 3;    handles = guidata(hObject); end;
+if nargin < 3;    handles = guidata(hObject); end
 
 % Check for "enter" or "escape"
 if isequal(hObject.CurrentKey, 'escape')

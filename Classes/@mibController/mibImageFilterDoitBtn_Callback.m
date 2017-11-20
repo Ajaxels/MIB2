@@ -25,6 +25,11 @@ switch filter_list{filter_val}
 %         obj.mibAnisotropicDiffusion('coherence_filter');
 %         obj.plotImage(0);
 %         return;
+    case 'DNN Denoise'
+        if obj.matlabVersion < 9.3
+            errordlg(sprintf('!!! Error !!!\nMatlab R2017b or newer is required to use this function!'), 'Matlab version is too old');
+            return;
+        end
     case 'Perona Malik anisotropic diffusion'
         obj.mibAnisotropicDiffusion('anisodiff');
         obj.plotImage(0);
@@ -158,7 +163,7 @@ end
 if showWaitbarLocal == 1
     delete(wb);
 end
-if isnan(log_text); return; end;
+if isnan(log_text); return; end
 %obj.mibModel.I{obj.mibModel.Id}.updateImgInfo(log_text);
 obj.mibModel.getImageMethod('updateImgInfo', NaN, log_text);
 

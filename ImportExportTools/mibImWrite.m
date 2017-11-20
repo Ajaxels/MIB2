@@ -24,7 +24,7 @@ function result = mibImWrite(img, filename, parameters)
 
 result = 0; %#ok<NASGU>
 [~, ~, ext] = fileparts(filename);
-if nargin < 3;     parameters = struct();  end;
+if nargin < 3;     parameters = struct();  end
 
 fields = fieldnames(parameters);
 formatOut = ext(2:end);

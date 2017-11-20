@@ -108,7 +108,7 @@ classdef Labels < matlab.mixin.Copyable
             % @code cropF2 = [100 512 NaN NaN 5 NaN 7 NaN];  // alternative definition of parameters for the crop  @endcode
             % @code indices = roiRegion.crop(cropF); // crop ROIs @endcode
             % @code indices = remove(obj, cropF); // Call within the class; crop ROIs @endcode
-            % @attention parameters dx, dy, dz, dt are not used, so they can be replaced with NaNs @endcode
+            % @attention parameters dx, dy, dz, dt are not used, so they can be replaced with NaNs 
 
             if obj.getLabelsNumber > 0
                 obj.labelPosition(:,1) = obj.labelPosition(:,1) - cropF(5) + 1;
@@ -122,12 +122,13 @@ classdef Labels < matlab.mixin.Copyable
         end
         
         
-        function [labelsList, labelPositions, indices] = getCurrentSliceLabels(obj, handles)
-            % [labelsList, labelPositions] = getCurrentSliceLabels(obj, handles)
+        function [labelsList, labelPositions, indices] = getCurrentSliceLabels(obj)
+            % [labelsList, labelPositions] = getCurrentSliceLabels(obj)
             % Get list of labels shown at the current slice
             %
+            % @note replaced with mibImage.getSliceLabels
+            %
             % Parameters:
-            % handles:  a handles structure of im_browser
             %
             % Return values:
             % labelsList:   a cell array with labels
@@ -141,15 +142,15 @@ classdef Labels < matlab.mixin.Copyable
             
             error('replaced with mibImage.getSliceLabels(), use without parameters!');
             
-            rangeT = [handles.Img{handles.Id}.I.slices{5}(1) handles.Img{handles.Id}.I.slices{5}(2)];
-            
-            if handles.Img{handles.Id}.I.orientation == 4   % xy
-                [labelsList, labelPositions, indices] = obj.getLabels(handles.Img{handles.Id}.I.slices{4}(1), NaN, NaN, rangeT);
-            elseif handles.Img{handles.Id}.I.orientation == 1   % zx
-                [labelsList, labelPositions, indices] = obj.getLabels(NaN, NaN, handles.Img{handles.Id}.I.slices{1}(1), rangeT);
-            elseif handles.Img{handles.Id}.I.orientation == 2   % zy
-                [labelsList, labelPositions, indices] = obj.getLabels(NaN, handles.Img{handles.Id}.I.slices{2}(1), NaN, rangeT);
-            end
+%             rangeT = [handles.Img{handles.Id}.I.slices{5}(1) handles.Img{handles.Id}.I.slices{5}(2)];
+%             
+%             if handles.Img{handles.Id}.I.orientation == 4   % xy
+%                 [labelsList, labelPositions, indices] = obj.getLabels(handles.Img{handles.Id}.I.slices{4}(1), NaN, NaN, rangeT);
+%             elseif handles.Img{handles.Id}.I.orientation == 1   % zx
+%                 [labelsList, labelPositions, indices] = obj.getLabels(NaN, NaN, handles.Img{handles.Id}.I.slices{1}(1), rangeT);
+%             elseif handles.Img{handles.Id}.I.orientation == 2   % zy
+%                 [labelsList, labelPositions, indices] = obj.getLabels(NaN, handles.Img{handles.Id}.I.slices{2}(1), NaN, rangeT);
+%             end
         end
         
         function [labelsList, labelPositions, indices] = getLabels(obj, rangeZ, rangeX, rangeY, rangeT)
@@ -249,8 +250,8 @@ classdef Labels < matlab.mixin.Copyable
             %
             % Parameters:
             % handles:  a handles structure of im_browser
-            % sliceNumber: [@optional], a slice number to get labels
-            % timePoint: [@optional], a time point to get the labels
+            % sliceNumber: [@em optional], a slice number to get labels
+            % timePoint: [@em optional], a time point to get the labels
             %
             % Return values:
             % labelsList:   a cell array with labels

@@ -33,9 +33,11 @@ classdef mibImportOmeroController < handle
             
             % update font and size
             global Font;
-            if obj.View.handles.text1.FontSize ~= Font.FontSize ...
-                    || ~strcmp(obj.View.handles.text1.FontName, Font.FontName)
-                mibUpdateFontSize(obj.View.gui, Font);
+            if ~isempty(Font)
+                if obj.View.handles.text1.FontSize ~= Font.FontSize ...
+                        || ~strcmp(obj.View.handles.text1.FontName, Font.FontName)
+                    mibUpdateFontSize(obj.View.gui, Font);
+                end
             end
             obj.projectId = []; % id of selected project
             obj.datasetId = []; % id of selected dataset
@@ -66,7 +68,10 @@ classdef mibImportOmeroController < handle
                 end
             end
             % update the project list
-            obj.updateProjectTable();
+            res = obj.updateProjectTable();
+            if res == 0     % no active projects
+                obj.closeWindow();
+            end
         end
         
         function closeWindow(obj)
@@ -78,15 +83,22 @@ classdef mibImportOmeroController < handle
             notify(obj, 'closeEvent');      % notify mibController that this child window is closed
         end
         
-        function updateProjectTable(obj)
+        function status = updateProjectTable(obj)
             % function updateProjectTable(obj)
             % update project list
+            
+            status = 0;
             
             proxy = obj.session.getContainerService();
             param = omero.sys.ParametersI();
             userId = obj.session.getAdminService().getEventContext().userId; % id of the user.
             param.exp(omero.rtypes.rlong(userId));
             projectsList = proxy.loadContainerHierarchy('omero.model.Project', [], param);
+            
+            if projectsList.isEmpty
+                errordlg(sprintf('!!! Error !!!\n\nNo projects were found!\nThis tool allows to import datasets from OMERO server, at the moment it is empty.\nPlease use OMERO client to upload images first and try again.'));
+                return;
+            end
             
             for j = 0:projectsList.size()-1
                 p = projectsList.get(j);
@@ -101,6 +113,7 @@ classdef mibImportOmeroController < handle
             obj.imageId = NaN;
             
             obj.updateDatasets('project');
+            status = 1;
         end
         
         function updateDatasets(obj, tableId)

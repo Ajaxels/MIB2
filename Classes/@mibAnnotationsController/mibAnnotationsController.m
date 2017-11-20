@@ -19,6 +19,11 @@ classdef mibAnnotationsController < handle
         % handle to the view
         listener
         % a cell array with handles to listeners
+        imarisOptions
+        % a structure with export options for imaris
+        % .radii - number with default radius
+        % .color - default color [Red Green Blue Alpha] in range from 0 to 1;
+        % .name - default name
         indices
         % indices of selected annotations in the table
         jScroll
@@ -47,6 +52,10 @@ classdef mibAnnotationsController < handle
             obj.mibModel = mibModel;    % assign model
             guiName = 'mibAnnotationsGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
+            
+            obj.imarisOptions.radii = NaN;
+            obj.imarisOptions.color = [1 0 0 0];
+            obj.imarisOptions.name = 'mibSpots';
             
             % find java object for the segmentation table
             obj.jScroll = findjobj(obj.View.handles.annotationTable);
@@ -104,15 +113,39 @@ classdef mibAnnotationsController < handle
                 case 'Cancel'
                     return;
                 case 'Import from Matlab'
+                    % get list of available variables
+                    availableVars = evalin('base', 'whos');
+                    % find only the cell type, because labelsList is array of cells
+                    idx = contains({availableVars.class}, 'cell');
+                    labelsList = {availableVars(idx).name}';
+                    idx = find(ismember(labelsList, 'labelsList')==1);
+                    if ~isempty(idx)
+                        labelsList{end+1} = idx;
+                    end
+                    
+                    idx = contains({availableVars.class}, 'double');
+                    labelPositions = {availableVars(idx).name}';
+                    idx = find(ismember(labelPositions, 'labelPositions')==1);
+                    if ~isempty(idx)
+                        labelPositions{end+1} = idx;
+                    end
+                    
                     title = 'Input variables for import';
-                    lines = [1 30];
-                    def = {'labelsList', 'labelPositions'};
-                    prompt = {'A variable for the annotation labels:','A variable for the annotation coordinates:'};
-                    answer = inputdlg(prompt, title, lines, def, 'on');
-                    if size(answer) == 0; return; end
+                    defAns = {labelsList, labelPositions};
+                    prompts = {'A variable for the annotation labels:'; 'A variable for the annotation coordinates:'};
+                    answer = mibInputMultiDlg([], prompts, defAns, title);
+                    if isempty(answer); return; end
+                    
                     obj.mibModel.mibDoBackup('labels', 0);
-                    labelsList = evalin('base',answer{1});
-                    labelPositions = evalin('base',answer{2});
+                    try
+                        labelsList = evalin('base', answer{1});
+                        labelPositions = evalin('base',answer{2});
+                    catch err
+                        errordlg(sprintf('!!! Error !!!\n\n%s', err.message), ...
+                            'Wrong variable');
+                        return;
+                    end
+                    
                     if size(labelPositions,2) == 3  % missing the t
                         labelPositions(:, 4) = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1);
                     end
@@ -149,12 +182,11 @@ classdef mibAnnotationsController < handle
             button =  questdlg(sprintf('Would you like to save annotations to a file or export to the main Matlab workspace?'),'Export/Save annotations','Save to a file','Export to Matlab','Cancel','Save to a file');
             if strcmp(button, 'Cancel'); return; end
             if strcmp(button, 'Export to Matlab')
-                title = 'Input variables to export';
-                lines = [1 30];
-                def = {'labelsList', 'labelPositions'};
-                prompt = {'A variable for the annotation labels:','A variable for the annotation coordinates:'};
-                answer = inputdlg(prompt, title, lines, def, 'on');
-                if size(answer) == 0; return; end
+                defAns = {'labelsList'; 'labelPositions'};
+                prompt = {'A variable for the annotation labels:';'A variable for the annotation coordinates:'};
+                answer = mibInputMultiDlg([], prompt, defAns, 'Input variables to export');
+                if isempty(answer); return; end
+                
                 assignin('base', answer{1}, labelsList);
                 assignin('base', answer{2}, labelPositions);
                 fprintf('Export annotations ("%s" and "%s") to Matlab: done!\n', answer{1}, answer{2});
@@ -341,17 +373,15 @@ classdef mibAnnotationsController < handle
                         sprintf('X coordinate (Xmax=%d):', obj.mibModel.getImageProperty('width'))...
                         sprintf('Y coordinate (Ymax=%d):', obj.mibModel.getImageProperty('height'))...
                         sprintf('T coordinate (Tmax=%d)', obj.mibModel.getImageProperty('time'))};
-                    name='Add annotation';
-                    numlines=1;
                     slices = obj.mibModel.getImageProperty('slices');
-                    
                     zVal = num2str(slices{orientation}(1));
                     tVal = num2str(slices{5}(1));
                     defaultAnnotationName = obj.mibModel.getImageProperty('defaultAnnotationText');
-                    defaultanswer={defaultAnnotationName, zVal, '10', '10', tVal};
-                    answer=inputdlg(prompt, name, numlines, defaultanswer);
-                    if isempty(answer); return; end
+                    defAns={defaultAnnotationName, zVal, '10', '10', tVal};
                     
+                    answer = mibInputMultiDlg([], prompt, defAns, 'Add annotation');
+                    if isempty(answer); return; end
+
                     obj.mibModel.mibDoBackup('labels', 0);
                     labelsText = answer(1);
                     obj.mibModel.setImageProperty('defaultAnnotationText', labelsText{1});
@@ -483,6 +513,41 @@ classdef mibAnnotationsController < handle
                             
                             points2amiraLandmarks(fn_out, labelPositionsOut, options);
                     end
+                case 'Imaris' % export annotations to Imaris
+                    if isempty(obj.indices); return; end
+                    data = obj.View.handles.annotationTable.Data;
+                    if isempty(data); return; end
+                    annIds = obj.indices(:,1);
+                    labelPositions = data(annIds,2:5);
+                    labelPositions = cellfun(@str2double, labelPositions);  % generate a matrix [z, x, y, t];
+                    
+                    labelPositions = [labelPositions(:,2), labelPositions(:,3), labelPositions(:,1), labelPositions(:,4)];   % reshape to [x, y, z, t]
+                    
+                    % recalculate position in respect to the bounding box
+                    bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
+                    pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
+                    labelPositions(:, 1) = labelPositions(:, 1)*pixSize.x + bb(1) - pixSize.x/2;
+                    labelPositions(:, 2) = labelPositions(:, 2)*pixSize.y + bb(3) - pixSize.y/2;
+                    labelPositions(:, 3) = labelPositions(:, 3)*pixSize.z + bb(5) - pixSize.z;
+                    
+                    if isnan(obj.imarisOptions.radii)
+                        obj.imarisOptions.radii = (max(labelPositions(:, 1))-min(labelPositions(:, 1)))/100;
+                    end
+                    prompt = {'Radius of spots:', sprintf('Color [R, G, B, A]\nrange from 0 to 1'), 'Name for spots:'};
+                    defAns = {num2str(obj.imarisOptions.radii), num2str(obj.imarisOptions.color), obj.imarisOptions.name};
+                    
+                    answer = mibInputMultiDlg([], prompt, defAns, 'Export to Imaris');
+                    if isempty(answer); return; end
+                    
+                    obj.imarisOptions.radii = str2double(answer{1});
+                    obj.imarisOptions.color = str2num(answer{2}); %#ok<ST2NM>
+                    obj.imarisOptions.name = answer{3};
+                    
+                    options.radii = zeros([size(labelPositions, 1) 1]) + obj.imarisOptions.radii;
+                    options.color = obj.imarisOptions.color;
+                    options.name = obj.imarisOptions.name;
+                    obj.mibModel.connImaris = mibSetImarisSpots(labelPositions, obj.mibModel.connImaris, options);
+                    
                 case 'Delete'   % delete the highlighted annotation
                     if isempty(obj.indices); return; end
                     data = obj.View.handles.annotationTable.Data;

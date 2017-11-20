@@ -24,10 +24,12 @@ switch parameter
     case 'copySlice'
         currentSlice = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
         maxSlice = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation);
-        prompt = {sprintf('Please enter the slice numbers (1-%d)\n\nIndex of the source slice:', maxSlice), 'Index of the destination slice:'};
-        dlg_title = 'Copy slice';
-        defaultans = {num2str(currentSlice), num2str(min([currentSlice+1 maxSlice]))};
-        answer = inputdlg(prompt, dlg_title, 1, defaultans);
+        prompt = {'Index of the source slice:', 'Index of the destination slice:'};
+        defAns = {num2str(currentSlice), num2str(min([currentSlice+1 maxSlice]))};
+        mibInputMultiDlgOptions.Title = sprintf('Please enter the slice numbers (1-%d)', maxSlice);
+        mibInputMultiDlgOptions.TitleLines = 2;
+                    
+        answer = mibInputMultiDlg({obj.mibPath}, prompt, defAns, 'Copy slice', mibInputMultiDlgOptions);
         if isempty(answer); return; end
         
         orient = obj.mibModel.I{obj.mibModel.Id}.orientation;

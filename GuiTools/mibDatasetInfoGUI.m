@@ -61,9 +61,11 @@ handles.output = hObject;
 
 % update font and size
 global Font;
-if handles.uipanel1.FontSize ~= Font.FontSize ...
-        || ~strcmp(handles.uipanel1.FontName, Font.FontName)
-    mibUpdateFontSize(handles.mibDatasetInfoGUI, Font);
+if ~isempty(Font)
+    if handles.uipanel1.FontSize ~= Font.FontSize ...
+            || ~strcmp(handles.uipanel1.FontName, Font.FontName)
+        mibUpdateFontSize(handles.mibDatasetInfoGUI, Font);
+    end
 end
 
 % resize in the controller

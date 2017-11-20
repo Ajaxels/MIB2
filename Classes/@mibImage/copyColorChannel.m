@@ -32,10 +32,14 @@ if strcmp(obj.meta('ColorType'), 'indexed')
 end
     
 if nargin < 3
-    if nargin < 2;         channel1 = 1; end;
-    prompt = {sprintf('Copy color channel:\nthe first color channel will be copied to the position of the second color channel\n\nEnter number of the first color channel:'),'Enter number of the second color channel:'};
-    answer = inputdlg(prompt,'Copy color channel', 1, {num2str(channel1), num2str(obj.colors+1)});
-    if size(answer) == 0; return; end;
+    if nargin < 2;         channel1 = 1; end
+    prompt = {'Enter number of the first color channel:'; 'Enter number of the second color channel:'};
+    defAns = {num2str(channel1), num2str(obj.colors+1)};
+    mibInputMultiDlgOptions.Title = sprintf('Copy color channel:\nthe first color channel will be copied to the position of the second color channel');
+    mibInputMultiDlgOptions.TitleLines = 4;
+    answer = mibInputMultiDlg([], prompt, defAns, 'Copy color channel', mibInputMultiDlgOptions);
+    if isempty(answer); return; end
+    
     channel1 = str2double(answer{1});
     channel2 = str2double(answer{2});
     channel2 = min([channel2, obj.colors+1]);

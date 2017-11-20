@@ -199,6 +199,9 @@
 % 
 % * *List of annotations...* - starts an auxiliary window with a list of
 % existing annotations, <ug_panel_segm_tools.html see more here> .
+% * *Export to Imaris as Spots* - export all annotations to a Spot object
+% in Imaris, please export first the dataset and only after that export
+% annotations as spots
 % * *Remove all annotations...* - deletes all annotations stored with the
 % model.
 %

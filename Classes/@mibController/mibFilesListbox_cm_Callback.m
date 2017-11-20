@@ -115,13 +115,28 @@ switch parameter
         end
         obj.mibView.handles.mibRecentDirsPopup.String = obj.mibModel.preferences.recentDirs;
     case 'insertData'
-        prompt = sprintf('Where the new dataset should be inserted?\n\n1 - beginning of the open dataset\n0 - end of the open dataset\n\nor type any number to define position');
-        insertPosition = mibInputDlg({mibPath}, prompt, 'Insert dataset', '0');
-        if isempty(insertPosition); return; end
-        insertPosition = str2double(insertPosition{1});
-        if insertPosition == 0; insertPosition = NaN; end
+%         prompt = sprintf('Where the new dataset should be inserted?\n\n1 - beginning of the open dataset\n0 - end of the open dataset\n\nor type any number to define position');
+%         insertPosition = mibInputDlg({mibPath}, prompt, 'Insert dataset', '0');
+%         insertPosition = str2double(insertPosition{1});
+%         if insertPosition == 0; insertPosition = NaN; end
+%         [img, img_info, ~] = mibLoadImages(fn, options);
+%         obj.mibModel.I{obj.mibModel.Id}.insertSlice(img, insertPosition, img_info);
+        
+        prompts = {'Dimension:'; ...
+            sprintf('Position\n1 - beginning of the open dataset\n0 - end of the open dataset\nor type any number to define position')};
+        defAns = {{'depth', 'time', 1}; '0'};
+        options.PromptLines = [1, 4];
+        dlgtitle = 'Insert dataset';
+        options.Title = 'Where the new dataset should be inserted?';
+        options.TitleLines = 1;
+        options.Focus = 2;
+        output = mibInputMultiDlg([], prompts, defAns, dlgtitle, options);
+        if isempty(output); return; end
+        insertPosition = str2double(output{2});
+        options.dim = output{1};
         [img, img_info, ~] = mibLoadImages(fn, options);
-        obj.mibModel.I{obj.mibModel.Id}.insertSlice(img, insertPosition, img_info);
+        obj.mibModel.I{obj.mibModel.Id}.insertSlice(img, insertPosition, img_info, options);
+        
         if obj.mibView.handles.mibLutCheckbox.Value == 1
             obj.mibModel.I{obj.mibModel.Id}.slices{3} = 1:size(obj.mibModel.I{obj.mibModel.Id}.img{1},3);
         else

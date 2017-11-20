@@ -55,9 +55,11 @@ handles.output = hObject;
 
 % update font and size
 global Font;
-if handles.logPrint.FontSize ~= Font.FontSize ...
-        || ~strcmp(handles.logPrint.FontName, Font.FontName)
-    mibUpdateFontSize(handles.mibLogListGUI, Font);
+if ~isempty(Font)
+    if handles.logPrint.FontSize ~= Font.FontSize ...
+            || ~strcmp(handles.logPrint.FontName, Font.FontName)
+        mibUpdateFontSize(handles.mibLogListGUI, Font);
+    end
 end
 
 % resize all elements x1.25 times for macOS

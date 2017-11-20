@@ -3,8 +3,8 @@ function updateSlicesStructure(obj, axesX, axesY)
 % updates obj.slices structure using the provided axesX, axesY boundaries
 %
 % Parameters:
-% axesX, a vector [min, max] for the X
-% axesY, a vector [min, max] for the Y
+% axesX: a vector [min, max] for the X
+% axesY: a vector [min, max] for the Y
 %
 % Return values:
 % 

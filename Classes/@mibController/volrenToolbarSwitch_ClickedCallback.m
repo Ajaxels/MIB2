@@ -49,7 +49,7 @@ if strcmp(obj.mibView.handles.volrenToolbarSwitch.State, 'on')
     %end
     
     if isempty(obj.mibModel.I{obj.mibModel.Id}.volren.previewImg)
-        obj.mibModel.I{obj.mibModel.Id}.volren.previewScale = 256/size(obj.mibModel.I{obj.mibModel.Id}.img{1}, 1);
+        obj.mibModel.I{obj.mibModel.Id}.volren.previewScale = 256/max([obj.mibModel.I{obj.mibModel.Id}.width obj.mibModel.I{obj.mibModel.Id}.height]);
         getDataOptions.blockModeSwitch = 0;
         
         R = [0 0 0];

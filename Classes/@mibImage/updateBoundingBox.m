@@ -53,6 +53,7 @@ if nargin < 2
     newBB = NaN;
 end
 
+% bouding box will be recalculated to um
 switch obj.pixSize.units
     case 'm'
         coef = 1e6;
@@ -65,6 +66,8 @@ switch obj.pixSize.units
     case 'nm'
         coef = 1e-3;
 end
+obj.pixSize.units = 'um';
+
 if isnan(newBB)     % shift the existing bounding box
     % get current bounding box x1,y1,z1
     bb = obj.getBoundingBox();

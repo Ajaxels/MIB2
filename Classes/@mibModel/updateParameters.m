@@ -25,7 +25,7 @@ function result = updateParameters(obj, pixSize)
 % pixSize.y = 10;
 % pixSize.z = 50;
 % pixSize.units = 'nm';
-% obj.mibModel.updateParameters(pixSize);  // call from mibController, update parameters using voxels: 10x10x50nm in size @endcode
+% obj.mibModel.updateParameters(pixSize);  // call from mibController, update parameters using voxels: 10x10x50nm in size 
 % @endcode
 % @code obj.mibModel.obj.updateParameters();  // call from mibController, update parameters of the dataset @endcode
 
@@ -42,19 +42,22 @@ function result = updateParameters(obj, pixSize)
 result = 0;
 
 if nargin < 2
-    prompt = {'Voxel size, X:','Voxel size, Y:','Voxel size, Z:','Time between frames:','Pixel units (m, cm, mm, um, nm):','Time units:'};
-    title = 'Dataset parameters';
-    lines = [1 30];
-    def = {sprintf('%g',obj.I{obj.Id}.pixSize.x),...
-        sprintf('%g',obj.I{obj.Id}.pixSize.y),...
-        sprintf('%g',obj.I{obj.Id}.pixSize.z),...
-        sprintf('%g',obj.I{obj.Id}.pixSize.t),...
-        obj.I{obj.Id}.pixSize.units,...
-        obj.I{obj.Id}.pixSize.tunits};
-    dlgOptions.Resize = 'on';
+    prompts = {'Voxel size, X:'; 'Voxel size, Y:'; 'Voxel size, Z:'; 'Time between frames:'; 'Pixel units (m, cm, mm, um, nm):'; 'Time units:'};
+    dlg_title = 'Dataset parameters';
+    
+    % generate the list of possible units and detect current one
+    unitsList = {'m'; 'cm'; 'mm'; 'um'; 'nm'};  % make a list of possible units 
+    unitsList{end+1} = find(ismember(unitsList, obj.I{obj.Id}.pixSize.units)==1);   % find the current unit in the list
+     
+    defaultAns = {sprintf('%g',obj.I{obj.Id}.pixSize.x),...
+                  sprintf('%g',obj.I{obj.Id}.pixSize.y),...
+                  sprintf('%g',obj.I{obj.Id}.pixSize.z),...
+                  sprintf('%g',obj.I{obj.Id}.pixSize.t),...
+                  unitsList,...
+                  obj.I{obj.Id}.pixSize.tunits};
     dlgOptions.WindowStyle = 'normal';
-    answer = inputdlg(prompt,title,lines,def,dlgOptions);
-    if size(answer) == 0; return; end;
+    answer = mibInputMultiDlg([], prompts, defaultAns, dlg_title, dlgOptions);
+    if isempty(answer); return; end
 
     obj.I{obj.Id}.pixSize.x = str2double(answer{1});
     obj.I{obj.Id}.pixSize.y = str2double(answer{2});
@@ -63,12 +66,12 @@ if nargin < 2
     obj.I{obj.Id}.pixSize.units = answer{5};
     obj.I{obj.Id}.pixSize.tunits = answer{6};
 else
-    if isfield(pixSize, 'x'); obj.I{obj.Id}.pixSize.x = pixSize.x; end;
-    if isfield(pixSize, 'y'); obj.I{obj.Id}.pixSize.y = pixSize.y; end;
-    if isfield(pixSize, 'z'); obj.I{obj.Id}.pixSize.z = pixSize.z; end;
-    if isfield(pixSize, 't'); obj.I{obj.Id}.pixSize.t = pixSize.t; end;
-    if isfield(pixSize, 'units'); obj.I{obj.Id}.pixSize.units = pixSize.units; end;
-    if isfield(pixSize, 'tunits'); obj.I{obj.Id}.pixSize.tunits = pixSize.tunits; end;
+    if isfield(pixSize, 'x'); obj.I{obj.Id}.pixSize.x = pixSize.x; end
+    if isfield(pixSize, 'y'); obj.I{obj.Id}.pixSize.y = pixSize.y; end
+    if isfield(pixSize, 'z'); obj.I{obj.Id}.pixSize.z = pixSize.z; end
+    if isfield(pixSize, 't'); obj.I{obj.Id}.pixSize.t = pixSize.t; end
+    if isfield(pixSize, 'units'); obj.I{obj.Id}.pixSize.units = pixSize.units; end
+    if isfield(pixSize, 'tunits'); obj.I{obj.Id}.pixSize.tunits = pixSize.tunits; end
 end
     
 resolution = mibCalculateResolution(obj.I{obj.Id}.pixSize);

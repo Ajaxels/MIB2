@@ -75,9 +75,11 @@ set(handles.statTable,'UIContextMenu',handles.statTable_cm);
 
 % % update font and size
 global Font;
-if handles.autoHighlightCheck.FontSize ~= Font.FontSize ...
-         || ~strcmp(handles.autoHighlightCheck.FontName, Font.FontName)
-     mibUpdateFontSize(handles.mibStatisticsGUI, Font);
+if ~isempty(Font)
+    if handles.autoHighlightCheck.FontSize ~= Font.FontSize ...
+             || ~strcmp(handles.autoHighlightCheck.FontName, Font.FontName)
+         mibUpdateFontSize(handles.mibStatisticsGUI, Font);
+    end
 end
 
 % resize all elements x1.25 times for macOS

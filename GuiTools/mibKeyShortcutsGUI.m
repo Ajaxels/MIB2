@@ -58,11 +58,12 @@ global Font;
 handles.winController = varargin{1};
 
 % update font and size
-if handles.text1.FontSize ~= Font.FontSize ...
-        || ~strcmp(handles.text1.FontName, Font.FontName)
-    mibUpdateFontSize(handles.mibKeyShortcutsGUI, Font);
+if ~isempty(Font)
+    if handles.text1.FontSize ~= Font.FontSize ...
+            || ~strcmp(handles.text1.FontName, Font.FontName)
+        mibUpdateFontSize(handles.mibKeyShortcutsGUI, Font);
+    end
 end
-
 % resize all elements x1.25 times for macOS
 mibRescaleWidgets(handles.mibKeyShortcutsGUI);
 

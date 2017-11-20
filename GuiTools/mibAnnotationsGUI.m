@@ -59,14 +59,17 @@ uimenu(handles.labelsTable_cm, 'Label', 'Add annotation...', 'Callback', {@table
 uimenu(handles.labelsTable_cm, 'Label', 'Jump to annotation', 'Callback', {@tableContextMenu_cb, 'Jump'});
 uimenu(handles.labelsTable_cm, 'Label', 'Count selected annotations', 'Callback', {@tableContextMenu_cb, 'Count'});
 uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations...', 'Callback', {@tableContextMenu_cb, 'Export'});
+uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations to Imaris', 'Callback', {@tableContextMenu_cb, 'Imaris'});
 uimenu(handles.labelsTable_cm, 'Label', 'Delete annotation...', 'Separator','on', 'Callback', {@tableContextMenu_cb, 'Delete'});
 set(handles.annotationTable,'UIContextMenu',handles.labelsTable_cm);
 
 % update font and size
 global Font;
-if handles.jumpCheck.FontSize ~= Font.FontSize ...
-        || ~strcmp(handles.jumpCheck.FontName, Font.FontName)
-    mibUpdateFontSize(handles.mibAnnotationsGUI, Font);
+if ~isempty(Font)
+    if handles.jumpCheck.FontSize ~= Font.FontSize ...
+            || ~strcmp(handles.jumpCheck.FontName, Font.FontName)
+        mibUpdateFontSize(handles.mibAnnotationsGUI, Font);
+    end
 end
 % resize all elements x1.25 times for macOS
 mibRescaleWidgets(handles.mibAnnotationsGUI);

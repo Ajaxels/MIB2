@@ -25,11 +25,11 @@ switch type
         obj.mibModel.mibShowAnnotationsCheck = 1;
         return;
     case 'line'
-        obj.mibModel.mibDoBackup('selection', 0);
+        %obj.mibModel.mibDoBackup('selection', 0);
         obj.mibView.gui.WindowButtonDownFcn = [];
         roi = imline(obj.mibView.handles.mibImageAxes);
     case 'freehand'
-        obj.mibModel.mibDoBackup('selection', 0);
+        %obj.mibModel.mibDoBackup('selection', 0);
         obj.mibView.gui.WindowButtonDownFcn = [];
         roi = imfreehand(obj.mibView.handles.mibImageAxes, 'Closed', 'false');
 end
@@ -44,13 +44,13 @@ delete(roi);
 % restore mibGUI_WindowButtonDownFcn
 obj.mibView.gui.WindowButtonDownFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowButtonDownFcn());
 
-helpSubString ='';
-if obj.mibModel.preferences.disableSelection == 0
-    img = cell2mat(obj.mibModel.getData2D('selection'));
-    img = mibConnectPoints(img, pos);
-    obj.mibModel.setData2D('selection', {img});
-    helpSubString = 'Use the "C"-key shortcut to clear the measured path';
-end
+% helpSubString ='';
+% if obj.mibModel.preferences.disableSelection == 0
+%     img = cell2mat(obj.mibModel.getData2D('selection'));
+%     img = mibConnectPoints(img, pos);
+%     obj.mibModel.setData2D('selection', {img});
+%     helpSubString = 'Use the "C"-key shortcut to clear the measured path';
+% end
 orientation = obj.mibModel.getImageProperty('orientation');
 pixSize = obj.mibModel.getImageProperty('pixSize');
 if orientation == 4   % xy plane
@@ -68,8 +68,9 @@ for i=2:size(pos,1)
     distance = distance + sqrt(((pos(i,1)-pos(i-1,1))*x)^2 + ((pos(i,2)-pos(i-1,2))*y)^2);
 end
 str2 = ['Distance = ' num2str(distance) ' ' pixSize.units];
-msgbox(sprintf('%s\n%s', str2, helpSubString), 'Measure...', 'help');
+msgbox(sprintf('%s\nThe measured length has been also copied to the system clipboard', str2), 'Measure...', 'help');
 disp(str2);
+clipboard('copy', [num2str(distance) ' ' pixSize.units])
 obj.plotImage();
 
 end

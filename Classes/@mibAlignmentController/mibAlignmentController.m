@@ -950,13 +950,16 @@ classdef mibAlignmentController < handle
                     end
                     % calculate drifts
                     [shiftX, shiftY] = mibCalcShifts(I, parameters);
-                    if isempty(shiftX); return; end;
+                    if isempty(shiftX); return; end
                     
-                    prompt = {sprintf('Would you like to use detected shifts?\n\nX shift:'),'Y shift:'};
-                    dlg_title = 'Calculated shifts';
-                    defaultans = {num2str(shiftX(2)), num2str(shiftY(2))};
-                    answer = inputdlg(prompt, dlg_title, 1, defaultans);
+                    prompt = {'X shift:'; 'Y shift:'};
+                    defAns = {num2str(shiftX(2)); num2str(shiftY(2))};
+                    mibInputMultiDlgOpt.PromptLines = [1, 1];
+                    mibInputMultiDlgOpt.Title = 'Would you like to use detected shifts?';
+                    mibInputMultiDlgOpt.TitleLines = 2;
+                    answer = mibInputMultiDlg([], prompt, defAns, 'Calculated shifts', mibInputMultiDlgOpt);
                     if isempty(answer); delete(parameters.waitbar); return; end
+                    
                     obj.shiftsX = str2double(answer{1});
                     obj.shiftsY = str2double(answer{2});
                 else
@@ -964,7 +967,7 @@ classdef mibAlignmentController < handle
                     obj.shiftsY = str2double(obj.View.handles.manualShiftY.String);
                 end
                 [img, bbShiftXY] = mibCrossShiftStacks(obj.mibModel.I{obj.mibModel.Id}.img{1}, img, obj.shiftsX, obj.shiftsY, parameters);
-                if isempty(img);        delete(parameters.waitbar);        return; end;
+                if isempty(img);        delete(parameters.waitbar);        return; end
                 obj.mibModel.I{obj.mibModel.Id}.img{1} = img;
                 clear img;
                 

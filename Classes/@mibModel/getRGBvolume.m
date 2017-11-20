@@ -25,7 +25,6 @@ function imgRGB = getRGBvolume(obj, img, options)
 % @li .LightVector -> Light Direction defaults to [0.67 0.33 -0.67]
 % @li .ViewerVector -> View vector X,Y,Z defaults to [0 0 1]
 % @li .ShadingMaterial -> The type of material shading : dull, shiny(default) or metal.
-% handles: handles structure of MIV
 %
 % Return values:
 % imgRGB: - RGB image with combined layers, [1:height, 1:width, 1:3]

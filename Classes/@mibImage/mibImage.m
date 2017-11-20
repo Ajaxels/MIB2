@@ -159,7 +159,7 @@ classdef mibImage < matlab.mixin.Copyable
         
         clearContents(obj, img, meta, disableSelection)        % set all elements of the class to default values
         
-        clearMask(obj, height, width, z)        % clear the 'Mask' layer. It is also possible to specify the area where the 'Mask' layer should be cleared
+        clearMask(obj, options)        % clear the 'Mask' layer. It is also possible to specify the area where the 'Mask' layer should be cleared
         
         clearSelection(obj, height, width, z, t, blockModeSwitch)        % Clear the 'Selection' layer. It is also possible to specify the area where the Selection layer should be cleared.
         
@@ -203,7 +203,7 @@ classdef mibImage < matlab.mixin.Copyable
         
         insertEmptyColorChannel(obj, channel1)        % Insert an empty color channel to the specified position
         
-        insertSlice(obj, img, insertPosition, meta)        % Insert a slice or a dataset into the existing volume
+        insertSlice(obj, img, insertPosition, meta, options)        % Insert a slice or a dataset into the existing volume
         
         invertColorChannel(obj, channel1)        % Invert color channel of the dataset
         

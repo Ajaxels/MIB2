@@ -67,9 +67,11 @@ handles.winController = varargin{1};
 
 % update font and size
 global Font;
-if handles.existingFnText1.FontSize ~= Font.FontSize ...
-        || ~strcmp(handles.existingFnText1.FontName, Font.FontName)
-    mibUpdateFontSize(handles.mibAlignmentGUI, Font);
+if ~isempty(Font)
+    if handles.existingFnText1.FontSize ~= Font.FontSize ...
+            || ~strcmp(handles.existingFnText1.FontName, Font.FontName)
+        mibUpdateFontSize(handles.mibAlignmentGUI, Font);
+    end
 end
 
 % rescale widgets for Mac and Linux

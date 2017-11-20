@@ -9,7 +9,11 @@ classdef mibMeasureToolController < handle
     % modify it under the terms of the GNU General Public License
     % as published by the Free Software Foundation; either version 2
     % of the License, or (at your option) any later version.
-    
+    %
+    % Updates:
+    % 04.10.2017, IB added possibility to do not calculate intensity
+    % profiles, fix of recalculation bug, when measurements were moved to
+    % the current slice
     
     properties
         mibController
@@ -152,29 +156,30 @@ classdef mibMeasureToolController < handle
             finetuneCheck = obj.View.handles.finetuneCheck.Value;
             integrateCheck = obj.View.handles.integrateCheck.Value;
             noPoints = str2double(obj.View.handles.noPointsEdit.String);
+            calcIntensity = obj.View.handles.calcIntensityCheck.Value;
             
             obj.View.handles.addBtn.BackgroundColor = 'r';
             %disableSegmentation = obj.mibController.mibView.disableSegmentation;
             obj.mibController.mibModel.disableSegmentation = 1;
             switch typeString{obj.View.handles.measureTypePopup.Value}
                 case 'Angle'
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.AngleFun(obj.mibController, [], colCh, finetuneCheck);
+                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.AngleFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity);
                 case 'Caliper'
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.CaliperFun(obj.mibController, [], colCh, finetuneCheck);
+                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.CaliperFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity);
                 case 'Circle (R)'
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.CircleFun(obj.mibController, [], colCh, finetuneCheck);
+                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.CircleFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity);
                 case 'Distance (freehand)'
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFreeFun(obj.mibController, colCh, finetuneCheck);
+                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFreeFun(obj.mibController, colCh, finetuneCheck, calcIntensity);
                 case 'Distance (linear)'
                     if integrateCheck
-                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj.mibController, [], colCh, finetuneCheck, noPoints);
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj.mibController, [], colCh, finetuneCheck, noPoints, calcIntensity);
                     else
-                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj.mibController, [], colCh, finetuneCheck);
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj.mibController, [], colCh, finetuneCheck, [], calcIntensity);
                     end
                 case 'Distance (polyline)'
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistancePolyFun(obj.mibController, [], colCh, noPoints, finetuneCheck);
+                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistancePolyFun(obj.mibController, [], colCh, noPoints, finetuneCheck, calcIntensity);
                 case 'Point'
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.PointFun(obj.mibController, [], colCh, finetuneCheck);
+                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.PointFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity);
             end
             obj.mibController.mibModel.disableSegmentation = 0;
             obj.View.handles.addBtn.BackgroundColor = 'g';
@@ -427,8 +432,9 @@ classdef mibMeasureToolController < handle
                     if integrateCheck
                         widthProfile = str2double(obj.View.handles.noPointsEdit.String);
                     end
-                        
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.editMeasurements(obj.mibController, n, colCh, widthProfile);
+                    calcIntensity = obj.View.handles.calcIntensityCheck.Value;
+                    
+                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.editMeasurements(obj.mibController, n, colCh, widthProfile, 1, calcIntensity);
                     eventdata.Indices = obj.indices;   % store current indices, because they will be removed in obj.updateTable;
                     obj.updateTable();
                     drawnow;
@@ -445,9 +451,10 @@ classdef mibMeasureToolController < handle
                     end
                     finetuneCheck = 0;
                     noOfMeasurements = size(obj.indices, 1);
+                    calcIntensity = obj.View.handles.calcIntensityCheck.Value;
                     for i=1:noOfMeasurements
                         n = obj.indices(i,1);
-                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.editMeasurements(obj.mibController, n, colCh, widthProfile, finetuneCheck);
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.editMeasurements(obj.mibController, n, colCh, widthProfile, finetuneCheck, calcIntensity);
                         waitbar(i/noOfMeasurements);
                     end
                     eventdata.Indices = obj.indices;   % store current indices, because they will be removed in obj.updateTable;
@@ -560,11 +567,25 @@ classdef mibMeasureToolController < handle
                 case 'Cancel'
                     return;
                 case 'Import from Matlab'
-                    title = 'Input variables for import';
-                    prompt = 'A variable that contains compatible structure:';
-                    def = 'mibMeasurements';
-                    answer = mibInputDlg({mibPath}, prompt, title, def);
-                    if size(answer) == 0; return; end;
+                    % get list of available variables
+                    availableVars = evalin('base', 'whos');
+                    idx = contains({availableVars.class}, {'struct'});
+                    if sum(idx) == 0
+                        errordlg(sprintf('!!! Error !!!\nNothing to import...'), 'Nothing to import');
+                        return;
+                    end
+                    Vars = {availableVars(idx).name}';        
+
+                    % find index of the I variable if it is present
+                    idx2 = find(ismember(Vars, 'mibMeasurements')==1);
+                    if ~isempty(idx2)
+                        Vars{end+1} = idx2;
+                    end
+                    prompts = {'A variable that contains compatible structure:'};
+                    defAns = {Vars};
+                    title = 'Input variable for import';
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
+                    if isempty(answer); return; end
                     obj.mibModel.mibDoBackup('measurements', 0);
                     obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data = evalin('base',answer{1});
                 case 'Load from a file'
@@ -572,7 +593,7 @@ classdef mibMeasureToolController < handle
                         {'*.measure;',  'Matlab format (*.measure)'; ...
                         '*.*',  'All Files (*.*)'}, ...
                         'Load measurements...', obj.mibModel.myPath);
-                    if isequal(filename, 0); return; end; % check for cancel
+                    if isequal(filename, 0); return; end % check for cancel
                     
                     obj.mibModel.mibDoBackup('measurements', 0);
                     res = load(fullfile(path, filename),'-mat');

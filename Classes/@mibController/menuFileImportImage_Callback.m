@@ -25,15 +25,61 @@ global mibPath;
 if nargin < 2;     parameter = 'matlab'; end
 switch parameter
     case 'matlab'
-        prompt = {'Image variable (h:w:color:index):','Image meta variable (containers.Map)'};
-        options.Resize='on';
-        answer = inputdlg(prompt(1:2), 'Import from Matlab', 1, {'I','I_meta'}, options);
-        if size(answer) == 0; return; end
+        % get list of available variables
+        availableVars = evalin('base', 'whos');
+        idx = contains({availableVars.class}, {'uint8', 'uint16', 'uint32', 'uint64','int8', 'int16', 'int32', 'int64', 'double', 'single'});
+        if sum(idx) == 0
+            errordlg(sprintf('!!! Error !!!\nNothing to import...'), 'Nothing to import');
+            return;
+        end
+        ImageVars = {availableVars(idx).name}';
+        ImageSize = {availableVars(idx).size}';
+        ImageClass = {availableVars(idx).class}';
+        ImageVarsDetails = ImageVars;
+
+        % add deteiled description to the text
+        for i=1:numel(ImageVarsDetails)
+            ImageVarsDetails{i} = sprintf('%s: %s [%s]', ImageVars{i}, ImageClass{i}, num2str(ImageSize{i}));
+        end
+        % find index of the I variable if it is present
+        idx2 = find(ismember(ImageVars, 'I')==1);
+        if ~isempty(idx2)
+            ImageVarsDetails{end+1} = idx2;
+        else
+            ImageVarsDetails{end+1} = 1;
+        end
+       
+        % find only the containers.Map type
+        idx = contains({availableVars.class}, 'containers.Map');
+        MetaVars = {'Do not import'};
+        if sum(idx) > 0
+            MetaVars = [MetaVars; {availableVars(idx).name}'];
+            idx = find(ismember(MetaVars, 'I_meta')==1);
+            if ~isempty(idx)
+                MetaVars{end+1} = idx;
+            else
+                MetaVars{end+1} = 1;
+            end
+        end
+        
+        prompts = {'Image variable (h:w:color:index):', 'Image meta variable (containers.Map)'};
+        defAns = {ImageVarsDetails, MetaVars};
+        title = 'Import from Matlab';
+        
+        [answer, selIndex] = mibInputMultiDlg({obj.mibPath}, prompts, defAns, title);
+        if isempty(answer); return; end
+        %answer(1) = ImageVars(contains(ImageVarsDetails(1:end-1), answer{1})==1);
+        answer(1) = ImageVars(selIndex(1));
+        
+        if strcmp(answer{2}, 'Do not import')
+            answer{2} = [];
+        end
         
         try
             img = evalin('base',answer{1});
         catch exception
-            errordlg(sprintf('The variable was not found in the Matlab base workspace:\n\n%s', exception.message),'Misssing variable!','modal');
+            errordlg(sprintf('The variable was not found in the Matlab base workspace:\n\n%s', exception.message),...
+                'Misssing variable!', 'modal');
             return;
         end
         if isstruct(img); img = img.data; end  % check for Amira structures
@@ -41,7 +87,7 @@ switch parameter
         img = imclipboard('paste');
         answer{2} = '';
     case 'imaris'
-        [img, answer{2}, viewPort, lutColors, obj.connImaris] = mibGetImarisDataset(obj.connImaris);
+        [img, answer{2}, viewPort, lutColors, obj.mibModel.connImaris] = mibGetImarisDataset(obj.mibModel.connImaris);
         if isnan(img(1)); return; end
         obj.mibView.handles.mibLutCheckbox.Value = 1;
         obj.mibModel.useLUT = 1;
@@ -55,8 +101,6 @@ switch parameter
             end
         end
         prompt = {sprintf('Please enter the URL\n(including the protocol type (e.g., http://))\nof an image to import:')};
-        %options.Resize='on';
-        %answer = inputdlg(prompt,'Open URL',1,{webLink},options);
         answer = mibInputDlg({mibPath}, prompt,'Open URL',webLink);
         if size(answer) == 0; return; end
         answer{2} = containers.Map('URL', answer{1});
@@ -150,7 +194,7 @@ if numel(size(img)) == 3 && size(img, 3) > 3    % reshape original dataset to w:
     end
 end
 
-if (~isempty(answer{2})) 
+if ~isempty(answer{2}) 
     if strcmp(parameter, 'matlab')
         try
             info = evalin('base', answer{2});

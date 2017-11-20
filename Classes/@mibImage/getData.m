@@ -41,15 +41,15 @@ function dataset = getData(obj, type, orient, col_channel, options, custom_img) 
 % Updates
 % 
 
-if nargin < 6; custom_img = NaN; end;
-if nargin < 5; options=struct(); end;
-if nargin < 4; col_channel = NaN; end;
-if nargin < 3; orient=obj.orientation; end;
+if nargin < 6; custom_img = NaN; end
+if nargin < 5; options=struct(); end
+if nargin < 4; col_channel = NaN; end
+if nargin < 3; orient=obj.orientation; end
 
 % setting default values for the orientation
-if orient == 0 || isnan(orient); orient=obj.orientation; end;
+if orient == 0 || isnan(orient); orient=obj.orientation; end
 
-if ~isfield(options, 'level'); options.level = 1; end;
+if ~isfield(options, 'level'); options.level = 1; end
 level = 2^(options.level-1);    % resampling factor
 
 blockModeSwitchLocal = 0;
@@ -60,8 +60,8 @@ elseif isfield(options, 't') && obj.time == 1     % override the blockmode switc
 end
 
 if strcmp(type,'image')
-    if isnan(col_channel); col_channel=obj.slices{3}; end;
-    if col_channel(1) == 0;  col_channel = 1:obj.colors; end;
+    if isnan(col_channel); col_channel=obj.slices{3}; end
+    if col_channel(1) == 0;  col_channel = 1:obj.colors; end
 end
 
 if blockModeSwitchLocal == 1

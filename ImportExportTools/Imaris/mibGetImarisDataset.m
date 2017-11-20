@@ -34,9 +34,10 @@ function [img, img_info, viewPort, lutColors, connImaris] = mibGetImarisDataset(
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 25.09.2017 IB updated connection to Imaris
+
 global mibPath;
-if nargin < 1; connImaris = []; end;
+if nargin < 1; connImaris = []; end
 
 img = NaN;
 img_info = NaN;
@@ -44,28 +45,15 @@ viewPort = struct();
 timePoint = 0;
 
 % establish connection to Imaris
-wb = waitbar(0, 'Please wait...', 'Name', 'Connecting to Imaris');
-if isempty(connImaris)
-    connImaris = IceImarisConnector(0);
-    if connImaris.isAlive == 0
-        errordlg(sprintf('Imaris was not found;\nPlease start Imaris and try again!'), 'Missing Imaris');
-        connImaris = [];
-        delete(wb);
-        return;
-    end
-else
-    if connImaris.isAlive == 0
-        connImaris.startImaris();
-    end    
-end
-delete(wb);
+connImaris = mibConnectToImaris(connImaris);
+if isempty(connImaris); return; end
 
 % Get size of the dataset in pixels
 [vSizeX, vSizeY, vSizeZ, vSizeC, vSizeT] = connImaris.getSizes();
 if vSizeZ > 1 && vSizeT > 1
     %answer = inputdlg(sprintf('!!! Warning !!!\n\nMIB can''t open 5D datasets!\nPlease enter a time point to open (starting from 0)'), 'Time point', 1, cellstr('0'));
     answer = mibInputDlg({mibPath}, sprintf('!!! Warning !!!\nA 5D dataset is opened in Imaris!\nPlease enter a time point to open (starting from 1) or type 0 to obtain the 5D dataset completely'), 'Time point', '1');
-    if isempty(answer);         return;    end;
+    if isempty(answer);         return;    end
     timePoint = str2double(answer{1});    % frame number to open for 5D datasets
 end
 

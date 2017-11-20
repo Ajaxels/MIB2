@@ -238,7 +238,7 @@ else
             options.t = t;
             switch options.Format
                 case 'bdv.hdf5'
-                    options.pixSize.units = sprintf('\xB5m'); % 'µm';
+                    options.pixSize.units = sprintf('\xB5m'); % '?m';
                     saveBigDataViewerFormat(options.filename, model, options);
                 case 'matlab.hdf5'
                     options.order = 'yxczt';
@@ -247,14 +247,15 @@ else
             
         elseif FilterIndex == 7     % Contours for IMOD (*.mod)
             if exist('savingOptions', 'var') == 0   % define parameters for the first time use
-                prompt = {'Take each Nth point in contours ( > 0):','Show detected points in the selection layer [0-no, 1-yes]:'};
-                dlg_title = 'Parameters';
-                answer = inputdlg(prompt, dlg_title, 1, {'5','0'});
-                if size(answer) == 0; return; end
+                prompt = {'Take each Nth point in contours ( > 0):', 'show detected points in the selection layer'};
+                defAns = {'5', false};
+                answer = mibInputMultiDlg([], prompt, defAns, 'Export to IMOD');
+                if isempty(answer); return; end
+                    
                 savingOptions.pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
                 savingOptions.xyScaleFactor = str2double(answer{1});
                 savingOptions.zScaleFactor = 1;
-                savingOptions.generateSelectionSw = str2double(answer{2});
+                savingOptions.generateSelectionSw = answer{2};
                 if selMaterial == 0 || isnan(selMaterial)
                     savingOptions.colorList = color_list;
                     savingOptions.ModelMaterialNames = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames; % names for materials;
@@ -284,18 +285,18 @@ else
         elseif FilterIndex == 10     % STL isosurface for Blinder (*.stl)
             bounding_box = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();  % get bounding box
             if exist('savingOptions', 'var') == 0   % define parameters for the first time use
-                prompt = {'Reduce the volume down to, width pixels [no volume reduction when 0]?',...
+                prompt = {'Reduce the volume down to, width pixels (no volume reduction when 0)?',...
                     'Smoothing 3d kernel, width (no smoothing when 0):',...
                     'Maximal number of faces (no limit when 0):'};
-                dlg_title = 'Isosurface parameters';
                 if obj.mibModel.I{obj.mibModel.Id}.width > 500
-                    def = {'500', '5', '300000'};
+                    defAns = {'500', '5', '300000'};
                 else
-                    def = {'0', '5', '300000'};
+                    defAns = {'0', '5', '300000'};
                 end
-                answer = inputdlg(prompt, dlg_title, 1, def);
-                if isempty(answer); return;  end
-                
+                mibInputMultiDlgOpt.PromptLines = [2, 1, 1];
+                answer = mibInputMultiDlg({obj.mibPath}, prompt, defAns, 'Isosurface parameters', mibInputMultiDlgOpt);
+                if isempty(answer); return; end
+                    
                 savingOptions.reduce = str2double(answer{1});
                 savingOptions.smooth = str2double(answer{2});
                 savingOptions.maxFaces = str2double(answer{3});

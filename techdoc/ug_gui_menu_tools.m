@@ -20,11 +20,8 @@
 %
 % Measures the linear distance between two points. Press and hold left mouse
 % button to draw a line that connects two object. The result will be shown
-% in the pop-up window and the line that connects the two selected points
-% will be added to the |Selection| layer. Press |Ctrl+Z| to undo the
-% modification of the |Selection| layer or press |C or Shift+C| to clear the |Selection| layer.
-% The linear measuring tool can also
-% be called from the <ug_gui_toolbar.html toolbar>. The pixel sizes are
+% in the pop-up and Matlab main window. Also the length of the measurement is copied to the system clipboard and can be pasted using the |Ctrl+V| key shortcut.
+% The linear measuring tool can also be called from the <ug_gui_toolbar.html toolbar>. The pixel sizes are
 % defined in the <ug_gui_menu_dataset.html Dataset parameters>.
 %
 % *Free hand measure*
@@ -33,6 +30,49 @@
 % be drawn arbitrarily.
 %
 % 
+%
+%% Classifiers
+% In this section MIB has two classifiers. One is designed for membrane
+% detection but works for other objects as well. The second classifier is
+% based on SLIC superpixels/supervoxels for the classification. 
+%
+% 
+% * *Membrane detection*, a method for automatic segmentation of images using Random Forest
+% classifier. The current version of the classifier is based on 
+% <http://www.kaynig.de/demos.html Random Forest for Membrane Detection by Verena Kaynig> 
+% and utilize <https://code.google.com/p/randomforest-matlab/ randomforest-matlab> by Abhishek Jaiantilal.
+% Please refer to the <ug_gui_menu_tools_random_forest.html help section> of the corresponding
+% function.
+% * *Superpixels classification*, is good for objects that have distinct
+% intensity properties. In this method, MIB first calculates SLIC
+% superpixels for 2D or supervoxels for 3D and classify them based on set
+% of provided labels that mark object of interest and the background. <ug_gui_menu_tools_random_forest_superpixels.html See
+% more in this example>.
+% 
+%
+%% Semi-automatic segmentation
+% Two methods for automated image segmentation and object separation. Both
+% methods available for 2D and 3D objects.
+%
+%
+% * <ug_gui_menu_tools_graphcut.html *Graphcut segmentation* (_recommended_)>
+% * <ug_gui_menu_tools_watershed.html *Watershed segmentation*>
+% 
+% 
+%
+% <<images\menuToolsGraphcutWatershed.jpg>>
+%
+%% Object separation
+% Tools for separation of objects that can be as materials of the current
+% model, the mask or selection layers.
+%
+% * <ug_gui_menu_tools_objseparation.html *Object separation*>
+%
+% Example of seeded watersheding of cells:
+%
+% 
+% <<images/menuToolsWatershedExample.jpg>>
+%
 %
 %% Stereology
 % The stereology tool of MIB counts number of intersections between materials of the opened
@@ -58,37 +98,5 @@
 % 0|) the grid may not be shown properly at the magnifications that are
 % lower than 100%. To see the grid also at low magnification, increase the
 % |extra grid thickness| value.
-%
-%% Classifiers
-% In this section MIB has two classifiers. One is designed for membrane
-% detection but works for other objects as well. The second classifier is
-% based on SLIC superpixels/supervoxels for the classification. 
-%
-% 
-% * *Membrane detection*, a method for automatic segmentation of images using Random Forest
-% classifier. The current version of the classifier is based on 
-% <http://www.kaynig.de/demos.html Random Forest for Membrane Detection by Verena Kaynig> 
-% and utilize <https://code.google.com/p/randomforest-matlab/ randomforest-matlab> by Abhishek Jaiantilal.
-% Please refer to the <ug_gui_menu_tools_random_forest.html help section> of the corresponding
-% function.
-% * *Superpixels classification*, is good for objects that have distinct
-% intensity properties. In this method, MIB first calculates SLIC
-% superpixels for 2D or supervoxels for 3D and classify them based on set
-% of provided labels that mark object of interest and the background. <ug_gui_menu_tools_random_forest_superpixels.html See
-% more in this example>.
-% 
-%% Watershed/Graphcut segmentation
-% Two methods for automated image segmentation and object separation. Both
-% methods available for both 2D and 3D objects.
-%
-% <ug_gui_menu_tools_watershed.html *SEE DETAILS HERE*>
-% 
-% <<images/menuToolsWatershed.png>>
-% 
-% Example of seeded watersheding of cells:
-%
-% 
-% <<images/menuToolsWatershedExample.jpg>>
-%
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>

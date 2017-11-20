@@ -25,10 +25,13 @@ switch parameter
         prompt = {sprintf('Enter destination in pixels\n\nX (1-%d):', obj.mibModel.I{obj.mibModel.Id}.width),...
             sprintf('Y (1-%d):', obj.mibModel.I{obj.mibModel.Id}.height),...
             sprintf('Z (1-%d):', obj.mibModel.I{obj.mibModel.Id}.depth)};
-        def = {num2str(round(obj.mibModel.I{obj.mibModel.Id}.width/2)),num2str(round(obj.mibModel.I{obj.mibModel.Id}.height/2)),...
+        defAns = {num2str(round(obj.mibModel.I{obj.mibModel.Id}.width/2)),num2str(round(obj.mibModel.I{obj.mibModel.Id}.height/2)),...
             num2str(obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber())};
-        answer = inputdlg(prompt,'Jump to:',1,def);
-        if isempty(answer); return; end;
+        
+        mibInputMultiDlgOpt.PromptLines = [3, 1, 1];
+        answer = mibInputMultiDlg({obj.mibPath}, prompt, defAns, 'Jump to:', mibInputMultiDlgOpt);
+        if isempty(answer); return; end
+        
         if num2str(obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber()) ~= str2double(answer{3})
             obj.mibView.handles.mibChangeLayerEdit.String = answer{3};
             obj.mibChangeLayerEdit_Callback();

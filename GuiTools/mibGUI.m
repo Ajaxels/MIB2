@@ -22,7 +22,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 19-Jun-2017 09:20:37
+% Last Modified by GUIDE v2.5 02-Nov-2017 19:29:42
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -73,9 +73,11 @@ end
 mibRescaleWidgets(handles.mibGUI);
 % update font and size
 global Font;
-if handles.mibPixelInfoText.FontSize ~= Font.FontSize ...
-        || ~strcmp(handles.mibPixelInfoText.FontName, Font.FontName)
-    mibUpdateFontSize(handles.mibGUI, Font);
+if ~isempty(Font)
+    if handles.mibPixelInfoText.FontSize ~= Font.FontSize ...
+            || ~strcmp(handles.mibPixelInfoText.FontName, Font.FontName)
+        mibUpdateFontSize(handles.mibGUI, Font);
+    end
 end
 
 % Set the font size for mibFilesListbox
@@ -725,10 +727,12 @@ switch parameter
         options.sliderShiftStep = 10;
     case 'set'
         options = handles.mibChangeLayerSlider.UserData;
-        prompt = {'Enter step for use with arrows or Q/W buttons:','Enter step for use with Shift+arrows or Shift+Q/W buttons:'};
-        def = {num2str(options.sliderStep),num2str(options.sliderShiftStep)};
-        answer = inputdlg(prompt,'Set step...',1,def);
-        if isempty(answer); return; end;
+        prompt = {'Enter step for use with arrows or Q/W buttons:', 'Enter step for use with Shift+arrows or Shift+Q/W buttons:'};
+        defAns = {num2str(options.sliderStep),num2str(options.sliderShiftStep)};
+        mibInputMultiDlgOpt.PromptLines = [1, 2];
+        answer = mibInputMultiDlg([], prompt, defAns, 'Set step...', mibInputMultiDlgOpt);
+        if isempty(answer); return; end
+
         options.sliderStep = round(str2double(cell2mat(answer(1))));     % parameters for slider movement
         options.sliderShiftStep = round(str2double(cell2mat(answer(2))));
 end
@@ -766,9 +770,11 @@ switch parameter
     case 'set'
         options = handles.mibChangeTimeSlider.UserData;
         prompt = {'Enter step for use with arrows or Q/W buttons:','Enter step for use with Shift+arrows or Shift+Q/W buttons:'};
-        def = {num2str(options.sliderStep),num2str(options.sliderShiftStep)};
-        answer = inputdlg(prompt,'Set step...',1,def);
-        if isempty(answer); return; end;
+        defAns = {num2str(options.sliderStep),num2str(options.sliderShiftStep)};
+        mibInputMultiDlgOpt.PromptLines = [1, 2];
+        answer = mibInputMultiDlg([], prompt, defAns, 'Set step...', mibInputMultiDlgOpt);
+        if isempty(answer); return; end
+        
         options.sliderStep = round(str2double(cell2mat(answer(1))));     % parameters for slider movement
         options.sliderShiftStep = round(str2double(cell2mat(answer(2))));
 end
@@ -1286,6 +1292,9 @@ switch selfilter
         handles.mibImageFiltersHSizeText.String = 'HSize:';
         handles.mibImageFiltersSigmaText.String = 'Sigma:';
         handles.mibImfiltPar2Edit.String = '0.6';
+    case 'DNN Denoise'
+        handles.mibImfiltPar1Edit.Enable = 'off';
+        handles.mibImfiltPar2Edit.Enable = 'off';
     case 'Unsharp'
             handles.mibImageFiltersHSizeText.String = 'Radius:';
             handles.mibImageFiltersSigmaText.String = 'Amount:';
@@ -1742,14 +1751,7 @@ end
 
 % --------------------------------------------------------------------
 function menuModelAnn_Callback(hObject, eventdata, handles, parameter)
-switch parameter
-    case 'list'
-        % show list of annotations
-        mibSegmLabelsBtn_Callback(hObject, eventdata, handles);
-    case 'delete'
-        % delete all annotations
-        handles.mibController.mibSegmAnnDeleteAllBtn_Callback();
-end
+handles.mibController.menuModelAnn_Callback(parameter);  
 end
 
 % --------------------------------------------------------------------
@@ -1863,12 +1865,6 @@ handles.mibController.startController('mibStereologyController');
 end
 
 % --------------------------------------------------------------------
-function menuToolsWatershed_Callback(hObject, eventdata, handles)
-handles.mibController.startController('mibWatershedController');
-end
-
-
-% --------------------------------------------------------------------
 function menuToolsClassifiers_Callback(hObject, eventdata, handles, parameter)
 switch parameter
     case 'membrane'
@@ -1877,6 +1873,22 @@ switch parameter
         handles.mibController.startController('mibSupervoxelClassifierController');
         
 end
+end
+
+% --------------------------------------------------------------------
+function menuToolsSemiAuto_Callback(hObject, eventdata, handles, parameter)
+switch parameter
+    case 'graphcut'
+        handles.mibController.startController('mibGraphcutController');
+    case 'watershed'
+        handles.mibController.startController('mibWatershedController');
+        
+end
+end
+
+% --------------------------------------------------------------------
+function menuToolsObjSep_Callback(hObject, eventdata, handles)
+handles.mibController.startController('mibObjSepController');
 end
 
 %% ------------------ Help menu ------------------ 

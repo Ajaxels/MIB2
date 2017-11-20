@@ -306,7 +306,7 @@ classdef mibDatasetInfoController < handle
             options.Resize = 'on';
             prompt = {'New parameter name:','New parameter value:'};
             answer = inputdlg(prompt,'Insert an entry',[1; 5],{'', ''},options);
-            if isempty(answer); return; end;
+            if isempty(answer); return; end
             
             meta = obj.mibModel.getImageProperty('meta');
             meta(answer{1}) = answer{2};
@@ -348,7 +348,7 @@ classdef mibDatasetInfoController < handle
                     end
                     strVal{2} = num2str(value);
                     answer = inputdlg({'New field name:','New value'}, 'Modify the entry',size(strVal{2},1), strVal, options);
-                    if isempty(answer); return; end;
+                    if isempty(answer); return; end
                     if ~isempty(subIndex)
                         value = meta(nodeName);
                         value(subIndex, :) = str2num(answer{2});

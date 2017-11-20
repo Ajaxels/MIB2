@@ -25,11 +25,35 @@ if obj.mibModel.preferences.disableSelection == 1
     return;
 end
 
-prompt = sprintf('Enter the name of the model variable.\nIt may be a matrix (1:height,1:width,1:z,1:t)\nor a structure with "model" and "materials" fields');
-title = 'Import from Matlab';
-%answer = inputdlg(prompt,title,1,{'O'},'on');
-answer = mibInputDlg({mibPath}, prompt, title, 'O');
-if size(answer) == 0; return; end
+% get list of available variables
+availableVars = evalin('base', 'whos');
+idx = contains({availableVars.class}, {'uint8', 'uint16', 'uint32', 'struct'});
+if sum(idx) == 0
+    errordlg(sprintf('!!! Error !!!\nNothing to import...'), 'Nothing to import');
+    return;
+end
+ModelVars = {availableVars(idx).name}';        
+ModelClass = {availableVars(idx).class}';
+ModelVarsDetails = ModelClass;
+% add deteiled description to the text
+for i=1:numel(ModelVarsDetails)
+    ModelVarsDetails{i} = sprintf('%s: %s', ModelVars{i}, ModelClass{i});
+end
+% find index of the I variable if it is present
+idx2 = find(ismember(ModelVars, 'O')==1);
+if ~isempty(idx2)
+    ModelVarsDetails{end+1} = idx2;
+else
+    ModelVarsDetails{end+1} = 1;
+end
+prompts = {sprintf('Enter the name of the model variable.\nIt may be a matrix (1:height,1:width,1:z,1:t)\nor a structure with "model" and some extra fields:')};
+defAns = {ModelVarsDetails};
+title = 'Import model from Matlab';
+mibInputMultiDlgOptions.PromptLines = 4;
+[answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, title, mibInputMultiDlgOptions);
+if isempty(answer); return; end
+%answer(1) = ModelVars(contains(ModelVarsDetails(1:end-1), answer{1})==1);
+answer(1) = ModelVars(selIndex(1));        
 
 if (~isempty(answer{1}))
     try

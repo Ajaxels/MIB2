@@ -23,13 +23,14 @@ function mibAutoBrightnessBtn_Callback(obj)
 % Updates
 % 
 
-prompt = {sprintf('!!! WARNING !!!\nThis function will recalculate intensities of the images!!!\nIf you want to adjust contrast without modification of intensities, please use the Display button in the View Settings panel!\n\nEnter low limit of saturation [0-1], %%:'),...
-                  'Enter high limit of saturation [0-1], %%:'};
-dlg_title = 'Enter limits for contrast stretching';
-num_lines = 1;
-def = {'0.01','0.99'};
-answer = inputdlg(prompt, dlg_title, num_lines, def);
-if isempty(answer); return; end;
+prompt = {'Enter low limit of saturation [0-1], %%:';...
+          'Enter high limit of saturation [0-1], %%:'};
+defAns = {'0.01','0.99'};
+mibInputMultiDlgOptions.Title = sprintf('!!! WARNING !!!\nThis function will recalculate intensities of the images!!!\nIf you want to adjust contrast without modification of intensities, please use the Display button in the View Settings panel!');
+mibInputMultiDlgOptions.TitleLines = 7;
+
+answer = mibInputMultiDlg({obj.mibPath}, prompt, defAns, 'Enter limits for contrast stretching', mibInputMultiDlgOptions);
+if isempty(answer); return; end
 
 low_lim = str2double(cell2mat(answer(1)));
 high_lim = str2double(cell2mat(answer(2)));

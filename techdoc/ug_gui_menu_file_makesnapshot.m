@@ -34,11 +34,17 @@
 % </ul>
 % </html>
 % 
-% * *Bin2* update the dimensions of the snapshot after decreasing the image
+% The *bin* checkbox defines actions for the *bin2*, *bin4*, and *bin8*
+% buttons. When the *bin* checkbox is selected the bin buttons reduce size
+% of the image, otherwise the buttons change their names to *mag2*, *mag4*,
+% and *mag8* and increase the image size.
+%
+%
+% * *bin2/mag2* update the dimensions of the snapshot after decreasing/increasing the image
 % size in 2 times
-% * *Bin4* update the dimensions of the snapshot after decreasing the image
+% * *bin4/mag4* update the dimensions of the snapshot after decreasing/increasing the image
 % size in 4 times
-% * *Bin8* update the dimensions of the snapshot after decreasing the image
+% * *bin8/mag4* update the dimensions of the snapshot after decreasing/increasing the image
 % size in 8 times
 % 
 %% Options

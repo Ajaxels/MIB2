@@ -24,12 +24,13 @@ function devTest_ClickedCallback(obj)
 %
 % Updates
 %
-
-
-button = questdlg(sprintf('!!! Development !!!\n\nWarning, you are going to start Matlab volume renderer\nPlease consider the downsampling of your dataset before use\nThis functionality is only available in R2017a'),'Volume rendering','Render','Cancel','Render');
-if strcmp(button, 'Cancel'); return; end
-if obj.matlabVersion < 9.2; return; end
-I = obj.mibModel.getData3D('image');
-volumeViewer(squeeze(I{1}));
+if ~isdeployed
+	button = questdlg(sprintf('!!! Development !!!\n\nWarning, you are going to start Matlab volume renderer\nPlease consider the downsampling of your dataset before use\nThis functionality is only available in R2017a'),'Volume rendering','Render','Cancel','Render');
+	if strcmp(button, 'Cancel'); return; end
+	if obj.matlabVersion < 9.2; return; end
+	I = obj.mibModel.getData3D('image');
+	volumeViewer(squeeze(I{1}));
+end
 return
-       
+
+            

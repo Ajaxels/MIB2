@@ -53,9 +53,11 @@ handles.output = hObject;
 
 % update font and size
 global Font;
-if handles.colorChannelText.FontSize ~= Font.FontSize ...
-        || ~strcmp(handles.colorChannelText.FontName, Font.FontName)
-    mibUpdateFontSize(handles.mibImageAdjustmentGUI, Font);
+if ~isempty(Font)
+    if handles.colorChannelText.FontSize ~= Font.FontSize ...
+            || ~strcmp(handles.colorChannelText.FontName, Font.FontName)
+        mibUpdateFontSize(handles.mibImageAdjustmentGUI, Font);
+    end
 end
 
 % resize all elements x1.25 times for macOS

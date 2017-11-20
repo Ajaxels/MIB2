@@ -32,6 +32,8 @@
 % at sharp intensity gradients.
 % * *Average*, (*2D*) Matlab Averaging filter, see more in the Matlab documentation for |fspecial|
 % and |imfilter|.
+% * *DNN Denoise*, (*2D*) denoise images using deep neural network,
+% available for Matlab R2017b and newer, requires Neural Network Toolbox
 % * *Disk*, (*2D*) Matlab circular averaging filter (pillbox), see more in the Matlab documentation for |fspecial|
 % and |imfilter|.
 % * *Gradient*, (*2D*) generates gradient image for the shown orientation.

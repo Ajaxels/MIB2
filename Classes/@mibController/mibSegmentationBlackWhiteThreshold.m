@@ -4,7 +4,6 @@ function mibSegmentationBlackWhiteThreshold(obj, parameter)
 % panel'
 %
 % Parameters:
-% handles: structure with handles of im_browser.m
 % parameter: a tag of the calling object
 % - ''mibSegmLowEdit'' - callback after enter a new value to the obj.mibView.handles.mibSegmLowEdit editbox
 % - ''mibSegmHighEdit'' - callback after enter a new value to the obj.mibView.handles.mibSegmHighEdit editbox

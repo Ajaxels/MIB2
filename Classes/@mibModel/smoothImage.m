@@ -21,14 +21,15 @@ function smoothImage(obj, type)
 % Updates
 % 
 
-title = [type 'Smoothing...'];
-def = {'2D', '5', '5', '5'};
-prompt = {'Mode (''3D'' for smoothing in 3D or ''2D'' for smoothing in 2D):',...
-    'XY Kernel size:', ...
-    sprintf('Z Kernel size for 3D; Y-dim for 2D\nleave empty for automatic calculation based on voxel size:'),...
-    'Sigma'};
-answer = inputdlg(prompt, title, [1 30], def, 'on');    
-if size(answer) == 0; return; end; 
+defAns = {{'2D', '3D'}, '5', '5', '5'};
+prompt = {'Mode:',...
+          'XY Kernel size:', ...
+          sprintf('Z Kernel size for 3D; Y-dim for 2D\nleave empty for automatic calculation based on voxel size:'),...
+          'Sigma'};
+
+mibInputMultiDlgOpt.PromptLines = [1, 1, 3, 1];
+answer = mibInputMultiDlg([], prompt, defAns, sprintf('Smooth %s', type), mibInputMultiDlgOpt);
+if isempty(answer); return; end
 
 if isnan(str2double(answer{3}))
     kernel = str2double(answer{2});

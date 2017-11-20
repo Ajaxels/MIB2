@@ -53,14 +53,14 @@ classdef mibRoiRegion < matlab.mixin.Copyable
     
     methods
         function obj = mibRoiRegion(mibImage)
-            % function obj = mibRoiRegion(hImageData)
+            % function obj = mibRoiRegion(mibImage)
             % Constructor for the @type mibRoiRegion class.
             %
             % Constructor for the mibRoiRegion class. Create a new instance of
             % the class with default parameters
             %
             % Parameters:
-            % hImg: - handle to imageData class
+            % mibImage: - handle to imageData class
             %
             % Return values:
             % obj - instance of the @type mibRoiRegion class.
@@ -231,7 +231,7 @@ classdef mibRoiRegion < matlab.mixin.Copyable
         end
         
         function impolyFun(obj, mibController, index, coordinates, noPoints)
-            % function imrectFun(obj, mibController, index, coordinates, noPoints)
+            % function impolyFun(obj, mibController, index, coordinates, noPoints)
             % Adds impoly type of ROI
             %
             % Parameters:
@@ -332,6 +332,7 @@ classdef mibRoiRegion < matlab.mixin.Copyable
             % Adds imrect type of ROI
             %
             % Parameters:
+            % mibController: a handle to mibController class
             % index: index of the ROI. If not empty will
             % allow to modify a ROI with the provided index
             % coordinates: [@em optional] coordinates for placing the ROI
@@ -528,7 +529,7 @@ classdef mibRoiRegion < matlab.mixin.Copyable
             % Parameters:
             % newData: structure of a new measurement to insert. Fields
             % should match those of obj.Data
-            % n: [@em optional] position where to add the measurement, @em default - number of measurements in obj.Data + 1
+            % index: [@em optional] position where to add the measurement, @em default - number of measurements in obj.Data + 1
             %
             % Return values:
             %
@@ -655,18 +656,6 @@ classdef mibRoiRegion < matlab.mixin.Copyable
             % @b Examples:
             % @code obj.mibModel.I{obj.mibModel.Id}.hROI.updateOptions(); // call from mibController class @endcode
             
-            prompt={...
-                sprintf('Marker Style\n( + o * . x s d ^ v > < p h )'),...
-                'Marker Size',...
-                sprintf('Line Style\n(-   --   :   -. )'),...
-                'Line Width',...
-                sprintf('Color\n( r  g  b  c  m  y  k  w none)'),...
-                'Text Foreground Color',...
-                'Text Background Color',...
-                'Text Fontsize'};
-            name='ROI Options';
-            numlines=1;
-            
             O = obj.Options;
             O = rmfield(O, 'showMarkers');
             O = rmfield(O, 'showLines');
@@ -675,48 +664,34 @@ classdef mibRoiRegion < matlab.mixin.Copyable
             fields = fieldnames(O);
             n = length(fields);
             
-            % builde the default answer from the options structure
-            for k = 1:n
-                defaultanswer{k} = O.(fields{k}); %#ok<AGROW>
-                if ~ischar(defaultanswer{k})
-                    defaultanswer{k} = num2str(defaultanswer{k}); %#ok<AGROW>
-                end
+            prompt={...
+                sprintf('Marker Style:'),...
+                'Marker Size:',...
+                sprintf('Line Style:'),...
+                'Line Width',...
+                sprintf('Color\n( r  g  b  c  m  y  k  w none)'),...
+                'Text Foreground Color',...
+                'Text Background Color',...
+                'Text Fontsize'};
+            
+            defAns={...
+                {'+', 'o', '*', '.', 'x', 's', 'd', '^', 'v', '>', '<', 'p', 'h'}; ...
+                O.markersize; ...
+                {'-','--',':','-.'}; ...
+                O.linewidth; ...
+                {'r','g','b','c','m','y','k','w','none'}; ...
+                {'r','g','b','c','m','y','k','w','none'};...
+                {'r','g','b','c','m','y','k','w','none'};...
+                O.fontsize};
+            
+            % build the default answer from the options structure
+            for k = [1 3 5 6 7]
+                idx2 = find(ismember(defAns{k}, O.(fields{k}))==1);
+                defAns{k}{end+1} = idx2;
             end
-            A = inputdlg(prompt,name,numlines,defaultanswer);
+            A = mibInputMultiDlg([], prompt, defAns, 'ROI Options');
             if isempty(A); return; end
-            
-            % check Options
-            
-            % check if a proper marker entered
-            if ~any(strcmp(O.marker,{'o','s','^','d','v','*','<','>','.','p','h','+','x','none'}))
-                errordlg(sprintf('Error!\n\nOptions: invalid marker\nValue reset to default!'),'Wrong value');
-                O.marker = 's';
-            end
-            
-            % check if a proper linestyle is entered
-            if ~any(strcmp(O.linestyle,{'-','--','-.',':','none'}))
-                errordlg(sprintf('Error!\n\nOptions: invalid linestyle\nValue reset to default!'),'Wrong value');
-                O.linestyle1 = '-';
-            end
-            
-            % check if a proper color is entered
-            if ~any(strcmp(O.color,{'y','m','c','r','g','b','w','k','none'})) ...
-                    && isempty(regexp(O.color1,'\[[(\d*)(\s*)(\.*)]*\]', 'once'))
-                errordlg(sprintf('Error!\n\nOptions: invalid color\nValue reset to default!'),'Wrong value');
-                O.color = 'r';
-            end
-            
-            if ~any(strcmp(O.textcolorfg,{'y','m','c','r','g','b','w','k','none'})) ...
-                    && isempty(regexp(O.textcolorfg,'\[[(\d*)(\s*)(\.*)]*\]', 'once'))
-                errordlg(sprintf('Error!\n\nOptions: invalid color\nValue reset to default!'),'Wrong value');
-                O.textcolorfg = 'y';
-            end
-            if ~any(strcmp(O.textcolorbg,{'y','m','c','r','g','b','w','k','none'})) ...
-                    && isempty(regexp(O.textcolorbg,'\[[(\d*)(\s*)(\.*)]*\]', 'once'))
-                errordlg(sprintf('Error!\n\nOptions: invalid color\nValue reset to default!'),'Wrong value');
-                O.textcolorbg = 'none';
-            end
-            
+       
             for k = 1:n
                 obj.Options.(fields{k}) = A{k};
             end
@@ -938,7 +913,7 @@ classdef mibRoiRegion < matlab.mixin.Copyable
         end
         
         function updateROIposition1(obj, new_position)
-            % function updateROIposition1(obj, new_position, roi_index)
+            % function updateROIposition1(obj, new_position)
             % Update ROI position during movement of @em imrect and @em imellipse
             %
             % one of two functions resposible for update of @em Measure.roi. @e pos.

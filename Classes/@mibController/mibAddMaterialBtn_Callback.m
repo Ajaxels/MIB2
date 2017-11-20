@@ -31,9 +31,6 @@ if obj.mibModel.preferences.disableSelection == 1
     return;
 end
 
-if ~obj.mibModel.getImageProperty('modelExist')
-    obj.mibCreateModelBtn_Callback(); % make an empty model
-end
 
 list = obj.mibModel.getImageProperty('modelMaterialNames');
 if isempty(list); list = cell(0); end    % remove empty entry from the list
@@ -46,16 +43,20 @@ if obj.mibModel.getImageProperty('modelType') < number + 1
 end
 
 if obj.mibModel.getImageProperty('modelType') < 256
-
     answer = mibInputDlg({mibPath}, sprintf('Please add a new name for this material:'), 'Rename material', num2str(number+1));
     if ~isempty(answer)
         list(end+1,1) = cellstr(answer(1));
     else
         return;
     end
-
-    % update material list for the model
-    obj.mibModel.setImageProperty('modelMaterialNames', list);
+    
+    if ~obj.mibModel.getImageProperty('modelExist')
+        obj.mibCreateModelBtn_Callback([], list); % make an empty model
+    else
+        % update material list for the model
+        obj.mibModel.setImageProperty('modelMaterialNames', list);    
+    end
+    
     obj.mibModel.I{obj.mibModel.Id}.generateModelColors();
 
     obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial = numel(list)+2;
@@ -63,6 +64,10 @@ if obj.mibModel.getImageProperty('modelType') < 256
     obj.updateSegmentationTable('end'); % scroll the segmentation table to bottom
     obj.plotImage(0);
 else     % for 65535 model look for the next empty material
+    if ~obj.mibModel.getImageProperty('modelExist')
+        obj.mibCreateModelBtn_Callback(); % make an empty model
+    end
+        
     maxVal = 0;
     options.blockModeSwitch = 0;
     wb = waitbar(0, sprintf('Looking for the next empty material\nPlease wait...'), 'Name', 'Next empty material', 'WindowStyle','modal');

@@ -52,9 +52,11 @@ handles.winController = varargin{1};
 
 % update font and size
 global Font;
-if handles.text2.FontSize ~= Font.FontSize ...
-        || ~strcmp(handles.text2.FontName, Font.FontName)
-    mibUpdateFontSize(handles.mibPreferencesGUI, Font);
+if ~isempty(Font)
+    if handles.text2.FontSize ~= Font.FontSize ...
+            || ~strcmp(handles.text2.FontName, Font.FontName)
+        mibUpdateFontSize(handles.mibPreferencesGUI, Font);
+    end
 end
 
 % resize all elements x1.25 times for macOS

@@ -18,6 +18,8 @@ classdef mibModel < handle
         % current working directory
         U
         % variable for Undo history
+        connImaris
+        % a handle to Imaris connection
         dejavufont
         % matrix with the font for images
         disableSegmentation
@@ -172,6 +174,7 @@ classdef mibModel < handle
             obj.showAllMaterials = 1;   % display all materials of the model
             obj.disableSegmentation = 0;    % disable segmentation switch
             obj.storedSelection = [];   % initialize stored selection
+            obj.connImaris = [];    % empty connection to Imaris
             
             for i=1:obj.maxId   % initialize mibImage 
                 obj.I{i}= mibImage();

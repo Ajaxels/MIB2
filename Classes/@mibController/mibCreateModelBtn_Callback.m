@@ -1,12 +1,13 @@
-function mibCreateModelBtn_Callback(obj, modelType)
+function mibCreateModelBtn_Callback(obj, modelType, modelMaterialNames)
 % function mibCreateModelBtn_Callback(obj, modelType)
 % Create a new model
 %
 %
 % Parameters:
-% modelType: [@em optional] a double with the model type:
+% modelType: [@em optional], can be empty: []; a double with the model type:
 % @li 63 - 63 material model
 % @li 255 - 255 material model
+% modelMaterialNames: [@em optional] can be empty: []; a cell array with names of materials, this parameter is not used for modelType > 255
 %
 % Return values:
 % 
@@ -25,7 +26,7 @@ function mibCreateModelBtn_Callback(obj, modelType)
 %
 % Updates
 %
-
+if nargin < 3; modelMaterialNames = []; end;
 if nargin < 2; modelType = []; end
 
 % do nothing is selection is disabled
@@ -48,7 +49,7 @@ wb = waitbar(0, 'Please wait...', 'Name', 'Create model', 'WindowStyle', 'modal'
 
 switch modelType
     case {63, 255}
-        obj.mibModel.I{obj.mibModel.Id}.createModel(modelType);
+        obj.mibModel.I{obj.mibModel.Id}.createModel(modelType, modelMaterialNames);
         %obj.mibModel.I{obj.mibModel.Id}.selectedMaterial = 2;
         %obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial = 2;
     case 65535

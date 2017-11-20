@@ -22,9 +22,10 @@ function mibRescaleWidgets(hGui)
 % 28.10.2016, IB adaptation for HG2
 
 global scalingGUI;
+if isempty(scalingGUI); return; end 
 
 % do not scale when scaling == 1
-if scalingGUI.scaling == 1; return; end;
+if scalingGUI.scaling == 1; return; end
 
 scaleFactor = scalingGUI.scaling;
 scaleWidgets = rmfield(scalingGUI, 'scaling');

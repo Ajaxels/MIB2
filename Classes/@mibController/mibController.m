@@ -10,7 +10,7 @@ classdef mibController < handle
     %
     
     properties
-        mibVersion = 'ver. 2.12 / 18.09.2017';  % ATTENTION! it is important to have the version number between "ver." and "/"
+        mibVersion = 'ver. 2.20 / 14.11.2017';  % ATTENTION! it is important to have the version number between "ver." and "/"
         % version of MIB
         mibModel
         % handles to the model
@@ -24,8 +24,6 @@ classdef mibController < handle
         % path to MIB installation directory
         brushSizeNumbers
         % matrix with the font for changing of brush size
-        connImaris
-        % a handle to Imaris connection
         childControllers
         % list of opened subcontrollers
         childControllersIds
@@ -108,6 +106,8 @@ classdef mibController < handle
         
         menuMaskSaveAs_Callback(obj)        % callback to Menu->Mask->Save As; save the Mask layer to a file
         
+        menuModelAnn_Callback(obj, parameter)      % callback to Menu->Model->Annotations; 
+        
         menuModelsConvertModel(obj, modelType)  % callback to Menu->Models->Convert, convert the model to a different modelType
         
         menuModelsExport_Callback(obj, parameter)        % callback to Menu->Models->Export export the Model layer to the main Matlab workspace
@@ -160,7 +160,7 @@ classdef mibController < handle
         
         mibColChannelCombo_Callback(obj)    % callback for modification of obj.View.handles.mibColorChannelCombo box
         
-        mibCreateModelBtn_Callback(obj, modelType)        % Create a new model
+        mibCreateModelBtn_Callback(obj, modelType, modelMaterialNames)        % Create a new model
         
         mibDoUndo(obj, newIndex)        % Undo the recent changes with Ctrl+Z shortcut
         
@@ -198,7 +198,7 @@ classdef mibController < handle
         
         mibModelShowCheck_Callback(obj)        % callback to the mibGUI.handles.mibModelShowCheck to toggle the Model layer on/off
         
-        mibMoveLayers(obj, obj_type_from, obj_type_to, layers_id, action_type)        % to move datasets between the layers (image, model, mask, selection)
+        mibMoveLayers(obj, obj_type_from, obj_type_to, layers_id, action_type, options)        % to move datasets between the layers (image, model, mask, selection)
         
         mibPixelInfo_Callback(obj, parameter)        % center image to defined position it is callback from a popup menu above the pixel information field of the Path panel
         
@@ -288,7 +288,7 @@ classdef mibController < handle
         
         mibGUI_WindowKeyPressFcn(obj, hObject, eventdata)        % callback for a key press in mibGUI
         
-        mibGUI_WindowKeyPressFcn_BrushSuperpixel(hObject, eventdata, handles)        % a function to check key callbacks when using the Brush in the Superpixel mode
+        mibGUI_WindowKeyPressFcn_BrushSuperpixel(obj, eventdata)        % a function to check key callbacks when using the Brush in the Superpixel mode
         
         mibGUI_WindowKeyReleaseFcn(obj, eventdata)        % callback for release of keys in mibGUI window
         
@@ -456,8 +456,6 @@ classdef mibController < handle
             obj.mibModel.mibSegmShowTypePopup = obj.mibView.handles.mibSegmShowTypePopup.Value;   % type of model visualization: @b 1 - filled; @b 2 - contour
             
             obj.plotImage(1);
-            
-            obj.connImaris = [];    % empty connection to Imaris
             
             obj.mibModel.myPath = obj.mibModel.preferences.lastpath;  % define current working directory
             obj.mibModel.U.setNumberOfHistorySteps(obj.mibModel.preferences.maxUndoHistory, obj.mibModel.preferences.max3dUndoHistory);    % update number of history steps

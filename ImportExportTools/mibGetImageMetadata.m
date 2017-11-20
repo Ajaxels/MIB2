@@ -106,7 +106,7 @@ for fn_index = 1:no_files
             if ~strcmp(img_info('ColorType'), 'truecolor')
                 img_info = containers.Map;
                 msgbox(sprintf('!!! Error !!!\n\nmibGetImageMetadata: files have dissimilar ColorType'),'Mixed colors','error','modal');
-                if options.waitbar==1; delete(wb); end;
+                if options.waitbar==1; delete(wb); end
                 return;
             end
         else
@@ -121,7 +121,7 @@ for fn_index = 1:no_files
         files(fn_index).color = img_info('Colors');
         files(fn_index).level = img_info('ReturnedLevel');
         files(fn_index).ColorType = img_info('ColorType');
-        if img_info('Time') == 0;  img_info('Time') = 1;    end;    % when time is 0 make it 1;
+        if img_info('Time') == 0;  img_info('Time') = 1;    end    % when time is 0 make it 1;
         files(fn_index).time = img_info('Time');
         if isKey(img_info, 'Datasetname')
             files(fn_index).seriesName = {img_info('Datasetname')};
@@ -154,7 +154,7 @@ for fn_index = 1:no_files
                 if isempty(answer); if options.waitbar==1; delete(wb); end; img_info = containers.Map; return; end;
                 level = str2double(answer);
                 if level < 1 || level > noLevels
-                    if options.waitbar==1; delete(wb); end;
+                    if options.waitbar==1; delete(wb); end
                     errordlg(sprintf('!!! Error !!!\n\nmibGetImageMetadata: Wrong number!\nThe number should be between 1 and %d', noLevels));
                     img_info = containers.Map;
                     return;
@@ -180,7 +180,7 @@ for fn_index = 1:no_files
                 case {'H5T_STD_I8LE','H5T_STD_U8LE'}
                     img_info('imgClass') = 'uint8';
                 otherwise
-                    if options.waitbar==1; delete(wb); end;
+                    if options.waitbar==1; delete(wb); end
                     errordlg(sprintf('Ops!\nmibGetImageMetadata: check image class (%s) and implement!', dataType));
                     return;
             end
@@ -188,7 +188,7 @@ for fn_index = 1:no_files
             
             files(fn_index).dim_xyczt = [img_info('Width'), img_info('Height'), img_info('Colors'), img_info('Depth'), img_info('Time')];
         else
-            if options.waitbar==1; delete(wb); end;
+            if options.waitbar==1; delete(wb); end
             img_info = containers.Map;
             errordlg(sprintf('!!! Error !!!\n\nmibGetImageMetadata: can''t detect the format!'));
             return;
@@ -203,7 +203,7 @@ for fn_index = 1:no_files
         pause(.1);
         if strcmp(files(fn_index).seriesName,'Cancel')
             img_info = containers.Map;
-            if options.waitbar==1; delete(wb); end; 
+            if options.waitbar==1; delete(wb); end
             return;
         end
         
@@ -251,6 +251,7 @@ for fn_index = 1:no_files
 
         % read a single point to determine the class of the dataset
         I = h5read(files(fn_index).filename, cell2mat(files(fn_index).seriesName),ones(1,sum(dim_yxczt>0)),ones(1,sum(dim_yxczt>0)));
+        %I = h5read(files(fn_index).filename, cell2mat(files(fn_index).seriesName),ones(1,sum(dim_yxczt>1)),ones(1,sum(dim_yxczt>1)));
         
         fields = sort(fieldnames(info));
         for ind = 1:numel(fields)
@@ -266,7 +267,7 @@ for fn_index = 1:no_files
         if isKey(img_info, 'ColorType')
             if ~strcmp(img_info('ColorType'), currentColorType)
                 img_info = containers.Map;
-                if options.waitbar==1; delete(wb); end;
+                if options.waitbar==1; delete(wb); end
                 msgbox('mibGetImageMetadata: files have dissimilar ColorType','Mixed colors','error','modal');
                 return;
             end
@@ -274,10 +275,10 @@ for fn_index = 1:no_files
             img_info('ColorType') = currentColorType;
         end
         
-        files(fn_index).noLayers = dim_yxczt(4);
-        files(fn_index).height = dim_yxczt(1);
-        files(fn_index).width = dim_yxczt(2);
-        files(fn_index).color = dim_yxczt(3);
+        files(fn_index).noLayers = max([1 dim_yxczt(4)]);
+        files(fn_index).height = max([1 dim_yxczt(1)]);
+        files(fn_index).width = max([1 dim_yxczt(2)]);
+        files(fn_index).color = max([1 dim_yxczt(3)]);
         files(fn_index).time = max([dim_yxczt(5) 1]);
         files(fn_index).imgClass = class(I);
         files(fn_index).dim_xyczt = dim_yxczt;
@@ -322,10 +323,10 @@ for fn_index = 1:no_files
         files(fn_index).object_type = 'amiramesh';
         [~, info, dim_xyczt] = getAmiraMeshHeader(files(fn_index).filename);
         if isKey(img_info, 'ColorType')
-            if ~strcmp(img_info('ColorType'), info('ColorType'));
+            if ~strcmp(img_info('ColorType'), info('ColorType'))
                 img_info = containers.Map;
                 msgbox('Files have dissimilar ColorType','Mixed colors','error','modal');
-                if options.waitbar==1; delete(wb); end;
+                if options.waitbar==1; delete(wb); end
                 return;
             end
         else
@@ -476,7 +477,7 @@ for fn_index = 1:no_files
         if isKey(img_info, 'ColorType')
             if ~strcmp(img_info('ColorType'), info(1).ColorType)
                 img_info = containers.Map;
-                if options.waitbar==1; delete(wb); end;
+                if options.waitbar==1; delete(wb); end
                 msgbox(sprintf('!!! Error !!!\n\nmibGetImageMetadata: files have dissimilar ColorType'),'Mixed colors','error','modal');
                 return;
             end
@@ -548,10 +549,10 @@ for fn_index = 1:no_files
         end
         info.ImageDescription = labelOut;
         if isKey(img_info, 'ColorType')
-            if ~strcmp(img_info('ColorType'), 'grayscale');
+            if ~strcmp(img_info('ColorType'), 'grayscale')
                 img_info = containers.Map;
                 msgbox('Files have dissimilar ColorType','Mixed colors','error','modal');
-                if options.waitbar==1; delete(wb); end;
+                if options.waitbar==1; delete(wb); end
                 return;
             end
         else
@@ -582,7 +583,7 @@ for fn_index = 1:no_files
             files(fn_index).imgClass = 'uint32';
         else
             img_info=containers.Map;
-            if options.waitbar==1; delete(wb); end; 
+            if options.waitbar==1; delete(wb); end
             return;
         end
         close(mrcFile);
@@ -810,7 +811,11 @@ for fn_index = 1:no_files
         end
         
         pixSize.units = 'um';
-        dt = omeMeta.getPlaneDeltaT(0,0);
+        try
+            dt = omeMeta.getPlaneDeltaT(0,0);
+        catch err
+            dt = [];
+        end
         if ~isempty(dt)
             if double(dt.value) == 0    % force pixSize.t be 1
                 pixSize.t = 1;  
@@ -872,6 +877,6 @@ else
     img_info('SliceName') = cellstr(strcat(fnShort, ext));
 end
 
-if options.waitbar==1; delete(wb); end;
+if options.waitbar==1; delete(wb); end
 img_info('Filename') = filenames{1};
 end

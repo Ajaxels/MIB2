@@ -45,6 +45,6 @@ else
     else
         options.modelIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
     end
-    obj.connImaris = mibSetImarisDataset(obj.mibModel.I{obj.mibModel.Id}, obj.connImaris, options);
+    obj.mibModel.connImaris = mibSetImarisDataset(obj.mibModel.I{obj.mibModel.Id}, obj.mibModel.connImaris, options);
 end
 end

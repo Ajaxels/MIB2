@@ -40,9 +40,9 @@ function [I, img_info] = loadBigDataViewerFormat(filename, options, img_info)
 % Updates
 %
 
-if nargin < 3; img_info = containers.Map; end;
-if nargin < 2; options=struct(); end;
-if nargin < 1;
+if nargin < 3; img_info = containers.Map; end
+if nargin < 2; options=struct(); end
+if nargin < 1
     errordlg(sprintf('!!! Error !!!\n\nThe filename is missing!\nI = loadBigDataViewerFormat(filename, options)'));
     return;
 end
@@ -50,7 +50,7 @@ I = [];
 
 if ~isfield(options, 'waitbar');    options.waitbar = 1; end
 
-if options.waitbar; wb = waitbar(0, sprintf('Loading HDF5 file structure\nPlease wait...'), 'Name', 'Loading HFD5...'); end;
+if options.waitbar; wb = waitbar(0, sprintf('Loading HDF5 file structure\nPlease wait...'), 'Name', 'Loading HFD5...'); end
 
 info = h5info(filename);
 offsetIndex = find(ismember({info.Groups(:).Name}, '/t00000') == 1);  % index of the first timepoint
@@ -85,17 +85,17 @@ if isempty(img_info)   % when no img_info, populate it from the HDF5 file
     
     noLevels = numel(info.Groups(offsetIndex).Groups(1).Groups);  % number of levels in the image pyramid
     
-    if isfield(options, 'level');   % level of the pyramid to return, 1 for full resolution
+    if isfield(options, 'level')  % level of the pyramid to return, 1 for full resolution
         if options.level(1) < 1 || options.level(1) > noLevels
-            if options.waitbar; delete(wb); end;
+            if options.waitbar; delete(wb); end
             errordlg(sprintf('!!! Error !!!\n\nThe level value (%d) is out of range!\nThe "options.level" should be between 1 and %d', options.level, noLevels));
             return;
         end
         img_info('ReturnedLevel') = options.level;
     else
         prompt = sprintf('The dataset contains %d image(s)\nPlease choose the one to take (enter "1" to get image in the original size):', noLevels);
-        answer = mib_inputdlg(NaN, prompt, 'Select image', '1');
-        if isempty(answer); if options.waitbar==1; delete(wb); end; return; end;
+        answer = mibInputDlg([], prompt, 'Select image', '1');
+        if isempty(answer); if options.waitbar==1; delete(wb); end; return; end
         img_info('ReturnedLevel') = str2double(answer);
         if img_info('ReturnedLevel') < 1 || img_info('ReturnedLevel') > noLevels
             errordlg(sprintf('!!! Error !!!\n\nWrong number!\nThe number should be between 1 and %d', noLevels));
@@ -107,7 +107,7 @@ if isempty(img_info)   % when no img_info, populate it from the HDF5 file
     img_info('Width') = xyzVal(1);
     img_info('Depth') = xyzVal(3);
     img_info('Levels') = noLevels;
-    if img_info('Time') == 0; img_info('Time') = 1; end;
+    if img_info('Time') == 0; img_info('Time') = 1; end
     % detect data type
     dataType = info.Groups(offsetIndex).Groups(1).Groups(img_info('ReturnedLevel')).Datasets.Datatype.Type;
     switch dataType
@@ -116,7 +116,7 @@ if isempty(img_info)   % when no img_info, populate it from the HDF5 file
         case {'H5T_STD_I8LE','H5T_STD_U8LE'}
             img_info('imgClass') = 'uint8';
         otherwise
-            if options.waitbar==1; delete(wb); end;
+            if options.waitbar==1; delete(wb); end
             errordlg(sprintf('Ops!\nloadBigDataViewerFormat: check image class (%s) and implement!', dataType));
             return;
     end
@@ -126,7 +126,7 @@ dataType = info.Groups(offsetIndex).Groups(1).Groups(img_info('ReturnedLevel')).
 % define part of the dataset to take
 if isfield(options, 'x')   % min/max width
     if options.x(1) < 1 || options.x(1) > img_info('Width') || options.x(2) < 1 || options.x(2) > img_info('Width')
-        if options.waitbar==1; delete(wb); end;
+        if options.waitbar==1; delete(wb); end
         errordlg(sprintf('!!! Error !!!\n\nThe X value [%d:%d] is out of range!\nThe "options.x" should be between 1 and %d', options.x(1),options.x(2),img_info('Width')));
     end
     x = options.x;
@@ -135,7 +135,7 @@ else
 end
 if isfield(options, 'y')   % min/max height
     if options.y(1) < 1 || options.y(1) > img_info('Height') || options.y(2) < 1 || options.y(2) > img_info('Height')
-        if options.waitbar==1; delete(wb); end;
+        if options.waitbar==1; delete(wb); end
         errordlg(sprintf('!!! Error !!!\n\nThe Y value [%d:%d] is out of range!\nThe "options.y" should be between 1 and %d', options.y(1),options.y(2),img_info('Height')));
     end
     y = options.y;
@@ -144,7 +144,7 @@ else
 end
 if isfield(options, 'z')   % min/max depth, z
     if options.z(1) < 1 || options.z(1) > img_info('Depth') || options.z(2) < 1 || options.z(2) > img_info('Depth')
-        if options.waitbar==1; delete(wb); end;
+        if options.waitbar==1; delete(wb); end
         errordlg(sprintf('!!! Error !!!\n\nThe Z value [%d:%d] is out of range!\nThe "options.z" should be between 1 and %d', options.z(1),options.z(2),img_info('Depth')));
     end
     z = options.z;
@@ -153,7 +153,7 @@ else
 end
 if isfield(options, 'c')   % vector of color channels
     if min(options.c) < 1 || max(options.c) > img_info('Colors')
-        if options.waitbar==1; delete(wb); end;
+        if options.waitbar==1; delete(wb); end
         errordlg(sprintf('!!! Error !!!\n\nThe C value is out of range!\nThe "options.c" should be between 1 and %d', img_info('Colors')));
     end
     c = options.c;
@@ -162,7 +162,7 @@ else
 end
 if isfield(options, 't')   % min/max time point
     if options.t(1) < 1 || options.t(1) > img_info('Time') || options.z(2) < 1 || options.z(2) > img_info('Time')
-        if options.waitbar==1; delete(wb); end;
+        if options.waitbar==1; delete(wb); end
         errordlg(sprintf('!!! Error !!!\n\nThe T value [%d:%d] is out of range!\nThe "options.t" should be between 1 and %d', options.t(1),options.t(2),img_info('Time')));
     end
     t = options.t;
@@ -177,7 +177,7 @@ level = img_info('ReturnedLevel');
 
 dataset = zeros([width, height, depth, numel(c), diff(t)+1], img_info('imgClass'));  % allocate space
 timeCount = 0;  % time index for the output
-if options.waitbar; waitbar(0.05, wb, sprintf('Loading HDF5 images\nPlease wait...')); end;
+if options.waitbar; waitbar(0.05, wb, sprintf('Loading HDF5 images\nPlease wait...')); end
 
 for timePnt=t(1):t(2)
     timeIndex = timePnt + offsetIndex - 1;  % index in the HDF5 file
@@ -207,14 +207,14 @@ for timePnt=t(1):t(2)
         
         dataset(:,:,:,ch, timePnt) = dummy;
     end
-    if options.waitbar; waitbar((timePnt-t(1))/(diff(t)+1), wb, sprintf('Loading HDF5 images\nPlease wait...')); end;
+    if options.waitbar; waitbar((timePnt-t(1))/(diff(t)+1), wb, sprintf('Loading HDF5 images\nPlease wait...')); end
 end
 I = permute(dataset, [2 1 4 3 5]);    % permute for MIB [y,x,c,z,t];
 
 % test of read string
 % dummy = h5read(fullfileH5, [info.Groups(1).Name '/' info.Groups(1).Datasets(1).Name]);
 
-if options.waitbar; delete(wb); end;
+if options.waitbar; delete(wb); end
 end
 
 

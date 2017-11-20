@@ -35,7 +35,7 @@ separatingPanelPos2 = obj.mibView.handles.mibSeparatingPanel2.Position;
 %             
 %             error('dasda')
 %         end
-        
+
 if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer within the current axes
     obj.mibView.handles.mibGUI.Pointer = 'crosshair';
     
@@ -96,6 +96,23 @@ if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer with
         txt = [num2str(x) ':' num2str(y) ' (RRR:GGG:BBB)'];
         obj.mibView.handles.mibPixelInfoTxt2.String = txt;
     end
+    %[axesX, axesY] = obj.mibModel.getAxesLimits();
+    %centX = mean(axesX);
+    %centY = mean(axesY);
+    %centX = max([1 centX]);
+    %centY = max([1 centY]);
+    %centX = min([centX obj.mibModel.I{obj.mibModel.Id}.width]);
+    %centY = min([centY obj.mibModel.I{obj.mibModel.Id}.height]);
+    %[x2, y2] = obj.mibModel.convertMouseToDataCoordinates(centX, centY, 'shown');
+    %x2 = floor(axesY(1));
+    %y2 = floor(axesY(2));
+    
+    %x2 = x*obj.mibModel.I{obj.mibModel.Id}.magFactor + max([0 floor(axesX(1))]);
+    %y2 = y*obj.mibModel.I{obj.mibModel.Id}.magFactor + max([0 floor(axesY(1))]);
+    %y2 = axesY(2);
+    %txt = sprintf('%dx%d (:::) %sx%s', x, y, num2str(floor(x2)), num2str(floor(y2)));
+    %obj.mibView.handles.mibPixelInfoTxt2.String = txt;
+    
 elseif x2>separatingPanelPos(1) && x2<separatingPanelPos(1)+separatingPanelPos(3) && y2>separatingPanelPos(2) && y2<separatingPanelPos(2)+separatingPanelPos(4) % mouse pointer within the current axes
     obj.mibView.gui.Pointer = 'left';
 elseif x2>separatingPanelPos2(1) && x2<separatingPanelPos2(1)+separatingPanelPos2(3) && y2>separatingPanelPos2(2) && y2<separatingPanelPos2(2)+separatingPanelPos2(4) % mouse pointer within the current axes

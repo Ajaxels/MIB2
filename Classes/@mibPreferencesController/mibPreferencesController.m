@@ -617,11 +617,25 @@ classdef mibPreferencesController < handle
                 case 'delete'   % delete selected color
                     obj.preferences.modelMaterialColors(position(:,1),:) = [];
                 case 'import'   % import color from matlab workspace
+                    % get list of available variables
+                    availableVars = evalin('base', 'whos');
+                    idx = contains({availableVars.class}, {'double', 'single'});
+                    if sum(idx) == 0
+                        errordlg(sprintf('!!! Error !!!\nNothing to import...'), 'Nothing to import');
+                        return;
+                    end
+                    Vars = {availableVars(idx).name}';   
+                    % find index of the I variable if it is present
+                    idx2 = find(ismember(Vars, 'colormap')==1);
+                    if ~isempty(idx2)
+                        Vars{end+1} = idx2;
+                    end
+                    prompts = {sprintf('Input a variable that contains the colormap\n\nIt should be a matrix [colorNumber, [R,G,B]]:')};
+                    defAns = {Vars};
                     title = 'Import colormap';
-                    prompt = sprintf('Input a variable that contains colormap\n\nIt should be a matrix [colorNumber, [R,G,B]]');
-                    %answer = inputdlg(prompt,title,[1 30],{'colormap'},'on');
-                    answer = mibInputDlg({mibPath}, prompt, title, 'colormap');
-                    if size(answer) == 0; return; end
+                    mibInputMultiDlgOptions.PromptLines = 3;
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, title, mibInputMultiDlgOptions);
+                    if isempty(answer); return; end
                     
                     try
                         colormap = evalin('base',answer{1});
@@ -645,7 +659,7 @@ classdef mibPreferencesController < handle
                     obj.preferences.modelMaterialColors = colormap;
                 case 'export'       % export color to Matlab workspace
                     title = 'Export colormap';
-                    prompt = sprintf('Input a destination variable for export\n\nA matrix containing the current colormap [colorNumber, [R,G,B]] will be assigned to this variable');
+                    prompt = sprintf('Input a destination variable for export\nA matrix containing the current colormap [colorNumber, [R,G,B]] will be assigned to this variable');
                     %answer = inputdlg(prompt,title,[1 30],{'colormap'},'on');
                     answer = mibInputDlg({mibPath}, prompt, title, 'colormap');
                     if size(answer) == 0; return; end
@@ -936,63 +950,41 @@ classdef mibPreferencesController < handle
             
             global scalingGUI;
             
-            prompt = {'Scaling factor for MIB:', 'Operating system scaling factor:', sprintf('\nDefine types of widgets to scale:\n0 - do not scale\n1 - scale\nScale uipanel:'), ...
-                'Scale uibuttongroup:', 'Scale uitab:','Scale uitabgroup:', 'Scale axes:', 'Scale uitable:', 'Scale uicontrol:'};
-            dlg_title = 'Scaling of widgets';
-            defaultans = {num2str(obj.preferences.gui.scaling), num2str(obj.preferences.gui.systemscaling), ...
-                num2str(obj.preferences.gui.uipanel), num2str(obj.preferences.gui.uibuttongroup), num2str(obj.preferences.gui.uitab),...
-                num2str(obj.preferences.gui.uitabgroup), num2str(obj.preferences.gui.axes), num2str(obj.preferences.gui.uitable),...
-                num2str(obj.preferences.gui.uicontrol)};
-            answer = inputdlg(prompt, dlg_title, 1, defaultans);
+            prompt = {'Scaling factor for MIB:', ...
+                'Operating system scaling factor:', ...
+                'scale uipanel:', ...
+                'scale uibuttongroup:', ...
+                'scale uitab:',...
+                'scale uitabgroup:', ...
+                'scale axes:', ...
+                'scale uitable:', ...
+                'scale uicontrol:'};
+           
+            defAns = {num2str(obj.preferences.gui.scaling), ...
+                num2str(obj.preferences.gui.systemscaling), ...
+                logical(obj.preferences.gui.uipanel), ...
+                logical(obj.preferences.gui.uibuttongroup), ....
+                logical(obj.preferences.gui.uitab),...
+                logical(obj.preferences.gui.uitabgroup), ...
+                logical(obj.preferences.gui.axes), ...
+                logical(obj.preferences.gui.uitable),...
+                logical(obj.preferences.gui.uicontrol)};
+            answer = mibInputMultiDlg([], prompt, defAns, 'Scaling of widgets');
             if isempty(answer); return; end
+            
             if str2double(answer{1}) <= 0 
                 errordlg(sprintf('!!! Error !!!\nthe scaling factor should be larger than 0'));
                 return;
             end
             obj.preferences.gui.scaling = str2double(answer{1});
             obj.preferences.gui.systemscaling = str2double(answer{2});
-            
-            if ~ismember(str2double(answer{3}), [0 1])
-                errordlg(sprintf('!!! Error !!!\nthe value should be 0 or 1'));
-                return;
-            end
-            obj.preferences.gui.uipanel = str2double(answer{3});
-            
-            if ~ismember(str2double(answer{4}), [0 1])
-                errordlg(sprintf('!!! Error !!!\nthe value should be 0 or 1'));
-                return;
-            end
-            obj.preferences.gui.uibuttongroup = str2double(answer{4});
-            
-            if ~ismember(str2double(answer{5}), [0 1])
-                errordlg(sprintf('!!! Error !!!\nthe value should be 0 or 1'));
-                return;
-            end
-            obj.preferences.gui.uitab = str2double(answer{5});
-            
-            if ~ismember(str2double(answer{6}), [0 1])
-                errordlg(sprintf('!!! Error !!!\nthe value should be 0 or 1'));
-                return;
-            end
-            obj.preferences.gui.uitabgroup = str2double(answer{6});
-            
-            if ~ismember(str2double(answer{7}), [0 1])
-                errordlg(sprintf('!!! Error !!!\nthe value should be 0 or 1'));
-                return;
-            end
-            obj.preferences.gui.axes = str2double(answer{7});
-            
-            if ~ismember(str2double(answer{8}), [0 1])
-                errordlg(sprintf('!!! Error !!!\nthe value should be 0 or 1'));
-                return;
-            end
-            obj.preferences.gui.uitable = str2double(answer{8});
-            
-            if ~ismember(str2double(answer{9}), [0 1])
-                errordlg(sprintf('!!! Error !!!\nthe value should be 0 or 1'));
-                return;
-            end
-            obj.preferences.gui.uicontrol = str2double(answer{9});
+            obj.preferences.gui.uipanel = answer{3};
+            obj.preferences.gui.uibuttongroup = answer{4};
+            obj.preferences.gui.uitab = answer{5};
+            obj.preferences.gui.uitabgroup = answer{6};
+            obj.preferences.gui.axes = answer{7};
+            obj.preferences.gui.uitable = answer{8};
+            obj.preferences.gui.uicontrol = answer{9};
             
             scalingGUI = obj.preferences.gui;
             mibRescaleWidgets(obj.mibController.mibView.gui);

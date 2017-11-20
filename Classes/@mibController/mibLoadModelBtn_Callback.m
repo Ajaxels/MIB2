@@ -108,15 +108,40 @@ if nargin < 2   % model and options were not provided
             end
             clear res;
         elseif strcmp(filename{fnId}(end-1:end),'am') % loading amira mesh
+            [~, img_info] = getAmiraMeshHeader(fullfile([path filename{fnId}]));
+            try
+                keysList = keys(img_info);
+                for keyId=1:numel(keysList)
+                    strfindResult = strfind(keysList{keyId}, 'Materials_');
+                    if ~isempty(strfindResult)
+                        % keysList{keyId} for materials returned as
+                        % Materials_NAME-OF-MATERIAL_Color  - color
+                        % Materials_NAME-OF-MATERIAL_Id     - index of material
+                        matName = keysList{keyId}(11:end);      % 11 due to removal of 'Materials_' text
+                        materialInfo = img_info(keysList{keyId});
+                        if contains(matName, 'Color')
+                            materialColor = str2num(materialInfo); %#ok<ST2NM>   Materials_NAME-OF-MATERIAL_Color
+                            materialIndex = img_info(keysList{keyId+1});  %      Materials_NAME-OF-MATERIAL_Id
+                            modelMaterialColors(materialIndex, :) = materialColor(1:3); %#ok<AGROW>
+                            modelMaterialNames{materialIndex, :} = matName(1:end-6); %#ok<AGROW>
+                            keyId = keyId + 1; %#ok<FXSET>
+                        end
+                    end
+                end
+                options.color_list = modelMaterialColors;
+                options.material_list = modelMaterialNames;
+            catch err
+                err;
+            end
             model = amiraLabels2bitmap(fullfile([path filename{fnId}]));
-            options.model_fn = fullfile([path filename{1}(1:end-2) 'mat']);
+            options.model_fn = fullfile([path filename{1}(1:end-2) 'model']);
             options.modelVariable = 'amira_mesh';
         elseif strcmp(filename{fnId}(end-1:end),'h5') || strcmp(filename{fnId}(end-2:end),'xml')  % loading model in hdf5 format
             options.mibBioformatsCheck = 0;
             options.waitbar = 0;
             [model, img_info, ~] = mibLoadImages({fullfile(path, filename{fnId})}, options);
             model = squeeze(model);
-            options.model_fn = fullfile([path filename{1}(1:end-2) 'mat']);
+            options.model_fn = fullfile([path filename{1}(1:end-2) 'model']);
             options.modelVariable = 'hdf5';
             if isKey(img_info, 'material_list')     % add list of material names
                 options.material_list = img_info('material_list');
@@ -128,7 +153,7 @@ if nargin < 2   % model and options were not provided
         elseif strcmp(filename{fnId}(end-3:end),'nrrd') % loading model in nrrd format
             model = nrrdLoadWithMetadata(fullfile([path filename{fnId}]));
             model =  uint8(permute(model.data, [2 1 3]));
-            options.model_fn = fullfile([path filename{fnId}(1:end-2) 'mat']);
+            options.model_fn = fullfile([path filename{fnId}(1:end-2) 'model']);
             options.modelVariable = 'nrrd_model';
         elseif strcmp(filename{fnId}(end-3:end),'mrc') % loading model in mrc format            
             options.mibBioformatsCheck = 0;
@@ -141,7 +166,7 @@ if nargin < 2   % model and options were not provided
             options.waitbar = 0;
             [model, ~, ~] = mibLoadImages({fullfile(path, filename{fnId})}, options);
             model =  squeeze(model);
-            options.model_fn = fullfile(path, [filename{1}(1:end-3) 'mat']);
+            options.model_fn = fullfile(path, [filename{1}(1:end-3) 'model']);
             options.modelVariable = 'tif_model';
         end
         

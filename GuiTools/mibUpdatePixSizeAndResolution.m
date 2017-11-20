@@ -1,5 +1,5 @@
 function [img_info, pixSize] = mibUpdatePixSizeAndResolution(img_info, pixSize)
-% function [img_info, pixSize] = ib_updatePixSizeAndResolution(img_info, pixSize)
+% function [img_info, pixSize] = mibUpdatePixSizeAndResolution(img_info, pixSize)
 % Calculate update resolution fields in the imageData.img_info('ImageDescription') or recalculate physical size of voxels
 %
 % - If 'BoundingBox' information exist in the imageData.img_info('ImageDescription') the function recalculates the
@@ -35,6 +35,14 @@ function [img_info, pixSize] = mibUpdatePixSizeAndResolution(img_info, pixSize)
 % Updates
 % 
 
+if nargin < 2
+    pixSize.x = 1;
+    pixSize.y = 1;
+    pixSize.z = 1;
+    pixSize.t = 1;
+    pixSize.tunits = 's';
+    pixSize.units = 'um';
+end
 
 % update resolution and pixel sizes
 curr_text = img_info('ImageDescription');
@@ -44,7 +52,7 @@ depth = img_info('Depth');
 bb_info_exist = strfind(curr_text,'BoundingBox');
 if bb_info_exist > 0   % use information from the BoundingBox parameter for pixel sizes if it is exist
     spaces = strfind(curr_text,' ');
-    if numel(spaces) < 7; spaces(7) = numel(curr_text); end;
+    if numel(spaces) < 7; spaces(7) = numel(curr_text); end
     tab_pos = strfind(curr_text,sprintf('|'));
     pos = min([spaces(7) tab_pos]);
     bb_coord = str2num(curr_text(spaces(1):pos)); %#ok<ST2NM>
@@ -54,7 +62,7 @@ if bb_info_exist > 0   % use information from the BoundingBox parameter for pixe
     pixSize.x = dx/(max([width 2])-1);  % tweek for saving single layered tifs for Amira
     pixSize.y = dy/(max([height 2])-1);
     pixSize.z = dz/(max([depth 2])-1);
-    if isnan(pixSize.z);   pixSize.z = pixSize.x; end;  % fix to do not get errors for setting of DataAspectRatio
+    if isnan(pixSize.z);   pixSize.z = pixSize.x; end  % fix to do not get errors for setting of DataAspectRatio
     pixSize.units = 'um';
     resolution = mibCalculateResolution(pixSize);
 else

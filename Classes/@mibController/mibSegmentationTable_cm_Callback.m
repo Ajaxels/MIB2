@@ -59,7 +59,7 @@ switch type
             c =  uisetcolor(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(contIndex-2,:), figTitle);
             if length(c) ~= 1
                 obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(contIndex-2,:) = c;
-            end;
+            end
         end
         obj.updateSegmentationTable();
     case 'statistics'
@@ -68,7 +68,7 @@ switch type
         contIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
         
         options.fillBg = 0;
-        if obj.mibView.getRoiSwitch == 1; options.roiId = []; end;
+        if obj.mibView.getRoiSwitch == 1; options.roiId = []; end
         
         if contIndex == -1
             model = obj.mibModel.getData3D('mask', NaN, NaN, NaN, options);
@@ -76,7 +76,7 @@ switch type
             modelMaterialColors = obj.mibModel.preferences.maskcolor;
         else
             model = obj.mibModel.getData3D('model', NaN, NaN, NaN, options);
-            if obj.mibModel.showAllMaterials == 1; contIndex = 0; end;      % show all materials
+            if obj.mibModel.showAllMaterials == 1; contIndex = 0; end      % show all materials
             modelMaterialColors = obj.mibModel.getImageProperty('modelMaterialColors');
         end
         if numel(model) > 1
@@ -89,15 +89,16 @@ switch type
             'Smoothing 3d kernel, width (no smoothing when 0):',...
             'Maximal number of faces (no limit when 0):',...
             'Show orthoslice (enter a number slice number, or NaN):'};
-        dlg_title = 'Isosurface parameters';
         if size(model{1},2) > 500
-            def = {'500','5','300000','1'};
+            defAns = {'500','5','300000','1'};
         else
-            def = {'0','5','300000','1'};
+            defAns = {'0','5','300000','1'};
         end
-        answer = inputdlg(prompt,dlg_title,1,def);
+
+        mibInputMultiDlgOpt.PromptLines = [2, 1, 1, 2];
+        answer = mibInputMultiDlg({obj.mibPath}, prompt, defAns, 'Isosurface parameters', mibInputMultiDlgOpt);
+        if isempty(answer); return; end
         
-        if isempty(answer); return;  end;
         Options.reduce = str2double(answer{1});
         Options.smooth = str2double(answer{2});
         Options.maxFaces = str2double(answer{3});

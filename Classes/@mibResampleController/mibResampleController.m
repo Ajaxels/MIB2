@@ -208,6 +208,7 @@ classdef mibResampleController  < handle
             options.width = newW;
             options.depth = newZ;
             options.method = methodImage;
+            options.imgType = '4D';
             for t=1:maxT
                 img = cell2mat(obj.mibModel.getData3D('image', t, 4, NaN, options));
                 waitbar(0.05,wb);
@@ -244,7 +245,7 @@ classdef mibResampleController  < handle
             obj.mibModel.I{obj.mibModel.Id}.meta('ResolutionUnit') = 'Inch';
             
             options.method = modelsMethod;
-            
+            options.imgType = '3D';
             % resample model and mask
             if obj.mibModel.I{obj.mibModel.Id}.modelExist
                 waitbar(0.75,wb,sprintf('Resampling model...\n[%d %d %d %d]->[%d %d %d %d]', ...

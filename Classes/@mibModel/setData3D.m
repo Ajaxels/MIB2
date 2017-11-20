@@ -77,6 +77,7 @@ if isnan(time); time = obj.I{options.id}.slices{5}(1); end
 if orient == 0 || isnan(orient); orient=obj.I{options.id}.orientation; end
 
 if isfield(options, 'PixelIdxList')
+    if strcmp(type, 'image'); errordlg(sprintf('!!! Error !!!\n\nmibImage.setData3D: the PixelIdxList parameter is not compatible with the the Image layer'), 'Syntax error!'); return; end
     if time > 1     % shift the indices to the choosen time point
         options.PixelIdxList = options.PixelIdxList + ...
             obj.I{options.id}.width*obj.I{options.id}.height*obj.I{options.id}.depth*(time-1);

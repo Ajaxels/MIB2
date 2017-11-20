@@ -36,46 +36,23 @@ function connImaris = mibRenderModelImaris(mibImage, connImaris, options)
 % Igor Beati, Bitplane.
 %
 % Updates
-% 
+% 25.09.2017 IB updated connection to Imaris
 
 global mibPath;
 
-if nargin < 3; options = struct(); end;
-if nargin < 2; connImaris = []; end;
+if nargin < 3; options = struct(); end
+if nargin < 2; connImaris = []; end
 
-if ~isfield(options, 'materialIndex'); options.materialIndex = 0; end;  % render all materials by default
+if ~isfield(options, 'materialIndex'); options.materialIndex = 0; end  % render all materials by default
 
 answer = inputdlg(sprintf('!!! ATTENTION !!!\n\nA volume that is currently open in Imaris will be removed!\nYou can preserve it by importing it into MIB and exporting it back to Imaris after the surface is generated.\n\nTo proceed further please define a smoothing factor,\na number, 0 or higher (IN IMAGE UNITS);\ncurrent voxel size: %.4f x %.4f x %.4f:', ...
     mibImage.pixSize.x, mibImage.pixSize.y, mibImage.pixSize.z), 'Smoothing factor', 1, {'0'});
-if isempty(answer); return; end;
+if isempty(answer); return; end
 vSmoothing = str2double(answer{1});
 
 % establishing connection to Imaris
-wb = waitbar(0, 'Please wait...', 'Name', 'Connecting to Imaris');
-if isempty(connImaris)
-    try
-        connImaris = IceImarisConnector(0);
-        waitbar(0.3, wb);
-    catch exception
-        %if strcmp(exception.message, 'Could not connect to Imaris Server.')
-        errordlg(sprintf('Could not connect to Imaris Server;\nPlease start Imaris and try again!'), ...
-            'Missing Imaris');
-        delete(wb);
-        connImaris = [];
-        return;
-    end
-    waitbar(0.7, wb);
-    if connImaris.isAlive == 0
-        % start Imaris
-        connImaris.startImaris()
-        waitbar(0.95, wb);
-    end
-else
-    if connImaris.isAlive == 0
-        connImaris.startImaris();
-    end
-end
-delete(wb);
+connImaris = mibConnectToImaris(connImaris);
+if isempty(connImaris); return; end
 
 % define index of material to model, NaN - model all
 if options.materialIndex == 0    % all materials
@@ -91,7 +68,7 @@ end
 if mibImage.time > 1
     mode = questdlg(sprintf('Would you like to export currently shown 3D (W:H:C:Z) stack or complete 4D (W:H:C:Z:T) dataset to Imaris?'),...
         'Export to Imaris', '3D', '4D', 'Cancel', '3D');
-    if strcmp(mode, 'Cancel'); return; end;
+    if strcmp(mode, 'Cancel'); return; end
 else
     mode = '3D';
 end
@@ -99,7 +76,7 @@ if ~isempty(connImaris.mImarisApplication.GetDataSet) && strcmp(mode, '3D')
     [vSizeX, vSizeY, vSizeZ, vSizeC, vSizeT] = connImaris.getSizes();
     if vSizeZ > 1 && vSizeT > 1 && strcmp(mode, '3D')
         insertInto = mibInputDlg({mibPath}, sprintf('!!! Warning !!!\n\nA 5D dataset is open in Imaris!\nPlease enter a time point to update (starting from 0)\nor type "-1" to replace dataset completely'), 'Time point', mibImage.slices{5}(1));
-        if isempty(insertInto); return; end;
+        if isempty(insertInto); return; end
         imarisOptions.insertInto = insertInto;
     end
 end

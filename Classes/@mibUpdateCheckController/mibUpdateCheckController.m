@@ -30,9 +30,11 @@ classdef mibUpdateCheckController < handle
             
             % % update font and size
             global Font;
-            if obj.View.handles.dummyText.FontSize ~= Font.FontSize ...
-                    || ~strcmp(obj.View.handles.dummyText.FontName, Font.FontName)
-                mibUpdateFontSize(obj.View.gui, Font);
+            if ~isempty(Font)
+                if obj.View.handles.dummyText.FontSize ~= Font.FontSize ...
+                        || ~strcmp(obj.View.handles.dummyText.FontName, Font.FontName)
+                    mibUpdateFontSize(obj.View.gui, Font);
+                end
             end
             
 			obj.updateWidgets();

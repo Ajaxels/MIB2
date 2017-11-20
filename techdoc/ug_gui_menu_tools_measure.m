@@ -110,8 +110,10 @@
 % 
 % 
 % 
-% * The *fine-tuning* checkbox: when selected positions of the measurements can be
+% * The *Fine-tuning* checkbox: when selected positions of the measurements can be
 % adjusted during the placement
+% * The *Calculate intensities* checkbox: when enabled, an intensity
+% profile is calculated for each measurement
 % * *Preview intenity (only for Distance, linear)* - instantly shows an
 % intensity profile while placing the measurements
 % * *Integrate (only for Distance, linear)* - allows to use integration of

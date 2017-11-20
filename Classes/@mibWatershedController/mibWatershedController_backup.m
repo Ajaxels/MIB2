@@ -30,6 +30,16 @@ classdef mibWatershedController  < handle
         % enable real time segmentation (for the graphcut only)
         shownLabelObj
         % indices of currently displayed superpixels for the objects
+        seedObj
+        % a cell array with the object seeds for each slice for 3D graphcut
+        seedBg
+        % a cell array with the background seeds for each slice for 3D graphcut
+        timerElapsed
+        % a variable to keep the elapsed time, when the elapsed time
+        % shorter than the timerElapsedMax the waitbar is not shown
+        timerElapsedMax
+        % when the segmentation is longer that this number, the waitbar is
+        % displayed
     end
     
     events
@@ -47,7 +57,9 @@ classdef mibWatershedController  < handle
                     if strcmp(evnt.Parameter.type, 'model') && obj.realtimeSwitch == 1
                         tic
                         obj.doGraphcutSegmentation();
-                        toc
+                        obj.timerElapsed = toc;
+                        fprintf('Elapsed time is %f seconds.\n', obj.timerElapsed);
+                        notify(obj.mibModel, 'showMask');
                     end
             end
         end
@@ -77,7 +89,11 @@ classdef mibWatershedController  < handle
             %obj.graphcut.PixelIdxList{1} = [];  % position of pixels in each supervoxels
             
             obj.shownLabelObj = [];  % indices of currently displayed superpixels for the objects
+            obj.seedObj = [];
+            obj.seedBg = [];
             obj.realtimeSwitch = 0;
+            obj.timerElapsedMax = .5;   % if segmentation is slower than this time, show the waitbar
+            obj.timerElapsed = 9999999; % initialize the timer
             
             % selected default mode
             obj.mode = 'mode2dCurrentRadio';
@@ -290,6 +306,7 @@ classdef mibWatershedController  < handle
             % callback for press of clearPreprocessBtn; clear the preprocessed data
             
             obj.preprocImg = NaN;
+            obj.graphcut = struct();
             obj.graphcut.slic = [];     % SLIC labels for the graph cut workflow
             obj.graphcut.noPix = [];    % number of superpixels/supervoxels for the graph cut workflow
             obj.graphcut.Graph = [];    % graph for the graph cut workflow
@@ -297,12 +314,33 @@ classdef mibWatershedController  < handle
             %obj.graphcut.PixelIdxList = [];  % position of pixels in each supervoxels
             %obj.graphcut.PixelIdxList{1} = [];  % position of pixels in each supervoxels
             
-            obj.shownLabelObj = [];  % indices of currently displayed superpixels for the objects
+            if obj.View.handles.mode2dRadio.Value == 1
+                depth = str2num(obj.View.handles.zSubareaEdit.String); %#ok<ST2NM>
+                obj.shownLabelObj = cell([max(depth)-min(depth)+1 1]);  % indices of currently displayed superpixels for the objects
+            else
+                obj.shownLabelObj = [];  % indices of currently displayed superpixels for the objects    
+            end
+            
+            obj.seedObj = [];
+            obj.seedBg = [];
             
             bgcol = obj.View.handles.clearPreprocessBtn.BackgroundColor;
             obj.View.handles.preprocessBtn.BackgroundColor = bgcol;
             obj.View.handles.superpixelsBtn.BackgroundColor = bgcol;
             obj.View.handles.superpixelsCountText.String = sprintf('Superpixels count: 0');
+            
+            val = str2num(obj.View.handles.binSubareaEdit.String); %#ok<ST2NM>
+            % disable the realtime mode
+            if sum(val) ~= 2
+                obj.View.handles.realtimeCheck.Value = 0;
+                obj.realtimeSwitch = 0;
+                obj.View.handles.realtimeCheck.Enable = 'off';
+                obj.View.handles.realtimeText.Enable = 'off';
+            else
+                obj.View.handles.realtimeCheck.Enable = 'on';
+                obj.View.handles.realtimeText.Enable = 'on';
+            end
+            
         end
         
         function mode2dRadio_Callback(obj, hObject)
@@ -321,7 +359,7 @@ classdef mibWatershedController  < handle
                 if strcmp(button,'Cancel')
                     obj.View.handles.(obj.mode).Value = 1;
                     return;
-                end;
+                end
                 obj.clearPreprocessBtn_Callback();    % clear preprocessed data
             end
             obj.mode = hObject.Tag;
@@ -449,6 +487,7 @@ classdef mibWatershedController  < handle
             else
                 val = round(val);
             end
+            
             hObject.String = sprintf('%d; %d',val(1), val(2));
             obj.clearPreprocessBtn_Callback();    % clear preprocessed data
         end
@@ -466,6 +505,8 @@ classdef mibWatershedController  < handle
             if gradientSw == 0 && eigenSw == 0
                 return;
             end
+            
+            obj.timerElapsed = 9999999;     % reinitialize the timer
             
             eigenSigma = str2double(obj.View.handles.eigenSigmaEdit.String);
             invertImage = obj.View.handles.signalPopup.Value;    % if == 1 image should be inverted, black-on-white
@@ -678,6 +719,9 @@ classdef mibWatershedController  < handle
                 notify(obj.mibModel, 'showMask');
             elseif obj.View.handles.graphCutToggle.Value
                 % clear list of selected pixels
+                obj.seedObj = cell([size(obj.graphcut.slic, 3), 1]);
+                obj.seedBg = cell([size(obj.graphcut.slic, 3), 1]);
+                
                 if obj.View.handles.mode2dRadio.Value == 1
                     thick = str2num(obj.View.handles.zSubareaEdit.String);  %#ok<ST2NM>
                     startIndex = min(thick);
@@ -696,7 +740,8 @@ classdef mibWatershedController  < handle
             else
                 obj.doObjectSeparation();
             end
-            toc
+            obj.timerElapsed = toc;
+            fprintf('Elapsed time: %f seconds\n', obj.timerElapsed)
             notify(obj.mibModel, 'plotImage');
         end
         
@@ -704,14 +749,21 @@ classdef mibWatershedController  < handle
             % function doGraphcutSegmentation(obj)
             % make graphcut segmentation
             
-            if isempty(obj.graphcut.noPix)
-                obj.superpixelsBtn_Callback();
-            end
-            wb = waitbar(0, sprintf('Graphcut segmentation...\nPlease wait...'), 'Name', 'Maxflow/Mincut');
-            
             bgMaterialId = obj.View.handles.backgroundMateriaPopup.Value;    % index of the background label
             seedMaterialId = obj.View.handles.signalMateriaPopup.Value;    % index of the signal label
             noMaterials = numel(obj.View.handles.signalMateriaPopup.String);    % number of materials in the model
+
+            if bgMaterialId == seedMaterialId
+                errordlg(sprintf('!!! Error !!!\nWrong selection of materials!\nPlease select two different materials in the Background and Object combo boxes of the Image segmentation settings panel'))
+                return;
+            end
+            
+            if isempty(obj.graphcut.noPix)
+                obj.superpixelsBtn_Callback();
+            end
+            if obj.timerElapsed > obj.timerElapsedMax
+                wb = waitbar(0, sprintf('Graphcut segmentation...\nPlease wait...'), 'Name', 'Maxflow/Mincut');
+            end
             
             % get area for processing
             width = str2num(obj.View.handles.xSubareaEdit.String); %#ok<ST2NM>
@@ -723,6 +775,12 @@ classdef mibWatershedController  < handle
             getDataOptions.y = [min(height) max(height)];
             getDataOptions.z = [min(thick) max(thick)];
             getDataOptions.blockModeSwitch = 0;
+
+            % generate a structure for conversion of pixels in the 3D
+            % cropped graphcut
+            convertPixelOpt.x = getDataOptions.x;
+            convertPixelOpt.y = getDataOptions.y;
+            convertPixelOpt.z = getDataOptions.z;
             
             % calculate image size after binning
             binVal = str2num(obj.View.handles.binSubareaEdit.String);     %#ok<ST2NM> % vector to bin the data binVal(1) for XY and binVal(2) for Z
@@ -759,7 +817,12 @@ classdef mibWatershedController  < handle
                 %     end
                 
                 labelObj = unique(currSlic(seedImg==seedMaterialId));
-                if isempty(labelObj); delete(wb); return; end
+                if isempty(labelObj)
+                    if obj.timerElapsed > obj.timerElapsedMax
+                        delete(wb); 
+                    end
+                    return; 
+                end
                 labelBg = unique(currSlic(seedImg==bgMaterialId));
                 
                 if obj.graphcut.superPixType == 2 && strcmp(obj.graphcut.dilateMode, 'post')  % watershed
@@ -769,11 +832,13 @@ classdef mibWatershedController  < handle
                 end
                 
                 % generate data term
-                waitbar(.45, wb, sprintf('Generating data term\nPlease wait...'));
+                if obj.timerElapsed > obj.timerElapsedMax
+                    waitbar(.45, wb, sprintf('Generating data term\nPlease wait...'));
+                end
                 
                 T = zeros([obj.graphcut.noPix(sliceNo), 2])+0.5;
-                % remove from labelBg those that are also found in labelObj
-                labelBg(ismember(labelBg, labelObj)) = [];
+                % remove from labelObj those that are also found in labelBg
+                labelObj(ismember(labelObj, labelBg)) = [];
                 
                 T(labelObj, 1) = 0;        T(labelObj, 2) = 99999;
                 T(labelBg,  1) = 99999;      T(labelBg,  2) = 0;
@@ -797,16 +862,15 @@ classdef mibWatershedController  < handle
                 end
                 
                 % % using ismembc instead of ismember because it is a bit faster
-                % % however, the vertcut with known indeces of pixels is ~x10 times
-                % faster!
+                % % however, the vertcut with known indeces of pixels is faster!
                 % indexLabel = find(labels>0);
                 % Mask(ismember(double(currSlic), indexLabel)) = 1;
                 if isfield(obj.graphcut, 'PixelIdxList')
                     if ~isempty(negIds)
-                        Mask(vertcat(obj.graphcut.PixelIdxList{1}{negIds>0})) = 0;  % remove background superpixels
-                        Mask(vertcat(obj.graphcut.PixelIdxList{1}{posIds>0})) = 1;  % add object superpixels
+                        Mask(vertcat(obj.graphcut.PixelIdxList{negIds>0})) = 0;  % remove background superpixels
+                        Mask(vertcat(obj.graphcut.PixelIdxList{posIds>0})) = 1;  % add object superpixels
                     else
-                        Mask(vertcat(obj.graphcut.PixelIdxList{1}{labels>0})) = 1;    
+                        Mask(vertcat(obj.graphcut.PixelIdxList{labels>0})) = 1;    
                     end
                 else
                     if ~isempty(negIds)
@@ -822,8 +886,8 @@ classdef mibWatershedController  < handle
                             negIds = uint32(negIds);
                             posIds = uint32(posIds);
                         end
-                        Mask(ismember(currSlic, negIds)) = 0;
-                        Mask(ismember(currSlic, posIds)) = 1;
+                        if ~isempty(negIds); Mask(ismember(currSlic, negIds)) = 0; end
+                        if ~isempty(posIds); Mask(ismember(currSlic, posIds)) = 1; end
                     else
                         indexLabel = find(labels>0);
                         if isa(currSlic, 'uint8')
@@ -862,7 +926,6 @@ classdef mibWatershedController  < handle
                 total = endIndex-startIndex+1;
                 for sliceNo = startIndex:endIndex
                     negIds = []; 
-                    
                     seedImg = cell2mat(obj.mibModel.getData2D('model', sliceNo, NaN, NaN, getDataOptions));   % get slice
                     
                     if binVal(1) ~= 1   % bin data
@@ -874,6 +937,7 @@ classdef mibWatershedController  < handle
                     currSlic = obj.graphcut.slic(:,:,index);
                     labelObj = unique(currSlic(seedImg==seedMaterialId));
                     if isempty(labelObj); index = index + 1; continue; end
+                    
                     labelBg = unique(currSlic(seedImg==bgMaterialId));
                     
                     if obj.graphcut.superPixType == 2 && strcmp(obj.graphcut.dilateMode, 'post')  % watershed
@@ -882,8 +946,8 @@ classdef mibWatershedController  < handle
                         labelBg(labelBg==0) = [];
                     end
                     
-                    % remove from labelBg those that are also found in labelObj
-                    labelBg(ismember(labelBg, labelObj)) = [];
+                    % remove from labelObj those that are also found in labelBg
+                    labelObj(ismember(labelObj, labelBg)) = [];
                     
                     % generate data term
                     T = zeros([obj.graphcut.noPix(index), 2])+0.5;
@@ -932,8 +996,8 @@ classdef mibWatershedController  < handle
                                 negIds = uint32(negIds);
                                 posIds = uint32(posIds);
                             end
-                            Mask(ismember(currSlic, negIds)) = 0;
-                            Mask(ismember(currSlic, posIds)) = 1;
+                            if ~isempty(negIds); Mask(ismember(currSlic, negIds)) = 0; end
+                            if ~isempty(posIds); Mask(ismember(currSlic, posIds)) = 1; end
                         else
                             indexLabel = find(labels>0);
                             if isa(currSlic, 'uint8')
@@ -959,7 +1023,9 @@ classdef mibWatershedController  < handle
                         Mask = imresize(Mask, [max(height)-min(height)+1, max(width)-min(width)+1], 'nearest');
                     end
                     obj.mibModel.setData2D('mask', Mask, sliceNo, NaN, NaN, getDataOptions);   % set slice
-                    waitbar(index/total, wb, sprintf('Calculating...\nPlease wait...'));
+                    if obj.timerElapsed > obj.timerElapsedMax
+                        waitbar(index/total, wb, sprintf('Calculating...\nPlease wait...'));
+                    end
                     index = index + 1;
                 end
             else        % do it for 3D
@@ -967,14 +1033,39 @@ classdef mibWatershedController  < handle
                 negIds = []; 
                 posIds = [];
                 
-                seedImg = cell2mat(obj.mibModel.getData3D('model', NaN, 4, NaN, getDataOptions));   % get dataset
-                if binVal(1) ~= 1 || binVal(2) ~= 1
-                    waitbar(.05, wb, sprintf('Binning the labels\nPlease wait...'));
-                    resizeOptions.height = binHeight;
-                    resizeOptions.width = binWidth;
-                    resizeOptions.depth = binThick;
-                    resizeOptions.method = 'nearest';
-                    seedImg = mibResize3d(seedImg, [], resizeOptions);
+                if isempty(obj.shownLabelObj)
+                    depth = str2num(obj.View.handles.zSubareaEdit.String); %#ok<ST2NM>
+                    obj.seedObj = cell([max(depth)-min(depth)+1 1]);
+                    obj.seedBg = cell([max(depth)-min(depth)+1 1]);
+                    
+                    seedImg = cell2mat(obj.mibModel.getData3D('model', NaN, 4, NaN, getDataOptions));   % get dataset
+                    if binVal(1) ~= 1 || binVal(2) ~= 1
+                        if obj.timerElapsed > obj.timerElapsedMax
+                            waitbar(.05, wb, sprintf('Binning the labels\nPlease wait...'));
+                        end
+                        resizeOptions.height = binHeight;
+                        resizeOptions.width = binWidth;
+                        resizeOptions.depth = binThick;
+                        resizeOptions.method = 'nearest';
+                        seedImg = mibResize3d(seedImg, [], resizeOptions);
+                    end
+                else
+                    sliceId = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber()-min(thick)+1;
+                    if size(obj.graphcut.slic, 3) < sliceId     % check for out of bounaries
+                        if obj.timerElapsed > obj.timerElapsedMax
+                            delete(wb);
+                        end
+                        return;
+                    end
+                    getDataOptions.z = [sliceId, sliceId];
+                    seedImg = cell2mat(obj.mibModel.getData2D('model', NaN, 4, NaN, getDataOptions));   % get dataset
+                    if binVal(1) ~= 1 || binVal(2) ~= 1
+                        resizeOptions.height = binHeight;
+                        resizeOptions.width = binWidth;
+                        resizeOptions.depth = 1;
+                        resizeOptions.method = 'nearest';
+                        seedImg = mibResize3d(seedImg, [], resizeOptions);
+                    end
                 end
                 
                 
@@ -983,35 +1074,51 @@ classdef mibWatershedController  < handle
                 %     end
                 
                 % define labeled object
-                waitbar(.35, wb, sprintf('Definfing the labels\nPlease wait...'));
-                [labelObj, ~, countL] = unique(obj.graphcut.slic(seedImg==seedMaterialId));     % countL can be used to count number of occurances as
-                [labelBg, ~, countBg] = unique(obj.graphcut.slic(seedImg==bgMaterialId));       % numel(find(countL==IndexOfSuperpixel)))
-                
-                if obj.graphcut.superPixType == 2 && strcmp(obj.graphcut.dilateMode, 'post')   % watershed
-                    % remove 0 indices
-                    labelObj(labelObj==0) = [];
-                    labelBg(labelBg==0) = [];
+                if obj.timerElapsed > obj.timerElapsedMax
+                    waitbar(.35, wb, sprintf('Definfing the labels\nPlease wait...'));
                 end
-                
-                % when two labels intersect in one supervoxel, prefer the one that
-                % has larger number of occurances
-                [commonVal, bgIdx] = intersect(labelBg, labelObj);  % find indices of the intersection supervoxels
-                labelIdx = find(ismember(labelObj, commonVal));
-                
-                for comId = 1:numel(commonVal)
-                    if numel(find(countL==labelIdx(comId))) > numel(find(countBg==bgIdx(comId)))
-                        labelBg(labelBg==commonVal(comId)) = [];
+                if isempty(obj.shownLabelObj)   % generate for 3D
+                    for sliceId = 1:size(obj.graphcut.slic, 3)
+                        currSlicImg = obj.graphcut.slic(:, :, sliceId);
+                        currSeedImg = seedImg(:, :, sliceId);
+                        obj.seedObj{sliceId} = unique(currSlicImg(currSeedImg==seedMaterialId));
+                        if noMaterials == 2
+                            obj.seedBg{sliceId} = unique(currSlicImg(currSeedImg==bgMaterialId));
+                        else
+                            % combine bg and all other materials to background    
+                            obj.seedBg{sliceId} = unique(currSlicImg(~ismember(currSeedImg, [0 seedMaterialId])));
+                        end
+                        %labelBg(ismember(labelBg, labelObj)) = [];
+                    end
+                else    % work with the current slice in 2D
+                    currSlicImg = obj.graphcut.slic(:, :, sliceId);
+                    obj.seedObj{sliceId} = unique(currSlicImg(seedImg==seedMaterialId));
+                    if noMaterials == 2
+                        obj.seedBg{sliceId} = unique(currSlicImg(seedImg==bgMaterialId));
                     else
-                        labelObj(labelObj==commonVal(comId)) = [];
+                        % combine bg and all other materials to background
+                        obj.seedBg{sliceId} = unique(currSlicImg(~ismember(seedImg, [0 seedMaterialId])));
                     end
                 end
                 
-                % OLD CODE that gives preference to label
-                % remove from labelBg those that are also found in labelObj
-                %labelBg(ismember(labelBg, labelObj)) = [];
+                % when two seeds overlap give preference to the background
+                labelBg = vertcat(obj.seedBg{:});
+                for sliceId = 1:size(obj.graphcut.slic, 3)
+                    [commonVal, bgIdx] = intersect(obj.seedObj{sliceId}, labelBg);
+                    obj.seedObj{sliceId}(bgIdx) = [];
+                end
+                labelObj = vertcat(obj.seedObj{:});
+                
+%                 if obj.graphcut.superPixType == 2 && strcmp(obj.graphcut.dilateMode, 'post')   % watershed
+%                     % remove 0 indices
+%                     labelObj(labelObj==0) = [];
+%                     labelBg(labelBg==0) = [];
+%                 end
                 
                 % generate data term
-                waitbar(.45, wb, sprintf('Generating data term\nPlease wait...'));
+                if obj.timerElapsed > obj.timerElapsedMax
+                    waitbar(.45, wb, sprintf('Generating data term\nPlease wait...'));
+                end
                 T = zeros([obj.graphcut.noPix, 2])+0.5;
                 T(labelObj, 1) = 0;
                 T(labelObj, 2) = 999999;
@@ -1034,17 +1141,21 @@ classdef mibWatershedController  < handle
                 %     labels = BK_GetLabeling(h);
                 %     BK_Delete(h);
                 
-                waitbar(.55, wb, sprintf('Doing maxflow/mincut\nPlease wait...'));
+                if obj.timerElapsed > obj.timerElapsedMax
+                    waitbar(.55, wb, sprintf('Doing maxflow/mincut\nPlease wait...'));
+                end
                 %[~, labels] = maxflow(obj.graphcut.Graph{1}, T);
                 [~, labels] = maxflow_v222(obj.graphcut.Graph{1}, T);
                 
-                waitbar(.75, wb, sprintf('Generating the mask\nPlease wait...'));
+                if obj.timerElapsed > obj.timerElapsedMax
+                    waitbar(.75, wb, sprintf('Generating the mask\nPlease wait...'));
+                end
                 
                 if isempty(obj.shownLabelObj)
                     obj.shownLabelObj = labels;
                     Mask = zeros(size(seedImg),'uint8');
                 else
-                    Mask = cell2mat(obj.mibModel.getData3D('mask', NaN, 4, NaN, getDataOptions));   % get mask
+                    %Mask = cell2mat(obj.mibModel.getData3D('mask', NaN, 4, NaN, getDataOptions));   % get mask
                     negIds = obj.shownLabelObj - labels;
                     posIds = labels - obj.shownLabelObj;
                     obj.shownLabelObj = labels;
@@ -1055,18 +1166,31 @@ classdef mibWatershedController  < handle
                 %Mask(ismember(double(graphcut.slic), find(labels>0))) = 1;
                 
                 % % using ismembc instead of ismember because it is a bit faster
-                % % however, the vertcut with known indeces of pixels is ~x10 times
-                % faster!
+                % % however, the vertcut with known indeces of pixels is faster!
                 % unfortunately it takes a lot of space to keep the indices of
                 % supervoxels
-                if ~isfield(obj.graphcut, 'PixelIdxList')
+                if isfield(obj.graphcut, 'PixelIdxList')
                     if ~isempty(negIds)
-                        Mask(vertcat(obj.graphcut.PixelIdxList{1}{negIds>0})) = 0;  % remove background superpixels
-                        Mask(vertcat(obj.graphcut.PixelIdxList{1}{posIds>0})) = 1;  % add object superpixels
+                        setDataOpt.PixelIdxList = find(negIds>0);
+                        if ~isempty(setDataOpt.PixelIdxList)
+                            setDataOpt.PixelIdxList = vertcat(obj.graphcut.PixelIdxList{setDataOpt.PixelIdxList});
+                            setDataOpt.PixelIdxList = obj.mibModel.I{obj.mibModel.Id}.convertPixelIdxListCrop2Full(setDataOpt.PixelIdxList, convertPixelOpt);   % recalc indices
+                            dataset = zeros([numel(setDataOpt.PixelIdxList), 1], 'uint8');
+                            obj.mibModel.setData3D('mask', dataset, NaN, NaN, NaN, setDataOpt);
+                        end
+                        setDataOpt.PixelIdxList = find(posIds>0);
+                        if ~isempty(setDataOpt.PixelIdxList)
+                            setDataOpt.PixelIdxList = vertcat(obj.graphcut.PixelIdxList{setDataOpt.PixelIdxList});
+                            setDataOpt.PixelIdxList = obj.mibModel.I{obj.mibModel.Id}.convertPixelIdxListCrop2Full(setDataOpt.PixelIdxList, convertPixelOpt);   % recalc indices
+                            dataset = zeros([numel(setDataOpt.PixelIdxList), 1], 'uint8')+1;
+                            obj.mibModel.setData3D('mask', dataset, NaN, NaN, NaN, setDataOpt);
+                        end
+                        if obj.timerElapsed > obj.timerElapsedMax
+                            delete(wb);
+                        end
+                        return;
                     else
-                        %Mask(vertcat(obj.graphcut.PixelIdxList{1}{labels>0})) = 1;  
-                        %Mask(vertcat(obj.graphcut.PixelIdxList{labels>0})) = 1;  
-                        Mask(obj.graphcut.PixelIdxList{labels>0}) = 1;  
+                        Mask(vertcat(obj.graphcut.PixelIdxList{labels>0})) = 1;  
                     end
                 else
                     if ~isempty(negIds)
@@ -1082,8 +1206,23 @@ classdef mibWatershedController  < handle
                             negIds = uint32(negIds);
                             posIds = uint32(posIds);
                         end
-                        Mask(ismember(obj.graphcut.slic, negIds)) = 0;
-                        Mask(ismember(obj.graphcut.slic, posIds)) = 1;
+                        if ~isempty(negIds)
+                            setDataOpt.PixelIdxList = find(ismember(obj.graphcut.slic, negIds)>0);
+                            setDataOpt.PixelIdxList = obj.mibModel.I{obj.mibModel.Id}.convertPixelIdxListCrop2Full(setDataOpt.PixelIdxList, convertPixelOpt);   % recalc indices
+                            dataset = zeros([numel(setDataOpt.PixelIdxList), 1], 'uint8');
+                            obj.mibModel.setData3D('mask', dataset, NaN, NaN, NaN, setDataOpt);
+                        end
+                        
+                        if ~isempty(posIds)
+                            setDataOpt.PixelIdxList = find(ismember(obj.graphcut.slic, posIds)>0);
+                            setDataOpt.PixelIdxList = obj.mibModel.I{obj.mibModel.Id}.convertPixelIdxListCrop2Full(setDataOpt.PixelIdxList, convertPixelOpt);   % recalc indices
+                            dataset = zeros([numel(setDataOpt.PixelIdxList), 1], 'uint8')+1;
+                            obj.mibModel.setData3D('mask', dataset, NaN, NaN, NaN, setDataOpt);
+                        end
+                        if obj.timerElapsed > obj.timerElapsedMax
+                            delete(wb);
+                        end
+                        return;
                     else
                         indexLabel = find(labels>0);
                         %indexLabel = find(labels==1); % test of BK_matlab
@@ -1108,7 +1247,9 @@ classdef mibWatershedController  < handle
                 %Mask(seedImg==seedMaterialId) = 1;    % add label pixels
                 
                 if binVal(1) ~= 1 || binVal(2) ~= 1
-                    waitbar(.95, wb, sprintf('Re-binning the mask\nPlease wait...'));
+                    if obj.timerElapsed > obj.timerElapsedMax
+                        waitbar(.95, wb, sprintf('Re-binning the mask\nPlease wait...'));
+                    end
                     resizeOptions.height = max(height)-min(height)+1;
                     resizeOptions.width = max(width)-min(width)+1;
                     resizeOptions.depth = max(thick)-min(thick)+1;
@@ -1117,7 +1258,9 @@ classdef mibWatershedController  < handle
                 end
                 obj.mibModel.setData3D('mask', Mask, NaN, 4, NaN, getDataOptions);   % set dataset
             end
-            delete(wb);
+            if obj.timerElapsed > obj.timerElapsedMax
+                delete(wb);
+            end
         end
         
         function doImageSegmentation(obj)
@@ -1459,7 +1602,7 @@ classdef mibWatershedController  < handle
                     for sliceId=getDataOptions.z(1):getDataOptions.z(2)
                         img = cell2mat(obj.mibModel.getData2D(inputType, sliceId, NaN, modelId, getDataOptions));   % get slice with objects to watershed
                         seedImg = cell2mat(obj.mibModel.getData2D(seedType, sliceId, NaN, seedModelId, getDataOptions));   % get slice with objects to watershed
-                        if max(max(seedImg)) == 0; continue; end;    % skip when no seeds
+                        if max(max(seedImg)) == 0; continue; end    % skip when no seeds
                         if obj.View.handles.intensityRadio.Value
                             intImg = cell2mat(obj.mibModel.getData2D('image', sliceId, NaN, col_channel, getDataOptions));   % get slice with objects to watershed
                         end
@@ -1823,7 +1966,6 @@ classdef mibWatershedController  < handle
                         % segmentation, i.e. in this function
                         % in 'post' the superpixels are dilated after the graphcut
                         % segmentation
-                        obj.graphcut.dilateMode = 'post';
                         obj.graphcut.dilateMode = 'pre';
                         if strcmp(obj.graphcut.dilateMode, 'pre')
                             obj.graphcut.slic = imdilate(obj.graphcut.slic, ones(3));
@@ -2060,9 +2202,11 @@ classdef mibWatershedController  < handle
                         if strcmp(obj.graphcut.dilateMode, 'pre')
                             obj.graphcut.slic = imdilate(obj.graphcut.slic, ones([3 3 3]));
                         end
-                        %STATS = regionprops(obj.graphcut.slic, 'PixelIdxList');
                         obj.recalcGraph_Callback();
                     end
+                    % clear list of selected pixels
+                    obj.seedObj = cell([size(obj.graphcut.slic, 3), 1]);
+                    obj.seedBg = cell([size(obj.graphcut.slic, 3), 1]);
             end
             
             % convert to a proper class, to uint8 if below 255
@@ -2084,14 +2228,9 @@ classdef mibWatershedController  < handle
             obj.graphcut.blackOnWhite = blackOnWhite;   % 1-when black ridges over white background
             obj.graphcut.watershedReduce = watershedReduce; % factor to reduce oversegmentation by watershed
             
-            if isfield(STATS, 'PixelIdxList')
-                STATS = STATS.PixelIdxList;
-                obj.graphcut.PixelIdxList = struct2cell(STATS);
-            end
-            
             if exist('fn_out', 'var')
                 % autosaving results
-                waitbar(.98, wb, sprintf('Saving Graphcut to a file\nPlease wait...'), 'Name', 'Saving to a file');
+                waitbar(.95, wb, sprintf('Saving Graphcut to a file\nPlease wait...'), 'Name', 'Saving to a file');
                 %Graphcut = rmfield(obj.graphcut, 'PixelIdxList');   %#ok<NASGU> % remove the PixelIdxList to make save fast
                 %Graphcut = obj.graphcut; %#ok<NASGU>
                 
@@ -2100,6 +2239,12 @@ classdef mibWatershedController  < handle
                 Graphcut = rmfield(obj.graphcut, 'Graph');   %#ok<NASGU> % remove the PixelIdxList to make save fast
                 save(fn_out, 'Graphcut', '-mat', '-v7.3');
                 fprintf('MIB: saving graphcut structure to %s -> done!\n', fn_out);
+            end
+            
+            % calculate PixelIdxList
+            if obj.View.handles.pixelIdxListCheck.Value == 1
+                waitbar(.98, wb, sprintf('Calculate PixelIdxList\nPlease wait...'), 'Name', 'PixelIdxList');
+                obj.pixelIdxListCheck_Callback();
             end
             
             waitbar(1, wb, sprintf('Done!'));
@@ -2180,11 +2325,25 @@ classdef mibWatershedController  < handle
                     case 'Cancel'
                         return;
                     case 'Import from Matlab'
-                        title = 'Input variables for import';
-                        prompt = 'A variable that contains compatible structure:';
-                        def = 'Graphcut';
-                        answer = mibInputDlg({mibPath}, prompt, title, def);
-                        if size(answer) == 0; return; end
+                        availableVars = evalin('base', 'whos');
+                        idx = contains({availableVars.class}, {'struct'});
+                        if sum(idx) == 0
+                            errordlg(sprintf('!!! Error !!!\nNothing to import...'), 'Nothing to import');
+                            return;
+                        end
+                        Vars = {availableVars(idx).name}';
+                        
+                        % find index of the I variable if it is present
+                        idx2 = find(ismember(Vars, 'Graphcut')==1);
+                        if ~isempty(idx2)
+                            Vars{end+1} = idx2;
+                        end
+                        prompts = {'A variable that contains compatible structure:'};
+                        defAns = {Vars};
+                        title = 'Input variable for import';
+                        answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
+                        if isempty(answer); return; end
+
                         tic;
                         obj.clearPreprocessBtn_Callback();
 
@@ -2259,6 +2418,14 @@ classdef mibWatershedController  < handle
             % recalculate the Graph
             if ~isfield(obj.graphcut, 'Graph')
                 obj.recalcGraph_Callback(1);
+            end
+            
+            % calculate PixelIdxList if needed
+            if obj.View.handles.pixelIdxListCheck.Value == 1 && ~isfield(obj.graphcut, 'PixelIdxList')
+                obj.pixelIdxListCheck_Callback();
+            end
+            if isfield(obj.graphcut, 'PixelIdxList')
+                obj.View.handles.pixelIdxListCheck.Value = 1;
             end
             
             obj.View.handles.superpixelsBtn.BackgroundColor = 'g';
@@ -2345,7 +2512,7 @@ classdef mibWatershedController  < handle
             % function superpixTypePopup_Callback(obj, parameter)
             % callback for change of superpixTypePopup
             
-            if nargin < 2; parameter = 'clear'; end;     % clear preprocessed data
+            if nargin < 2; parameter = 'clear'; end     % clear preprocessed data
             
             popupVal = obj.View.handles.superpixTypePopup.Value;
             popupText = obj.View.handles.superpixTypePopup.String;
@@ -2380,8 +2547,8 @@ classdef mibWatershedController  < handle
             % function recalcGraph_Callback(obj, showWaitbar)
             % callback for press of recalcGraph; recalculate energy
             % barriers for the graphcut structure
-            
-            if nargin < 2;    showWaitbar = 0; end;
+           
+            if nargin < 2;    showWaitbar = 0; end
             
             if ~isfield(obj.graphcut, 'EdgesValues')
                 errordlg(sprintf('!!! Error !!!\n\nThe edges are missing!\nPlease press the Superpixels/Graph button to calculate them'));
@@ -2391,7 +2558,7 @@ classdef mibWatershedController  < handle
             if showWaitbar; wb = waitbar(0, sprintf('Calculating weights for boundaries...\nPlease wait...')); end;
             
             obj.graphcut.scaleFactor = str2double(obj.View.handles.edgeFactorEdit.String);
-            if showWaitbar; waitbar(.1, wb); end;
+            if showWaitbar; waitbar(.1, wb); end
             
             for i=1:numel(obj.graphcut.EdgesValues)
                 edgeMax = max(obj.graphcut.EdgesValues{i});
@@ -2400,17 +2567,52 @@ classdef mibWatershedController  < handle
                 normE = obj.graphcut.EdgesValues{i}/edgeVar;   % scale to 0-1 range
                 EdgesValues = exp(-normE*obj.graphcut.scaleFactor);  % should be low (--> 0) at the edges of objects
                 
-                if showWaitbar; waitbar(.5, wb); end;
+                if showWaitbar; waitbar(.5, wb); end
                 
                 Edges2 = fliplr(obj.graphcut.Edges{i});    % complement for both ways
                 Edges = double([obj.graphcut.Edges{i}; Edges2]);
                 obj.graphcut.Graph{i} = sparse(Edges(:,1), Edges(:,2), [EdgesValues EdgesValues]);
-                if showWaitbar; waitbar(i/numel(obj.graphcut.EdgesValues), wb); end;
+                if showWaitbar; waitbar(i/numel(obj.graphcut.EdgesValues), wb); end
             end
             
-            if showWaitbar; waitbar(.9, wb); end;
-            if showWaitbar;     waitbar(1, wb);     delete(wb);  end;
+            if showWaitbar; waitbar(.9, wb); end
+            if showWaitbar;     waitbar(1, wb);     delete(wb);  end
+        end
+        
+        function pixelIdxListCheck_Callback(obj)
+            % function pixelIdxListCheck_Callback(obj)
+            % calculate pixelIdxList for the superpixels
+            % this may improve performance of the segmentation process, but
+            % requires more memory
+            
+            if isempty(obj.graphcut.noPix); return; end
+            
+            % clear the structure
+            if obj.View.handles.pixelIdxListCheck.Value == 0
+                obj.graphcut = rmfield(obj.graphcut, 'PixelIdxList');
+                return;
+            end
+            
+            wb = waitbar(0, sprintf('Calculating PixelIdxList\nPlease wait...'));
+            if obj.View.handles.mode2dCurrentRadio.Value    % 2d current slice
+                STATS = regionprops(obj.graphcut.slic, 'PixelIdxList');
+                obj.graphcut.PixelIdxList = struct2cell(STATS);
+            elseif obj.View.handles.mode2dRadio.Value       % 2d slice by slice
+                depth = size(obj.graphcut.slic,3);
+                for sliceId = 1:depth
+                    STATS = regionprops(obj.graphcut.slic(:,:,sliceId), 'PixelIdxList');
+                    obj.graphcut.PixelIdxList{sliceId} = struct2cell(STATS);
+                    waitbar(sliceId/depth, wb);
+                end
+            else    % 3d
+                STATS = regionprops(obj.graphcut.slic, 'PixelIdxList');
+                waitbar(0.8, wb);
+                obj.graphcut.PixelIdxList = struct2cell(STATS);
+                waitbar(1, wb);
+            end
+            delete(wb);
         end
         
     end
 end
+

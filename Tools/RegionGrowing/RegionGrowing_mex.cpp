@@ -164,8 +164,10 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] )
     // 1st input: Image (get dimensions as well)
     if (!mxIsDouble(prhs[0])) mexErrMsgTxt("First input argument must be of type double.");
     pdImg = (double*) mxGetData(prhs[0]);
+    const mwSize *pSize;
     //const int* pSize = mxGetDimensions(prhs[0]);
-    const int* pSize = mxGetDimensions(prhs[0]);
+    pSize = mxGetDimensions(prhs[0]);
+    
     long lNDims = mxGetNumberOfDimensions(prhs[0]);
     lNY = long(pSize[0]);
 	lNX = long(pSize[1]);

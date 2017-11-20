@@ -28,7 +28,7 @@ function I = mibAddScaleBar(I, pixSize, scale, orientation, base, table)
 % of the License, or (at your option) any later version.
 % 
 % Updates
-% 
+% 13.11.2017, fix of wrong scale size when using the YZ, XZ orientations
 
 
 % load characters for the scale bar
@@ -40,15 +40,15 @@ end
 if orientation == 4
     pixelSize = pixSize.x/scale;
 elseif orientation == 1
-    pixelSize = pixSize.x/scale;
+    pixelSize = pixSize.z/scale;
 elseif orientation == 2
-    pixelSize = pixSize.y/scale;
+    pixelSize = pixSize.z/scale;
 end
 
 width = size(I,2);
 height = size(I,1);
 
-resizeFactor = ceil(min([width height])/1200);
+resizeFactor = ceil(min([width height])/800);
 
 %scaleBarText = sprintf('%.3f %s',width*pixelSize/10, pixSize.units);
 %scaleBarLength = round(width/10);

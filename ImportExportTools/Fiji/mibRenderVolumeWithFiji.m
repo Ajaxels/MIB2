@@ -55,12 +55,13 @@ end
 
 prompt = {'Reduce the volume down to, max width pixels [no volume reduction when 0]?',...
           'Smoothing 3d kernel, width (no smoothing when 0):',...
-          'Invert? [0-no, 1-yes]',...
-          'Transparency threshold, use several comma-separated numbers for RGB'};
-dlg_title = 'Volume parameters';
-def = {'512','0','1','NaN'};
-answer = inputdlg(prompt,dlg_title,1,def);
-if isempty(answer); return;  end;
+          'invert the volume (recommended for EM)',...
+          'Transparency threshold, use several comma-separated numbers for RGB:'};
+defAns = {'512','0', true, 'NaN'};
+
+mibInputMultiDlgOpt.PromptLines = [2, 1, 1, 2];
+answer = mibInputMultiDlg([], prompt, defAns, 'Volume parameters', mibInputMultiDlgOpt);
+if isempty(answer); return; end
 
 tic
 
@@ -73,7 +74,7 @@ else
     factorX=1;
     factorY=1;
     factorZ=1;
-end;
+end
 
 kernelX = str2double(answer{2});
 kernelY = round(kernelX*pixSize.x/pixSize.y) + abs(mod(round(kernelX*pixSize.x/pixSize.y),2)-1);
@@ -98,7 +99,7 @@ else
     factorX=1;
     factorY=1;
     factorZ=1;
-end;
+end
 width = ceil(size(Volume,2)/factorX);
 height = ceil(size(Volume,1)/factorY);
 thick = ceil(size(Volume,4)/factorZ);

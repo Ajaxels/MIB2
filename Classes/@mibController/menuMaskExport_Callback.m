@@ -35,24 +35,32 @@ switch parameter
         disp(['Mask export: created variable ' answer{1} ' in the Matlab workspace']);
         delete(wb);
     case 'buffer'
-        destinationButton = [];
+        % find buffers that have the mask layer
+        destinationBuffer = 1:obj.mibModel.maxId;
+        destinationButton = 1;
         for i=1:obj.mibModel.maxId
             if strcmp(obj.mibModel.I{i}.meta('Filename'), 'none.tif') == 0
                 destinationButton = i;
                 break;
             end
-        end    
-        if isempty(destinationButton)
-            errordlg(sprintf('!!! Error !!!\n\nPlease open another dataset into one of the buffers of MIB and try again!'), 'Missing dataset', 'modal');
-            return;
         end
-        answer = mibInputDlg({mibPath}, 'Enter destination buffer number (from 1 to 9) to export the mask layer:','Export mask', num2str(destinationButton));
+
+        destinationBuffer = arrayfun(@(x) {num2str(x)}, destinationBuffer);   % convert to string cell array
+        prompts = {'Enter destination to export the Mask layer:'};
+        defAns = {[destinationBuffer, destinationButton]};
+        title = 'Export Mask to another dataset';
+        answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
         if isempty(answer); return; end
         destinationButton = str2double(answer{1});
-        if strcmp(obj.mibModel.I{destinationButton}.meta('Filename'), 'none.tif')
-            errordlg(sprintf('!!! Error !!!\n\nWrong destination!\nThe destination should have an opened dataset with dimensions that match dimensions of the current dataset'), 'Missing dataset', 'modal');
+        
+        % check dimensions
+        [height, width, ~, depth, time] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image');
+        [height2, width2, ~, depth2, time2] = obj.mibModel.I{destinationButton}.getDatasetDimensions('image');
+        if height ~= height2 || width~=width2 || depth~=depth2 || time~=time2
+            errordlg(sprintf('!!! Error !!!\n\nDimensions mismatch [height x width x depth x time]\nCurrent dimensions: %d x %d x %d x %d\nImported dimensions: %d x %d x %d x %d', height, width, depth, time, height2, width2, depth2, time2), 'Wrong dimensions', 'modal');
             return;
         end
+        
         wb = waitbar(0, 'Please wait...', 'Name', 'Copying the mask', 'WindowStyle', 'modal');
         options.blockModeSwitch = 0;
         mask = obj.mibModel.getData4D('mask', 4, NaN, options);

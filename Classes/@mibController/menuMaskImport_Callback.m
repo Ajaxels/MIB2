@@ -30,11 +30,38 @@ end
 
 switch parameter
     case 'matlab'
-        answer = mibInputDlg({mibPath}, 'Mask variable (1:h,1:w,1:z,1:t)', 'Import from Matlab', 'M');
-        if size(answer) == 0; return; end
+        availableVars = evalin('base', 'whos');
+        idx = contains({availableVars.class}, {'uint8', 'uint16', 'uint32', 'uint64','int8', 'int16', 'int32', 'int64', 'double', 'single'});
+        if sum(idx) == 0
+            errordlg(sprintf('!!! Error !!!\nNothing to import...'), 'Nothing to import');
+            return;
+        end
+        ImageVars = {availableVars(idx).name}';
+        ImageSize = {availableVars(idx).size}';
+        ImageClass = {availableVars(idx).class}';
+        ImageVarsDetails = ImageVars;
+        % add deteiled description to the text
+        for i=1:numel(ImageVarsDetails)
+            ImageVarsDetails{i} = sprintf('%s: %s [%s]', ImageVars{i}, ImageClass{i}, num2str(ImageSize{i}));
+        end
+        
+        % find index of the I variable if it is present
+        idx2 = find(ismember(ImageVars, 'M')==1);
+        if ~isempty(idx2)
+            ImageVarsDetails{end+1} = idx2;
+        else
+            ImageVarsDetails{end+1} = 1;
+        end
+        
+        prompts = {'Mask variable (1:h,1:w,1:z,1:t):'};
+        defAns = {ImageVarsDetails};
+        title = 'Import Mask from Matlab';
+        [answer, selIndex] = mibInputMultiDlg({obj.mibPath}, prompts, defAns, title);
+        if isempty(answer); return; end
+        %answer(1) = ImageVars(contains(ImageVarsDetails(1:end-1), answer{1})==1);
+        answer(1) = ImageVars(selIndex(1));
         
         wb = waitbar(0, sprintf('Importing mask\nPlease wait...'),'Name','Import Mask', 'WindowStyle', 'modal');
-        
         if (~isempty(answer{1}))
             try
                 mask = evalin('base',answer{1});
@@ -76,31 +103,35 @@ switch parameter
             delete(wb);
         end
     case 'buffer'
-        destinationButton = [];
+        % find buffers that have the mask layer
+        sourceBuffer = zeros([obj.mibModel.maxId 1]);
         for i=1:obj.mibModel.maxId
-            if strcmp(obj.mibModel.I{i}.meta('Filename'), 'none.tif') == 0
-                destinationButton = i;
-                break;
-            end
-        end    
-        if isempty(destinationButton)
-            errordlg(sprintf('!!! Error !!!\n\nPlease open another dataset into one of the buffers of MIB and try again!'), 'Missing dataset', 'modal');
+            sourceBuffer(i) = obj.mibModel.I{i}.maskExist;
+        end
+        sourceBuffer = find(sourceBuffer==1);   % find buffer indices
+        sourceBuffer = sourceBuffer(sourceBuffer~=obj.mibModel.Id);     % remove currently opened buffer from the list
+        
+        if isempty(sourceBuffer)
+            errordlg(sprintf('!!! Error !!!\n\nThe Mask layer has not been found!'), 'Missing mask', 'modal');
             return;
         end
-        
-        answer = mibInputDlg({mibPath}, 'Enter buffer number (from 1 to 9) of the dataset that has the mask layer:','Import mask', num2str(destinationButton));
+        sourceBuffer = arrayfun(@(x) {num2str(x)}, sourceBuffer);   % convert to string cell array
+        prompts = {'Please select the buffer number:'};
+        defAns = {sourceBuffer};
+        title = 'Import Mask from another dataset';
+        answer = mibInputMultiDlg({obj.mibPath}, prompts, defAns, title);
         if isempty(answer); return; end
         
         destinationButton = str2double(answer{1});
-        if strcmp(obj.mibModel.I{destinationButton}.meta('Filename'), 'none.tif')
-            errordlg(sprintf('!!! Error !!!\n\nWrong origin!\nThe dataset of the mask origin should contain the dataset and the mask'), 'Missing dataset', 'modal');
+
+        % check dimensions
+        [height, width, ~, depth, time] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image');
+        [height2, width2, ~, depth2, time2] = obj.mibModel.I{destinationButton}.getDatasetDimensions('image');
+        if height ~= height2 || width~=width2 || depth~=depth2 || time~=time2
+            errordlg(sprintf('!!! Error !!!\n\nDimensions mismatch [height x width x depth x time]\nCurrent dimensions: %d x %d x %d x %d\nImported dimensions: %d x %d x %d x %d', height, width, depth, time, height2, width2, depth2, time2), 'Wrong dimensions', 'modal');
             return;
         end
-        
-        if obj.mibModel.I{destinationButton}.maskExist == 0
-            errordlg(sprintf('!!! Error !!!\n\nThe mask layer is not present in the origin dataset!'), 'Missing the mask layer', 'modal');
-            return;
-        end
+
         wb = waitbar(0, 'Please wait...', 'Name', 'Copying the mask', 'WindowStyle', 'modal');
         options.blockModeSwitch = 0;
         options.id = destinationButton;

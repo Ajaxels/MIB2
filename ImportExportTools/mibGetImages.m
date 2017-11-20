@@ -142,7 +142,7 @@ for fn_index = 1:no_files
         img(1:maxY,1:maxX,1:maxC,layer_id:layer_id+files(fn_index).noLayers-1,1:maxT) = hdf5_image;
         clear hdf5_image;
         layer_id = layer_id + files(fn_index).noLayers;
-        if options.waitbar; waitbar(layer_id/maxZ, wb); end;
+        if options.waitbar; waitbar(layer_id/maxZ, wb); end
     elseif strcmp(files(fn_index).object_type,'amiramesh')        % Amira Mesh
         if options.waitbar
             options.hWaitbar = wb;
@@ -304,21 +304,18 @@ for fn_index = 1:no_files
 end
 
 if isa(img, 'uint32')   % convert to 16 bit image format
-    
-    %maxVal =  zeros([size(img,4),1],'uint32');
-    %minVal =  zeros([size(img,4),1],'uint32');
-    %for i=1:size(img,4)
-    %    maxVal(i) = max(max(max(img(:,:,:,i))));
-    %    minVal(i) = min(min(min(img(:,:,:,i))));
-    %end
     maxVal = max(max(max(max(img))));
     minVal = min(min(min(min(img))));
     
-    prompt = {sprintf('mibGetImages:\nEnter minimal intensity value\n(this value will be set to 0):'),sprintf('Enter maximal intensity value\n(this value will be set to 65535):')};
-    dlg_title = 'Conversion to 16bit format';
-    def = {num2str(minVal),num2str(maxVal)};
-    answer = inputdlg(prompt,dlg_title,1,def);
-    drawnow;    % otherwise crashes
+    prompt = {sprintf('Enter minimal intensity value\n(this value will be set to 0):'),...
+              sprintf('Enter maximal intensity value\n(this value will be set to 65535):')};
+    defAns = {num2str(minVal), num2str(maxVal)};
+    
+    mibInputMultiDlgOpt.PromptLines = [2, 2];
+    answer = mibInputMultiDlg([], prompt, defAns, 'Conversion to 16bit format', mibInputMultiDlgOpt);
+    if isempty(answer); return; end
+    
+    %drawnow;    % otherwise crashes
     if isempty(answer)
         if options.waitbar; delete(wb); end
         img = NaN;

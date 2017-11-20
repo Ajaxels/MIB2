@@ -54,9 +54,11 @@ classdef TripleAreaIntensityController < handle
             
             % update font and size
             global Font;
-            if obj.View.handles.text1.FontSize ~= Font.FontSize ...
-                    || ~strcmp(obj.View.handles.text1.FontName, Font.FontName)
-                mibUpdateFontSize(obj.View.gui, Font);
+            if ~isempty(Font)
+                if obj.View.handles.text1.FontSize ~= Font.FontSize ...
+                        || ~strcmp(obj.View.handles.text1.FontName, Font.FontName)
+                    mibUpdateFontSize(obj.View.gui, Font);
+                end
             end
             
 			obj.updateWidgets();

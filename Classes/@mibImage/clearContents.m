@@ -48,6 +48,24 @@ if nargin < 3;    meta = []; end
 if nargin < 2
     obj.img{1} = imread('im_browser_dummy.jpg'); % dummy image
 else
+    if isa(img, 'double') || isa(img, 'single')
+        % find maximal value
+        % 
+        maxVal = max(img(:));
+        if maxVal < 256
+            img = uint8(img);   % convert to 8bit
+            sprintf('MIB: image was converted to 8bit\n');
+        elseif maxVal < 65536
+            img = uint16(img);   % convert to 16bit 
+            sprintf('MIB: image was converted to 16bit\n');
+        elseif maxVal < 4294967296
+            img = uint32(img);   % convert to 32bit
+            sprintf('MIB: image was converted to 32bit\n');
+        else
+            errordlg(sprintf('!!! Wrong data type !!!\n\nThis dataset is not compatible with MIB'));
+            return;
+        end
+    end
     obj.img{1} = img; % initialize with an image
 end
 
@@ -132,6 +150,7 @@ else
     Values = values(meta);
     Values = [valueSet, Values];
     obj.meta = containers.Map(Keys, Values);
+    [obj.meta, obj.pixSize] = mibUpdatePixSizeAndResolution(obj.meta);  % update pixsize and resolution
 end
 
 % add colors to the LUT color table
@@ -153,7 +172,7 @@ end
 % extract lut colors from meta data
 if isa(meta,'containers.Map')
     if isKey(meta, 'lutColors')
-        if ischar(meta('lutColors')); meta('lutColors') = str2num(meta('lutColors')); end;
+        if ischar(meta('lutColors')); meta('lutColors') = str2num(meta('lutColors')); end %#ok<ST2NM>
         obj.lutColors(1:size(meta('lutColors'),1), :) = meta('lutColors');
     end
 end

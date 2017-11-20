@@ -34,14 +34,13 @@ switch parameter
                 break;
             end
         end
-        answer = mibInputDlg({mibPath}, 'Enter destination buffer number (from 1 to 9) to duplicate the dataset:','Duplicate', num2str(destinationButton));
+        prompts = {'Enter the destination buffer:'};
+        defAns = {arrayfun(@(x) {num2str(x)}, 1:obj.mibModel.maxId)};
+        defAns{1}(end+1) = {destinationButton};
+        title = 'Duplicate dataset';
+        answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
         if isempty(answer); return; end
         destinationButton = str2double(answer{1});
-        
-        if destinationButton > obj.mibModel.maxId || destinationButton < 1
-            errordlg('The destination should be a number from 1 to 9!','Wrong destination'); 
-            return; 
-        end
 
         if ~strcmp(obj.mibModel.I{destinationButton}.meta('Filename'), 'none.tif')
             button = questdlg(sprintf('You are goind to overwrite dataset in buffer %d\n\nAre you sure?', destinationButton), ...
@@ -66,15 +65,14 @@ switch parameter
                 break;
             end
         end
-
-        answer = mibInputDlg({mibPath}, 'Enter buffer number (from 1 to 9) to synchronize with:', ...
-            'Synchronize xy', num2str(destinationButton));
-        if isempty(answer); return; end;
+        prompts = {'Enter number of the dataset to synchronize with:'};
+        defAns = {arrayfun(@(x) {num2str(x)}, 1:obj.mibModel.maxId)};
+        defAns{1}(end+1) = {destinationButton};
+        title = 'Synchronize dataset';
+        answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
+        if isempty(answer); return; end
         destinationButton = str2double(answer{1});
-        if destinationButton > obj.mibModel.maxId || destinationButton < 1
-            errordlg('The buffer number should be from 1 to 9!', 'Wrong buffer'); 
-            return; 
-        end;
+
         if obj.mibModel.I{buttonID}.orientation ~= obj.mibModel.I{destinationButton}.orientation
             errordlg(sprintf('The datasets should be in the same orientation!\n\nFor example, switch orientation of both datasets to XY (the XY button in the toolbar) and try again'),'Wrong buffer'); return;
         end
@@ -124,7 +122,7 @@ switch parameter
     case 'clearAll'     % clear all stored datasets
         button = questdlg(sprintf('Warning!\n\nYou are going to clear all buffered datasets!\nContinue?'),...
             'Clear buffer','Continue','Cancel','Cancel');
-        if strcmp(button, 'Cancel'); return; end;
+        if strcmp(button, 'Cancel'); return; end
         
         % initialize image buffer with dummy images
         obj.mibModel.Id = 1;   % number of the selected buffer
@@ -135,7 +133,7 @@ switch parameter
             obj.updateAxesLimits('resize', button);
             bufferId = sprintf('mibBufferToggle%d', button);
             obj.mibView.handles.(bufferId).Value = 0;
-        end;
+        end
         obj.mibView.handles.mibBufferToggle1.Value = 1;
         obj.mibModel.U.clearContents();  % clear undo history
         notify(obj.mibModel, 'newDataset');  % notify about a new dataset

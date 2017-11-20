@@ -6,9 +6,20 @@ function PixelIdxList = convertPixelIdxListCrop2Full(obj, PixelIdxListCrop, opti
 % Parameters:
 % PixelIdxListCrop: vector of indices of the cropped dataset
 % options: a structure with parameters
-% @li .y -> [@em optional], [ymin, ymax] y-dimensions of the cropped dataset
-% @li .x -> [@em optional], [xmin, xmax] x-dimensions of the cropped dataset
+% @li .y -> [ymin, ymax] y-dimensions of the cropped dataset
+% @li .x -> [xmin, xmax] x-dimensions of the cropped dataset
 % @li .z -> [@em optional], [zmin, zmax] z-dimensions of the cropped dataset
+
+%| 
+% @b Examples:
+% @code 
+% [yMin, yMax, xMin, xMax, zMin, zMax] = obj.mibModel.I{obj.mibModel.Id}.getCoordinatesOfShownImage(4); 
+% convertPixelOpt.y = [yMin yMax]; // y-dimensions of the cropped dataset
+% convertPixelOpt.x = [xMin xMax]; // x-dimensions of the cropped dataset
+% convertPixelOpt.z = [zMin, zMax]; // z-dimensions of the cropped dataset
+% PixelIdxListFull = obj.mibModel.I{obj.mibModel.Id}.convertPixelIdxListCrop2Full(PixelIdxListFullCrop, convertPixelOpt);
+% @endcode
+
 
 if nargin < 3; error('missing parameters'); end
 

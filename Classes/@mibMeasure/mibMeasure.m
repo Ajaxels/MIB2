@@ -344,8 +344,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             if isempty(obj.typeToShow); obj.typeToShow = 'All'; end
         end
         
-        function editMeasurements(obj, mibController, index, colCh, widthProfile, finetuneCheck)
-            % function editMeasurements(obj, mibController, colCh, widthProfile, finetuneCheck)
+        function editMeasurements(obj, mibController, index, colCh, widthProfile, finetuneCheck, calcIntensity)
+            % function editMeasurements(obj, mibController, colCh, widthProfile, finetuneCheck, calcIntensity)
             % update measurements
             %
             % Parameters:
@@ -355,30 +355,33 @@ classdef mibMeasure < matlab.mixin.Copyable
             % for all color channels
             % widthProfile: [@em optional] width of profile for measurements of intensity profiles, could be empty
             % finetuneCheck: [@em optional] a number 0 - do not fine tune the measurement; 1-do the finetuning manually
+            % calcIntensity: [@em optional] @b 1 (@em default) - calculate
+            % intensity profile, 0 - do not calculate
             
+            if nargin < 7; calcIntensity = 1; end
             if nargin < 6; finetuneCheck = 1; end
             if nargin < 5; widthProfile = []; end
             if nargin < 4; colCh = obj.Data(index).colCh; end
             
-            %disableSegmentation = mibController.mibView.disableSegmentation;
+            %disableSegmentation = mibController.mibModel.disableSegmentation;
             mibController.mibModel.disableSegmentation = 1;
             
             type = obj.Data(index).type;
             switch cell2mat(type)
                 case 'Distance (linear)'
-                    obj.DistanceFun(mibController, index, colCh, finetuneCheck, widthProfile);
+                    obj.DistanceFun(mibController, index, colCh, finetuneCheck, widthProfile, calcIntensity);
                 case 'Circle (R)'
-                    obj.CircleFun(mibController, index, colCh, finetuneCheck);
+                    obj.CircleFun(mibController, index, colCh, finetuneCheck, calcIntensity);
                 case 'Angle'
-                    obj.AngleFun(mibController, index, colCh, finetuneCheck);
+                    obj.AngleFun(mibController, index, colCh, finetuneCheck, calcIntensity);
                 case 'Caliper'
-                    obj.CaliperFun(mibController, index, colCh, finetuneCheck);
+                    obj.CaliperFun(mibController, index, colCh, finetuneCheck, calcIntensity);
                 case 'Distance (polyline)'
-                    obj.DistancePolyFun(mibController, index, colCh, [], finetuneCheck);
+                    obj.DistancePolyFun(mibController, index, colCh, [], finetuneCheck, calcIntensity);
                 case 'Point'
-                    obj.PointFun(mibController, index, colCh, finetuneCheck);
+                    obj.PointFun(mibController, index, colCh, finetuneCheck, calcIntensity);
             end
-            %mibController.mibView.disableSegmentation = disableSegmentation;
+            mibController.mibModel.disableSegmentation = 0;
         end
         
         function removeMeasurements(obj, index)
@@ -439,8 +442,6 @@ classdef mibMeasure < matlab.mixin.Copyable
                 'Text Foreground Color',...
                 'Text Background Color',...
                 'Text Fontsize'};
-            name='Plot Options';
-            numlines=1;
             
             O = obj.Options;
             O = rmfield(O, 'showMarkers');
@@ -448,77 +449,45 @@ classdef mibMeasure < matlab.mixin.Copyable
             O = rmfield(O, 'showText');
             O = rmfield(O, 'splinemethod');
             fields = fieldnames(O);
-            n = length(fields);
+            
+            defAns={...
+                {'+', 'o', '*', '.', 'x', 's', 'd', '^', 'v', '>', '<', 'p', 'h'};...
+                {'+', 'o', '*', '.', 'x', 's', 'd', '^', 'v', '>', '<', 'p', 'h'};...
+                O.markersize;...
+                {'-','--',':','-.'};...
+                {'-','--',':','-.'};...
+                O.linewidth;...
+                {'r','g','b','c','m','y','k','w','none'};...
+                {'r','g','b','c','m','y','k','w','none'};...
+                {'r','g','b','c','m','y','k','w','none'};...
+                {'r','g','b','c','m','y','k','w','none'};...
+                O.fontsize};
             
             % build the default answer from the options structure
-            for k = 1:n
-                defaultanswer{k} = O.(fields{k});
-                if ~ischar(defaultanswer{k})
-                    defaultanswer{k} = num2str(defaultanswer{k});
-                end
+            for k = [1 2 4 5 7 8 9 10]
+                idx2 = find(ismember(defAns{k}, O.(fields{k}))==1);
+                defAns{k}{end+1} = idx2;
+%                 defaultanswer{k} = O.(fields{k});
+%                 if ~ischar(defaultanswer{k})
+%                     defaultanswer{k} = num2str(defaultanswer{k});
+%                 end
             end
-            A = inputdlg(prompt,name,numlines,defaultanswer);
-            if isempty(A); return; end;
             
-            O.marker1 = A{1};
-            O.marker2 = A{2};
-            O.markersize = A{3};
-            O.linestyle1 = A{4};
-            O.linestyle2 = A{5};
-            O.linewidth = A{6};
-            O.color1 = A{7};
-            O.color2 = A{8};
-            O.textcolorfg = A{9};
-            O.textcolorbg = A{10};
-            O.fontsize = A{11};
+            A = mibInputMultiDlg([], prompt, defAns, 'Plot Options');
+            if isempty(A); return; end
+            
+            obj.Options.marker1 = A{1};
+            obj.Options.marker2 = A{2};
+            obj.Options.markersize = A{3};
+            obj.Options.linestyle1 = A{4};
+            obj.Options.linestyle2 = A{5};
+            obj.Options.linewidth = A{6};
+            obj.Options.color1 = A{7};
+            obj.Options.color2 = A{8};
+            obj.Options.textcolorfg = A{9};
+            obj.Options.textcolorbg = A{10};
+            obj.Options.fontsize = A{11};
 
-            % check Options
-            % check if a proper marker entered
-            if ~any(strcmp(O.marker1,{'o','s','^','d','v','*','<','>','.','p','h','+','x','none'}))
-                errordlg(sprintf('Error!\n\nOptions: invalid marker\nValue reset to default!'),'Wrong value');
-                O.marker1 = 'o';
-            end
-            if ~any(strcmp(O.marker2,{'o','s','^','d','v','*','<','>','.','p','h','+','x','none'}))
-                errordlg(sprintf('Error!\n\nOptions: invalid marker\nValue reset to default!'),'Wrong value');
-                O.marker1 = '.';
-            end
-            
-            % check if a proper linestyle is entered
-            if ~any(strcmp(O.linestyle1,{'-','--','-.',':','none'}))
-                errordlg(sprintf('Error!\n\nOptions: invalid linestyle\nValue reset to default!'),'Wrong value');
-                O.linestyle1 = '-';
-            end
-            if ~any(strcmp(O.linestyle2,{'-','--','-.',':','none'}))
-                errordlg(sprintf('Error!\n\nOptions: invalid linestyle\nValue reset to default!'),'Wrong value');
-                O.linestyle2 = '--';
-            end
-            
-            % check if a proper color is entered
-            if ~any(strcmp(O.color1,{'y','m','c','r','g','b','w','k','none'})) ...
-                    && isempty(regexp(O.color1,'\[[(\d*)(\s*)(\.*)]*\]', 'once'))
-                errordlg(sprintf('Error!\n\nOptions: invalid color\nValue reset to default!'),'Wrong value');
-                O.color1 = 'r';
-            end
-            if ~any(strcmp(O.color2,{'y','m','c','r','g','b','w','k','none'})) ...
-                    && isempty(regexp(O.color2,'\[[(\d*)(\s*)(\.*)]*\]', 'once'))
-                errordlg(sprintf('Error!\n\nOptions: invalid color\nValue reset to default!'),'Wrong value');
-                O.color2 = 'k';
-            end
-            if ~any(strcmp(O.textcolorfg,{'y','m','c','r','g','b','w','k','none'})) ...
-                    && isempty(regexp(O.textcolorfg,'\[[(\d*)(\s*)(\.*)]*\]', 'once'))
-                errordlg(sprintf('Error!\n\nOptions: invalid color\nValue reset to default!'),'Wrong value');
-                O.textcolorfg = 'y';
-            end
-            if ~any(strcmp(O.textcolorbg,{'y','m','c','r','g','b','w','k','none'})) ...
-                    && isempty(regexp(O.textcolorbg,'\[[(\d*)(\s*)(\.*)]*\]', 'once'))
-                errordlg(sprintf('Error!\n\nOptions: invalid color\nValue reset to default!'),'Wrong value');
-                O.textcolorbg = 'none';
-            end
-            
-            for k = 1:n
-                %handles.h.Img{handles.h.Id}.I.hMeasure.Options.(fields{k}) = A{k};
-                obj.Options.(fields{k}) = O.(fields{k});
-            end
         end
         
         function setDefaultOptions(obj)
@@ -770,8 +739,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             circ.R  = R;
         end
         
-        function result = AngleFun(obj, mibController, index, colCh, finetuneCheck)
-            % function result = AngleFun(obj, mibController, index, colCh, finetuneCheck)
+        function result = AngleFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
+            % function result = AngleFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
             % This function allows the measurement of an angle between 3 points
             %
             % Parameters:
@@ -780,6 +749,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             % empty (@b [] ) - adds a new measurement
             % colCh: [@em optional] color channel to use for profile; @em default = 1
             % finetuneCheck: [@em optional] @b 1 (@em default) - allow fine-tuning during the placing of measurements; @b 0 - instant placing
+            % calcIntensity: [@em optional] @b 1 (@em default) - calculate
+            % intensity profile, 0 - do not calculate
             %
             % Return values:
             % result - 1-success, 0-cancel
@@ -791,7 +762,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             
             % Credit: adapted from Image Measurement Utility by Jan Neggers
             % http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility
-            
+            if nargin < 6; calcIntensity = 1; end
             if nargin < 5; finetuneCheck = 1; end
             if nargin < 4; colCh = 1; end
             if nargin < 3; index = []; end
@@ -816,6 +787,9 @@ classdef mibMeasure < matlab.mixin.Copyable
                 else
                     position = [x(2), y(2); x(1), y(1); x(3), y(3)];
                 end
+                % get Z-value
+                z = obj.hImg.getCurrentSliceNumber();
+                timePoint = obj.hImg.getCurrentTimePoint();
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -829,11 +803,11 @@ classdef mibMeasure < matlab.mixin.Copyable
                     position(:,1) = tempData.X;
                     position(:,2) = tempData.Y;
                 end
+                % get Z-value
+                z = tempData.Z;
+                timePoint = tempData.T;
             end
             
-            % get Z-value
-            z = obj.hImg.getCurrentSliceNumber();
-            timePoint = obj.hImg.getCurrentTimePoint();
             % detect Cancel due to press of the Escape button
             if isempty(position)
                 if exist('tempData','var')
@@ -863,34 +837,40 @@ classdef mibMeasure < matlab.mixin.Copyable
             Y = position(:,2);
             
             % create image space (for intensity)
-            if orientation == 1   % zx orientation
-                [x, y] = meshgrid(1:obj.hImg.depth, 1:obj.hImg.width);                
-            elseif orientation == 2   % zy orientation
-                [x, y] = meshgrid(1:obj.hImg.depth, 1:obj.hImg.height);
-            else        % xy orientation
-                [x, y] = meshgrid(1:obj.hImg.width, 1:obj.hImg.height);
+            if calcIntensity
+                if orientation == 1   % zx orientation
+                    [x, y] = meshgrid(1:obj.hImg.depth, 1:obj.hImg.width);                
+                elseif orientation == 2   % zy orientation
+                    [x, y] = meshgrid(1:obj.hImg.depth, 1:obj.hImg.height);
+                else        % xy orientation
+                    [x, y] = meshgrid(1:obj.hImg.width, 1:obj.hImg.height);
+                end
+            
+                % calculate a length vector
+                t = [ 0 ; hypot(diff(X),diff(Y)) ];
+                t = cumsum(t);
+            
+                % discretize the measurement line
+                Ni = max(t);
+                ti = linspace(0,max(t),Ni);
+                xi = interp1(t,X,ti);
+                yi = interp1(t,Y,ti);
+            
+                getDataOptions.blockModeSwitch = 0;
+                im = cell2mat(mibController.mibModel.getData2D('image', NaN, NaN, colCh, getDataOptions));
+            
+                % interpolate the intensity profile along the measurement line
+                for ch=1:size(im, 3)
+                    profile(ch,:) = interp2(x, y, double(im(:,:,ch)), xi, yi); %#ok<AGROW>
+                end
+            
+                % calculate the average intensity
+                intensity = mean(profile, 2);
+            else
+                intensity = NaN;
+                ti = NaN;
+                profile = NaN;
             end
-            
-            % calculate a length vector
-            t = [ 0 ; hypot(diff(X),diff(Y)) ];
-            t = cumsum(t);
-            
-            % discretize the measurement line
-            Ni = max(t);
-            ti = linspace(0,max(t),Ni);
-            xi = interp1(t,X,ti);
-            yi = interp1(t,Y,ti);
-            
-            getDataOptions.blockModeSwitch = 0;
-            im = cell2mat(mibController.mibModel.getData2D('image', NaN, NaN, colCh, getDataOptions));
-            
-            % interpolate the intensity profile along the measurement line
-            for ch=1:size(im, 3)
-                profile(ch,:) = interp2(x, y, double(im(:,:,ch)), xi, yi); %#ok<AGROW>
-            end
-            
-            % calculate the average intensity
-            intensity = mean(profile, 2);
             
             % store the measurement
             if isempty(index)
@@ -916,8 +896,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             result = 1;
         end
         
-        function result = CaliperFun(obj, mibController, index, colCh, finetuneCheck)
-            % function result = CaliperFun(obj, mibController, index, colCh, finetuneCheck)
+        function result = CaliperFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
+            % function result = CaliperFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
             % measuring a distance between two opposite sides of an object
             %
             % Parameters:
@@ -926,6 +906,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             % empty (@b [] ) - adds a new measurement
             % colCh: [@em optional] color channel to use for profile; @em default = 1
             % finetuneCheck: [@em optional] @b 1 (@em default) - allow fine-tuning during the placing of measurements; @b 0 - instant placing
+            % calcIntensity: [@em optional] @b 1 (@em default) - calculate
+            % intensity profile, 0 - do not calculate
             %
             % Return values:
             % result - 1-success, 0-cancel
@@ -937,7 +919,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             
             % Credit: adapted from Image Measurement Utility by Jan Neggers
             % http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility
-            
+            if nargin < 6; calcIntensity = 1; end
             if nargin < 5; finetuneCheck = 1; end
             if nargin < 4; colCh = 1; end
             if nargin < 3; index = []; end
@@ -986,6 +968,9 @@ classdef mibMeasure < matlab.mixin.Copyable
                 clear position;
                 position(1:3,1) = [X ; P(1)];
                 position(1:3,2) = [Y ; P(2)];
+                % get Z-value
+                z = obj.hImg.getCurrentSliceNumber();
+                timePoint = obj.hImg.getCurrentTimePoint();
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -1019,12 +1004,10 @@ classdef mibMeasure < matlab.mixin.Copyable
                     position(:,1) = tempData.X;
                     position(:,2) = tempData.Y;
                 end
-                
+                % get Z-value
+                z = tempData.Z;
+                timePoint = tempData.T;
             end
-            
-            % get Z-value
-            z = obj.hImg.getCurrentSliceNumber();
-            timePoint = obj.hImg.getCurrentTimePoint();
             
             % detect Cancel due to press of the Escape button
             if isempty(position)
@@ -1033,7 +1016,7 @@ classdef mibMeasure < matlab.mixin.Copyable
                     mibController.plotImage();
                 end
                 return;
-            end;
+            end
             
             % calculate the perpendicular distance
             x1 = position(1,1);
@@ -1049,18 +1032,24 @@ classdef mibMeasure < matlab.mixin.Copyable
             if orientation == 1   % zx orientation
                 pixX = pixSize.z;
                 pixY = pixSize.x;
-                % create image space (for intensity)
-                [x, y] = meshgrid(1:obj.hImg.depth, 1:obj.hImg.width);
+                if calcIntensity
+                    % create image space (for intensity)
+                    [x, y] = meshgrid(1:obj.hImg.depth, 1:obj.hImg.width);
+                end
             elseif orientation == 2   % zy orientation
                 pixX = pixSize.z;
                 pixY = pixSize.y;
-                % create image space (for intensity)
-                [x, y] = meshgrid(1:obj.hImg.depth, 1:obj.hImg.height);
+                if calcIntensity
+                    % create image space (for intensity)
+                    [x, y] = meshgrid(1:obj.hImg.depth, 1:obj.hImg.height);
+                end
             else        % xy orientation
                 pixX = pixSize.x;
                 pixY = pixSize.y;
-                % create image space (for intensity)
-                [x, y] = meshgrid(1:obj.hImg.width, 1:obj.hImg.height);
+                if calcIntensity
+                    % create image space (for intensity)
+                    [x, y] = meshgrid(1:obj.hImg.width, 1:obj.hImg.height);
+                end
             end
             
             % The perpendicular distance (http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html)
@@ -1081,26 +1070,31 @@ classdef mibMeasure < matlab.mixin.Copyable
             X = [x1 ; x2 ; x3 ; x4];
             Y = [y1 ; y2 ; y3 ; y4];
             
-            % calculate a length vector
-            t = [ 0 ; hypot(diff(X(3:4)),diff(Y(3:4))) ];
-            t = cumsum(t);
+            if calcIntensity
+                % calculate a length vector
+                t = [ 0 ; hypot(diff(X(3:4)),diff(Y(3:4))) ];
+                t = cumsum(t);
             
-            % discretize the measurement line
-            Ni = ceil(max(t));
-            ti = linspace(0,max(t),Ni);
-            xi = interp1(t,X(3:4),ti);
-            yi = interp1(t,Y(3:4),ti);
+                % discretize the measurement line
+                Ni = ceil(max(t));
+                ti = linspace(0,max(t),Ni);
+                xi = interp1(t,X(3:4),ti);
+                yi = interp1(t,Y(3:4),ti);
             
-            getDataOptions.blockModeSwitch = 0;
-            im = cell2mat(mibController.mibModel.getData2D('image', NaN, NaN, colCh, getDataOptions));
+                getDataOptions.blockModeSwitch = 0;
+                im = cell2mat(mibController.mibModel.getData2D('image', NaN, NaN, colCh, getDataOptions));
             
-            % interpolate the intensity profile along the measurement line
-            for ch=1:size(im, 3)
-                profile(ch, :) = interp2(x, y, double(im(:,:,ch)), xi, yi);
+                % interpolate the intensity profile along the measurement line
+                for ch=1:size(im, 3)
+                    profile(ch, :) = interp2(x, y, double(im(:,:,ch)), xi, yi);
+                end
+            
+                % calculate the average intensity
+                intensity = mean(profile, 2);
+            else
+                intensity = NaN;
+                profile = NaN;
             end
-            
-            % calculate the average intensity
-            intensity = mean(profile, 2);
             % store the measurement
             if isempty(index)
                 n = obj.getNumberOfMeasurements + 1;
@@ -1126,7 +1120,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             result = 1;
         end
         
-        function result = CircleFun(obj, mibController, index, colCh, finetuneCheck)
+        function result = CircleFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
             % function result = CircleFun(obj, mibController, index, colCh, finetuneCheck)
             % This function allows the measurement of a radius
             %
@@ -1136,6 +1130,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             % empty (@b [] ) - adds a new measurement
             % colCh: [@em optional] color channel to use for profile; @em default = 1
             % finetuneCheck: [@em optional] @b 1 (@em default) - allow fine-tuning during the placing of measurements; @b 0 - instant placing
+            % calcIntensity: [@em optional] @b 1 (@em default) - calculate
+            % intensity profile, 0 - do not calculate
             %
             % Return values:
             % result - 1-success, 0-cancel
@@ -1147,7 +1143,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             
             % Credit: adapted from Image Measurement Utility by Jan Neggers
             % http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility
-            
+            if nargin < 6; calcIntensity = 1; end
             if nargin < 5; finetuneCheck = 1; end
             if nargin < 4; colCh = 1; end
             if nargin < 3; index = []; end
@@ -1173,6 +1169,10 @@ classdef mibMeasure < matlab.mixin.Copyable
                 else
                     position = obj.drawROI(mibController, 'imellipse', P, 1);
                 end
+                
+                % get Z-value
+                z = obj.hImg.getCurrentSliceNumber();
+                timePoint = obj.hImg.getCurrentTimePoint();
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -1191,11 +1191,10 @@ classdef mibMeasure < matlab.mixin.Copyable
                 else
                     position = obj.drawROI(mibController, 'imellipse', P, 1);
                 end
+                % get Z-value
+                z = tempData.Z;
+                timePoint = tempData.T;
             end
-            
-            % get Z-value
-            z = obj.hImg.getCurrentSliceNumber();
-            timePoint = obj.hImg.getCurrentTimePoint();
             
             % detect Cancel due to press of the Escape button
             if isempty(position)
@@ -1217,27 +1216,31 @@ classdef mibMeasure < matlab.mixin.Copyable
             phi = linspace(0,2*pi,60);
             X = circ.R*sin(phi) + circ.xc;
             Y = circ.R*cos(phi) + circ.yc;
+            if calcIntensity
+                % create image space (for intensity)
+                [x, y] = meshgrid(1:obj.hImg.width, 1:obj.hImg.height);
             
-            % create image space (for intensity)
-            [x, y] = meshgrid(1:obj.hImg.width, 1:obj.hImg.height);
+                % find all pixels inside the circle
+                incircle = inpolygon(x, y, X, Y);
             
-            % find all pixels inside the circle
-            incircle = inpolygon(x, y, X, Y);
+                getDataOptions.blockModeSwitch = 0;
+                im = cell2mat(mibController.mibModel.getData2D('image', NaN, NaN, colCh, getDataOptions));
             
-            getDataOptions.blockModeSwitch = 0;
-            im = cell2mat(mibController.mibModel.getData2D('image', NaN, NaN, colCh, getDataOptions));
+                for ch=1:size(im, 3)
+                    % profile
+                    im_temp = im(:,:,ch);
+                    profile(ch,:) = im_temp(incircle).'; %#ok<AGROW>
+                    % calculate the average intensity
+                    intensity(ch) = mean(im_temp(incircle)); %#ok<AGROW>
+                end
             
-            for ch=1:size(im, 3)
-                % profile
-                im_temp = im(:,:,ch);
-                profile(ch,:) = im_temp(incircle).'; %#ok<AGROW>
-                % calculate the average intensity
-                intensity(ch) = mean(im_temp(incircle)); %#ok<AGROW>
+                % distance from center
+                ti = hypot(x(incircle)-xc,y(incircle)-yc).';
+            else
+                intensity = NaN;
+                profile = NaN;
+                ti = NaN;
             end
-            
-            % distance from center
-            ti = hypot(x(incircle)-xc,y(incircle)-yc).';
-            
             % store the measurement
             if isempty(index)
                 n = obj.getNumberOfMeasurements + 1;
@@ -1262,8 +1265,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             result = 1;
         end
         
-        function result = DistanceFreeFun(obj, mibController, colCh, finetuneCheck)
-            % function result = DistanceFreeFun(obj, mibController, colCh, finetuneCheck)
+        function result = DistanceFreeFun(obj, mibController, colCh, finetuneCheck, calcIntensity)
+            % function result = DistanceFreeFun(obj, mibController, colCh, finetuneCheck, calcIntensity)
             % measuring of distance along the free-hand path. The path is
             % converted to the impoly line
             %
@@ -1271,6 +1274,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             % mibController: handle of mibController
             % colCh: [@em optional] color channel to use for profile; @em default = 1
             % finetuneCheck: [@em optional] @b 1 (@em default) - allow fine-tuning during the placing of measurements; @b 0 - instant placing
+             % calcIntensity: [@em optional] @b 1 (@em default) - calculate
+            % intensity profile, 0 - do not calculate
             %
             % Return values:
             % result - 1-success, 0-cancel
@@ -1280,9 +1285,9 @@ classdef mibMeasure < matlab.mixin.Copyable
             % @code obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFreeFun(obj, 1); // call from mibMeasureToolController; draw a path and measure the distance between points. Calculate intensity profile for color channel 1 @endcode
             
             global mibPath;
-            
-            if nargin < 4; finetuneCheck = 1; end;
-            if nargin < 3; colCh = 1; end;
+            if nargin < 5; calcIntensity = 1; end
+            if nargin < 4; finetuneCheck = 1; end
+            if nargin < 3; colCh = 1; end
             result = 0;
             
             position = obj.drawROI(mibController, 'imfreehand');
@@ -1298,17 +1303,17 @@ classdef mibMeasure < matlab.mixin.Copyable
                     mibController.plotImage();
                 end
                 return;
-            end;
+            end
             
             prompt = sprintf('There are %d vertices in the line. Please enter a coefficient to decrease it if needed; any in range 1-%d\n\nIf coefficient is 2, the number of vertices will be reduced in 2 times', size(position,1), size(position,1));
             title = 'Convert to polyline';
             answer = mibInputDlg({mibPath}, prompt, title, '10');
-            if isempty(answer); return; end;
+            if isempty(answer); return; end
             
             coef = round(str2double(cell2mat(answer)));
             if coef >= size(position,1)
                 coef = 1;
-            end;
+            end
             position = position(1:coef:end,:);
             
             spl.x = position(:,1);
@@ -1331,12 +1336,12 @@ classdef mibMeasure < matlab.mixin.Copyable
             obj.addMeasurements(newData, n);
             
             % call DistancePolyFun to do calculations
-            obj.DistancePolyFun(mibController, n, colCh, size(position,1), finetuneCheck);
+            obj.DistancePolyFun(mibController, n, colCh, size(position,1), finetuneCheck, calcIntensity);
             result = 1;
         end
         
-        function result = DistancePolyFun(obj, mibController, index, colCh, noPoints, finetuneCheck)
-            % function result = DistancePolyFun(obj, mibController, index, colCh, noPoints, modeString, finetuneCheck)
+        function result = DistancePolyFun(obj, mibController, index, colCh, noPoints, finetuneCheck, calcIntensity)
+            % function result = DistancePolyFun(obj, mibController, index, colCh, noPoints, modeString, finetuneCheck, calcIntensity)
             % measuring of distance along the path
             %
             % Parameters:
@@ -1346,6 +1351,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             % colCh: [@em optional] color channel to use for profile; @em default = 1
             % noPoints: [@em optional] define number of points in the path; @em default = 5
             % finetuneCheck: [@em optional] @b 1 (@em default) - allow fine-tuning during the placing of measurements; @b 0 - instant placing
+            % calcIntensity: [@em optional] @b 1 (@em default) - calculate
+            % intensity profile, 0 - do not calculate
             %
             % Return values:
             % result - 1-success, 0-cancel
@@ -1357,6 +1364,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             
             % Credit: adapted from Image Measurement Utility by Jan Neggers
             % http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility
+            if nargin < 7; calcIntensity = 1; end
             if nargin < 6; finetuneCheck = 1; end
             if nargin < 5; noPoints = 5; end
             if nargin < 4; colCh = 1; end
@@ -1386,6 +1394,9 @@ classdef mibMeasure < matlab.mixin.Copyable
                     position(:,1) = x;
                     position(:,2) = y;
                 end
+                % get Z-value
+                z = obj.hImg.getCurrentSliceNumber();
+                timePoint = obj.hImg.getCurrentTimePoint();
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -1399,11 +1410,10 @@ classdef mibMeasure < matlab.mixin.Copyable
                     position(:,1) = tempData.spline.x;
                     position(:,2) = tempData.spline.y;
                 end
+                % get Z-value
+                z = tempData.Z;
+                timePoint = tempData.T;
             end
-            
-            % get Z-value
-            z = obj.hImg.getCurrentSliceNumber();
-            timePoint = obj.hImg.getCurrentTimePoint();
             
             % detect Cancel due to press of the Escape button
             if isempty(position)
@@ -1463,17 +1473,21 @@ classdef mibMeasure < matlab.mixin.Copyable
             % calculate the spline length
             L = sum( hypot( diff(xi)*pixX,diff(yi)*pixY ) );
             
-            getDataOptions.blockModeSwitch = 0;
-            im = cell2mat(mibController.mibModel.getData2D('image', NaN, NaN, colCh, getDataOptions));
+            if calcIntensity
+                getDataOptions.blockModeSwitch = 0;
+                im = cell2mat(mibController.mibModel.getData2D('image', NaN, NaN, colCh, getDataOptions));
             
-            for ch=1:size(im, 3) 
-                % interpolate the intensity profile along the measurement line
-                profile(ch, :) = interp2(x, y, double(im(:,:,ch)), xi, yi);
+                for ch=1:size(im, 3) 
+                    % interpolate the intensity profile along the measurement line
+                    profile(ch, :) = interp2(x, y, double(im(:,:,ch)), xi, yi);
+                end
+            
+                % calculate the average intensity
+                intensity = mean(profile, 2);
+            else
+                intensity = NaN;
+                profile = NaN;
             end
-            
-            % calculate the average intensity
-            intensity = mean(profile, 2);
-            
             if isempty(index)
                 n = obj.getNumberOfMeasurements + 1;
             else
@@ -1498,8 +1512,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             result = 1;
         end
         
-        function result = PointFun(obj, mibController, index, colCh, finetuneCheck)
-            % function result = PointFun(obj, mibController, index, colCh, finetuneCheck)
+        function result = PointFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
+            % function result = PointFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
             % add a point as a marker
             %
             % Parameters:
@@ -1508,6 +1522,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             % empty (@b [] ) - adds a new measurement
             % colCh: [@em optional] color channel to use for profile; @em default = 1
             % finetuneCheck: [@em optional] @b 1 (@em default) - allow fine-tuning during the placing of measurements; @b 0 - instant placing
+            % calcIntensity: [@em optional] @b 1 (@em default) - calculate
+            % intensity profile, 0 - do not calculate
             %
             % Return values:
             % result - 1-success, 0-cancel
@@ -1518,7 +1534,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             % @code obj.mibModel.I{obj.mibModel.Id}.hMeasure.PointFun(obj, 2, 1); // call from mibMeasureToolController; edit second measurement. @endcode
             
             global mibPath;
-            
+            if nargin < 6; calcIntensity = 1; end
             if nargin < 5; finetuneCheck = 1; end
             if nargin < 4; colCh = 1; end
             if nargin < 3; index = []; end
@@ -1532,6 +1548,9 @@ classdef mibMeasure < matlab.mixin.Copyable
                     position = [x, y];
                 end
                 if isempty(position);  return; end % cancel
+                % get Z-value
+                z = obj.hImg.getCurrentSliceNumber();
+                timePoint = obj.hImg.getCurrentTimePoint();
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -1545,11 +1564,10 @@ classdef mibMeasure < matlab.mixin.Copyable
                     position(:, 1) = tempData.X;
                     position(:, 2) = tempData.Y;
                 end
+                % get Z-value
+                z = tempData.Z;
+                timePoint = tempData.T;
             end
-            
-            % get Z-value
-            z = obj.hImg.getCurrentSliceNumber();
-            timePoint = obj.hImg.getCurrentTimePoint();
             
             % detect Cancel due to press of the Escape button
             if isempty(position)
@@ -1572,12 +1590,17 @@ classdef mibMeasure < matlab.mixin.Copyable
             end
             if isempty(answer); answer = {''}; end
             
-            if colCh == 0
-                intensity = obj.hImg.img{1}(ceil(position(2)),ceil(position(1)), :, z, timePoint); %#ok<AGROW>
-                profile = squeeze(intensity);
+            if calcIntensity
+                if colCh == 0
+                    intensity = obj.hImg.img{1}(ceil(position(2)),ceil(position(1)), :, z, timePoint); %#ok<AGROW>
+                    profile = squeeze(intensity);
+                else
+                    intensity(ch) = obj.hImg.img{1}(ceil(position(2)),ceil(position(1)), colCh, z, timePoint); %#ok<AGROW>
+                    profile = squeeze(intensity);
+                end
             else
-                intensity(ch) = obj.hImg.img{1}(ceil(position(2)),ceil(position(1)), colCh, z, timePoint); %#ok<AGROW>
-                profile = squeeze(intensity);
+                intensity = NaN;
+                profile = NaN;
             end
             
             newData.n = n;
@@ -1598,8 +1621,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             result = 1;
         end
         
-        function result = DistanceFun(obj, mibController, index, colCh, finetuneCheck, integrateWidth)
-            % function result = DistanceFun(obj, mibController, index, colCh, finetuneCheck, integrateWidth)
+        function result = DistanceFun(obj, mibController, index, colCh, finetuneCheck, integrateWidth, calcIntensity)
+            % function result = DistanceFun(obj, mibController, index, colCh, finetuneCheck, integrateWidth, calcIntensity)
             % measuring distance between two points
             %
             % Parameters:
@@ -1609,6 +1632,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             % colCh: [@em optional] color channel to use for profile; @em default = 1
             % finetuneCheck: [@em optional] @b 1 (@em default) - allow fine-tuning during the placing of measurements; @b 0 - instant placing
             % integrateWidth: [@em optional] a number of pixels for integration of image intensity profile
+            % calcIntensity: [@em optional] @b 1 (@em default) - calculate
+            % intensity profile, 0 - do not calculate
             %
             % Return values:
             % result - 1-success, 0-cancel
@@ -1620,7 +1645,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             
             % Credit: adapted from Image Measurement Utility by Jan Neggers
             % http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility
-            
+            if nargin < 7; calcIntensity = 1; end
             if nargin < 6; integrateWidth = []; end
             if nargin < 5; finetuneCheck = 1; end
             if nargin < 4; colCh = 1; end
@@ -1645,6 +1670,9 @@ classdef mibMeasure < matlab.mixin.Copyable
                     position(:,1) = x;
                     position(:,2) = y;
                 end
+                % get Z-value
+                z = obj.hImg.getCurrentSliceNumber();
+                timePoint = obj.hImg.getCurrentTimePoint();
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -1658,12 +1686,11 @@ classdef mibMeasure < matlab.mixin.Copyable
                     position(:,1) = tempData.X;
                     position(:,2) = tempData.Y;
                 end
+                % get Z-value
+                z = tempData.Z;
+                timePoint = tempData.T;
             end
-            
-            % get Z-value
-            z = obj.hImg.getCurrentSliceNumber();
-            timePoint = obj.hImg.getCurrentTimePoint();
-            
+
             % detect Cancel due to press of the Escape button
             if isempty(position)
                 if exist('tempData','var')
@@ -1679,23 +1706,29 @@ classdef mibMeasure < matlab.mixin.Copyable
             if orientation == 1   % zx orientation
                 A = diff(position(:,1))*pixSize.z;
                 B = diff(position(:,2))*pixSize.x;
-                if isempty(integrateWidth)
-                    % create image space (for intensity)
-                    [x, y] = meshgrid(1:obj.hImg.depth, 1:obj.hImg.width);
+                if calcIntensity
+                    if isempty(integrateWidth)
+                        % create image space (for intensity)
+                        [x, y] = meshgrid(1:obj.hImg.depth, 1:obj.hImg.width);
+                    end
                 end
             elseif orientation == 2   % zy orientation
                 A = diff(position(:,1))*pixSize.z;
                 B = diff(position(:,2))*pixSize.y;
-                if isempty(integrateWidth)
-                    % create image space (for intensity)
-                    [x, y] = meshgrid(1:obj.hImg.depth, 1:obj.hImg.height);
+                if calcIntensity
+                    if isempty(integrateWidth)
+                        % create image space (for intensity)
+                        [x, y] = meshgrid(1:obj.hImg.depth, 1:obj.hImg.height);
+                    end
                 end
             else        % xy orientation
                 A = diff(position(:,1))*pixSize.x;
                 B = diff(position(:,2))*pixSize.y;
-                if isempty(integrateWidth)
-                    % create image space (for intensity)
-                    [x, y] = meshgrid(1:obj.hImg.width, 1:obj.hImg.height);
+                if calcIntensity
+                    if isempty(integrateWidth)
+                        % create image space (for intensity)
+                        [x, y] = meshgrid(1:obj.hImg.width, 1:obj.hImg.height);
+                    end
                 end
             end
             Distance = hypot(A,B);
@@ -1704,32 +1737,35 @@ classdef mibMeasure < matlab.mixin.Copyable
             X = position(:,1);
             Y = position(:,2);
             
-            if isempty(integrateWidth)
-                 % calculate a length vector
-                t = [ 0 ; hypot(diff(X),diff(Y)) ];
-                t = cumsum(t);
-                
-                % discretize the measurement line
-                %Ni = 200;
-                Ni = max(t);
-                ti = linspace(0,max(t),Ni);
-                xi = interp1(t,X,ti);
-                yi = interp1(t,Y,ti);
-            end
+            if calcIntensity
+                if isempty(integrateWidth)
+                     % calculate a length vector
+                    t = [ 0 ; hypot(diff(X),diff(Y)) ];
+                    t = cumsum(t);
+
+                    % discretize the measurement line
+                    %Ni = 200;
+                    Ni = max(t);
+                    ti = linspace(0,max(t),Ni);
+                    xi = interp1(t,X,ti);
+                    yi = interp1(t,Y,ti);
+                end
             
-            getDataOptions.blockModeSwitch = 0;
-            im = cell2mat(mibController.mibModel.getData2D('image', NaN, NaN, colCh, getDataOptions));
-            % interpolate the intensity profile along the measurement line
-            if isempty(integrateWidth)
-                for ch=1:size(im, 3)
-                    profile(ch, :) = interp2(x, y, double(im(:,:,ch)), xi, yi); %#ok<AGROW>
+                getDataOptions.blockModeSwitch = 0;
+                im = cell2mat(mibController.mibModel.getData2D('image', NaN, NaN, colCh, getDataOptions));
+                % interpolate the intensity profile along the measurement line
+                if isempty(integrateWidth)
+                    for ch=1:size(im, 3)
+                        profile(ch, :) = interp2(x, y, double(im(:,:,ch)), xi, yi); %#ok<AGROW>
+                    end
+                else
+                    profile = mibImageProfileIntegrate(im, position(1,1), position(1,2), position(2,1), position(2,2), integrateWidth);
+                    %ti2 = linspace(0, Distance, size(profile,2));
+                    %Distance = profileLength*pixSize.x;
                 end
             else
-                profile = mibImageProfileIntegrate(im, position(1,1), position(1,2), position(2,1), position(2,2), integrateWidth);
-                %ti2 = linspace(0, Distance, size(profile,2));
-                %Distance = profileLength*pixSize.x;
+                profile = NaN;
             end
-            
             
 %             % interpolate the intensity profile along the measurement line
 %             for ch=1:size(im, 3)
@@ -1762,10 +1798,14 @@ classdef mibMeasure < matlab.mixin.Copyable
             newData.spline = [];
             newData.circ = [];
             newData.intensity = intensity;
-            if isempty(integrateWidth)
-                ti = linspace(0, Distance, Ni);
+            if calcIntensity
+                if isempty(integrateWidth)
+                    ti = linspace(0, Distance, Ni);
+                else
+                    ti = linspace(0, Distance, size(profile, 2));
+                end
             else
-                ti = linspace(0, Distance, size(profile, 2));
+                ti = NaN;
             end
             newData.profile = [ti ; profile];
             newData.integrateWidth = integrateWidth;

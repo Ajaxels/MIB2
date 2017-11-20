@@ -25,7 +25,7 @@ function [axesX, axesY] = getAxesLimits(obj, id)
 % Updates
 % 
 
-if nargin < 2; id = obj.Id; end;
+if nargin < 2; id = obj.Id; end
 axesX = obj.I{id}.axesX;
 axesY = obj.I{id}.axesY;
 end
