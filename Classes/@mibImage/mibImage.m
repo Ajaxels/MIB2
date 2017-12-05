@@ -195,9 +195,13 @@ classdef mibImage < matlab.mixin.Copyable
         
         [height, width, color, depth, time] = getDatasetDimensions(obj, type, orient, color, options)        % Get dimensions of the dataset
         
+        [totalSize, imSize] = getDatasetSizeInBytes(obj)        % Get size of the loaded dataset in bytes
+        
+        dataset = getPixelIdxList(obj, type, PixelIdxList, options)     % Get dataset from the list of pixel indices
+        
         bb = getROIBoundingBox(obj, roiIndex)        % return the bounding box info for the ROI at the current orientation
         
-        [totalSize, imSize] = getDatasetSizeInBytes(obj)        % Get size of the loaded dataset in bytes
+        index = getSelectedMaterialIndex(obj)        % return the index of the currently selected material
         
         [labelsList, labelPositions, indices] = getSliceLabels(obj, sliceNumber, timePoint)        % Get list of labels (mibImage.hLabels) shown at the specified slice
         

@@ -151,7 +151,7 @@ else
         if isnan(obj.mibView.trackerYXZ(1))
             msgbox('Please use Shift+Mouse click to define the starting point!', 'Missing the starting point');
             return;
-        end;
+        end
         obj.mibView.trackerYXZ = obj.mibView.trackerYXZ(:,end);
         [axesX, axesY] = obj.mibModel.getAxesLimits();
         pointY = obj.mibView.trackerYXZ(1)-max([0 floor(axesY(1))]);
@@ -176,7 +176,7 @@ else
                 else
                     colorId = 1;
                 end
-            end;
+            end
             options.p1 = [pointY; pointX];
             options.p2 = [min([ceil(yx(1)*magFactor), size(currentSelection,1)]); ...
                 min([ceil(yx(2)*magFactor) size(currentSelection,2)])];

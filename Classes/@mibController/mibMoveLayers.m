@@ -70,7 +70,7 @@ else
 end
 
 if obj.mibModel.I{obj.mibModel.Id}.modelType < 256
-    contSelIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;    % index of the selected material
+    contSelIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();    % index of the selected material
     if strcmp(obj_type_from, 'model') && contSelIndex == - 1
         obj_type_from = 'mask'; 
     end
@@ -81,14 +81,14 @@ else
     elseif obj.mibModel.I{obj.mibModel.Id}.selectedMaterial == 2
         contSelIndex = 0;
     else
-        
+        contSelIndex = 0;
     end
     if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial > 2
         contAddIndex = str2double(obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2});
     elseif obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 2
         contAddIndex = 0;
     else
-        
+        contAddIndex = 0;
     end
 end
 

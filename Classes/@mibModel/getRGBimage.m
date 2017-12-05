@@ -298,7 +298,7 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
     if obj.I{obj.Id}.modelType > 0
         over_type = obj.mibSegmShowTypePopup;  % if 1=filled, 2=contour
         M = sOver1;   % Model
-        selectedObject = obj.I{obj.Id}.selectedMaterial - 2;  % selected model object
+        selectedObject = obj.I{obj.Id}.getSelectedMaterialIndex;  % selected model object
         
         if over_type == 2       % see model as a countour
             if obj.showAllMaterials == 1 % show all materials
@@ -341,13 +341,22 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
                     case 'uint16';  modColors = uint16(obj.I{obj.Id}.modelMaterialColors*colorScale);
                     case 'uint32';  modColors = uint32(obj.I{obj.Id}.modelMaterialColors*colorScale);
                 end
-                R(modIndeces) = R(modIndeces)*T + modColors(M(modIndeces),1) * (1-T);
-                G(modIndeces) = G(modIndeces)*T + modColors(M(modIndeces),2) * (1-T);
-                B(modIndeces) = B(modIndeces)*T + modColors(M(modIndeces),3) * (1-T);
+                if obj.I{obj.Id}.modelType <= 65535
+                    R(modIndeces) = R(modIndeces)*T + modColors(M(modIndeces),1) * (1-T);
+                    G(modIndeces) = G(modIndeces)*T + modColors(M(modIndeces),2) * (1-T);
+                    B(modIndeces) = B(modIndeces)*T + modColors(M(modIndeces),3) * (1-T);
+                else
+                    R(modIndeces) = R(modIndeces)*T + modColors(mod(M(modIndeces), 65535), 1) * (1-T);
+                    G(modIndeces) = G(modIndeces)*T + modColors(mod(M(modIndeces), 65535), 2) * (1-T);
+                    B(modIndeces) = B(modIndeces)*T + modColors(mod(M(modIndeces), 65535), 3) * (1-T);
+                end
             end
         elseif selectedObject > 0
             i = selectedObject;
             pntlist = find(M==i);
+            if obj.I{obj.Id}.modelType > 65535
+                i = mod(i, 65535);  % modify color index
+            end
             if ~isempty(pntlist)
                 R(pntlist) = R(pntlist)*T+obj.I{obj.Id}.modelMaterialColors(i,1)*colorScale*(1-T);
                 G(pntlist) = G(pntlist)*T+obj.I{obj.Id}.modelMaterialColors(i,2)*colorScale*(1-T);

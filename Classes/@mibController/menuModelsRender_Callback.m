@@ -30,7 +30,7 @@ switch type
         if obj.mibModel.showAllMaterials == 1    % all materials
             options.materialIndex = 0;
         else
-            options.materialIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
+            options.materialIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
         end
         
         obj.mibModel.connImaris = mibRenderModelImaris(obj.mibModel.I{obj.mibModel.Id}, obj.mibModel.connImaris, options);

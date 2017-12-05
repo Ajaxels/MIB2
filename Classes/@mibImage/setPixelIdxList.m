@@ -3,10 +3,10 @@ function result = setPixelIdxList(obj, type, dataset, PixelIdxList, options)
 % Set dataset
 %
 % Parameters:
-% type: type of the dataset to update, 'image', 'model','mask', 'selection', or 'everything' ('model','mask' and 'selection' for imageData.model_type==''uint6'' only)
+% type: type of the dataset to update, 'image' (not implemented), 'model','mask', 'selection', or 'everything' ('model','mask' and 'selection' for imageData.model_type==''uint6'' only)
 % dataset: a vector with values
 % PixelIdxList: indices of pixels that have to be updated (calculated for the full dataset in the XY orientation)
-% options: [@em optional], a structure with extra parameters
+% options: [@em optional], a structure with extra parameters @b NOT @b USED
 % @li .z -> [@em optional], z coordinate, when missing use the currently shown
 % @li .t -> [@em optional], time point, when missing use the currently shown
 %

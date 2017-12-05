@@ -6,7 +6,7 @@ function convertModel(obj, type)
 %
 % Parameters:
 % type: [optional] a double with type of a new model: 63 (63 materials
-% max), 255 (255 materials max), 65535 (65535 materials max)
+% max), 255 (255 materials max), 65535 (65535 materials max), 4294967295 (4294967295 materials max)
 %
 % Return values:
 %
@@ -23,7 +23,7 @@ function convertModel(obj, type)
 % of the License, or (at your option) any later version.
 
 % Updates
-% 
+% 04.12.2017, IB, added 4294967295 materials
 
 if nargin < 2
     if obj.modelType == 255
@@ -32,7 +32,7 @@ if nargin < 2
         type = 255;
     end
 end
-if type == obj.modelType; return; end;
+if type == obj.modelType; return; end
 
 wb = waitbar(0, sprintf('Converting the model to the "%d" type\n\nPlease wait...', type), 'Name', 'Converting the model', 'WindowStyle', 'modal');
 if type == 63     % convert from 255 to 63
@@ -69,6 +69,8 @@ else                        % convert from 63 to 255
                 obj.model{1} = uint8(obj.model{1});
             case 65535
                 obj.model{1} = uint16(obj.model{1});
+            case 4294967295
+                obj.model{1} = uint32(obj.model{1});
         end
         obj.maskExist = 1;
     end

@@ -32,7 +32,7 @@ if obj.mibModel.disableSegmentation == 1; return; end
 
 tic
 switch3d = obj.mibView.handles.mibActions3dCheck.Value;     % use tool in 3d
-selcontour = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;  % get selected contour
+selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
 threshold1 = str2double(obj.mibView.handles.mibSelectionToolEdit.String); % getting low threshold shift for magic wand tool
 threshold2 = str2double(obj.mibView.handles.mibMagicUpThresEdit.String); % getting up threshold shift for magic wand tool
 

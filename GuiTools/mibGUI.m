@@ -1711,6 +1711,8 @@ switch hObject.Tag
         modelType = 255;
     case 'menuModelsType65535'
         modelType = 65535;
+    case 'menuModelsType4294967295'
+        modelType = 4294967295;        
 end
 handles.mibController.menuModelsConvertModel(modelType);
 end

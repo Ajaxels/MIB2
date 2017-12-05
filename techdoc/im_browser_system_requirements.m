@@ -15,7 +15,7 @@
 %
 % It is highly recommended to use 64-bit operating system with sufficient amount of memory.
 %% MATLAB
-% *MATLAB, Release 2014b*, (_and later_). MIB was tested with Matlab R2014b - R2017a.
+% *MATLAB, Release 2014b*, (_and newer_). MIB was tested with Matlab R2014b - R2017b.
 % 
 %% Toolboxes
 %%

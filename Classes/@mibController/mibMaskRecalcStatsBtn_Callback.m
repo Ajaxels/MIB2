@@ -21,7 +21,7 @@ wb = waitbar(0, 'Calculating statistics, please wait...', 'WindowStyle', 'modal'
 getDataOptions.blockModeSwitch = 0;
 if obj.mibView.handles.mibSegmMaskClickModelCheck.Value
     type = 'model';
-    colchannel = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
+    colchannel = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
     if colchannel < 0  % do not continue when All is selected
         msgbox(sprintf('Please select Material in the ''Select from list'' and press the ''Recalc.'' button in the Segmentation panel, Object Picker tool again!'),'Warning!','warn');
         delete(wb);
@@ -36,11 +36,14 @@ if obj.mibView.handles.mibMagicwandConnectCheck4.Value
 else
     connectionType = 26; % 26-neighbour points
 end
-obj.mibModel.I{obj.mibModel.Id}.maskStat = bwconncomp(cell2mat(obj.mibModel.getData3D(type, NaN, 4, colchannel, getDataOptions)), connectionType); 
-obj.mibModel.I{obj.mibModel.Id}.maskStat.L = labelmatrix(obj.mibModel.I{obj.mibModel.Id}.maskStat);     % create a label matrix for fast search of the indices
-obj.mibModel.I{obj.mibModel.Id}.maskStat.bb = regionprops(obj.mibModel.I{obj.mibModel.Id}.maskStat, 'BoundingBox');     % create a label matrix for fast search of the indices
-obj.mibModel.I{obj.mibModel.Id}.maskStat = rmfield(obj.mibModel.I{obj.mibModel.Id}.maskStat, 'PixelIdxList');   % remove PixelIdxList it is not needed anymore
-
+if obj.mibModel.I{obj.mibModel.Id}.modelType < 65535
+    obj.mibModel.I{obj.mibModel.Id}.maskStat = bwconncomp(cell2mat(obj.mibModel.getData3D(type, NaN, 4, colchannel, getDataOptions)), connectionType); 
+    obj.mibModel.I{obj.mibModel.Id}.maskStat.L = labelmatrix(obj.mibModel.I{obj.mibModel.Id}.maskStat);     % create a label matrix for fast search of the indices
+    obj.mibModel.I{obj.mibModel.Id}.maskStat.bb = regionprops(obj.mibModel.I{obj.mibModel.Id}.maskStat, 'BoundingBox');     % create a label matrix for fast search of the indices
+    obj.mibModel.I{obj.mibModel.Id}.maskStat = rmfield(obj.mibModel.I{obj.mibModel.Id}.maskStat, 'PixelIdxList');   % remove PixelIdxList it is not needed anymore
+else
+    obj.mibModel.I{obj.mibModel.Id}.maskStat = regionprops(cell2mat(obj.mibModel.getData3D(type, NaN, 4, NaN, getDataOptions)), 'PixelIdxList'); 
+end
 delete(wb);
 
 end

@@ -241,11 +241,11 @@ classdef TripleAreaIntensityController < handle
             for sliceId = 1:size(model1, 3)
                 waitbar(sliceId/size(model1, 3),wb);
                 CC1 = bwconncomp(model1(:,:,sliceId),8);
-                if CC1.NumObjects == 0; continue; end;  % check whether the materials exist on the current slice
+                if CC1.NumObjects == 0; continue; end  % check whether the materials exist on the current slice
                 STATS1 = regionprops(CC1, 'Centroid', 'PixelIdxList');
                 CC2 = bwconncomp(model2(:,:,sliceId), 8);
                 STATS2 = regionprops(CC2, 'Centroid', 'PixelIdxList');
-                if CC1.NumObjects ~= CC2.NumObjects; continue; end;
+                if CC1.NumObjects ~= CC2.NumObjects; continue; end
                 
                 BG_CC.NumObjects = 0;
                 BG_STATS = [];
@@ -451,7 +451,7 @@ classdef TripleAreaIntensityController < handle
                         end
                     end
                     
-                    rowId = rowId + 1;
+                    %rowId = rowId + 1;
                 end
                 
                 if background_Check == 1 && CC1.NumObjects ~= BG_CC.NumObjects  % add text of averaged background

@@ -67,7 +67,7 @@ if sel_col_ch == 0 && obj.mibView.handles.mibAdaptiveDilateCheck.Value == 1
 end
 selected = NaN;
 if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value  % area for dilation is taken only from selected contour
-    selected = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
+    selected = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
 end
 
 maskedSw = obj.mibView.handles.mibMaskedAreaCheck.Value;

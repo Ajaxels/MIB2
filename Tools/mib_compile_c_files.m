@@ -7,18 +7,21 @@ wb = waitbar(0, sprintf('Compiling Volume rendering\nPlease wait...'), 'Name', '
 
 currDir = fullfile(mibDir, 'GuiTools','volren');
 cd(currDir);
-mex affine_transform_2d_double.c image_interpolation.c -v;
+mex -compatibleArrayDims -v affine_transform_2d_double.c image_interpolation.c;
 
 %% Compiling fast marching
 waitbar(0.05, wb, sprintf('Compiling Fast Marching\nPlease wait...'));
 currDir = fullfile(mibDir, 'Tools','FastMarching','functions');
 cd(currDir);
-mex('msfm2d.c' ,'-v');
-mex('msfm3d.c' ,'-v');
+%mex('msfm2d.c' ,'-v');
+%mex('msfm3d.c' ,'-v');
+mex -compatibleArrayDims -v msfm2d.c
+mex -compatibleArrayDims -v msfm3d.c
 
 currDir = fullfile(mibDir, 'Tools','FastMarching','shortestpath');
 cd(currDir);
-mex('rk4.c' ,'-v');
+%mex('rk4.c' ,'-v');
+mex -compatibleArrayDims -v rk4.c
 
 %% Compiling Frangi
 waitbar(0.1, wb, sprintf('Compiling Frangi\nPlease wait...'));

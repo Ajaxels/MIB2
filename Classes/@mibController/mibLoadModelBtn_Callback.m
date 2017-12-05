@@ -64,7 +64,7 @@ if nargin < 2   % model and options were not provided
     set(findall(wb,'type','text'),'Interpreter','none');
     waitbar(0, wb);
     options = struct();
-    
+    options.imgStretch = 0;     % turn off conversion of images from uint32 to uint16 class
     for fnId = 1:numel(filename)
         if ismember(filename{fnId}(end-3:end), {'.mat', 'odel'}) % loading model in the matlab format
             res = load([path filename{fnId}], '-mat');
@@ -190,8 +190,13 @@ if nargin < 2   % model and options were not provided
             maxModelValue = max(max(max(max(model))));
             if maxModelValue < 64
                 options.modelType = 63;
+            elseif maxModelValue < 256
+                options.modelType = 63;
+            elseif maxModelValue < 65536
+                options.modelType = 65535;
             else
-                options.modelType = 255;
+                errordlg('This model type is not yet implemented!', 'Too many materials');
+                delete(wb);
             end
         end
         

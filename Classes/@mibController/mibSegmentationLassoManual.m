@@ -27,7 +27,7 @@ function mibSegmentationLassoManual(obj, modifier)
 % 
 
 switch3d = obj.mibView.handles.mibActions3dCheck.Value;     % use tool in 3d
-selcontour = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;  % get selected contour
+selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
 list = obj.mibView.handles.mibFilterSelectionPopup.String;
 type = list{obj.mibView.handles.mibFilterSelectionPopup.Value};    % Lasso or Rectangle
 

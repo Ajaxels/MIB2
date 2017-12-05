@@ -74,7 +74,7 @@ if mode3D
     
     % limit to the selected material of the model
     if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value
-        selcontour = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;  % get selected contour
+        selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
         currModel = cell2mat(obj.mibModel.getData3D('model', NaN, NaN, selcontour, backupOptions));
         selarea = bitand(selarea, currModel);
     end
@@ -91,7 +91,7 @@ else
     
     % limit to the selected material of the model
     if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value
-        selcontour = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;  % get selected contour
+        selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
         currModel = cell2mat(obj.mibModel.getData2D('model', NaN, NaN, selcontour, backupOptions));
         selected_mask = bitand(selected_mask, currModel);
     end

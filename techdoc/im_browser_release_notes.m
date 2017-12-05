@@ -5,6 +5,13 @@
 %
 %
 %
+%% 2.21 / 04.12.2017
+% * Added model with 4294967295 materials for tests
+% * Improved object picker for models with 65535 materials
+% * Fix compiling of certain function using the |-compatibleArrayDims| switch to be compatible with the new Matlab API
+% * Fix of 'Fix selection to material' switch for models with more than 255 materials
+% * Fix connection to Omero for the deployed version
+%
 %% 2.20 14.11.2017
 % * Added a new 3D Grid mode to the Graphcut tool; when used the fast interactive performance can be achieved even with very large datasets
 % * Added denoise of image using deep neural network (|Image Filters

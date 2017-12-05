@@ -25,7 +25,7 @@ function mibRemoveMaterialBtn_Callback(obj)
 unFocus(obj.mibView.handles.mibRemoveMaterialBtn); % remove focus from hObject
 
 if obj.mibModel.I{obj.mibModel.Id}.selectedMaterial < 3; return; end  % can't delete Mask/Exterior
-value = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
+value = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
 
 modelMaterialNames = obj.mibModel.getImageProperty('modelMaterialNames');    % list of materials of the model
 msg = sprintf('You are going to delete material "%s"\nwhich has a number: %d\n\nAre you sure?', modelMaterialNames{value}, value);

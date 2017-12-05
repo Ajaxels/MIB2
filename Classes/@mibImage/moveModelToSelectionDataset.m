@@ -24,7 +24,7 @@ function moveModelToSelectionDataset(obj, action_type, options)
 % @b Examples:
 % @code 
 % userData = obj.mibView.handles.mibSegmentationTable.UserData;     // call from mibController, get user data structure 
-% options.contSelIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2; // index of the selected material
+% options.contSelIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex(); // index of the selected material
 % options.contAddIndex = obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2; // index of the target material
 % options.selected_sw = obj.mibView.handles.mibSegmSelectedOnlyCheck.Value;   // when 1- limit selection to the selected material
 % options.maskedAreaSw = obj.mibView.handles.mibMaskedAreaCheck.Value;

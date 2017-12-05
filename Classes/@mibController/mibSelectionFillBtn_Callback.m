@@ -22,7 +22,7 @@ function mibSelectionFillBtn_Callback(obj, sel_switch)
 if obj.mibModel.preferences.disableSelection == 1; return; end
 
 tic;
-selContour = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
+selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
 selectedOnly = obj.mibView.handles.mibSegmSelectedOnlyCheck.Value;
 if nargin < 2
     modifier = obj.mibView.gui.CurrentModifier;
@@ -43,7 +43,7 @@ if strcmp(sel_switch,'2D')
     obj.mibModel.mibDoBackup('selection', 0);
     filled_img = imfill(cell2mat(obj.mibModel.getData2D('selection')),'holes');
     if selectedOnly
-        filled_img = filled_img & cell2mat(obj.mibModel.getData2D('model', NaN, NaN, selContour));
+        filled_img = filled_img & cell2mat(obj.mibModel.getData2D('model', NaN, NaN, selcontour));
     end
     obj.mibModel.setData2D('selection', {filled_img});
 else 
@@ -69,7 +69,7 @@ else
             if max(max(slice)) < 1; continue; end
             slice = imfill(slice,'holes');
             if selectedOnly
-                slice = slice & cell2mat(obj.mibModel.getData2D('model', layer_id, obj.mibModel.I{obj.mibModel.Id}.orientation, selContour, options));
+                slice = slice & cell2mat(obj.mibModel.getData2D('model', layer_id, obj.mibModel.I{obj.mibModel.Id}.orientation, selcontour, options));
             end
             obj.mibModel.setData2D('selection', {slice}, layer_id, obj.mibModel.I{obj.mibModel.Id}.orientation, 0, options);
             index = index + 1;

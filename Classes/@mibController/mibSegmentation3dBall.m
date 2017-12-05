@@ -62,7 +62,7 @@ obj.mibModel.mibDoBackup('selection', 1, options);
 
 % limit selection to material of the model
 if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value
-    selcontour = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;  % get selected contour
+    selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
     model = cell2mat(obj.mibModel.getData3D('model', NaN, 4, selcontour, options));
     selarea = selarea & model;
 end

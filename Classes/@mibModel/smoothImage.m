@@ -73,8 +73,8 @@ switch type
         end
     case 'model'
         options.dataType = '3D';
-        sel_model = obj.I{obj.Id}.selectedMaterial - 2;
-        if sel_model < 1; return; end;
+        sel_model = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
+        if sel_model < 1; return; end
         if t1==t2
             obj.mibDoBackup('model', 1);
         end

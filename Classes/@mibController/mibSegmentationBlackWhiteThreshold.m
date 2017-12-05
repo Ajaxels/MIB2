@@ -64,7 +64,7 @@ val2 = round(obj.mibView.handles.mibSegmHighSlider.Value);
 
 selected = obj.mibView.handles.mibSegmSelectedOnlyCheck.Value;  % do only for selected material
 masked = obj.mibView.handles.mibMaskedAreaCheck.Value;     % do only for masked material
-model_id = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;  % get selected contour;
+model_id = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();  % get selected contour;
 adaptive = obj.mibView.handles.mibSegmThresPanelAdaptiveCheck.Value;    % use or not the adaptive mode
 if adaptive
     val1 = val1/double(maxVal);

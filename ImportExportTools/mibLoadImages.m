@@ -11,6 +11,7 @@ function [img, img_info, pixSize] = mibLoadImages(filenames, options)
 %     - .waitbar -> @b 1 - show waitbar, @b 0 - do not show waitbar
 %     - .customSections -> @b 0 or @b 1, when @b 1 take some custom section(s) from the dataset
 %     - .mibPath [optional] a string with path to MIB directory, an optional parameter to mibInputDlg.m 
+%     - .imgStretch [optional] -> stretch or not the image if it is uint32 class
 %     - .Font -> [optional] a structure with the Font settings from mib to initialize new dialog
 %           .FontName 
 %           .FontUnits
@@ -46,6 +47,7 @@ if ~isfield(options, 'mibBioformatsCheck');    options.mibBioformatsCheck = 0; e
 if ~isfield(options, 'waitbar');        options.waitbar = 0; end
 if ~isfield(options, 'customSections');     options.customSections = 0; end
 if ~isfield(options, 'mibPath');    options.mibPath = mibPath;  end
+if ~isfield(options, 'imgStretch');    options.imgStretch = 1;  end
 if ~isfield(options, 'Font');    options.Font = Font;  end
 
 autoCropSw = 0;     % auto crop images that have dimension mismatch
@@ -72,13 +74,15 @@ end
 
 % fill img_info and preallocate memory for the dataset
 % check files for dimensions and class
-if strcmp(files(1).imgClass, 'int16') || strcmp(files(1).imgClass, 'uint32')
-    choice = questdlg(sprintf('The original image is in the %s format\n\nIt will be converted into uint16 format!', files(1).imgClass), ...
-        'Image Format Warning!', ...
-        'Sure','Cancel','Sure');
-    if strcmp(choice, 'Cancel')
-        img = NaN;
-        return;
+if options.imgStretch == 1
+    if strcmp(files(1).imgClass, 'int16') || strcmp(files(1).imgClass, 'uint32')
+        choice = questdlg(sprintf('The original image is in the %s format\n\nIt will be converted into uint16 format!', files(1).imgClass), ...
+            'Image Format Warning!', ...
+            'Sure','Cancel','Sure');
+        if strcmp(choice, 'Cancel')
+            img = NaN;
+            return;
+        end
     end
 end
 
@@ -93,6 +97,7 @@ end
 
 % loading the datasets
 getImagesOpt.waitbar = options.waitbar;
+getImagesOpt.imgStretch = options.imgStretch;
 [img, img_info] = mibGetImages(files, img_info, getImagesOpt);
 [img_info, pixSize] = mibUpdatePixSizeAndResolution(img_info, pixSize);
 toc

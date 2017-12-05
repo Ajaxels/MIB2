@@ -23,7 +23,8 @@ if iscell(obj.mibView.brushSelection)  % return after movement of the brush tool
     currSelection = cell2mat(obj.mibModel.getData2D('selection',NaN, NaN, NaN, getDataOptions));
     obj.mibView.brushSelection{1} = imresize(obj.mibView.brushSelection{1}, size(currSelection),'method','nearest');
     
-    selcontour = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
+    selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
+    
     if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value
         currModel = cell2mat(obj.mibModel.getData2D('model', NaN, NaN, NaN, getDataOptions));
         obj.mibView.brushSelection{1}(currModel~=selcontour) = 0;

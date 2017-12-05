@@ -91,6 +91,10 @@ else     % for 65535 model look for the next empty material
         obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{1} = num2str(maxVal+1);
         eventdata2.Indices = [3, 2];
     end
+    if size(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors,1) < maxVal+1  % generate a random color
+        obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(maxVal+1, :) = rand(1,3);
+    end
+    
     obj.mibSegmentationTable_CellSelectionCallback(eventdata2);     % update mibSegmentationTable
     waitbar(1, wb);
     delete(wb);

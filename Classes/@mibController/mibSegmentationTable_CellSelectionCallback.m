@@ -128,9 +128,9 @@ end
 
 colergen = @(color,text) ['<html><table border=0 width=300 color=0 bgcolor=',color,'><TR><TD>',text,'</TD></TR></table></html>'];
 if selectedMaterial == 1
-    jTable.setValueAt(java.lang.String(colergen(sprintf('''rgb(%d, %d, %d)''', 51, 153, 255), 'Mask')),selectedMaterial-1,1);
+    jTable.setValueAt(java.lang.String(colergen(sprintf('''rgb(%d, %d, %d)''', 51, 153, 255), 'Mask')), selectedMaterial-1,1);
 elseif selectedMaterial == 2
-    jTable.setValueAt(java.lang.String(colergen(sprintf('''rgb(%d, %d, %d)''', 51, 153, 255), 'Exterior')),selectedMaterial-1,1);
+    jTable.setValueAt(java.lang.String(colergen(sprintf('''rgb(%d, %d, %d)''', 51, 153, 255), 'Exterior')), selectedMaterial-1,1);
 else
     if obj.mibModel.I{obj.mibModel.Id}.modelType < 256 
         jTable.setValueAt(java.lang.String(colergen(sprintf('''rgb(%d, %d, %d)''', 51, 153, 255), ...
@@ -145,7 +145,7 @@ else
     else
         jTable.setValueAt(java.lang.String(colergen(sprintf('''rgb(%d, %d, %d)''', 51, 153, 255), ...
             obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{selectedMaterial-2})), selectedMaterial-1, 1);
-        materialIndex = str2double(obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{selectedMaterial-2});
+        materialIndex = mod(str2double(obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{selectedMaterial-2}), 65535);
         jTable.setValueAt(java.lang.String(colergen(sprintf('''rgb(%d, %d, %d)''', ...
                 round(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(materialIndex, 1)*255), ...
                 round(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(materialIndex, 2)*255), ...

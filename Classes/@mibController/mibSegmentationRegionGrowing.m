@@ -37,8 +37,7 @@ if obj.mibModel.disableSegmentation == 1; return; end
 
 tic
 switch3d = obj.mibView.handles.mibActions3dCheck.Value;     % use tool in 3d
-selcontour = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;  % get selected contour
-
+selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
 col_channel = obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel;   
 if col_channel == 0
     if obj.mibModel.getImageProperty('colors') > 1

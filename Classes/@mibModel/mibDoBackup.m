@@ -166,7 +166,7 @@ if switch3d == 1        % 3D mode
     elseif strcmp(type, 'measurements')
         obj.U.store(type, {obj.I{obj.Id}.hMeasure.Data}, NaN);
     else
-        if obj.preferences.disableSelection == 1; return; end;    % do not make backups if selection is disabled
+        if obj.preferences.disableSelection == 1; return; end    % do not make backups if selection is disabled
         if strcmp(type, 'image')
             obj.U.store(type, obj.getData3D(type, NaN, getDataOptions.orient, 0, getDataOptions), NaN, getDataOptions);
         else

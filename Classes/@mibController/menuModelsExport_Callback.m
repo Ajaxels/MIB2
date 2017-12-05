@@ -43,7 +43,7 @@ else
     if obj.mibModel.showAllMaterials == 1    % all materials
         options.modelIndex = NaN;
     else
-        options.modelIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
+        options.modelIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
     end
     obj.mibModel.connImaris = mibSetImarisDataset(obj.mibModel.I{obj.mibModel.Id}, obj.mibModel.connImaris, options);
 end

@@ -34,8 +34,8 @@ switch type
             hObject.Checked = 'off';
         end
     case 'rename'
-        contIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
-        if contIndex < 1; return; end;  % do not rename Mask/Exterior
+        contIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;   % do not change to obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex() here!
+        if contIndex < 1; return; end  % do not rename Mask/Exterior
         segmList = obj.mibModel.getImageProperty('modelMaterialNames');
         answer = mibInputDlg({mibPath}, sprintf('Please add a new name for this material:'), 'Rename material', segmList{contIndex});
         if ~isempty(answer)
@@ -53,7 +53,7 @@ switch type
             c =  uisetcolor(obj.mibModel.preferences.maskcolor, 'Set color for Mask');
             if length(c) ~= 1
                 obj.mibModel.preferences.maskcolor = c;
-            end;
+            end
         elseif contIndex > 2    % set color for the selected material
             figTitle = ['Set color for ' obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{contIndex-2}];
             c =  uisetcolor(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(contIndex-2,:), figTitle);
@@ -65,7 +65,7 @@ switch type
     case 'statistics'
         obj.startController('mibStatisticsController');
     case 'isosurface'
-        contIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
+        contIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
         
         options.fillBg = 0;
         if obj.mibView.getRoiSwitch == 1; options.roiId = []; end
@@ -124,7 +124,7 @@ switch type
         bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();  % get bounding box
         mibRenderModel(model{1}, contIndex, obj.mibModel.I{obj.mibModel.Id}.pixSize, bb, modelMaterialColors, image, Options);
     case 'volumeFiji'
-        contIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
+        contIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
         options.fillBg = 0;
         
         if contIndex == -1

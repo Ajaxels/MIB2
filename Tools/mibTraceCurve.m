@@ -45,18 +45,18 @@ if nargin < 3   % if mask is not provided generate a new one
     mask = zeros([size(img,1) size(img,2)],'uint8');
 end
 if nargin < 2 && test_run_sw == 0; error('not enough parameters'); end
-if ~isfield(options, 'colorId'); options.colorId = 1; end;
-if ~isfield(options, 'segmTrackBlackChk'); options.segmTrackBlackChk = 1; end;
-if ~isfield(options, 'scaleFactor'); options.scaleFactor = 1; end;
+if ~isfield(options, 'colorId'); options.colorId = 1; end
+if ~isfield(options, 'segmTrackBlackChk'); options.segmTrackBlackChk = 1; end
+if ~isfield(options, 'scaleFactor'); options.scaleFactor = 1; end
 
 maxIntensity = double(intmax(class(img)));
-if size(img,3) > 1; img = img(:,:,options.colorId); end;
+if size(img,3) > 1; img = img(:,:,options.colorId); end
 if options.segmTrackBlackChk % invert image
     img = maxIntensity - img;   
 end
 val1 = double(img(options.p1(1),options.p1(2)));
 val2 = double(img(options.p2(1),options.p2(2)));
-pointsVec =  img > min([val1 val2])-abs(val1-val2)*options.scaleFactor & img < max([val1 val2])+abs(val1-val2)*options.scaleFactor;
+pointsVec =  img > min([val1 val2])-abs(val1-val2)*options.scaleFactor & img <= max([val1 val2])+abs(val1-val2)*options.scaleFactor;
 img = img/50;
 img(pointsVec) = maxIntensity;
 

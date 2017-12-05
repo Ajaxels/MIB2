@@ -27,6 +27,7 @@ function [img, img_info] = mibGetImages(files, img_info, options)
 %       img_info: -> containers.Map with details of the dataset from getImageMetadata()
 %       options: -> structure with options
 %          - .waitbar -> @b 0 - no waitbar, @b 1 - show waitbar
+%          - .imgStretch [optional] -> stretch or not the image if it is uint32 class
 %
 %
 % Return values:
@@ -49,6 +50,7 @@ if nargin < 2
 end
 if nargin < 3;     options.waitbar = 1;  end
 if ~isfield(options, 'waitbar');    options.waitbar = 1; end
+if ~isfield(options, 'imgStretch');    options.imgStretch = 1; end
 
 % memory pre-allocation
 height = max([files(:).height]);
@@ -303,7 +305,8 @@ for fn_index = 1:no_files
     end
 end
 
-if isa(img, 'uint32')   % convert to 16 bit image format
+
+if isa(img, 'uint32') && options.imgStretch==1  % convert to 16 bit image format
     maxVal = max(max(max(max(img))));
     minVal = min(min(min(min(img))));
     
