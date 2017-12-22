@@ -96,8 +96,8 @@ if status == 0
 else
     hObject.Selected = 'off';
     hObject.BackgroundColor = [1 1 1];
-    if isfield(obj.handles, 'updatefilelistBtn')
-        uicontrol(obj.handles.updatefilelistBtn);    
+    if isfield(obj.handles, 'mibUpdatefilelistBtn')
+        uicontrol(obj.handles.mibUpdatefilelistBtn);    
     end
 end
 

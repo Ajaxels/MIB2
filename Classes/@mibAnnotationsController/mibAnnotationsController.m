@@ -116,14 +116,15 @@ classdef mibAnnotationsController < handle
                     % get list of available variables
                     availableVars = evalin('base', 'whos');
                     % find only the cell type, because labelsList is array of cells
-                    idx = contains({availableVars.class}, 'cell');
+                    idx = ismember({availableVars.class}, 'cell');
+                    
                     labelsList = {availableVars(idx).name}';
                     idx = find(ismember(labelsList, 'labelsList')==1);
                     if ~isempty(idx)
                         labelsList{end+1} = idx;
                     end
                     
-                    idx = contains({availableVars.class}, 'double');
+                    idx = ismember({availableVars.class}, 'double');
                     labelPositions = {availableVars(idx).name}';
                     idx = find(ismember(labelPositions, 'labelPositions')==1);
                     if ~isempty(idx)

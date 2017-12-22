@@ -26,6 +26,8 @@ classdef TripleAreaIntensityController < handle
         % handle to the view
         listener
         % a cell array with handles to listeners
+        matlabExportVariable
+        % name of variable for export results to Matlab
     end
     
     events
@@ -48,6 +50,12 @@ classdef TripleAreaIntensityController < handle
             obj.mibModel = mibModel;    % assign model
             guiName = 'TripleAreaIntensityGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
+            
+            if isdeployed
+                obj.View.handles.exportMatlabCheck.Enable = 'off';
+            end
+            
+            obj.matlabExportVariable = 'TripleaAreaIntensity';
             
             % resize all elements x1.25 times for macOS
             mibRescaleWidgets(obj.View.gui);
@@ -130,6 +138,19 @@ classdef TripleAreaIntensityController < handle
             obj.View.handles.filenameEdit.TooltipString = fullfile(path, [fn '_analysis.xls']);
         end
         
+        function exportMatlabCheck_Callback(obj)
+            % callback for press of the Export to Matlab checkbox
+            if obj.View.handles.exportMatlabCheck.Value
+                answer = mibInputDlg({[]}, sprintf('Please define output variable\n(do not use spaces or specials characters):'),...
+                    'Export variable', obj.matlabExportVariable);
+                if ~isempty(answer)
+                    obj.matlabExportVariable = answer{1};
+                else
+                    return;
+                end
+            end
+        end
+        
         function continueBtn_Callback(obj)
             % function continueBtn_Callback(obj)
             % do calculations
@@ -145,10 +166,12 @@ classdef TripleAreaIntensityController < handle
                 if exist(fn, 'file') == 2
                     strText = sprintf('!!! Warning !!!\n\nThe file:\n%s \nis already exist!\n\nOverwrite?', fn);
                     button = questdlg(strText, 'File exist!','Overwrite', 'Cancel', 'Cancel');
-                    if strcmp(button, 'Cancel'); return; end;
+                    if strcmp(button, 'Cancel'); return; end
                     delete(fn);     % delete existing file
                 end
             end
+            
+            connectionsCheck = obj.View.handles.connectionsCheck.Value;     % show or not connected objects
             
             parameterToCalculateList = obj.View.handles.parameterCombo.String;    % get type of intensity to calculate (min, max, average...)
             parameterToCalculateVal = obj.View.handles.parameterCombo.Value;
@@ -175,7 +198,35 @@ classdef TripleAreaIntensityController < handle
                 end
             end
             
-            wb = waitbar(0,'Please wait...','Name','Triple Area Intensity...','WindowStyle','modal');
+            % generate structure for results
+            TripleArea = struct();
+            % TripleArea.info - general info
+            % TripleArea.imgDir - directory with images
+            % TripleArea.calcPar - calculated parameter
+            % TripleArea.colChannel - calculated parameter
+            % TripleArea.BackgroundMaterial - name of the background material
+            % TripleArea.RatioInfo - ratio of materials
+            % TripleArea.subtractedBg - 0 background was not subtracted, 1 - background was subtracted
+            % TripleArea.additionalThresholdingValue - additionally threshold one of the materials
+            % TripleArea.MaterialName1 - name of the 1st material
+            % TripleArea.MaterialName2 - name of the 2nd material
+            % TripleArea.Filename - cell array of filenames filename
+            % TripleArea.SliceNumber - array of slice numbers
+            % TripleArea.MaterialNameAdditionallyThresholded - name of the 2nd material
+            % TripleArea.Intensity1 - array of intensity of Material 1
+            % TripleArea.Intensity2 - array of intensity of Material 2
+            % TripleArea.IntensityBg - array of intensity of Background
+            % TripleArea.IntensityA - array of additionally thresholded areas
+            % TripleArea.Ratio - array of ratio of materials
+            TripleArea.Filename = {};
+            TripleArea.SliceNumber = [];
+            TripleArea.Intensity1 = [];
+            TripleArea.Intensity2 = [];
+            TripleArea.IntensityBg = [];
+            TripleArea.IntensityA = [];
+            TripleArea.Ratio = [];
+            
+            wb = waitbar(0,'Please wait...','Name','Triple Area Intensity...', 'WindowStyle', 'modal');
             obj.mibModel.mibDoBackup('selection', 1);
             obj.mibModel.I{obj.mibModel.Id}.hLabels.clearContents();  % remove annotations from the model
             
@@ -187,8 +238,17 @@ classdef TripleAreaIntensityController < handle
             s(3,1) = {['Calculating: ' parameterToCalculate]};
             s(3,4) = {['Color channel: ' num2str(colCh)]};
             
+            TripleArea.info = 'TripleAreaIntensity: triple material intensity analysis and ratio calculation';
+            TripleArea.imgDir = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
+            TripleArea.calcPar = parameterToCalculate;
+            TripleArea.colChannel = colCh;
+            TripleArea.subtractedBg = subtractBg_Check;
+            TripleArea.RatioInfo = [obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{material1_Index} '/' obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{material2_Index}];
+            
+            
             if background_Check
                 s(4,4) = {['Background material: ' obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{background_Index}]};
+                TripleArea.BackgroundMaterial = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{background_Index};
             end
             
             s(6,1) = {'Filename'};
@@ -196,21 +256,29 @@ classdef TripleAreaIntensityController < handle
             if subtractBg_Check
                 s(6,3) = cellstr([obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{material1_Index} '-minus-Bg']);
                 s(6,4) = cellstr([obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{material2_Index} '-minus-Bg']);
+                TripleArea.MaterialName1 = [obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{material1_Index} '_minus_Bg'];
+                TripleArea.MaterialName2 = [obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{material2_Index} '_minus_Bg'];
             else
                 s(6,3) = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames(material1_Index);
                 s(6,4) = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames(material2_Index);
+                TripleArea.MaterialName1 = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{material1_Index};
+                TripleArea.MaterialName2 = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{material2_Index};
             end
             s(6,5) = cellstr('Bg');
             s(7,5) = cellstr('(background)');
             s(6,6) = {'Ratio'};
             s(7,6) = {[obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{material1_Index} '/' obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{material2_Index}]};
             if additionalThresholdingCheck
+                TripleArea.additionalThresholdingValue = addMaterial_Shift;
+                
                 s(4,8) = {['Intensity shift for thresholding: ' num2str(addMaterial_Shift)]};
                 s(6,7) = {'Intensity of thresholded'};
                 if subtractBg_Check
                     s(7,7) = {[obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{addMaterial_Index} '-minus-Bg']};
+                    TripleArea.MaterialNameAdditionallyThresholded = [obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{addMaterial_Index} '-minus-Bg'];
                 else
                     s(7,7) = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames(addMaterial_Index);
+                    TripleArea.MaterialNameAdditionallyThresholded = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames(addMaterial_Index);
                 end
             end
             
@@ -223,7 +291,10 @@ classdef TripleAreaIntensityController < handle
             else
                 background = NaN;
             end
-            selection = zeros(size(model1), class(model1));   % create new selection layer
+            
+            if connectionsCheck
+                selection = zeros(size(model1), class(model1));   % create new selection layer
+            end
             
             if isKey(obj.mibModel.I{obj.mibModel.Id}.meta, 'SliceName')   % when filenames are present use them
                 inputFn = obj.mibModel.I{obj.mibModel.Id}.meta('SliceName');
@@ -333,11 +404,13 @@ classdef TripleAreaIntensityController < handle
                 for objId = 1:numel(STATS1)
                     pnts(1,:) = STATS1(objId).Centroid;
                     pnts(2,:) = STATS2(idx(objId)).Centroid;
-                    selection(:,:,sliceId) = mibConnectPoints(selection(:,:,sliceId), pnts);    % connect centroids between Material 1 and Material 2 for checking
-                    if numel(bg_idx) > 0    % connect centroids of material 1 and Bg
-                        pnts2(1,:) = STATS1(objId).Centroid;
-                        pnts2(2,:) = BG_STATS(bg_idx(objId)).Centroid;
-                        selection(:,:,sliceId) = mibConnectPoints(selection(:,:,sliceId), pnts2);    % connect centroids for checking
+                    if connectionsCheck
+                        selection(:,:,sliceId) = mibConnectPoints(selection(:,:,sliceId), pnts);    % connect centroids between Material 1 and Material 2 for checking
+                        if numel(bg_idx) > 0    % connect centroids of material 1 and Bg
+                            pnts2(1,:) = STATS1(objId).Centroid;
+                            pnts2(2,:) = BG_STATS(bg_idx(objId)).Centroid;
+                            selection(:,:,sliceId) = mibConnectPoints(selection(:,:,sliceId), pnts2);    % connect centroids for checking
+                        end
                     end
                     
                     switch parameterToCalculate
@@ -412,6 +485,7 @@ classdef TripleAreaIntensityController < handle
                     
                     % generate intensity 1 for excel
                     s(rowId, 3) = {num2str(Intensity1(objId))};
+                    
                     % generate intensity 2 for excel
                     s(rowId, 4) = {num2str(Intensity2(objId))};
                     if background_Check
@@ -447,11 +521,11 @@ classdef TripleAreaIntensityController < handle
                             end
                             coordinates(2) = coordinates(2) + 18;    % shift coordinate for text
                             obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(num2str(IntensityA(objId)), [sliceId, coordinates]);
-                        catch err;
+                        catch err
                         end
                     end
                     
-                    %rowId = rowId + 1;
+                    rowId = rowId + 1;
                 end
                 
                 if background_Check == 1 && CC1.NumObjects ~= BG_CC.NumObjects  % add text of averaged background
@@ -468,14 +542,45 @@ classdef TripleAreaIntensityController < handle
                 if additionalThresholdingCheck
                     obj.mibModel.setData2D('mask', mask, sliceId, NaN, NaN, options);
                 end
-                rowId = rowId + 1;
+                
+                if obj.View.handles.exportMatlabCheck.Value
+                    TripleArea.Filename = [TripleArea.Filename; repmat(s(rowId-1, 1), [numel(STATS1), 1])];
+                    TripleArea.SliceNumber = [TripleArea.SliceNumber; repmat(sliceId, [numel(STATS1), 1])];
+                    TripleArea.Intensity1 = [TripleArea.Intensity1; Intensity1];
+                    TripleArea.Intensity2 = [TripleArea.Intensity2; Intensity2];
+                    if additionalThresholdingCheck
+                        TripleArea.IntensityA = [TripleArea.IntensityA; IntensityA];
+                    end
+                    
+                    if numel(Background) == numel(STATS1)
+                        TripleArea.IntensityBg = [TripleArea.IntensityBg; Background];
+                    else
+                        TripleArea.IntensityBg = [TripleArea.IntensityBg; repmat(Background, [numel(STATS1), 1])];
+                    end
+                    if calculateRatioCheck
+                        TripleArea.Ratio = [TripleArea.Ratio; Intensity1./Intensity2];
+                    end
+                  
+                end
+                
+                %rowId = rowId + 1;
             end
-            obj.mibModel.setData3D('selection', selection, NaN, 4, NaN, options);
+            
+            if connectionsCheck
+                obj.mibModel.setData3D('selection', selection, NaN, 4, NaN, options);
+            end
             
             if obj.View.handles.savetoExcel.Value
-                waitbar(1, wb, 'Generating Excel file...');
+                waitbar(.99, wb, 'Generating Excel file...');
                 xlswrite2(fn, s, 'Sheet1', 'A1');
             end
+            
+            if obj.View.handles.exportMatlabCheck.Value
+                waitbar(1, wb, 'Exporting to Matlab...');
+                fprintf('TripleIntensity: a structure with results "%s" was created\n', obj.matlabExportVariable);
+                assignin('base', obj.matlabExportVariable, TripleArea);
+            end
+            
             % turn on annotations
             obj.mibModel.mibShowAnnotationsCheck = 1;
             notify(obj.mibModel, 'plotImage');

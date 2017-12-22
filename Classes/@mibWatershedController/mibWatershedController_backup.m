@@ -2326,7 +2326,7 @@ classdef mibWatershedController  < handle
                         return;
                     case 'Import from Matlab'
                         availableVars = evalin('base', 'whos');
-                        idx = contains({availableVars.class}, {'struct'});
+                        idx = ismember({availableVars.class}, {'struct'});
                         if sum(idx) == 0
                             errordlg(sprintf('!!! Error !!!\nNothing to import...'), 'Nothing to import');
                             return;

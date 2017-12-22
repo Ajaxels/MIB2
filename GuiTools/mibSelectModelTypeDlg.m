@@ -237,7 +237,7 @@ function mibSelectModelTypeDlg_KeyPressFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-if nargin < 3;    handles = guidata(hObject); end;
+if nargin < 3;    handles = guidata(hObject); end
 
 % Check for "enter" or "escape"
 if isequal(hObject.CurrentKey, 'escape')

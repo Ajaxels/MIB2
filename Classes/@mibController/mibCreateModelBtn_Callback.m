@@ -56,6 +56,8 @@ switch modelType
         obj.mibModel.I{obj.mibModel.Id}.createModel(65535);
         %obj.mibModel.I{obj.mibModel.Id}.selectedMaterial = 3;
         %obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial = 3;
+    case 4294967295
+        obj.mibModel.I{obj.mibModel.Id}.createModel(4294967295);
 end
 waitbar(0.9, wb);
 

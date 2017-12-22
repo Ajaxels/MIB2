@@ -119,7 +119,7 @@ if nargin < 2   % model and options were not provided
                         % Materials_NAME-OF-MATERIAL_Id     - index of material
                         matName = keysList{keyId}(11:end);      % 11 due to removal of 'Materials_' text
                         materialInfo = img_info(keysList{keyId});
-                        if contains(matName, 'Color')
+                        if ~isempty(strfind(matName, 'Color')) %#ok<STREMP>
                             materialColor = str2num(materialInfo); %#ok<ST2NM>   Materials_NAME-OF-MATERIAL_Color
                             materialIndex = img_info(keysList{keyId+1});  %      Materials_NAME-OF-MATERIAL_Id
                             modelMaterialColors(materialIndex, :) = materialColor(1:3); %#ok<AGROW>
@@ -140,7 +140,8 @@ if nargin < 2   % model and options were not provided
             options.mibBioformatsCheck = 0;
             options.waitbar = 0;
             [model, img_info, ~] = mibLoadImages({fullfile(path, filename{fnId})}, options);
-            model = squeeze(model);
+            %model = squeeze(model);
+            model = permute(model, [1 2 4 5 3]);    % remove 3rd dimension, i.e. color
             options.model_fn = fullfile([path filename{1}(1:end-2) 'model']);
             options.modelVariable = 'hdf5';
             if isKey(img_info, 'material_list')     % add list of material names

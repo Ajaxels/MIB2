@@ -32,7 +32,7 @@ function varargout = TripleAreaIntensityGUI(varargin)
 
 % Edit the above text to modify the response to help TripleAreaIntensityGUI
 
-% Last Modified by GUIDE v2.5 01-Mar-2017 22:53:28
+% Last Modified by GUIDE v2.5 21-Dec-2017 15:15:44
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -191,4 +191,9 @@ end
 % --- Executes on button press in continueBtn.
 function continueBtn_Callback(hObject, eventdata, handles)
 handles.winController.continueBtn_Callback();
+end
+
+% --- Executes on button press in exportMatlabCheck.
+function exportMatlabCheck_Callback(hObject, eventdata, handles)
+handles.winController.exportMatlabCheck_Callback();
 end

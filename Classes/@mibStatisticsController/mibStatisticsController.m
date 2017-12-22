@@ -538,7 +538,11 @@ classdef mibStatisticsController < handle
                 end
                 toc
             else
-                wb = waitbar(0,'Highlighting selected objects...','Name','Highlighting');
+                if numel(object_list) > 1 || strcmp(mode, 'Replace')
+                    wb = waitbar(0,'Highlighting selected objects...','Name','Highlighting');
+                elseif numel(obj.STATS(object_list(1)).PixelIdxList) > 1000000
+                    wb = waitbar(0,'Highlighting selected objects...','Name','Highlighting');
+                end
                 timePoints = [obj.STATS(object_list).TimePnt];
                 [timePointsUnuque, ~, ic] = unique(timePoints);
                 index = 1;
@@ -631,9 +635,11 @@ classdef mibStatisticsController < handle
                         obj.mibModel.setData3D('model', {selection_mask}, t, NaN, NaN, getDataOptions);
                     end
                     index = index + 1;
-                    waitbar(index/numel(timePointsUnuque),wb);
+                    if exist('wb', 'var'); waitbar(index/numel(timePointsUnuque), wb); end
+                    
                 end
-                delete(wb);
+                if exist('wb', 'var'); delete(wb); end
+                
             end
             disp(['MaskStatistics: selected ' num2str(numel(object_list)) ' objects']);
             

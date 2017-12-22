@@ -68,7 +68,7 @@ if isequal(filename,0); return; end % check for cancel
 
 % set default for tif format
 if strcmp(Filters{FilterIndex,2}, 'All Files (*.*)')
-    Filters{FilterIndex,2} = find(contains(Filters(:,2), 'TIF format uncompressed (*.tif)'));
+    Filters{FilterIndex,2} = find(ismember(Filters(:,2), 'TIF format uncompressed (*.tif)'));
     filename = [filename '.tif'];
 end
 

@@ -81,7 +81,7 @@
 % intensities of other objects).
 % The numbers are stored in the Annotation layer available from the
 % |Menu->Models->Annotations|.
-% The corresponding objects will also be connected with a line for reference. The line is stored in the
+% The corresponding objects will also be connected with a line for reference (when the |Show connections| checkbox is selected). The line is stored in the
 % |Selection| layer and can be removed using the |Shift+C| shortcut.
 %%
 % 
@@ -102,12 +102,15 @@
 % coefficient equal to _the intensity of the background + the Threshold
 % shift value_.
 % * *Plot ratio as histogram* - the ratio between intensities will be displayed as a histogram.
+% * *Export to Matlab* - export results to Matlab main workspace as a structure
+% * *Show connections* - display connected areas using the Selection layer,
+% the connections can be removed using the Shift+C shortcut
 % 
 %% Credits
 %
 % <html>
 %  Written by Ilya Belevich, University of Helsinki<br>
-%  version 1.1, 02.03.2017<br>
+%  version 1.2, 21.12.2017<br>
 %  email: <a href="mailto:ilya.belevich @ helsinki.fi">ilya.belevich @ helsinki.fi</a><br>
 %  web: <a href="http://www.biocenter.helsinki.fi/~ibelev/">http://www.biocenter.helsinki.fi/~ibelev/</a><br>
 % </html>

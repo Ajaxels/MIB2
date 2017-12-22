@@ -643,7 +643,8 @@ for fn_index = 1:no_files
             files(layer_id).hDataset = filesTemp.hDataset;
             files(layer_id).hDataset.setSeries(filesTemp.seriesIndex(fileSubIndex)-1);
             files(layer_id).seriesName = filesTemp.seriesIndex(fileSubIndex);
-            files(layer_id).seriesRealName = filesTemp.seriesRealName{fileSubIndex};
+            %files(layer_id).seriesRealName = filesTemp.seriesRealName{fileSubIndex};
+            [~, files(layer_id).seriesRealName] = fileparts(filesTemp.seriesRealName{fileSubIndex});
             
             if metaSwitch == 1 && fn_index == 1 && fileSubIndex == 1 % read full metadata for the first file
                 % extract metadata table for this series

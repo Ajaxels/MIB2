@@ -27,7 +27,8 @@ switch parameter
     case 'matlab'
         % get list of available variables
         availableVars = evalin('base', 'whos');
-        idx = contains({availableVars.class}, {'uint8', 'uint16', 'uint32', 'uint64','int8', 'int16', 'int32', 'int64', 'double', 'single'});
+        %idx = contains({availableVars.class}, {'uint8', 'uint16','uint32', 'uint64','int8', 'int16', 'int32', 'int64', 'double','single'}); % contains available only from R2016b
+        idx = ismember({availableVars.class}, {'uint8', 'uint16', 'uint32', 'uint64','int8', 'int16', 'int32', 'int64', 'double', 'single'});
         if sum(idx) == 0
             errordlg(sprintf('!!! Error !!!\nNothing to import...'), 'Nothing to import');
             return;
@@ -50,7 +51,9 @@ switch parameter
         end
        
         % find only the containers.Map type
-        idx = contains({availableVars.class}, 'containers.Map');
+        %idx = contains({availableVars.class}, 'containers.Map');
+        idx = ismember({availableVars.class}, 'containers.Map');
+        
         MetaVars = {'Do not import'};
         if sum(idx) > 0
             MetaVars = [MetaVars; {availableVars(idx).name}'];

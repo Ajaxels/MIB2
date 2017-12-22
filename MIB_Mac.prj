@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="257032753" file="/Volumes/Transcend/MIB2/MIB2_deploy/MIB_Mac.prj" location="/Volumes/Transcend/MIB2/MIB2_deploy" name="MIB_Mac" preferred-package-location="/Volumes/Transcend/MIB2/MIB2_deploy/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="3984627941" file="/Volumes/Transcend/MIB2/MIB2_deploy/MIB_Mac.prj" location="/Volumes/Transcend/MIB2/MIB2_deploy" name="MIB_Mac" preferred-package-location="/Volumes/Transcend/MIB2/MIB2_deploy/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}/MIB_Mac_resources/icon.icns</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
     </param.icons>
-    <param.version>2.1</param.version>
+    <param.version>2.211</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -103,6 +103,16 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
       <file>${PROJECT_ROOT}/Plugins</file>
       <file>${PROJECT_ROOT}/Resources</file>
       <file>${PROJECT_ROOT}/Tools</file>
+      <file>/Volumes/Transcend/MIB2/OMERO541/connectOmero.m</file>
+      <file>/Volumes/Transcend/MIB2/OMERO541/createObjectDictionary.m</file>
+      <file>/Volumes/Transcend/MIB2/OMERO541/findOmero.m</file>
+      <file>/Volumes/Transcend/MIB2/OMERO541/getAnnotationTypes.m</file>
+      <file>/Volumes/Transcend/MIB2/OMERO541/getObjectTypes.m</file>
+      <file>/Volumes/Transcend/MIB2/OMERO541/getOmeroJars.m</file>
+      <file>/Volumes/Transcend/MIB2/OMERO541/loadOmero.m</file>
+      <file>/Volumes/Transcend/MIB2/OMERO541/omeroKeepAlive.m</file>
+      <file>/Volumes/Transcend/MIB2/OMERO541/omeroVersion.m</file>
+      <file>/Volumes/Transcend/MIB2/OMERO541/unloadOmero.m</file>
     </fileset.resources>
     <fileset.package>
       <file>${PROJECT_ROOT}/Plugins</file>
@@ -110,10 +120,8 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
       <file>${PROJECT_ROOT}/techdoc</file>
     </fileset.package>
     <fileset.depfun>
-      <file>/Applications/Fiji.app/scripts/InstallJava3D.m</file>
-      <file>/Applications/Fiji.app/scripts/IsJava3DInstalled.m</file>
-      <file>/Applications/Fiji.app/scripts/Miji.m</file>
       <file>${PROJECT_ROOT}/mib.m</file>
+      <file>/Volumes/Transcend/MIB2/OMERO541/helper/JavaImageToMatlab.m</file>
     </fileset.depfun>
     <build-deliverables>
       <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="run_MIB.sh" optional="false">/Volumes/Transcend/MIB2/MIB2_deploy/MIB_Mac/for_testing/run_MIB.sh</file>

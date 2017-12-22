@@ -311,6 +311,7 @@ if isfield(handles, 'dataDim') && eventdata.Indices(1) <= numel(handles.dataDim)
                 transMatrix(i) = keyPosition;
             else
                 transMatrix(i) = missingAxis(missingIndex);
+                transMatrix(i) = numel(dataDim) + missingIndex;
                 missingIndex = missingIndex + 1;
             end
         end

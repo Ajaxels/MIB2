@@ -623,7 +623,7 @@ classdef mibRechopDatasetController < handle
                             % Materials_NAME-OF-MATERIAL_Id     - index of material
                             matName = keysList{keyId}(11:end);      % 11 due to removal of 'Materials_' text 
                             materialInfo = img_info(keysList{keyId});
-                            if contains(matName, 'Color')
+                            if ~isempty(strfind(matName, 'Color')) %#ok<STREMP>
                                 materialColor = str2num(materialInfo); %#ok<ST2NM>   Materials_NAME-OF-MATERIAL_Color
                                 materialIndex = img_info(keysList{keyId+1});  %      Materials_NAME-OF-MATERIAL_Id
                                 R.modelMaterialColors(materialIndex, :) = materialColor(1:3);

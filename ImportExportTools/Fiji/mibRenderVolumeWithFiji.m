@@ -116,7 +116,7 @@ if factorX ~= 1 || factorY ~= 1 || factorZ ~=1
 end
 
 % Invert image intensities, Ctrl+I shortcut
-invertSwitch = str2double(answer{3});
+invertSwitch = answer{3};
 if invertSwitch ==1
     waitbar(0.5, wb,  'Inverting the volume...');
     maxval = intmax(class(Volume));

@@ -27,7 +27,7 @@ end
 
 % get list of available variables
 availableVars = evalin('base', 'whos');
-idx = contains({availableVars.class}, {'uint8', 'uint16', 'uint32', 'struct'});
+idx = ismember({availableVars.class}, {'uint8', 'uint16', 'uint32', 'struct'});
 if sum(idx) == 0
     errordlg(sprintf('!!! Error !!!\nNothing to import...'), 'Nothing to import');
     return;

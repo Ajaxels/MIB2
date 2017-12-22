@@ -139,4 +139,6 @@ switch position
         VerticalScrollBar.setValue(0);
 end
 userData.jScroll.repaint;
+% update callback for key press
+obj.mibView.gui.WindowKeyPressFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowKeyPressFcn(hObject, eventdata)); % turn ON callback for the keys
 end

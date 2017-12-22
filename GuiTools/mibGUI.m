@@ -357,14 +357,15 @@ set(handles.mibFirstSliceBtn,'cdata',btn2);
 
 %% Add icons to menu
 pause(.1);
+
 % Disable items in the menu that are not available in the deployed version
 if isdeployed
-    handles.menuFileImportImageMatlab.Enable = 'off';
-    handles.menuFileExportImageMatlab.Enable = 'off';
-    handles.menuModelsImport.Enable = 'off';
-    handles.menuModelsExportMatlab.Enable = 'off';
-    handles.menuMaskImportMatlab.Enable = 'off';
-    handles.menuMaskExportMatlab.Enable = 'off';
+    %handles.menuFileImportImageMatlab.Enable = 'off';
+    %handles.menuFileExportImageMatlab.Enable = 'off';
+    %handles.menuModelsImport.Enable = 'off';
+    %handles.menuModelsExportMatlab.Enable = 'off';
+    %handles.menuMaskImportMatlab.Enable = 'off';
+    %handles.menuMaskExportMatlab.Enable = 'off';
     %handles.menuFileImportImageImaris.Enable = 'off';
     %handles.menuFileExportImageImaris.Enable = 'off';
     %handles.menuModelsRenderImaris.Enable = 'off';
@@ -554,19 +555,24 @@ end
 function mibFolderSelectBtn_Callback(~, ~, handles)
 % --- Executes on button press in mibFolderSelectBtn, directory selection via a GUI tool
 newPath = uigetdir(handles.mibPathEdit.String,'Choose Directory');
-if newPath == 0; return; end;
+if newPath == 0; return; end
 handles.mibController.updateMyPath(newPath);
 end
 
 function mibPathEdit_Callback(~, ~, handles)
 % update mibModel.myPath variable
-handles.mibController.updateMyPath(handles.mibPathEdit.String);
+new_path = handles.mibPathEdit.String;
+[fpath, ~, fext] = fileparts(new_path);
+if ~isempty(fext)
+    new_path = fpath; 
+end
+handles.mibController.updateMyPath(new_path);
 end
 
 function mibRecentDirsPopup_Callback(~, eventdata, handles)
 % a callback for selection of recent directories using handles.mibRecentDirsPopup
 listStr = handles.mibRecentDirsPopup.String;
-if isempty(listStr); return; end;
+if isempty(listStr); return; end
 val = handles.mibRecentDirsPopup.Value;
 selectedDir = listStr{val};
 handles.mibPathEdit.String = selectedDir;

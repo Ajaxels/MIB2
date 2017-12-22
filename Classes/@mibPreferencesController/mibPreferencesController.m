@@ -619,7 +619,7 @@ classdef mibPreferencesController < handle
                 case 'import'   % import color from matlab workspace
                     % get list of available variables
                     availableVars = evalin('base', 'whos');
-                    idx = contains({availableVars.class}, {'double', 'single'});
+                    idx = ismember({availableVars.class}, {'double', 'single'});
                     if sum(idx) == 0
                         errordlg(sprintf('!!! Error !!!\nNothing to import...'), 'Nothing to import');
                         return;

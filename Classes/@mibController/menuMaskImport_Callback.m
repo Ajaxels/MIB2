@@ -31,7 +31,7 @@ end
 switch parameter
     case 'matlab'
         availableVars = evalin('base', 'whos');
-        idx = contains({availableVars.class}, {'uint8', 'uint16', 'uint32', 'uint64','int8', 'int16', 'int32', 'int64', 'double', 'single'});
+        idx = ismember({availableVars.class}, {'uint8', 'uint16', 'uint32', 'uint64','int8', 'int16', 'int32', 'int64', 'double', 'single'});
         if sum(idx) == 0
             errordlg(sprintf('!!! Error !!!\nNothing to import...'), 'Nothing to import');
             return;

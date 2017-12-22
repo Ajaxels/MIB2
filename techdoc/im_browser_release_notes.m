@@ -5,6 +5,13 @@
 %
 %
 %
+%% 2.211 / 21.12.2017
+% * Updated TripleAreaIntensity plugin
+% * Fix, the |contains| function replaced with ismember for compatibility with Matlab 2014b-2016a
+% * Fix of lost key press callbacks after modification of the segmentation table
+% * Fix of loading hdf5 datasets with time dimension
+% * Few other minor bug fixes
+% 
 %% 2.21 / 04.12.2017
 % * Added model with 4294967295 materials for tests
 % * Improved object picker for models with 65535 materials

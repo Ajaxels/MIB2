@@ -120,7 +120,7 @@ for contour=1:max(max(max(bitmap)))
     else
         fprintf(fid,'        Material_%s {\n', modelMaterialNames{contour});
     end
-    fprintf(fid,'            Id %d \n', contour);
+    fprintf(fid,'            Id %d,\n', contour);
     fprintf(fid,'            Color %f %f %f 0 \n', color_list(contour,1),color_list(contour,2),color_list(contour,3));
     fprintf(fid,'        }\n');
 end

@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}\MIB_resources\icon_24.png</file>
       <file>${PROJECT_ROOT}\MIB_resources\icon_16.png</file>
     </param.icons>
-    <param.version>2.21</param.version>
+    <param.version>2.211</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -103,6 +103,16 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
       <file>${PROJECT_ROOT}\Plugins</file>
       <file>${PROJECT_ROOT}\Resources</file>
       <file>${PROJECT_ROOT}\Tools</file>
+      <file>C:\MATLAB\Scripts\OMERO_541\connectOmero.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_541\createObjectDictionary.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_541\findOmero.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_541\getAnnotationTypes.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_541\getObjectTypes.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_541\getOmeroJars.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_541\loadOmero.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_541\omeroKeepAlive.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_541\omeroVersion.m</file>
+      <file>C:\MATLAB\Scripts\OMERO_541\unloadOmero.m</file>
     </fileset.resources>
     <fileset.package>
       <file>${PROJECT_ROOT}\Plugins</file>
@@ -111,13 +121,7 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
     </fileset.package>
     <fileset.depfun>
       <file>${PROJECT_ROOT}\mib.m</file>
-      <file>C:\MATLAB\Scripts\OMERO_541\connectOmero.m</file>
-      <file>C:\MATLAB\Scripts\OMERO_541\findOmero.m</file>
-      <file>C:\MATLAB\Scripts\OMERO_541\getOmeroJars.m</file>
       <file>C:\MATLAB\Scripts\OMERO_541\helper\JavaImageToMatlab.m</file>
-      <file>C:\MATLAB\Scripts\OMERO_541\loadOmero.m</file>
-      <file>C:\MATLAB\Scripts\OMERO_541\omeroVersion.m</file>
-      <file>C:\MATLAB\Scripts\OMERO_541\unloadOmero.m</file>
       <file>C:\Tools\Science\Fiji.app\scripts\InstallJava3D.m</file>
       <file>C:\Tools\Science\Fiji.app\scripts\IsJava3DInstalled.m</file>
       <file>C:\Tools\Science\Fiji.app\scripts\Miji.m</file>
