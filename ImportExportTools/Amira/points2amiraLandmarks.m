@@ -19,7 +19,7 @@ res = 0;
 
 if nargin < 3;     options = struct();  end
 if nargin < 2
-    error('Please provide filename for the surface and structure with surface data!');
+    error('Please provide filename for the file and coordinates of points!');
 end
 if ~isfield(options, 'overwrite'); options.overwrite = 0; end
 if ~isfield(options, 'format'); options.format = 'ascii'; end

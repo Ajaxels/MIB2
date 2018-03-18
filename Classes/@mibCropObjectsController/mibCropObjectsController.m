@@ -325,8 +325,9 @@ classdef mibCropObjectsController < handle
                             matlabVar.Model.materials = material_list;
                             matlabVar.Model.colors = color_list;
                             if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber() > 1  % save annotations
-                                [labelText, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+                                [labelText, labelValues, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
                                 matlabVar.labelText = labelText;
+                                matlabVar.labelValues = labelValues;
                                 matlabVar.labelPosition = labelPosition;
                             end
                         else
@@ -340,8 +341,8 @@ classdef mibCropObjectsController < handle
                                     fnModel = fullfile(obj.outputDir, fnModel);
                                     
                                     if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber() > 1  % save annotations
-                                        [labelText, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
-                                        save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', 'labelText', 'labelPosition', '-mat', '-v7.3');
+                                        [labelText, labelValues, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+                                        save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', 'labelText', 'labelValues', 'labelPosition', '-mat', '-v7.3');
                                     else    % save without annotations
                                         save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', '-mat', '-v7.3');
                                     end

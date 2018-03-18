@@ -11,6 +11,8 @@ function imgRGB = getRGBimage(obj, options, sImgIn)
 %                           when @b marker - show only the marker without the label, when
 %                           @b text - show only text without marker
 % @li .t -> [@em optional], [tmin, tmax] the time point of the dataset; default is the currently shown time point
+% @li .y -> [@em optional], [ymin, ymax] of the part of the slice to take (sets .blockModeSwitch to 0)
+% @li .x -> [@em optional], [xmin, xmax] of the part of the slice to take (sets .blockModeSwitch to 0)
 % @li .useLut -> [@em optional], 0 or 1 to use or not LUT table
 % sImgIn: a custom 3D stack to grab a single 2D slice from
 %
@@ -295,7 +297,7 @@ end
 if isnan(sOver1(1,1,1)) == 0   % segmentation model
     sList = obj.I{obj.Id}.modelMaterialNames;
     T = obj.preferences.mibModelTransparencySlider; % transparency for the segmentation model
-    if obj.I{obj.Id}.modelType > 0
+    if obj.I{obj.Id}.modelType ~= 127 && obj.I{obj.Id}.modelType ~= 32767
         over_type = obj.mibSegmShowTypePopup;  % if 1=filled, 2=contour
         M = sOver1;   % Model
         selectedObject = obj.I{obj.Id}.getSelectedMaterialIndex;  % selected model object
@@ -346,16 +348,17 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
                     G(modIndeces) = G(modIndeces)*T + modColors(M(modIndeces),2) * (1-T);
                     B(modIndeces) = B(modIndeces)*T + modColors(M(modIndeces),3) * (1-T);
                 else
-                    R(modIndeces) = R(modIndeces)*T + modColors(mod(M(modIndeces), 65535), 1) * (1-T);
-                    G(modIndeces) = G(modIndeces)*T + modColors(mod(M(modIndeces), 65535), 2) * (1-T);
-                    B(modIndeces) = B(modIndeces)*T + modColors(mod(M(modIndeces), 65535), 3) * (1-T);
+                    colorId = mod(M(modIndeces)-1, 65535)+1;
+                    R(modIndeces) = R(modIndeces)*T + modColors(colorId, 1) * (1-T);
+                    G(modIndeces) = G(modIndeces)*T + modColors(colorId, 2) * (1-T);
+                    B(modIndeces) = B(modIndeces)*T + modColors(colorId, 3) * (1-T);
                 end
             end
         elseif selectedObject > 0
             i = selectedObject;
             pntlist = find(M==i);
             if obj.I{obj.Id}.modelType > 65535
-                i = mod(i, 65535);  % modify color index
+                i = mod(i-1, 65535)+1;  % modify color index
             end
             if ~isempty(pntlist)
                 R(pntlist) = R(pntlist)*T+obj.I{obj.Id}.modelMaterialColors(i,1)*colorScale*(1-T);
@@ -363,18 +366,13 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
                 B(pntlist) = B(pntlist)*T+obj.I{obj.Id}.modelMaterialColors(i,3)*colorScale*(1-T);
             end
         end
-    elseif obj.I{obj.Id}.modelType == 0
+    elseif obj.I{obj.Id}.modelType ~= 127 || obj.I{obj.Id}.modelType ~= 32767
         maximum = max(max(sOver1));
-%         if orientation == 4
-%             maximum = obj.I{obj.Id}.model_diff_max(slices{4}(1));
-%         else
-%             maximum = max(obj.I{obj.Id}.model_diff_max);
-%         end
-        coef = 1 + 255/maximum*T;
-        R = zeros(size(R),'uint8');
-        R(sOver1 < 0) = uint8(abs(sOver1(sOver1 < 0))*coef); %*T+255*(1-T));
-        B = zeros(size(B),'uint8');
-        B(sOver1 > 0) = uint8(sOver1(sOver1 > 0)*coef); %*T+255*(1-T));
+        coef = double(1 + 255/maximum*(1-T));
+        R = zeros(size(R), 'uint8');
+        R(sOver1 < 0) = uint8(abs(sOver1(sOver1 < 0)))*coef; %*T+255*(1-T));
+        B = zeros(size(B), 'uint8');
+        B(sOver1 > 0) = uint8(sOver1(sOver1 > 0))*coef; %*T+255*(1-T));
     end
 end
 
@@ -423,7 +421,10 @@ end
 if obj.mibShowAnnotationsCheck %% && obj.orientation == 4
     if obj.I{obj.Id}.hLabels.getLabelsNumber() >= 1
         % labelPos(index, z x y)
-        [labelsList, labelPos] = obj.I{obj.Id}.getSliceLabels();
+        if ~isfield(options, 'sliceNo')
+            options.sliceNo = obj.I{obj.Id}.slices{obj.I{obj.Id}.orientation}(1);
+        end
+        [labelsList, labelValues, labelPos] = obj.I{obj.Id}.getSliceLabels(options.sliceNo);
         if isempty(labelsList); return; end
         if orientation == 4     % get ids of the correct vectors in the matrix, depending on orientation
             xId = 2;
@@ -457,7 +458,7 @@ if obj.mibShowAnnotationsCheck %% && obj.orientation == 4
                 pos(:,1) = ceil((labelPos(:,xId) - max([0 floor(axesX(1))])) / magnificationFactor);% - .999/obj.magFactor);     % - .999/obj.magFactor subtract 1 pixel to put a marker to the left-upper corner of the pixel
                 pos(:,2) = ceil((labelPos(:,yId) - max([0 floor(axesY(1))])) / magnificationFactor);% - .999/obj.magFactor);
             end
-            if obj.mibAnnMarkerCheck == 1    % show only a marker
+            if strcmp(obj.mibAnnMarkerEdit, 'marker')  % show only a marker
                 addTextOptions.markerText = 'marker';
             else
                 addTextOptions.markerText = 'both';
@@ -465,7 +466,21 @@ if obj.mibShowAnnotationsCheck %% && obj.orientation == 4
         end
         addTextOptions.color = obj.preferences.annotationColor;
         addTextOptions.fontSize = obj.preferences.annotationFontSize;
-        imgRGB = mibAddText2Img(imgRGB, labelsList, pos, obj.dejavufont, addTextOptions);
+        
+        switch obj.mibAnnMarkerEdit
+            case 'value'
+                modString = sprintf('%c.%df', '%', obj.mibAnnValuePrecision);
+                labelsList = arrayfun(@(a) sprintf(modString, a), labelValues, 'UniformOutput', 0);
+            case 'label + value'
+                if obj.mibAnnValueEccentricCheck == 0
+                    modString = sprintf('%cs: %c.%df', '%', '%', obj.mibAnnValuePrecision);
+                    labelsList = cellfun(@(a, b) sprintf(modString, a, b), labelsList, num2cell(labelValues), 'UniformOutput', 0);
+                else
+                    modString = sprintf('%c.%df: %cs', '%', obj.mibAnnValuePrecision, '%');
+                    labelsList = cellfun(@(a, b) sprintf(modString, a, b), num2cell(labelValues), labelsList, 'UniformOutput', 0);
+                end
+        end
+        imgRGB = mibAddText2Img(imgRGB, labelsList, pos, addTextOptions);
     end
 end
 end

@@ -20,7 +20,7 @@ function [par, img_info, dim_xyczt] = getAmiraMeshHeader(filename)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 09.01.2018, IB added extraction of embedded containers in the amiramesh headers
 
 img_info = containers.Map;
 if nargin < 1
@@ -73,6 +73,11 @@ while numel(strfind(tline, 'Lattice')) == 0
         level = level + 1;
         if strcmp(strtrim(tline(1:openGroup(1)-1)),'im_browser')    % remove the group made with im_browser
             field(level) = cellstr('');
+        elseif tline(end) == '{' && level > 1
+            level = level - 1;
+            par(parIndex).Name = field{level};
+            par(parIndex).Value = cellstr(loopHeader(fid, tline, level));
+            parIndex = parIndex + 1;
         else
             field(level) = cellstr(tline(1:openGroup(1)-1));
         end
@@ -86,7 +91,12 @@ while numel(strfind(tline, 'Lattice')) == 0
         for lev = 1:level
             parField = [parField '_' field{lev}];
         end
-        parField = [parField '_' tline(1:spaces(1)-1)];
+        
+        try
+            parField = [parField '_' tline(1:spaces(1)-1)];
+        catch err
+            0
+        end
         if parField(1) == '_'; parField = parField(2:end); end
         if parField(1) == '_'; parField = parField(2:end); end
         
@@ -136,6 +146,8 @@ while numel(strfind(tline,'# Data section follows')) == 0
             classType(dataIndex) = cellstr('uint8');
         elseif numel(strfind(tline,'ushort')) ~= 0 || numel(strfind(tline,'usingle')) ~= 0
             classType(dataIndex) = cellstr('uint16');
+        elseif numel(strfind(tline,'int')) ~= 0
+            classType(dataIndex) = cellstr('uint32');
         end
         % define number of colors
         openBlock = strfind(tline,'[');
@@ -201,4 +213,28 @@ if HxMultiChannelField3_sw == 0 && max(colorChannels) == 4  % RGBA
 end
     
 dim_xyczt = [width height max(colorChannels) depth 1];
+end
+
+function parValueText = loopHeader(fid, parValueText, level)
+% collect inbedded containers as a plain text
+while level >= 1
+    tline = strtrim(fgetl(fid));
+
+    if tline(end) == '{'    % open group
+        level = level + 1;
+        parValueText = sprintf('%s\n%s', parValueText, tline);
+    elseif tline(end) == '}'    % close group
+        openGroup = strfind(tline, '{');
+        closeGroup = strfind(tline, '}');
+        if numel(openGroup) < numel(closeGroup)     % close the group
+            level = level - 1;
+            parValueText = sprintf('%s\n}', parValueText);
+        else    % situation when: \"Deblur\" setVar \"CustomHelp\" {deblur.html}
+            parValueText = sprintf('%s\n%s', parValueText, tline);
+        end
+    else
+        parValueText = sprintf('%s\n%s', parValueText, tline);
+    end
+    %sprintf('Level: %d, %s', level, tline)
+end
 end

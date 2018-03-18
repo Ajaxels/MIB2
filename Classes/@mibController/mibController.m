@@ -10,7 +10,7 @@ classdef mibController < handle
     %
     
     properties
-        mibVersion = 'ver. 2.211 / 21.12.2017';  % ATTENTION! it is important to have the version number between "ver." and "/"
+        mibVersion = 'ver. 2.22 / 16.03.2018';  % ATTENTION! it is important to have the version number between "ver." and "/"
         % version of MIB
         mibModel
         % handles to the model
@@ -92,6 +92,8 @@ classdef mibController < handle
         
         menuImageMode_Callback(obj, hObject)        % callback to the Menu->Image->Mode, convert image to different formats
         
+        menuImageToolsProjection_Callback(obj)      % callback for the Menu->Image->Tools->Intensity projection
+        
         menuMaskClear_Callback(obj)        % callback to Menu->Mask->Clear mask, clear the Mask layer
         
         menuMaskExport_Callback(obj, parameter)        % callback to Menu->Mask->Export, export the Mask layer to Matlab or another buffer
@@ -132,6 +134,8 @@ classdef mibController < handle
         
         mibAnisotropicDiffusion(obj, filter_type)        % Filter image with Anisotropic diffusion filters
         
+        mibAnnMarkerEdit_Callback(obj)      % callback for selection of annotation marker type
+        
         mibAutoBrightnessBtn_Callback(obj)        % Adjust brightness automatically for the shown image
         
         mibBioformatsCheck_Callback(obj)  % Bioformats that can be read with BioFormats toolbox this function updates the list of file filters in obj.mibView.handles.mibFileFilterPopup
@@ -140,6 +144,8 @@ classdef mibController < handle
         
         mibBufferToggleContext_Callback(obj, parameter, buttonID)   % callback function for the popup menu of the buffer buttons in the upper part of the @em Directory @em contents panel. This callback is triggered from all those buttons.
         
+        mibBrushPanelInterpolationSettingsBtn_Callback(obj)     % callback for modification of the interpolation settings
+
         mibBrushSuperpixelsEdit_Callback(obj, hObject)        % callback for modification of superpixel mode settings of the brush tool
         
         mibBrushSuperpixelsWatershedCheck_Callback(obj, hObject)        % callback for selection of superpixel mode for the brush tool
@@ -360,6 +366,15 @@ classdef mibController < handle
             % Parameters:
             % mibModel: a handle to mibModel class
             
+            % define some global variables
+            global Font mibPath scalingGUI DejaVuSansMono;
+            
+            % when insertText is missing MIB will use a legacy function to add text to image
+            % load the text table and keep it in a global variable
+            if isempty(which('insertText'))
+                DejaVuSansMono = 1-imread('DejaVuSansMono.png');   % table with DejaVu font, Pt = 8, 10, 12, 14, 16, 18, 20
+            end
+            
             % show splash screen
             try
                 if isdeployed
@@ -389,19 +404,17 @@ classdef mibController < handle
                     
                     % get numbers for the brush size change
                     obj.brushSizeNumbers = 1-imread(fullfile(obj.mibPath, 'Resources', 'numbers.png'));   % height=16, letter size = 8, +1 pixel border
-                    dejavufont = 1-imread(fullfile(obj.mibPath, 'Resources', 'DejaVuSansMono.png'));   % table with DejaVu font, Pt = 8, 10, 12, 14, 16, 18, 20
                 else
                     obj.mibPath = fileparts(which('mib'));
                     img = imread(fullfile(obj.mibPath, 'Resources', 'splash'));  % load splash screen
                     
                     % get numbers for the brush size change
                     obj.brushSizeNumbers = 1-imread(fullfile(obj.mibPath, 'Resources', 'numbers.png'));   % height=16, letter size = 8, +1 pixel border
-                    dejavufont = 1-imread(fullfile(obj.mibPath, 'Resources', 'DejaVuSansMono.png'));   % table with DejaVu font, Pt = 8, 10, 12, 14, 16, 18, 20
                 end
                 addTextOptions.color = [1 1 0];
-                addTextOptions.fontSize = 2;
+                addTextOptions.fontSize = 3;
                 addTextOptions.markerText = 'text';
-                img = mibAddText2Img(img, obj.mibVersion, [1, 425], dejavufont, addTextOptions);
+                img = mibAddText2Img(img, obj.mibVersion, [1, 418], addTextOptions);
                 
                 jimg = im2java(img);
                 frame = javax.swing.JFrame;
@@ -431,12 +444,11 @@ classdef mibController < handle
             
             obj.mibModel = mibModel;
             obj.getDefaultParameters();          % restore default/stored parameters
-            % define some global variables
-            global Font mibPath scalingGUI;
+            
             Font = obj.mibModel.preferences.Font;
             mibPath = obj.mibPath;
             scalingGUI = obj.mibModel.preferences.gui;
-            
+
             obj.mibView = mibView(obj);
             
             % update LUT colors and non-63 materials models
@@ -452,7 +464,9 @@ classdef mibController < handle
 
             obj.mibModel.mibLiveStretchCheck = obj.mibView.handles.mibLiveStretchCheck.Value;   % enable/disable live stretching of image intensities
             obj.mibModel.mibShowAnnotationsCheck = obj.mibView.handles.mibShowAnnotationsCheck.Value;   % enable/disable live stretching of image intensities
-            obj.mibModel.mibAnnMarkerCheck = obj.mibView.handles.mibAnnMarkerCheck.Value;   % show only annotation marker: @b 0 - marker and text; @ 1 - only marker
+            obj.mibModel.mibAnnValueEccentricCheck = obj.mibView.handles.mibAnnValueEccentricCheck.Value;   % enable value-eccentric annotations, @b 0 - annotation text first, value second; @b 1 - annotation value first, text - second
+            obj.mibModel.mibAnnValuePrecision = 0;   % precision of annotation values, an integer from 0 and above
+            obj.mibModel.mibAnnMarkerEdit = 'label + value';
             obj.mibModel.mibSegmShowTypePopup = obj.mibView.handles.mibSegmShowTypePopup.Value;   % type of model visualization: @b 1 - filled; @b 2 - contour
             
             obj.plotImage(1);
@@ -484,6 +498,16 @@ classdef mibController < handle
             % update version specific elements
             if obj.matlabVersion < 9
                 obj.mibView.handles.mibSegmThresPanelAdaptiveCheck.Enable = 'off';
+            end
+            
+            % update filters panel
+            if ~isdeployed
+                res = which('bm3d');
+                if ~isempty(res)
+                    currStr = obj.mibView.handles.mibImageFilterPopup.String;
+                    currStr{end+1} = 'External: BMxD';
+                    obj.mibView.handles.mibImageFilterPopup.String = currStr;
+                end
             end
             
             if exist('frame','var')     % close splash window

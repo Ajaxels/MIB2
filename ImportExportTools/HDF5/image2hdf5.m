@@ -42,40 +42,40 @@ function result = image2hdf5(filename, imageS, options)
 %   image2hdf5('saveme.h5', image_var, options, 'test');
 
 result = 0;
-if nargin < 3; options = struct(); end;
-if nargin < 2; error('Please provide filename and image!'); end;
+if nargin < 3; options = struct(); end
+if nargin < 2; error('Please provide filename and image!'); end
 
-if ~isfield(options, 'ChunkSize'); options.ChunkSize = [];    end;
-if ~isfield(options, 'Deflate'); options.Deflate = 0;    end;
-if ~isfield(options, 'overwrite'); options.overwrite = 0;    end;
-if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1;    end;
-if ~isfield(options, 'height'); options.height = size(imageS, 1);    end;
-if ~isfield(options, 'width'); options.width = size(imageS, 2);    end;
-if ~isfield(options, 'colors'); options.colors = size(imageS, 3);    end;
-if ~isfield(options, 'depth'); options.depth = size(imageS, 4);    end;
-if ~isfield(options, 'time'); options.time = size(imageS, 5);    end;
-if ~isfield(options, 'x'); options.x = 1;    end;
-if ~isfield(options, 'y'); options.y = 1;    end;
-if ~isfield(options, 'z'); options.z = 1;    end;
-if ~isfield(options, 't'); options.t = 1;    end;
-if ~isfield(options, 'DatasetName');    % Set dataset name and check for the leading slash
+if ~isfield(options, 'ChunkSize'); options.ChunkSize = [];    end
+if ~isfield(options, 'Deflate'); options.Deflate = 0;    end
+if ~isfield(options, 'overwrite'); options.overwrite = 0;    end
+if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1;    end
+if ~isfield(options, 'height'); options.height = size(imageS, 1);    end
+if ~isfield(options, 'width'); options.width = size(imageS, 2);    end
+if ~isfield(options, 'colors'); options.colors = size(imageS, 3);    end
+if ~isfield(options, 'depth'); options.depth = size(imageS, 4);    end
+if ~isfield(options, 'time'); options.time = size(imageS, 5);    end
+if ~isfield(options, 'x'); options.x = 1;    end
+if ~isfield(options, 'y'); options.y = 1;    end
+if ~isfield(options, 'z'); options.z = 1;    end
+if ~isfield(options, 't'); options.t = 1;    end
+if ~isfield(options, 'DatasetName')    % Set dataset name and check for the leading slash
     options.DatasetName = '/MIB_Export';    
 else
     if options.DatasetName(1) ~= '/'
         options.DatasetName = ['/' options.DatasetName];
     end
-end;
-if ~isfield(options, 'ImageDescription'); options.ImageDescription = '';    end;
+end
+if ~isfield(options, 'ImageDescription'); options.ImageDescription = '';    end
 
-if ~isfield(options, 'order'); 
+if ~isfield(options, 'order')
     options.order = 'yxczt';    
-end;
+end
 
 if options.overwrite == 0
     if exist(filename,'file') == 2
         reply = questdlg(sprintf('!!! Warning !!!\n\nThe file exists!\nOverwrite?'),'Overwrite','Overwrite','Cancel','Cancel');
-        if strcmp(reply,'Cancel'); return; end;
-    end;
+        if strcmp(reply,'Cancel'); return; end
+    end
 end
 
 % % permute the matrix to make it yxczt
@@ -83,13 +83,13 @@ end
 %     imageS = reshape(imageS, size(imageS,1), size(imageS,2), 1, size(imageS,3),size(imageS,4));
 % end
 
-if options.showWaitbar; 
+if options.showWaitbar
     %warning('off','MATLAB:gui:latexsup:UnableToInterpretTeXString');    % switch off warnings for latex
 	curInt = get(0, 'DefaulttextInterpreter'); 
 	set(0, 'DefaulttextInterpreter', 'none'); 
     wb = waitbar(0,sprintf('%s\nPlease wait...',filename),'Name','Saving images as hdf5...','WindowStyle','modal');
     waitbar(0, wb); 
-end;
+end
 
 if exist(filename,'file') && options.t == 1  % for overwrite
     fileNameDelete = filename;
@@ -98,22 +98,24 @@ end
 
 % create dataset
 if options.t == 1
-    if options.showWaitbar; waitbar(.05,wb,sprintf('%s\nCreate file container...',filename)); end;
+    if options.showWaitbar; waitbar(.05,wb,sprintf('%s\nCreate file container...',filename)); end
     if ~isempty(options.ChunkSize)   % do not chunk the data
-        h5create(filename, options.DatasetName, [options.height, options.width, options.colors, options.depth, options.time], 'Datatype', class(imageS),...
-                'Deflate', options.Deflate, 'ChunkSize', [options.ChunkSize(1) options.ChunkSize(2) 1 options.ChunkSize(3) 1]);
+        h5create(filename, options.DatasetName, [options.height, options.width, options.colors, options.depth, options.time], ...
+            'Datatype', class(imageS), 'Deflate', options.Deflate, ...
+            'ChunkSize', [options.ChunkSize(1) options.ChunkSize(2) 1 options.ChunkSize(3) 1]);
     else
         h5create(filename, options.DatasetName, [options.height, options.width, options.colors, options.depth, options.time], 'Datatype', class(imageS),...
-                'Deflate', options.Deflate);
+                'Deflate', options.Deflate, ...
+                'ChunkSize', [options.height, options.width, 1, options.depth, 1]);
     end
 end
 
-if options.showWaitbar; waitbar(.1,wb,sprintf('%s\nSaving images...',filename)); end;
+if options.showWaitbar; waitbar(.1,wb,sprintf('%s\nSaving images...',filename)); end
 h5write(filename, options.DatasetName, imageS, ...
         [options.y, options.x, 1, options.z, options.t],...
         [size(imageS,1), size(imageS,2), size(imageS,3), size(imageS,4),size(imageS,5)]);
 
-    if options.showWaitbar; waitbar(.9,wb,sprintf('%s\nSaving metadata...',filename)); end;
+    if options.showWaitbar; waitbar(.9,wb,sprintf('%s\nSaving metadata...',filename)); end
 
 % generate axistags to be compatible with Ilastik
 % see more here:

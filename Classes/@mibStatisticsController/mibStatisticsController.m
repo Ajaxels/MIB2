@@ -153,7 +153,11 @@ classdef mibStatisticsController < handle
             targetList = {'Mask';'Exterior'};
             if obj.mibModel.getImageProperty('modelExist')
                 materials = obj.mibModel.getImageProperty('modelMaterialNames');
-                targetList = [targetList; materials];
+                if obj.mibModel.I{obj.mibModel.Id}.modelType < 255
+                    targetList = [targetList; materials];
+                else
+                    targetList = [targetList; 'Model'; materials];
+                end
             end
             obj.View.handles.targetPopup.String = targetList;
             
@@ -265,23 +269,22 @@ classdef mibStatisticsController < handle
                         obj.mibModel.I{obj.mibModel.Id}.hLabels.clearContents();
                     end
                     
-                    labelList = cell([numel(obj.indices(:,1)), 1]);
-                    positionList = zeros([numel(obj.indices(:,1)), 4]);
-                    for rowId = 1:numel(obj.indices(:,1))
-                        val = data(obj.indices(rowId,1), 2);
-                        objId = data(obj.indices(rowId,1), 1);
-                        %labelList(rowId) = {sprintf('%d:%s',  objId, num2str(val))};
-                        labelList(rowId) = {sprintf('%s',  num2str(val))};
-                        positionList(rowId,:) = [data(obj.indices(rowId,1), 3),  obj.STATS(objId).Centroid(1),  obj.STATS(objId).Centroid(2), data(obj.indices(rowId,1), 4)];
-                    end
+                    property = obj.View.handles.propertyCombo.String(obj.View.handles.propertyCombo.Value);
+                    labelList = repmat(property, [numel(obj.indices(:,1)), 1]);
+                    labelValues = data(obj.indices(:,1), 2);
+                    positionList = arrayfun(@(index) data(index, 3),obj.indices(:,1));
+                    positionList(:,2) = arrayfun(@(objId) obj.STATS(objId).Centroid(1), data(obj.indices(:,1), 1));
+                    positionList(:,3) = arrayfun(@(objId) obj.STATS(objId).Centroid(2), data(obj.indices(:,1), 1));
+                    positionList(:,4) = arrayfun(@(index) data(index, 4),obj.indices(:,1));
                     
                     if strcmp(parameter, 'removeLabel')
                         obj.mibModel.I{obj.mibModel.Id}.hLabels.removeLabels(positionList);   % remove labels by position
                     else
-                        obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(labelList, positionList);
+                        obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(labelList, positionList, labelValues);
                     end
                     obj.mibModel.mibShowAnnotationsCheck = 1;
                     
+                    notify(obj.mibModel, 'updatedAnnotations');
                     notify(obj.mibModel, 'plotImage');
                     
 %                     % update the annotation window
@@ -329,7 +332,7 @@ classdef mibStatisticsController < handle
             % sorting (i.e. 1, 2, 3, or 4)
             
             data = obj.View.handles.statTable.Data;
-            if iscell(data); return; end;   % nothing to sort
+            if iscell(data); return; end   % nothing to sort
             if obj.sorting == 1     % ascend sorting
                 [data(:,colIndex), index] = sort(data(:,colIndex), 'ascend');
                 obj.sorting = 0;
@@ -815,7 +818,11 @@ classdef mibStatisticsController < handle
                 OPTIONS.material_id = 'Exterior';
             else
                 OPTIONS.model_fn = obj.mibModel.getImageProperty('modelFilename');
-                OPTIONS.material_id = sprintf('%d (%s)', obj.sel_model, obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{obj.sel_model});
+                if ~isnan(obj.sel_model)
+                    OPTIONS.material_id = sprintf('%d (%s)', obj.sel_model, obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{obj.sel_model});
+                else
+                    OPTIONS.material_id = 'Model';
+                end
             end
             
             if strcmp(OPTIONS.frame, '2D, Slice')
@@ -952,19 +959,33 @@ classdef mibStatisticsController < handle
             colorChannel = obj.View.handles.firstChannelCombo.Value;
             colorChannel2 = obj.View.handles.secondChannelCombo.Value;  % for correlation
             
-            selectedMaterial = obj.View.handles.targetPopup.Value-2;  % selected material: -1=Mask; 0=Ext; 1-1st material  ...
+            selectedMaterial = obj.View.handles.targetPopup.Value-2;  % selected material: 
+                % for models <= 255: -1=Mask; 0=Ext; 1-1st material  ...
+                % for models > 255: -1=Mask; 0=Ext; 1-Model, 2-first selected material, 3-second selected material
 
             if selectedMaterial >= 0    % model
                 if obj.mibModel.getImageProperty('modelExist') == 0
                     errordlg(sprintf('The model is not detected!\n\nPlease create a new model using:\nMenu->Models->New model'),'Missing model');
                     return;
                 end
-                obj.sel_model = selectedMaterial;    % selected material
-                list = obj.mibModel.getImageProperty('modelMaterialNames');
+
+                %list = obj.mibModel.getImageProperty('modelMaterialNames');
+                list = obj.View.handles.targetPopup.String;
+                
+                if obj.mibModel.I{obj.mibModel.Id}.modelType < 256
+                    obj.sel_model = selectedMaterial;    % selected material
+                else
+                    if selectedMaterial == 1
+                        obj.sel_model = NaN;    % selected material
+                    else
+                        obj.sel_model = str2double(list{obj.View.handles.targetPopup.Value});
+                    end
+                end
+
                 if selectedMaterial == 0
                     materialName = 'Exterior';
                 else
-                    materialName = list{obj.sel_model};
+                    materialName = list{selectedMaterial+2};
                 end
                 
                 if numel(property) == 1
@@ -1051,15 +1072,32 @@ classdef mibStatisticsController < handle
                     if sum(ismember(property, 'HolesArea')) > 0
                         img = imfill(img, conn, 'holes') - img;
                     end
-                    CC = bwconncomp(img,conn);
-                    if CC.NumObjects == 0
-                        continue;
+                    
+                    if obj.mibModel.I{obj.mibModel.Id}.modelType < 256 || ~isnan(obj.sel_model)
+                        CC = bwconncomp(img, conn);
+                        if CC.NumObjects == 0
+                            continue;
+                        end
+                    else
+                        CC = img;
+                        imgSize = size(img);
+                        clear img;
                     end
                     waitbar(0.05,wb);
                     
                     % calculate common properties
                     STATS = regionprops(CC, {'PixelIdxList', 'Centroid', 'BoundingBox'}); %#ok<*PROP>
-                    
+                    if isnan(obj.sel_model)
+                        % remove empty entries for models with more than
+                        % 255 materials
+                        emptyIndeces = find(arrayfun(@(STATS) isempty(STATS.PixelIdxList), STATS));
+                        STATS(emptyIndeces) = [];
+                        CC = struct();
+                        CC.PixelIdxList = {STATS(:).PixelIdxList};
+                        CC.NumObjects = numel(CC.PixelIdxList);
+                        CC.ImageSize = imgSize;
+                        CC.Connectivity = conn;
+                    end
                     % calculate matlab standard shape properties
                     prop1 = property(ismember(property, {'FilledArea'}));
                     if ismember('Volume', property)
@@ -1216,6 +1254,14 @@ classdef mibStatisticsController < handle
                         end_id = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, orientation);
                     end
 
+                    customProps = {'EndpointsLength','CurveLengthInUnits','CurveLengthInPixels','HolesArea'};
+                    shapeProps = {'Solidity', 'Perimeter', 'Orientation', 'MinorAxisLength', 'MajorAxisLength', 'FilledArea', 'Extent', 'EulerNumber',...
+                            'EquivDiameter', 'Eccentricity', 'ConvexArea', 'Area'};
+                    shapeProps3D = {'FirstAxisLength','SecondAxisLength'};     % these properties are calculated by regionprops3mib
+                    intProps = {'SumIntensity','StdIntensity','MeanIntensity','MaxIntensity','MinIntensity'};
+                    intCustomProps = 'Correlation';
+                    commonProps = {'PixelIdxList', 'Centroid', 'BoundingBox'};
+                    
                     getDataOptions.t = [t t];
                     getDataOptions.blockModeSwitch = 0;
                     for lay_id=start_id:end_id
@@ -1226,25 +1272,33 @@ classdef mibStatisticsController < handle
                             slice = cell2mat(obj.mibModel.getData2D('model', lay_id, orientation, obj.sel_model, getDataOptions));
                         end
                         
-                        customProps = {'EndpointsLength','CurveLengthInUnits','CurveLengthInPixels','HolesArea'};
-                        shapeProps = {'Solidity', 'Perimeter', 'Orientation', 'MinorAxisLength', 'MajorAxisLength', 'FilledArea', 'Extent', 'EulerNumber',...
-                            'EquivDiameter', 'Eccentricity', 'ConvexArea', 'Area'};
-                        shapeProps3D = {'FirstAxisLength','SecondAxisLength'};     % these properties are calculated by regionprops3mib
-                        intProps = {'SumIntensity','StdIntensity','MeanIntensity','MaxIntensity','MinIntensity'};
-                        intCustomProps = 'Correlation';
-                        commonProps = {'PixelIdxList', 'Centroid', 'BoundingBox'};
-                        
                         % get objects
                         if ~isempty(property(ismember(property,'HolesArea')))     % calculate curve length in units
                             slice = imfill(slice, conn, 'holes') - slice;
                         end
-                        CC = bwconncomp(slice,conn);
                         
-                        if CC.NumObjects == 0
-                            continue;
+                        if ~isnan(obj.sel_model)
+                            CC = bwconncomp(slice,conn);
+                            if CC.NumObjects == 0
+                                continue;
+                            end
+                        else
+                            CC = slice;
                         end
+                        
                         % calculate common properties
                         STATS = regionprops(CC, commonProps);
+                        if isnan(obj.sel_model)
+                            % remove empty entries for models with more than
+                            % 255 materials
+                            emptyIndeces = find(arrayfun(@(STATS) isempty(STATS.PixelIdxList), STATS));
+                            STATS(emptyIndeces) = [];
+                            CC = struct();
+                            CC.PixelIdxList = {STATS(:).PixelIdxList};
+                            CC.NumObjects = numel(CC.PixelIdxList);
+                            CC.ImageSize = size(slice);
+                            CC.Connectivity = conn;
+                        end
                         
                         % calculate matlab standard shape properties
                         prop1 = property(ismember(property,shapeProps));

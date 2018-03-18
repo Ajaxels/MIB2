@@ -22,7 +22,7 @@ function varargout = mibExternalDirsGUI(varargin)
 
 % Edit the above text to modify the response to help mibExternalDirsGUI
 
-% Last Modified by GUIDE v2.5 02-Mar-2017 17:51:28
+% Last Modified by GUIDE v2.5 20-Feb-2018 17:50:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,36 +58,11 @@ handles.winController = varargin{1};
 % Choose default command line output for mibExternalDirsGUI
 handles.output = hObject;
 
+% move the window
+hObject = moveWindowOutside(hObject, 'center', 'center');
+
 % Update handles structure
 guidata(hObject, handles);
-
-% Determine the position of the dialog - centered on the callback figure
-% if available, else, centered on the screen
-FigPos=get(0,'DefaultFigurePosition');
-OldUnits = get(hObject, 'Units');
-set(hObject, 'Units', 'pixels');
-OldPos = get(hObject,'Position');
-FigWidth = OldPos(3);
-FigHeight = OldPos(4);
-if isempty(gcbf)
-    ScreenUnits=get(0,'Units');
-    set(0,'Units','pixels');
-    ScreenSize=get(0,'ScreenSize');
-    set(0,'Units',ScreenUnits);
-    
-    FigPos(1)=1/2*(ScreenSize(3)-FigWidth);
-    FigPos(2)=2/3*(ScreenSize(4)-FigHeight);
-else
-    GCBFOldUnits = get(gcbf,'Units');
-    set(gcbf,'Units','pixels');
-    GCBFPos = get(gcbf,'Position');
-    set(gcbf,'Units',GCBFOldUnits);
-    FigPos(1:2) = [(GCBFPos(1) + GCBFPos(3) / 2) - FigWidth / 2, ...
-        (GCBFPos(2) + GCBFPos(4) / 2) - FigHeight / 2];
-end
-FigPos(3:4)=[FigWidth FigHeight];
-set(hObject, 'Position', FigPos);
-set(hObject, 'Units', OldUnits);
 
 % UIWAIT makes mibExternalDirsGUI wait for user response (see UIRESUME)
 % uiwait(handles.mibExternalDirsGUI);
@@ -139,19 +114,17 @@ function selectDirBtn_Callback(hObject, eventdata, handles)
 handles.winController.selectDirBtn_Callback();
 end
 
-
-% --- Executes when selected object is changed in radioButtons.
-function radioButtons_SelectionChangedFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in radioButtons 
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles.winController.radioButtons_SelectionChangedFcn(hObject.String);
-end
-
 % --- Executes on button press in acceptBtn.
 function acceptBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to acceptBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.winController.acceptBtn_Callback();
+end
+
+
+% --- Executes on selection change in externalToolPopup.
+function externalToolPopup_Callback(hObject, eventdata, handles)
+entry = handles.externalToolPopup.String{handles.externalToolPopup.Value};
+handles.winController.externalToolPopup_Callback(entry);
 end

@@ -61,7 +61,7 @@
 %%
 % 
 % <html>
-% Developed during 2010-2017 by<br>
+% Developed during 2010-2018 by<br>
 % Core developer:<br>
 % <a href="http://www.biocenter.helsinki.fi/~ibelev/">Ilya Belevich</a><br>
 % Developers:<br>

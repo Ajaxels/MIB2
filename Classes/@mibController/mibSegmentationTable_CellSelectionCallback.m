@@ -98,7 +98,13 @@ else                        % define color
         if length(c) == 1
             return; 
         end
-        obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(Indices(1)-2,:) = c;
+        if obj.mibModel.I{obj.mibModel.Id}.modelType < 256
+            colIndex = Indices(1)-2;
+        else
+            colIndex = str2double(obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{Indices(1)-2});
+            colIndex = mod(colIndex-1, 65535)+1;
+        end
+        obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(colIndex,:) = c;
     else
         return;
     end
@@ -145,7 +151,7 @@ else
     else
         jTable.setValueAt(java.lang.String(colergen(sprintf('''rgb(%d, %d, %d)''', 51, 153, 255), ...
             obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{selectedMaterial-2})), selectedMaterial-1, 1);
-        materialIndex = mod(str2double(obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{selectedMaterial-2}), 65535);
+        materialIndex = mod(str2double(obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{selectedMaterial-2})-1, 65535)+1;
         jTable.setValueAt(java.lang.String(colergen(sprintf('''rgb(%d, %d, %d)''', ...
                 round(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(materialIndex, 1)*255), ...
                 round(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(materialIndex, 2)*255), ...

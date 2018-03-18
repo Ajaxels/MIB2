@@ -82,11 +82,12 @@ kernelZ = round(kernelX*pixSize.x/pixSize.z) + abs(mod(round(kernelX*pixSize.x/p
 
 wb = waitbar(0, 'Smoothing the volume...','Name','Volume');
 if kernelX > 0
-        options.fitType = 'Gaussian 3d';
+        options.fitType = 'Gaussian';
         options.dataType = '4D';
         options.hSize = [kernelX kernelY kernelZ];
         options.sigma = kernelX/5;
         options.pixSize = pixSize;
+        options.filters3DCheck = 1;
         Volume = ib_doImageFiltering(Volume, options);
 end
 

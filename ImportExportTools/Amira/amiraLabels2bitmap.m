@@ -26,7 +26,7 @@ if nargin < 1
         {'*.am','Amira mesh labels(*.am)';
          '*.*',  'All Files (*.*)'}, ...
          'Pick a file');
-    if filename == 0; return; end;
+    if filename == 0; return; end
     filename = [pathname filename];
 end
 %filename = 'ER.am';
@@ -68,6 +68,17 @@ if isempty(strfind(tline, 'Labels'))
     return;
 end
 
+if strfind(tline, 'byte')
+    imgClass = 'uint8';
+elseif strfind(tline, 'ushort')
+    imgClass = 'uint16';
+elseif strfind(tline, 'int')
+    imgClass = 'uint32';
+else
+    msgbox('Wrong data type!', 'Error!', 'error');
+    return;
+end
+
 % skiping the rest of the header
 while numel(strfind(tline,'# Data section follows')) == 0
     tline = fgetl(fid);
@@ -83,13 +94,30 @@ if strcmp(type,'ascii')
     fclose(fid);
 else
     if RLEcompression == 0
-        bitmap_vec = fread(fid, height*width*depth, '*uint8', 0, 'ieee-le');
+        switch imgClass
+            case 'uint8'
+                bitmap_vec = fread(fid, height*width*depth, '*uint8', 0, 'ieee-le');
+            case 'uint16'
+                bitmap_vec = fread(fid, height*width*depth, '*uint16', 0, 'ieee-le');
+            case 'uint32'
+                bitmap_vec = fread(fid, height*width*depth, '*uint32', 0, 'ieee-le');
+            end
         fclose(fid);
     elseif RLEcompression == 1  % read RLE compressed block
-        bitmap_vec = zeros(elements_no,1,'uint8'); 
-        index = double(1);
-        
-        vec = fread(fid, elementsInFile, '*uint8'); 
+        switch imgClass
+            case 'uint8'
+                bitmap_vec = zeros(elements_no, 1, 'uint8');
+                index = double(1);
+                vec = fread(fid, elementsInFile, '*uint8');
+            case 'uint16'
+                bitmap_vec = zeros(elements_no, 1, 'uint16');
+                index = double(1);
+                vec = fread(fid, elementsInFile, '*uint16');
+            case 'uint32'
+                bitmap_vec = zeros(elements_no, 1, 'uint32');
+                index = double(1);
+                vec = fread(fid, elementsInFile, '*uint32');
+        end
         fclose(fid);
         
         i=1;

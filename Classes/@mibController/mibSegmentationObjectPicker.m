@@ -43,6 +43,7 @@ if obj.mibView.handles.mibSegmMaskClickModelCheck.Value
         return;
     end
     colchannel = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
+    if obj.mibModel.I{obj.mibModel.Id}.modelType > 255; colchannel = NaN; end     % get all materials
 else
     type = 'mask';
     if obj.mibModel.getImageProperty('maskExist') == 0
@@ -157,17 +158,17 @@ switch obj.mibView.handles.mibFilterSelectionPopup.Value
         else
             obj.mibModel.mibDoBackup('selection', 0);
             if strcmp(type,'model') && obj.mibView.handles.mibSegmSelectedOnlyCheck.Value % model with selected only switch
-                mask = cell2mat(obj.mibModel.getData2D(type, NaN, NaN, colchannel));
+                selarea = cell2mat(obj.mibModel.getData2D(type, NaN, NaN, colchannel));
             elseif strcmp(type,'model')
                 mask = cell2mat(obj.mibModel.getData2D(type));     % model
                 colchannel = mask(yCrop, xCrop);
-                if colchannel == 0; return; end;
-                %mask = bitand(mask, colchannel);
-                mask = bitand(mask, 63)==colchannel;
+                if colchannel == 0; return; end
+                selarea = zeros(size(mask), 'uint8');
+                selarea(mask==colchannel) = 1;
             else
-                mask = cell2mat(obj.mibModel.getData2D(type)); % mask
+                selarea = cell2mat(obj.mibModel.getData2D(type)); % mask
             end
-            selarea = uint8(bwselect(mask, xCrop, yCrop, 4));
+            selarea = uint8(bwselect(selarea, xCrop, yCrop, 4));
         end
     case 2 % selection with lasso tool
         obj.mibView.gui.Pointer = 'cross';
@@ -184,7 +185,7 @@ switch obj.mibView.handles.mibFilterSelectionPopup.Value
         currMask = cell2mat(obj.mibModel.getData2D(type, NaN, NaN, colchannel, options));
         selected_mask = imresize(selected_mask, [size(currMask,1) size(currMask,2)], 'method', 'nearest');
         
-        CC = regionprops(selected_mask,'BoundingBox');
+        CC = regionprops(selected_mask, 'BoundingBox');
         bb = CC.BoundingBox;
         bb(1) = bb(1) + max([1 ceil(axesX(1))])-1;
         bb(2) = bb(2) + max([1 ceil(axesY(1))])-1;
@@ -211,7 +212,7 @@ switch obj.mibView.handles.mibFilterSelectionPopup.Value
         else
             obj.mibModel.mibDoBackup('selection', 0);
             selarea = bitand(selected_mask, currMask);
-        end;
+        end
     case 3 % selection with rectangle tool
          obj.mibView.gui.Pointer = 'cross';
         obj.mibView.gui.WindowButtonDownFcn = [];

@@ -19,7 +19,7 @@ function menuMaskSaveAs_Callback(obj)
 if obj.mibModel.I{obj.mibModel.Id}.maskExist == 0
     disp('Cancelled: No mask information found!'); 
     return; 
-end;
+end
 if isnan(obj.mibModel.I{obj.mibModel.Id}.maskImgFilename)
     [pathstr, name] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
     fn_out = fullfile(pathstr, ['Mask_' name '.mask']);
@@ -31,7 +31,7 @@ if isnan(obj.mibModel.I{obj.mibModel.Id}.maskImgFilename)
     end
 else
     fn_out = obj.mibModel.I{obj.mibModel.Id}.maskImgFilename;
-end;
+end
 
 [filename, path, FilterIndex] = uiputfile(...
     {'*.mask',  'Matlab format (*.mask)'; ...
@@ -60,7 +60,7 @@ else
     if obj.mibModel.I{obj.mibModel.Id}.time > 1
         button = questdlg(sprintf('!!! Warning !!!\nIt is not possible to save 4D dataset into a single file!\n\nHowever it is possible to save the currently shown Z-stack, or to make a series of files'), ...
             'Save mask', 'Save as series of 3D datasets', 'Save the currently shown Z-stack', 'Cancel', 'Save as series of 3D datasets');
-        if strcmp(button, 'Cancel'); return; end;
+        if strcmp(button, 'Cancel'); return; end
         if strcmp(button, 'Save as series of 3D datasets')
             t1 = 1;
             t2 = obj.mibModel.I{obj.mibModel.Id}.time;
@@ -97,7 +97,7 @@ else
             end
             maskImg = reshape(maskImg, [size(maskImg,1) size(maskImg,2) 1 size(maskImg,3)]);
             [result, savingOptions] = mibImage2tiff(fullfile(path, fnOut), maskImg, savingOptions, ImageDescription); 
-            if isfield(savingOptions, 'SliceName'); savingOptions = rmfield(savingOptions, 'SliceName'); end; % remove SliceName field when saving series of 2D files
+            if isfield(savingOptions, 'SliceName'); savingOptions = rmfield(savingOptions, 'SliceName'); end % remove SliceName field when saving series of 2D files
         end
     end
 end

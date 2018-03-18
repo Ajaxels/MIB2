@@ -28,6 +28,7 @@ function result = setData4D(obj, type, dataset, orient, col_channel, options)
 % @li .t -> [@em optional], [tmin, tmax] coordinates of the dataset to take after transpose, time
 % @li .level -> [@em optional], index of image level from the image pyramid
 % @li .id -> [@em optional], an index dataset from 1 to 9, defalt = currently shown dataset
+% @li .replaceDatasetSwitch -> [@em optional], force to replace dataset completely with a new dataset
 %
 % Return values:
 % result: -> @b 1 - success, @b 0 - error
@@ -75,7 +76,9 @@ if orient == 0 || isnan(orient); orient=obj.I{options.id}.orientation; end
 
 if strcmp(type,'image')
     if isnan(col_channel); col_channel=obj.I{options.id}.slices{3}; end
-    if col_channel(1) == 0;  col_channel = 1:obj.I{options.id}.colors; end
+    if col_channel(1) == 0 
+        col_channel = 1:min([obj.I{options.id}.colors size(dataset, 3)]); 
+    end
 end
 
 if isfield(options, 'blockModeSwitch')

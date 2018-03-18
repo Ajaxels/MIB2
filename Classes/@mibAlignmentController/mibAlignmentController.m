@@ -483,6 +483,7 @@ classdef mibAlignmentController < handle
                             end
                             
                             tform2 = maketform('affine', input, output);    % fitgeotrans: see below for the test
+                            
                             % define boundaries for datasets to take, note that the .x, .y, .z are numbers after transpose of the dataset
                             optionsGetData.x = [1, Width];
                             optionsGetData.y = [1, Height];
@@ -506,30 +507,117 @@ classdef mibAlignmentController < handle
                             end
                             
                             
-                            %                 %tform2 = fitgeotrans(output, input, 'affine');
-                            %                 tform2 = fitgeotrans(output, input, 'NonreflectiveSimilarity');
-                            %
-                            %                 [T, RB] = imwarp(handles.I.img(:,:,:,layer+1:end), tform2, 'bicubic', 'FillValues', backgroundColor);
-                            %                 if RB.XWorldLimits(1) <  1
-                            %                     obj.shiftsX = floor(RB.XWorldLimits(1));
-                            %                 else
-                            %                     obj.shiftsX = ceil(RB.XWorldLimits(1));
-                            %                 end
-                            %                 if RB.YWorldLimits(1) < 1
-                            %                     obj.shiftsY = floor(RB.YWorldLimits(1))-1;
-                            %                 else
-                            %                     obj.shiftsY = ceil(RB.YWorldLimits(1))-1;
-                            %                 end
+%                                             tform2 = fitgeotrans(output, input, 'affine');
+%                                             %tform2 = fitgeotrans(output, input, 'NonreflectiveSimilarity');
+%                             
+%                                             [T, RB] = imwarp(handles.I.img(:,:,:,layer+1:end), tform2, 'bicubic', 'FillValues', backgroundColor);
+%                                             if RB.XWorldLimits(1) <  1
+%                                                 obj.shiftsX = floor(RB.XWorldLimits(1));
+%                                             else
+%                                                 obj.shiftsX = ceil(RB.XWorldLimits(1));
+%                                             end
+%                                             if RB.YWorldLimits(1) < 1
+%                                                 obj.shiftsY = floor(RB.YWorldLimits(1))-1;
+%                                             else
+%                                                 obj.shiftsY = ceil(RB.YWorldLimits(1))-1;
+%                                             end
+                            %                                                                                                                                                                 
                             
                             [img, bbShiftXY] = mibCrossShiftStacks(cell2mat(obj.mibModel.getData4D('image', NaN, 0, optionsGetData2)), T, obj.shiftsX, obj.shiftsY, parameters);
                             if isempty(img);   return; end
                             optionsSetData.blockModeSwitch = 0;
+                            
                             obj.mibModel.setData4D('image', img, NaN, 0, optionsSetData);
                             
                             layerId = layer;
                             layer = Depth;
                         end
                         layer = layer + 1;
+                    end
+                elseif strcmp(parameters.method, 'imwarp test')
+                    % test function to improve alignment using 3+ points
+                    % for multiple slices. 
+                    % Limited to the same image size as the first image and
+                    % 63 materials only
+                    
+                    obj.shiftsX = zeros(1, Depth);
+                    obj.shiftsY = zeros(1, Depth);
+                    
+                    tformMatrix = cell([Depth,1]);
+                    iMatrix = cell([Depth,1]);
+                    rbMatrix = cell([Depth,1]);
+                    for layer = 2:Depth
+                        currImg = cell2mat(obj.mibModel.getData2D('selection', layer-1, NaN, NaN, optionsGetData));
+                        if sum(sum(currImg)) > 0   % landmark is found
+                            CC1 = bwconncomp(currImg);
+                            
+                            if CC1.NumObjects < 3; continue; end  % require 3 points
+                            CC2 = bwconncomp(cell2mat(obj.mibModel.getData2D('selection', layer, NaN, NaN, optionsGetData)));
+                            if CC2.NumObjects < 3; continue; end  % require 3 points
+                            
+                            STATS1 = regionprops(CC1, 'Centroid');
+                            STATS2 = regionprops(CC2, 'Centroid');
+                            
+                            % find distances between centroids of material 1 and material 2
+                            X1 =  reshape([STATS1.Centroid], [2 numel(STATS1)])';     % centroids matrix, c1([x,y], pointNumber)
+                            X2 =  reshape([STATS2.Centroid], [2 numel(STATS1)])';
+                            
+                            if ~isempty(tformMatrix{layer-1})
+                                [X1(:,1), X1(:,2)] = transformPointsForward(tformMatrix{layer-1}, X1(:,1), X1(:,2)); 
+                                [X2(:,1), X2(:,2)] = transformPointsForward(tformMatrix{layer-1}, X2(:,1), X2(:,2)); 
+                            end
+                            
+                            idx = mibAlignmentController.findMatchingPairs(X2, X1);
+                            
+                            output = reshape([STATS1.Centroid], [2 numel(STATS1)])';     % main dataset points, centroids matrix, c1(pointNumber, [x,y])
+                            for objId = 1:numel(STATS2)
+                                input(objId, :) = STATS2(idx(objId)).Centroid; % the second dataset points, centroids matrix, c1(pointNumber, [x,y])
+                            end
+                            
+                            % define background color
+                            if isnumeric(parameters.backgroundColor)
+                                backgroundColor = options.backgroundColor;
+                            else
+                                if strcmp(parameters.backgroundColor,'black')
+                                    backgroundColor = 0;
+                                elseif strcmp(parameters.backgroundColor,'white')
+                                    backgroundColor = intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1}));
+                                else
+                                    backgroundColor = mean(mean(cell2mat(obj.mibModel.getData2D('image', layer-1, NaN, colorCh, optionsGetData))));
+                                end
+                            end
+                            
+                            tform2 = fitgeotrans(input, output, 'affine');
+                            if isempty(tformMatrix{layer})
+                                tformMatrix(layer:end) = {tform2};
+                                refImgSize = imref2d([Height, Width]);
+                            else
+                                tform2.T = tform2.T*tformMatrix{layer}.T;
+                                tformMatrix(layer:end) = {tform2};
+                                %[y, x] = outputLimits(tform2, [1 Height], [1 Width])
+                            end
+                        end
+                    end
+                    
+                    for layer=2:Depth
+                        if ~isempty(tformMatrix{layer})
+                            I = cell2mat(obj.mibModel.getData2D('image', layer, NaN, colorCh, optionsGetData));
+                            try
+                                [iMatrix{layer}, rbMatrix{layer}] = imwarp(I, tformMatrix{layer}, 'cubic', 'OutputView', refImgSize, 'FillValues', double(backgroundColor));
+                            catch err
+                                0
+                            end
+                            obj.mibModel.setData2D('image', iMatrix{layer}, layer, NaN, colorCh, optionsGetData)
+                            %                             A = imread('pout.tif');
+                            %                             Rin = imref2d(size(A))
+                            %                             Rin.XWorldLimits = Rin.XWorldLimits-mean(Rin.XWorldLimits);
+                            %                             Rin.YWorldLimits = Rin.YWorldLimits-mean(Rin.YWorldLimits);
+                            %                             out = imwarp(A,Rin,tform);
+                            
+                            I = cell2mat(obj.mibModel.getData2D('everything', layer, NaN, NaN, optionsGetData));
+                            I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
+                            obj.mibModel.setData2D('everything', I, layer, NaN, NaN, optionsGetData)
+                         end
                     end
                 else        % standard alignement
                     %parameters.step = str2double(obj.View.handles.stepEditbox,'string'));

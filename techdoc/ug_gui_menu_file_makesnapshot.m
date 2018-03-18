@@ -61,6 +61,8 @@
 % <<images\menuFileSnapshot_split.jpg>>
 % 
 %
+% * *white Bg* - render background in white color for the split
+% channel mode and the scale bars
 % * *Scale bar* - select the |Scale bar| check box to add a scale bar to the snapshot. *Note!* if the width of the snapshot is too small the
 % scale bar is not generated
 % * *Measurements* - add the displayed measurements to the snapshot.

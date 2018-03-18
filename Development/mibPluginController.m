@@ -42,6 +42,9 @@ classdef mibPluginController < handle
             guiName = 'mibPluginGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
+            % move the window to the left hand side of the main window
+            obj.View.gui = moveWindowOutside(obj.View.gui, 'left');
+            
             % resize all elements of the GUI
             mibRescaleWidgets(obj.View.gui);
             
@@ -89,5 +92,15 @@ classdef mibPluginController < handle
             
             fprintf('childController:updateWidgets: %g\n', toc);
         end
+        
+        % ------------------------------------------------------------------
+        % % Additional functions and callbacks
+        function calculateBtn_Callback(obj)
+            % start main calculation of the plugin
+        
+            fprintf('calculateBtn_Callback: Calculate button was pressed\n');
+        end
+        
+        
     end
 end

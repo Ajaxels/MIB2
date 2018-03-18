@@ -1,4 +1,5 @@
 function Graphcut = mibGraphcut_CalcSupervoxels(Graphcut, img, parLoopOptions)
+% function Graphcut = mibGraphcut_CalcSupervoxels(Graphcut, img, parLoopOptions)
     img = squeeze(img);   % get dataset
     % bin dataset
     if parLoopOptions.binVal(1) ~= 1 || parLoopOptions.binVal(2) ~= 1

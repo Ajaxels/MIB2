@@ -22,7 +22,7 @@ function varargout = mibPluginGUI(varargin)
 
 % Edit the above text to modify the response to help mibPluginGUI
 
-% Last Modified by GUIDE v2.5 22-Aug-2017 14:08:04
+% Last Modified by GUIDE v2.5 16-Jan-2018 09:01:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -85,3 +85,38 @@ function mibPluginGUI_CloseRequestFcn(hObject, eventdata, handles)
 
 handles.winController.closeWindow();
 
+
+
+% % ----------------------------------------------------------------------
+% Callbacks for buttons
+% % ----------------------------------------------------------------------
+
+% --- Executes on button press in helpBtn
+function helpBtn_Callback(hObject, eventdata, handles)
+% hObject    handle to closeBtn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+global mibPath;
+web(fullfile(mibPath, 'Plugins', 'MyPlugins', 'mibPlugin', 'Help', 'index.html'), '-helpbrowser');
+
+
+% --- Executes on button press in calculateBtn.
+% start calculation of something
+function calculateBtn_Callback(hObject, eventdata, handles)
+% hObject    handle to closeBtn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% call a corresponding method of the controller class
+handles.winController.calculateBtn_Callback();
+
+
+% --- Executes on button press in closeBtn.
+% close the plugin window
+function closeBtn_Callback(hObject, eventdata, handles)
+% hObject    handle to closeBtn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+handles.winController.closeWindow();

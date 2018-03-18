@@ -10,6 +10,7 @@ function mibSegmentationTable_cm_Callback(obj, hObject, type)
 % @li ''set color'' - Set color of the selected material
 % @li ''statistics'' - Get statistics for material
 % @li ''isosurface'' - Show isosurface (Matlab)
+% @li ''isosurface2imaris'' - render isosurface in Matlab and export to Imaris
 % @li ''volumeFiji'' - Show as volume (Fiji)
 
 % Copyright (C) 29.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
@@ -64,7 +65,7 @@ switch type
         obj.updateSegmentationTable();
     case 'statistics'
         obj.startController('mibStatisticsController');
-    case 'isosurface'
+    case {'isosurface', 'isosurface2imaris'}
         contIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
         
         options.fillBg = 0;
@@ -122,6 +123,14 @@ switch type
         end
         
         bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();  % get bounding box
+        if strcmp(type, 'isosurface2imaris')
+            Options.exportToImaris = 1;
+            if contIndex == -1
+                Options.modelMaterialNames = 'Mask';
+            else
+                Options.modelMaterialNames = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames;    
+            end
+        end
         mibRenderModel(model{1}, contIndex, obj.mibModel.I{obj.mibModel.Id}.pixSize, bb, modelMaterialColors, image, Options);
     case 'volumeFiji'
         contIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();

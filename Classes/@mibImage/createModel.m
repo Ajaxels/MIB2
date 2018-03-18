@@ -10,7 +10,9 @@ function createModel(obj, modelType, modelMaterialNames)
 % - @b 63 - a segmentation model with up to 63 materials; the 'Model', 'Mask' and 'Selection' layers stored in the same matrix, to decrease memory consumption;
 % - @b 255 - a segmentation model with up to 255 materials; the 'Model', 'Mask' and 'Selection' layers stored in separate matrices;
 % - @b 65535 - a segmentation model with up to 65535 materials; the 'Model', 'Mask' and 'Selection' layers stored in separate matrices;
-% - @b 128 - a model layer that has intensities from -128 to 128.
+% - @b 4294967295 - a segmentation model with up to 4294967295 materials; the 'Model', 'Mask' and 'Selection' layers stored in separate matrices;
+% - @b 127 - a model layer that has intensities from -128 to 127.
+% - @b 32767 - a model layer that has intensities from -32768 to 32767.
 % modelMaterialNames: [@em optional] a cell array with names of materials, this parameter is not used for modelType > 255
 
 %
@@ -43,9 +45,7 @@ if modelType == 63
         obj.model{1} = bitand(obj.model{1}, 192);
     else
         if ~isnan(obj.selection{1}(1))
-            if isnan(obj.model{1}(1))
-                obj.model{1} = zeros([size(obj.img{1},1) size(obj.img{1},2) size(obj.img{1},4) size(obj.img{1},5)], 'uint8');
-            end % create new model
+            obj.model{1} = zeros([size(obj.img{1},1) size(obj.img{1},2) size(obj.img{1},4) size(obj.img{1},5)], 'uint8');
             obj.model{1}(obj.selection{1}==1) = bitset(obj.model{1}(obj.selection{1}==1), 8, 1);    % generate selection layer
             if obj.maskExist == 1
                 obj.model{1}(obj.maskImg{1}==1) = bitset(obj.model{1}(obj.maskImg{1}==1), 7, 1);    % generate mask layer
@@ -67,10 +67,15 @@ else
     end
     if modelType == 255
         obj.model{1} = zeros([obj.height, obj.width, obj.depth, obj.time], 'uint8');
-    elseif modelType == 128
+    elseif modelType == 127
         obj.model{1} = zeros([obj.height, obj.width, obj.depth, obj.time],'int8');
+    elseif modelType == 32767
+        obj.model{1} = zeros([obj.height, obj.width, obj.depth, obj.time],'int16');
     elseif modelType == 65535
         obj.model{1} = zeros([obj.height, obj.width, obj.depth, obj.time], 'uint16');
+        obj.modelMaterialColors = rand(65535,3);    % generate vector for colors
+    elseif modelType == 4294967295
+        obj.model{1} = zeros([obj.height, obj.width, obj.depth, obj.time], 'uint32');
         obj.modelMaterialColors = rand(65535,3);    % generate vector for colors
     end
 end
@@ -93,7 +98,7 @@ if modelType < 256
     obj.selectedMaterial = 2;
     obj.selectedAddToMaterial = 2;
 else
-    obj.modelMaterialNames = {'1', '2'};
+    obj.modelMaterialNames = {'1', '2'}';
     obj.selectedMaterial = 3;
     obj.selectedAddToMaterial = 3;
 end

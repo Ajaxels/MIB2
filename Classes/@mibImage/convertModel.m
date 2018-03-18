@@ -34,6 +34,11 @@ if nargin < 2
 end
 if type == obj.modelType; return; end
 
+if obj.modelExist == 0
+    errordlg('Model is not present, create an empty model first', 'Missing a model');
+    return;
+end
+
 wb = waitbar(0, sprintf('Converting the model to the "%d" type\n\nPlease wait...', type), 'Name', 'Converting the model', 'WindowStyle', 'modal');
 if type == 63     % convert from 255 to 63
     if ~isnan(obj.selection{1}(1))
@@ -94,7 +99,7 @@ if type < 256
     obj.selectedAddToMaterial = 2;
 else
     if obj.modelType < 256 % from 8bit to 65535
-        obj.modelMaterialNames = {'1', '2'};
+        obj.modelMaterialNames = {'1', '2'}';
         obj.modelMaterialColors = rand(65535,3);    % generate vector for colors
     end
     obj.selectedMaterial = 3;

@@ -25,17 +25,21 @@ classdef mibExternalDirsController < handle
             guiName = 'mibExternalDirsGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
+            externalPaths = [{'Fiji installation folder'}, {'Omero installation folder'},...
+                              {'BM3D filter'}, {'BM4D filter'}];
+            obj.View.handles.externalToolPopup.String = externalPaths;
+            
             % resize all elements x1.25 times for macOS
             mibRescaleWidgets(obj.View.gui);
             
             % update font and size
             global Font;
-            if obj.View.handles.fijiRadio.FontSize ~= Font.FontSize ...
-                    || ~strcmp(obj.View.handles.fijiRadio.FontName, Font.FontName)
+            if obj.View.handles.text2.FontSize ~= Font.FontSize ...
+                    || ~strcmp(obj.View.handles.text2.FontName, Font.FontName)
                 mibUpdateFontSize(obj.View.gui, Font);
             end
-            obj.View.gui.WindowStyle = 'modal';     % make window modal
-            obj.radioButtons_SelectionChangedFcn();
+            %obj.View.gui.WindowStyle = 'modal';     % make window modal
+            obj.externalToolPopup_Callback();
         end
         
         function closeWindow(obj)
@@ -67,7 +71,7 @@ classdef mibExternalDirsController < handle
             % select directory using uigetdir
             
             folder_name = uigetdir(obj.View.handles.dirEdit.String, 'Select directory');
-            if folder_name==0; return; end;
+            if folder_name==0; return; end
             obj.View.handles.dirEdit.String = folder_name;
             obj.dirEdit_Callback();
         end
@@ -76,28 +80,36 @@ classdef mibExternalDirsController < handle
             % function updatePreferences(obj)
             % % update local copy of preferences
             
-            switch obj.View.handles.radioButtons.SelectedObject.String
+            switch obj.View.handles.externalToolPopup.String{obj.View.handles.externalToolPopup.Value}
                 case 'Fiji installation folder'
                     obj.localPreferences.dirs.fijiInstallationPath = obj.View.handles.dirEdit.String;
                 case 'Omero installation folder'
                     obj.localPreferences.dirs.omeroInstallationPath = obj.View.handles.dirEdit.String;
+                case 'BM3D filter'
+                    obj.localPreferences.dirs.bm3dInstallationPath = obj.View.handles.dirEdit.String;
+                case 'BM4D filter'
+                    obj.localPreferences.dirs.bm4dInstallationPath = obj.View.handles.dirEdit.String;                    
             end
         end
         
-        function radioButtons_SelectionChangedFcn(obj, name)
-            % function radioButtons_SelectionChangedFcn(obj, name)
-            % callback for change of selected radio button
+        function externalToolPopup_Callback(obj, name)
+            % function externalToolPopup_Callback(obj, name)
+            % callback for change of selected tool
             %
             % Parameters:
             % name: text of the radio button
             
-            if nargin < 2; name = obj.View.handles.radioButtons.SelectedObject.String; end;
+            if nargin < 2; name = obj.View.handles.externalToolPopup.String{obj.View.handles.externalToolPopup.Value}; end
             
             switch name
                 case 'Fiji installation folder'
                     obj.View.handles.dirEdit.String = obj.localPreferences.dirs.fijiInstallationPath;
                 case 'Omero installation folder'
                     obj.View.handles.dirEdit.String = obj.localPreferences.dirs.omeroInstallationPath;
+                case 'BM3D filter'
+                    obj.View.handles.dirEdit.String = obj.localPreferences.dirs.bm3dInstallationPath;
+                case 'BM4D filter'
+                    obj.View.handles.dirEdit.String = obj.localPreferences.dirs.bm4dInstallationPath;
             end
             obj.dirEdit_Callback();
         end

@@ -65,10 +65,16 @@ for objId = 1:CC.NumObjects
         D1 = bwdistgeodesic(M1, EndPoints(LongestDist(2)), 'quasi-euclidean');
         D2 = bwdistgeodesic(M1, EndPoints(LongestDist(3)), 'quasi-euclidean');
         D = D1 + D2;
-        D = round(D * 8) / 8;
-        D(isnan(D)) = Inf;
-        M1 = imregionalmin(D);
         
+        D = -D + min(D(:))+.9;
+        M1 = zeros(size(M1), 'uint8');
+        M1(D>0) = 1;
+        
+        % this code gives sometimes short profiles
+        %D = round(D * 8) / 8;
+        %D(isnan(D)) = Inf;
+        %M1 = imregionalmin(D);
+                
         %figure(3);
         %P = imoverlay(img, M1, [1 0 0]);
         %imshow(P, 'InitialMagnification', 200);

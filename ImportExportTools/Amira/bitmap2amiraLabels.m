@@ -31,9 +31,10 @@ function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list
 % of the License, or (at your option) any later version.
 %
 % Updates
-% ver 1.01 - 10.08.2010 - added voxel size
-% ver 1.02 - 02.09.2011 - added minimal coordinates of the bounding box
-% ver 1.03 - 07.07.2016 - added possibility to have color_list and modelMaterialNames empty
+% 10.08.2010 - added voxel size
+% 02.09.2011 - added minimal coordinates of the bounding box
+% 07.07.2016 - added possibility to have color_list and modelMaterialNames empty
+% 15.03.2018, IB added saving of models with more than 255 materials
 
 result = 0;
 %warning('off','MATLAB:gui:latexsup:UnableToInterpretTeXString');    % switch off warnings for latex
@@ -63,25 +64,32 @@ if nargin < 4   % generate color_list
 end
 if nargin < 3; format = 'binary'; end
 
-if isempty(color_list)      % generate color_list
-    maxColor = max(max(max(bitmap)));
-    if maxColor == 1
-        color_list = squeeze(label2rgb(1:maxColor))';
-    else
-        color_list = squeeze(label2rgb(1:maxColor));    
-    end
-    color_list = color_list/255;
+useMaterialNames = 1;     % save material names and colors
+if isa(bitmap, 'uint16') || isa(bitmap, 'uint32')
+    useMaterialNames = 0;
 end
 
-if isempty(modelMaterialNames)  % generate material names
-    maxColor = max(max(max(bitmap)));
-    for color=1:maxColor
-        modelMaterialNames(color) = cellstr(num2str(color));
+if useMaterialNames
+    if isempty(color_list)      % generate color_list
+        maxColor = max(max(max(bitmap)));
+        if maxColor == 1
+            color_list = squeeze(label2rgb(1:maxColor))';
+        else
+            color_list = squeeze(label2rgb(1:maxColor));    
+        end
+        color_list = color_list/255;
     end
-end
 
-if max(max(color_list)) > 1     % normalize to 0-1 range
-    color_list = color_list/max(max(color_list));
+    if isempty(modelMaterialNames)  % generate material names
+        maxColor = max(max(max(bitmap)));
+        for color=1:maxColor
+            modelMaterialNames(color) = cellstr(num2str(color));
+        end
+    end
+
+    if max(max(color_list)) > 1     % normalize to 0-1 range
+        color_list = color_list/max(max(color_list));
+    end
 end
 
 if overwrite == 0
@@ -111,21 +119,35 @@ end
 % saving the header
 fprintf(fid,'define Lattice %d %d %d\n\n',size(bitmap,2),size(bitmap,1),size(bitmap,3));
 fprintf(fid,'Parameters {\n');
-fprintf(fid,'    Materials {\n');
-fprintf(fid,'        Exterior {\n');
-fprintf(fid,'        }\n');
-for contour=1:max(max(max(bitmap)))
-    if isnan(str2double(modelMaterialNames{contour}))
-        fprintf(fid,'        %s {\n', modelMaterialNames{contour});
-    else
-        fprintf(fid,'        Material_%s {\n', modelMaterialNames{contour});
-    end
-    fprintf(fid,'            Id %d,\n', contour);
-    fprintf(fid,'            Color %f %f %f 0 \n', color_list(contour,1),color_list(contour,2),color_list(contour,3));
+if useMaterialNames
+    fprintf(fid,'    Materials {\n');
+    fprintf(fid,'        Exterior {\n');
     fprintf(fid,'        }\n');
+    for contour=1:max(max(max(bitmap)))
+        if isnan(str2double(modelMaterialNames{contour}))
+            fprintf(fid,'        %s {\n', modelMaterialNames{contour});
+        else
+            fprintf(fid,'        Material_%s {\n', modelMaterialNames{contour});
+        end
+        fprintf(fid,'            Id %d,\n', contour);
+        fprintf(fid,'            Color %f %f %f 0 \n', color_list(contour,1),color_list(contour,2),color_list(contour,3));
+        fprintf(fid,'        }\n');
+    end
+    fprintf(fid,'    }\n');
 end
-fprintf(fid,'    }\n');
-fprintf(fid,'    Content "%dx%dx%d byte, uniform coordinates",\n',size(bitmap,2),size(bitmap,1),size(bitmap,3));
+
+classText = 'byte';
+switch class(bitmap)
+    case 'uint8'
+        classText = 'byte';
+    case 'uint16'
+        classText = 'ushort';
+    case 'uint32'
+        classText = 'int';
+end
+
+fprintf(fid,'    Content "%dx%dx%d %s, uniform coordinates",\n',size(bitmap,2),size(bitmap,1),size(bitmap,3), classText);
+
 fprintf(fid,'    BoundingBox %f %f %f %f %f %f,\n',...
     voxel.minx, voxel.minx+(size(bitmap,2)-1)*voxel.x,...
     voxel.miny, voxel.miny+(size(bitmap,1)-1)*voxel.y,...
@@ -137,13 +159,14 @@ bitmap = reshape(permute(bitmap,[2 1 3]),1,[])';
 if showWaitbar; waitbar(.1, wb); end
 % saving the data
 if strcmp(format,'binary')
-    fprintf(fid,'Lattice { byte Labels } @1\n\n');
+    fprintf(fid,'Lattice { %s Labels } @1\n\n', classText);
     fprintf(fid,'# Data section follows\n');
     fprintf(fid,'@1\n');
 
-    fwrite(fid, bitmap, 'uint8', 0, 'ieee-le');
+    %fwrite(fid, bitmap, 'uint8', 0, 'ieee-le');
+    fwrite(fid, bitmap, class(bitmap), 0, 'ieee-le');
 elseif strcmp(format,'ascii')
-    fprintf(fid,'Lattice { byte Labels } @1\n\n');
+    fprintf(fid,'Lattice { %s Labels } @1\n\n', classText);
     fprintf(fid,'# Data section follows\n');
     fprintf(fid,'@1\n');
     maxVal = numel(bitmap);
@@ -225,11 +248,18 @@ elseif strcmp(format,'binaryRLE')
         bitmap(bytesCounter+2) = lastCharacter;
         bytesCounter = bytesCounter + 2;
     end
-    fprintf(fid,'Lattice { byte Labels } @1(HxByteRLE,%d)\n\n', bytesCounter);
+    fprintf(fid,'Lattice { %s Labels } @1(HxByteRLE,%d)\n\n', classText, bytesCounter);
     fprintf(fid,'# Data section follows\n');
     fprintf(fid,'@1\n');
     if showWaitbar; waitbar(.8, wb); end
-    fwrite(fid, bitmap(1:bytesCounter), '*uint8', 0, 'ieee-le');
+    switch class(bitmap)
+        case 'uint8'
+            fwrite(fid, bitmap(1:bytesCounter), '*uint8', 0, 'ieee-le');
+        case 'uint16'
+            fwrite(fid, bitmap(1:bytesCounter), '*uint16', 0, 'ieee-le');
+        case 'uint32'
+            fwrite(fid, bitmap(1:bytesCounter), '*uint32', 0, 'ieee-le');
+    end
 end
 fprintf(fid,'\n');
 fclose(fid);

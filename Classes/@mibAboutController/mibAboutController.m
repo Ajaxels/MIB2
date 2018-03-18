@@ -44,10 +44,11 @@ classdef mibAboutController < handle
             img = imread(fullfile(mibPath, 'Resources', 'mib_about.jpg'));
             
             addTextOptions.color = [1 1 0];
-            addTextOptions.fontSize = 2;
+            addTextOptions.fontSize = 3;
             addTextOptions.markerText = 'text';
+            addTextOptions.AnchorPoint = 'LeftBottom';
             dateTag = versionText(26:end);  % trim to remove 'Microscopy Image Browser ' text
-            img = mibAddText2Img(img, dateTag, [1,402], obj.mibModel.dejavufont, addTextOptions);
+            img = mibAddText2Img(img, dateTag, [1,402], addTextOptions);
             
             imh = image(img, 'parent', obj.View.handles.axes1);
             obj.View.handles.axes1.XTick = [];

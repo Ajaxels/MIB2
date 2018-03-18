@@ -104,7 +104,7 @@ if options.roiId >= 0
             mask = mask(bb(3):bb(4), bb(1):bb(2));
             
             mask = repmat(mask,[1, 1, numel(col_channel)]);
-            for layerId = 1:size(dataset{roiId2}, ndims(dataset{roiId2}))
+            for layerId = 1:size(dataset{roiId2}, max([ndims(dataset{roiId2}) 3]))
                 if strcmp(type, 'image')
                     slice = dataset{roiId2}(:,:,:,layerId);
                     slice(~mask) = options.fillBg;

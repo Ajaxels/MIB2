@@ -47,8 +47,17 @@ mex('slicsupervoxelmex_byte.c' ,'-v');
 mex -v -largeArrayDims maxflowmex_v222.cpp maxflow-v2.22/adjacency_list_new_interface/graph.cpp maxflow-v2.22/adjacency_list_new_interface/maxflow.cpp
 %mex -v -largeArrayDims maxflowmex_v301.cpp maxflow-v3.01/graph.cpp maxflow-v3.01/maxflow.cpp
 
+%% Compiling patchnormals
+% the patchnormals are not compiled because they
+% the compiled patchnormals have some issues with memory, so it is not
+% recommended to compile it
+% waitbar(0.25, wb, sprintf('Compiling patchnormals\nPlease wait...'));
+% currDir = fullfile(mibDir, 'Tools');
+% cd(currDir);
+% mex('patchnormals_double.c' ,'-largeArrayDims', '-v');
+
 %% Compiling Region Growing
-waitbar(0.25, wb, sprintf('Compiling Region Growing\nPlease wait...'));
+waitbar(0.3, wb, sprintf('Compiling Region Growing\nPlease wait...'));
 currDir = fullfile(mibDir, 'Tools','RegionGrowing');
 cd(currDir);
 mex('RegionGrowing_mex.cpp' ,'-v');
@@ -67,3 +76,4 @@ disp(nrrdPath)
 disp('2) Random Forest Classifier for Linux')
 disp(forestPath1)
 disp(forestPath2)
+

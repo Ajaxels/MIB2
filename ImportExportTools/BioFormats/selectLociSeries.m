@@ -154,41 +154,16 @@ mibRescaleWidgets(handles.selectLociSeries);
 handles.text2.FontSize = handles.text2.FontSize + 2;
 handles.selectedSeriesText.FontSize = handles.text2.FontSize + 2;
 
-% Update handles structure
-guidata(hObject, handles);
-
 if numSeries==1
     continueBtn_Callback(handles.continueBtn, '', handles);
     return;
 end
 
-% Determine the position of the dialog - centered on the callback figure
-% if available, else, centered on the screen
-FigPos=get(0,'DefaultFigurePosition');
-OldUnits = get(hObject, 'Units');
-set(hObject, 'Units', 'pixels');
-OldPos = get(hObject,'Position');
-FigWidth = OldPos(3);
-FigHeight = OldPos(4);
-if isempty(gcbf)
-    ScreenUnits=get(0,'Units');
-    set(0,'Units','pixels');
-    ScreenSize=get(0,'ScreenSize');
-    set(0,'Units',ScreenUnits);
+% move the window
+hObject = moveWindowOutside(hObject, 'center', 'center');
 
-    FigPos(1)=1/2*(ScreenSize(3)-FigWidth);
-    FigPos(2)=2/3*(ScreenSize(4)-FigHeight);
-else
-    GCBFOldUnits = get(gcbf,'Units');
-    set(gcbf,'Units','pixels');
-    GCBFPos = get(gcbf,'Position');
-    set(gcbf,'Units',GCBFOldUnits);
-    FigPos(1:2) = [(GCBFPos(1) + GCBFPos(3) / 2) - FigWidth / 2, ...
-                   (GCBFPos(2) + GCBFPos(4) / 2) - FigHeight / 2];
-end
-FigPos(3:4)=[FigWidth FigHeight];
-set(hObject, 'Position', FigPos);
-set(hObject, 'Units', OldUnits);
+% Update handles structure
+guidata(hObject, handles);
 
 % Make the GUI modal
 set(handles.selectLociSeries,'WindowStyle','modal')
@@ -295,7 +270,38 @@ function updateImagePreview(handles)
 % update image preview
 % load a slice for a thumbnail
 
+% if preview is disabled, return
+if handles.previewCheck.Value == 0; return; end
+
 sliceNumber = round(handles.sliceNumberSlider.Value);
+
+% % a test code to generate preview image from single points, seems to be
+% % quite slow
+% 
+% axesUnits = handles.imagePreview.Units;
+% handles.imagePreview.Units = 'pixels';
+% axWidth = handles.imagePreview.Position(3);
+% axHeight = handles.imagePreview.Position(4);
+% templateImage = zeros([ceil(axHeight), ceil(axWidth), handles.output4(3)]);
+% stepX = handles.output4(1)/axWidth;
+% stepY = handles.output4(2)/axHeight;
+% options.dx = 1;
+% options.dy = 1;
+% r = loci.formats.Memoizer(handles.output2);
+% ypos = 1;
+% for y=1:stepY:handles.output4(2)
+%     options.y1 = floor(y);
+%     xpos = 1;
+%     for x=1:stepX:handles.output4(1)
+%         options.x1 = floor(x);
+%             %bfImg = bfGetPlane(handles.output2, handles.output(1), options.x1, options.y1, options.dx, options.dy);
+%             bfImg = bfGetPlane(r, handles.output(1), options.x1, options.y1, options.dx, options.dy);
+%             templateImage(ypos:ypos+options.dy-1, xpos:xpos+options.dx-1, :) = bfImg;
+%             xpos = xpos + options.dx;
+%     end
+%     ypos = ypos + options.dy;
+% end
+% handles.imagePreview.Units = axesUnits;
 
 templateImage = bfopen3(handles.output2, handles.output(1), sliceNumber);
 templateImage = imresize(templateImage.img, 128/size(templateImage.img,1));

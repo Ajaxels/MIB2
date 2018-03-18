@@ -10,6 +10,8 @@ classdef mibMakeMovieController < handle
     % as published by the Free Software Foundation; either version 2
     % of the License, or (at your option) any later version.
     
+    % Updates
+    % 17.01.2018, imporoved performance with the ROI mode
     
     properties
         mibModel
@@ -26,10 +28,6 @@ classdef mibMakeMovieController < handle
         % width of the image area to render
         resizedWidth
         % width of the image area to render with respect of the aspect ratio
-        textCharactersBase
-        % a matrix with bitmaps of characters for generation of the scale bar
-        textCharactersTable
-        % a matrix with list of characters for generation of the scale bar
     end
     
     events
@@ -58,10 +56,6 @@ classdef mibMakeMovieController < handle
             end
             
             obj.updateWidgets();
-            
-            % load bitmap data and character table for the scale bars
-            obj.textCharactersBase = uint8(1 - logical(imread('chars.bmp')));
-            obj.textCharactersTable = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890''?!"?$%&/()=?^?+???,.-<\|;:_>????*@#[]{} ';
             
             % add listner to obj.mibModel and call controller function as a callback
             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
@@ -321,7 +315,7 @@ classdef mibMakeMovieController < handle
             if isnan(val)
                 obj.View.handles.firstFrameEdit.String = '1';
                 return; 
-            end;
+            end
             
             options.blockModeSwitch = 1;
             [~, ~, ~, z] = obj.mibModel.getImageMethod('getDatasetDimensions', NaN, 'image', NaN, NaN, options);
@@ -453,6 +447,12 @@ classdef mibMakeMovieController < handle
             end
             noFrames = numel(framePnts);
             
+            if obj.View.handles.roiRadio.Value
+                STATS.BoundingBox
+                options.x = [floor(STATS.BoundingBox(1)), floor(STATS.BoundingBox(1))+STATS.BoundingBox(3)-1];
+                options.y = [floor(STATS.BoundingBox(2)), floor(STATS.BoundingBox(2))+STATS.BoundingBox(4)-1];
+            end
+            
             index = 1;
             for frame = framePnts
                 if zStackSwitch
@@ -463,9 +463,6 @@ classdef mibMakeMovieController < handle
                     options.t = [frame frame];
                 end
                 img = obj.mibModel.getRGBimage(options);
-                if obj.View.handles.roiRadio.Value
-                    img = imcrop(img, STATS.BoundingBox);
-                end
                 
                 scale = newWidth/size(img, 2);
                 if newWidth ~= obj.origWidth || newHeight ~= obj.origHeight   % resize the image
@@ -479,7 +476,8 @@ classdef mibMakeMovieController < handle
                 
                 if index == 1
                     if scalebarSwitch  % add scale bar
-                        img2 = mibAddScaleBar(img, obj.mibModel.I{obj.mibModel.Id}.pixSize, scale, obj.mibModel.I{obj.mibModel.Id}.orientation, obj.textCharactersBase, obj.textCharactersTable);
+                        scalebarOptions.orientation = obj.mibModel.I{obj.mibModel.Id}.orientation;
+                        img2 = mibAddScaleBar(img, obj.mibModel.I{obj.mibModel.Id}.pixSize, scale, scalebarOptions);
                         scaleBar = img2(size(img2,1)-(size(img2,1)-size(img,1)-1):size(img2,1),:,:);
                         img = img2;
                     end
@@ -489,7 +487,7 @@ classdef mibMakeMovieController < handle
                     end
                 end
                 writeVideo(writerObj, im2frame(img));
-                if mod(frame,10)==0; waitbar(index/noFrames, wb); end;
+                if mod(frame,10)==0; waitbar(index/noFrames, wb); end
                 index = index + 1;
             end
             close(writerObj);

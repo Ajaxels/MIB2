@@ -5,6 +5,7 @@ function menuDatasetTrasform_Callback(obj, mode)
 %
 % Parameters:
 % mode: a string with a transormation mode:
+% @li 'addframe', add a frame around the dataset
 % @li 'flipH', flip the dataset horizontally
 % @li 'flipV', flip the dataset vertically
 % @li 'flipZ', flip the Z-stacks of the dataset
@@ -23,7 +24,7 @@ function menuDatasetTrasform_Callback(obj, mode)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 13.03.2018 IB, added Add Frame mode
 
 obj.mibModel.U.clearContents(); % clear undo history
 
@@ -34,5 +35,7 @@ switch mode
         obj.mibModel.rotateDataset(mode);
     case {'xy2zx', 'xy2zy','zx2zy','z2t'}
         obj.mibModel.transposeDataset(mode);
+    case 'addframe'
+        obj.mibModel.addFrame();
 end
 end

@@ -300,7 +300,7 @@ classdef mibStereologyController < handle
             
             % include annotations
             if obj.View.handles.annotationCheck.Value == 1
-                [labelsList, labelPositions, indices] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels;
+                [labelsList, labelValues, labelPositions, indices] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels;
                 labelsList = strtrim(labelsList);   % remove the blank spaces
                 uniqLabels = unique(labelsList);
                 res.Annotations.Labels = uniqLabels;
@@ -308,7 +308,8 @@ classdef mibStereologyController < handle
                 for labelId=1:numel(uniqLabels)
                     for timeId=1:time
                         for sliceId = 1:depth
-                            res.Annotations.Occurrence(timeId, sliceId, labelId) = sum(ismember(labelsList, uniqLabels(labelId)) & ismember(labelPositions(:,1), sliceId) & ismember(labelPositions(:,4), timeId));
+                            indices = ismember(labelsList, uniqLabels(labelId)) & ismember(labelPositions(:,1), sliceId) & ismember(labelPositions(:,4), timeId);
+                            res.Annotations.Occurrence(timeId, sliceId, labelId) = sum(labelValues(indices));
                         end
                     end
                 end

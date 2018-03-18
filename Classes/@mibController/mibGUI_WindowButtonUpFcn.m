@@ -14,6 +14,7 @@ function mibGUI_WindowButtonUpFcn(obj, brush_switch)
 %
 % Updates
 % 
+
 if iscell(obj.mibView.brushSelection)  % return after movement of the brush tool
     if numel(obj.mibView.brushSelection) > 1
         obj.mibView.brushSelection{1} = obj.mibView.brushSelection{2}.selectedSlic;
@@ -22,6 +23,15 @@ if iscell(obj.mibView.brushSelection)  % return after movement of the brush tool
     getDataOptions.roiId = -1;
     currSelection = cell2mat(obj.mibModel.getData2D('selection',NaN, NaN, NaN, getDataOptions));
     obj.mibView.brushSelection{1} = imresize(obj.mibView.brushSelection{1}, size(currSelection),'method','nearest');
+    
+%     % smooth brush, quite slow
+%     filterOptions.fitType = 'Gaussian';
+%     filterOptions.hSize = 11;
+%     filterOptions.sigma = filterOptions.hSize;
+%     filterOptions.showWaitbar = 0;
+%     filterOptions.dataType = '3D';
+%     filterOptions.orientation = 4;
+%     obj.mibView.brushSelection{1} = mibDoImageFiltering(obj.mibView.brushSelection{1}, filterOptions);
     
     selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
     
@@ -63,4 +73,5 @@ obj.plotImage();
 obj.mibView.updateCursor('dashed');
 obj.mibView.gui.WindowScrollWheelFcn = (@(hObject, eventdata, handles) obj.mibGUI_ScrollWheelFcn(eventdata));   % moved from plotImage
 obj.mibView.gui.WindowButtonMotionFcn = (@(hObject, eventdata, handles) obj.mibGUI_WinMouseMotionFcn());   % moved from plotImage
+
 end

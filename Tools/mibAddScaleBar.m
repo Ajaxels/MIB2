@@ -1,24 +1,21 @@
-function I = mibAddScaleBar(I, pixSize, scale, orientation, base, table)
-% I = mibAddScaleBar(I, pixSize, scale, orientation, base, table)
-% add a scale bar to the image
+function I = mibAddScaleBar(I, pixSize, scale, Options)
+% I = mibAddScaleBar(I, pixSize, scale, orientation, scaleBarHeight)
+% add a scale bar to the image.
+% Requires insertText and insertMarker functions from the Computer Vision System
+% Toolbox. When these functions are not available is using an old function.
 %
 % Parameters:
 % I:    RGB image that requires the scale bar
 % pixSize:  a structure with pixel size of the image, .x, .y, .z
-% scale: scaling factor   
-% orientation:  orientation of the snapshot: 1, 2, 4
-% base:     a matrix with bitmap letters that will be used for the scale bar text
-% table:    a list of letters in the base matrix
-%
-% Fuse text into an image I
-% based on original code by by Davide Di Gloria
-% http://www.mathworks.com/matlabcentral/fileexchange/26940-render-rgb-text-over-rgb-or-grayscale-image
-% I=renderText(I, text)
-% text -> cell with text
+% scale: scaling factor, i.e. how the pixel size is different from the pixSize structure   
+% Options: an optional structure with additional settings
+%  .orientation - orientation of the snapshot: 1, 2, 4 (default)
+%  .scaleBarHeight - height of the scale bar in pixels, minimal height is 22 pixels, default = []
+%  .bgColor - background color, a single number from 0 (black) to 1 (while), default = 0
 
 %| 
 % @b Examples:
-% @code I = mibAddScaleBar(I, pixSize, scale, orientation);      // add scalebar @endcode
+% @code I = mibAddScaleBar(I, pixSize, scale);      // add scalebar @endcode
 
 % Copyright (C) 26.12.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
@@ -29,29 +26,36 @@ function I = mibAddScaleBar(I, pixSize, scale, orientation, base, table)
 % 
 % Updates
 % 13.11.2017, fix of wrong scale size when using the YZ, XZ orientations
+% 27.01.2018, updated to use insertImage function of Matlab
+% 20.02.2018, added background color and modified the syntax
 
+global DejaVuSansMono;
 
-% load characters for the scale bar
-if nargin < 5
-    base=uint8(1 - logical(imread('chars.bmp')));
-    table='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890''?!"?$%&/()=?^?+???,.-<\|;:_>????*@#[]{} ';
-end
+if nargin < 4; Options = struct(); end
+if ~isfield(Options, 'orientation'); Options.orientation = 4; end
+if ~isfield(Options, 'scaleBarHeight'); Options.scaleBarHeight = []; end
+if ~isfield(Options, 'bgColor'); Options.bgColor = 0; end
+scaleBarHeight = Options.scaleBarHeight;
 
-if orientation == 4
+if Options.orientation == 4
     pixelSize = pixSize.x/scale;
-elseif orientation == 1
+elseif Options.orientation == 1
     pixelSize = pixSize.z/scale;
-elseif orientation == 2
+elseif Options.orientation == 2
     pixelSize = pixSize.z/scale;
 end
 
 width = size(I,2);
 height = size(I,1);
-
-resizeFactor = ceil(min([width height])/800);
-
-%scaleBarText = sprintf('%.3f %s',width*pixelSize/10, pixSize.units);
-%scaleBarLength = round(width/10);
+if isempty(scaleBarHeight)
+    scaleBarHeight = 22*ceil(min([width height])/600);
+else
+    if scaleBarHeight < 22
+        msgbox(sprintf('The height of the scale bar should be at least 22 pixels'), 'Scale bar', 'error');
+        return;
+    end
+end
+resizeFactor = scaleBarHeight/22;    
 
 targetStep = width*pixelSize/10;  % targeted length of the scale bar in units
 mag = floor(log10(targetStep));     % magnitude of the scale bar
@@ -66,53 +70,58 @@ else
 end
 scaleBarLength = round(roundStep/pixelSize);
 
-text_str = scaleBarText;
-n = numel(text_str);
 ColorsNumber = size(I, 3);
-
-coord(2,n)=0;
-for i=1:n
-    coord(:,i)= [0 find(table == text_str(i))-1];
-end
-m = floor(coord(2,:)/26);
-coord(1,:) = m*20+1;
-coord(2,:) = (coord(2,:)-m*26)*13+1;
-
-model = zeros(22,size(I,2),size(I,3), class(I));
-%model = zeros(22*resizeFactor,size(I,2),size(I,3), class(I));
-total_index = 1;
-max_int = double(intmax(class(I)));
 shiftX = 5;     % shift of the scale bar from the left corner
-%if scaleBarLength+shiftX*2+(numel(text_str)*12) > width
-if scaleBarLength+shiftX*2+(numel(text_str)*12*resizeFactor) > width
+max_int = double(intmax(class(I)));
+bgColor = round(Options.bgColor*max_int);  % background color
+fgColor = round((1-Options.bgColor)*max_int); % foreground color
+
+if scaleBarLength+shiftX*2+(numel(scaleBarText)*12*resizeFactor) > width
     msgbox(sprintf('Image is too small to put the scale bar!\nSaving image without the scale bar...'),'Scale bar','warn');
     return;
 end
-for index = 1:numel(text_str)
-    model(1:20, scaleBarLength+shiftX*2+(12*index-11):scaleBarLength+shiftX*2+(index*12), :) = repmat(double(imcrop(base,[coord(2,total_index) coord(1,total_index) 11 19]))*max_int, [1, 1, ColorsNumber]);
-    total_index = total_index + 1;
-end
+
+scaleBarSectionHeight = 22;
+model = zeros(scaleBarSectionHeight, size(I,2), size(I,3), class(I))+bgColor;
 
 % add scale
-model(10:12, shiftX:shiftX+scaleBarLength-1,:) = repmat(max_int, [3, scaleBarLength, ColorsNumber]);
-model(8:14, shiftX,:) = repmat(max_int, [7, 1, ColorsNumber]);
-model(8:14, shiftX+scaleBarLength-1,:) = repmat(max_int, [7, 1, ColorsNumber]);
+model(10:12, shiftX:shiftX+scaleBarLength-1,:) = repmat(fgColor, [3, scaleBarLength, ColorsNumber]);
+model(8:14, shiftX,:) = repmat(fgColor, [7, 1, ColorsNumber]);
+model(8:14, shiftX+scaleBarLength-1,:) = repmat(fgColor, [7, 1, ColorsNumber]);
 
-% resize the scale bar
-if resizeFactor > 1
-    model1 = model(:, 1:scaleBarLength+shiftX*2, :);    % crop the scale bar
-    model1 = imresize(model1, [size(model1,1)*resizeFactor size(model1,2)], 'nearest');
-    model2 = model(:,scaleBarLength+shiftX*2+1:scaleBarLength+shiftX*2+(index*12)+1,:);    % crop the label
-    model2 = imresize(model2, resizeFactor, 'bicubic');
-    
-    if size(model1,2)+shiftX*resizeFactor+size(model2,2) > width
-        msgbox(sprintf('Image is too small to put the scale bar!\nSaving image without the scale bar...'),'Scale bar','warn');
-        return;
+if isempty(DejaVuSansMono)
+    % resize the scale bar
+    if resizeFactor > 1
+        model1 = model(:, 1:scaleBarLength+shiftX*2, :);    % crop the scale bar
+        model1 = imresize(model1, [scaleBarHeight size(model1,2)], 'nearest');
+        scaleBarLength = size(model1, 2);
+
+        model = zeros(scaleBarHeight,  size(I,2), size(I,3), class(I))+bgColor;
+        model(:, round(shiftX*resizeFactor):round(shiftX*resizeFactor)+size(model1,2)-1,:) = model1;
     end
-    
-    model = zeros(22*resizeFactor,size(I,2),size(I,3), class(I));
-    model(:,shiftX*resizeFactor:shiftX*resizeFactor+size(model1,2)-1,:) = model1;
-    model(:,size(model1,2)+shiftX*resizeFactor:size(model1,2)+shiftX*resizeFactor+size(model2,2)-1,:) = model2;
+    scaleBarText = strrep(scaleBarText, 'u', char(956));    % replace u sign
+    model = insertText(model, [scaleBarLength+10*resizeFactor, round(scaleBarHeight/2)], scaleBarText, 'FontSize', round(15*resizeFactor), ...
+        'BoxOpacity',0, 'TextColor', [fgColor, fgColor, fgColor], 'AnchorPoint', 'LeftCenter');
+else
+    options.color = [fgColor, fgColor, fgColor];
+    %options.fontSize = min([round(15*resizeFactor) 7]); %9 10 13 13 16 18 20
+    options.fontSize = 7;
+    options.markerText = 'text';
+    model = mibAddText2Img_Legacy(model, scaleBarText, [scaleBarLength+10*resizeFactor, 1], [], options);
+    if resizeFactor > 1
+        dx = scaleBarLength+10*resizeFactor;
+        labelImage = imresize(model(:, dx:dx+numel(scaleBarText)+numel(scaleBarText)*12,:), resizeFactor, 'nearest');
+                
+        model1 = model(:, 1:scaleBarLength+shiftX*2, :);    % crop the scale bar
+        model1 = imresize(model1, [scaleBarHeight size(model1,2)], 'nearest');
+        scaleBarLength = size(model1, 2);
+        
+        model = zeros(scaleBarHeight,  size(I,2), size(I,3), class(I))+bgColor;
+        model(:, round(shiftX*resizeFactor):round(shiftX*resizeFactor)+size(model1,2)-1,:) = model1;
+        dx = scaleBarLength+10*resizeFactor;
+        model(:, dx:dx+size(labelImage,2)-1,:) = labelImage;
+    end
 end
+
 I = cat(1, I, model);
 end

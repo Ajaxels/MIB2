@@ -162,7 +162,7 @@ classdef mibImageMorphOpsController < handle
                     obj.View.handles.modePopup.Enable = 'on';
                 case 'Morphological closing'
                     infoText = 'Morphologically close image: a dilation followed by an erosion';
-                    handles.operationName = 'imclose';
+                    obj.operationName = 'imclose';
                 case 'Dilate image'
                     infoText = 'Dilate image';
                     obj.operationName = 'imdilate';

@@ -238,7 +238,7 @@ elseif strcmp(format,'indexed')   % ->indexed
                         end
                         imgRGB = cat(3,R,G,B);
                         [I(:,:,1,sliceId,t), obj.meta('Colormap')] = rgb2ind(imgRGB, levels);
-                        if mod(index,10)==0; waitbar(index/maxCounter, wb); end; 
+                        if mod(index,10)==0; waitbar(index/maxCounter, wb); end
                         index = index + 1;
                     end
                 end
@@ -250,7 +250,7 @@ elseif strcmp(format,'indexed')   % ->indexed
                 for t=1:obj.time
                     for i=1:obj.depth
                         [obj.img{1}(:,:,1,i,t), obj.meta('Colormap')] =  rgb2ind(I(:,:,:,i,t),levels);
-                        if mod(index,10)==0; waitbar(index/maxCounter, wb); end; 
+                        if mod(index,10)==0; waitbar(index/maxCounter, wb); end
                         index = index + 1;
                     end
                 end

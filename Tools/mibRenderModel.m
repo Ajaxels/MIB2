@@ -18,6 +18,8 @@ function p = mibRenderModel(Volume, Index, pixSize, boundingBox, color_list, Ima
 % @li .smooth - smoothing 3d kernel, width (no smoothing when 0)
 % @li .maxFaces - maximal number of faces (no limit when 0)
 % @li .slice - show orthoslice (enter a number slice number, or NaN)
+% @li .exportToImaris - an optional switch to export the model to Imaris
+% @li .modelMaterialNames - a cell array for material names, for export to Imaris
 %
 % Return values:
 % p: triangulated patch defined by FV (a structure with fields 'vertices'
@@ -58,8 +60,11 @@ if nargin < 7
     Options.smooth = str2double(answer{2});
     Options.maxFaces = str2double(answer{3});
     Options.slice = str2double(answer{4});
+    Options.exportToImaris = 0;
     if isnan(Options.slice); Options.slice = 0; end
 end
+
+if ~isfield(Options, 'exportToImaris'); Options.exportToImaris = 0; end
 
 if nargin < 6   % initializa Image
     Image = NaN;
@@ -68,11 +73,11 @@ end
 if nargin < 5   % generate random color list
     for i=1:255
         color_list(i,:) = [rand(1) rand(1) rand(1)];
-    end;
-end;
+    end
+end
 
 wb = waitbar(0, 'Smoothing the volume...','Name','Isosurface');
-if isnan(Index); Index = 0; end;
+if isnan(Index); Index = 0; end
 if Index==0
     minIndex = 1;
     maxIndex = max(max(max(Volume)));
@@ -91,7 +96,7 @@ else
     factorX=1;
     factorY=1;
     factorZ=1;
-end;
+end
 
 kernelX = Options.smooth;
 kernelY = round(kernelX*pixSize.x/pixSize.y) + abs(mod(round(kernelX*pixSize.x/pixSize.y),2)-1);
@@ -123,12 +128,24 @@ for contIndex=minIndex:maxIndex
     
     disp(['Object ' num2str(contIndex) ' (before reduction of faces): N faces=' num2str(size(faces,1)) ', N vertices=' num2str(size(verts,1))]);
     waitbar(0.8*contIndex/maxIndex, wb,  sprintf('Material %d: Rendering...', contIndex));
-    p(contIndex) = patch('Faces',faces,'Vertices',verts,'FaceColor',color_list(contIndex,:),'EdgeColor','none');
+    p(contIndex) = patch('Faces',faces, 'Vertices', verts, ...
+        'FaceColor', color_list(contIndex,:), 'EdgeColor', 'none');
     if Options.maxFaces ~= 0
         waitbar(0.9*contIndex/maxIndex, wb,  sprintf('Material %d: Reducing number of faces...', contIndex));
         reducepatch(p(contIndex), Options.maxFaces);
     end
     set(p(contIndex),'AmbientStrength',.3);
+    
+    if Options.exportToImaris == 1
+        surface.faces = p(contIndex).Faces;
+        surface.vertices = p(contIndex).Vertices;
+        options.color = color_list(contIndex,:);
+        if isfield(Options, 'modelMaterialNames')
+            options.name = Options.modelMaterialNames{contIndex};
+        end
+        mibSetImarisSurface(surface, [], options);
+    end
+    
 end
 
 % calculate ticks

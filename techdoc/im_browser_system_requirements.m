@@ -32,41 +32,26 @@
 % *<http://openmicroscopy.org/info/bio-formats Bio-formats>* java library (_optional_) is provided in the
 % |ImportExportTools/BioFormats| folder.
 %
-%% Compiled Frangi mask filter
-% Compiled Frangi Mask filter is recommended for faster run. Please compile it for your OS.
-% Most of C-functions can be compiled using a single script:
-%%
+%% BMxD Image Filters
+% When installed MIB can use BM3D and BM4D filters to filter datasets. The
+% filters are not supplied with MIB due to license limitations and have to
+% be installed separetly (*_only for Matlab version of MIB!_*).
 % 
-% * In Matlab command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
-%   for example _c:\MATLAB\Scripts\mib_
-% * To compile, type in Matlab command window _mib_compile_c_files_
+% *Installation instructions:*
 %
-% *Note!* These files should be already pre-compiled for win32, win64 and mac64.
+% 
+% * Download *BM3D MATLAB software* and *BM4D MATLAB software* from
+% <http://www.cs.tut.fi/~foi/GCF-BM3D/ Image and video denoising by sparse
+% 3D transform-domain collaborative filtering> webpage.
+% * Unzip the files to directory with Matlab scripts. For example,
+% _c:\MATLAB\Scripts\BMxD\BM3D_ and _c:\MATLAB\Scripts\BMxD\BM4D_
+% * Start MIB and specify these folders in MIB preferences:
+% |MIB->Menu->File->Preferences->External dirs|. Alternatively, the
+% directories can be added to Matlab path.
+% * Restart MIB
+% 
 %
-%% Connection to OMERO server
-% Connection to <http://www.openmicroscopy.org/site OMERO server> requires the download of OMERO API bindings for
-% Matlab.
-%
-% * Download Matlab plugin for OMERO 
-% <http://www.openmicroscopy.org/site/products/omero/ from here>.
-% It should be listed in the *OMERO->OMERO Downloads, Plugins/Matlab*
-% section. (*Note!* Make sure that the version of Matlab plugin corresponds
-% to the version of OMERO server you are going to login. Old OMERO
-% downloads are listed in the _Previous versions_ section at the bottom of
-% the page.
-% * Unzip the file to your scripts directory, for example
-% |C:\Matlab\Scripts\OMERO_5|
-% * *FOR MATLAB VERSION* Add this directory (|C:\Matlab\Scripts\OMERO_5|) with subfolders to Matlab path (|Matlab->Home tab->Set Path...->Add with Subfolders...|) or run
-% |pathtool| in Matlab command window
-% * *FOR DEPLOYED VERSION* Add path to the OMERO installation using the MIB Preferences dialog: |MIB->Menu->Preferences->External dirs|. For example,
-% _|C:\Matlab\Scripts\OMERO_5\libs\|_ for Omero version 5, or
-% _|C:\Matlab\Scripts\OMERO_4\libs\|_ for Omero verison 4
-%
-%
-% When using Omero, MIB stores servers and ports in _mib_omero.mat_ file
-% located in 'c:\temp\mib_omero.mat' or in the system |temp| folder.
-%
-%% Fiji: volume rendering and connection
+%% FIJI: volume rendering and connection
 % Microscopy Image Browser can use Fiji 3D Viewer plugin for visualization
 % of volumes and models. In addition, there is a <ug_panel_fiji_connect.html Fiji Connect panel> that allows interaction between |MIB| and Fiji.
 %
@@ -99,8 +84,9 @@
 % *Note 3*, the Fiji 3D viewer may not work when started for the first
 % time. In this case, Matlab should be restarted.
 %
-%% Membrane Click Tracker
-% Compiled files are required to use Membrane Click Tracker tool. Please compile them for your OS. Most of C-functions can be compiled using a single script:
+%% FRANGI: compiled Frangi mask filter
+% Compiled Frangi Mask filter is recommended for faster run. Please compile it for your OS.
+% Most of C-functions can be compiled using a single script:
 %%
 % 
 % * In Matlab command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
@@ -109,16 +95,7 @@
 %
 % *Note!* These files should be already pre-compiled for win32, win64 and mac64.
 %
-%% Read NRRD format
-% Microscopy Image Browser uses an own function for saving data in the NRRD
-% format, but relies on <http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule
-% *Projects:MATLABSlicerExampleModule*> by John Melonakos for reading it.
-% On Windows OS the files should be already pre-compiled, but for Linux it
-% may be needed to compile them. 
-%
-% Please refer to details in |im_browser\ImportExportTools\nrrd\compilethis.m|.
-%
-%% Connection to Imaris
+%% IMARIS: connection to Imaris
 % Microscopy Image Browser can be used together with
 % <http://www.bitplane.com/imaris Imaris>. This functionality is achieved
 % with <http://www.scs2.net/next/index.php?id=110 IceImarisConnector>
@@ -143,6 +120,60 @@
 % |system('notepad javaclasspath.txt')|; add the path; and save the file
 % # Restart Matlab
 %
+%% Membrane Click Tracker
+% Compiled files are required to use Membrane Click Tracker tool. Please compile them for your OS. Most of C-functions can be compiled using a single script:
+%%
+% 
+% * In Matlab command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
+%   for example _c:\MATLAB\Scripts\mib_
+% * To compile, type in Matlab command window _mib_compile_c_files_
+%
+% *Note!* These files should be already pre-compiled for win32, win64 and mac64.
+%
+%% NRRD: read NRRD format
+% Microscopy Image Browser uses an own function for saving data in the NRRD
+% format, but relies on <http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule
+% *Projects:MATLABSlicerExampleModule*> by John Melonakos for reading it.
+% On Windows OS the files should be already pre-compiled, but for Linux it
+% may be needed to compile them. 
+%
+% Please refer to details in |im_browser\ImportExportTools\nrrd\compilethis.m|.
+%
+%% OMERO: connection to OMERO server
+% Connection to <http://www.openmicroscopy.org/site OMERO server> requires the download of OMERO API bindings for
+% Matlab.
+%
+% * Download Matlab plugin for OMERO 
+% <http://www.openmicroscopy.org/site/products/omero/ from here>.
+% It should be listed in the *OMERO->OMERO Downloads, Plugins/Matlab*
+% section. (*Note!* Make sure that the version of Matlab plugin corresponds
+% to the version of OMERO server you are going to login. Old OMERO
+% downloads are listed in the _Previous versions_ section at the bottom of
+% the page.
+% * Unzip the file to your scripts directory, for example
+% |C:\Matlab\Scripts\OMERO_5|
+% * *FOR MATLAB VERSION* Add this directory (|C:\Matlab\Scripts\OMERO_5|) with subfolders to Matlab path (|Matlab->Home tab->Set Path...->Add with Subfolders...|) or run
+% |pathtool| in Matlab command window
+% * *FOR DEPLOYED VERSION* Add path to the OMERO installation using the MIB Preferences dialog: |MIB->Menu->Preferences->External dirs|. For example,
+% _|C:\Matlab\Scripts\OMERO_5\libs\|_ for Omero version 5, or
+% _|C:\Matlab\Scripts\OMERO_4\libs\|_ for Omero verison 4
+%
+%
+% When using Omero, MIB stores servers and ports in _mib_omero.mat_ file
+% located in 'c:\temp\mib_omero.mat' or in the system |temp| folder.
+%
+%% Random Forest Classifier
+% Compiled files are required to use Random Forest Classifier. Microscopy Image Browser uses 
+% <https://code.google.com/p/randomforest-matlab/ randomforest-matlab> by Abhishek Jaiantilal which is already compiled for win32, win64. 
+%
+% For all other OS the files have to be compiled manually: 
+% Please refer to details in 
+%%
+% 
+% * _mib\Tools\RandomForest\RF_Class_C\README.txt_
+% * _mib\Tools\RandomForest\RF_Reg_C\README.txt_
+% 
+%
 %% SLIC superpixels, supervoxels and maxflow the Brush tool with supervoxels and for Graph-cut and Classifier
 % The brush tool can be used to select not individual pixels but rather groups of pixels (superpixels). 
 % This functionality is implemented using the <http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html SLIC (Simple Linear Iterative Clustering)> 
@@ -158,18 +189,6 @@
 % * To compile, type in Matlab command window _mib_compile_c_files_
 %
 % *Note!* These files should be already pre-compiled for win32, win64 and mac64.
-%
-%% Random Forest Classifier
-% Compiled files are required to use Random Forest Classifier. Microscopy Image Browser uses 
-% <https://code.google.com/p/randomforest-matlab/ randomforest-matlab> by Abhishek Jaiantilal which is already compiled for win32, win64. 
-%
-% For all other OS the files have to be compiled manually: 
-% Please refer to details in 
-%%
-% 
-% * _mib\Tools\RandomForest\RF_Class_C\README.txt_
-% * _mib\Tools\RandomForest\RF_Reg_C\README.txt_
-% 
 %
 %% Software Volume Rendering in MIB
 % Compiled |affine_transform_2d_double.c| function is required for volume rendering. Please compile it for your OS.

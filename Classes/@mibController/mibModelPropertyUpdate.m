@@ -10,7 +10,7 @@ function mibModelPropertyUpdate(obj, parameter)
 % @li 'mibMaskTransparencySlider' - transparency value for the mask layer
 % @li 'mibSelectionTransparencySlider' - transparency value for the selection layer
 % @li 'mibSegmShowTypePopup' - type of model visualization: @b 1 - filled; @b 2 - contour
-% @li 'mibAnnMarkerCheck' - show only annotation marker: @b 0 - marker and text; @ 1 - only marker
+% @li 'mibAnnValueEccentricCheck' - enable value-eccentric annotations
 %
 % Return values
 %

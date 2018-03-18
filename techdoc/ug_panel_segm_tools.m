@@ -37,8 +37,10 @@
 %% 2. Annotations
 %
 % <html>
-% A brief demonstration is available in the following video:<br>
+% A brief demonstration is available in the following videos:<br>
 % <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+% <br>
+% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/6otBey1eJ0U</a>
 % <br>
 % <table style="width: 800px; border: 0px">
 % <tr>
@@ -46,15 +48,26 @@
 %   <img src = "images\PanelsSegmentationToolsAnnotations.png">
 % </td>
 % <td style="border: 0px">
-% A set of tools to add/remove annotations.<br><br>
+% A set of tools to add/remove annotations. Each annotation allows to mark specific location in the dataset, assign a label and a value to it<br><br>
 % When the Annotation tool is selected the mouse click above the image adds annotation to the model.
 % The annotations can be removed by using <em>Ctrl + left mouse click</em> combination.
+% <br>
 % <ul>
 % <li>The <b>Annotation list</b> button starts a window with the list of existing
 % annotations. It is possible to load and save annotations to the main Matlab
 % workspace or to a file (matlab and excel formats). See more below.</li>
-% <li>The <b>Show only marker</b> checkbox - when selected the annotation text is not
-% displayed and the marker cross is only seen.</li>
+% <li>The <b>Delete All</b> button removes all annotations
+% <li>The <b>Display as</b> combobox - enables way how the annotations are
+% displayed in the <a href="ug_panel_im_view.html">Image View panel</a>. 
+    % <ul>The following modes are available:<br><br>
+    % <li><b>Marker</b>, show only location of the annotation using a cross-marker</li>
+    % <li><b>Label</b>, show marker and label for each annotation</li>
+    % <li><b>Value</b>, show marker and value for each annotation</li>
+    % <li><b>Label + Value</b>, show marker, label and value for each annotation</li>
+    % </ul>
+% </li>
+% <li><b>Value eccentric</b> checkbox, when enabled, the first parameter during visualization of annotations is
+% value and the second parameter is label.
 % </ul>
 % </td>
 % </tr>
@@ -62,6 +75,7 @@
 % </html>
 %
 % <html>
+% <b>List of annotations window</b>
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -69,24 +83,25 @@
 % </td>
 % <td style="border: 0px">
 % <ul>
-% <li>The <b>List of labels</b> table shows a list of annotations. 
+% <li>The <b>List of annotations</b> table shows a list of annotations. 
 %   <ul>The <em>right mouse button</em></b> click calls an additional popup menu that allows to 
-%       <li><em><b>Add annotation</em></b>, manually add annotation to the list</li>
+%       <li><em><b>Add annotation</em></b>, manually add annotation to the list, position of the first and second fields are defined by the <em>Value eccentric</em> checkbox of the Annotation panel, see above</li>
 %       <li><em><b>Jump to annotation</em></b>, moves the image so that the selected annotation is in the middle of the Image View panel</li>
 %       <li><em><b>Count selected annotations</em></b>, calculate occurance of each annotation in the list of selected annotations. 
 %           The results are displayed in the Matlab command window and
 %           copied to the system clipboard 
 %           <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a>
 %           </li>
-%       <li><em><b>Export selected annotations</em></b>, export selected annotations in the Matlab format or as landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>)</li>
+%       <li><em><b>Export selected annotations</em></b>, export selected annotations in the Matlab format, landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>), PSI format for Amira and Excel</li>
 %       <li><em><b>Export selected annotations to Imaris</em></b>, export selected annotations to Imaris (<em><b>Note!</em> please first export the dataset!</b>)</li>
 %       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
 %   </ul>
+% <li>The <b>Load</b> button, press to import annotations from the main Matlab workspace or load them from a file</li>
+% <li>The <b>Save</b> button, press to export annotations to the main Matlab workspace or to save them as a file in Matlab, Excel formats or as landmarks for Amira (
+%           <a href="https://youtu.be/wHr6nHpmVMo"><img style="vertical-align:middle;" src="images\youtube.png"></a> <em><b>Note!</em> only the coordinates are exported!</b>), or PSI format for Amira</li>
+% <li>The <b>Precision</b> editbox, modify precision of the value field in the table and for the visualization in the Image View panel
 % <li>The <b>Auto jump</b> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>
-% <li>The <b>Load</b> button imports annotations from the main Matlab workspace or load them from a file</li>
-% <li>The <b>Save</b> button exports annotations to the main Matlab workspace or to save them as a file in Matlab, Excel formats or as landmarks for Amira (
-%           <a href="https://youtu.be/wHr6nHpmVMo"><img style="vertical-align:middle;" src="images\youtube.png"></a> <em><b>Note!</em> only the coordinates are exported!</b>)</li>
-% <li>The <b>Sort table</b> allows to resort annotations</li>
+% <li>The <b>Sort table</b> allows to sort annotations based on their Name, Value, X, Y, Z, T</li>
 % <li>The <b>Refresh table</b> button updates the list of annotations</li>
 % <li>The <b>Delete all</b> button removes all annotations</li>
 % </ul>
@@ -123,6 +138,12 @@
 % current, <em>i.e.</em> eraser mode</li>The radius of the brush in the
 % eraser mode could be amplifier using the <b>Eraser, x</b> edit box.
 % </ul>
+% <br>
+% <b>Interpolation settings</b>, press to start a dialog that allows to
+% modify the interpolation settings. The settings can also be modified from
+% the <a href="ug_gui_menu_file_preferences.html">Preference dialog</a> and the type can be switched
+% using a dedicated button in the <a href="ug_gui_toolbar.html">toolbar</a>.<br>
+% <img src="images\PanelsSegmentationToolsBrushInterpolation.png">
 % </td>
 % </tr>
 % </table>

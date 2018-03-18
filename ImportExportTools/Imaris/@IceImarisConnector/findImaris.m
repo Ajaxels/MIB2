@@ -117,7 +117,7 @@ this.mImarisPath = imarisPath;
 % ImarisLib library
 if ispc()
     exePath = fullfile(imarisPath, 'Imaris.exe');
-    serverExePath = fullfile(imarisPath, 'ImarisServerIce.exe');
+    serverExePath = fullfile(imarisPath, 'ImarisServerIce.exe'); 
     libPath = fullfile(imarisPath, 'XT', 'matlab', 'ImarisLib.jar');
 elseif ismac()
     exePath = fullfile(imarisPath, 'Contents', 'MacOS', 'Imaris');

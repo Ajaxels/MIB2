@@ -5,8 +5,10 @@ function menuModelsRender_Callback(obj, type)
 % Parameters:
 % type: a string with desired rendering engine
 % @li ''matlab'' - Matlab rendering
+% @li ''matlabImaris'' - render model in Matlab and export the rendered
+% surface to Imaris
 % @li ''fiji'' - Fiji rendering
-% @li ''imaris'' - Imaris rendering
+% @li ''imaris'' - Imaris rendering, i.e. send first a model as a volume and use Imaris to generate the surface
 
 % Copyright (C) 11.01.2017 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi
@@ -23,6 +25,8 @@ if nargin < 2; type = 'matlab'; end
 switch type
     case 'matlab'
         obj.mibSegmentationTable_cm_Callback([], 'isosurface');
+    case 'matlabImaris'
+        obj.mibSegmentationTable_cm_Callback([], 'isosurface2imaris');
     case 'fiji'
         obj.mibSegmentationTable_cm_Callback([], 'volumeFiji');
     case 'imaris'

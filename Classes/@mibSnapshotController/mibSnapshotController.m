@@ -26,10 +26,6 @@ classdef mibSnapshotController < handle
         % width of the image area to render
         resizedWidth
         % width of the image area to render with respect of the aspect ratio
-        textCharactersBase
-        % a matrix with bitmaps of characters for generation of the scale bar
-        textCharactersTable
-        % a matrix with list of characters for generation of the scale bar
     end
     
     events
@@ -60,8 +56,8 @@ classdef mibSnapshotController < handle
             obj.updateWidgets();
             
             % load bitmap data and character table for the scale bars
-            obj.textCharactersBase = uint8(1 - logical(imread('chars.bmp')));
-            obj.textCharactersTable = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890''?!"?$%&/()=?^?+???,.-<\|;:_>????*@#[]{} ';
+            %obj.textCharactersBase = uint8(1 - logical(imread('chars.bmp')));
+            %obj.textCharactersTable = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890''?!"?$%&/()=?^?+???,.-<\|;:_>????*@#[]{} ';
             
             % add listner to obj.mibModel and call controller function as a callback
             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
@@ -334,7 +330,12 @@ classdef mibSnapshotController < handle
             
             obj.View.handles.snapshotBtn.BackgroundColor = 'r';
             drawnow;
-            
+            if obj.View.handles.whiteBgCheck.Value == 1
+                bgColor = 1;
+            else
+                bgColor = 0;
+            end
+                
             options.resize = 'no';
             options.mode = 'full';
             options.markerType = 'both';
@@ -446,7 +447,9 @@ classdef mibSnapshotController < handle
                 end
                 
                 if obj.View.handles.scalebarCheck.Value  % add scale bar
-                    img = mibAddScaleBar(img, obj.mibModel.I{obj.mibModel.Id}.pixSize, scale, obj.mibModel.I{obj.mibModel.Id}.orientation, obj.textCharactersBase, obj.textCharactersTable);
+                    scalebarOptions.orientation = obj.mibModel.I{obj.mibModel.Id}.orientation;
+                    scalebarOptions.bgColor = bgColor;
+                    img = mibAddScaleBar(img, obj.mibModel.I{obj.mibModel.Id}.pixSize, scale, scalebarOptions);
                 end
                 
                 if maxImageIndex == 1
@@ -457,7 +460,9 @@ classdef mibSnapshotController < handle
                         outW = size(img, 2);
                         colId = 1;
                         rowId = 1;
-                        imgOut = zeros([outH*rowNo + (rowNo-1)*imageShift, outW*colNo + (colNo-1)*imageShift, size(img, 3)], class(img)); %#ok<ZEROLIKE>
+                        max_int = double(intmax(class(img)));
+                        bgColor2 = bgColor*max_int;
+                        imgOut = zeros([outH*rowNo + (rowNo-1)*imageShift, outW*colNo + (colNo-1)*imageShift, size(img, 3)], class(img)) + bgColor2; %#ok<ZEROLIKE>
                     end
                     
                     y1 = (rowId-1)*outH+1 + imageShift*(rowId-1);
@@ -478,7 +483,7 @@ classdef mibSnapshotController < handle
                 if exist(obj.snapshotFilename{obj.mibModel.Id}, 'file')
                     button = questdlg(sprintf('Warning!\nThe file already exist!\n\nOverwrite?'),...
                         'Overwrite?','Overwrite','Cancel','Cancel');
-                    if strcmp(button, 'Cancel'); obj.View.handles.snapshotBtn.BackgroundColor = 'g'; return; end;
+                    if strcmp(button, 'Cancel'); obj.View.handles.snapshotBtn.BackgroundColor = 'g'; return; end
                 end
                 
                 formatId = obj.View.handles.fileFormatPopup.Value;

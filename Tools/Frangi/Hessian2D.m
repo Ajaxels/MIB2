@@ -1,4 +1,4 @@
-function [Dxx,Dxy,Dyy] = Hessian2D(I,Sigma)
+function [Dxx,Dxy,Dyy] = Hessian2D(I, Sigma)
 %  This function Hessian2 Filters the image with 2nd derivatives of a 
 %  Gaussian with parameter Sigma.
 % 

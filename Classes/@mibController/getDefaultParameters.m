@@ -378,6 +378,37 @@ if ~ispc
     javaaddpath(fullfile(poi_path, 'stax-api-1.0.1.jar'));
 end
 
+% add bm3d filter
+if ~isfield(obj.mibModel.preferences.dirs, 'bm3dInstallationPath')
+    obj.mibModel.preferences.dirs.bm3dInstallationPath = [];
+    if ~isdeployed  % disable in the compiled version due to the license limitations
+        res = which('bm3d');
+        if isempty(res)
+            obj.mibModel.preferences.dirs.bm3dInstallationPath = [];
+        else
+            obj.mibModel.preferences.dirs.bm3dInstallationPath = fileparts(res);
+        end
+    end
+end
+if ~isdeployed && isdir(obj.mibModel.preferences.dirs.bm3dInstallationPath)    
+    addpath(obj.mibModel.preferences.dirs.bm3dInstallationPath); 
+end
+
+if ~isfield(obj.mibModel.preferences.dirs, 'bm4dInstallationPath')
+    obj.mibModel.preferences.dirs.bm4dInstallationPath = [];
+    if ~isdeployed  % disable in the compiled version due to the license limitations
+        res = which('bm4d');
+        if isempty(res)
+            obj.mibModel.preferences.dirs.bm4dInstallationPath = [];
+        else
+            obj.mibModel.preferences.dirs.bm4dInstallationPath = fileparts(res);
+        end
+    end
+end
+if ~isdeployed && isdir(obj.mibModel.preferences.dirs.bm4dInstallationPath)    
+    addpath(obj.mibModel.preferences.dirs.bm4dInstallationPath); 
+end
+
 end
 
 %%

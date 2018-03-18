@@ -46,6 +46,8 @@
 % *Accurate Fast Marching function*> by Dirk-Jan Kroon, University of Twente, 2011 is utilized in the Membrane Click Tracker tool
 % * <http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff *ANISODIFF*> function written by Peter Kovesi, 2000-2002
 % * <http://www.loci.wisc.edu/software/bio-formats *BIO-FORMATS*> by Melissa Linkert, Curtis Rueden et al. 2002-2013
+% * <http://www.cs.tut.fi/~foi/GCF-BM3D/ *BMxD external filters*> by Kostadin Dabov
+% et al., Tampere University of Technology, Finland 2007-2014 can be used with MIB, when separately installed on the system
 % * <http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio
 % *BWDISTSC*> for 3D Euclidean distance transform for variable data aspect ratio written by Yuriy Mishchenko, Toros University, 2007-2013
 % * <http://www.peterkovesi.com/projects/segmentation/ *DRAWREGIONBOUNDARIES*>
@@ -93,6 +95,9 @@
 % connection to OMERO servers
 % * <http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser
 % *P_JSON*>, highly portable JSON parser function is written by Nedialko, 2009
+% * <https://se.mathworks.com/matlabcentral/fileexchange/24330-patch-normals *PATCHNORMALS*> 
+% by Dirk-Jan Kroon, University of Twente, implementation 2009 is used for
+% calculation of normals during export of surfaces to Imaris
 % * *Random Forest Classifier* is based on <http://www.kaynig.de/demos.html Verena Kaynig> implementation with utilization of <https://code.google.com/p/randomforest-matlab/ *randomforest-matlab*> by Abhishek Jaiantilal
 % * <http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag- *Region Adjacency Graph (RAG)*> function is written by David Legland,
 % INRA, France, 2013
@@ -132,6 +137,10 @@
 % easily distinguishahle colors for all color vision types. Proc Spie 6807 (2008)> 
 % * <http://colorbrewer2.org/ Cynthia Brewer, Mark Harrower, Ben Sheesley,
 % Andy Woodruff, David Heyman. ColorBrewer 2.0>
+%
+%
+% Some icons used in MIB were provided by Icons8.com
+% (<https://icons8.com https://icons8.com>), <https://icons8.com/license/ license information>
 %
 % *OLDER SCRIPTS*
 %%

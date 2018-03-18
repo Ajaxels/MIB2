@@ -5,6 +5,28 @@
 %
 %
 %
+%% 2.22 / 16.03.2018
+% * Added value field for the annotations, thus each annotation can be weighted based on its value
+% * Added possibility to do deep neural network denoising on GPUs with
+% small memory, use the |GPU block| parameter in |Image filters->DNN Denoise|
+% * Added the Simplify button to the Dataset Info window to allow remove most of metadata
+% * Added rendering with Imaris models generated in Matlab
+% (|Menu->Models->Render model->Matlab isosurface and export to Imaris|),
+% require Imaris 8.
+% * Added rendering snapshots with white background (|Toolbar->Snapshot tool->white Bg|)
+% * Added rendering of annotations as scaled spots in Imaris
+% * Added Get Statistics for models with more than 255 materials
+% * Added calculation of Min/Max/Mean/Median intensity projection (Menu->Image->Tools for images->Intensity projection...)
+% * Added use of external BMxD filters [Matlab version only!] (Image filters panel->External: BMxD)
+% * Added Add Frame tool that can be used to generate a frame around
+% dataset with a distinct color or using various repetition methods (Menu->Dataset->Transform->Add frame)
+% * Added renaming of annotations (|Menu->Models->Annotations->Annotation list->RMB over the list of selected annotations->Rename selected annotations...|)
+% * Improved movie rendering performance for the ROI mode
+% * Updated the Image Filter panel
+% * Fix of error when opening Images->MorphOps->Morph Closing
+% * Fix callback when selecting color channels in the Selection panel
+% * Fix of opening of AmiraMesh files with extended headers
+%
 %% 2.211 / 21.12.2017
 % * Updated TripleAreaIntensity plugin
 % * Fix, the |contains| function replaced with ismember for compatibility with Matlab 2014b-2016a

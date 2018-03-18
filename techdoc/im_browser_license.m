@@ -4,7 +4,7 @@
 %%
 % 
 % <html>
-% Developed during 2010-2017 by<br>
+% Developed during 2010-2018 by<br>
 % Core developer:<br>
 % <a href="http://www.biocenter.helsinki.fi/~ibelev/">Ilya Belevich</a><br>
 % Developers:<br>
@@ -21,7 +21,7 @@
 %
 % <html>
 % Microscopy Image Browser (MIB) a handy tool for image management<br>
-% Copyright (c) 2010-2017<br>
+% Copyright (c) 2010-2018<br>
 % Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br>
 % http://mib.helsinki.fi<br>
 % </html>
@@ -45,11 +45,15 @@
 % This section lists the license under which additional components are released. See also the <im_browser_ack.html Acknowledgements> section
 %
 % Abbreviations:
+%
+%
 % * <https://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29 *FreeBSD*>, Berkeley Software Distribution, 2-clause license, GPL compatible
 % * <http://www.gnu.org/licenses/gpl-2.0.html *GPL*>, GNU General Public License, version 2
 % * <https://en.wikipedia.org/wiki/BSD_licenses#3-clause_license_.28.22Revised_BSD_License.22.2C_.22New_BSD_License.22.2C_or_.22Modified_BSD_License.22.29 *ModifiedBSD*>, Berkeley Software Distribution, 3-clause license, GPL compatible 
 % * <http://en.wikipedia.org/wiki/MIT_License *MIT*>, a free software license originating at the Massachusetts Institute of Technology, GPL compatible
+% * <https://creativecommons.org/licenses/by-nd/3.0/ *CC BY-ND 3.0*>, Attribution-NoDerivs 3.0 Unported
 % * *ND*, no data
+%
 %%
 % 
 % <html>
@@ -256,6 +260,13 @@
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
+%   <td style="font-weight: bold">Patch Normals</td>
+%   <td>Dirk-Jan Kroon, University of Twente</td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/24330-patch-normals">via Matlab Exchange</a></td>
+%   <td>FreeBSD,<br> 2009</td>
+%   <td>2.22-</td>
+% </tr>
+% <tr style="">
 %   <td style="font-weight: bold">Projects:MATLABSlicerExampleModule, to read NRRD format</td>
 %   <td>John Melonakos</td>
 %   <td><a href="http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule">web link</a></td>
@@ -347,6 +358,20 @@
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28518-xml2struct">via Matlab Exchange</a></td>
 %   <td>FreeBSD,<br> 2010</td>
 %   <td>0.x-2.x</td>
+% </tr>
+% <tr style="">
+%   <td style="font-weight: bold"></td>
+%   <td></td>
+%   <td></td>
+%   <td></td>
+%   <td></td>
+% </tr>
+% <tr style="">
+%   <td style="font-weight: bold">Some icons</td>
+%   <td>Icons8.com</td>
+%   <td><a href="https://icons8.com">website</a></td>
+%   <td>CC BY-ND 3.0,<br> 2018</td>
+%   <td>2.22-</td>
 % </tr>
 % </table>
 % </html>

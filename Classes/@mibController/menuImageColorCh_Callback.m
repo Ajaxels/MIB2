@@ -31,17 +31,17 @@ switch parameter
     case 'invert'
         if obj.mibModel.I{obj.mibModel.Id}.time < 2
             obj.mibModel.mibDoBackup('image', 1); 
-        end;
+        end
         obj.mibModel.I{obj.mibModel.Id}.invertColorChannel();
     case 'rotate'
         if obj.mibModel.I{obj.mibModel.Id}.time < 2
             obj.mibModel.mibDoBackup('image', 1); 
-        end;
+        end
         obj.mibModel.I{obj.mibModel.Id}.rotateColorChannel();        
     case 'swap'
         if obj.mibModel.I{obj.mibModel.Id}.time < 2
             obj.mibModel.mibDoBackup('image', 1); 
-        end;
+        end
         obj.mibModel.I{obj.mibModel.Id}.swapColorChannels();
     case 'delete'
         obj.mibModel.I{obj.mibModel.Id}.deleteColorChannel();

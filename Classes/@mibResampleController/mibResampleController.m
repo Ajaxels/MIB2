@@ -216,15 +216,15 @@ classdef mibResampleController  < handle
                 if strcmp(resamplingFunction, 'interpn')
                     options.showWaitbar = 0;
                     options.algorithm = 'interpn';
-                    imgOut(:,:,:,:,t) = mibResize3d(img(:,:,:,:,t), [], options);
+                    imgOut(:,:,:,:,t) = mibResize3d(img(:,:,:,:), [], options);
                 elseif strcmp(resamplingFunction, 'imresize')
                     options.showWaitbar = 0;
                     options.algorithm = 'imresize';
-                    imgOut(:,:,:,:,t) = mibResize3d(img(:,:,:,:,t), [], options);
+                    imgOut(:,:,:,:,t) = mibResize3d(img(:,:,:,:), [], options);
                 else
                     options.showWaitbar = 0;
                     options.algorithm = 'tformarray';
-                    imgOut(:,:,:,:,t) = mibResize3d(img(:,:,:,:,t), [], options);
+                    imgOut(:,:,:,:,t) = mibResize3d(img(:,:,:,:), [], options);
                 end
             end
             clear img;
@@ -285,12 +285,12 @@ classdef mibResampleController  < handle
                 % shift labels
                 labelsNumber = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber();
                 if labelsNumber > 0
-                    [labelsList, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
+                    [labelsList, labelValues, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
                     if numel(labelsList) == 0; return; end
                     labelPositions(:,1) =  labelPositions(:,1) * options.depth/obj.depth;
                     labelPositions(:,2) =  labelPositions(:,2) * options.width/obj.width;
                     labelPositions(:,3) =  labelPositions(:,3) * options.height/obj.height;
-                    obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(labelsList, labelPositions);
+                    obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(labelsList, labelPositions, labelValues);
                 end
                 
                 obj.mibModel.setData4D('model', imgOut, 4, NaN, options);

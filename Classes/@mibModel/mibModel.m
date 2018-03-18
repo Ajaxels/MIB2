@@ -20,14 +20,17 @@ classdef mibModel < handle
         % variable for Undo history
         connImaris
         % a handle to Imaris connection
-        dejavufont
-        % matrix with the font for images
         disableSegmentation
         % a switch 0/1 to disable segmentation tools while for example modifying ROIs
         displayedLutColors
         % a matrix with the currently shown colors for the color channels (updated in mibController.redrawMibChannelMixerTable function)
-        mibAnnMarkerCheck
-        % show only annotation marker: @b 0 - marker and text; @ 1 - only marker 
+        mibAnnMarkerEdit
+        % a string with the mode to show the annotation: 'marker', 'label', 'value', 'label + value' (@em default)
+        mibAnnValueEccentricCheck
+        % enable value-eccentric annotations, @b 0 - annotation text first,
+        % value second; @b 1 - annotation value first, text - second
+        mibAnnValuePrecision
+        % precision of annotation values, an integer from 0 and above
         mibHideImageCheck
         % define whether or not dispay the image layer (used in obj.getRGBimage)
         % a status of mibCpontroller.mibView.handles.mibHideImageCheck.Value
@@ -99,6 +102,9 @@ classdef mibModel < handle
     
     methods
         % declaration of functions in the external files, keep empty line in between for the doc generator
+        
+        addFrame(obj)   % add a frame around the dataset
+        
         contrastCLAHE(obj, mode, colCh)        % Do CLAHE Contrast-limited adaptive histogram equalization for the dataset
         
         contrastNormalizationMemoryOptimized(obj, type_switch, colorChannel)        % Normalize contrast between the layers of the dataset
@@ -165,7 +171,6 @@ classdef mibModel < handle
         end
         
         function reset(obj)
-            global mibPath;
             obj.maxId = 9;  % define maximal number of datasets (equal to number of mibBufferToggle buttons in the Directory contents panel)
             obj.myPath = '\';   % define working directory
             obj.Id = 1;         % index of the current dataset
@@ -180,7 +185,6 @@ classdef mibModel < handle
                 obj.I{i}= mibImage();
             end
             obj.U = mibImageUndo();    % create instanse for keeping undo information
-            obj.dejavufont = 1-imread(fullfile(mibPath, 'Resources', 'DejaVuSansMono.png'));   % table with DejaVu font, Pt = 8, 10, 12, 14, 16, 18, 20
         end
     end
     

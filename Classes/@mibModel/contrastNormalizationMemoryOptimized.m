@@ -235,6 +235,7 @@ if ~strcmp(type_switch, 'normalT')
                     end
                 end
                 obj.setData2D('image', curr_img, z, NaN, colorChannel, options);
+                
                 if mod(counter,10)==0; waitbar(counter/maxZ*maxT,wb); end
                 counter = counter + 1;
             end

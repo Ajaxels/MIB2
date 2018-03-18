@@ -30,6 +30,12 @@ switch filter_list{filter_val}
             errordlg(sprintf('!!! Error !!!\nMatlab R2017b or newer is required to use this function!'), 'Matlab version is too old');
             return;
         end
+        n = gpuDeviceCount();
+        if n==0
+            button = questdlg(sprintf('!!! Warning !!!\n\nEfficient image denoising using deep neural network requires GPUs\nwithout GPU denoising will be extremely slow'),...
+                'Deep neural network denoise', 'Proceed anyway', 'Cancel', 'Cancel');
+            if strcmp(button, 'Cancel'); return; end
+        end
     case 'Perona Malik anisotropic diffusion'
         obj.mibAnisotropicDiffusion('anisodiff');
         obj.plotImage(0);
@@ -78,6 +84,7 @@ doAfter = doAfter{obj.mibView.handles.mibImageFiltersOptionsPopup.Value};
 
 options.dataType = '4D';    % 4D means that there are 4 dimensions in the dataset (h,w,c,z) to separate with selection, where it is only 3 (h,w,z)
 options.fitType = cell2mat(filter_list(filter_val));
+options.filters3DCheck = obj.mibView.handles.mibImageFilters3DCheck.Value;
 
 %options.colorChannel = get(handles.ColChannelCombo,'Value')-1;
 slices = obj.mibModel.getImageProperty('slices');
@@ -116,7 +123,7 @@ if strcmp(mode, '4D, complete volume')
     timeVector = [1, obj.mibModel.getImageProperty('time')];
     options.showWaitbar = 0;    % do not show waitbar in the filtering function
     showWaitbarLocal = 1;
-    wb = waitbar(0,['Applying ' options.fitType ' filter...'],'Name','Filtering','WindowStyle','modal');
+    wb = waitbar(0,['Applying ' options.fitType ' filter...'], 'Name', 'Filtering', 'WindowStyle', 'modal');
 elseif strcmp(mode, '3D, current stack')
     obj.mibModel.mibDoBackup('image', 1, getDataOptions);
     timeVector = [obj.mibModel.I{obj.mibModel.Id}.getCurrentTimePoint(), obj.mibModel.I{obj.mibModel.Id}.getCurrentTimePoint()];

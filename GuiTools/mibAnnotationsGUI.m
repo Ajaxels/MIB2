@@ -15,7 +15,7 @@ function varargout = mibAnnotationsGUI(varargin)
 
 % Edit the above text to modify the response to help mibAnnotationsGUI
 
-% Last Modified by GUIDE v2.5 03-Sep-2017 10:36:12
+% Last Modified by GUIDE v2.5 28-Feb-2018 18:07:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,10 +55,11 @@ repositionSwitch = 1; % reposition the figure, when creating a new figure
 handles.indices = [];
 
 handles.labelsTable_cm = uicontextmenu('Parent',handles.mibAnnotationsGUI);
-uimenu(handles.labelsTable_cm, 'Label', 'Add annotation...', 'Callback', {@tableContextMenu_cb, 'Add'});
 uimenu(handles.labelsTable_cm, 'Label', 'Jump to annotation', 'Callback', {@tableContextMenu_cb, 'Jump'});
+uimenu(handles.labelsTable_cm, 'Label', 'Add annotation...', 'Callback', {@tableContextMenu_cb, 'Add'});
+uimenu(handles.labelsTable_cm, 'Label', 'Rename selected annotations...', 'Callback', {@tableContextMenu_cb, 'Rename'});
 uimenu(handles.labelsTable_cm, 'Label', 'Count selected annotations', 'Callback', {@tableContextMenu_cb, 'Count'});
-uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations...', 'Callback', {@tableContextMenu_cb, 'Export'});
+uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations...', 'Callback', {@tableContextMenu_cb, 'Export'}, 'Separator', 'on');
 uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations to Imaris', 'Callback', {@tableContextMenu_cb, 'Imaris'});
 uimenu(handles.labelsTable_cm, 'Label', 'Delete annotation...', 'Separator','on', 'Callback', {@tableContextMenu_cb, 'Delete'});
 set(handles.annotationTable,'UIContextMenu',handles.labelsTable_cm);
@@ -77,45 +78,11 @@ mibRescaleWidgets(handles.mibAnnotationsGUI);
 % Choose default command line output for mibAnnotationsGUI
 handles.output = hObject;
 
+% move the window
+hObject = moveWindowOutside(hObject, 'left');
+
 % Update handles structure
 guidata(hObject, handles);
-
-% Determine the position of the dialog - centered on the callback figure
-% if available, else, centered on the screen
-if repositionSwitch
-    FigPos=get(0,'DefaultFigurePosition');
-    OldUnits = get(hObject, 'Units');
-    set(hObject, 'Units', 'pixels');
-    OldPos = get(hObject,'Position');
-    FigWidth = OldPos(3);
-    FigHeight = OldPos(4);
-    if isempty(gcbf)
-        ScreenUnits=get(0,'Units');
-        set(0,'Units','pixels');
-        ScreenSize=get(0,'ScreenSize');
-        set(0,'Units',ScreenUnits);
-        
-        FigPos(1)=1/2*(ScreenSize(3)-FigWidth);
-        FigPos(2)=2/3*(ScreenSize(4)-FigHeight);
-    else
-        GCBFOldUnits = get(gcbf,'Units');
-        set(gcbf,'Units','pixels');
-        GCBFPos = get(gcbf,'Position');
-        set(gcbf,'Units',GCBFOldUnits);
-        screenSize = get(0,'ScreenSize');
-        if GCBFPos(1)-FigWidth > 0 % put figure on the left side of the main figure
-            FigPos(1:2) = [GCBFPos(1)-FigWidth-16 GCBFPos(2)+GCBFPos(4)-FigHeight+54];
-        elseif GCBFPos(1) + GCBFPos(3) + FigWidth < screenSize(3) % put figure on the right side of the main figure
-            FigPos(1:2) = [GCBFPos(1)+GCBFPos(3)+16 GCBFPos(2)+GCBFPos(4)-FigHeight+54];
-        else
-            FigPos(1:2) = [(GCBFPos(1) + GCBFPos(3) / 2) - FigWidth / 2, ...
-                (GCBFPos(2) + GCBFPos(4) / 2) - FigHeight / 2];
-        end
-    end
-    FigPos(3:4)=[FigWidth FigHeight];
-    set(hObject, 'Position', FigPos);
-    set(hObject, 'Units', OldUnits);
-end
 
 % UIWAIT makes mibAnnotationsGUI wait for user response (see UIRESUME)
 % uiwait(handles.mibAnnotationsGUI);
@@ -193,4 +160,8 @@ end
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
 web(fullfile(mibPath, 'techdoc/html/ug_panel_segm_tools.html#2'), '-helpbrowser');
+end
+
+function precisionEdit_Callback(hObject, eventdata, handles)
+handles.winController.precisionEdit_Callback();
 end

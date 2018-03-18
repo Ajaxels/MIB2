@@ -22,6 +22,7 @@ function result = setData(obj, type, dataset, orient, col_channel, options)
 % @li .z -> [@em optional], [zmin, zmax] coordinates of the dataset to take after transpose, depth
 % @li .t -> [@em optional], [tmin, tmax] coordinates of the dataset to take after transpose, time
 % @li .level -> [@em optional], index of image level from the image pyramid
+% @li .replaceDatasetSwitch -> [@em optional], force to replace dataset completely with a new dataset
 %
 % Return values:
 % result: -> @b 1 - success, @b 0 - error
@@ -58,6 +59,8 @@ if level ~= 1
     % resample dataset code
 end
 
+if ~isfield(options, 'replaceDatasetSwitch'); options.replaceDatasetSwitch = 0; end % defines whether the dataset should be replaced, in a situation when width/height mismatch
+
 blockModeSwitchLocal = 0;
 if isfield(options, 'y') || isfield(options, 'x') || isfield(options, 'z') || (isfield(options, 't') && obj.time > 1)
     blockModeSwitchLocal = 1;
@@ -65,13 +68,14 @@ elseif isfield(options, 't') && obj.time == 1     % override the blockmode switc
     blockModeSwitchLocal = 0;
 end
 
-replaceDatasetSwitch = 0; % defines whether the dataset should be replaced, in a situation when width/height mismatch
 if strcmp(type,'image')
     if isnan(col_channel); col_channel=obj.slices{3}; end
     if col_channel(1) == 0; col_channel = 1:obj.colors; end
-    if (size(dataset,1) ~= size(obj.img{1}, 1) || size(dataset,2) ~= size(obj.img{1},2) || size(dataset,4) ~= size(obj.img{1},4) || ...
+    if (size(dataset,1) ~= size(obj.img{1}, 1) ...
+            || size(dataset,2) ~= size(obj.img{1},2) ...
+            || size(dataset,4) ~= size(obj.img{1},4) || ...
             ~strcmp(class(dataset), class(obj.img{1}))) && blockModeSwitchLocal == 0
-        replaceDatasetSwitch = 1;
+        options.replaceDatasetSwitch = 1;
     end
 end
 
@@ -110,7 +114,7 @@ end
 if obj.modelType > 63  % uint8/int8 type of the model
     if blockModeSwitchLocal == 0     % set the full size dataset
         if strcmp(type,'image')
-            if replaceDatasetSwitch
+            if options.replaceDatasetSwitch
                 if orient == 4 % yx
                     obj.img{1} = dataset;
                 elseif orient==1    % xz; get permuted dataset
@@ -216,7 +220,7 @@ else        % ************ uint6 model type
     % the following part of the code is broken into two sections because it is faster
     if blockModeSwitchLocal == 0     % set the full size dataset
         if strcmp(type,'image')
-            if replaceDatasetSwitch
+            if options.replaceDatasetSwitch
                 if orient == 4      % yx
                     obj.img{1} = dataset;
                 elseif orient==1    % xz; get permuted dataset

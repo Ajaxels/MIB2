@@ -273,8 +273,8 @@ classdef mibChopDatasetController < handle
                                 case '.model'     % matlab
                                     modelVariable = 'imOut'; %#ok<NASGU>
                                     if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber() > 1  % save annotations
-                                        [labelText, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
-                                        save(fnModel, 'imOut', 'modelMaterialNames', 'modelMaterialColors', 'BoundingBox', 'modelVariable', 'labelText', 'labelPosition', '-mat', '-v7.3');
+                                        [labelText, labelValues, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+                                        save(fnModel, 'imOut', 'modelMaterialNames', 'modelMaterialColors', 'BoundingBox', 'modelVariable', 'labelText', 'labelValues', 'labelPosition', '-mat', '-v7.3');
                                     else    % save without annotations
                                         save(fnModel, 'imOut', 'modelMaterialNames', 'modelMaterialColors', 'BoundingBox', 'modelVariable', '-mat', '-v7.3');
                                     end

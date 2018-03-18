@@ -57,40 +57,8 @@ handles.mode2dCurrentRadio.Value = 1;
 % Choose default command line output for mibChildGUI
 handles.output = hObject;
 
-% Determine the position of the dialog - on a side of the main figure
-% if available, else, centered on the main figure
-FigPos=get(0,'DefaultFigurePosition');
-OldUnits = get(hObject, 'Units');
-set(hObject, 'Units', 'pixels');
-OldPos = get(hObject,'Position');
-FigWidth = OldPos(3);
-FigHeight = OldPos(4);
-if isempty(gcbf)
-    ScreenUnits=get(0,'Units');
-    set(0,'Units','pixels');
-    ScreenSize=get(0,'ScreenSize');
-    set(0,'Units',ScreenUnits);
-    
-    FigPos(1)=1/2*(ScreenSize(3)-FigWidth);
-    FigPos(2)=2/3*(ScreenSize(4)-FigHeight);
-else
-    GCBFOldUnits = get(gcbf,'Units');
-    set(gcbf,'Units','pixels');
-    GCBFPos = get(gcbf,'Position');
-    set(gcbf,'Units',GCBFOldUnits);
-    screenSize = get(0,'ScreenSize');
-    if GCBFPos(1)-FigWidth > 0 % put figure on the left side of the main figure
-        FigPos(1:2) = [GCBFPos(1)-FigWidth-10 GCBFPos(2)+GCBFPos(4)-FigHeight];
-    elseif GCBFPos(1) + GCBFPos(3) + FigWidth < screenSize(3) % put figure on the right side of the main figure
-        FigPos(1:2) = [GCBFPos(1)+GCBFPos(3)+10 GCBFPos(2)+GCBFPos(4)-FigHeight];
-    else
-        FigPos(1:2) = [(GCBFPos(1) + GCBFPos(3) / 2) - FigWidth / 2, ...
-            (GCBFPos(2) + GCBFPos(4) / 2) - FigHeight / 2];
-    end
-end
-FigPos(3:4)=[FigWidth FigHeight];
-set(hObject, 'Position', FigPos);
-set(hObject, 'Units', OldUnits);
+% move the window
+hObject = moveWindowOutside(hObject, 'left');
 
 % Update handles structure
 guidata(hObject, handles);

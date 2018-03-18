@@ -117,14 +117,23 @@ if options.roiId >= 0
         options.y = [bb(3), bb(4)];
         
         if ~isnan(options.fillBg)
-            result = obj.I{options.id}.setData(type, dataset{roiId2}, orient, col_channel, options);
+            if iscell(dataset)
+                result = obj.I{options.id}.setData(type, dataset{roiId2}, orient, col_channel, options);
+            else
+                result = obj.I{options.id}.setData(type, dataset, orient, col_channel, options);
+            end
         else
             % crop mask to its bounding box
             mask = mask(bb(3):bb(4), bb(1):bb(2));
-            mask = repmat(mask,[1, 1, numel(col_channel), size(dataset{roiId2}, ndims(dataset{roiId2}))]);
-
-            sliceTemp = obj.I{options.id}.getData(type, orient, col_channel, options);     % get current dataset
-            sliceTemp(mask==1) = dataset{roiId2}(mask==1);
+            if iscell(dataset)
+                mask = repmat(mask, [1, 1, numel(col_channel), size(dataset{roiId2}, max([ndims(dataset{roiId2}) 3]))]);
+                sliceTemp = obj.I{options.id}.getData(type, orient, col_channel, options);     % get current dataset
+                sliceTemp(mask==1) = dataset{roiId2}(mask==1);
+            else
+                mask = repmat(mask, [1, 1, numel(col_channel), size(dataset, max([ndims(dataset) 3]))]);
+                sliceTemp = obj.I{options.id}.getData(type, orient, col_channel, options);     % get current dataset
+                sliceTemp(mask==1) = dataset(mask==1);
+            end
             result = obj.I{options.id}.setData(type, sliceTemp, orient, col_channel, options);
         end
         roiId2 = roiId2 + 1;

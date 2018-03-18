@@ -12,6 +12,17 @@ function mibAddIcons(handles)
 % Updates
 % 
 
+% add icons to buttons
+global mibPath;
+
+btnText = strrep(['file:/' fullfile(mibPath, 'Resources', 'minus.png')],'\','/'); 
+btnText = ['<html><img src="' btnText '"/></html>']; 
+handles.mibRemoveMaterialBtn.String = btnText;
+
+% add icon to the preview button
+btnText = strrep(['file:/' fullfile(mibPath, 'Resources', 'settings.png')],'\','/'); 
+btnText = ['<html><img src="' btnText '"/></html>']; 
+handles.mibBrushPanelInterpolationSettingsBtn.String = btnText;
 
 %jFrame = handles.mibGUI.JavaFrame;
 jFrame = get(handle(handles.mibGUI), 'JavaFrame');

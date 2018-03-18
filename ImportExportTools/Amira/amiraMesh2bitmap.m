@@ -31,6 +31,7 @@ function [bitmap, par] = amiraMesh2bitmap(filename, options)
 % ver 1.04 - 13.03.2013, load binned or cropped dataset
 % ver 1.05 - 17.10.2014, fix of waitbar for R2014b
 % ver 1.06 - 29.09.2015, added use of amiraLabels2bitmap for Labels
+% ver 1.07 - 09.01.2018, added extraction of embedded containers in the amiramesh headers
 
 % -- debug block starts --
 %filename = 'e:\3View\2011\1115_YukiOhsiki_2nd\120207_Huh7_SeipinKO_OA\R04_P2\Huh7_SeipinKO_r4_Pos2.am';
@@ -38,7 +39,7 @@ function [bitmap, par] = amiraMesh2bitmap(filename, options)
 % -- debug block ends --
 
 bitmap = NaN;
-if nargin < 2; options = struct(); end;
+if nargin < 2; options = struct(); end
 if ~isfield(options, 'hWaitbar');    options.hWaitbar = NaN; end
 
 customSections=0;
@@ -51,7 +52,7 @@ if nargin < 1
         {'*.am','Amira mesh labels(*.am)';
         '*.*',  'All Files (*.*)'}, ...
         'Pick a file');
-    if filename == 0; return; end;
+    if filename == 0; return; end
     filename = [pathname filename];
 end
 fid = fopen(filename, 'r');
@@ -100,8 +101,8 @@ level = 0;
 parIndex = 1;
 while numel(strfind(tline, 'Lattice')) == 0
     tline = strtrim(fgetl(fid));
-    if numel(strfind(tline, 'Lattice')) ~= 0; break; end;
-    if level == 0; field = cellstr(''); end;
+    if numel(strfind(tline, 'Lattice')) ~= 0; break; end
+    if level == 0; field = cellstr(''); end
     
     openGroup = strfind(tline, '{');
     closeGroup = strfind(tline, '}');
@@ -109,31 +110,37 @@ while numel(strfind(tline, 'Lattice')) == 0
         level = level + 1;
         if strcmp(strtrim(tline(1:openGroup(1)-1)),'im_browser')    % remove the group made with im_browser
             field(level) = cellstr('');
+        elseif tline(end) == '{' && level > 1
+            level = level - 1;
+            par(parIndex).Name = field{level};
+            %a = loopHeader(fid, tline, level);
+            par(parIndex).Value = cellstr(loopHeader(fid, tline, level));
+            parIndex = parIndex + 1;
         else
             field(level) = cellstr(tline(1:openGroup(1)-1));
         end
     elseif isempty(openGroup) & ~isempty(closeGroup)
         level = level - 1;
-        if level == -1; break; end;  % end of the Parameters section
+        if level == -1; break; end  % end of the Parameters section
         field(level+1) = cellstr('');
     else
         spaces = strfind(strtrim(tline), ' ');
         parField = '';
-        for lev = 1:level;
+        for lev = 1:level
             parField = [parField '_' field{lev}];
         end
         parField = [parField '_' tline(1:spaces(1)-1)];
-        if parField(1) == '_'; parField = parField(2:end); end;
-        if parField(1) == '_'; parField = parField(2:end); end;
+        if parField(1) == '_'; parField = parField(2:end); end
+        if parField(1) == '_'; parField = parField(2:end); end
         value = tline(spaces(1)+1:end);
-        if value(end) == ','; value = value(1:end-1); end;  % remove ending comma
-        if numel(value)>0 && value(1) == '"' && value(end) == '"';
+        if value(end) == ','; value = value(1:end-1); end  % remove ending comma
+        if numel(value)>0 && value(1) == '"' && value(end) == '"'
             value = value(2:end-1);
         elseif numel(value)>0
             if isempty(strfind(value, ' '))
                 value = str2num(value); 
             end
-        end;   % remove quotation marks from strings 
+        end   % remove quotation marks from strings 
 
         %par.(parField) = cellstr(value);
         par(parIndex).Name = parField;
@@ -192,11 +199,11 @@ else
     bitmap = zeros([floor(height/xy_step), floor(width/xy_step), maxColors, depth], classType{1});
 end
 
-if ~isfield(options, 'maxZ'); 
+if ~isfield(options, 'maxZ') 
     maxZ = (dataIndex - 1)*depth;   % for waitbar
 else
     maxZ = options.maxZ;
-end;
+end
 
 color_id = 0;
 for dataBlock = 1:dataIndex - 1
@@ -243,7 +250,7 @@ for dataBlock = 1:dataIndex - 1
             end
         end
         %if ~isnan(options.hWaitbar) && mod(zIndex, ceil(maxZ/20))==0;
-        if ishandle(options.hWaitbar) && mod(zIndex, ceil(maxZ/20))==0;            
+        if ishandle(options.hWaitbar) && mod(zIndex, ceil(maxZ/20))==0          
             waitbar((zIndex)/maxZ,options.hWaitbar);
         end
         zIndex = zIndex + 1;
@@ -255,4 +262,28 @@ end
 fclose(fid);
 
 disp(['amiraMesh2bitmap: ' filename ' was loaded!']);
+end
+
+function parValueText = loopHeader(fid, parValueText, level)
+% collect inbedded containers as a plain text
+while level >= 1
+    tline = strtrim(fgetl(fid));
+
+    if tline(end) == '{'    % open group
+        level = level + 1;
+        parValueText = sprintf('%s\n%s', parValueText, tline);
+    elseif tline(end) == '}'    % close group
+        openGroup = strfind(tline, '{');
+        closeGroup = strfind(tline, '}');
+        if numel(openGroup) < numel(closeGroup)     % close the group
+            level = level - 1;
+            parValueText = sprintf('%s\n}', parValueText);
+        else    % situation when: \"Deblur\" setVar \"CustomHelp\" {deblur.html}
+            parValueText = sprintf('%s\n%s', parValueText, tline);
+        end
+    else
+        parValueText = sprintf('%s\n%s', parValueText, tline);
+    end
+    %sprintf('Level: %d, %s', level, tline)
+end
 end

@@ -22,7 +22,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 02-Nov-2017 19:29:42
+% Last Modified by GUIDE v2.5 11-Mar-2018 09:39:31
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -49,7 +49,7 @@ function mibGUI_OpeningFcn(hObject, ~, handles, varargin)
 % Choose default command line output for mibGUI
 handles.output = hObject;
 
-if isa(varargin{1}, 'mibController');    handles.mibController = varargin{1}; end;
+if isa(varargin{1}, 'mibController');    handles.mibController = varargin{1}; end
 
 if handles.mibController.matlabVersion >= 8.4 % R2014b
     handles.mibGUI.GraphicsSmoothing = 'off';  % turn off smoothing and turn opengl renderer
@@ -61,7 +61,7 @@ end
 title = ['Microscopy Image Browser ' handles.mibController.mibVersion];
 if isdeployed
     title = [title ' deployed version']; 
-end;
+end
 handles.mibGUI.Name = title;
 
 % disable widgets that are not compatible with mac and linux
@@ -847,7 +847,7 @@ end
 
 % --- Executes when mibGUI is resized.
 function mibGUI_SizeChangedFcn(hObject, eventdata, handles)
-if ~isfield(handles, 'mibController'); return; end;
+if ~isfield(handles, 'mibController'); return; end
 handles.mibController.mibGUI_SizeChangedFcn()
 end
 
@@ -863,6 +863,11 @@ function mibEraserEdit_Callback(hObject, eventdata, handles)
 handles.mibController.mibEraserEdit_Callback();
 end
 
+% --- Executes on button press in mibBrushPanelInterpolationSettingsBtn.
+function mibBrushPanelInterpolationSettingsBtn_Callback(hObject, eventdata, handles)
+handles.mibController.mibBrushPanelInterpolationSettingsBtn_Callback();
+end
+
 function mibBrushSuperpixelsWatershedCheck_Callback(hObject, eventdata, handles)
 handles.mibController.mibBrushSuperpixelsWatershedCheck_Callback(hObject);
 end
@@ -875,6 +880,11 @@ function mibSegmLabelsBtn_Callback(hObject, eventdata, handles)
 % --- Executes on button press in mibSegmLabelsBtn.
 handles.mibController.startController('mibAnnotationsController');
 handles.mibShowAnnotationsCheck.Value = 1;
+end
+
+% --- Executes on selection change in mibAnnMarkerEdit.
+function mibAnnMarkerEdit_Callback(hObject, eventdata, handles)
+handles.mibController.mibAnnMarkerEdit_Callback();
 end
 
 % --- Executes on button press in mibSegmAnnDeleteAllBtn.
@@ -1183,6 +1193,12 @@ end
 end
 
 
+% --- Executes on selection change in mibColChannelCombo.
+function mibColChannelCombo_Callback(hObject, eventdata, handles)
+% update selected color channel
+handles.mibController.mibColChannelCombo_Callback();
+end
+
 %% --------------------- VIEW SETTINGS PANEL CALLBACKS ---------------------
 function mibLutCheckbox_Callback(hObject, eventdata, handles)
 % --- Executes on button press in mibLutCheckbox.
@@ -1272,6 +1288,8 @@ function mibImageFilterPopup_Callback(hObject, eventdata, handles)
 % --- Executes on selection change in mibImageFilterPopup.
 returnFromFrangi = handles.mibImfiltPar4Edit.Enable;
 
+handles.mibImageFilterDoitBtn.Enable = 'on';
+
 % change type of image filter
 handles.mibImageFiltersTypePopup.Enable = 'off';
 handles.mibImfiltPar1Edit.Enable = 'on';
@@ -1279,9 +1297,14 @@ handles.mibImfiltPar2Edit.Enable = 'on';
 handles.mibImfiltPar3Edit.Enable = 'off';
 handles.mibImfiltPar4Edit.Enable = 'off';
 handles.mibImfiltPar5Edit.Enable = 'off';
+handles.mibImageFilters3DCheck.Enable = 'off';
 handles.mibImfiltPar1Edit.TooltipString = 'Kernel size in pixels, use two semicolon separated numbers for custom kernels';
 handles.mibImfiltPar2Edit.TooltipString = '';
+handles.mibImageFiltersTypeText.String = 'Type:';
 %handles.coherenceFilterPanel.Visible = 'off';
+
+% replace 512 with 3 when switching from DNN to other filters
+if strcmp(handles.mibImfiltPar1Edit.String, '512');    handles.mibImfiltPar1Edit.String = '3'; end
 
 selval = handles.mibImageFilterPopup.Value;
 list = handles.mibImageFilterPopup.String;
@@ -1294,12 +1317,15 @@ if strcmp(returnFromFrangi, 'on')   % reinitialize default values when returning
 end
 
 switch selfilter
-    case {'Gaussian', 'Gaussian 3D'}
+    case {'Gaussian'}
         handles.mibImageFiltersHSizeText.String = 'HSize:';
         handles.mibImageFiltersSigmaText.String = 'Sigma:';
         handles.mibImfiltPar2Edit.String = '0.6';
+        handles.mibImageFilters3DCheck.Enable = 'on';
     case 'DNN Denoise'
-        handles.mibImfiltPar1Edit.Enable = 'off';
+        handles.mibImageFiltersHSizeText.String = 'GPU block:';
+        handles.mibImfiltPar1Edit.TooltipString = 'Define size of the block in pixels to fit into GPU memory';
+        handles.mibImfiltPar1Edit.String = '512';
         handles.mibImfiltPar2Edit.Enable = 'off';
     case 'Unsharp'
             handles.mibImageFiltersHSizeText.String = 'Radius:';
@@ -1312,18 +1338,20 @@ switch selfilter
     case 'Motion'
         handles.mibImageFiltersHSizeText.String = 'Length:';
         handles.mibImageFiltersSigmaText.String = 'Angle:';
-    case {'Average', 'Disk', 'Median 2D', 'Wiener 2D','Median 3D'}
+    case {'Average', 'Disk', 'Median', 'Wiener'}
         handles.mibImageFiltersHSizeText.String = 'HSize:';
         handles.mibImfiltPar2Edit.Enable = 'off';
-        if strcmp(selfilter, 'Median 3D')
+        if strcmp(selfilter, 'Median')
+            handles.mibImageFilters3DCheck.Enable = 'on';
             handles.mibImageFiltersTypeText.String = 'Padding:';
             handles.mibImageFiltersTypePopup.String = {'replicate', 'symmetric', 'zeros'};
             handles.mibImageFiltersTypePopup.Enable = 'on';
         end
-    case {'Gradient 2D', 'Gradient 3D'}
+    case 'Gradient'
         handles.mibImfiltPar1Edit.Enable = 'off';
         handles.mibImfiltPar2Edit.Enable = 'off';
-    case {'Frangi 2D', 'Frangi 3D'}
+        handles.mibImageFilters3DCheck.Enable = 'on';
+    case 'Frangi'
         handles.mibImageFiltersHSizeText.String = 'Range';
         handles.mibImfiltPar1Edit.String = '1-6';
         handles.mibImfiltPar1Edit.TooltipString = 'The range of sigmas used, default [1-6]';
@@ -1335,16 +1363,10 @@ switch selfilter
         handles.mibImfiltPar3Edit.Enable = 'on';
         handles.mibImfiltPar4Edit.Enable = 'on';
         handles.mibImageFiltersTypePopup.Enable = 'On';
+        handles.mibImageFiltersTypePopup.Value = min([handles.mibImageFiltersTypePopup.Value 2]); 
         handles.mibImageFiltersTypePopup.String = {'Black on White','White on Black'};
-        if strcmp(selfilter, 'Frangi 3D')
-            handles.mibImfiltPar5Edit.Enable = 'on';
-            handles.mibImfiltPar3Edit.TooltipString = 'Frangi vesselness constant, treshold on Lambda2/Lambda3 determines if its a line(vessel) or a plane like structure, default .5;';
-            handles.mibImfiltPar4Edit.TooltipString = 'Frangi vesselness constant, which determines the deviation from a blob like structure, default .5;';
-            handles.mibImfiltPar5Edit.TooltipString = 'Frangi vesselness constant which gives the threshold between eigenvalues of noise and vessel structure. A thumb rule is dividing the the greyvalues of the vessels by 4 till 6';
-        else
-            handles.mibImfiltPar3Edit.TooltipString = 'Frangi correction constant, default 0.5';
-            handles.mibImfiltPar4Edit.TooltipString = 'Frangi correction constant, default 15';
-        end
+        handles.mibImageFiltersTypePopup.TooltipString = 'black-on-white for EM images; white-on-black for LM images';
+        handles.mibImageFilters3DCheck.Enable = 'on';
     case 'Laplacian'
         handles.mibImageFiltersSigmaText.String = 'Alpha:';
         handles.mibImfiltPar2Edit.String = '0.5';
@@ -1361,6 +1383,31 @@ switch selfilter
         handles.mibImageFiltersTypePopup.Enable = 'on';
         handles.mibImageFiltersTypePopup.Value = min([handles.mibImageFiltersTypePopup.Value 2]);
         handles.mibImageFiltersTypePopup.String = {'Edges','Regions'};
+        handles.mibImageFiltersTypePopup.TooltipString = 'Edges: favours high contrast edges over low contrast ones; Region: favours wide regions over smaller ones';
+    case 'External: BMxD'
+        if ~isdeployed
+            res = which('bm4d');
+            if ~isempty(res)
+                handles.mibImageFilters3DCheck.Enable = 'on';
+            end
+            handles.mibImageFiltersTypePopup.Enable = 'on';
+            handles.mibImageFiltersSigmaText.String = 'K (%)';
+            handles.mibImfiltPar2Edit.String = '6';
+            if handles.mibImageFilters3DCheck.Value == 1
+                handles.mibImageFiltersTypePopup.String = {'mp, Gauss: modified','mp, Rice: modified',...
+                    'np, Gauss: normal', 'np, Rice: normal',...
+                    'lc, Gauss: low complexity', 'lc, Rice: low complexity'};
+                handles.mibImfiltPar1Edit.Enable = 'off';
+            else
+                handles.mibImageFiltersTypePopup.Value = min([handles.mibImageFiltersTypePopup.Value 2]); 
+                handles.mibImageFiltersTypePopup.String = {'np: normal','lc: low complexity'};
+                handles.mibImfiltPar1Edit.Enable = 'off';
+            end
+            handles.mibImageFiltersTypePopup.TooltipString = 'filtering profile';
+        else
+            handles.mibImageFilterDoitBtn.Enable = 'off';
+        end
+        
 %     case {'Edge Enhancing Coherence Filter'}
 %         handles.mibImfiltPar1Edit.Enable = 'off';
 %         handles.mibImfiltPar2Edit.Enable = 'off';
@@ -1389,15 +1436,49 @@ switch selfilter
 %         handles.mibImageFiltersSigmaText.String = 'Size:';
 %         handles.mibImfiltPar3Edit.Enable = 'off';
 end
+mibImageFilters3DCheck_Callback(hObject, eventdata, handles);
+mibImfiltPar1Edit_Callback(handles.mibImfiltPar1Edit, eventdata, handles);
+end
 
-% update the mode from 2D to 3D when using the 3D filters
-if ismember(selfilter, {'Gaussian 3D', 'Gradient 3D', 'Frangi 3D'})
+
+% --- Executes on button press in mibImageFilters3DCheck.
+function mibImageFilters3DCheck_Callback(hObject, eventdata, handles)
+if strcmp(handles.mibImageFilters3DCheck.Enable, 'off')
+    handles.mibImageFilters3DCheck.Value = 0;
+    return;
+end
+
+selval = handles.mibImageFilterPopup.Value;
+list = handles.mibImageFilterPopup.String;
+selfilter = cell2mat(list(selval));
+
+if handles.mibImageFilters3DCheck.Value == 1
+    switch selfilter
+        case 'Frangi'
+            handles.mibImfiltPar5Edit.Enable = 'on';
+            handles.mibImfiltPar3Edit.TooltipString = 'Frangi vesselness constant, treshold on Lambda2/Lambda3 determines if its a line(vessel) or a plane like structure, default .5;';
+            handles.mibImfiltPar4Edit.TooltipString = 'Frangi vesselness constant, which determines the deviation from a blob like structure, default .5;';
+            handles.mibImfiltPar5Edit.TooltipString = 'Frangi vesselness constant which gives the threshold between eigenvalues of noise and vessel structure. A thumb rule is dividing the the greyvalues of the vessels by 4 till 6';
+        case 'External: BMxD'
+            handles.mibImageFiltersTypePopup.String = {'mp, Gauss: modified','mp, Rice: modified',...
+                    'np, Gauss: normal', 'np, Rice: normal',...
+                    'lc, Gauss: low complexity', 'lc, Rice: low complexity'};
+    end
+    % update the mode from 2D to 3D when using the 3D filters
     if handles.mibImageFiltersModePopup.Value == 1
         handles.mibImageFiltersModePopup.Value = 2;
     end
+else
+    switch selfilter
+        case 'Frangi'
+            handles.mibImfiltPar5Edit.Enable = 'off';
+            handles.mibImfiltPar3Edit.TooltipString = 'Frangi correction constant, default 0.5';
+            handles.mibImfiltPar4Edit.TooltipString = 'Frangi correction constant, default 15';
+        case 'External: BMxD'
+            handles.mibImageFiltersTypePopup.Value = min([handles.mibImageFiltersTypePopup.Value 2]);
+            handles.mibImageFiltersTypePopup.String = {'np: normal','lc: low complexity'};
+    end
 end
-
-mibImfiltPar1Edit_Callback(handles.mibImfiltPar1Edit, eventdata, handles);
 end
 
 function mibImfiltPar1Edit_Callback(hObject, eventdata, handles)
@@ -1405,13 +1486,13 @@ function mibImfiltPar1Edit_Callback(hObject, eventdata, handles)
 list = handles.mibImageFilterPopup.String;
 val = handles.mibImageFilterPopup.Value;
 switch cell2mat(list(val))
-    case {'Gaussian','Average','Log','Gaussian 3D','Wiener 2D','Median 2D'}
+    case {'Gaussian', 'Average', 'Log', 'Wiener', 'Median'}
         editbox_Callback(handles.mibImfiltPar1Edit, eventdata, handles, 'posintx2', '3', [1,NaN]);
     case {'Disk','Motion'}
         editbox_Callback(handles.mibImfiltPar1Edit, eventdata, handles, 'pint', '3', [1,NaN]);
     case {'Unsharp'}
         editbox_Callback(handles.mibImfiltPar1Edit, eventdata, handles, 'pfloat', '1', [0.0001,NaN]);
-    case {'Frangi 2D','Frangi 3D'}
+    case {'Frangi'}
         editbox_Callback(handles.mibImfiltPar1Edit,eventdata,handles,'intrange','1-6');
         editbox_Callback(handles.mibImfiltPar2Edit,eventdata,handles,'pint','2',[1,NaN]);
         editbox_Callback(handles.mibImfiltPar3Edit,eventdata,handles,'pfloat', '0.9');
@@ -1434,6 +1515,8 @@ val = handles.mibImageFilterPopup.Value;
 switch cell2mat(list(val))
     case 'Unsharp'
         editbox_Callback(handles.mibImfiltPar2Edit,eventdata,handles,'pfloat','1.2',[0.001,10]);
+    case 'External: BMxD'
+        editbox_Callback(handles.mibImfiltPar2Edit,eventdata,handles,'pint', '4', [0,100]);
     otherwise
         editbox_Callback(handles.mibImfiltPar2Edit,eventdata,handles,'pfloat','1',[0.001,NaN]);
 end
@@ -1684,6 +1767,11 @@ end
 % --------------------------------------------------------------------
 function menuImageInvert_Callback(hObject, eventdata, handles, parameter)
 handles.mibController.menuImageInvert_Callback(parameter);
+end
+
+% --------------------------------------------------------------------
+function menuImageToolsProjection_Callback(hObject, eventdata, handles)
+handles.mibController.menuImageToolsProjection_Callback();
 end
 
 % --------------------------------------------------------------------

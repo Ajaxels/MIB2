@@ -37,12 +37,10 @@ else
     kernel = [str2double(answer{2}) str2double(answer{3})];
 end
 
-if strcmp(answer{1},'2D')
-    options.fitType = 'Gaussian';
-else
-    options.fitType = 'Gaussian 3D';
-end
+options.fitType = 'Gaussian';
+if strcmp(answer{1},'3D'); options.filters3DCheck = 1; end
 options.hSize = kernel;
+
 if isempty(answer{4})
     options.sigma = 1;
 else

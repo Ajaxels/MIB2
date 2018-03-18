@@ -91,7 +91,30 @@
 % In this section, MIB has tools that are targeted for manipulation of the
 % image layer.
 %
+% *Intensity projection*
+%
+%
 % 
+% <html>
+% Calculate one of the following intensity projections:<br>
+% <table>
+% <tr>
+% <td><img src="images\MenuImageToolsIntensityProjection.png"></td>
+% <td>
+% <ul>
+% <li><b>maximum intensity projection</b>, project the voxel with the highest value on every view throughout the volume onto a 2D image</li>
+% <li><b>minimum intensity projection</b>, project the voxel with the smallest value on every view throughout the volume onto a 2D image</li>
+% <li><b>mean intensity projection</b>, project the mean value of voxels on every view throughout the volume onto a 2D image</li>
+% <li><b>median intensity projection</b>, project the median value of voxels on every view throughout the volume onto a 2D image</li>
+% </td>
+% </tr>
+% </table>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/hwFpS_3eP9U</a>
+% </html>
+% 
+%
+%
 % *Select image frame*
 %
 % 

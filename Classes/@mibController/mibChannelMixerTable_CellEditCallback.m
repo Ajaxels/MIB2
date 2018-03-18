@@ -24,9 +24,9 @@ if isempty(selected)
     data{Indices(1), 2} = PreviousData;
     obj.mibView.handles.mibChannelMixerTable.Data = data;
     return;
-end;
+end
 if strcmp(modifier, 'control') % toggle between two color channels using the Ctrl modifier
-    for i=1:size(data,1);        data{i,2} = 0;    end;    % clear selected channels
+    for i=1:size(data,1);        data{i,2} = 0;    end    % clear selected channels
     data{Indices(1,1),2} = 1;
     obj.mibView.handles.mibChannelMixerTable.Data = data;
 end

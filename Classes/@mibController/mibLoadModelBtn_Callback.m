@@ -10,6 +10,7 @@ function mibLoadModelBtn_Callback(obj, model, options)
 % @li .modelMaterialColors - a matrix with colors for materials
 % @li .labelText - a cell array with labels
 % @li .labelPosition - a matrix [x, y, z, t] with coordinates of labels
+% @li .labelValues - an array of numbers for values of labels
 % @li .modelType - a double with type of the model: 63, 255
 % @li .modelVariable - an optional string with the name of the model variable
 %
@@ -105,6 +106,7 @@ if nargin < 2   % model and options were not provided
             if isfield(res, 'labelText')
                 options.labelText = res.labelText;
                 options.labelPosition = res.labelPosition;
+                if isfield(res, 'labelValues'); options.labelValues = res.labelValues; end
             end
             clear res;
         elseif strcmp(filename{fnId}(end-1:end),'am') % loading amira mesh
@@ -188,16 +190,21 @@ if nargin < 2   % model and options were not provided
         
         % get the type of the model
         if ~isfield(options, 'modelType')
-            maxModelValue = max(max(max(max(model))));
-            if maxModelValue < 64
-                options.modelType = 63;
-            elseif maxModelValue < 256
-                options.modelType = 63;
-            elseif maxModelValue < 65536
-                options.modelType = 65535;
-            else
-                errordlg('This model type is not yet implemented!', 'Too many materials');
-                delete(wb);
+            switch class(model)
+                case 'uint8'
+                    maxModelValue = max(max(max(max(model))));
+                    if maxModelValue < 64
+                        options.modelType = 63;
+                    else
+                        options.modelType = 255;
+                    end
+                case 'uint16'
+                    options.modelType = 65535;
+                case 'uint32'
+                    options.modelType = 4294967295;
+                otherwise
+                    errordlg('This model type is not yet implemented! Convert the model into one of the following classes: uint8, uint16, uint32', 'Too many materials');
+                    delete(wb);
             end
         end
         
@@ -262,11 +269,21 @@ else
     
     % get the type of the model
     if ~isfield(options, 'modelType')
-        maxModelValue = max(max(max(max(model))));
-        if maxModelValue < 64
-            options.modelType = 63;
-        else
-            options.modelType = 255;
+        switch class(model)
+            case 'uint8'
+                maxModelValue = max(max(max(max(model))));
+                if maxModelValue < 64
+                    options.modelType = 63;
+                else
+                    options.modelType = 255;
+                end
+            case 'uint16'
+                options.modelType = 65535;
+            case 'uint32'
+                options.modelType = 4294967295;
+            otherwise
+                errordlg('This model type is not yet implemented! Convert the model into one of the following classes: uint8, uint16, uint32', 'Too many materials');
+                delete(wb);
         end
     end
     
@@ -287,36 +304,64 @@ end
 
 if isfield(options, 'material_list')
     obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames = options.material_list;
-    max_color = numel(options.material_list);
 elseif isfield(options, 'modelMaterialNames')
     obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames = options.modelMaterialNames;
-    max_color = numel(options.modelMaterialNames);
 else
-    max_color = max(max(max(max(model))));
-    if max_color > 0
-        obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames = cell(max_color, 1);
-        for i=1:max_color
-            obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames(i,1) = cellstr(num2str(i));
-        end
+    switch class(model)
+        case 'uint8'
+            max_color = max(max(max(max(model))));
+            if max_color > 0
+                obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames = cell(max_color, 1);
+                for i=1:max_color
+                    obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames(i,1) = cellstr(num2str(i));
+                end
+            end
+        case 'uint16'
+            obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames = {'1','2'}';
+        case 'uint32'
+            obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames = {'1','2'}';
     end
 end
+
 if isfield(options, 'color_list')
     obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors = options.color_list;
 elseif isfield(options, 'modelMaterialColors')
     obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors = options.modelMaterialColors;
 else
-    obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors = obj.mibModel.preferences.modelMaterialColors(1:min([max_color, size(obj.mibModel.preferences.modelMaterialColors,1)]), :);
+    switch class(model)
+        case 'uint8'
+            max_color = numel(obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames);
+            obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors = obj.mibModel.preferences.modelMaterialColors(1:min([max_color, size(obj.mibModel.preferences.modelMaterialColors,1)]), :);
+        case 'uint16'
+            obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors = rand([65535,3]);
+        case 'uint32'
+            obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors = rand([65535,3]);
+    end
 end
+
 % adding extra colors if needed
-if max_color > size(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors,1)
-    minId = size(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors,1)+1;
-    maxId = max_color;
-    obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors = [obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors; rand([maxId-minId+1,3])];
+if isa(model, 'uint8')
+    max_color = numel(obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames);
+    if max_color > size(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors,1)
+        minId = size(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors,1)+1;
+        maxId = max_color;
+        obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors = [obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors; rand([maxId-minId+1,3])];
+    end
+else
+    max_color = size(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors, 1);
+    if max_color < 65535
+        obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors = [obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors; rand([65535-max_color, 3])];
+    end
 end
+
 % add annotations
 if isfield(options, 'labelText')
     obj.mibModel.I{obj.mibModel.Id}.hLabels.clearContents();    % clear current labels
-    obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(options.labelText, options.labelPosition);
+    if isfield(options, 'labelValues')
+        obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(options.labelText, options.labelPosition, options.labelValues);
+    else
+        obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(options.labelText, options.labelPosition);
+    end
 end
 
 obj.mibModel.I{obj.mibModel.Id}.modelFilename = options.model_fn;

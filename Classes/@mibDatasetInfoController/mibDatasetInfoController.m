@@ -108,6 +108,23 @@ classdef mibDatasetInfoController < handle
             notify(obj, 'closeEvent');      % notify mibController that this child window is closed
         end
         
+        function simplifyBtn_Callback(obj)
+            % remove most of metadata
+            res = questdlg(sprintf('!!! Warning !!!\n\nYou are going to remove most of metadata.\nThe bounding box and the lut colors will be preserved\n\nContinue?'), 'Remove metadata', 'Continue', 'Cancel', 'Cancel');
+            if strcmp(res, 'Cancel'); return; end
+            
+            meta = obj.mibModel.getImageProperty('meta');
+            keySet = keys(meta);
+            
+            mainKeys = {'Filename', 'Height','Width', 'Depth', 'Time', 'ImageDescription', 'ColorType', 'ResolutionUnit', ...
+                'XResolution','YResolution','SliceName','SeriesNumber','lutColors'};
+            removeKeysPos = ~ismember(keySet, mainKeys);
+            removeKeys = keySet(removeKeysPos);
+            remove(meta, removeKeys);
+            obj.mibModel.setImageProperty('meta', meta);
+            obj.updateWidgets();
+        end
+        
         function updateWidgets(obj)
             % % populate uiTree
             import javax.swing.*
@@ -278,7 +295,7 @@ classdef mibDatasetInfoController < handle
             % function uiTreeNodeSelectedCallback(obj, varargin)
             % a callback for selection of an entry in the uitree
             nodes = obj.uiTree.getSelectedNodes;
-            if isempty(nodes); return; end;
+            if isempty(nodes); return; end
             
             % store name of the selected field for syncronization
             obj.selectedNodeName = char(nodes(1).getName);
@@ -360,7 +377,7 @@ classdef mibDatasetInfoController < handle
                 elseif iscell(meta(nodeName))
                     if isempty(subIndex)
                         answer = inputdlg('New field name:', 'Modify the entry',1, {nodeName}, options);
-                        if isempty(answer); return; end;
+                        if isempty(answer); return; end
                         value = meta(nodeName);
                         remove(meta, nodeName);      % remove the old key
                         meta(answer{1}) = value;
@@ -369,7 +386,7 @@ classdef mibDatasetInfoController < handle
                         value = meta(nodeName);
                         strVal{2} = value{subIndex};
                         answer = inputdlg({'New field name:','New value'}, 'Modify the entry',size(strVal{2},1), strVal, options);
-                        if isempty(answer); return; end;
+                        if isempty(answer); return; end
                         value(subIndex) = answer(2);
                         meta(nodeName) = value;
                     end
@@ -377,7 +394,7 @@ classdef mibDatasetInfoController < handle
                     strVal{1} = nodeName;
                     strVal{2} = meta(nodeName);
                     answer = inputdlg({'New field name:','New value'}, 'Modify the entry',5, strVal, options);
-                    if isempty(answer); return; end;
+                    if isempty(answer); return; end
                     remove(meta, nodeName);      % remove the old key
                     meta(answer{1}) = answer{2};
                 end
@@ -390,19 +407,35 @@ classdef mibDatasetInfoController < handle
             % function deleteBtn_Callback(obj)
             % delete selected entry from uitree
             button = questdlg(sprintf('Warning!!!\n\nYou are going to delete the highlighted parameters!\nAre you sure?'),'Delete entries','Delete','Cancel','Cancel');
-            if strcmp(button, 'Cancel'); return; end;
+            if strcmp(button, 'Cancel'); return; end
             
             meta = obj.mibModel.getImageProperty('meta');
             
             nodes = obj.uiTree.getSelectedNodes;
-            keySet = cell([numel(nodes), 1]);
+            %keySet = cell([numel(nodes), 1]);
+            keySet = [];
+            
             for i=1:numel(nodes)
-                nodeName = char(nodes(i).getName);
-                colonChar = strfind(nodeName, ':');
-                if ~isempty(colonChar)
-                    nodeName = nodeName(1:colonChar-1);
+                if nodes(i).getDepth > 0
+                    childs = nodes(i).getChildCount();
+                    keySetCurrent = cell([childs, 1]);
+                    for childId=1:childs
+                        nodeName = char(nodes(i).getChildAt(childId-1).getName());
+                        colonChar = strfind(nodeName, ':');
+                        if ~isempty(colonChar)
+                            nodeName = nodeName(1:colonChar-1);
+                        end
+                        keySetCurrent{childId} = nodeName;
+                    end
+                else
+                    nodeName = char(nodes(i).getName);
+                    colonChar = strfind(nodeName, ':');
+                    if ~isempty(colonChar)
+                        nodeName = nodeName(1:colonChar-1);
+                    end
+                    keySetCurrent = nodeName;
                 end
-                keySet{i} = nodeName;
+                keySet = [keySet; keySetCurrent];
             end
             remove(meta, keySet);
             obj.mibModel.setImageProperty('meta', meta);

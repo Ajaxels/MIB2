@@ -30,7 +30,9 @@ classdef mibImage < matlab.mixin.Copyable
         depth
         % number of stacks in the dataset
         defaultAnnotationText
-        % default test for the annotations
+        % default text for the annotations
+        defaultAnnotationValue
+        % default value for the annotations
         height
         % image height, px
         hLabels
@@ -89,6 +91,7 @@ classdef mibImage < matlab.mixin.Copyable
         % @li 63 - maximum  63 material for the model
         % @li 255 - maximum 255 material for the model
         % @li 65535 - maximum 65535 material for the model
+        % @li 4294967295 - maximum 4294967295 material for the model
         modelVariable
         % @em modelVariable is a variable name in the mat-file to keep the 'Model' layer'; default: 'mibModel'
         orientation
@@ -270,6 +273,7 @@ classdef mibImage < matlab.mixin.Copyable
             end
             
             obj.defaultAnnotationText = 'Feature 1';
+            obj.defaultAnnotationValue = 1;
             
             if isempty(img) 
                 obj.clearContents();

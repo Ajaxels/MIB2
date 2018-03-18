@@ -1,0 +1,168 @@
+<deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
+  <configuration build-checksum="799137055" file="/home/ad/home/i/ibelev/Ilya/Matlab/MIB2/MIB_Linux.prj" location="/home/ad/home/i/ibelev/Ilya/Matlab/MIB2" name="MIB_Linux" preferred-package-location="/home/ad/home/i/ibelev/Ilya/Matlab/MIB2/MIB_Linux/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
+    <param.appname>MIB</param.appname>
+    <param.icon>${PROJECT_ROOT}/MIB_Mac_resources/icon.icns</param.icon>
+    <param.icons>
+      <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_48.png</file>
+      <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_32.png</file>
+      <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
+      <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
+    </param.icons>
+    <param.version>2.212</param.version>
+    <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
+    <param.email>ilya.belevich@helsinki.fi</param.email>
+    <param.company>University of Helsinki</param.company>
+    <param.summary>Microscopy Image Browser (MIB) is software for advanced processing, segmentation and visualization of multi-dimensional microscopy datasets</param.summary>
+    <param.description>You are going to install MIB that has been compiled to stand-alone executables (exe-files).
+If you have not previously installed the MATLAB Compiler Runtime (MCR) it will be automatically downloaded and installed during the installation.
+
+Microscopy Image Browser (MIB) a handy tool for image management
+Copyright (c) 2010-2017
+Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
+http://mib.helsinki.fi
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+
+GNU GENERAL PUBLIC LICENSE
+Version 2, June 1991
+
+Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Everyone is permitted to copy and distribute verbatim copies
+of this license document, but changing it is not allowed.</param.description>
+    <param.screenshot>${PROJECT_ROOT}/Resources/mib_about.jpg</param.screenshot>
+    <param.guid />
+    <param.installpath.string>/MIB/</param.installpath.string>
+    <param.installpath.combo>option.installpath.user</param.installpath.combo>
+    <param.logo>${PROJECT_ROOT}/Resources/im_browser_splash_short.jpg</param.logo>
+    <param.install.notes>To configure scaling of widgets (especially on MacOS) please check Menu-&gt;File-&gt;Preferences-&gt;GUI scaling.
+
+To configure path to Fiji and Omero server please add paths to those program in Menu-&gt;File-&gt;Preferences-&gt;External dirs
+
+Further instructions:
+http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
+    <param.target.install.notes />
+    <param.intermediate>${PROJECT_ROOT}/MIB_Linux/for_testing</param.intermediate>
+    <param.files.only>${PROJECT_ROOT}/MIB_Linux/for_redistribution_files_only</param.files.only>
+    <param.output>${PROJECT_ROOT}/MIB_Linux/for_redistribution</param.output>
+    <param.logdir>${PROJECT_ROOT}/MIB_Linux</param.logdir>
+    <param.enable.clean.build>false</param.enable.clean.build>
+    <param.user.defined.mcr.options />
+    <param.target.type>subtarget.standalone</param.target.type>
+    <param.support.packages />
+    <param.web.mcr>true</param.web.mcr>
+    <param.package.mcr>false</param.package.mcr>
+    <param.no.mcr>false</param.no.mcr>
+    <param.web.mcr.name>MIB2_Linux</param.web.mcr.name>
+    <param.package.mcr.name>MIB2_Linux_mcr</param.package.mcr.name>
+    <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
+    <param.windows.command.prompt>false</param.windows.command.prompt>
+    <param.create.log>false</param.create.log>
+    <param.log.file />
+    <param.native.matlab>false</param.native.matlab>
+    <param.checkbox>false</param.checkbox>
+    <param.example />
+    <param.help.text />
+    <unset>
+      <param.guid />
+      <param.installpath.combo />
+      <param.target.install.notes />
+      <param.intermediate />
+      <param.files.only />
+      <param.output />
+      <param.logdir />
+      <param.enable.clean.build />
+      <param.user.defined.mcr.options />
+      <param.target.type />
+      <param.support.packages />
+      <param.web.mcr />
+      <param.package.mcr />
+      <param.no.mcr />
+      <param.no.mcr.name />
+      <param.windows.command.prompt />
+      <param.create.log />
+      <param.log.file />
+      <param.native.matlab />
+      <param.checkbox />
+      <param.example />
+      <param.help.text />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}/mib_deploy.m</file>
+    </fileset.main>
+    <fileset.resources>
+      <file>${PROJECT_ROOT}/Classes</file>
+      <file>${PROJECT_ROOT}/GuiTools</file>
+      <file>${PROJECT_ROOT}/ImportExportTools</file>
+      <file>${PROJECT_ROOT}/Plugins</file>
+      <file>${PROJECT_ROOT}/Resources</file>
+      <file>${PROJECT_ROOT}/Tools</file>
+    </fileset.resources>
+    <fileset.package>
+      <file>${PROJECT_ROOT}/Plugins</file>
+      <file>${PROJECT_ROOT}/Resources</file>
+      <file>${PROJECT_ROOT}/techdoc</file>
+    </fileset.package>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}/mib.m</file>
+    </fileset.depfun>
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="MIB" optional="false">/home/ad/home/i/ibelev/Ilya/Matlab/MIB2/MIB_Linux/for_testing/MIB</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="splash.png" optional="false">/home/ad/home/i/ibelev/Ilya/Matlab/MIB2/MIB_Linux/for_testing/splash.png</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="run_MIB.sh" optional="false">/home/ad/home/i/ibelev/Ilya/Matlab/MIB2/MIB_Linux/for_testing/run_MIB.sh</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="readme.txt" optional="true">/home/ad/home/i/ibelev/Ilya/Matlab/MIB2/MIB_Linux/for_testing/readme.txt</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/cs/group/svc/opt/MATLAB/R2017b</root>
+      <toolboxes>
+        <toolbox name="fixedpoint" />
+        <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
+      </toolboxes>
+      <toolbox>
+        <fixedpoint>
+          <enabled>true</enabled>
+        </fixedpoint>
+      </toolbox>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>false</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>true</linux>
+      <solaris>false</solaris>
+      <osver>4.13.0-26-generic</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>glnxa64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

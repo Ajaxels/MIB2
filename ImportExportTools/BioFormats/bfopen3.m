@@ -1,4 +1,4 @@
-function [result] = bfopen3(r, seriesNumber, sliceNo)
+function [result] = bfopen3(r, seriesNumber, sliceNo, options)
 % A script for opening microscopy images in MATLAB using Bio-Formats.
 % modified from the original bfopen.m by Ilya Belevich
 % 
@@ -12,6 +12,12 @@ function [result] = bfopen3(r, seriesNumber, sliceNo)
 %      r.setId(handles.filename);
 %   seriesNumber - number of selected serie starting from 1
 %   sliceNo - [optional] desired slice number from the series
+%   options - [optional] a structure with a subset of the image to obtain.
+%   Warning! not yet completely tested
+%       .x1 - starting x position
+%       .y1 - starting y position
+%       .dx - width
+%       .dy - height
 % OUT:
 %   result -> Structure with the selected serie
 %       .img -> Image with [heigh width color z-stack] dimensions
@@ -38,9 +44,8 @@ function [result] = bfopen3(r, seriesNumber, sliceNo)
 %
 % 05.09.2013 Ilya Belevich, added sliceNo to load only a single slice
 
-if nargin < 3
-    sliceNo = NaN;
-end
+if nargin < 4;     options = struct;   end
+if nargin < 3;     sliceNo = NaN;   end
 
 % check MATLAB version, since typecast function requires MATLAB 7.1+
 canTypecast = versionCheck(version, 7, 1);
@@ -50,10 +55,16 @@ bioFormatsVersion = char(loci.formats.FormatTools.VERSION);
 isBioFormatsTrunk = versionCheck(bioFormatsVersion, 5, 0);
 
 r.setSeries(seriesNumber - 1);
-Width = r.getSizeX();
-Height = r.getSizeY();
+if ~isfield(options, 'x1')
+    Width = r.getSizeX();
+    Height = r.getSizeY();
+else
+    Width = options.dx;
+    Height = options.dy;
+end
 Colors = r.getSizeC();
 Time = 1;
+
 if isnan(sliceNo)
     if r.getSizeZ() == 1 && r.getSizeT() > 1
         ZStacks = r.getSizeT();
@@ -79,7 +90,10 @@ end
 
 result.img = zeros([Height, Width, Colors, ZStacks, Time], ImageClassType);
 
-fprintf('Reading series #%d', seriesNumber);
+if ~isfield(options, 'x1')
+    fprintf('Reading series #%d', seriesNumber);
+end
+
 pixelType = r.getPixelType();
 bpp = loci.formats.FormatTools.getBytesPerPixel(pixelType);
 fp = loci.formats.FormatTools.isFloatingPoint(pixelType);
@@ -94,7 +108,7 @@ else
     numImages = Colors;
     startSlice = sliceNo*Colors-(Colors-1);
     endSlice = sliceNo*Colors;
-    if endSlice > r.getImageCount();
+    if endSlice > r.getImageCount()
         sprintf('bfopen3: Wrong slice number!\nCancelling!')
         return;
     end
@@ -110,11 +124,12 @@ index = 1;
 for i = startSlice:endSlice
     % different color channels loaded as a list, so thay have to be
     % assigned to the proper z-slices
-    
-    if mod(index+1, 72) == 1
-        fprintf('\n    ');
+    if ~isfield(options, 'x1')
+        if mod(index+1, 72) == 1
+            fprintf('\n    ');
+        end
+        if i>1;         fprintf('.');     end
     end
-    if i>1;         fprintf('.');     end;
 %     s = 1;    
 %
 %     plane = r.openBytes(i - 1);
@@ -195,19 +210,22 @@ for i = startSlice:endSlice
 %         shape = [Width Height];
 %         arr = reshape(arr, shape)';
 %     end
-    
-    arr = bfGetPlane(r, i);
+    if ~isfield(options, 'x1')
+        arr = bfGetPlane(r, i);    
+    else
+        arr = bfGetPlane(r, i, options.x1, options.y1, options.dx, options.dy);
+    end
     
     % save image plane and label into the list
     result.img(:, :, colorID, sliceID, timeID) = arr;
     colorID = colorID + 1;
     index = index + 1;
     
-    if colorID > Colors; 
+    if colorID > Colors
         colorID = 1; 
         sliceID = sliceID + 1;
     end 
-    if sliceID > ZStacks; 
+    if sliceID > ZStacks
         sliceID = 1; 
         timeID = timeID + 1;
     end 
@@ -232,8 +250,7 @@ end
 % result{s, 2} = metadataList;
 % result{s, 3} = colorMaps;
 % result{s, 4} = r.getMetadataStore();
-
-fprintf('\n');
+if ~isfield(options, 'x1');     fprintf('\n');  end
 end
 
 

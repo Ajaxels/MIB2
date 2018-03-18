@@ -225,8 +225,22 @@ for fn_index = 1:no_files
                 else
                     axistags = infoHDF5.Attributes(attrIndex).Value;
                 end
-                axistags = p_json(axistags);  % parse the axistags
-                img_info('ImageDescription') = axistags.axes{1}.description;
+                try
+                    axistags = p_json(axistags);  % parse the axistags
+                    img_info('ImageDescription') = axistags.axes{1}.description;
+                catch err   
+                    % fix, the following case:
+                    % 
+                    % "description": "BoundingBox 22.85280 64.00440 70.62840 104.57640 0.00000 2.40120    |<?xml version="1.0" encodi...
+                    % },
+                    descriptionId = strfind(axistags, 'description');
+                    braketId = strfind(axistags, '}');
+                    if ~isempty(descriptionId)
+                        braketId2 = braketId(find(braketId>descriptionId(1)));
+                        descriptionText = axistags(descriptionId(1)+14:braketId2(1)-4);
+                    end
+                    img_info('ImageDescription') = descriptionText;
+                end
             end
         end
         

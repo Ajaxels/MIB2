@@ -15,6 +15,8 @@ function updateGuiWidgets(obj)
 % Updates
 % 
 
+global mibPath;
+
 obj.mibView.updateCursor();  % update size of the cursor
 obj.mibModel.disableSegmentation = 0;    % reenable segmentation tools if they were accidentaly turned off
 
@@ -67,21 +69,30 @@ end
 obj.mibView.handles.menuModelsType63.Checked = 'off';
 obj.mibView.handles.menuModelsType255.Checked = 'off';
 obj.mibView.handles.menuModelsType65535.Checked = 'off';
+obj.mibView.handles.menuModelsType4294967295.Checked = 'off';
 switch obj.mibModel.I{obj.mibModel.Id}.modelType
     case 63
         obj.mibView.handles.menuModelsType63.Checked = 'on';
     case 255
         obj.mibView.handles.menuModelsType255.Checked = 'on';
     case 65535
-        obj.mibView.handles.menuModelsType65535.Checked = 'on';        
+        obj.mibView.handles.menuModelsType65535.Checked = 'on';  
+    case 4294967295
+        obj.mibView.handles.menuModelsType4294967295.Checked = 'on';         
 end
 if obj.mibModel.getImageProperty('modelType') < 256
-    obj.mibView.handles.mibAddMaterialBtn.String = '+';
+    %obj.mibView.handles.mibAddMaterialBtn.String = '+';
+    btnText = strrep(['file:/' fullfile(mibPath, 'Resources', 'plus.png')],'\','/'); 
+    btnText = ['<html><img src="' btnText '"/></html>']; 
+    obj.mibView.handles.mibAddMaterialBtn.String = btnText;
     obj.mibView.handles.mibAddMaterialBtn.TooltipString = 'press to add Material to the model';
     obj.mibView.handles.mibRemoveMaterialBtn.Enable = 'on';
     obj.mibView.handles.mibSegmShowTypePopup.Enable = 'on';
 else
-    obj.mibView.handles.mibAddMaterialBtn.String = 'E';
+    %obj.mibView.handles.mibAddMaterialBtn.String = 'E';
+    btnText = strrep(['file:/' fullfile(mibPath, 'Resources', 'next.png')],'\','/'); 
+    btnText = ['<html><img src="' btnText '"/></html>']; 
+    obj.mibView.handles.mibAddMaterialBtn.String = btnText;
     obj.mibView.handles.mibAddMaterialBtn.TooltipString = 'press to find and select the next empty material';
     obj.mibView.handles.mibRemoveMaterialBtn.Enable = 'off';
     obj.mibView.handles.mibSegmShowTypePopup.Enable = 'off';
@@ -207,7 +218,7 @@ obj.mibView.handles.mibRoiList.Value = 1;
 if number > 0
     %currVal = obj.mibView.handles.mibRoiList.Value;
     currVal = obj.mibModel.I{obj.mibModel.Id}.selectedROI;
-    if currVal > 0; obj.mibView.handles.mibRoiShowCheck.Value = 1; end;
+    if currVal > 0; obj.mibView.handles.mibRoiShowCheck.Value = 1; end
     for i=1:number
         str2(i+1) = obj.mibModel.I{obj.mibModel.Id}.hROI.Data(indices(i)).label;
     end

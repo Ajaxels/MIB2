@@ -25,23 +25,41 @@ function mibSegmentationAnnotation(obj, y, x, z, t, modifier)
 % of the License, or (at your option) any later version.
 %
 % Updates
-%
+% 28.02.2018, IB, added compatibility with values
 
 % check for switch that disables segmentation tools
 if obj.mibModel.disableSegmentation == 1; return; end
 
 global mibPath;
 defaultAnnotationText = obj.mibModel.getImageProperty('defaultAnnotationText');
+defaultAnnotationValue = obj.mibModel.getImageProperty('defaultAnnotationValue');
 obj.mibModel.mibDoBackup('labels', 0);
 if isempty(modifier) || strcmp(modifier, 'shift')  % add annotation
-    labelText = mibInputDlg({mibPath}, 'Type a new annotation:', 'Add annotation', defaultAnnotationText);
-    if isempty(labelText); return; end
-    obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(labelText, [z, x, y, t]);
+    title = 'Add annotation';
+    if obj.mibModel.mibAnnValueEccentricCheck == 1
+        defAns = {defaultAnnotationValue, defaultAnnotationText};
+        prompts = {'Annotation value:'; 'Annotation text:'};
+    else
+        defAns = {defaultAnnotationText, defaultAnnotationValue};
+        prompts = {'Annotation text:'; 'Annotation value:'};
+    end
+    answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
+    if isempty(answer); return; end
+    if obj.mibModel.mibAnnValueEccentricCheck == 1
+        labelText = answer(2);
+        labelValue = str2double(answer{1});
+    else
+        labelText = answer(1);
+        labelValue = str2double(answer{2});
+    end
+    
+    obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(labelText, [z, x, y, t], labelValue);
     obj.mibModel.setImageProperty('defaultAnnotationText', labelText{1});
+    obj.mibModel.setImageProperty('defaultAnnotationValue', labelValue);
     obj.mibView.handles.mibShowAnnotationsCheck.Value = 1;
     obj.mibModel.mibShowAnnotationsCheck = 1;
 elseif strcmp(modifier, 'control')  % remove the closest to the mouse click annotation
-    [~, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.getSliceLabels();
+    [~, ~, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.getSliceLabels();
     if isempty(labelPositions); return; end
     orientation = obj.mibModel.getImageProperty('orientation');
     if orientation == 4   % xy

@@ -15,7 +15,10 @@ function index = getSelectedMaterialIndex(obj)
 if obj.modelType < 256
     index = obj.selectedMaterial - 2;
 else
-    index = str2double(obj.modelMaterialNames{obj.selectedMaterial - 2});
+    index = obj.selectedMaterial - 2;
+    if index > 0
+        index = str2double(obj.modelMaterialNames{obj.selectedMaterial - 2});
+    end
 end
 
 end

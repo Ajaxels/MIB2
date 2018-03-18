@@ -115,10 +115,10 @@
 %
 %%
 % 
-% * *Matlab isosurfaces*, MIB uses Matlab engine to generate isosurfaces
+% * *Matlab isosurface...*, MIB uses Matlab engine to generate isosurfaces
 % from the models and visualize those using a modification of the <http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m view3d> function 
 % written by Torsten Vogel. 
-% 
+%
 %%
 % 
 % <html>
@@ -158,6 +158,14 @@
 % </table>
 % </html>
 % 
+% * *Matlab isosurface and export to Imaris*, MIB uses Matlab engine to generate isosurfaces
+% from the models and export the resulting surfaces to Imaris for visualization. 
+%
+% <html>
+% A demonstration is available in the following video:<br>
+% <a href="https://youtu.be/nDpC8b8lqo4"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/nDpC8b8lqo4</a>
+% </html>
+%
 % * *Fiji volume...*, uses Fiji 3D viewer for visualization of the model as
 % a volume (<http://mib.helsinki.fi/tutorials/VisualizationOverview.html click here for details>. (requires Fiji to be installed,
 % <im_browser_system_requirements.html see here>).
