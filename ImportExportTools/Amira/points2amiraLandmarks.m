@@ -27,7 +27,7 @@ if ~isfield(options, 'format'); options.format = 'ascii'; end
 if options.overwrite == 0
     if exist(filename,'file') == 2
         button = questdlg(sprintf('The file already exist!!!\nOverwrite?'), 'Overwrite', 'Yes', 'No', 'No');
-        if ~strcmp(button, 'No'); return; end
+        if strcmp(button, 'No'); return; end
     end
 end
 

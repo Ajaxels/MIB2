@@ -18,7 +18,7 @@ function mibDoUndo(obj, newIndex)
 % Updates
 % 
 
-if nargin < 2; newIndex = NaN; end;
+if nargin < 2; newIndex = NaN; end
 if isnan(newIndex)  % result of Ctrl+Z combination
     newIndex = obj.mibModel.U.prevUndoIndex;
     newDataIndex = obj.mibModel.U.undoIndex;
@@ -98,6 +98,8 @@ else
         elseif strcmp(type, 'labels')
             [labels.labelText, labels.labelValues, labels.labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
             obj.mibModel.U.replaceItem(newDataIndex, type, {labels}, NaN, storeOptions);
+        elseif strcmp(type, 'lines3d')          
+            obj.mibModel.U.replaceItem(newDataIndex, type, {obj.mibModel.I{obj.mibModel.Id}.hLines3D}, NaN, storeOptions);
         elseif strcmp(type, 'measurements')
             obj.mibModel.U.replaceItem(newDataIndex, type, {obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data}, NaN, storeOptions);
         else
@@ -112,6 +114,7 @@ else
     end
 end
 obj.mibModel.U.undoIndex = newIndex;
+eventdata = ToggleEventData('');    % make empty event data for the notify function at the end
 
 setDataOptions = storeOptions;
 if storeOptions.switch3d     % 3D case
@@ -182,6 +185,9 @@ else        % 2D case
                 data = data{cellId};
                 obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(data.labelText, data.labelPosition, data.labelValues);
                 notify(obj.mibModel, 'updatedAnnotations');
+            case 'lines3d'
+                obj.mibModel.I{obj.mibModel.Id}.hLines3D = copy(data{cellId});
+                eventdata = ToggleEventData('lines3d');
             case 'measurements'
                 data = data{cellId};
                 obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data = data;
@@ -202,7 +208,7 @@ if ~strcmp(type, 'selection') && strcmp(type2, 'selection') && newIndex > newDat
 end
 
 % tweak to allow better Membrane Click Tracker work after Undo
-if size(obj.mibView.trackerYXZ, 2) == 2; obj.mibView.trackerYXZ = obj.mibView.trackerYXZ(:,1); end;
+if size(obj.mibView.trackerYXZ, 2) == 2; obj.mibView.trackerYXZ = obj.mibView.trackerYXZ(:,1); end
 
 % % update the annotation window
 % windowId = findall(0,'tag','ib_labelsGui');
@@ -222,6 +228,6 @@ if size(obj.mibView.trackerYXZ, 2) == 2; obj.mibView.trackerYXZ = obj.mibView.tr
 
 %sprintf('Undo: Index=%d, numel=%d, max=%d', obj.mibModel.U.undoIndex, numel(obj.mibModel.U.undoList), obj.mibModel.U.max_steps)
 obj.plotImage(0);
-notify(obj.mibModel, 'undoneBackup');
+notify(obj.mibModel, 'undoneBackup', eventdata);
 
 end

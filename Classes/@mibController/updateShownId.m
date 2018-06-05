@@ -23,5 +23,5 @@ function updateShownId(obj, Id)
 
 obj.mibModel.Id = Id;               % update Id
 notify(obj.mibModel, 'updateId');   % notify the controller about updated Id
-obj.plotImage(0);                    % plot image
+obj.plotImage(0);                   % plot image
 end

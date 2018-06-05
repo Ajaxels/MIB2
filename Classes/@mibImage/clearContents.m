@@ -36,6 +36,7 @@ obj.maskExist = 0;
 obj.hLabels = Labels();     % initialize labels class
 obj.hMeasure = mibMeasure(obj);     % initialize measure class
 obj.hROI = mibRoiRegion(obj);
+obj.hLines3D = Lines3D();     % initialize Lines3D class
 obj.blockModeSwitch = 0;
 obj.selectedMaterial = 1;   % index of the selected material in mibView.handles.mibSegmentationTable; 1-mask
 obj.selectedAddToMaterial = 1; % index of the selected material for the Add to in mibView.handles.mibSegmentationTable; 1-mask

@@ -12,8 +12,7 @@ function unFocus(hObject)
 % Updates
 % 
 
-
-set(hObject, 'Enable', 'off');
+hObject.Enable = 'off';
 drawnow;
-set(hObject, 'Enable', 'on');
+hObject.Enable = 'on';
 end

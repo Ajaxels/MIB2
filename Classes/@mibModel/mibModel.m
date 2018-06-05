@@ -42,6 +42,8 @@ classdef mibModel < handle
         % define whether or not dispay the model layer (used in obj.getRGBimage) a status of mibCpontroller.mibView.handles.mibModelShowCheck.Value 
         mibShowAnnotationsCheck
         % show or not the annotations
+        mibShowLines3DCheck
+        % show or not 3D lines
         mibSegmShowTypePopup
         % type of model visualization: @b 1 - filled; @b 2 - contour
         storedSelection
@@ -90,6 +92,8 @@ classdef mibModel < handle
         % meta data was has been updated, works via obj.getImageMethod
         updatedAnnotations
         % event that the annotation list has been updated for use with mibAnnotationsController
+        updatedLines3D
+        % event that the lines3D class was updated for use with mibLines3DController
         updateROI
         % event after change number of ROIs
         updateGuiWidgets

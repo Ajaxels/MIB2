@@ -88,6 +88,10 @@ classdef mibCropController  < handle
             [numberOfROI, indicesOfROI] = obj.mibModel.I{obj.mibModel.Id}.hROI.getNumberOfROI(0);     % get all ROI
             if numberOfROI == 0
                  obj.View.handles.roiRadio.Enable = 'off';
+                 if strcmp(obj.currentMode, 'roiRadio')     % disable roi mode when no roi
+                    obj.currentMode = 'manualRadio';
+                    obj.View.handles.manualRadio.Value = 1;
+                 end
             end
             obj.radio_Callback(obj.View.handles.(obj.currentMode));
             

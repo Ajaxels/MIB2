@@ -107,7 +107,8 @@
 % # Add path of Imaris installation to a system environment variable
 % *IMARISPATH*. _Start->Computer->right mouse click->Properties->Advanced
 % system settings->Environment Variables...->New..._. For example,
-% |IMARISPATH = c:\Tools\Science\Imaris\|
+% |IMARISPATH = c:\Tools\Science\Imaris\|. Also path to Imaris can be
+% specified from the MIB preferences: |Menu->File->Preferences->External dirs|
 % # Restart Matlab
 %
 % *Note:* it is recommended to put |ImarisLib.jar| to the static Java

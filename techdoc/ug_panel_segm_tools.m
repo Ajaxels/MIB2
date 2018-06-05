@@ -6,7 +6,7 @@
 % <ug_gui_panels.html *Panels*> |*-->*| <ug_panel_segm.html *Segmentation Panel*>
 %
 % 
-%% 1. The 3D ball
+%% The 3D ball
 %
 % <html>
 % <table style="width: 800px; border: 0px">
@@ -17,7 +17,11 @@
 % <td style="border: 0px">
 % Makes selection as a spherical object in the 3D space with a radius taken from the
 % <b>Radius, px</b> edit box. The <b>Eraser, x</b> edit box modifies
-% increse of the 3D ball eraser, when holding the Clrl key.
+% increse of the 3D ball eraser, when holding the Clrl key.<br>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=1s"><img
+% style="vertical-align:middle;" src="images\youtube2.png">
+% https://youtu.be/ZcJQb59YzUA?t=1s</a><br><br>
 % <br><br>
 % <b>Note!</b> The 3D shape of the ball is defined by the
 % pixel dimensions, see <em>Dataset Parameters</em> in <a href="ug_gui_menu_dataset.html">Menu->Dataset->Parameters</a>.
@@ -30,11 +34,120 @@
 % </td>
 % </tr>
 % </table>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/ZcJQb59YzUA?t=1s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=1s</a>
 % </html>
 %
-%% 2. Annotations
+%% The 3D lines
+%
+% <html>
+% A demonstration is available on youtube:<br>
+% <a href=""><img style="vertical-align:middle;" src="images\youtube2.png">
+% https://youtu.be/DNRUePJiCbE</a><br>
+% <table style="width: 800px; border: 0px">
+% <tr>
+% <td style="border: 0px">
+%   <img src = "images\PanelsSegmentationTools3DLines.png">
+% </td>
+% <td style="border: 0px">
+% The 3D lines tool can be used to draw lines in 3D and arrange them as
+% graphs or skeletons. The 3D lines composed of Nodes (Vertices) 
+% connected with Edges (a line that connect two nodes). Separated from each
+% other sets of 3D lines organized into separate trees. 
+% <br><br>
+% Modification of nodes is possible using mouse clicks. To increase
+% flexibility, the clicks can be extended with key-modifiers, such as
+% <em>Shift, Control, Alt</em>. Each action can be configured depending on
+% needs. Please refer to a table below for various options:
+% <br><br>
+% <b>Available actions</b>
+% <ul>
+% <li><b>Add node</b>, add a new node to the active tree; the new point will be connected to the active point (shown in red) of the tree</li>
+% <li><b>Assign active node</b>, assign the closest node to position of the mouse click, as a new active node</li>
+% <li><b>Connect to node</b>, connect active node to another existing node</li>
+% <li><b>Delete node</b>, delete the closest node to position of the mouse click; the edges will be rearranged to prevent splitting of the tree</li>
+% <li><b>Insert node after active</b>, insert a new node after the active node</li>
+% <li><b>Modify active node</b>, change position of the active node</li>
+% <li><b>New tree</b>, add a new node and assign it to a new tree, which is not connected to other trees</li>
+% <li><b>Split tree</b>, delete the closest node to position of the mouse click and split the tree at this point</li>
+% </ul>
+% Use the <b>Show lines</b> checkbox to toggle visibility of the lines in
+% the Image View panel.
+% <br>
+% Press the <b>Table view</b> button to start a window which tables that
+% describe the 3D lines (see below).
+% <br><br>
+% </td>
+% </tr>
+% </table>
+% <table style="width: 800px; border: 0px">
+% <tr>
+% <td style="border: 0px">
+%   <img src = "images\PanelsSegmentationTools3DLinesDlg.png">
+% <br><br>
+% <b>Tools panel</b><br>
+% <ul>
+% <li><b>Load</b>, load 3D lines from a file in matlab-compatible lines3d format</li>
+% <li><b>Save</b>, export to Matlab or save 3D lines to a file:
+%   <ul>
+%   <li><b>Matlab format, *.lines3d</b>, it is recommended to save the 3D lines in the matlab format!</li>
+%   <li><b>Amira Spatial graph, *.am</b>, Amira-compatible format in binary or ascii form</li>
+%   <li><b>Excel format, *.xls</b>, export Nodes and Edges tables to an Excel file</li>
+%   </ul>
+% </li>
+% <li><b>Refresh</b>, refresh the tables shown in this window</li>
+% <li><b>Delete all</b>, delete all 3D lines</li>
+% <li><b>Visualize in 3D</b>, plot all trees in the 3D space</li>
+% <li><b>Settings</b>, modify color and thickness of 3D lines</li>
+% </ul>
+% </td>
+% <td style="border: 0px">
+% <b>Table with the list of trees</b><br>
+% The upper table shows the list of trees and number of nodes that compose
+% each tree. <b><em>Each tree should have an unique name!</b></em><br><br>
+% Right mouse click starts a popup menu with various options:
+% <ul>
+% <li><b>Rename selected tree...</b>, rename selected in the table tree; tree name should be unique!</li>
+% <li><b>Find tree by node...</b>, find a tree which has a node with provided index</li>
+% <li><b>Visualize in 3D selected tree(s)</b>, plot the selected trees in 3D</li>
+% <li><b>Save/export selected tree(s)</b>, export to Matlab or save to a file the selected trees, see the Tools panel below for the list of available file formats</li>
+% <li><b>Delete selected tree(s)</b>, delete selected tree from the table</li>
+% </ul>
+% <br><br>
+% <b>Space between the tables</b><br>
+% <ul>
+% <li><b>Active tree</b>, an index of the active tree</li>
+% <li><b>Active node</b>, an index of the active node</li>
+% <li><b>Table</b>, a combo box to select what should be shown in the lower table: Nodes or Edges</li>
+% <li><b>Field</b>, a combo box to define an additional field that should be shown the lower table. By default, only the Radius and Weights fields are available</li>
+% <li><b>Auto jump</b>, when selected, auto jump to the selected node</li>
+% <li><b>Auto refresh</b>, automatically refresh the tables, may be quite slow with many nodes</li>
+% </ul>
+% <br>
+% <b>Nodes table</b><br>
+% The table shows list of nodes and offers multiple actions via a popup
+% menu:
+% <ul>
+% <li><b>Jump to the node</b>, jumps to the selected node and put it in the center of the Image View panel</li>
+% <li><b>Set as active node</b>, makes the selected node active</li>
+% <li><b>Rename selected nodes...</b>, assign a new name for the selected nodes</li>
+% <li><b>Show coordinates in pixels...</b>, by default, the coordinates of the nodes are shown in the physical units of the dataset, <em>i.e.</em> with respect to <a href="ug_gui_menu_dataset.html#8">the bounding box</a>; this action shows coordinate of the node in pixels</li>
+% <li><b>New annotations from nodes</b>, generate a new annotations from the position of nodes</li>
+% <li><b>Add nodes to annotations</b>, add selected nodes to the existing annotations</li>
+% <li><b>Delete nodes from annotations</b>, delete selected nodes from the existing annotations</li>
+% <li><b>Delete nodes...</b>, delete selected nodes</li>
+% </ul>
+% <br>
+% <b>Edges table</b><br>
+% The table shows list of edges; certain actions available via a popup menu:
+% <ul>
+% <li><b>Jump to the node</b>, jumps to the selected node and put it in the center of the Image View panel</li>
+% <li><b>Set as active node</b>, makes the selected node active</li>
+% </ul>
+% </td>
+% </tr>
+% </table>
+% </html>
+%
+%% Annotations
 %
 % <html>
 % A brief demonstration is available in the following videos:<br>
@@ -110,7 +223,7 @@
 % </table>
 % </html>
 % 
-%% 3. The Brush tool 
+%% The Brush tool 
 %
 % <html>
 % <table style="width: 800px; border: 0px">
@@ -207,7 +320,7 @@
 % <im_browser_system_requirements.html
 % Microscopy Image Browser System Requirements> section for details.
 %
-%% 4. The Black and White Thresholding tool 
+%% The Black and White Thresholding tool 
 %
 %
 % <html>
@@ -238,7 +351,7 @@
 % <a href="https://youtu.be/ZcJQb59YzUA?t=4m37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m37s</a>
 % </html>
 %
-%% 5. The Lasso tool
+%% The Lasso tool
 %
 % <html>
 % <table style="width: 800px; border: 0px">
@@ -270,7 +383,7 @@
 % 
 % The Lasso tool works also in 3D.
 %
-%% 6. The Magic Wand+Region Growing tool
+%% The Magic Wand+Region Growing tool
 % Selection of pixels with the _mouse button_ based on their
 % intensities. The intensity variation is calculated from the intensity of the 
 % selected pixel and two threshold values from the |Variation| edit boxes.
@@ -303,7 +416,7 @@
 % * *Shift + left mouse click*, will add new selection to the existing one.
 % * *Ctrl + left mouse click*, will remove new selection from the current.
 %
-%% 7. The Membrane Click Tracker tool
+%% The Membrane Click Tracker tool
 % This tool tracks membrane-type objects by using 2 mouse clicks that define start and end point of the membrane domain. 
 %
 % <html>
@@ -349,7 +462,7 @@
 % usefull for tracing microtubules).
 %
 %
-%% 8. Object Picker
+%% Object Picker
 %
 % This mode allows fast selection of objects from the |Mask| or |Model|
 % layers. When the |Mask| and |Model| radio buttons define the target layer
@@ -423,7 +536,7 @@
 % * *Ctrl + left mouse click*, will remove selection from the current.
 %
 %
-%% 9. The Spot tool 
+%% The Spot tool 
 %
 % <html>
 % <table style="width: 800px; border: 0px">

@@ -3,7 +3,7 @@ classdef mibAlignmentController < handle
     % controller class for alignment of datasets
     
     % Copyright (C) 25.01.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+    % part of Microscopy Image Browser, http:\\mib.helsinki.fi
     % This program is free software; you can redistribute it and/or
     % modify it under the terms of the GNU General Public License
     % as published by the Free Software Foundation; either version 2
@@ -18,7 +18,7 @@ classdef mibAlignmentController < handle
         % a cell array with handles to listeners
         files
         % files structure from the getImageMetadata
-        maskOrSelection   
+        maskOrSelection
         % variable to keep information about type of layer used for alignment
         meta
         % meta containers.Map from the getImageMetadata
@@ -30,7 +30,7 @@ classdef mibAlignmentController < handle
         % vector with X-shifts
         shiftsY
         % vector with Y-shifts
-        varname  
+        varname
         % variable for import
         
     end
@@ -94,7 +94,7 @@ classdef mibAlignmentController < handle
             obj.View = mibChildView(obj, guiName); % initialize the view
             
             obj.varname = 'I';  % variable for import
-			
+            
             obj.updateWidgets();
         end
         
@@ -163,10 +163,10 @@ classdef mibAlignmentController < handle
         
         function selectButton_Callback(obj)
             % function selectButton_Callback(obj)
-            % --- Executes on button press in selectButton.    
+            % --- Executes on button press in selectButton.
             
             startingPath = obj.View.handles.pathEdit.String;
-
+            
             if obj.View.handles.dirRadio.Value
                 newValue = uigetdir(startingPath, 'Select directory...');
                 if newValue == 0; return; end;
@@ -254,7 +254,7 @@ classdef mibAlignmentController < handle
         function radioButton_Callback(obj)
             % function radioButton_Callback(obj)
             % callback for selection of radio buttons:
-            % obj.View.handles.dirRadio; .fileRadio; .importRadio in the Second stack panel 
+            % obj.View.handles.dirRadio; .fileRadio; .importRadio in the Second stack panel
             if obj.View.handles.dirRadio.Value
                 obj.View.handles.pathEdit.String = obj.pathstr;
                 obj.View.handles.imageInfoEdit.Enable = 'off';
@@ -354,12 +354,11 @@ classdef mibAlignmentController < handle
             % --- Executes on button press in continueBtn and does alignment
             global mibPath;
             
-            tic
             parameters.waitbar = waitbar(0, 'Please wait...', 'Name', 'Alignment and drift correction');
             
             %handles.output = get(hObject,'String');
             pathIn = obj.View.handles.pathEdit.String;
-            colorCh = obj.View.handles.colChPopup.Value;
+            parameters.colorCh = obj.View.handles.colChPopup.Value;
             
             % get color to fill background
             if obj.View.handles.bgWhiteRadio.Value
@@ -380,12 +379,17 @@ classdef mibAlignmentController < handle
             
             algorithmText = obj.View.handles.methodPopup.String;
             parameters.method = algorithmText{obj.View.handles.methodPopup.Value};
+            parameters.TransformationType = obj.View.handles.transformationTypePopup.String{obj.View.handles.transformationTypePopup.Value};
+            if strcmp(parameters.TransformationType, 'piecewise linear'); parameters.TransformationType = 'pwl'; end
+            parameters.TransformationType(parameters.TransformationType == ' ') = '';   % remove spaces
+            parameters.TransformationMode = obj.View.handles.transformationModePopup.String{obj.View.handles.transformationModePopup.Value};
+            parameters.transformationDegree = obj.View.handles.transformationDegreePopup.Value + 1;
             
             [Height, Width, Color, Depth, Time] = obj.mibModel.getImageMethod('getDatasetDimensions');
-            
             optionsGetData.blockModeSwitch = 0;
             if obj.View.handles.singleStacksModeRadio.Value   % align the currently opened dataset
                 if strcmp(parameters.method, 'Single landmark point')
+                    tic
                     obj.shiftsX = zeros(1, Depth);
                     obj.shiftsY = zeros(1, Depth);
                     
@@ -424,7 +428,7 @@ classdef mibAlignmentController < handle
                     ylabel('Displacement');
                     title('Detected drifts');
                     
-                    if ~isdeployed 
+                    if ~isdeployed
                         assignin('base', 'shiftX', obj.shiftsX);
                         assignin('base', 'shiftY', obj.shiftsY);
                         fprintf('Shifts between images were exported to the Matlab workspace (shiftX, shiftY)\nThese variables can be modified and saved to a disk using the following command:\nsave ''myfile.mat'' shiftX shiftY;\n');
@@ -443,6 +447,7 @@ classdef mibAlignmentController < handle
                     img = mibCrossShiftStack(cell2mat(obj.mibModel.getData4D('image', NaN, 0, optionsGetData)), obj.shiftsX, obj.shiftsY, parameters);
                     obj.mibModel.setData4D('image', img, NaN, 0, optionsGetData);
                 elseif strcmp(parameters.method, 'Three landmark points')
+                    tic
                     obj.shiftsX = zeros(1, Depth);
                     obj.shiftsY = zeros(1, Depth);
                     
@@ -478,7 +483,7 @@ classdef mibAlignmentController < handle
                                 elseif strcmp(parameters.backgroundColor,'white')
                                     backgroundColor = intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1}));
                                 else
-                                    backgroundColor = mean(mean(cell2mat(obj.mibModel.getData2D('image', layer, NaN, colorCh, optionsGetData))));
+                                    backgroundColor = mean(mean(cell2mat(obj.mibModel.getData2D('image', layer, NaN, parameters.colorCh, optionsGetData))));
                                 end
                             end
                             
@@ -507,21 +512,21 @@ classdef mibAlignmentController < handle
                             end
                             
                             
-%                                             tform2 = fitgeotrans(output, input, 'affine');
-%                                             %tform2 = fitgeotrans(output, input, 'NonreflectiveSimilarity');
-%                             
-%                                             [T, RB] = imwarp(handles.I.img(:,:,:,layer+1:end), tform2, 'bicubic', 'FillValues', backgroundColor);
-%                                             if RB.XWorldLimits(1) <  1
-%                                                 obj.shiftsX = floor(RB.XWorldLimits(1));
-%                                             else
-%                                                 obj.shiftsX = ceil(RB.XWorldLimits(1));
-%                                             end
-%                                             if RB.YWorldLimits(1) < 1
-%                                                 obj.shiftsY = floor(RB.YWorldLimits(1))-1;
-%                                             else
-%                                                 obj.shiftsY = ceil(RB.YWorldLimits(1))-1;
-%                                             end
-                            %                                                                                                                                                                 
+                            %                                             tform2 = fitgeotrans(output, input, 'affine');
+                            %                                             %tform2 = fitgeotrans(output, input, 'NonreflectiveSimilarity');
+                            %
+                            %                                             [T, RB] = imwarp(handles.I.img(:,:,:,layer+1:end), tform2, 'bicubic', 'FillValues', backgroundColor);
+                            %                                             if RB.XWorldLimits(1) <  1
+                            %                                                 obj.shiftsX = floor(RB.XWorldLimits(1));
+                            %                                             else
+                            %                                                 obj.shiftsX = ceil(RB.XWorldLimits(1));
+                            %                                             end
+                            %                                             if RB.YWorldLimits(1) < 1
+                            %                                                 obj.shiftsY = floor(RB.YWorldLimits(1))-1;
+                            %                                             else
+                            %                                                 obj.shiftsY = ceil(RB.YWorldLimits(1))-1;
+                            %                                             end
+                            %
                             
                             [img, bbShiftXY] = mibCrossShiftStacks(cell2mat(obj.mibModel.getData4D('image', NaN, 0, optionsGetData2)), T, obj.shiftsX, obj.shiftsY, parameters);
                             if isempty(img);   return; end
@@ -534,94 +539,16 @@ classdef mibAlignmentController < handle
                         end
                         layer = layer + 1;
                     end
-                elseif strcmp(parameters.method, 'imwarp test')
-                    % test function to improve alignment using 3+ points
-                    % for multiple slices. 
+                elseif strcmp(parameters.method, 'Landmarks, multi points')
+                    % function to improve alignment using 3+ points
+                    % for multiple slices.
                     % Limited to the same image size as the first image and
                     % 63 materials only
-                    
-                    obj.shiftsX = zeros(1, Depth);
-                    obj.shiftsY = zeros(1, Depth);
-                    
-                    tformMatrix = cell([Depth,1]);
-                    iMatrix = cell([Depth,1]);
-                    rbMatrix = cell([Depth,1]);
-                    for layer = 2:Depth
-                        currImg = cell2mat(obj.mibModel.getData2D('selection', layer-1, NaN, NaN, optionsGetData));
-                        if sum(sum(currImg)) > 0   % landmark is found
-                            CC1 = bwconncomp(currImg);
-                            
-                            if CC1.NumObjects < 3; continue; end  % require 3 points
-                            CC2 = bwconncomp(cell2mat(obj.mibModel.getData2D('selection', layer, NaN, NaN, optionsGetData)));
-                            if CC2.NumObjects < 3; continue; end  % require 3 points
-                            
-                            STATS1 = regionprops(CC1, 'Centroid');
-                            STATS2 = regionprops(CC2, 'Centroid');
-                            
-                            % find distances between centroids of material 1 and material 2
-                            X1 =  reshape([STATS1.Centroid], [2 numel(STATS1)])';     % centroids matrix, c1([x,y], pointNumber)
-                            X2 =  reshape([STATS2.Centroid], [2 numel(STATS1)])';
-                            
-                            if ~isempty(tformMatrix{layer-1})
-                                [X1(:,1), X1(:,2)] = transformPointsForward(tformMatrix{layer-1}, X1(:,1), X1(:,2)); 
-                                [X2(:,1), X2(:,2)] = transformPointsForward(tformMatrix{layer-1}, X2(:,1), X2(:,2)); 
-                            end
-                            
-                            idx = mibAlignmentController.findMatchingPairs(X2, X1);
-                            
-                            output = reshape([STATS1.Centroid], [2 numel(STATS1)])';     % main dataset points, centroids matrix, c1(pointNumber, [x,y])
-                            for objId = 1:numel(STATS2)
-                                input(objId, :) = STATS2(idx(objId)).Centroid; % the second dataset points, centroids matrix, c1(pointNumber, [x,y])
-                            end
-                            
-                            % define background color
-                            if isnumeric(parameters.backgroundColor)
-                                backgroundColor = options.backgroundColor;
-                            else
-                                if strcmp(parameters.backgroundColor,'black')
-                                    backgroundColor = 0;
-                                elseif strcmp(parameters.backgroundColor,'white')
-                                    backgroundColor = intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1}));
-                                else
-                                    backgroundColor = mean(mean(cell2mat(obj.mibModel.getData2D('image', layer-1, NaN, colorCh, optionsGetData))));
-                                end
-                            end
-                            
-                            tform2 = fitgeotrans(input, output, 'affine');
-                            if isempty(tformMatrix{layer})
-                                tformMatrix(layer:end) = {tform2};
-                                refImgSize = imref2d([Height, Width]);
-                            else
-                                tform2.T = tform2.T*tformMatrix{layer}.T;
-                                tformMatrix(layer:end) = {tform2};
-                                %[y, x] = outputLimits(tform2, [1 Height], [1 Width])
-                            end
-                        end
-                    end
-                    
-                    for layer=2:Depth
-                        if ~isempty(tformMatrix{layer})
-                            I = cell2mat(obj.mibModel.getData2D('image', layer, NaN, colorCh, optionsGetData));
-                            try
-                                [iMatrix{layer}, rbMatrix{layer}] = imwarp(I, tformMatrix{layer}, 'cubic', 'OutputView', refImgSize, 'FillValues', double(backgroundColor));
-                            catch err
-                                0
-                            end
-                            obj.mibModel.setData2D('image', iMatrix{layer}, layer, NaN, colorCh, optionsGetData)
-                            %                             A = imread('pout.tif');
-                            %                             Rin = imref2d(size(A))
-                            %                             Rin.XWorldLimits = Rin.XWorldLimits-mean(Rin.XWorldLimits);
-                            %                             Rin.YWorldLimits = Rin.YWorldLimits-mean(Rin.YWorldLimits);
-                            %                             out = imwarp(A,Rin,tform);
-                            
-                            I = cell2mat(obj.mibModel.getData2D('everything', layer, NaN, NaN, optionsGetData));
-                            I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
-                            obj.mibModel.setData2D('everything', I, layer, NaN, NaN, optionsGetData)
-                         end
-                    end
+                    obj.LandmarkMultiPointAlignment(parameters);
+                    return;
                 else        % standard alignement
                     %parameters.step = str2double(obj.View.handles.stepEditbox,'string'));
-                    
+                    tic
                     % calculate shifts
                     if isempty(obj.shiftsX)
                         if obj.View.handles.subWindowCheck.Value == 1
@@ -631,14 +558,14 @@ classdef mibAlignmentController < handle
                             optionsGetData.y(2) = str2double(obj.View.handles.searchYmaxEdit.String);
                             optionsGetData.z(1) = 1;
                             optionsGetData.z(2) = Depth;
-                            I = squeeze(cell2mat(obj.mibModel.getData4D('image', NaN, colorCh, optionsGetData)));
+                            I = squeeze(cell2mat(obj.mibModel.getData4D('image', NaN, parameters.colorCh, optionsGetData)));
                             optionsGetData = rmfield(optionsGetData, 'x');
                             optionsGetData = rmfield(optionsGetData, 'y');
                             optionsGetData = rmfield(optionsGetData, 'z');
-                            %I = squeeze(handles.I.img(y1:y2, x1:x2, colorCh, :, handles.I.slices{5}(1)));
+                            %I = squeeze(handles.I.img(y1:y2, x1:x2, parameters.colorCh, :, handles.I.slices{5}(1)));
                         else
-                            %I = squeeze(handles.I.img(:, :, colorCh, :, handles.I.slices{5}(1)));
-                            I = squeeze(cell2mat(obj.mibModel.getData4D('image', NaN, colorCh, optionsGetData)));
+                            %I = squeeze(handles.I.img(:, :, parameters.colorCh, :, handles.I.slices{5}(1)));
+                            I = squeeze(cell2mat(obj.mibModel.getData4D('image', NaN, parameters.colorCh, optionsGetData)));
                         end
                         
                         if obj.View.handles.maskCheck.Value == 1
@@ -674,7 +601,7 @@ classdef mibAlignmentController < handle
                         end
                         
                         if obj.View.handles.gradientCheckBox.Value
-                            waitbar(0, parameters.waitbar, sprintf('Calculating intensity gradient for color channel %d ...', colorCh));
+                            waitbar(0, parameters.waitbar, sprintf('Calculating intensity gradient for color channel %d ...', parameters.colorCh));
                             
                             img = zeros(size(I), class(I));
                             % generate gradient image
@@ -989,17 +916,17 @@ classdef mibAlignmentController < handle
                 if obj.View.handles.dirRadio.Value
                     % loading the datasets
                     [img,  img_info] = mibGetImages(obj.files, obj.meta);
-                    waitbar(0, parameters.waitbar, sprintf('Aligning stacks using color channel %d ...', colorCh));
+                    waitbar(0, parameters.waitbar, sprintf('Aligning stacks using color channel %d ...', parameters.colorCh));
                 elseif obj.View.handles.fileRadio.Value
                     [img,  img_info] = mibGetImages(obj.files, obj.meta);
-                    waitbar(0, parameters.waitbar, sprintf('Aligning stacks using color channel %d ...', colorCh));
+                    waitbar(0, parameters.waitbar, sprintf('Aligning stacks using color channel %d ...', parameters.colorCh));
                 elseif obj.View.handles.importRadio.Value
-                    waitbar(0, parameters.waitbar, sprintf('Aligning stacks using color channel %d ...', colorCh));
+                    waitbar(0, parameters.waitbar, sprintf('Aligning stacks using color channel %d ...', parameters.colorCh));
                     imgInfoVar = obj.View.handles.imageInfoEdit.String;
                     img = evalin('base', pathIn);
                     if numel(size(img)) == 3 && size(img,3) > 3    % reshape original dataset to w:h:color:z
                         img = reshape(img, size(img,1), size(img,2), 1, size(img,3));
-                    end;
+                    end
                     if ~isempty(imgInfoVar)
                         img_info = evalin('base', imgInfoVar);
                     else
@@ -1015,11 +942,11 @@ classdef mibAlignmentController < handle
                     h1 = max([size(obj.mibModel.I{obj.mibModel.Id}.img{1}, 1) size(img, 1)]);
                     
                     I = zeros([h1, w1, 2], class(obj.mibModel.I{obj.mibModel.Id}.img{1})) + ...
-                        mean(mean(obj.mibModel.I{obj.mibModel.Id}.img{1}(:, :, colorCh, end, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1))));
+                        mean(mean(obj.mibModel.I{obj.mibModel.Id}.img{1}(:, :, parameters.colorCh, end, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1))));
                     I(1:obj.mibModel.I{obj.mibModel.Id}.height, 1:obj.mibModel.I{obj.mibModel.Id}.width, 1) = ...
-                        obj.mibModel.I{obj.mibModel.Id}.img{1}(:, :, colorCh, end, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1));
+                        obj.mibModel.I{obj.mibModel.Id}.img{1}(:, :, parameters.colorCh, end, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1));
                     I(1:size(img, 1), 1:size(img, 2), 2) = ...
-                        img(:, :, colorCh, 1, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1));
+                        img(:, :, parameters.colorCh, 1, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1));
                     
                     if obj.View.handles.gradientCheckBox.Value
                         % generate gradient image
@@ -1126,8 +1053,352 @@ classdef mibAlignmentController < handle
             toc;
             notify(obj.mibModel, 'newDataset');
             notify(obj.mibModel, 'plotImage');
-
+            
             obj.closeWindow();
         end
+        
+        
+        function LandmarkMultiPointAlignment(obj, parameters)
+            % function LandmarkMultiPointAlignment(obj, parameters)
+            % perform alignment using multiple landmark points
+            
+            [Height, Width, Color, Depth, Time] = obj.mibModel.getImageMethod('getDatasetDimensions');
+            optionsGetData.blockModeSwitch = 0;
+            
+            if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber > 5
+                button = questdlg(sprintf('Have the corresponding points were labeled using Annotations or using brush and the selection layer?'), ...
+                    'Annotations or Selection?', 'Annotations', 'Selection', 'Cancel', 'Annotations');
+                switch button
+                    case 'Annotations'
+                        parameters.useAnnotations = 1;
+                    case 'Selection'
+                        parameters.useAnnotations = 0;
+                    case 'Cancel'
+                        delete(parameters.waitbar);
+                        return;
+                end
+            end
+            tic
+            
+            % define minimal number of required landmarks
+            switch parameters.TransformationType
+                case 'nonreflectivesimilarity'
+                    minLandmarks = 2;
+                case {'similarity', 'affine'}
+                    minLandmarks = 3;
+                case {'projective', 'pwl'}
+                    minLandmarks = 4;
+                case {'polynomial', 'lwm'}
+                    minLandmarks = 6;
+            end
+            
+            obj.shiftsX = zeros(1, Depth);
+            obj.shiftsY = zeros(1, Depth);
+            
+            % allocate space
+            tformMatrix = cell([Depth,1]);  % for transformation matrix, https://se.mathworks.com/help/images/matrix-representation-of-geometric-transformations.html
+            iMatrix = cell([Depth,1]);      % cell array with transformed images
+            rbMatrix = cell([Depth,1]);     % cell array with spatial referencing information associated with the transformed images
+            
+            % define background color
+            if isnumeric(parameters.backgroundColor)
+                backgroundColor = options.backgroundColor;
+            else
+                if strcmp(parameters.backgroundColor,'black')
+                    backgroundColor = 0;
+                elseif strcmp(parameters.backgroundColor,'white')
+                    backgroundColor = intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1}));
+                else
+                    backgroundColor = mean(mean(cell2mat(obj.mibModel.getData2D('image', 1, NaN, parameters.colorCh, optionsGetData))));
+                end
+            end
+            
+            for layer = 2:Depth
+                outputPnts = [];
+                if parameters.useAnnotations
+                    [labelsList, ~, X1] = obj.mibModel.I{obj.mibModel.Id}.getSliceLabels(layer-1);
+                    if ~isempty(labelsList)
+                        if numel(labelsList) < minLandmarks; continue; end
+                        [labelsList2, ~, X2] = obj.mibModel.I{obj.mibModel.Id}.getSliceLabels(layer);
+                        if numel(labelsList2) < minLandmarks; continue; end
+                        outputPnts = X1(:,2:3);     % x,y
+                        X2 = X2(:,2:3);     % x,y
+                        inputPnts = zeros(size(outputPnts));
+                        for labelId = 1:numel(labelsList)
+                            idx = find(ismember(labelsList2, labelsList{labelId})==1);
+                            inputPnts(labelId, :) = X2(idx, :); %#ok<FNDSB>
+                        end
+                    end
+                else
+                    currImg = cell2mat(obj.mibModel.getData2D('selection', layer-1, NaN, NaN, optionsGetData));
+                    if sum(sum(currImg)) > 0   % landmark is found
+                        CC1 = bwconncomp(currImg);
+                        
+                        if CC1.NumObjects < minLandmarks; continue; end  % require minLandmarks points
+                        CC2 = bwconncomp(cell2mat(obj.mibModel.getData2D('selection', layer, NaN, NaN, optionsGetData)));
+                        if CC2.NumObjects < minLandmarks; continue; end  % require minLandmarks points
+                        
+                        STATS1 = regionprops(CC1, 'Centroid');
+                        STATS2 = regionprops(CC2, 'Centroid');
+                        
+                        % find distances between centroids of material 1 and material 2
+                        X1 =  reshape([STATS1.Centroid], [2 numel(STATS1)])';     % centroids matrix, c1([x,y], pointNumber)
+                        X2 =  reshape([STATS2.Centroid], [2 numel(STATS1)])';
+                        
+                        if ~isempty(tformMatrix{layer-1})
+                            [X1(:,1), X1(:,2)] = transformPointsForward(tformMatrix{layer-1}, X1(:,1), X1(:,2));
+                            [X2(:,1), X2(:,2)] = transformPointsForward(tformMatrix{layer-1}, X2(:,1), X2(:,2));
+                        end
+                        
+                        idx = mibAlignmentController.findMatchingPairs(X2, X1);     % indices of X2 matching X1
+                        outputPnts = reshape([STATS1.Centroid], [2 numel(STATS1)])';     % main dataset points, centroids matrix, c1(pointNumber, [x,y])
+                        inputPnts = zeros(size(outputPnts));
+                        
+                        for objId = 1:numel(STATS2)
+                            inputPnts(objId, :) = STATS2(idx(objId)).Centroid; % the second dataset points, centroids matrix, c1(pointNumber, [x,y])
+                        end
+                    end
+                end
+                
+                if isempty(outputPnts) && isempty(tformMatrix{layer}); continue; end    % skip begining of the dataset
+                
+                % https://se.mathworks.com/help/images/matrix-representation-of-geometric-transformations.html
+                if isempty(tformMatrix{layer})
+                    if ~strcmp(parameters.TransformationType, 'polynomial')
+                        tform2 = fitgeotrans(inputPnts, outputPnts, parameters.TransformationType);
+                    else
+                        tform2 = fitgeotrans(inputPnts, outputPnts, parameters.TransformationType, parameters.transformationDegree);
+                    end
+                    
+                    tformMatrix(layer:end) = {tform2};
+                    refImgSize = imref2d([Height, Width]);
+                elseif ~isempty(outputPnts)
+                    if ~strcmp(parameters.TransformationType, 'polynomial')
+                        tform2 = fitgeotrans(inputPnts, outputPnts, parameters.TransformationType);
+                    else
+                        tform2 = fitgeotrans(inputPnts, outputPnts, parameters.TransformationType, parameters.transformationDegree);
+                    end
+                    %tform3 = cp2tform(inputPnts, outputPnts, parameters.TransformationType);
+                    tform2.T = tform2.T*tformMatrix{layer}.T;
+                    tformMatrix(layer:end) = {tform2};
+                    %[y, x] = outputLimits(tform2, [1 Height], [1 Width])
+                end
+                
+                waitbar(layer/Depth, parameters.waitbar, sprintf('Step 1: Extracting landmarks\nPlease wait...'));
+            end
+            
+            if strcmp(parameters.TransformationMode, 'cropped') == 1    % the cropped view, faster and take less memory
+                for layer=2:Depth
+                    if ~isempty(tformMatrix{layer})
+                        I = cell2mat(obj.mibModel.getData2D('image', layer, NaN, parameters.colorCh, optionsGetData));
+                        [iMatrix{layer}, rbMatrix{layer}] = imwarp(I, tformMatrix{layer}, 'cubic', 'OutputView', refImgSize, 'FillValues', double(backgroundColor));
+                        
+                        obj.mibModel.setData2D('image', iMatrix{layer}, layer, NaN, parameters.colorCh, optionsGetData);
+                        %                             A = imread('pout.tif');
+                        %                             Rin = imref2d(size(A))
+                        %                             Rin.XWorldLimits = Rin.XWorldLimits-mean(Rin.XWorldLimits);
+                        %                             Rin.YWorldLimits = Rin.YWorldLimits-mean(Rin.YWorldLimits);
+                        %                             out = imwarp(A,Rin,tform);
+                        
+                        if obj.mibModel.I{obj.mibModel.Id}.modelType == 63
+                            I = cell2mat(obj.mibModel.getData2D('everything', layer, NaN, NaN, optionsGetData));
+                            I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
+                            obj.mibModel.setData2D('everything', I, layer, NaN, NaN, optionsGetData);
+                        else
+                            if obj.mibModel.getImageProperty('modelExist')
+                                I = cell2mat(obj.mibModel.getData2D('model', layer, NaN, NaN, optionsGetData));
+                                I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
+                                obj.mibModel.setData2D('model', I, layer, NaN, NaN, optionsGetData);
+                            end
+                            if obj.mibModel.getImageProperty('maskExist')
+                                I = cell2mat(obj.mibModel.getData2D('mask', layer, NaN, NaN, optionsGetData));
+                                I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
+                                obj.mibModel.setData2D('mask', I, layer, NaN, NaN, optionsGetData);
+                            end
+                            if  ~isnan(obj.mibModel.I{obj.mibModel.Id}.selection{1}(1))
+                                I = cell2mat(obj.mibModel.getData2D('selection', layer, NaN, NaN, optionsGetData));
+                                I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
+                                obj.mibModel.setData2D('selection', I, layer, NaN, NaN, optionsGetData);
+                            end
+                        end
+                        
+                        % transform annotations
+                        [labelsList, labelValues, labelPositions, indices] = obj.mibModel.I{obj.mibModel.Id}.getSliceLabels(layer);
+                        if ~isempty(labelsList)
+                            [labelPositions(:,2), labelPositions(:,3)] = transformPointsForward(tformMatrix{layer}, labelPositions(:,2), labelPositions(:,3));
+                            obj.mibModel.I{obj.mibModel.Id}.hLabels.updateLabels(indices, labelsList, labelPositions, labelValues);
+                        end
+                    end
+                    waitbar(layer/Depth, parameters.waitbar, sprintf('Step 2: Align datasets\nPlease wait...'));
+                end
+            else  % the extended view
+                iMatrix = cell([numel(Depth), 1]);
+                rbMatrix(1:Depth) = {refImgSize};
+                
+                for layer=1:Depth
+                    if ~isempty(tformMatrix{layer})
+                        I = cell2mat(obj.mibModel.getData2D('image', layer, NaN, parameters.colorCh, optionsGetData));
+                        [iMatrix{layer}, rbMatrix{layer}] = imwarp(I, tformMatrix{layer}, 'cubic', 'FillValues', double(backgroundColor));
+                        
+                        %I = cell2mat(obj.mibModel.getData2D('everything', layer, NaN, NaN, optionsGetData));
+                        %I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
+                        %obj.mibModel.setData2D('everything', I, layer, NaN, NaN, optionsGetData);
+                    else
+                        iMatrix{layer} = cell2mat(obj.mibModel.getData2D('image', layer, NaN, parameters.colorCh, optionsGetData));
+                    end
+                    waitbar(layer/Depth, parameters.waitbar, sprintf('Step 2: Transforming images\nPlease wait...'));
+                end
+                
+                xmin = zeros([numel(rbMatrix), 1]);
+                xmax = zeros([numel(rbMatrix), 1]);
+                ymin = zeros([numel(rbMatrix), 1]);
+                ymax = zeros([numel(rbMatrix), 1]);
+                % calculate shifts
+                for layer=1:numel(rbMatrix)
+                    xmin(layer) = floor(rbMatrix{layer}.XWorldLimits(1));
+                    xmax(layer) = floor(rbMatrix{layer}.XWorldLimits(2));
+                    ymin(layer) = floor(rbMatrix{layer}.YWorldLimits(1));
+                    ymax(layer) = floor(rbMatrix{layer}.YWorldLimits(2));
+                end
+                dx = min(xmin);
+                dy = min(ymin);
+                nWidth = max(xmax)-min(xmin);
+                nHeight = max(ymax)-min(ymin);
+                Iout = zeros([nHeight, nWidth, 1, numel(rbMatrix)], class(I)) + backgroundColor;
+                for layer=1:numel(rbMatrix)
+                    x1 = xmin(layer)-dx+1;
+                    x2 = x1 + rbMatrix{layer}.ImageSize(2)-1;
+                    y1 = ymin(layer)-dy+1;
+                    y2 = y1 + rbMatrix{layer}.ImageSize(1)-1;
+                    Iout(y1:y2,x1:x2,:,layer) = iMatrix{layer};
+                    
+                    % transform annotations
+                    [labelsList, labelValues, labelPositions, indices] = obj.mibModel.I{obj.mibModel.Id}.getSliceLabels(layer);
+                    if ~isempty(labelsList)
+                        if ~isempty(tformMatrix{layer})
+                            [labelPositions(:,2), labelPositions(:,3)] = transformPointsForward(tformMatrix{layer}, labelPositions(:,2), labelPositions(:,3));
+                            labelPositions(:,2) = labelPositions(:,2) - dx - 1;
+                            labelPositions(:,3) = labelPositions(:,3) - dy - 1;
+                        else
+                            labelPositions(:,2) = labelPositions(:,2) + x1;
+                            labelPositions(:,3) = labelPositions(:,3) + y1;
+                        end
+                        obj.mibModel.I{obj.mibModel.Id}.hLabels.updateLabels(indices, labelsList, labelPositions, labelValues);
+                    end
+                    waitbar(layer/Depth, parameters.waitbar, sprintf('Step 3: Assembling transformed images\nPlease wait...'));
+                end
+                obj.mibModel.setData4D('image', Iout);
+                
+                % aligning the model
+                if obj.mibModel.I{obj.mibModel.Id}.modelType == 63
+                    Iout = zeros([nHeight, nWidth, numel(rbMatrix)], class(I));
+                    Model = cell2mat(obj.mibModel.getData4D('everything', NaN, NaN, optionsGetData));
+                    for layer=1:Depth
+                        if ~isempty(tformMatrix{layer})
+                            I = imwarp(Model(:,:,layer), tformMatrix{layer}, 'nearest', 'FillValues', 0);
+                        else
+                            I = Model(:,:,layer);
+                        end
+                        x1 = xmin(layer)-dx+1;
+                        x2 = x1 + rbMatrix{layer}.ImageSize(2)-1;
+                        y1 = ymin(layer)-dy+1;
+                        y2 = y1 + rbMatrix{layer}.ImageSize(1)-1;
+                        Iout(y1:y2,x1:x2,layer) = I;
+                        waitbar(layer/Depth, parameters.waitbar, sprintf('Step 4: Assembling transformed models\nPlease wait...'));
+                    end
+                    obj.mibModel.setData4D('everything', Iout, NaN, NaN, optionsGetData);
+                else
+                    % aligning the model layer
+                    if obj.mibModel.getImageProperty('modelExist')
+                        Iout = zeros([nHeight, nWidth, numel(rbMatrix)], class(I));
+                        Model = cell2mat(obj.mibModel.getData4D('model', NaN, NaN, optionsGetData));
+                        for layer=1:Depth
+                            if ~isempty(tformMatrix{layer})
+                                I = imwarp(Model(:,:,layer), tformMatrix{layer}, 'nearest', 'FillValues', 0);
+                            else
+                                I = Model(:,:,layer);
+                            end
+                            x1 = xmin(layer)-dx+1;
+                            x2 = x1 + rbMatrix{layer}.ImageSize(2)-1;
+                            y1 = ymin(layer)-dy+1;
+                            y2 = y1 + rbMatrix{layer}.ImageSize(1)-1;
+                            Iout(y1:y2,x1:x2,layer) = I;
+                            waitbar(layer/Depth, parameters.waitbar, sprintf('Step 4: Assembling transformed model\nPlease wait...'));
+                        end
+                        obj.mibModel.setData4D('model', Iout, NaN, NaN, optionsGetData);
+                    end
+                    % aligning the mask layer
+                    if obj.mibModel.getImageProperty('maskExist')
+                        Iout = zeros([nHeight, nWidth, numel(rbMatrix)], class(I));
+                        Model = cell2mat(obj.mibModel.getData4D('mask', NaN, NaN, optionsGetData));
+                        for layer=1:Depth
+                            if ~isempty(tformMatrix{layer})
+                                I = imwarp(Model(:,:,layer), tformMatrix{layer}, 'nearest', 'FillValues', 0);
+                            else
+                                I = Model(:,:,layer);
+                            end
+                            x1 = xmin(layer)-dx+1;
+                            x2 = x1 + rbMatrix{layer}.ImageSize(2)-1;
+                            y1 = ymin(layer)-dy+1;
+                            y2 = y1 + rbMatrix{layer}.ImageSize(1)-1;
+                            Iout(y1:y2,x1:x2,layer) = I;
+                            waitbar(layer/Depth, parameters.waitbar, sprintf('Step 4: Assembling transformed mask\nPlease wait...'));
+                        end
+                        obj.mibModel.setData4D('mask', Iout, NaN, NaN, optionsGetData);
+                    end
+                    % aligning the selection layer
+                    if  ~isnan(obj.mibModel.I{obj.mibModel.Id}.selection{1}(1))
+                        Iout = zeros([nHeight, nWidth, numel(rbMatrix)], class(I));
+                        Model = cell2mat(obj.mibModel.getData4D('selection', NaN, NaN, optionsGetData));
+                        for layer=1:Depth
+                            if ~isempty(tformMatrix{layer})
+                                I = imwarp(Model(:,:,layer), tformMatrix{layer}, 'nearest', 'FillValues', 0);
+                            else
+                                I = Model(:,:,layer);
+                            end
+                            x1 = xmin(layer)-dx+1;
+                            x2 = x1 + rbMatrix{layer}.ImageSize(2)-1;
+                            y1 = ymin(layer)-dy+1;
+                            y2 = y1 + rbMatrix{layer}.ImageSize(1)-1;
+                            Iout(y1:y2,x1:x2,layer) = I;
+                            waitbar(layer/Depth, parameters.waitbar, sprintf('Step 4: Assembling transformed selection\nPlease wait...'));
+                        end
+                        obj.mibModel.setData4D('selection', Iout, NaN, NaN, optionsGetData);
+                    end
+                end
+                
+                % calculate shift of the bounding box
+                maxXshift = dx;   % maximal X shift in pixels vs the first slice
+                maxYshift = dy;   % maximal Y shift in pixels vs the first slice
+                if obj.mibModel.I{obj.mibModel.Id}.orientation == 4
+                    maxXshift = maxXshift*obj.mibModel.I{obj.mibModel.Id}.pixSize.x;  % X shift in units vs the first slice
+                    maxYshift = maxYshift*obj.mibModel.I{obj.mibModel.Id}.pixSize.y;  % Y shift in units vs the first slice
+                    maxZshift = 0;
+                elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 2
+                    maxYshift = maxYshift*obj.mibModel.I{obj.mibModel.Id}.pixSize.y;  % Y shift in units vs the first slice
+                    maxZshift = maxXshift*obj.mibModel.I{obj.mibModel.Id}.pixSize.z;  % X shift in units vs the first slice;
+                    maxXshift = 0;
+                elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 1
+                    maxXshift = maxXshift*obj.mibModel.I{obj.mibModel.Id}.pixSize.y;  % X shift in units vs the first slice
+                    maxZshift = maxXshift*obj.mibModel.I{obj.mibModel.Id}.pixSize.z;
+                    maxYshift = 0;                              % Y shift in units vs the first slice
+                end
+                obj.mibModel.I{obj.mibModel.Id}.updateBoundingBox(NaN, [maxXshift, maxYshift, maxZshift]);
+            end
+            toc;
+            
+            if obj.View.handles.saveShiftsCheck.Value     % use preexisting parameters
+                fn = obj.View.handles.saveShiftsXYpath.String;
+                save(fn, 'tformMatrix', 'rbMatrix');
+                fprintf('alignment: tformMatrix and rbMatrix were saved to a file:\n%s\n', fn);
+            end
+            
+            delete(parameters.waitbar);
+            notify(obj.mibModel, 'newDataset');
+            notify(obj.mibModel, 'plotImage');
+            obj.closeWindow();
+        end
+        
     end
 end
+

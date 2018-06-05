@@ -23,20 +23,28 @@
 %% Morphological 2D/3D operations
 %
 % <html>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/L-w8eGDfUkU"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/L-w8eGDfUkU</a>
+% A brief demonstration is available in the following videos:<br>
+% <a href="https://youtu.be/L-w8eGDfUkU"><img
+% style="vertical-align:middle;" src="images\youtube2.png">
+% https://youtu.be/L-w8eGDfUkU</a><br>
+% <a href="https://youtu.be/Au4vb7max9Q"><img style="vertical-align:middle;" src="images\youtube2.png"> Skeleton for 3D objects, https://youtu.be/Au4vb7max9Q</a>
 % </html>
 %
 % <<images\MenuSelectionMorphOps.png>>
 %
-% Performs 2D morphological operations on the |Selection| layer. See more in the description of Matlab |bwmorph| function. The following operations are available:
+% Performs morphological operations for 2D and 3D objects of the |Selection| layer. See more in the description of Matlab |bwmorph|, |bwmorph3| and |bwskel|
+% functions. The following operations are available:
 %
 % <html>
 % <ul>
-% <li> <b>Branch points</b> - find branch points of skeleton;</li>
+% <li> <b>Branch points</b> - (2D/3D) find branch points of skeleton;</li>
+% <li> <b>Clean</b> - (3D) remove isolated voxels;</li>
 % <li> <b>Diagonal fill</b> - (Diag) uses diagonal fill to eliminate 8-connectivity of thebackground;</li>
-% <li> <b>Endpoints</b> - finds end points of skeleton;</li>
-% <li> <b>Skeleton</b> - (Skel) with n = Inf, removes pixels on the boundaries of objects but does not allow objects to break apart. The 
+% <li> <b>End points</b> - (2D/3D)finds end points of skeleton;</li>
+% <li> <b>Fill</b> - (3D) Fill isolated interior voxels, setting them to 1.<br>Isolated interior voxels are individual voxels that are set to 0 that are surrounded (6-connected) by voxels set to 1;</li>
+% <li> <b>Majority</b> - (3D) Keep a voxel set to 1 if 14 or more voxels (the majority) in its 3-by-3-by-3, 26-connected neighborhood are set to 1; otherwise, set the voxel to 0;</li>
+% <li> <b>Remove</b> - (3D) Remove interior voxels, setting it to 0.\nInterior voxels are individual voxels that are set to 1 that are surrounded (6-connected) by voxels set to 1;</li>
+% <li> <b>Skeleton</b> - (Skel, 2D/3D) with n = Inf, removes pixels on the boundaries of objects but does not allow objects to break apart. The 
 % remaining pixels make up the image skeleton. This option preserves the Euler number;</li>
 % <li> <b>Spur</b> - removes spur pixels, <em>i.e.</em> the pixels that have exactly one 8-connected neighbor. For example, spur essentially removes the endpoints of lines</li>
 % <li> <b>Thin</b> - with n = Inf, thins objects to lines. It removes pixels so that an object without holes shrinks to a
@@ -44,7 +52,7 @@
 % connected ring halfway between each hole and the outer boundary;
 % this option preserves the Euler number. Use the "remove branches" option
 % to remove small branches from each line profile <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a></li>
-% <li> <b>Ultimate erosion</b>, performs ultimate erosion, <em>i.e.</em> object -> to point</li>
+% <li> <b>Ultimate erosion</b>, (2D/3D) performs ultimate erosion, <em>i.e.</em> object -> to point</li>
 % </ul>
 % </html>
 %

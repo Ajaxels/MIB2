@@ -20,8 +20,12 @@ classdef mibMorphOpsController < handle
         % handle to the view
         listener
         % a cell array with handles to listeners
+        matlabVersion
+        % current version of Matlab
         type
         % type of action to perform
+        type3d
+        % type of action to perform for 3D objects
     end
     
     events
@@ -55,6 +59,13 @@ classdef mibMorphOpsController < handle
                 mibUpdateFontSize(obj.View.gui, Font);
             end
             obj.type = parameter;
+            obj.type3d = 'branchpoints';
+            
+            matlabVer = ver('matlab');
+            obj.matlabVersion = str2double(matlabVer.Version);
+            if obj.matlabVersion >= 9.4
+                obj.View.handles.objects3D.Enable = 'on';
+            end
             
             obj.updateWidgets();
 			
@@ -82,10 +93,19 @@ classdef mibMorphOpsController < handle
             % function updateWidgets(obj)
             % update widgets of this window
             
+            if obj.View.handles.objects3D.Value == 1
+                typeId = obj.type3d;
+                obj.View.handles.sliceRadio.Enable = 'off';
+                obj.View.handles.datasetRadio.Value = 1;
+            else
+                typeId = obj.type;
+                obj.View.handles.sliceRadio.Enable = 'on';
+            end
+            
             % highlight desired operation in the list
             list = obj.View.handles.morphOpsPopup.String;
             for i=1:numel(list)
-                if strcmp(list{i}, obj.type)
+                if strcmp(list{i}, typeId)
                     obj.View.handles.morphOpsPopup.Value = i;
                     continue;
                 end
@@ -104,10 +124,21 @@ classdef mibMorphOpsController < handle
             
             obj.View.handles.ulterPanel.Visible = 'off';
             obj.View.handles.iterPanel.Visible = 'on';
+            obj.View.handles.limitToRadio.String = 'Limit to:';
+            
+            if obj.View.handles.objects3D.Value == 1
+                obj.View.handles.limitToRadio.Enable = 'off';
+                obj.View.handles.infiniteRadio.Enable = 'off';
+                obj.View.handles.iterEdit.Enable = 'off';
+            else
+                obj.View.handles.limitToRadio.Enable = 'on';
+                obj.View.handles.infiniteRadio.Enable = 'on';
+                obj.View.handles.iterEdit.Enable = 'on';
+            end
             
             switch strtrim(selected)
                 case 'branchpoints'
-                    textString = sprintf('Find branch points of skeleton');
+                    textString = sprintf('Find branch points of skeleton.\nBranch points are the pixels at the junction where multiple branches meet.\nTo find branch points, the image must be skeletonized.');
                     obj.View.handles.infoText.String = textString;
                 case 'bwulterode'
                     textString{1} = 'The ultimate erosion computesthe ultimate erosion of the selection';
@@ -118,6 +149,9 @@ classdef mibMorphOpsController < handle
                     obj.View.handles.infoText.String = textString;
                     obj.View.handles.iterPanel.Visible = 'off';
                     obj.View.handles.ulterPanel.Visible = 'on';
+                case 'clean'
+                    textString = sprintf('Remove isolated voxels.\nAn isolated voxel is an individual, 26-connected voxel that is set to 1 that are surrounded by voxels set to 0');
+                    obj.View.handles.infoText.String = textString;
                 case 'diag'
                     textString{1} = 'Uses diagonal fill to eliminate 8-connectivity of the background. For example:';
                     textString{2} = '1 0 0 0  ->  1 1 0 0';
@@ -132,10 +166,33 @@ classdef mibMorphOpsController < handle
                     textString{4} = '0 0 1 0  ->  0 0 1 0';
                     textString{5} = '0 0 0 0  ->  1 0 0 0';
                     obj.View.handles.infoText.String = textString;
+                case 'fill'
+                    textString = sprintf('Fill isolated interior voxels, setting them to 1.\nIsolated interior voxels are individual voxels that are set to 0 that are surrounded (6-connected) by voxels set to 1');
+                    obj.View.handles.infoText.String = textString;
+                case 'majority'
+                    textString = sprintf('Keep a voxel set to 1 if 14 or more voxels (the majority) in its 3-by-3-by-3, 26-connected neighborhood are set to 1; otherwise, set the voxel to 0');
+                    obj.View.handles.infoText.String = textString;
+                case 'remove'
+                    textString = sprintf('Remove interior voxels, setting it to 0.\nInterior voxels are individual voxels that are set to 1 that are surrounded (6-connected) by voxels set to 1');
+                    obj.View.handles.infoText.String = textString;
                 case 'skel'
                     textString{1} = 'With Iterations = Inf, removes pixels on the boundaries of objects but does not allow objects to break apart.';
                     textString{2} = 'The pixels remaining make up the image skeleton. This option preserves the Euler number.';
                     obj.View.handles.infoText.String = textString;
+                    if obj.View.handles.objects3D.Value == 0
+                        obj.View.handles.removeBranchesCheck.Enable = 'on';
+                    else
+                        obj.View.handles.removeBranchesCheck.Enable = 'off';
+                    end
+                    
+                    if obj.matlabVersion >= 9.4
+                        obj.View.handles.limitToRadio.Enable = 'on';
+                        obj.View.handles.limitToRadio.String = 'Min branch length:';
+                        obj.View.handles.iterEdit.Enable = 'on';
+                        obj.View.handles.infiniteRadio.Enable = 'off';
+                        obj.View.handles.limitToRadio.Value = 1;
+                    end
+                    
                 case 'spur'
                     textString{1} = 'Removes spur pixels. For example:';
                     textString{2} = '0 0 0 0  ->  0 0 0 0';
@@ -148,7 +205,11 @@ classdef mibMorphOpsController < handle
                     textString{2} = 'This option preserves the Euler number.';
                     obj.View.handles.infoText.String = textString;
             end
-            obj.type = selected;
+            if obj.View.handles.objects3D.Value == 1
+                obj.type3d = selected;
+            else
+                obj.type = selected;
+            end
         end
         
         function continueBtn_Callback(obj)
@@ -156,9 +217,9 @@ classdef mibMorphOpsController < handle
             % callback for press of obj.View.handles.continueBtn
 
             if obj.View.handles.sliceRadio.Value == 1
-                switch3d = 0;
+                datasetSwitch = 0;
             else
-                switch3d = 1;
+                datasetSwitch = 1;
             end
             
             removeBranchesCheck = obj.View.handles.removeBranchesCheck.Value;   % whether or not remove branches during thinning
@@ -176,10 +237,15 @@ classdef mibMorphOpsController < handle
                 end
             end
             
-            wb = waitbar(0,sprintf('Performing: %s\nPlease wait...', obj.type), 'Name', 'Morph Ops', 'WindowStyle', 'modal');
-            if obj.mibModel.getImageProperty('time') == 1
-                obj.mibModel.mibDoBackup('selection', switch3d);
+            if obj.View.handles.objects3D.Value == 0
+                wb = waitbar(0,sprintf('Performing: %s\nPlease wait...', obj.type), 'Name', 'Morph Ops', 'WindowStyle', 'modal');
+            else
+                wb = waitbar(0,sprintf('Performing: %s\nPlease wait...', obj.type3d), 'Name', 'Morph Ops', 'WindowStyle', 'modal');
             end
+            if obj.mibModel.getImageProperty('time') == 1
+                obj.mibModel.mibDoBackup('selection', datasetSwitch);
+            end
+            
             tic
             for t=1:obj.mibModel.getImageProperty('time')
                 getDataOptions.roiId = [];
@@ -191,7 +257,7 @@ classdef mibMorphOpsController < handle
                             selection{roiId} = bwulterode(selection{roiId}, method, conn);
                         end
                         obj.mibModel.setData3D('selection', selection, t, 4, NaN, getDataOptions);
-                    elseif switch3d                         % 2D mode, whole dataset
+                    elseif datasetSwitch                         % 2D mode, whole dataset
                         selection = obj.mibModel.getData3D('selection', t, 0, NaN, getDataOptions);
                         maxVal = numel(selection)*size(selection{1}, 3);
                         for roiId=1:numel(selection)
@@ -211,26 +277,43 @@ classdef mibMorphOpsController < handle
                         end
                         obj.mibModel.setData2D('selection', selection, NaN, NaN, NaN, getDataOptions);
                     end
-                else    % branchpoints, diag, endpoints, skel, spur, thin
-                    if switch3d
+                else    % branchpoints, diag, endpoints, skel, spur, thin & 3D objects operations
+                    if datasetSwitch
                         selection = obj.mibModel.getData3D('selection', t, 0, NaN, getDataOptions);
                         maxVal = numel(selection)*size(selection{1}, 3);
                         for roiId=1:numel(selection)
-                            for layer = 1:size(selection{roiId}, 3)
-                                selection{roiId}(:,:,layer) = bwmorph(selection{roiId}(:,:,layer), obj.type, iterNo);
-                                %selection{roiId}(:,:,layer) = gather(bwmorph(gpuArray(logical(selection{roiId}(:,:,layer))),selected, iterNo));     % alternative version to use with GPU
-                                if removeBranchesCheck == 1 && strcmp(obj.type, 'thin')
-                                    selection{roiId}(:,:,layer) = mibRemoveBranches(selection{roiId}(:,:,layer));
+                            if obj.View.handles.objects3D.Value == 0   % perform 2D operations
+                                for layer = 1:size(selection{roiId}, 3)
+                                    if strcmp(obj.type, 'skel') && obj.matlabVersion >= 9.4
+                                        selection{roiId}(:,:,layer) = bwskel(logical(selection{roiId}(:,:,layer)), 'MinBranchLength', iterNo);
+                                    else
+                                        selection{roiId}(:,:,layer) = bwmorph(selection{roiId}(:,:,layer), obj.type, iterNo);
+                                        %selection{roiId}(:,:,layer) = gather(bwmorph(gpuArray(logical(selection{roiId}(:,:,layer))),selected, iterNo));     % alternative version to use with GPU
+                                    end
+                                    if removeBranchesCheck == 1 && (strcmp(obj.type, 'thin') || strcmp(obj.type, 'skel'))
+                                        selection{roiId}(:,:,layer) = mibRemoveBranches(selection{roiId}(:,:,layer));
+                                    end
+                                    if mod(layer, 10)==0; waitbar(layer*roiId/maxVal, wb); end
                                 end
-                                if mod(layer, 10)==0; waitbar(layer*roiId/maxVal, wb); end
+                            else % perform 3D operations, for R2018a and newer
+                                if strcmp(obj.type3d, 'skel')
+                                    selection{roiId} = bwskel(logical(selection{roiId}), 'MinBranchLength', iterNo);
+                                else
+                                    selection{roiId} = bwmorph3(selection{roiId}, obj.type3d);
+                                end
+                                waitbar(roiId/numel(selection), wb); 
                             end
                         end
                         obj.mibModel.setData3D('selection', selection, t, 0, NaN, getDataOptions);
                     else
                         selection = obj.mibModel.getData2D('selection', NaN, NaN, NaN, getDataOptions);
                         for roiId=1:numel(selection)
-                            selection{roiId} = bwmorph(selection{roiId}, obj.type, iterNo);
-                            if removeBranchesCheck == 1 && strcmp(obj.type, 'thin')
+                            if strcmp(obj.type, 'skel') && obj.matlabVersion >= 9.4
+                                selection{roiId} = bwskel(logical(selection{roiId}), 'MinBranchLength', iterNo);
+                            else
+                                selection{roiId} = bwmorph(selection{roiId}, obj.type, iterNo);
+                            end
+                            if removeBranchesCheck == 1 && (strcmp(obj.type, 'thin') || strcmp(obj.type, 'skel'))
                                 selection{roiId} = mibRemoveBranches(selection{roiId});
                             end
                             waitbar(roiId/numel(selection), wb);

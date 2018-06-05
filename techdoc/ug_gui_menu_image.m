@@ -91,17 +91,55 @@
 % In this section, MIB has tools that are targeted for manipulation of the
 % image layer.
 %
-% *Intensity projection*
-%
-%
 % 
 % <html>
-% Calculate one of the following intensity projections:<br>
 % <table>
+% <tr>
+% <td colspan = 2><b>Image arithmetics</b><br>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
+% </td>
+% </tr>
+% <tr>
+% <td><img src="images\MenuImageToolsArithmetics.png"></td>
+% <td>
+% <ul>
+% <b>Parameters and options:</b><br><br>
+% <li><b>Input A</b>, specify index of the MIB container with the source image. The image in the specified container will be referenced as "A"</li>
+% <li><b>Destination class</b>, the result of the operation will be stored in one of these classes</li>
+% <li><b>Destination buffer</b>, the result of the operation will be stored in this container</li>
+% <li><b>Input B</b>, an optional input to specify a second MIB container to use. The image in the specified container will be referenced as "B"</li>
+% <li><b>Input C</b>, an optional input to specify a third MIB container to use. The image in the specified container will be referenced as "C"</li>
+% <li><b>Convert via uint32</b>, use this checkbox to ensure that before the operations images are converted to unit32 container and highlights are not clipped away</li>
+% <li><b>Expression</b>, an expression with arithmetic operation to perform, see below for some examples</li> 
+% </ul>
+% <br>
+% <ul>
+% Examples:
+% <li><b>A=A+100</b>, increase intensity of all pixels in image A by 100</li>
+% <li><b>A=A*2</b>, increase intensity of all pixels in image A in 2 times</li>
+% <li><b>A=A+B-C</b>, add image B to image A and subtract image C from the result</li>
+% <li><b>A=A+mean(B(:))</b>, add mean value of image B to image A</li>
+% <li><b>A=A-min(B(:))</b>, subtract the min-value of image B from image A</li>
+% <li><b>A(:,:,2,:)=A(:,:,2,:)*1.4</b>, increase image intensity of the second color channel in 1.4 times</li>
+% </ul>
+% </td>
+% </tr>
+% </table>
+% <br>
+% <br>
+% <table>
+% <tr>
+% <td colspan = 2><b>Intensity projection</b><br>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/hwFpS_3eP9U</a>
+% </td>
+% </tr>
 % <tr>
 % <td><img src="images\MenuImageToolsIntensityProjection.png"></td>
 % <td>
 % <ul>
+% Calculate one of the following intensity projections:
 % <li><b>maximum intensity projection</b>, project the voxel with the highest value on every view throughout the volume onto a 2D image</li>
 % <li><b>minimum intensity projection</b>, project the voxel with the smallest value on every view throughout the volume onto a 2D image</li>
 % <li><b>mean intensity projection</b>, project the mean value of voxels on every view throughout the volume onto a 2D image</li>
@@ -109,25 +147,25 @@
 % </td>
 % </tr>
 % </table>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/hwFpS_3eP9U</a>
-% </html>
-% 
-%
-%
-% *Select image frame*
-%
-% 
-% <<images\image_border_detection.png>>
-% 
-% Detects the frame (which is an area of the same intensity that touches edge
-% of the image) of the image. The detected area can be assinged to the
-% |Selection| or |Mask| layers, or that area can be replaced with another
-% color for the |Image| layer.
-% 
-% <html>
+% <br>
+% <br>
+% <table>
+% <tr>
+% <td colspan = 2><b>Select image frame</b><br>
 % A brief demonstration is available in the following video:<br>
 % <a href="https://youtu.be/sWjipmeU5eA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/sWjipmeU5eA</a>
+% </td>
+% </tr>
+% <tr>
+% <td><img src="images\image_border_detection.png"></td>
+% <td>
+% Detects the frame (which is an area of the same intensity that touches edge
+% of the image) of the image. The detected area can be assinged to the
+% <em>Selection</em> or <em>Mask</em> layers, or that area can be replaced with another
+% color for the <em>Image</em> layer.
+% </td>
+% </tr>
+% </table>
 % </html>
 %
 %% Morphological operations

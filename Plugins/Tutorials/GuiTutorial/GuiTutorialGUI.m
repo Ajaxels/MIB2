@@ -58,6 +58,9 @@ handles.winController = varargin{1};
 % Choose default command line output for GuiTutorialGUI
 handles.output = hObject;
 
+% move the window
+hObject = moveWindowOutside(hObject, 'left');
+
 % Update handles structure
 guidata(hObject, handles);
 

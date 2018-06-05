@@ -15,7 +15,7 @@ function menuFileSaveImageAs_Callback(obj)
 % of the License, or (at your option) any later version.
 %
 % Updates
-%
+% 04.06.2018 save TransformationMatrix with AmiraMesh
 
 
 % save image as...

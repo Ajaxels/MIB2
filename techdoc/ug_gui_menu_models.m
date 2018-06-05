@@ -166,6 +166,16 @@
 % <a href="https://youtu.be/nDpC8b8lqo4"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/nDpC8b8lqo4</a>
 % </html>
 %
+% * *Matlab volume viewer*, render the model using Matlab volume viewer,
+% available only for the Matlab version of MIB and requires R2017b or
+% newer.
+%
+% <html>
+% A demonstration is available in the following video:<br>
+% <a href="https://youtu.be/J70V33f7bas"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/J70V33f7bas</a>
+% </html>
+%
+%
 % * *Fiji volume...*, uses Fiji 3D viewer for visualization of the model as
 % a volume (<http://mib.helsinki.fi/tutorials/VisualizationOverview.html click here for details>. (requires Fiji to be installed,
 % <im_browser_system_requirements.html see here>).

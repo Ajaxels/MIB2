@@ -110,8 +110,12 @@
 % Manipulations with individual slices of the dataset. The following actions are possible
 %
 % 
-% * *Copy slice to another position* - allows to copy slice from one
-% position to another position within the same dataset
+% * *Copy slice...* - allows to copy slice from one
+% position to another position within the same dataset (the 'Replace'
+% options) or to insert one slice to another position in the dataset (the
+% 'Insert' option). <https://youtu.be/iGA4US2PHXw A short demo>.
+% * *Insert an empty slice* - insert a uniformly colored slice to any
+% position inside the dataset. <https://youtu.be/iGA4US2PHXw A short demo>.
 % * *Delete slice(s)...* - removes desired slice(s) from a Z-stack of the
 % dataset. _For example, type " |5:10| " to delete all slices from slice 5 to
 % slice 10._

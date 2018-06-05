@@ -239,17 +239,36 @@ end
 
 % --- Executes on selection change in methodPopup.
 function methodPopup_Callback(hObject, eventdata, handles)
-val = handles.methodPopup.Value;
+methodsList = handles.methodPopup.String;
+methodSelected = methodsList{handles.methodPopup.Value};
 textStr = '';
-switch val
-    case 1  % drift correction
+handles.colChPopup.Enable = 'off';
+handles.gradientCheckBox.Enable = 'off';
+handles.transformationTypePopup.Enable = 'off';
+handles.transformationModePopup.Enable = 'off';
+handles.correlateWithPopup.Enable = 'off';
+handles.transformationDegreePopup.Enable = 'off';
+
+switch methodSelected
+    case 'Drift correction'
         textStr = sprintf('Use the Drift correction mode for small shifts or comparably sized images');
-    case 2  % Template matching
-         textStr = sprintf('Use the Template matching mode for when aligning two stacks with one of the stacks smaller in size');
-    case 3
+        handles.colChPopup.Enable = 'on';
+        handles.gradientCheckBox.Enable = 'on';
+        handles.correlateWithPopup.Enable = 'on';
+    case 'Template matching'
+        textStr = sprintf('Use the Template matching mode for when aligning two stacks with one of the stacks smaller in size');
+        handles.colChPopup.Enable = 'on';
+        handles.gradientCheckBox.Enable = 'on';
+        handles.correlateWithPopup.Enable = 'on';
+    case 'Single landmark point'
         textStr = sprintf('Use the brush tool to mark two corresponding spots on consecutive slices. The dataset will be translated to align the marked spots');
-    case 4
-        textStr = sprintf('In this mode use the brush tool to mark corresponding spots on two consecutive slices. The dataset will be transformed to align the marked spots');
+    case 'Three landmark points'
+        textStr = sprintf('Use the brush tool to mark corresponding spots on two consecutive slices. The dataset will be transformed to align the marked spots. The Landmark mode recommended instead!');
+    case 'Landmarks, multi points'
+        textStr = sprintf('Use annotations or selection with brush to mark corresponding spots on consecutive slices. The dataset will be transformed to align the marked areas');
+        handles.transformationTypePopup.Enable = 'on';
+        handles.transformationModePopup.Enable = 'on';
+        %handles.transformationDegreePopup.Enable = 'on';
 end
 handles.landmarkHelpText.String = textStr;
 handles.landmarkHelpText.TooltipString = textStr;
@@ -313,7 +332,10 @@ end
 
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
-web('http://mib.helsinki.fi/help/main/ug_gui_menu_dataset_alignment.html', '-helpbrowser');
+global mibPath;
+web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_dataset_alignment.html'), '-helpbrowser');
+
+%web('http://mib.helsinki.fi/help/main/ug_gui_menu_dataset_alignment.html', '-helpbrowser');
 end
 
 % --- Executes on button press in continueBtn.

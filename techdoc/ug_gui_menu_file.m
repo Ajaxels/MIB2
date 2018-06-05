@@ -51,6 +51,14 @@
 %
 % Please refer to the <ug_gui_menu_file_chop.html Chopped images...> section for details.
 %
+%% Rename and shuffle
+% Two tools placed under this menu entry allow to shuffle files for their
+% blind modeling, when the user does not know which file belong to which
+% condition. The models from the shuffled files can be converted back over
+% the original filenames for analysis.
+%
+% Please refer to the <ug_gui_menu_file_rename_and_shuffle.html Rename and shuffle> section for details.
+%
 %% Export image to 
 % Export images to the main Matlab workspace or Imaris.
 %
@@ -94,8 +102,12 @@
 % 
 % <<images/menuFileSnapshot.png>>
 % 
-%% Render volume (with Fiji)
-% Volume rendering of the opened dataset using Fiji 3D image viewer. Please refer to details in the 
+%% Render volume
+% Volume rendering of the opened dataset using Fiji 3D image viewer or Matlab Volume Viewer application. 
+%
+% *Volume rendering using Fiji 3D viewer*
+%
+% Please refer to details in the 
 % <im_browser_system_requirements.html Microscopy Image Browser System Requirements Fiji> section for installation of Fiji.
 %
 % <html>
@@ -122,6 +134,17 @@
 % be used here to provide specific transparency parameters for each color
 % channel. In addition, the transparency threshold can also be tweaked in 
 % the Fiji 3D viewer window: |3D Viewer->Edit->Attributes->Adjust threshold|. 
+%
+%
+% *Volume rendering using Matlab Volume Viewer*
+% When MIB is used with Matlab R2017a or newer it is possible to export the
+% open dataset to Volume Viewer application. Please note that this feature
+% is not available for the compliled version of MIB
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/J70V33f7bas"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/J70V33f7bas</a>
+% </html>
 % 
 %% Preferences
 % View and edit preferences of Microscopy Image Browser. Allows to modify colors of the |Selection|, |Model| and |Mask|

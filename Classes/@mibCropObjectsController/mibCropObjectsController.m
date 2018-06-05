@@ -314,16 +314,16 @@ classdef mibCropObjectsController < handle
                         
                         imOut =  modelImg(yMin:yMax, xMin:xMax, zMin:zMax); %#ok<NASGU>
                         
-                        material_list = obj.mibModel.getImageProperty('modelMaterialNames'); %#ok<NASGU>
-                        color_list = obj.mibModel.getImageProperty('modelMaterialColors'); %#ok<NASGU>
+                        modelMaterialNames = obj.mibModel.getImageProperty('modelMaterialNames'); %#ok<NASGU>
+                        modelMaterialColors = obj.mibModel.getImageProperty('modelMaterialColors'); %#ok<NASGU>
                         if material_id > 0
-                            color_list = color_list(material_id, :); %#ok<NASGU>
-                            material_list = material_list(material_id);
+                            modelMaterialColors = modelMaterialColors(material_id, :); %#ok<NASGU>
+                            modelMaterialNames = modelMaterialNames(material_id);
                         end
                         if obj.View.handles.matlabRadio.Value == 1   % export to Matlab
                             matlabVar.Model.model = imOut;
-                            matlabVar.Model.materials = material_list;
-                            matlabVar.Model.colors = color_list;
+                            matlabVar.Model.materials = modelMaterialNames;
+                            matlabVar.Model.colors = modelMaterialColors;
                             if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber() > 1  % save annotations
                                 [labelText, labelValues, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
                                 matlabVar.labelText = labelText;
@@ -333,29 +333,37 @@ classdef mibCropObjectsController < handle
                         else
                             % generate filename
                             [~, fnModel] = fileparts(filename);
-                            bounding_box = imgOut2.getBoundingBox(); %#ok<NASGU>
+                            BoundingBox = imgOut2.getBoundingBox(); %#ok<NASGU>
                             
                             switch obj.View.handles.modelFormatPopup.Value
                                 case 1  % Matlab format
                                     fnModel = ['Labels_' fnModel '.model']; %#ok<AGROW>
                                     fnModel = fullfile(obj.outputDir, fnModel);
                                     
+                                    modelVariable = 'imOut'; %#ok<NASGU>
+                                    modelType = obj.mibModel.I{obj.mibModel.Id}.modelType;  %#ok<NASGU> % type of the model
+                                    
                                     if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber() > 1  % save annotations
-                                        [labelText, labelValues, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
-                                        save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', 'labelText', 'labelValues', 'labelPosition', '-mat', '-v7.3');
+                                        %[labelText, labelValues, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+                                        %save(fnModel, 'imOut', 'modelMaterialNames', 'modelMaterialColors', 'BoundingBox', 'labelText', 'labelValues', 'labelPosition', '-mat', '-v7.3');
+                                        
+                                        [labelText, labelValues, labelPosition] = imgOut2.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+                                        str1 = sprintf('save ''%s'' imOut modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType labelText labelValues labelPosition -mat -v7.3', fnModel);
                                     else    % save without annotations
-                                        save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', '-mat', '-v7.3');
+                                        %save(fnModel, 'imOut', 'modelMaterialNames', 'modelMaterialColors', 'BoundingBox', '-mat', '-v7.3');
+                                        str1 = sprintf('save ''%s'' imOut modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType -mat -v7.3', fnModel);
                                     end
+                                    eval(str1);
                                 case 2  % Amira Mesh
                                     fnModel = ['Labels_' fnModel '.am']; %#ok<AGROW>
                                     fnModel = fullfile(obj.outputDir, fnModel);
                                     
                                     pixStr = imgOut2.pixSize;
-                                    pixStr.minx = bounding_box(1);
-                                    pixStr.miny = bounding_box(3);
-                                    pixStr.minz = bounding_box(5);
+                                    pixStr.minx = BoundingBox(1);
+                                    pixStr.miny = BoundingBox(3);
+                                    pixStr.minz = BoundingBox(5);
                                     showWaitbar = 0;  % show or not waitbar in bitmap2amiraMesh
-                                    bitmap2amiraLabels(fnModel, imOut, 'binary', pixStr, color_list, material_list, 1, showWaitbar);
+                                    bitmap2amiraLabels(fnModel, imOut, 'binary', pixStr, modelMaterialColors, modelMaterialNames, 1, showWaitbar);
                                 case 3 % MRC
                                     fnModel = ['Labels_' fnModel '.mrc']; %#ok<AGROW>
                                     fnModel = fullfile(obj.outputDir, fnModel);
@@ -370,7 +378,7 @@ classdef mibCropObjectsController < handle
                                     
                                     Options.overwrite = 1;
                                     Options.showWaitbar = 0;  % show or not waitbar in bitmap2nrrd
-                                    bitmap2nrrd(fnModel, imOut, bounding_box, Options);
+                                    bitmap2nrrd(fnModel, imOut, BoundingBox, Options);
                                 case {5, 6}  % LZW TIF / uncompressed TIF
                                     fnModel = ['Labels_' fnModel '.tif']; %#ok<AGROW>
                                     fnModel = fullfile(obj.outputDir, fnModel);
@@ -397,7 +405,7 @@ classdef mibCropObjectsController < handle
                         else
                             % generate filename
                             [~, fnModel] = fileparts(filename);
-                            bounding_box = imgOut2.getBoundingBox(); %#ok<NASGU>
+                            BoundingBox = imgOut2.getBoundingBox(); %#ok<NASGU>
                             
                             switch obj.View.handles.maskFormatPopup.Value
                                 case 1  % Matlab format
@@ -409,9 +417,9 @@ classdef mibCropObjectsController < handle
                                     fnModel = fullfile(obj.outputDir, fnModel);
                                     
                                     pixStr = imgOut2.pixSize;
-                                    pixStr.minx = bounding_box(1);
-                                    pixStr.miny = bounding_box(3);
-                                    pixStr.minz = bounding_box(5);
+                                    pixStr.minx = BoundingBox(1);
+                                    pixStr.miny = BoundingBox(3);
+                                    pixStr.minz = BoundingBox(5);
                                     showWaitbar = 0;  % show or not waitbar in bitmap2amiraMesh
                                     bitmap2amiraLabels(fnModel, imOut, 'binary', pixStr, [.567, .213, .625], cellstr('Mask'), 1, showWaitbar);
                                 case 3 % MRC
@@ -428,7 +436,7 @@ classdef mibCropObjectsController < handle
                                     
                                     Options.overwrite = 1;
                                     Options.showWaitbar = 0;  % show or not waitbar in bitmap2nrrd
-                                    bitmap2nrrd(fnModel, imOut, bounding_box, Options);
+                                    bitmap2nrrd(fnModel, imOut, BoundingBox, Options);
                                 case {5, 6}  % LZW TIF / uncompressed TIF
                                     fnModel = ['Mask_' fnModel '.tif']; %#ok<AGROW>
                                     fnModel = fullfile(obj.outputDir, fnModel);

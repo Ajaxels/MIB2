@@ -15,7 +15,7 @@ function updateFilelist(obj, filename)
 % Updates
 % 
 
-if nargin < 2;     filename = NaN;   end;
+if nargin < 2; filename = NaN; end
 
 extentions = obj.mibView.handles.mibFileFilterPopup.String;
 extention = extentions(obj.mibView.handles.mibFileFilterPopup.Value);

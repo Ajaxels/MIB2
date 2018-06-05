@@ -73,7 +73,7 @@
 % to apply this modification.
 %
 % *External dirs*, starts a dialog to specify installation directories for
-% Fiji and Omero.  Please refer to the <im_browser_system_requirements.html System Requirements> pages for details.
+% Fiji, Imaris, Omero and BMxD filters.  Please refer to the <im_browser_system_requirements.html System Requirements> pages for details.
 % If there is no need to use any of these programs, remove all text from the path edit box.
 % 
 % <<images\MenuFilePreferencesExernalDirs.png>>

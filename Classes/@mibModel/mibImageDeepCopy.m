@@ -30,6 +30,8 @@ waitbar(0.7, wb);
 obj.I{toId}.hROI.mibImage = obj.I{toId};     % re-reference mibImage
 waitbar(0.8, wb);
 obj.I{toId}.hLabels  = copy(obj.I{fromId}.hLabels);
+waitbar(0.85, wb);
+obj.I{toId}.hLines3D  = copy(obj.I{fromId}.hLines3D);
 waitbar(0.9, wb);
 obj.I{toId}.hMeasure  = copy(obj.I{fromId}.hMeasure);
 obj.I{toId}.hMeasure.hImg  = obj.I{toId}; % re-reference mibImage

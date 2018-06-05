@@ -70,6 +70,9 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'Tools','FastMarching','shortestpath'));
     addpath(fullfile(func_dir, 'Tools','Frangi'));
     addpath(fullfile(func_dir, 'Tools','imclipboard'));
+    addpath(fullfile(func_dir, 'Tools','matGeom'));
+    addpath(fullfile(func_dir, 'Tools','matGeom','geom2d'));
+    addpath(fullfile(func_dir, 'Tools','matGeom','geom3d'));
     addpath(fullfile(func_dir, 'Tools','RandomForest'));
     addpath(fullfile(func_dir, 'Tools', 'RandomForest','RF_Class_C'));
     addpath(fullfile(func_dir, 'Tools', 'RandomForest','RF_Reg_C'));

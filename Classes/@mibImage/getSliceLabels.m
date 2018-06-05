@@ -1,5 +1,5 @@
 function [labelsList, labelValues, labelPositions, indices] = getSliceLabels(obj, sliceNumber, timePoint)
-% [labelsList, labelPositions, indices] = getSliceLabels(obj, sliceNumber, timePoint)
+% [labelsList, labelValues, labelPositions, indices] = getSliceLabels(obj, sliceNumber, timePoint)
 % Get list of labels (mibImage.hLabels) shown at the specified slice
 %
 % Parameters:

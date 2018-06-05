@@ -14,7 +14,7 @@ function varargout = mibStatisticsGUI(varargin)
 % Updates
 % 
 
-% Last Modified by GUIDE v2.5 11-Mar-2017 00:49:40
+% Last Modified by GUIDE v2.5 25-Mar-2018 15:44:29
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -76,8 +76,10 @@ set(handles.statTable,'UIContextMenu',handles.statTable_cm);
 % % Add sorting to the table:
 % % http://undocumentedmatlab.com/blog/uitable-sorting
 % % Display the uitable and get its underlying Java object handle
-% jscrollpane = findjobj(handles.statTable);
-% jtable = jscrollpane.getViewport.getView;
+jscrollpane = findjobj(handles.statTable);
+jtable = jscrollpane.getViewport.getView;
+jtable.setAutoResizeMode(jtable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+
 %  
 % % Now turn the JIDE sorting on
 % jtable.setSortable(true);		% or: set(jtable,'Sortable','on');
@@ -267,5 +269,11 @@ handles.parametersPanel.Position(2) = winPos(4)-handles.parametersPanel.Position
 
 handles.statisticsResultsPanel.Position(2) = handles.histPanel.Position(2)+handles.histPanel.Position(4);
 handles.statisticsResultsPanel.Position(4) = handles.parametersPanel.Position(2)-handles.statisticsResultsPanel.Position(2);
+handles.statisticsResultsPanel.Position(3) = winPos(3)-handles.statisticsResultsPanel.Position(1)*2;
 
+end
+
+% --- Executes on selection change in unitsCombo.
+function unitsCombo_Callback(hObject, eventdata, handles)
+handles.winController.unitsCombo_Callback();
 end

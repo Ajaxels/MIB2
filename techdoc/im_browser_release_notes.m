@@ -5,6 +5,27 @@
 %
 %
 %
+%% 2.30 / 18.05.2018
+% * Added Lines3D class for 3D measurements and generation of 3D skeletons and graphs 
+% * Added the Image arithmetics dialog (|Menu->Image->Tools for images->Image arithmetics...|)
+% * Added the Rename and Shuffle tool (|Menu->File->Rename and Shuffle|) to
+% shuffle images for blind modeling and restore the models back to the
+% original sets of images
+% * Added alignment using multi-point landmarks (|Menu->Dataset->Alignment|)
+% * Added modification of Imaris path from MIB preferences:
+% |Menu->File->Preferences->External dirs|, please remove IMARISPATH
+% variable from the system environmental variables
+% * Added calculation of 3D skeleton and morphological operations for 3D
+% objects: |Menu->Selection->Morphological 2D/3D operations|, (_only for Matlab R2018a and newer_)
+% * Added export of volumes and models for rendering to Matlab VolumeViewer
+% application (|Menu->File->Render volume->Matlab volume viewer| or |Menu->Models->Render model->Matlab volume viewer|, (_only the Matlab version of MIB, requires Matlab R2017a and newer_)
+% * Added quantitation of objects in physical units (|Menu->Models->Model statistics...|)
+% * Added options to insert an empty slice into the dataset (|Menu->Dataset->Slice->Insert an empty slice|) and to insert
+% an existing slice into another position (|Menu->Dataset->Slice->Copy slice...|)
+% * Added recentering the view after click for the Membrane ClickTracker tool
+% * Added export of TransformationMatrix with AmiraMesh files
+% * Fix of cropping objects to files from the Get Statistics tool
+%
 %% 2.22 / 16.03.2018
 % * Added value field for the annotations, thus each annotation can be weighted based on its value
 % * Added possibility to do deep neural network denoising on GPUs with

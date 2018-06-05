@@ -79,7 +79,7 @@ classdef Labels < matlab.mixin.Copyable
             % @code addLabel(obj, labels, positions); // Call within the class;  add a labels to the list @endcode
             
             if ~iscell(labels); labels = cellstr(labels); end
-            if numel(labels) ~= size(positions, 1); error('Labels.add: error, number of labels and coordinates mismatch!'); end
+            if numel(labels) ~= size(positions, 1); error('Labels.addLabels: error, number of labels and coordinates mismatch!'); end
             if nargin < 4
                 values = zeros([numel(labels), 1]) + 1;
             end
@@ -202,7 +202,7 @@ classdef Labels < matlab.mixin.Copyable
 
             if ~isnan(rangeZ(1))   % sort with Z
                 if numel(rangeZ) == 1
-                    selIndices = find(floor(labelPositions(:,1))==rangeZ);
+                    selIndices = find(round(labelPositions(:,1))==rangeZ);
                 else
                     selIndices = find(labelPositions(:,1) >= rangeZ(1) & labelPositions(:,1) <= rangeZ(2));
                 end
@@ -213,7 +213,7 @@ classdef Labels < matlab.mixin.Copyable
             end
             if ~isnan(rangeX(1))   % sort with X
                 if numel(rangeX) == 1
-                    selIndices = find(floor(labelPositions(:,2))==rangeX);
+                    selIndices = find(round(labelPositions(:,2))==rangeX);
                 else
                     selIndices = find(labelPositions(:,2) >= rangeX(1) & labelPositions(:,2) <= rangeX(2));
                 end
@@ -224,7 +224,7 @@ classdef Labels < matlab.mixin.Copyable
             end
             if ~isnan(rangeY(1))   % sort with Y
                 if numel(rangeY) == 1
-                    selIndices = find(floor(labelPositions(:,3))==rangeY);
+                    selIndices = find(round(labelPositions(:,3))==rangeY);
                 else
                     selIndices = find(labelPositions(:,3) >= rangeY(1) & labelPositions(:,3) <= rangeY(2));
                 end
@@ -235,7 +235,7 @@ classdef Labels < matlab.mixin.Copyable
             end
             if ~isnan(rangeT(1))   % sort with Y
                 if numel(rangeT) == 1
-                    selIndices = find(floor(labelPositions(:, 4))==rangeT);
+                    selIndices = find(round(labelPositions(:, 4))==rangeT);
                 else
                     selIndices = find(labelPositions(:,4) >= rangeT(1) & labelPositions(:,4) <= rangeT(2));
                 end
@@ -243,6 +243,9 @@ classdef Labels < matlab.mixin.Copyable
                 labelValues = labelValues(selIndices);
                 labelPositions = labelPositions(selIndices,:);
                 indices = indices(selIndices);  
+            end
+            if size(indices, 1) < size(indices, 2)
+                indices = indices'; 
             end
         end
         
@@ -374,6 +377,8 @@ classdef Labels < matlab.mixin.Copyable
             % @endcode
             % @code obj.mibModel.I{obj.mibModel.Id}.hLabels.removeLabels(labels); // remove annotations that match labels @endcode
             % @code removeLabels(obj, labels); // Call within the class; remove annotations that match labels  @endcode
+            
+            if isempty(obj.labelPosition); return; end  % nothing to remove
             
             if nargin < 2      % remove all labels
                 choice = questdlg('Delete all annotations from the model?', 'Remove annotations', 'Delete', 'Cancel','Cancel');

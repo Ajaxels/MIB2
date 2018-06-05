@@ -10,7 +10,7 @@ classdef mibController < handle
     %
     
     properties
-        mibVersion = 'ver. 2.22 / 16.03.2018';  % ATTENTION! it is important to have the version number between "ver." and "/"
+        mibVersion = 'ver. 2.30 / 18.05.2018';  % ATTENTION! it is important to have the version number between "ver." and "/"
         % version of MIB
         mibModel
         % handles to the model
@@ -76,7 +76,7 @@ classdef mibController < handle
         
         menuFilePreference_Callback(obj)        % callback to MIB->Menu->File->Preferences...
         
-        menuFileRenderFiji_Callback(obj)        % callback to MIB->Menu->File->Render volume (with Fiji)...
+        menuFileRender_Callback(obj, parameter)        % callback to MIB->Menu->File->Render volume (with Fiji)...
         
         menuFileSaveImageAs_Callback(obj)        % callback to the mibGUI.handles.menuFileSaveImageAs, saves image to a file
         
@@ -90,9 +90,11 @@ classdef mibController < handle
         
         menuImageInvert_Callback(obj, mode)        % callback for Menu->Image->Invert image; start invert image 
         
-        menuImageMode_Callback(obj, hObject)        % callback to the Menu->Image->Mode, convert image to different formats
+        menuImageMode_Callback(obj, hObject)        % callback to Menu->Image->Mode, convert image to different formats
         
-        menuImageToolsProjection_Callback(obj)      % callback for the Menu->Image->Tools->Intensity projection
+        menuImageToolsArithmetics_Callback(obj)     % callback for Menu->Image->Tools->Image Arithmetics
+        
+        menuImageToolsProjection_Callback(obj)      % callback for Menu->Image->Tools->Intensity projection
         
         menuMaskClear_Callback(obj)        % callback to Menu->Mask->Clear mask, clear the Mask layer
         
@@ -236,9 +238,11 @@ classdef mibController < handle
         
         mibSegmentationBrush(obj, y, x, modifier)        % do segmentation using the brush tool
         
-        mibSegmentationLasso(obj, modifier)        % Do segmentation using the lasso tool
+        mibSegmentationLasso(obj, modifier)        % do segmentation using the lasso tool
         
-        mibSegmentationLassoManual(obj, modifier)        % Do manual segmentation using the lasso tool in the manual mode
+        mibSegmentationLassoManual(obj, modifier)        % do manual segmentation using the lasso tool in the manual mode
+        
+        mibSegmentationLines3D(obj, y, x, z, modifier)      % do segmentation using 3D lines
         
         mibSegmentationMagicWand(obj, yxzCoordinate, modifier)        % Do segmentation using the Magic Wand tool
         
@@ -464,6 +468,7 @@ classdef mibController < handle
 
             obj.mibModel.mibLiveStretchCheck = obj.mibView.handles.mibLiveStretchCheck.Value;   % enable/disable live stretching of image intensities
             obj.mibModel.mibShowAnnotationsCheck = obj.mibView.handles.mibShowAnnotationsCheck.Value;   % enable/disable live stretching of image intensities
+            obj.mibModel.mibShowLines3DCheck = obj.mibView.handles.mibShowLines3DCheck.Value;   % enable/disable show of 3D lines
             obj.mibModel.mibAnnValueEccentricCheck = obj.mibView.handles.mibAnnValueEccentricCheck.Value;   % enable value-eccentric annotations, @b 0 - annotation text first, value second; @b 1 - annotation value first, text - second
             obj.mibModel.mibAnnValuePrecision = 0;   % precision of annotation values, an integer from 0 and above
             obj.mibModel.mibAnnMarkerEdit = 'label + value';
@@ -498,6 +503,10 @@ classdef mibController < handle
             % update version specific elements
             if obj.matlabVersion < 9
                 obj.mibView.handles.mibSegmThresPanelAdaptiveCheck.Enable = 'off';
+            elseif obj.matlabVersion < 8.6  % remove 3D lines
+                segmToolsList = obj.mibView.handles.mibSegmentationToolPopup.String;
+                segmToolsList(ismember(segmToolsList, '3D lines')) = [];
+                obj.mibView.handles.mibSegmentationToolPopup.String = segmToolsList;
             end
             
             % update filters panel

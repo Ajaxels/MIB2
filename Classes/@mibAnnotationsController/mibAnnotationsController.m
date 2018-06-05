@@ -349,52 +349,10 @@ classdef mibAnnotationsController < handle
             % Indices: index of the selected cell, returned by
             % eventdata.Indices structure of GUI
             
-            if obj.View.handles.jumpCheck.Value == 1  % jump to the selected annotation
-                if isempty(Indices); return; end
-                rowId = Indices(1);
-                data = obj.View.handles.annotationTable.Data;    % get table contents
-                if size(data,1) < rowId; return; end
-                
-                getDim.blockModeSwitch = 0;
-                [imgH, imgW, ~, imgZ] = obj.mibModel.getImageMethod('getDatasetDimensions', NaN, 'image', NaN, NaN, getDim);
-                orientation = obj.mibModel.getImageProperty('orientation');
-                if orientation == 4   % xy
-                    z = str2double(data{rowId, 3});
-                    x = str2double(data{rowId, 4});
-                    y = str2double(data{rowId, 5});
-                elseif orientation == 1   % zx
-                    z = str2double(data{rowId, 5});
-                    x = str2double(data{rowId, 3});
-                    y = str2double(data{rowId, 4});
-                elseif orientation == 2   % zy
-                    z = str2double(data{rowId, 5});
-                    x = str2double(data{rowId, 3});
-                    y = str2double(data{rowId, 5});
-                end
-                t = str2double(data{rowId, 6});
-                % do not jump when the label out of image boundaries
-                if x>imgW || y>imgH || z>imgZ
-                    warndlg('The annotation is outside of the image boundaries!', 'Wrong coordinates');
-                    return;
-                end
-                
-                % move image-view to the object
-                obj.mibModel.I{obj.mibModel.Id}.moveView(x, y);
-                
-                % change t
-                if obj.mibModel.getImageProperty('time') > 1
-                    eventdata = ToggleEventData(floor(t));
-                    notify(obj.mibModel, 'updateTimeSlider', eventdata);
-                end
-                % change z
-                if size(obj.mibModel.I{obj.mibModel.Id}.img{1}, orientation) > 1
-                    eventdata = ToggleEventData(floor(z));
-                    notify(obj.mibModel, 'updateLayerSlider', eventdata);
-                else
-                    notify(obj.mibModel, 'plotImage');
-                end
-            end
             obj.indices = Indices;
+            if obj.View.handles.jumpCheck.Value == 1  % jump to the selected annotation
+                obj.tableContextMenu_cb('Jump')
+            end
         end
         
         function annotationTable_CellEditCallback(obj, Indices)
@@ -486,27 +444,27 @@ classdef mibAnnotationsController < handle
                     obj.updateWidgets();
                     notify(obj.mibModel, 'plotImage');  % notify to plot the image
                 case 'Jump'     % jump to the highlighted annotation
+                    tic
                     if isempty(obj.indices); return; end
-                    data = obj.View.handles.annotationTable.Data;
-                    if isempty(data); return; end
+                    if isempty(obj.View.handles.annotationTable.Data); return; end
                     
                     rowId = obj.indices(1);
                     getDim.blockModeSwitch = 0;
                     [imgH, imgW, ~, imgZ] = obj.mibModel.getImageMethod('getDatasetDimensions', NaN, 'image',NaN,NaN,getDim);
                     if orientation == 4   % xy
-                        z = str2double(data{rowId, 3});
-                        x = str2double(data{rowId, 4});
-                        y = str2double(data{rowId, 5});
+                        z = str2double(obj.View.handles.annotationTable.Data{rowId, 3});
+                        x = str2double(obj.View.handles.annotationTable.Data{rowId, 4});
+                        y = str2double(obj.View.handles.annotationTable.Data{rowId, 5});
                     elseif orientation == 1   % zx
-                        z = str2double(data{rowId, 5});
-                        x = str2double(data{rowId, 3});
-                        y = str2double(data{rowId, 4});
+                        z = str2double(obj.View.handles.annotationTable.Data{rowId, 5});
+                        x = str2double(obj.View.handles.annotationTable.Data{rowId, 3});
+                        y = str2double(obj.View.handles.annotationTable.Data{rowId, 4});
                     elseif orientation == 2   % zy
-                        z = str2double(data{rowId, 4});
-                        x = str2double(data{rowId, 3});
-                        y = str2double(data{rowId, 5});
+                        z = str2double(obj.View.handles.annotationTable.Data{rowId, 4});
+                        x = str2double(obj.View.handles.annotationTable.Data{rowId, 3});
+                        y = str2double(obj.View.handles.annotationTable.Data{rowId, 5});
                     end
-                    t = str2double(data{rowId, 6});
+                    t = str2double(obj.View.handles.annotationTable.Data{rowId, 6});
                     % do not jump when the label out of image boundaries
                     if x>imgW || y>imgH || z>imgZ
                         warndlg('The annotation is outside of the image boundaries!', 'Wrong coordinates');
@@ -518,16 +476,17 @@ classdef mibAnnotationsController < handle
                     
                     % change t
                     if obj.mibModel.getImageProperty('time') > 1
-                        eventdata = ToggleEventData(floor(t));
+                        eventdata = ToggleEventData(round(t));
                         notify(obj.mibModel, 'updateTimeSlider', eventdata);
                     end
                     % change z
                     if size(obj.mibModel.I{obj.mibModel.Id}.img{1}, orientation) > 1
-                        eventdata = ToggleEventData(floor(z));
+                        eventdata = ToggleEventData(round(z));
                         notify(obj.mibModel, 'updateLayerSlider', eventdata);
                     else
                         notify(obj.mibModel, 'plotImage');
                     end
+                    toc
                 case 'Count'    % count selected annotations
                     if isempty(obj.indices); return; end
                     data = obj.View.handles.annotationTable.Data;
@@ -540,13 +499,14 @@ classdef mibAnnotationsController < handle
                     totalValues = sum(labelsValues);
                     uniqLabels = unique(labelsList);
                     
-                    output = sprintf('Counting annotations:\n');
+                    output = sprintf('----------------------------------------------------------:\n');
+                    output = [output sprintf('Counting annotations:\n')];
                     output = [output sprintf('Total number of selected annotation categories: %d\n', numel(annIds))];
                     output = [output sprintf('Total number of selected annotation values: %f\n', totalValues)];
                     for labelId=1:numel(uniqLabels)
                         posIds = ismember(labelsList, uniqLabels(labelId));
                         Occurrence = sum(labelsValues(posIds));
-                        output = [output sprintf('%s: %f (%.3f percents)\n', uniqLabels{labelId}, Occurrence, Occurrence/totalValues*100)]; %#ok<AGROW>
+                        output = [output sprintf('%s: %f (%.3f percent)\n', uniqLabels{labelId}, Occurrence, Occurrence/totalValues*100)]; %#ok<AGROW>
                     end
                     fprintf(output);
                     clipboard('copy', output);
@@ -584,7 +544,7 @@ classdef mibAnnotationsController < handle
                         obj.imarisOptions.radii = (max(labelPositions(:, 1))-min(labelPositions(:, 1)))/50/max(labelValues);
                     end
                     prompt = {'Radius scaling factor for spots:', sprintf('Color [R, G, B, A]\nrange from 0 to 1'), 'Name for spots:'};
-                    defAns = {num2str(obj.imarisOptions.radii), num2str(obj.imarisOptions.color), obj.imarisOptions.name};
+                    defAns = {num2str(obj.imarisOptions.radii), num2str(obj.imarisOptions.color), labelText{1}};
                     
                     answer = mibInputMultiDlg({mibPath}, prompt, defAns, 'Export to Imaris');
                     if isempty(answer); return; end

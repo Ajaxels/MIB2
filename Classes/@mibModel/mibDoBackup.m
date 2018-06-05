@@ -5,7 +5,8 @@ function mibDoBackup(obj, type, switch3d, getDataOptions)
 % The dataset is stored in imageUndo class
 % 
 % Parameters:
-% type: ''image'', ''selection'', ''mask'', ''model'', 'labels', ''everything'' (for mibImage.modelType==63 only)
+% type: ''image'', ''selection'', ''mask'', ''model'', 'labels',
+% ''everything'' (for mibImage.modelType==63 only), ''lines3d'', ''labels''
 % switch3d: - a switch to define a 2D or 3D mode to store the dataset dataset
 % - @b 0 - 2D slice
 % - @b 1 - 3D dataset
@@ -34,6 +35,12 @@ function mibDoBackup(obj, type, switch3d, getDataOptions)
 % cancel if the undo system is disabled
 if obj.U.enableSwitch == 0; return; end
 if nargin < 4; getDataOptions = struct(); end
+
+if strcmp(type, 'lines3d')
+    obj.U.store(type, {copy(obj.I{obj.Id}.hLines3D)});
+    return;
+end
+
 % replace types 'selection','mask','model' to 'everything' for uint6 models
 if obj.I{obj.Id}.modelType == 63
     if strcmp(type, 'selection') || strcmp(type, 'mask') || strcmp(type, 'model')

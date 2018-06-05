@@ -69,6 +69,8 @@ classdef mibMeasure < matlab.mixin.Copyable
     end
     
     events
+        addMeasurement
+        % add a new measurement, when the Measure Tool is displayed
         updatePosition
         % update coordinates of measurements
     end

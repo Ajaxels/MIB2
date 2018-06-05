@@ -22,7 +22,7 @@ tool = cell2mat(txt(val));
 tool = strtrim(tool);   % remove ending space
 switch3d = obj.mibView.handles.mibActions3dCheck.Value;     % use filters in 3d
 xy = obj.mibView.handles.mibImageAxes.CurrentPoint;
-seltype = obj.mibView.gui.SelectionType; 
+seltype = obj.mibView.gui.SelectionType;
 modifier = obj.mibView.gui.CurrentModifier;
 % swap left and right mouse buttons check
 if strcmp(obj.mibView.handles.toolbarSwapMouse.State, 'on')
@@ -59,7 +59,7 @@ if strcmp(seltype,'normal') %& strcmp(modifier,'alt')
     % check for the mouse inside the image axes
     xlim = obj.mibView.handles.mibImageAxes.XLim;
     ylim = obj.mibView.handles.mibImageAxes.YLim;
-    if xy(1,1) < xlim(1) || xy(1,2) < ylim(1) || xy(1,1) > xlim(2) || xy(1,2) > ylim(2); return; end;
+    if xy(1,1) < xlim(1) || xy(1,2) < ylim(1) || xy(1,1) > xlim(2) || xy(1,2) > ylim(2); return; end
     
     if ishandle(obj.mibView.cursor)
        obj.mibView.cursor.Visible = 'off';
@@ -146,6 +146,15 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
             % 3D ball: filled shere in 3d with a center at the clicked point
             [w, h, z] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 0);
             obj.mibSegmentation3dBall(ceil(h), ceil(w), ceil(z), modifier);
+        case '3D lines'
+            [w, h, z] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 0);
+            obj.mibSegmentationLines3D(h, w, z, modifier);
+            
+            if obj.mibView.handles.mibSegmTrackRecenterCheck.Value == 1 && isempty(modifier)  % recenter the view
+                obj.mibModel.I{obj.mibModel.Id}.moveView(w, h);
+            end
+            obj.plotImage();
+            return;
         case 'Annotations'
             % add text annotation
             [w, h, z, t] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 0);
@@ -201,7 +210,7 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
                 modifier = 'shift'; 
             elseif strcmp(modifier, 'shift')
                 modifier = [];
-            end;
+            end
             
             if subTool == 1
                 obj.mibSegmentationMagicWand(ceil(yxzCoordinate), modifier);
@@ -224,7 +233,7 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
                 obj.mibSegmentationObjectPicker(ceil(yxzCoordinate), modifier);
             catch err
             end
-            if obj.mibView.handles.mibFilterSelectionPopup.Value == 6; return; end;     % return when using the Brush tool
+            if obj.mibView.handles.mibFilterSelectionPopup.Value == 6; return; end     % return when using the Brush tool
         case 'Membrane ClickTracker'
             % Trace membranes
             if switch3d
@@ -236,7 +245,16 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
             yx(1) = xy(1,2);
             yx(2) = xy(1,1);
             output = obj.mibSegmentationMembraneClickTraker(ceil(yxzCoordinate), yx, modifier);
-            if strcmp(output, 'return'); return; end;
+            if strcmp(output, 'return')
+%                 if obj.mibView.handles.mibSegmTrackRecenterCheck.Value == 1     % recenter the view
+%                     obj.mibModel.I{obj.mibModel.Id}.moveView(w, h);
+%                     obj.plotImage(); 
+%                 end
+                return; 
+            end
+            if obj.mibView.handles.mibSegmTrackRecenterCheck.Value == 1 && isempty(modifier)  % recenter the view
+                obj.mibModel.I{obj.mibModel.Id}.moveView(w, h);
+            end
         case 'Spot'
             % The spot mode: draw a circle after mouse click
             [w, h, z] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 1);

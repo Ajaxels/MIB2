@@ -47,6 +47,8 @@ classdef mibMeasureToolController < handle
                         % show preview of the intensity profile
                         obj.previewIntensityProfile();
                     end
+                case 'addMeasurement'
+                    obj.addBtn_Callback();
             end
         end
     end
@@ -65,8 +67,8 @@ classdef mibMeasureToolController < handle
             % add listner to obj.mibModel and call controller function as a callback
             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
             obj.listener{2} = addlistener(obj.mibModel, 'undoneBackup', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
-            
             obj.listener{3} = addlistener(obj.mibModel.I{obj.mibModel.Id}.hMeasure, 'updatePosition', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
+            obj.listener{4} = addlistener(obj.mibModel.I{obj.mibModel.Id}.hMeasure, 'addMeasurement', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
         end
         
         function closeWindow(obj)

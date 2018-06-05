@@ -1,5 +1,5 @@
-function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list, modelMaterialNames, overwrite, showWaitbar)
-% function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list, modelMaterialNames, overwrite, showWaitbar)
+function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list, modelMaterialNames, overwrite, showWaitbar, extraOptions)
+% function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list, modelMaterialNames, overwrite, showWaitbar, extraOptions)
 % Convert matrix [1:height, 1:width, 1:no_stacks] to Amira Mesh Labels
 %
 % Parameters:
@@ -19,6 +19,8 @@ function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list
 % materials, can be empty 
 % overwrite: [@em optional], if @b 1 do not check whether file with provided filename already exists
 % showWaitbar: [@em optional], if @b 1 - show the wait bar, if @b 0 - do not show
+% extraOptions: [@em optional], a structure with additional paramters
+% .TransformationMatrix - a string with the transformation matrix
 %
 % Return values:
 % result: result of the function run, @b 1 - success, @b 0 - fail
@@ -35,6 +37,7 @@ function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list
 % 02.09.2011 - added minimal coordinates of the bounding box
 % 07.07.2016 - added possibility to have color_list and modelMaterialNames empty
 % 15.03.2018, IB added saving of models with more than 255 materials
+% 04.06.2018 save TransformationMatrix with AmiraMesh
 
 result = 0;
 %warning('off','MATLAB:gui:latexsup:UnableToInterpretTeXString');    % switch off warnings for latex
@@ -45,6 +48,7 @@ minValRLE = 1;  % minimal value for using RLE compression
 if nargin < 2
     error('Please provide filename, and bitmap matrix!');
 end
+if nargin < 9;    extraOptions = struct(); end
 if nargin < 8   % add waitbar switch
     showWaitbar = 1;
 end
@@ -152,7 +156,14 @@ fprintf(fid,'    BoundingBox %f %f %f %f %f %f,\n',...
     voxel.minx, voxel.minx+(size(bitmap,2)-1)*voxel.x,...
     voxel.miny, voxel.miny+(size(bitmap,1)-1)*voxel.y,...
     voxel.minz, voxel.minz+(size(bitmap,3)-1)*voxel.z);
-fprintf(fid,'    CoordType "uniform"\n');
+fprintf(fid,'    CoordType "uniform"');
+
+if isfield(extraOptions, 'TransformationMatrix')    % save transformation matrix
+    fprintf(fid,'\tTransformationMatrix %s\n', extraOptions.TransformationMatrix);
+else
+    fprintf(fid,'\n');
+end
+
 fprintf(fid,'}\n\n');
 % reshape the matrix into a vector
 bitmap = reshape(permute(bitmap,[2 1 3]),1,[])';

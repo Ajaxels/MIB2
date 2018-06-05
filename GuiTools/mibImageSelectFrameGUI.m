@@ -17,7 +17,7 @@ function varargout = mibImageSelectFrameGUI(varargin)
 
 % Edit the above text to modify the response to help mibImageSelectFrameGUI
 
-% Last Modified by GUIDE v2.5 19-Jun-2017 14:49:40
+% Last Modified by GUIDE v2.5 03-May-2018 17:09:20
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;

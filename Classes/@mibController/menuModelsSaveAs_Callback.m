@@ -15,7 +15,7 @@ function menuModelsSaveAs_Callback(obj, parameter)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 04.06.2018 save TransformationMatrix with AmiraMesh
 
 if nargin < 2; parameter = 'save'; end
 
@@ -163,6 +163,13 @@ else
             model = model*multCoefficient;
         end
         
+        % add TransformationMatrix for saving with AmiraMesh
+        if isKey(obj.mibModel.I{obj.mibModel.Id}.meta, 'TransformationMatrix')
+            extraOptions.TransformationMatrix = obj.mibModel.I{obj.mibModel.Id}.meta('TransformationMatrix');
+        else
+            extraOptions = struct();
+        end
+        
         if FilterIndex == 2     % Amira mesh binary RLE compression
             bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
             pixStr = obj.mibModel.I{obj.mibModel.Id}.pixSize;
@@ -170,7 +177,7 @@ else
             pixStr.miny = bb(3);
             pixStr.minz = bb(5);
             showWaitbar = ~showLocalWaitbar;  % show or not waitbar in bitmap2amiraMesh
-            bitmap2amiraLabels(fullfile(path, fnOut), model, 'binaryRLE', pixStr, color_list, modelMaterialNames, 1, showWaitbar);
+            bitmap2amiraLabels(fullfile(path, fnOut), model, 'binaryRLE', pixStr, color_list, modelMaterialNames, 1, showWaitbar, extraOptions);
         elseif FilterIndex == 3     % Amira mesh binary
             bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
             pixStr = obj.mibModel.I{obj.mibModel.Id}.pixSize;
@@ -178,7 +185,7 @@ else
             pixStr.miny = bb(3);
             pixStr.minz = bb(5);
             showWaitbar = ~showLocalWaitbar;  % show or not waitbar in bitmap2amiraMesh
-            bitmap2amiraLabels(fullfile(path, fnOut), model, 'binary', pixStr, color_list, modelMaterialNames, 1, showWaitbar);
+            bitmap2amiraLabels(fullfile(path, fnOut), model, 'binary', pixStr, color_list, modelMaterialNames, 1, showWaitbar, extraOptions);
         elseif FilterIndex == 4     % Amira mesh ascii
             bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
             pixStr = obj.mibModel.I{obj.mibModel.Id}.pixSize;
@@ -186,7 +193,7 @@ else
             pixStr.miny = bb(3);
             pixStr.minz = bb(5);
             showWaitbar = ~showLocalWaitbar;  % show or not waitbar in bitmap2amiraMesh
-            bitmap2amiraLabels(fullfile(path, fnOut), model, 'ascii', pixStr, color_list, modelMaterialNames, 1, showWaitbar);
+            bitmap2amiraLabels(fullfile(path, fnOut), model, 'ascii', pixStr, color_list, modelMaterialNames, 1, showWaitbar, extraOptions);
         elseif FilterIndex == 5 || FilterIndex == 12          % hdf5 format
             if t==t1    % getting parameters for saving dataset
                 options = mibSaveHDF5Dlg(obj.mibModel.I{obj.mibModel.Id});

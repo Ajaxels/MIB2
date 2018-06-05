@@ -375,13 +375,14 @@ classdef mibPreferencesController < handle
             
             % position: define the row to be selected
             colergen = @(color,text) ['<html><table border=0 width=40 bgcolor=',color,'><TR><TD>',text,'</TD></TR> </table></html>'];
-            data = cell([size(obj.preferences.modelMaterialColors, 1), 4]);
-            for colorId = 1:size(obj.preferences.modelMaterialColors, 1)
-                data{colorId, 1} = round(obj.preferences.modelMaterialColors(colorId, 1)*255);
-                data{colorId, 2} = round(obj.preferences.modelMaterialColors(colorId, 2)*255);
-                data{colorId, 3} = round(obj.preferences.modelMaterialColors(colorId, 3)*255);
+            modelMaterialColors_local = obj.preferences.modelMaterialColors(1:min([255, size(obj.preferences.modelMaterialColors, 1)]),:);
+            data = cell([size(modelMaterialColors_local, 1), 4]);
+            for colorId = 1:size(modelMaterialColors_local, 1)
+                data{colorId, 1} = round(modelMaterialColors_local(colorId, 1)*255);
+                data{colorId, 2} = round(modelMaterialColors_local(colorId, 2)*255);
+                data{colorId, 3} = round(modelMaterialColors_local(colorId, 3)*255);
                 data{colorId, 4} = colergen(sprintf('''rgb(%d, %d, %d)''', ...
-                    round(obj.preferences.modelMaterialColors(colorId, 1)*255), round(obj.preferences.modelMaterialColors(colorId, 2)*255), round(obj.preferences.modelMaterialColors(colorId, 3)*255)),'&nbsp;');  % rgb(0,255,0)
+                    round(modelMaterialColors_local(colorId, 1)*255), round(modelMaterialColors_local(colorId, 2)*255), round(modelMaterialColors_local(colorId, 3)*255)),'&nbsp;');  % rgb(0,255,0)
             end
             obj.View.handles.modelsColorsTable.Data = data;
             obj.View.handles.modelsColorsTable.ColumnWidth = {39 40 39 32};
@@ -444,6 +445,11 @@ classdef mibPreferencesController < handle
             
             obj.mibController.toolbarInterpolation_ClickedCallback('keepcurrent');     % update the interpolation button icon
             obj.mibController.toolbarResizingMethod_ClickedCallback('keepcurrent');
+            
+            % update imaris path using IMARISPATH enviromental variable
+            if ~isempty(obj.mibModel.preferences.dirs.imarisInstallationPath)
+                setenv('IMARISPATH', obj.mibModel.preferences.dirs.imarisInstallationPath);
+            end
             
             notify(obj.mibModel, 'plotImage');
         end

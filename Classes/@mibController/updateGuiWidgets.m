@@ -80,9 +80,17 @@ switch obj.mibModel.I{obj.mibModel.Id}.modelType
     case 4294967295
         obj.mibView.handles.menuModelsType4294967295.Checked = 'on';         
 end
+
+% on PC path is file://c:/...
+% on Mac file:///Volumes/Transcend/...
+if ispc
+    fileText = 'file:/';
+else
+    fileText = 'file://';
+end
 if obj.mibModel.getImageProperty('modelType') < 256
     %obj.mibView.handles.mibAddMaterialBtn.String = '+';
-    btnText = strrep(['file:/' fullfile(mibPath, 'Resources', 'plus.png')],'\','/'); 
+    btnText = strrep([fileText fullfile(mibPath, 'Resources', 'plus.png')],'\','/'); 
     btnText = ['<html><img src="' btnText '"/></html>']; 
     obj.mibView.handles.mibAddMaterialBtn.String = btnText;
     obj.mibView.handles.mibAddMaterialBtn.TooltipString = 'press to add Material to the model';
@@ -90,7 +98,7 @@ if obj.mibModel.getImageProperty('modelType') < 256
     obj.mibView.handles.mibSegmShowTypePopup.Enable = 'on';
 else
     %obj.mibView.handles.mibAddMaterialBtn.String = 'E';
-    btnText = strrep(['file:/' fullfile(mibPath, 'Resources', 'next.png')],'\','/'); 
+    btnText = strrep([fileText fullfile(mibPath, 'Resources', 'next.png')],'\','/'); 
     btnText = ['<html><img src="' btnText '"/></html>']; 
     obj.mibView.handles.mibAddMaterialBtn.String = btnText;
     obj.mibView.handles.mibAddMaterialBtn.TooltipString = 'press to find and select the next empty material';

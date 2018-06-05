@@ -1,6 +1,7 @@
 function res = surf2amiraHyperSurface(filename, surface, options)
 % generate amira Hypersurface Ascii file
-% in:
+% 
+% Parameters:
 % filename - filename to save data
 % surface - structure with surface information
 %       .vertices - coordinates of vertices [Nx3]
@@ -9,8 +10,17 @@ function res = surf2amiraHyperSurface(filename, surface, options)
 %   .overwrite - 1-automatically overwrite existing files
 %   .format - a string with format: 'binary' or 'ascii'
 %   
+% Return values:
+% res: result of the function run, @b 1 - success, @b 0 - fail
 
-% Ilya Belevich (c) 2010 ajaxel@gmail.com
+% Copyright (C) 2010 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% This program is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public License
+% as published by the Free Software Foundation; either version 2
+% of the License, or (at your option) any later version.
+%
+% Updates
 % 19.05.2017, IB added options structure
 
 res = 0;
@@ -27,7 +37,7 @@ if ~isfield(options, 'format'); options.format = 'ascii'; end
 if options.overwrite == 0
     if exist(filename,'file') == 2
         button = questdlg(sprintf('The file already exist!!!\nOverwrite?'), 'Overwrite', 'Yes', 'No', 'No');
-        if ~strcmp(button, 'No'); return; end
+        if strcmp(button, 'No'); return; end
     end
 end
 

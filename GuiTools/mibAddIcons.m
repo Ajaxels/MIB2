@@ -15,12 +15,20 @@ function mibAddIcons(handles)
 % add icons to buttons
 global mibPath;
 
-btnText = strrep(['file:/' fullfile(mibPath, 'Resources', 'minus.png')],'\','/'); 
+% on PC path is file://c:/...
+% on Mac file:///Volumes/Transcend/...
+if ispc
+    fileText = 'file:/';
+else
+    fileText = 'file://';
+end
+
+btnText = strrep([fileText fullfile(mibPath, 'Resources', 'minus.png')],'\','/'); 
 btnText = ['<html><img src="' btnText '"/></html>']; 
 handles.mibRemoveMaterialBtn.String = btnText;
 
 % add icon to the preview button
-btnText = strrep(['file:/' fullfile(mibPath, 'Resources', 'settings.png')],'\','/'); 
+btnText = strrep([fileText fullfile(mibPath, 'Resources', 'settings.png')],'\','/'); 
 btnText = ['<html><img src="' btnText '"/></html>']; 
 handles.mibBrushPanelInterpolationSettingsBtn.String = btnText;
 
@@ -50,17 +58,19 @@ drawnow;    % set delay
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'omero.png')));
     Item = jFileMenu.getMenuComponent(3);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'chop.png')));
-    Item = jFileMenu.getMenuComponent(5);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'exportmatlab2.png')));
+    Item = jFileMenu.getMenuComponent(4);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'shuffle.png')));
     Item = jFileMenu.getMenuComponent(6);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'saveas.png')));
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'exportmatlab2.png')));
     Item = jFileMenu.getMenuComponent(7);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'makevideo.png')));
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'saveas.png')));
     Item = jFileMenu.getMenuComponent(8);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'makevideo.png')));
+    Item = jFileMenu.getMenuComponent(9);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'snapshot.png')));
-    Item = jFileMenu.getMenuComponent(10);
+    Item = jFileMenu.getMenuComponent(11);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'render.png')));
-    Item = jFileMenu.getMenuComponent(12);
+    Item = jFileMenu.getMenuComponent(13);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'preferences.png')));
     
 jDatasetMenu = jMenuBar.getComponent(1);
@@ -102,7 +112,7 @@ drawnow;    % set delay
     Item = jImageMenu.getMenuComponent(5);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'tools.png')));
     Item = jImageMenu.getMenuComponent(6);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'tophat.png')));
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'morph_ops.png')));
     Item = jImageMenu.getMenuComponent(8);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'intensity.png')));
     
@@ -169,7 +179,7 @@ drawnow;    % set delay
     Item = jSelMenu.getMenuComponent(1);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'copylayers.png')));       
     Item = jSelMenu.getMenuComponent(2);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'morph.png'))); 
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'morph_ops.png'))); 
     Item = jSelMenu.getMenuComponent(4);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'expand.png')));
     Item = jSelMenu.getMenuComponent(5);

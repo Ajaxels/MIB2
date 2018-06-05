@@ -36,7 +36,9 @@ classdef mibImage < matlab.mixin.Copyable
         height
         % image height, px
         hLabels
-        % a handle to class to keep annotations
+        % a handle to class for keeping annotations
+        hLines3D
+        % a handle to class for keeping 3D Lines and skeletons
         hMeasure
         % a handle to class to keep measurements
         hROI
@@ -172,6 +174,10 @@ classdef mibImage < matlab.mixin.Copyable
         
         PixelIdxList = convertPixelIdxListCrop2Full(obj, PixelIdxListCrop, options)  % convert PixelIdxList of the cropped dataset to PixelIdxList of the full  dataset, only for 4D datasets (h, w, depth, time)
         
+        [x, y, z] = convertPixelsToUnits(obj, x, y, z)  % convert pixel with x, y, z coordinate to the physical imaging units
+        
+        [x, y, z] = convertUnitsToPixels(obj, x, y, z)  % convert coordinate in physical units to pixels
+        
         copyColorChannel(obj, channel1, channel2)        % Copy intensity from the first color channel (@em channel1) to the position of the second color channel (@em channel2)
         
         result = copySlice(obj, sliceNumberFrom, sliceNumberTo, orient)        % Copy specified slice from one part of the dataset to another
@@ -206,7 +212,7 @@ classdef mibImage < matlab.mixin.Copyable
         
         index = getSelectedMaterialIndex(obj)        % return the index of the currently selected material
         
-        [labelsList, labelPositions, indices] = getSliceLabels(obj, sliceNumber, timePoint)        % Get list of labels (mibImage.hLabels) shown at the specified slice
+        [labelsList, labelValues, labelPositions, indices] = getSliceLabels(obj, sliceNumber, timePoint)        % Get list of labels (mibImage.hLabels) shown at the specified slice
         
         insertEmptyColorChannel(obj, channel1)        % Insert an empty color channel to the specified position
         

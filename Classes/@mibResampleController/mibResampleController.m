@@ -282,20 +282,20 @@ classdef mibResampleController  < handle
                 waitbar(0.95,wb);
                 obj.mibModel.I{obj.mibModel.Id}.model{1} = zeros(size(imgOut), 'uint8');  % reinitialize .model
                 
-                % shift labels
-                labelsNumber = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber();
-                if labelsNumber > 0
-                    [labelsList, labelValues, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
-                    if numel(labelsList) == 0; return; end
-                    labelPositions(:,1) =  labelPositions(:,1) * options.depth/obj.depth;
-                    labelPositions(:,2) =  labelPositions(:,2) * options.width/obj.width;
-                    labelPositions(:,3) =  labelPositions(:,3) * options.height/obj.height;
-                    obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(labelsList, labelPositions, labelValues);
-                end
-                
                 obj.mibModel.setData4D('model', imgOut, 4, NaN, options);
             elseif obj.mibModel.I{obj.mibModel.Id}.modelType == 63     % when no model, reset handles.Img{andles.Id}.I.model variable
                 obj.mibModel.I{obj.mibModel.Id}.model{1} = zeros([size(imgOut,1), size(imgOut,2), size(imgOut,4) size(imgOut,5)], 'uint8');    % clear the old model
+            end
+            
+            % shift annotations
+            labelsNumber = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber();
+            if labelsNumber > 0
+                [labelsList, labelValues, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
+                if numel(labelsList) == 0; return; end
+                labelPositions(:,1) =  labelPositions(:,1) * options.depth/obj.depth;
+                labelPositions(:,2) =  labelPositions(:,2) * options.width/obj.width;
+                labelPositions(:,3) =  labelPositions(:,3) * options.height/obj.height;
+                obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(labelsList, labelPositions, labelValues);
             end
             
             % resampling ROIS

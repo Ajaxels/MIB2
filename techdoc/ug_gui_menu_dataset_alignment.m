@@ -3,8 +3,11 @@
 % separate datasets. 
 % 
 % <html>
-% A demonstration is available in the following video:<br>
-% <a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-qwoO5z02aA</a>
+% A demonstration is available in the following videos:<br>
+% <a href="https://youtu.be/-qwoO5z02aA"><img
+% style="vertical-align:middle;" src="images\youtube2.png">
+% https://youtu.be/-qwoO5z02aA</a><br>
+% <a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube2.png">Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a>
 % </html>
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_dataset.html *Dataset*>
@@ -58,11 +61,23 @@
 %       </td>
 %     </tr>
 %     <tr>
+%       <td><b>Landmarks, multi points</b></td>
+%       <td>Landmarks, multi points align datasets based on marked points.
+%       The points for alignment can be selected using the Selection layer or Annotations
+%       (<em>recommended</em>), where the corresponding points should have
+%       the same name. A table below indicates various transformation
+%       types:<br>
+%       <img src="images/menuDatasetAlignToolLandmarkModes.jpg">
+%       </td>
+%     </tr>
+%     <tr>
 %       <td><b>Three landmark points</b></td>
-%       <td>Three landmark points mode is another manual mode, where user should mark
-%       three corresponding areas on two consequetive slices using the brush tool. 
-%       During alignment the images will be translated/scaled/rotated to
-%       align the marked areas 
+%       <td><b>It is recommended to use the <em>Landmarks, multi points mode</em> instead!</b><br>
+%           Three landmark points mode is another manual mode, where user should mark
+%           three corresponding areas on two consequetive slices using the brush tool. 
+%           During alignment the images will be translated/scaled/rotated to
+%           align the marked areas 
+%       </td>
 %     </tr>
 %     </table>
 %   </li>

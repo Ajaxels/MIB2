@@ -137,7 +137,7 @@ obj.mibModel.preferences.gui.uitable = 1;   % scaling uicontrol
 obj.mibModel.preferences.gui.uicontrol = 1;   % scaling uicontrol
 
 % define keyboard shortcuts
-maxShortCutIndex = 29;  % total number of shortcuts
+maxShortCutIndex = 30;  % total number of shortcuts
 obj.mibModel.preferences.KeyShortcuts.shift(1:maxShortCutIndex) = 0;
 obj.mibModel.preferences.KeyShortcuts.control(1:maxShortCutIndex) = 0;
 obj.mibModel.preferences.KeyShortcuts.alt(1:maxShortCutIndex) = 0;
@@ -237,10 +237,13 @@ obj.mibModel.preferences.KeyShortcuts.Key{28} = 'f';
 obj.mibModel.preferences.KeyShortcuts.Action{28} = 'Find material under cursor';
 obj.mibModel.preferences.KeyShortcuts.control(28) = 1;
 
-obj.mibModel.preferences.KeyShortcuts.Key{maxShortCutIndex} = 'v';
-obj.mibModel.preferences.KeyShortcuts.Action{maxShortCutIndex} = 'Paste buffered selection to all slices';
-obj.mibModel.preferences.KeyShortcuts.control(maxShortCutIndex) = 1;
-obj.mibModel.preferences.KeyShortcuts.shift(maxShortCutIndex) = 1;
+obj.mibModel.preferences.KeyShortcuts.Key{29} = 'v';
+obj.mibModel.preferences.KeyShortcuts.Action{29} = 'Paste buffered selection to all slices';
+obj.mibModel.preferences.KeyShortcuts.control(29) = 1;
+obj.mibModel.preferences.KeyShortcuts.shift(29) = 1;
+% add a new key shortcut to the end of the list
+obj.mibModel.preferences.KeyShortcuts.Key{maxShortCutIndex} = 'm';
+obj.mibModel.preferences.KeyShortcuts.Action{maxShortCutIndex} = 'Add measurement (Measure tool)';
 
 obj.mibModel.preferences.recentDirs = {};
 
@@ -407,6 +410,23 @@ if ~isfield(obj.mibModel.preferences.dirs, 'bm4dInstallationPath')
 end
 if ~isdeployed && isdir(obj.mibModel.preferences.dirs.bm4dInstallationPath)    
     addpath(obj.mibModel.preferences.dirs.bm4dInstallationPath); 
+end
+
+% set imaris path
+if ~isfield(obj.mibModel.preferences.dirs, 'imarisInstallationPath')
+    obj.mibModel.preferences.dirs.imarisInstallationPath = [];
+    res = getenv('IMARISPATH');
+    if isempty(res)
+        obj.mibModel.preferences.dirs.imarisInstallationPath = [];
+    else
+        obj.mibModel.preferences.dirs.imarisInstallationPath = res;
+    end
+else
+    if isdir(obj.mibModel.preferences.dirs.imarisInstallationPath) 
+        setenv('IMARISPATH', obj.mibModel.preferences.dirs.imarisInstallationPath);
+    else
+        obj.mibModel.preferences.dirs.imarisInstallationPath = [];
+    end
 end
 
 end

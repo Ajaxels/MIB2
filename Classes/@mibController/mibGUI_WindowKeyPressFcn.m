@@ -88,6 +88,8 @@ ActionId = find(ActionId>0);    % action id is the index of the action, obj.mibM
 
 if ~isempty(ActionId) % find in the list of existing shortcuts
     switch obj.mibModel.preferences.KeyShortcuts.Action{ActionId}
+        case 'Add measurement (Measure tool)'   % add measurement, works with Measure Tool, default 'm'
+            notify(obj.mibModel.I{obj.mibModel.Id}.hMeasure, 'addMeasurement');
         case 'Switch dataset to XY orientation'         % default 'Alt + 1'
             if obj.mibModel.I{obj.mibModel.Id}.orientation == 4 || isnan(inImage) %|| x < 1 || x > handles.Img{handles.Id}.I.no_stacks;
                 return;

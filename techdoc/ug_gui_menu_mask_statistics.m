@@ -28,6 +28,10 @@
 % eachother at the corners will be separated into two individual objects</li>
 % <li><b>6. The first color channel combobox </b> is used to specify color channel for image intensity analysis</li>
 % <li><b>7. The second color channel combobox</b> for correlation intensity analysis</li>
+% <li><b>8. The Units combobox</b> specify units for the results: pixels or physical units.
+% <b>Important!</b> some parameters can only be calculated in pixels;
+% in addition, calculation of certain properties (such as <em>MeridionalEccentricity, EquatorialEccentricity, MajorAxisLength, SecondAxisLength, ThirdAxisLength, EquivDiameter, Surface Area</em>) of 3D objects 
+% in physical units is correct only for isotropic voxels</li>
 % <li><b>8. The multiple properties checkbox</b> allows detection of several object properties at the same time. The properties can be selected using <b>the Define properties button</b>
 % <img src="images\MenuMaskStatisticsMultiple.png"></li>
 % <li><b>9. The Statistics table</b> contains calculated values. The objects in this window may be sorted

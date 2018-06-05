@@ -26,6 +26,7 @@ function result = bitmap2amiraMesh(filename, bitmap, img_info, options)
 % ver 1.01 - 10.02.2012, memory performance improvement
 % ver 1.02 - 07.11.2013, added .colors
 % ver 1.03 - 17.09.2014, fix for saving parameters that are in structures
+% ver 1.04 - 04.06.2018 save TransformationMatrix with AmiraMesh
 
 result = 0;
 if nargin < 2
@@ -167,7 +168,12 @@ if isKey(img_info, 'ImageDescription')
     end
 end
 fprintf(fid,'\tBoundingBox %s,\n', num2str(bb));
-fprintf(fid,'\tCoordType "uniform"\n');
+fprintf(fid,'\tCoordType "uniform"');
+if isKey(img_info, 'TransformationMatrix')    % save transformation matrix
+    fprintf(fid,'\tTransformationMatrix %s\n', num2str(img_info('TransformationMatrix')));
+else
+    fprintf(fid,'\n');
+end
 fprintf(fid,'}\n\n');
 
 if isa(bitmap(1), 'uint8')

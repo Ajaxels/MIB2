@@ -18,7 +18,7 @@ function output = regionprops3mib( input, varargin )
 %  direction of the major axis
 %  
 %  'MajorAxisLength' : returns the length of the major axis
-%  'FirstAxisLength' : returns the length of the major axis
+%  'FirstAxisLength' : returns the length of the first axis
 %  'SecondAxisLength' : returns the length of the second axis
 %
 %  'Centroid' : returns the centroid of the object
@@ -42,10 +42,10 @@ function output = regionprops3mib( input, varargin )
 % 08.11.2017, renamed to regionprops3mib to do not overlap with
 % regionprops3 released with Matlab R2017b
 
-if sum(strcmpi(varargin,'IsPixList'));
+if sum(strcmpi(varargin,'IsPixList'))
     if isstruct(input)
         pixList = input;
-    elseif length(size(input))== 2 && size(input,2) == 3;
+    elseif length(size(input))== 2 && size(input,2) == 3
         pixList.pixList = input;
     else
         error('Pixel list should be either an Mx3 matrix or a structured array of Mx3 matrix');

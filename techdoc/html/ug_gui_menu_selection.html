@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Selection Menu</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-03-18"><meta name="DC.source" content="ug_gui_menu_selection.m"><style type="text/css">
+      --><title>Selection Menu</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-06-05"><meta name="DC.source" content="ug_gui_menu_selection.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,14 +67,21 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
   </style></head><body><div class="content"><h1>Selection Menu</h1><!--introduction--><p>Actions that can be applied to the <tt>Selection</tt> layer. The <tt>Selection</tt> is one of three main segmentation layers (<tt>Model, Selection, Mask</tt>) which can be used in combibation with other layer. See more about segmentation layers in <a href="ug_gui_data_layers.html">the Data layers of Microscopy Image Browser section</a>.</p><p><img vspace="5" hspace="5" src="images\menuSelection.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Selection to Buffer</a></li><li><a href="#2">..-&gt;Mask</a></li><li><a href="#3">Morphological 2D/3D operations</a></li><li><a href="#4">Expand to mask borders</a></li><li><a href="#5">Interpolate</a></li><li><a href="#8">Replace selected area in the image</a></li><li><a href="#9">Smooth selection</a></li><li><a href="#10">Invert selection</a></li></ul></div><h2 id="1">Selection to Buffer</h2><p>Allows to Copy (<tt>Ctrl+C</tt> shortcut) the <tt>Selection</tt> of the currently shown slice to a buffer, which later can be pasted to any other slice with the <tt>Ctrl+V</tt> shortcut or to all slices (<tt>Ctrl+Shift+V</tt>). In addition there is an option to clear the buffer (<tt>Menu-&gt;Selection-&gt;Selection to Buffer-&gt;Clear</tt>); this action clears only the buffer and does not affect any of the other layers (<tt>Selection, Mask, Model</tt>).</p><h2 id="2">..-&gt;Mask</h2><p>Allows the modification of the <tt>Mask</tt> layer by the contents of the <tt>Selection</tt> layer. It is possible to replace the mask with the selection, add selection to the mask, or remove selection from the mask. This action can be applied for the currently shown slice or for the whole volume.</p><h2 id="3">Morphological 2D/3D operations</h2><p>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/L-w8eGDfUkU"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/L-w8eGDfUkU</a>
-</p><p><img vspace="5" hspace="5" src="images\MenuSelectionMorphOps.png" alt=""> </p><p>Performs 2D morphological operations on the <tt>Selection</tt> layer. See more in the description of Matlab <tt>bwmorph</tt> function. The following operations are available:</p><p>
+A brief demonstration is available in the following videos:<br>
+<a href="https://youtu.be/L-w8eGDfUkU"><img
+style="vertical-align:middle;" src="images\youtube2.png">
+https://youtu.be/L-w8eGDfUkU</a><br>
+<a href="https://youtu.be/Au4vb7max9Q"><img style="vertical-align:middle;" src="images\youtube2.png"> Skeleton for 3D objects, https://youtu.be/Au4vb7max9Q</a>
+</p><p><img vspace="5" hspace="5" src="images\MenuSelectionMorphOps.png" alt=""> </p><p>Performs morphological operations for 2D and 3D objects of the <tt>Selection</tt> layer. See more in the description of Matlab <tt>bwmorph</tt>, <tt>bwmorph3</tt> and <tt>bwskel</tt> functions. The following operations are available:</p><p>
 <ul>
-<li> <b>Branch points</b> - find branch points of skeleton;</li>
+<li> <b>Branch points</b> - (2D/3D) find branch points of skeleton;</li>
+<li> <b>Clean</b> - (3D) remove isolated voxels;</li>
 <li> <b>Diagonal fill</b> - (Diag) uses diagonal fill to eliminate 8-connectivity of thebackground;</li>
-<li> <b>Endpoints</b> - finds end points of skeleton;</li>
-<li> <b>Skeleton</b> - (Skel) with n = Inf, removes pixels on the boundaries of objects but does not allow objects to break apart. The
+<li> <b>End points</b> - (2D/3D)finds end points of skeleton;</li>
+<li> <b>Fill</b> - (3D) Fill isolated interior voxels, setting them to 1.<br>Isolated interior voxels are individual voxels that are set to 0 that are surrounded (6-connected) by voxels set to 1;</li>
+<li> <b>Majority</b> - (3D) Keep a voxel set to 1 if 14 or more voxels (the majority) in its 3-by-3-by-3, 26-connected neighborhood are set to 1; otherwise, set the voxel to 0;</li>
+<li> <b>Remove</b> - (3D) Remove interior voxels, setting it to 0.\nInterior voxels are individual voxels that are set to 1 that are surrounded (6-connected) by voxels set to 1;</li>
+<li> <b>Skeleton</b> - (Skel, 2D/3D) with n = Inf, removes pixels on the boundaries of objects but does not allow objects to break apart. The
 remaining pixels make up the image skeleton. This option preserves the Euler number;</li>
 <li> <b>Spur</b> - removes spur pixels, <em>i.e.</em> the pixels that have exactly one 8-connected neighbor. For example, spur essentially removes the endpoints of lines</li>
 <li> <b>Thin</b> - with n = Inf, thins objects to lines. It removes pixels so that an object without holes shrinks to a
@@ -82,7 +89,7 @@ minimally connected stroke, and an object with holes shrinks to a
 connected ring halfway between each hole and the outer boundary;
 this option preserves the Euler number. Use the "remove branches" option
 to remove small branches from each line profile <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a></li>
-<li> <b>Ultimate erosion</b>, performs ultimate erosion, <em>i.e.</em> object -> to point</li>
+<li> <b>Ultimate erosion</b>, (2D/3D) performs ultimate erosion, <em>i.e.</em> object -> to point</li>
 </ul>
 </p><h2 id="4">Expand to mask borders</h2><p>Each selected area will be expanded to match the borders of the mask that contains selected area.</p><h2 id="5">Interpolate</h2><p>Interpolation of the <tt>Selection</tt> layer is a method to reconstruct <tt>Selection</tt> on empty slices between two slices containing the <tt>Selection</tt> layer. Shortcut for this action is <tt>i</tt>.</p><p>There are two types of interpolators. Select the best suitable interpolator in the <a href="ug_gui_menu_file_preferences.html">Preferences dialog</a> or by pressing the Interpolator type button in the <a href="ug_gui_toolbar.html">Toolbar</a>:</p><div><ul><li><b>shape</b> - good for interpolation of the blobs (filled structures).</li></ul></div><p><img vspace="5" hspace="5" src="images/MenuSelectionInterpolationShape.jpg" alt=""> </p><p>
 A brief demonstration is available in the following video:<br>
@@ -93,7 +100,7 @@ A brief demonstration is available in the following video:<br>
 </p><p><b><i>Please note!</i></b> there should be only one object in the <tt>Selection</tt> layer on the starting and ending slices.</p><h2 id="8">Replace selected area in the image</h2><p>Replaces image intensities in the selected areas with new values. A new dialog will ask to provide new intensities, slices, and the color channels.</p><p>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/fNz1vGq7Hb0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/fNz1vGq7Hb0</a>
-</p><h2 id="9">Smooth selection</h2><p>Smoothes the <tt>Selection</tt> layer in 2D or 3D space.</p><h2 id="10">Invert selection</h2><p>Inverts the current selection for the whole dataset.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+</p><h2 id="9">Smooth selection</h2><p>Smoothes the <tt>Selection</tt> layer in 2D or 3D space.</p><h2 id="10">Invert selection</h2><p>Inverts the current selection for the whole dataset.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Selection Menu
 % Actions that can be applied to the |Selection| layer. The |Selection| is one
@@ -120,20 +127,28 @@ A brief demonstration is available in the following video:<br>
 %% Morphological 2D/3D operations
 %
 % <html>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/L-w8eGDfUkU"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/L-w8eGDfUkU</a>
+% A brief demonstration is available in the following videos:<br>
+% <a href="https://youtu.be/L-w8eGDfUkU"><img
+% style="vertical-align:middle;" src="images\youtube2.png">
+% https://youtu.be/L-w8eGDfUkU</a><br>
+% <a href="https://youtu.be/Au4vb7max9Q"><img style="vertical-align:middle;" src="images\youtube2.png"> Skeleton for 3D objects, https://youtu.be/Au4vb7max9Q</a>
 % </html>
 %
 % <<images\MenuSelectionMorphOps.png>>
 %
-% Performs 2D morphological operations on the |Selection| layer. See more in the description of Matlab |bwmorph| function. The following operations are available:
+% Performs morphological operations for 2D and 3D objects of the |Selection| layer. See more in the description of Matlab |bwmorph|, |bwmorph3| and |bwskel|
+% functions. The following operations are available:
 %
 % <html>
 % <ul>
-% <li> <b>Branch points</b> - find branch points of skeleton;</li>
+% <li> <b>Branch points</b> - (2D/3D) find branch points of skeleton;</li>
+% <li> <b>Clean</b> - (3D) remove isolated voxels;</li>
 % <li> <b>Diagonal fill</b> - (Diag) uses diagonal fill to eliminate 8-connectivity of thebackground;</li>
-% <li> <b>Endpoints</b> - finds end points of skeleton;</li>
-% <li> <b>Skeleton</b> - (Skel) with n = Inf, removes pixels on the boundaries of objects but does not allow objects to break apart. The 
+% <li> <b>End points</b> - (2D/3D)finds end points of skeleton;</li>
+% <li> <b>Fill</b> - (3D) Fill isolated interior voxels, setting them to 1.<br>Isolated interior voxels are individual voxels that are set to 0 that are surrounded (6-connected) by voxels set to 1;</li>
+% <li> <b>Majority</b> - (3D) Keep a voxel set to 1 if 14 or more voxels (the majority) in its 3-by-3-by-3, 26-connected neighborhood are set to 1; otherwise, set the voxel to 0;</li>
+% <li> <b>Remove</b> - (3D) Remove interior voxels, setting it to 0.\nInterior voxels are individual voxels that are set to 1 that are surrounded (6-connected) by voxels set to 1;</li>
+% <li> <b>Skeleton</b> - (Skel, 2D/3D) with n = Inf, removes pixels on the boundaries of objects but does not allow objects to break apart. The 
 % remaining pixels make up the image skeleton. This option preserves the Euler number;</li>
 % <li> <b>Spur</b> - removes spur pixels, <em>i.e.</em> the pixels that have exactly one 8-connected neighbor. For example, spur essentially removes the endpoints of lines</li>
 % <li> <b>Thin</b> - with n = Inf, thins objects to lines. It removes pixels so that an object without holes shrinks to a
@@ -141,7 +156,7 @@ A brief demonstration is available in the following video:<br>
 % connected ring halfway between each hole and the outer boundary;
 % this option preserves the Euler number. Use the "remove branches" option
 % to remove small branches from each line profile <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a></li>
-% <li> <b>Ultimate erosion</b>, performs ultimate erosion, <em>i.e.</em> object -> to point</li>
+% <li> <b>Ultimate erosion</b>, (2D/3D) performs ultimate erosion, <em>i.e.</em> object -> to point</li>
 % </ul>
 % </html>
 %

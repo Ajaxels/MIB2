@@ -16,6 +16,8 @@ classdef mibStatisticsController < handle
         % handles to the model
         View
         % handle to the view
+        anisotropicVoxelsAgree
+        % check for warning about anisotropic voxels
         histLimits
         % limits for the histogram
         indices
@@ -24,6 +26,8 @@ classdef mibStatisticsController < handle
         % a cell array with handles to listeners
         intType
         % index of the selected mode for the intensity mode
+        matlabVersion
+        % version of Matlab
         obj2DType
         % index of the selected mode for the object mode
         obj3DType     
@@ -40,6 +44,8 @@ classdef mibStatisticsController < handle
         % list of properties to calculate
         STATS
         % a structure with quantification results
+        units
+        % a char with units to use: 'pixels' or 'um'
         childControllers
         % list of opened subcontrollers
         childControllersIds
@@ -53,12 +59,11 @@ classdef mibStatisticsController < handle
     end
     
     methods (Static)
-        function ViewListner_Callback(obj, src, evnt)
-        %function ViewListner_Callback(obj, varargin)
-            switch src.Name
-                case 'Id'
+        function ViewListner_Callback2(obj, src, evnt)
+            switch evnt.EventName
+                case 'updateId'
                     obj.updateWidgets();
-                case 'newDatasetSwitch'
+                case 'newDataset' 
                     % dataset was reloaded
                     if ~isempty(obj.runId)
                         if obj.runId(1) == obj.mibModel.Id
@@ -102,6 +107,9 @@ classdef mibStatisticsController < handle
             guiName = 'mibStatisticsGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
+            % populate units combo box
+            obj.View.handles.unitsCombo.String = {'pixels', obj.mibModel.I{obj.mibModel.Id}.pixSize.units};
+            
             % set default parameters
             obj.intType = 1;                % index of the selected mode for the intensity mode
             obj.obj2DType = 1;              % index of the selected mode for the object mode
@@ -112,6 +120,11 @@ classdef mibStatisticsController < handle
             obj.histLimits = [0 1];     % limits for the histogram
             obj.STATS = struct();
             obj.runId = [];
+            obj.units = 'pixels';
+            obj.anisotropicVoxelsAgree = 0;     % warning dialog was shown or not
+            
+            obj.matlabVersion = ver('Matlab');
+            obj.matlabVersion = str2double(obj.matlabVersion.Version);
             obj.updateWidgets();
             
             obj.childControllers = {};    % initialize child controllers
@@ -127,8 +140,8 @@ classdef mibStatisticsController < handle
             obj.targetPopup_Callback();
             
             % add listner to obj.mibModel and call controller function as a callback
-            obj.listener{1} = addlistener(obj.mibModel, 'Id', 'PostSet', @(src,evnt) obj.ViewListner_Callback(obj, src, evnt));     % for static
-            obj.listener{2} = addlistener(obj.mibModel, 'newDatasetSwitch', 'PostSet', @(src,evnt) obj.ViewListner_Callback(obj, src, evnt));     % for static
+            obj.listener{1} = addlistener(obj.mibModel, 'updateId', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt)); 
+            obj.listener{2} = addlistener(obj.mibModel, 'newDataset', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt)); 
         end
         
         function closeWindow(obj)
@@ -266,6 +279,12 @@ classdef mibStatisticsController < handle
                     grid;
                 case {'newLabel', 'addLabel', 'removeLabel'}
                     if strcmp(parameter, 'newLabel')    % clear existing annotations
+                        if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber() > 0
+                            button = questdlg(sprintf('!!! Warning !!!\n\nDo you want to overwrite the existing annotations?'), ...
+                                'Overwrite annotations', 'Overwrite', 'Cancel', 'Cancel');
+                            if strcmp(button, 'Cancel'); return; end
+                        end
+                        obj.mibModel.mibDoBackup('labels', 0);
                         obj.mibModel.I{obj.mibModel.Id}.hLabels.clearContents();
                     end
                     
@@ -381,7 +400,7 @@ classdef mibStatisticsController < handle
                 obj.View.handles.secondChannelCombo.Enable = 'on';
             else
                 obj.View.handles.secondChannelCombo.Enable = 'off';
-                if strcmp(list{value},'EndpointsLength') || strcmp(list{value},'CurveLengthInUnits') || strcmp(list{value},'CurveLengthInPixels')
+                if strcmp(list{value},'EndpointsLength') || strcmp(list{value},'CurveLength')
                     if obj.View.handles.connectivityCombo.Value == 1
                         msgbox('The connectivity parameter was changed from 4 to 8!','Connectivity changed','warn','modal')
                         obj.View.handles.connectivityCombo.Value = 2;
@@ -449,12 +468,18 @@ classdef mibStatisticsController < handle
                 obj.View.handles.firstChannelCombo.Enable = 'off';
                 obj.View.handles.secondChannelCombo.Enable = 'off';
                 if object2d_Sw == 1
-                    list = {'Area','ConvexArea','CurveLengthInPixels','CurveLengthInUnits','Eccentricity','EndpointsLength','EquivDiameter','EulerNumber',...
+                    list = {'Area','ConvexArea','CurveLength','Eccentricity','EndpointsLength','EquivDiameter','EulerNumber',...
                         'Extent','FilledArea','FirstAxisLength','HolesArea','MajorAxisLength','MinorAxisLength','Orientation',...
                         'Perimeter','SecondAxisLength','Solidity'};
                     obj.View.handles.propertyCombo.Value = obj.obj2DType;
                 else
-                    list ={'Volume','EndpointsLength','EquatorialEccentricity','FilledArea','HolesArea','MajorAxisLength','MeridionalEccentricity','SecondAxisLength','ThirdAxisLength'};
+                    if obj.matlabVersion >= 9.3
+                        list ={'Volume','EndpointsLength','EquatorialEccentricity','FilledArea','HolesArea','MajorAxisLength',...
+                            'MeridionalEccentricity','SecondAxisLength','ThirdAxisLength',...
+                            'ConvexVolume', 'EquivDiameter','Extent','Solidity','SurfaceArea'};
+                    else
+                        list ={'Volume','EndpointsLength','EquatorialEccentricity','FilledArea','HolesArea','MajorAxisLength','MeridionalEccentricity','SecondAxisLength','ThirdAxisLength'};
+                    end
                     obj.View.handles.propertyCombo.Value = obj.obj3DType;
                 end
             end
@@ -469,6 +494,7 @@ classdef mibStatisticsController < handle
                 obj.selectedProperties = {'Volume'};  % update handles.properties
                 obj.View.handles.multipleCheck.Value = 0;
                 obj.View.handles.multipleBtn.Enable = 'off';
+                obj.unitsCombo_Callback();
             end
             
             if obj.View.handles.multipleCheck.Value == 1
@@ -747,6 +773,23 @@ classdef mibStatisticsController < handle
             obj.highlightSelection(object_list);
         end
         
+        function unitsCombo_Callback(obj)
+            % callback for change of the unitCombo combo
+            curValue = obj.View.handles.unitsCombo.String{obj.View.handles.unitsCombo.Value};
+            
+            pixSize = obj.mibModel.getImageProperty('pixSize');
+            if ((pixSize.x ~= pixSize.z || pixSize.y ~= pixSize.z) && ~strcmp(curValue, 'pixels') && obj.View.handles.object3dRadio.Value == 1) && obj.anisotropicVoxelsAgree == 0
+                answer = questdlg(sprintf('!!! Warning !!!\n\nPlease note that calculation of certain 3D properties, such as\nMeridionalEccentricity, EquatorialEccentricity, MajorAxisLength, SecondAxisLength, ThirdAxisLength, EquivDiameter, SurfaceArea\nrequires isotropic voxels!'),...
+                    'Attention!!!', 'Confirm', 'Cancel', 'Confirm');
+                if strcmp(answer, 'Cancel')
+                    obj.View.handles.unitsCombo.Value = 1;
+                    return; 
+                end
+                obj.anisotropicVoxelsAgree = 1;
+            end
+            obj.units = curValue;
+        end
+        
         function multipleBtn_Callback(obj)
             % a callback for obj.View.handles.multipleBtn, selecting multiple
             % properties for calculation
@@ -757,7 +800,7 @@ classdef mibStatisticsController < handle
             res = mibMaskStatsProps(obj.selectedProperties, obj3d);
             if ~isempty(res)
                 obj.selectedProperties = sort(res);
-                customProps = {'CurveLengthInUnits','CurveLengthInPixels','EndpointsLength'};
+                customProps = {'CurveLength','EndpointsLength'};
                 if sum(ismember(obj.selectedProperties, customProps)) > 1
                     if obj.View.handles.connectivityCombo.Value == 1
                         msgbox('The connectivity parameter was changed from 4 to 8!','Connectivity changed','warn','modal')
@@ -786,6 +829,8 @@ classdef mibStatisticsController < handle
             % function exportButton_Callback(obj)
             % a callback for obj.View.handles.exportButton
             
+            global mibPath;
+            
             % export Statistics to Matlab or Excel
             if ~isdeployed
                 choice =  questdlg('Would you like to save results?', 'Export', 'Save as...', 'Export to Matlab', 'Cancel', 'Save as...');
@@ -803,6 +848,8 @@ classdef mibStatisticsController < handle
             connectivityList = obj.View.handles.connectivityCombo.String;   % if 1: connectivity=4(2d) and 6(3d), if 2: 8(2d)/26(3d)
             OPTIONS.connectivity = connectivityList{connectivityValue};   % if 1: connectivity=4(2d) and 6(3d), if 2: 8(2d)/26(3d)
             OPTIONS.colorChannel = obj.View.handles.firstChannelCombo.Value;
+            OPTIONS.units = obj.units;
+            
             if obj.sel_model == -1
                 OPTIONS.type = 'Mask';
             elseif obj.sel_model == 0
@@ -836,9 +883,15 @@ classdef mibStatisticsController < handle
             set(0, 'DefaulttextInterpreter', 'none');
             
             if strcmp(choice, 'Export to Matlab')
-                disp('''MIB_stats'' and ''MIB_options'' structures with results have been created in the Matlab workspace');
-                assignin('base', 'MIB_options', OPTIONS);
-                assignin('base', 'MIB_stats', obj.STATS);
+                answer = mibInputDlg({mibPath}, ...
+                    sprintf('Please name of the variable for the export:'),...
+                    'Export to Matlab', 'MIB_stats');
+                if isempty(answer); return; end
+                
+                fprintf('"%s" structure with results was created in the Matlab workspace\n', answer{1});
+                STATSOUT = obj.STATS;
+                STATSOUT(1).OPTIONS = OPTIONS;
+                assignin('base', answer{1}, STATSOUT);
             elseif strcmp(choice, 'Save as...')
                 fn_out = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
                 if isempty(fn_out)
@@ -883,14 +936,19 @@ classdef mibStatisticsController < handle
                         s(4,field*2-1+1) = fieldNames(field);
                         s(4,field*2+1) = {pixSize.(fieldNames{field})};
                     end
-                    start=8;
-                    s(6,1) = {'Results:'};
-                    s(7,1) = {'ObjID'};
-                    s(7,3) = {'Centroid'};
-                    s(8,2) = {'X'};
-                    s(8,3) = {'Y'};
-                    s(8,4) = {'Z'};
-                    s(7,5) = {'TimePnt'};
+                    s(5,1) = {sprintf('CALCULATED IN %s', upper(obj.units))};
+                    if ~strcmp(OPTIONS.units, 'pixels') && strcmp(OPTIONS.mode, '3D objects') && pixSize.x ~= pixSize.z
+                        s(5,6) = {sprintf('ATTENTION CALCULATION OF SOME PARAMETERS (such as Eccentricity, Lengths, Diameter, Surface Area) IN %s REQUIRES ISOTROPIC PIXELS!!!', upper(obj.units))};
+                    end
+                    
+                    start=9;
+                    s(7,1) = {'Results:'};
+                    s(8,1) = {'ObjID'};
+                    s(8,3) = {'Centroid, px'};
+                    s(9,2) = {'X'};
+                    s(9,3) = {'Y'};
+                    s(9,4) = {'Z'};
+                    s(8,5) = {'TimePnt'};
                     noObj = numel(STATS);
                     s(start+1:start+noObj,1) = num2cell(1:noObj);
                     s(start+1:start+noObj,2:4) = num2cell(cat(1,STATS.Centroid));
@@ -902,7 +960,7 @@ classdef mibStatisticsController < handle
                     STATS = rmfield(STATS, 'BoundingBox');
                     
                     fieldNames = fieldnames(STATS);
-                    s(7,6:5+numel(fieldNames)) = fieldNames;
+                    s(8,6:5+numel(fieldNames)) = fieldNames;
                     for id=1:numel(fieldNames)
                         s(start+1:start+noObj,5+id) = num2cell(cat(1, STATS.(fieldNames{id})));
                     end
@@ -1023,6 +1081,8 @@ classdef mibStatisticsController < handle
             obj.STATS = cell2struct(cell(size(property)), property, 2);
             obj.STATS = orderfields(obj.STATS);
             obj.STATS(1) = [];
+            
+            pixSize = obj.mibModel.getImageProperty('pixSize');
             
             for t=t1:t2
                 if strcmp(mode, '3D objects')
@@ -1157,22 +1217,31 @@ classdef mibStatisticsController < handle
                     prop1 = property(ismember(property, 'EndpointsLength'));
                     if ~isempty(prop1)
                         STATS3 = regionprops(CC, 'PixelList');
-                        for obj=1:numel(STATS3)
-                            minZ = STATS3(obj).PixelList(1,3);
-                            maxZ = STATS3(obj).PixelList(end,3);
-                            minPoints = STATS3(obj).PixelList(STATS3(obj).PixelList(:,3)==minZ,:);   % find points on the starting slice
+                        if strcmp(obj.units, 'pixels')
+                            xPix = 1;
+                            yPix = 1;
+                            zPix = 1;
+                        else
+                            xPix = pixSize.x;
+                            yPix = pixSize.y;
+                            zPix = pixSize.z;
+                        end
+                        
+                        for objId=1:numel(STATS3)
+                            minZ = STATS3(objId).PixelList(1,3);
+                            maxZ = STATS3(objId).PixelList(end,3);
+                            minPoints = STATS3(objId).PixelList(STATS3(objId).PixelList(:,3)==minZ,:);   % find points on the starting slice
                             minPoints = [minPoints(1,1:2); minPoints(end,1:2)];  % take 1st and last point
-                            maxPoints = STATS3(obj).PixelList(STATS3(obj).PixelList(:,3)==maxZ,:);   % find points on the ending slice
+                            maxPoints = STATS3(objId).PixelList(STATS3(objId).PixelList(:,3)==maxZ,:);   % find points on the ending slice
                             maxPoints = [maxPoints(1,1:2); maxPoints(end,1:2)];  % take 1st and last point
                             
                             DD = sqrt( bsxfun(@plus,sum(minPoints.^2,2),sum(maxPoints.^2,2)') - 2*(minPoints*maxPoints') );
                             maxVal = max(DD(:));
                             [row, col] = find(DD == maxVal,1);
-                            pixSize = obj.mibModel.getImageProperty('pixSize');
-                            STATS3(obj).EndpointsLength = sqrt(...
-                                ((minPoints(row,1) - maxPoints(col,1))*pixSize.x)^2 + ...
-                                ((minPoints(row,2) - maxPoints(col,2))*pixSize.y)^2 + ...
-                                ((minZ - maxZ)*pixSize.z)^2 );
+                            STATS3(objId).EndpointsLength = sqrt(...
+                                    ((minPoints(row,1) - maxPoints(col,1))*xPix)^2 + ...
+                                    ((minPoints(row,2) - maxPoints(col,2))*yPix)^2 + ...
+                                    ((minZ - maxZ)*zPix)^2 );    
                         end
                         [STATS.EndpointsLength] = deal(STATS3.EndpointsLength);
                     end
@@ -1203,6 +1272,18 @@ classdef mibStatisticsController < handle
                             [STATS.StdIntensity] = calcVal{:};
                         end
                     end
+                    
+                    waitbar(0.7, wb);
+                    prop1 = property(ismember(property, {'ConvexVolume', 'EquivDiameter','Extent',...
+                        'Solidity','SurfaceArea'}));
+                    if ~isempty(prop1)
+                        STATS2 = table2struct(regionprops3(CC, prop1));
+                        fieldNames = fieldnames(STATS2);
+                        for i=1:numel(fieldNames)
+                            [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
+                        end
+                    end
+                    
                     waitbar(0.8,wb);
                     % calculate correlation between channels
                     prop1 = property(ismember(property, 'Correlation'));
@@ -1217,8 +1298,27 @@ classdef mibStatisticsController < handle
                     end
                     [STATS.TimePnt] = deal(t);  % add time points
                     
+                    % recalculate to units if needed
+                    if ~strcmp(obj.units, 'pixels')
+                        fieldNames = fieldnames(STATS);
+                        
+                        for i=1:numel(fieldNames)
+                            switch fieldNames{i}
+                                case {'Volume', 'FilledArea', 'ConvexVolume', 'HolesArea'}
+                                    STATSTEMP = cell2struct(num2cell([STATS.(fieldNames{i})]* pixSize.x * pixSize.y * pixSize.z), (fieldNames{i}),1);
+                                    [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
+                                case {'MajorAxisLength','SecondAxisLength','ThirdAxisLength','EquivDiameter'}
+                                    STATSTEMP = cell2struct(num2cell([STATS.(fieldNames{i})] * (pixSize.x + pixSize.y)/2), (fieldNames{i}),1);
+                                    [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
+                                case 'SurfaceArea'
+                                    STATSTEMP = cell2struct(num2cell([STATS.(fieldNames{i})] * (pixSize.x + pixSize.y)/2 * pixSize.z), (fieldNames{i}),1);
+                                    [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
+                            end
+                        end
+                    end
+                    
                     % recalculate PixelIdxList to the full dataset
-                    if getDataOptions.blockModeSwitch == 1 
+                    if getDataOptions.blockModeSwitch == 1
                         [yMin, yMax, xMin, xMax, zMin, zMax] = obj.mibModel.I{obj.mibModel.Id}.getCoordinatesOfShownImage(4);
                         convertPixelOpt.y = [yMin yMax]; % y-dimensions of the cropped dataset
                         convertPixelOpt.x = [xMin xMax]; % x-dimensions of the cropped dataset
@@ -1254,7 +1354,7 @@ classdef mibStatisticsController < handle
                         end_id = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, orientation);
                     end
 
-                    customProps = {'EndpointsLength','CurveLengthInUnits','CurveLengthInPixels','HolesArea'};
+                    customProps = {'EndpointsLength','CurveLength','HolesArea'};
                     shapeProps = {'Solidity', 'Perimeter', 'Orientation', 'MinorAxisLength', 'MajorAxisLength', 'FilledArea', 'Extent', 'EulerNumber',...
                             'EquivDiameter', 'Eccentricity', 'ConvexArea', 'Area'};
                     shapeProps3D = {'FirstAxisLength','SecondAxisLength'};     % these properties are calculated by regionprops3mib
@@ -1305,12 +1405,27 @@ classdef mibStatisticsController < handle
                         if ~isempty(prop1)
                             STATS2 = regionprops(CC, prop1);
                             fieldNames = fieldnames(STATS2);
-                            for i=1:numel(fieldNames)
-                                [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
-                            end
+                            %if strcmp(obj.units, 'pixels')
+                                for i=1:numel(fieldNames)
+                                    [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
+                                end
+%                             else
+%                                 for i=1:numel(fieldNames)
+%                                     switch fieldNames{i}
+%                                         case {'Area', 'ConvexArea', 'FilledArea'}
+%                                             STATSTEMP = cell2struct(num2cell([STATS2.(fieldNames{i})]* pixSize.x * pixSize.y), (fieldNames{i}),1);
+%                                             [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
+%                                         case {'MajorAxisLength','MinorAxisLength','EquivDiameter','Perimeter'}
+%                                             STATSTEMP = cell2struct(num2cell([STATS2.(fieldNames{i})] * (pixSize.x + pixSize.y)/2), (fieldNames{i}),1);
+%                                             [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
+%                                         otherwise
+%                                             [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
+%                                     end
+%                                 end
+%                             end
                         end
                         
-                        % calculate regionprop3 shape properties
+                        % calculate regionprop3mib shape properties
                         prop1 = property(ismember(property, shapeProps3D));
                         if ~isempty(prop1)
                             try
@@ -1326,29 +1441,20 @@ classdef mibStatisticsController < handle
                         
                         % detects length between the end points of each object, applicable only to lines
                         prop1 = property(ismember(property, 'EndpointsLength'));
-                        pixSize = obj.mibModel.getImageProperty('pixSize');
                         if ~isempty(prop1)
                             STATS2 = regionprops(CC, 'PixelList');
-                            for obj=1:numel(STATS2)
-                                STATS(obj).EndpointsLength = sqrt(((STATS2(obj).PixelList(1,1) - STATS2(obj).PixelList(end,1))*pixSize.x)^2 + ...
-                                    ((STATS2(obj).PixelList(1,2) - STATS2(obj).PixelList(end,2))*pixSize.y)^2);
+                            for objId=1:numel(STATS2)
+                                STATS(objId).EndpointsLength = sqrt((STATS2(objId).PixelList(1,1) - STATS2(objId).PixelList(end,1))^2 + ...
+                                    (STATS2(objId).PixelList(1,2) - STATS2(objId).PixelList(end,2))^2);
                             end
                             clear STAT2;
                         end
                         % calculate curve length in pixels
-                        prop1 = property(ismember(property,'CurveLengthInPixels'));
+                        prop1 = property(ismember(property,'CurveLength'));
                         if ~isempty(prop1)
                             STATS2 = mibCalcCurveLength(slice, [], CC);
                             if isstruct(STATS2)
-                                [STATS.CurveLengthInPixels] = deal(STATS2.CurveLengthInPixels);
-                            end
-                        end
-                        % calculate curve length in units
-                        prop1 = property(ismember(property, 'CurveLengthInUnits'));     % calculate curve length in units
-                        if ~isempty(prop1)
-                            STATS2 = mibCalcCurveLength(slice, pixSize, CC);
-                            if isstruct(STATS2)
-                                [STATS.CurveLengthInUnits] = deal(STATS2.CurveLengthInUnits);
+                                [STATS.CurveLength] = deal(STATS2.CurveLengthInPixels);
                             end
                         end
                         
@@ -1395,11 +1501,26 @@ classdef mibStatisticsController < handle
                             end
                         end
                         
-%                         prop1 = property(ismember(property, regprops3Props));
-%                         if ~isempty(prop1)
-%                             
-%                         end
+                        %                         prop1 = property(ismember(property, regprops3Props));
+                        %                         if ~isempty(prop1)
+                        %
+                        %                         end
                         
+                        % recalculate to units if needed
+                        if ~strcmp(obj.units, 'pixels')
+                            fieldNames = fieldnames(STATS);
+                        
+                            for i=1:numel(fieldNames)
+                                switch fieldNames{i}
+                                    case {'Area', 'ConvexArea', 'FilledArea', 'HolesArea'}
+                                        STATSTEMP = cell2struct(num2cell([STATS.(fieldNames{i})]* pixSize.x * pixSize.y), (fieldNames{i}),1);
+                                        [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
+                                    case {'CurveLength','EndpointsLength','MajorAxisLength','MinorAxisLength','EquivDiameter','Perimeter','FirstAxisLength','SecondAxisLength',}
+                                        STATSTEMP = cell2struct(num2cell([STATS.(fieldNames{i})] * (pixSize.x + pixSize.y)/2), (fieldNames{i}),1);
+                                        [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
+                                end
+                            end
+                        end
                         
                         if numel(STATS)>0
                             % recalculate pixels' indeces into 3D space

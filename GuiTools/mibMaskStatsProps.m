@@ -30,7 +30,7 @@ function varargout = mibMaskStatsProps(varargin)
 % Updates
 % 
 
-% Last Modified by GUIDE v2.5 05-Dec-2016 16:09:24
+% Last Modified by GUIDE v2.5 25-Mar-2018 16:39:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -74,6 +74,16 @@ if handles.obj3d
     set(handles.shape3dPanel, 'position', pos);
     set(handles.shape2dPanel, 'visible', 'off');
     set(handles.shape3dPanel, 'visible', 'on');
+
+    matlabVersion = ver('Matlab');
+    matlabVersion = str2double(matlabVersion.Version);
+    if matlabVersion >= 9.3
+        handles.ConvexVolume3d.Enable = 'on';
+        handles.EquivDiameter3d.Enable = 'on';
+        handles.Extent3d.Enable = 'on';
+        handles.Solidity3d.Enable = 'on';
+        handles.SurfaceArea3d.Enable = 'on';
+    end
 end
 
 handles.mibMaskStatsProps.Position(3) = handles.uipanel1.Position(3)+handles.uipanel1.Position(1)*2;
@@ -143,9 +153,10 @@ end
 
 % --- Executes on button press in checkallBtn.
 function checkallBtn_Callback(hObject, eventdata, handles)
-excludeList = {'CurveLengthInPixels','CurveLengthInUnits','EndpointsLength','EndpointsLength3d','Correlation'};
+excludeList = {'CurveLength','EndpointsLength','EndpointsLength3d','Correlation'};
 if handles.obj3d == 1
-    list = findall(handles.mibMaskStatsProps, 'parent', handles.shape3dPanel,'style','checkbox');
+    %list = findall(handles.mibMaskStatsProps, 'parent', handles.shape3dPanel,'style','checkbox');
+    list = findall(handles.mibMaskStatsProps, 'parent', handles.shape3dPanel, 'Enable', 'on');
     for i=1:numel(list)
         if sum(ismember(get(list(i),'tag'), excludeList)) == 0
             set(list(i),'value', 1);

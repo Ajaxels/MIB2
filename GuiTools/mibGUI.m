@@ -22,7 +22,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 11-Mar-2018 09:39:31
+% Last Modified by GUIDE v2.5 18-May-2018 10:05:45
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -250,6 +250,8 @@ handles.mibSegmMagicPanel.Parent = handles.mibSegmentationPanel;
 handles.mibSegmMagicPanel.Position = pos;
 handles.mibSegmAnnPanel.Parent = handles.mibSegmentationPanel;
 handles.mibSegmAnnPanel.Position = pos;
+handles.mibSegmLines3DPanel.Parent = handles.mibSegmentationPanel;
+handles.mibSegmLines3DPanel.Position = pos;
 handles.mibSegmObjectPickerPanel.Parent = handles.mibSegmentationPanel;
 handles.mibSegmObjectPickerPanel.Position = pos;
 handles.mibSegmObjectPickerPanelSub2.Parent = handles.mibSegmObjectPickerPanelSub.Parent;
@@ -876,10 +878,15 @@ function mibBrushSuperpixelsEdit_Callback(hObject, eventdata, handles)
 handles.mibController.mibBrushSuperpixelsEdit_Callback(hObject);
 end
 
-function mibSegmLabelsBtn_Callback(hObject, eventdata, handles)
-% --- Executes on button press in mibSegmLabelsBtn.
-handles.mibController.startController('mibAnnotationsController');
-handles.mibShowAnnotationsCheck.Value = 1;
+function mibSegmLabelsBtn_Callback(hObject, eventdata, handles, controllerId)
+% --- Executes on button press in mibSegmLabelsBtn and mibSegmLines3DTableViewButton
+switch controllerId
+    case 'mibAnnotationsController'
+        handles.mibController.startController('mibAnnotationsController');
+        handles.mibShowAnnotationsCheck.Value = 1;
+    case 'mibLines3DController'
+        handles.mibController.startController('mibLines3DController');
+end
 end
 
 % --- Executes on selection change in mibAnnMarkerEdit.
@@ -1679,6 +1686,17 @@ function menuFileChoppedImage_Callback(hObject, eventdata, handles, parameter)
 handles.mibController.menuFileChoppedImage_Callback(parameter);
 end
 
+% --------------------------------------------------------------------
+function menuFileRandomize_Callback(hObject, eventdata, handles)
+% callback for Menu->File->Randomize files
+switch hObject.Tag
+    case 'menuFileRandomizeRand'
+        handles.mibController.startController('mibRandomDatasetController');
+    case 'menuFileRandomizeRestore'
+        handles.mibController.startController('mibRandomRestoreDatasetController');
+end
+end
+
 function menuFileSaveImageAs_Callback(~, ~, handles)
 % callback for press of Save Image as
 handles.mibController.menuFileSaveImageAs_Callback();
@@ -1696,9 +1714,9 @@ function menuFileSnapshot_Callback(hObject, eventdata, handles)
 handles.mibController.startController('mibSnapshotController');
 end
 
-function menuFileRenderFiji_Callback(hObject, eventdata, handles)
+function menuFileRender_Callback(hObject, eventdata, handles, parameter)
 % render model with Fiji
-handles.mibController.menuFileRenderFiji_Callback();
+handles.mibController.menuFileRender_Callback(parameter);
 end
 
 function menuFilePreference_Callback(hObject, eventdata, handles)
@@ -1777,6 +1795,11 @@ end
 % --------------------------------------------------------------------
 function menuImageToolsBorder_Callback(hObject, eventdata, handles)
 handles.mibController.startController('mibImageSelectFrameController');
+end
+
+% --------------------------------------------------------------------
+function menuImageToolsArithmetics_Callback(hObject, eventdata, handles)
+handles.mibController.menuImageToolsArithmetics_Callback();
 end
 
 % --------------------------------------------------------------------

@@ -25,7 +25,7 @@ classdef mibExternalDirsController < handle
             guiName = 'mibExternalDirsGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
-            externalPaths = [{'Fiji installation folder'}, {'Omero installation folder'},...
+            externalPaths = [{'Fiji installation folder'}, {'Omero installation folder', 'Imaris installation folder'},...
                               {'BM3D filter'}, {'BM4D filter'}];
             obj.View.handles.externalToolPopup.String = externalPaths;
             
@@ -85,6 +85,8 @@ classdef mibExternalDirsController < handle
                     obj.localPreferences.dirs.fijiInstallationPath = obj.View.handles.dirEdit.String;
                 case 'Omero installation folder'
                     obj.localPreferences.dirs.omeroInstallationPath = obj.View.handles.dirEdit.String;
+                case 'Imaris installation folder'
+                    obj.localPreferences.dirs.imarisInstallationPath = obj.View.handles.dirEdit.String;
                 case 'BM3D filter'
                     obj.localPreferences.dirs.bm3dInstallationPath = obj.View.handles.dirEdit.String;
                 case 'BM4D filter'
@@ -106,6 +108,8 @@ classdef mibExternalDirsController < handle
                     obj.View.handles.dirEdit.String = obj.localPreferences.dirs.fijiInstallationPath;
                 case 'Omero installation folder'
                     obj.View.handles.dirEdit.String = obj.localPreferences.dirs.omeroInstallationPath;
+                case 'Imaris installation folder'
+                    obj.View.handles.dirEdit.String  = obj.localPreferences.dirs.imarisInstallationPath;
                 case 'BM3D filter'
                     obj.View.handles.dirEdit.String = obj.localPreferences.dirs.bm3dInstallationPath;
                 case 'BM4D filter'

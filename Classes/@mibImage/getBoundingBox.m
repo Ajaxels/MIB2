@@ -1,6 +1,6 @@
 function bb = getBoundingBox(obj)
 % function bb = getBoundingBox(obj)
-% Get Bounding box info as a vector [xmin, width, ymin, height, zmin, thickness]
+% Get Bounding box info as a vector [xmin, width, ymin, height, zmin, depth]
 %
 % The bounding box info is needed to properly put the dataset in the 3D space. It is stored in the header of the
 % Amira mesh file, or in the beginning of the ImageDescription field of the TIF file.
@@ -35,7 +35,7 @@ curr_text = obj.meta('ImageDescription');             % get current bounding box
 bb_info_exist = strfind(curr_text,'BoundingBox');
 if bb_info_exist == 1   % use information from the BoundingBox parameter for pixel sizes if it is exist
     spaces = strfind(curr_text,' ');
-    if numel(spaces) < 7; spaces(7) = numel(curr_text); end;
+    if numel(spaces) < 7; spaces(7) = numel(curr_text); end
     tab_pos = strfind(curr_text,sprintf('|'));
     pos = min([spaces(7) tab_pos]);
     bb = str2num(curr_text(spaces(1):pos-1)); %#ok<ST2NM>

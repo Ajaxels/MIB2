@@ -238,6 +238,7 @@ classdef mibSupervoxelClassifierController < handle
                 if strcmp(res,'Load')
                     load(fn, '-mat');
                     obj.slic = localSlic; %#ok<CPROP>
+                    
                     clear slic;
                     
                     % update Subarea editboxes

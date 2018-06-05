@@ -102,6 +102,11 @@ if isempty(connImaris); return; end
 
 vImarisApplication = connImaris.mImarisApplication;
 imarisScene = vImarisApplication.GetSurpassScene;
+if isempty(imarisScene)
+    errordlg(sprintf('!!! Error !!!\n\nThe Imaris scene is empty!\nPlease open/export a dataset (Volume) in Imaris and try again!'),'No volume');
+    return;
+end
+
 vFactory = vImarisApplication.GetFactory;
 
 % Create a new Surface object

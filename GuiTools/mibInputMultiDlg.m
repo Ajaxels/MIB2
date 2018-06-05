@@ -23,6 +23,7 @@ function varargout = mibInputMultiDlg(varargin)
 % .TitleLines - a number that defines number of text lines reserved for the title
 % .WindowWidth - a number scales the standard width of the dialog x times
 % .Columns - an integer that defines number of columns
+% .LastItemColumns - [optional] force the last entry to be on a signle column, 1 or 0
 % .Focus - define index of the widget to get focused
 %
 % Return values:
@@ -44,6 +45,7 @@ function varargout = mibInputMultiDlg(varargin)
 % options.WindowWidth = 1.2;    // [optional] make window x1.2 times wider
 % options.Columns = 2;    // [optional] define number of columns
 % options.Focus = 1;      // [optional] define index of the widget to get focus
+% options.LastItemColumns = 1; // [optional] force the last entry to be on a signle column
 % [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
 % if isempty(answer); return; end; 
 % @endcode
@@ -135,8 +137,7 @@ end
 if ~isfield(options, 'WindowStyle'); options.WindowStyle = 'modal'; end
 if ~isfield(options, 'Columns'); options.Columns = 1; end
 if ~isfield(options, 'Focus'); options.Focus = 1; end
-
-
+if ~isfield(options, 'LastItemColumns'); options.LastItemColumns = 0; end
 
 if ~isfield(options, 'PromptLines')
     PromptLines = ones([numel(prompts) 1]);
@@ -166,13 +167,20 @@ end
 
 posVec = nan([numel(prompts)*2, 4]);    % allocate space for position matrix
 shiftY = 0; %dt*PromptLines(1);            % shifty
+maxShiftY = 0;  % maximal shift of the Y-coordinate
 widgetId = 1;
 shiftX = 0;
 for elementId = 1:numel(prompts)
-    if shiftX < floor((elementId-1)/ceil(numel(prompts)/options.Columns))*width
-        columnId = floor((elementId-1)/ceil(numel(prompts)/options.Columns));
-        shiftX = columnId*width + de/2*columnId; 
+    if shiftX < floor((elementId-1)/ceil((numel(prompts)-options.LastItemColumns)/options.Columns))*width
+        columnId = floor((elementId-1)/ceil((numel(prompts)-options.LastItemColumns)/options.Columns));
+        shiftX = columnId*width + de/2*columnId;
         shiftY = 0; %dt*PromptLines(1);
+    end
+    
+    % fix for the last item to be on a single column
+    if options.LastItemColumns == 1 && elementId == numel(prompts)
+        shiftX = 0;
+        shiftY = maxShiftY;
     end
     
     if ~islogical(defAns{elementId})    % make text string
@@ -181,6 +189,9 @@ for elementId = 1:numel(prompts)
         posVec(widgetId, 3) = width;
         posVec(widgetId, 4) = dt*PromptLines(elementId);
         shiftY = shiftY + dt*PromptLines(elementId);
+        if options.LastItemColumns == 1 && elementId == numel(prompts)
+            posVec(widgetId, 3) = widthFull;
+        end
     end
     widgetId = widgetId + 1;
     
@@ -189,8 +200,11 @@ for elementId = 1:numel(prompts)
     posVec(widgetId, 3) = width;
     posVec(widgetId, 4) = de;
     shiftY = shiftY + de + de/2;
+    if options.LastItemColumns == 1 && elementId == numel(prompts)
+        posVec(widgetId, 3) = widthFull;
+    end
     widgetId = widgetId + 1;
-    
+    maxShiftY = max([maxShiftY shiftY]);
 end
 if min(posVec(:,2)) < 0
     posVec(:,2) = posVec(:,2) - min(posVec(:,2));
@@ -332,16 +346,15 @@ end
 % ch(end-1).Units = 'normalized';
 % ch(end).Units = 'normalized';
 
+% Update handles structure
+guidata(hObject, handles);
+drawnow;
+
 % make the window wider
 if isfield(options, 'WindowWidth')
     handles.mibInputMultiDlg.Position(3) = handles.mibInputMultiDlg.Position(3)*options.WindowWidth;
 end
-
-% Update handles structure
-guidata(hObject, handles);
-
 handles.mibInputMultiDlg.Visible = 'on';
-drawnow;
 
 % highlight text in the edit box
 uicontrol(handles.hWidget(options.Focus));

@@ -87,7 +87,7 @@ if options.imgStretch == 1
 end
 
 if numel(unique(cell2mat({files.color}))) > 1 || numel(unique(cell2mat({files.height}))) > 1 || numel(unique(cell2mat({files.width}))) > 1 && autoCropSw==0
-    answer = mibInputDlg({options.mibPath}, sprintf('!!! Warning !!!\nThe XY dimensions or number of color channels mismatch!\nContinue anyway?\n\nEnter the background color intensity (0-%d):', intmax(files(1).imgClass)),'Dimensions mismatch','0');
+    answer = mibInputDlg({options.mibPath}, sprintf('!!! Warning !!!\nThe XY dimensions or number of color channels mismatch!\nContinue anyway?\n\nEnter the background color intensity (0-%d):', intmax(files(1).imgClass)),'Dimensions mismatch', num2str(intmax(files(1).imgClass)));
     if isempty(answer)
         img=NaN;
         return;

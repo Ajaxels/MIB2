@@ -506,11 +506,11 @@ classdef TripleAreaIntensityController < handle
                         s(rowId, 7) = {num2str(IntensityA(objId))};
                     end
                     
-                    obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(num2str(Intensity1(objId)), [sliceId, round(X1(objId,:))]);
-                    obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(num2str(Intensity2(objId)), [sliceId, round(X2(idx(objId),:))]);
+                    obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(TripleArea.MaterialName1, [sliceId, round(X1(objId,:))], Intensity1(objId));
+                    obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(TripleArea.MaterialName2, [sliceId, round(X2(idx(objId),:))], Intensity2(objId));
                     
                     if background_Check == 1 && CC1.NumObjects == BG_CC.NumObjects
-                        obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(num2str(Background(objId)), [sliceId, round(X3(bg_idx(objId),:))]);
+                        obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(TripleArea.BackgroundMaterial, [sliceId, round(X3(bg_idx(objId),:))], Background(objId));
                     end
                     if additionalThresholdingCheck
                         try
@@ -520,7 +520,7 @@ classdef TripleAreaIntensityController < handle
                                 coordinates = round(X2(idx(objId),:));
                             end
                             coordinates(2) = coordinates(2) + 18;    % shift coordinate for text
-                            obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(num2str(IntensityA(objId)), [sliceId, coordinates]);
+                            obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels('thres:', [sliceId, coordinates], IntensityA(objId));
                         catch err
                         end
                     end
@@ -530,7 +530,7 @@ classdef TripleAreaIntensityController < handle
                 
                 if background_Check == 1 && CC1.NumObjects ~= BG_CC.NumObjects  % add text of averaged background
                     for bgId = 1:numel(BG_STATS)
-                        obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(num2str(Background(min([numel(Background) bgId]))), [sliceId, round(X3(bgId,:))]);
+                        obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(TripleArea.BackgroundMaterial, [sliceId, round(X3(bgId,:))], Background(min([numel(Background) bgId])));
                     end
                 end
                 

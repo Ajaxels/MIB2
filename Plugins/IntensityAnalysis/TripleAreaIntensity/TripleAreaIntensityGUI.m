@@ -74,6 +74,9 @@ handles.helpText.String = strText;
 % Choose default command line output for TripleAreaIntensityGUI
 handles.output = hObject;
 
+% move the window
+hObject = moveWindowOutside(hObject, 'left');
+
 % Update handles structure
 guidata(hObject, handles);
 

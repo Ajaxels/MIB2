@@ -38,7 +38,7 @@ xMin = min(pnts(:,1));
 xMax = max(pnts(:,1));
 yMin = min(pnts(:,2));
 yMax = max(pnts(:,2));
-cropImg = zeros(yMax - yMin + 1, xMax - xMin + 1, 'uint8');
+cropImg = zeros([yMax - yMin + 1, xMax - xMin + 1], 'uint8');
 
 for pnt=2:max_index
     if pnt <= size(pnts, 1)
@@ -49,12 +49,12 @@ for pnt=2:max_index
         p2 = [pnts(1, 2)-yMin+1 pnts(1, 1)-xMin+1];           % yx
     end
     
-     dv = p2 - p1;
-        nPnts = max(abs(dv))+1;
-        linSpacing = linspace(0, 1, nPnts);
-        for i=1:nPnts
-            cropImg(round(p1(1) + linSpacing(i)*dv(1)), round(p1(2) + linSpacing(i)*dv(2))) = 1;
-        end
+    dv = p2 - p1;
+    nPnts = max(abs(dv))+1;
+    linSpacing = linspace(0, 1, nPnts);
+    for i=1:nPnts
+        cropImg(round(p1(1) + linSpacing(i)*dv(1)), round(p1(2) + linSpacing(i)*dv(2))) = 1;
+    end
 end
 if options.fill == 1
     cropImg = imfill(cropImg, 4);

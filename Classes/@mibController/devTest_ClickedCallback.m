@@ -24,6 +24,7 @@ function devTest_ClickedCallback(obj)
 %
 % Updates
 %
+%%
 
 % obj.mibModel.mibDoBackup('image', 1);
 % img = cell2mat(obj.mibModel.getData3D('image', 1, 4));
@@ -38,13 +39,17 @@ function devTest_ClickedCallback(obj)
 % 
 % return;
 
-
-button = questdlg(sprintf('!!! Development !!!\n\nWarning, you are going to start Matlab volume renderer\nPlease consider the downsampling of your dataset before use\nThis functionality is only available in R2017a'),'Volume rendering','Render','Cancel','Render');
-if strcmp(button, 'Cancel'); return; end
-if obj.matlabVersion < 9.2; return; end
-I = obj.mibModel.getData3D('image');
-volumeViewer(squeeze(I{1}));
-return
+% tic
+% obj.mibModel.mibDoBackup('image', 0);
+% I = cell2mat(obj.mibModel.getData2D('image'));
+% %I2 = imbilatfilt(I,1200,3,'NeighborhoodSize',7);
+% %[gradThresh,numIter] = imdiffuseest(I)
+% % I2 = imdiffusefilt(I, 'GradientThreshold', 20, 'NumberOfIterations', 10, ...
+% %     'Connectivity', 'maximal', 'ConductionMethod', 'quadratic');
+% obj.mibModel.setData2D('image', I2);
+% toc
+% obj.plotImage();
+% return
 
 
 % prompts = {'Enter a text Enter a text Enter a text Enter a text'; 'Select the option'; 'Are you sure?'; 'Are you sure again?'; 'This is very very very very very very very very very very long prompt:';...

@@ -417,6 +417,39 @@ if magnificationFactor < 1 && panModeException == 0
     end
 end
 
+% % add Lines3D to the figure
+if obj.mibShowLines3DCheck && obj.I{obj.Id}.hLines3D.noTrees > 0
+    pixBox(5:6) = [sliceToShowIdx sliceToShowIdx];            % [xmin xmax ymin ymax zmin zmax]
+    if options.blockModeSwitch == 1
+        [pixBox(3), pixBox(4), pixBox(1), pixBox(2)] = obj.I{obj.Id}.getCoordinatesOfShownImage();    % [yMin, yMax, xMin, xMax]
+    else
+        [datasetHeight, datasetWidth] = obj.I{obj.Id}.getDatasetDimensions('image', NaN, NaN, options);
+        pixBox(1) = 1;
+        pixBox(2) = datasetWidth;
+        pixBox(3) = 1;
+        pixBox(4) = datasetHeight;
+    end
+    
+    bb = obj.I{obj.Id}.getBoundingBox();
+    BoxOut = pixBox;
+    if obj.I{obj.Id}.orientation == 4   % xy
+        BoxOut(1:2) = pixBox(1:2)*obj.I{obj.Id}.pixSize.x + bb(1) - obj.I{obj.Id}.pixSize.x;
+        BoxOut(3:4) = pixBox(3:4)*obj.I{obj.Id}.pixSize.y + bb(3) - obj.I{obj.Id}.pixSize.y;
+        BoxOut(5:6) = pixBox(5:6)*obj.I{obj.Id}.pixSize.z + bb(5) - obj.I{obj.Id}.pixSize.z;
+    elseif obj.I{obj.Id}.orientation == 1   % zx
+        BoxOut(1:2) = pixBox(1:2)*obj.I{obj.Id}.pixSize.z + bb(5) - obj.I{obj.Id}.pixSize.z;
+        BoxOut(3:4) = pixBox(3:4)*obj.I{obj.Id}.pixSize.x + bb(1) - obj.I{obj.Id}.pixSize.x;
+        BoxOut(5:6) = pixBox(5:6)*obj.I{obj.Id}.pixSize.y + bb(3) - obj.I{obj.Id}.pixSize.y;
+    elseif obj.I{obj.Id}.orientation == 2   % xy
+        BoxOut(1:2) = pixBox(1:2)*obj.I{obj.Id}.pixSize.z + bb(5) - obj.I{obj.Id}.pixSize.z;
+        BoxOut(3:4) = pixBox(3:4)*obj.I{obj.Id}.pixSize.y + bb(3) - obj.I{obj.Id}.pixSize.y;
+        BoxOut(5:6) = pixBox(5:6)*obj.I{obj.Id}.pixSize.x + bb(1) - obj.I{obj.Id}.pixSize.x;
+    end
+    
+    addLinesOptions.orientation = obj.I{obj.Id}.orientation;
+    imgRGB = obj.I{obj.Id}.hLines3D.addLinesToImage(imgRGB, BoxOut, addLinesOptions);
+end
+
 % show annotations
 if obj.mibShowAnnotationsCheck %% && obj.orientation == 4
     if obj.I{obj.Id}.hLabels.getLabelsNumber() >= 1

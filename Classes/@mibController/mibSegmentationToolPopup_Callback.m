@@ -24,6 +24,7 @@ toolsList = obj.mibView.handles.mibSegmentationToolPopup.String;
 selectedTool = strtrim(toolsList{val});
 obj.mibView.handles.mibSegmMagicPanel.Visible = 'off';
 obj.mibView.handles.mibSegmAnnPanel.Visible = 'off';
+obj.mibView.handles.mibSegmLines3DPanel.Visible = 'off';
 obj.mibView.handles.mibSegmObjectPickerPanel.Visible = 'off';
 obj.mibView.handles.mibSegmSpotPanel.Visible = 'off';
 obj.mibView.handles.mibSegmThresPanel.Visible = 'off';
@@ -41,6 +42,8 @@ end
 switch selectedTool
     case 'Annotations'
         obj.mibView.handles.mibSegmAnnPanel.Visible = 'on';
+    case '3D lines'
+        obj.mibView.handles.mibSegmLines3DPanel.Visible = 'on';
     case 'Lasso'
         obj.mibView.handles.mibSegmObjectPickerPanel.Visible = 'on';
         obj.mibView.handles.mibSegmObjectPickerPanelSub.Visible = 'off';

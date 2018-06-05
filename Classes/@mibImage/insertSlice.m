@@ -6,8 +6,7 @@ function insertSlice(obj, img, insertPosition, meta, options)
 % img: new 2D-4D image stack to insert
 % insertPosition: @b [optional] position where to insert the new slice/volume
 % starting from @b 1. When omitted or @em NaN or @em 0 - add img to the end of the dataset
-% meta: @b [optional] containers Map with parameters of the dataset to
-% insert, can be empty
+% meta: @b [optional] containers Map with parameters of the dataset to insert, can be empty
 % options: an optional structure with additional paramters
 % .dim - a string that defines dimension 'depth' (default), 'time'
 %
@@ -45,7 +44,7 @@ if ~isfield(options, 'dim'); options.dim = 'depth'; end
 
 bgColor = 0;
 if size(obj.img{1}, 1) ~= size(img, 1) || size(obj.img{1},2) ~= size(img, 2) || size(obj.img{1},3) ~= size(img, 3)
-    answer = mibInputDlg({mibPath}, sprintf('Warning!\nSome of the image dimensions mismatch.\nContinue anyway?\n\nBackground color (a single number between: [0-%d])', intmax(class(img))),'Wrong dimensions','0');
+    answer = mibInputDlg({mibPath}, sprintf('Warning!\nSome of the image dimensions mismatch.\nContinue anyway?\n\nBackground color (a single number between: [0-%d])', intmax(class(img))),'Wrong dimensions', num2str(intmax(class(img))));
     if isempty(answer); return; end
     bgColor = str2double(answer{1});
 end

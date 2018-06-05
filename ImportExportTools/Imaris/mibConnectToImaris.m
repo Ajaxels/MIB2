@@ -35,7 +35,7 @@ if isempty(connImaris)
         waitbar(0.3, wb);
     catch exception
         %if strcmp(exception.message, 'Could not connect to Imaris Server.')
-        errordlg(sprintf('Could not connect to Imaris Server;\nPlease start Imaris and try again!'), ...
+        errordlg(sprintf('Could not connect to Imaris Server;\nPlease start Imaris and try again!\n\n%s', exception.message), ...
             'Missing Imaris');
         delete(wb);
         connImaris = [];

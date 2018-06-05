@@ -804,20 +804,25 @@ for fn_index = 1:no_files
             delete(dummyXMLFilename);           % delete dummy xml file
             img_info('meta') = meta.OME;
         end
-        xVal = double(omeMeta.getPixelsPhysicalSizeX(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));
-        if isempty(xVal)
-            pixSize.x = 1;   % in um
-            pixSize.y = 1;   % in um
-        else
-            pixSize.x = double(omeMeta.getPixelsPhysicalSizeX(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
-            pixSize.y = double(omeMeta.getPixelsPhysicalSizeY(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
+        try     % old vws data do not have this option
+            xVal = double(omeMeta.getPixelsPhysicalSizeX(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));
+            if isempty(xVal)
+                pixSize.x = 1;   % in um
+                pixSize.y = 1;   % in um
+            else
+                pixSize.x = double(omeMeta.getPixelsPhysicalSizeX(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
+                pixSize.y = double(omeMeta.getPixelsPhysicalSizeY(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
+            end
+            zVal = omeMeta.getPixelsPhysicalSizeZ(filesTemp.seriesIndex(fileSubIndex)-1);
+            if isempty(zVal)
+                pixSize.z = pixSize.y;   % in um
+            else
+                pixSize.z = double(omeMeta.getPixelsPhysicalSizeZ(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
+            end
+        catch err
+            continue;
         end
-        zVal = omeMeta.getPixelsPhysicalSizeZ(filesTemp.seriesIndex(fileSubIndex)-1);
-        if isempty(zVal)
-            pixSize.z = pixSize.y;   % in um
-        else
-            pixSize.z = double(omeMeta.getPixelsPhysicalSizeZ(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
-        end
+        
         % fix X and Y for dm4
         [~,~,ext] = fileparts(filenames{fn_index});
         if strcmp(ext, '.dm4') && pixSize.x ~= pixSize.y

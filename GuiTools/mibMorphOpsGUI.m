@@ -33,7 +33,7 @@ function varargout = mibMorphOpsGUI(varargin)
 
 % Edit the above text to modify the response to help mibMorphOpsGUI
 
-% Last Modified by GUIDE v2.5 10-Feb-2017 15:03:07
+% Last Modified by GUIDE v2.5 24-Mar-2018 14:11:31
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -173,4 +173,16 @@ end
 % --- Executes on button press in continueBtn.
 function continueBtn_Callback(hObject, eventdata, handles)
 handles.winController.continueBtn_Callback();
+end
+
+% --- Executes on button press in objects3D.
+function objects3D_Callback(hObject, eventdata, handles)
+if handles.objects3D.Value == 1
+    list = {'branchpoints', 'clean', 'endpoints', 'fill', 'majority', 'remove', 'skel'};
+else
+    list = {'branchpoints','bwulterode','diag','endpoints','skel','spur','thin'};
+end
+handles.morphOpsPopup.String = list;
+
+handles.winController.updateWidgets();
 end
