@@ -127,6 +127,7 @@ classdef mibRandomDatasetController < handle
             outputDirNum = str2double(obj.View.handles.outputDirNumEdit.String);    % number of output directories
             includeModels = obj.View.handles.includeModelCheck.Value;   % switch to include or not model files that are places in the input folders
             includeMasks = obj.View.handles.includeMaskCheck.Value;   % switch to include or not model files that are places in the input folders
+            filenameExtension = lower(obj.View.handles.filenameExtension.String); % extension for filenames with images
             
             Settings =  struct;     % structure with settings
             Settings.inputDirName = obj.View.handles.inputDirsList.String;  % paths to the input directories
@@ -152,7 +153,8 @@ classdef mibRandomDatasetController < handle
                 excludeFiles = zeros([numel(fileList), 1]);     % generate a vector with indices of the files that should be removed from the list
                 for i=1:numel(fileList)
                     [~,~,ext] = fileparts(fileList{i});
-                    if ismember(ext, {'.mat', '.model', '.mask'})
+                    %if ~ismember(lower(ext), ['.' filenameExtension])
+                    if ~strcmp(lower(ext), ['.' filenameExtension]) %#ok<STCI>  % add to the exculude files list
                         excludeFiles(i) = 1;
                     end
                     if includeModels    % find filenames for the models

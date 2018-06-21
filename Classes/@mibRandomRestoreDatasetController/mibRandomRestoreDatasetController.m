@@ -88,12 +88,12 @@ classdef mibRandomRestoreDatasetController < handle
             obj.View.handles.projectFilenameEdit.TooltipString = obj.inputFilename;
             
             % update project details
-            load(obj.inputFilename, '-mat');
-            if ~exist('Settings', 'var')
+            res = load(obj.inputFilename, '-mat');
+            if ~isfield(res, 'Settings')
                 errordlg('Something is wrong with the project file!');
                 return;
             end
-            obj.Settings = Settings; %#ok<CPROP>
+            obj.Settings = res.Settings; %#ok<CPROP>
             
             obj.updateWidgets();
         end

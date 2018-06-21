@@ -47,6 +47,7 @@
 % * *Include mask*, same as above but for masks. *Note!* It
 % is important that each folder contains only a single file in the
 % _*.mask_ format
+% * *Filename extension*, provide extension for filenames with images
 % * *Filename templalte*, define filename template for the shuffled images
 % * *Output directory*, define the output directory
 % * *Number of output sub-directories*, specify to how many output

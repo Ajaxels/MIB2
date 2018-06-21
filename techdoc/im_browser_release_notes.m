@@ -5,7 +5,7 @@
 %
 %
 %
-%% 2.30 / 18.05.2018
+%% 2.301 / 18.05.2018 (21.06.2018)
 % * Added Lines3D class for 3D measurements and generation of 3D skeletons and graphs 
 % * Added the Image arithmetics dialog (|Menu->Image->Tools for images->Image arithmetics...|)
 % * Added the Rename and Shuffle tool (|Menu->File->Rename and Shuffle|) to
@@ -25,6 +25,7 @@
 % * Added recentering the view after click for the Membrane ClickTracker tool
 % * Added export of TransformationMatrix with AmiraMesh files
 % * Fix of cropping objects to files from the Get Statistics tool
+% * [2.301] Added filter for filenames to the Shuffle and rename tool
 %
 %% 2.22 / 16.03.2018
 % * Added value field for the annotations, thus each annotation can be weighted based on its value
