@@ -108,12 +108,13 @@ if ~isdeployed
     end
 end
 
-r = loci.formats.ChannelFiller();
-r = loci.formats.ChannelSeparator(r);
-%r = loci.formats.gui.BufferedImageReader(r);
-r.setMetadataStore(loci.formats.MetadataTools.createOMEXMLMetadata());
+% r = loci.formats.ChannelFiller();
+% r = loci.formats.ChannelSeparator(r);
+% %r = loci.formats.gui.BufferedImageReader(r);
+% r.setMetadataStore(loci.formats.MetadataTools.createOMEXMLMetadata());
+% r.setId(handles.filename);
 
-r.setId(handles.filename);
+r = bfGetReader(handles.filename);
 
 numSeries = r.getSeriesCount();
 data = cell(numSeries,6);  % prepare data for the table

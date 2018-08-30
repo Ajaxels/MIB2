@@ -35,7 +35,12 @@ switch parameter
         answer = mibInputMultiDlg({obj.mibPath}, prompt, defAns, title);
         if isempty(answer); return; end
         
-        assignin('base', answer{1}, obj.mibModel.I{obj.mibModel.Id}.img{1});
+        if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
+            assignin('base', answer{1}, obj.mibModel.I{obj.mibModel.Id}.img{1});
+        else
+            img = cell2mat(obj.mibModel.getData4D('image', 4));
+            assignin('base', answer{1}, img);
+        end
         I_meta = containers.Map(keys(obj.mibModel.I{obj.mibModel.Id}.meta), values(obj.mibModel.I{obj.mibModel.Id}.meta));  % create a copy of the containers.Map
         assignin('base',[answer{1} '_meta'], I_meta);
         disp(['Image export: created [' answer{1} '] and [' [answer{1} '_meta]'] ' variables in the Matlab workspace']);

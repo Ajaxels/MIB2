@@ -18,6 +18,14 @@ function mibChannelMixerTable_Callback(obj, type)
 % Updates
 % 
 
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1 && ~ismember(type, {'set color'})
+    toolname = 'Actions with color channels are';
+    warndlg(sprintf('!!! Warning !!!\n\n%s not available in the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 if isempty(obj.mibView.handles.mibChannelMixerTable.UserData)
     errordlg(sprintf('The color channel was not selected!\n\nPlease select it in the View Settings->Colors table with the left mouse button and try again.'),'Wrong selection');
     return;

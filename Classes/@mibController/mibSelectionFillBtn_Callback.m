@@ -19,7 +19,7 @@ function mibSelectionFillBtn_Callback(obj, sel_switch)
 % 
 
 % do nothing is selection is disabled
-if obj.mibModel.preferences.disableSelection == 1; return; end
+if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
 
 tic;
 selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
@@ -57,7 +57,7 @@ else
         t2 = obj.mibModel.I{obj.mibModel.Id}.time;
         wb = waitbar(0,'Filling holes in 2D for a whole dataset...','WindowStyle','modal');
     end
-    max_size = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation);
+    max_size = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
     max_size2 = max_size*(t2-t1+1);
     index = 1;
     

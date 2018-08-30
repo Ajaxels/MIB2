@@ -50,6 +50,8 @@ colorList = 1:obj.colors;
 obj.img{1} = obj.img{1}(:,:,~ismember(colorList, channel1),:,:);
 waitbar(0.66, wb);
 obj.colors = obj.colors - numel(channel1);
+obj.dim_yxczt(3) = obj.colors;
+
 %obj.viewPort.min = obj.viewPort.min(colorList(colorList~=channel1));
 %obj.viewPort.max = obj.viewPort.max(colorList(colorList~=channel1));
 %obj.viewPort.gamma = obj.viewPort.gamma(colorList(colorList~=channel1));
@@ -75,7 +77,7 @@ if obj.colors == 1
 end
 if isempty(obj.slices{3})
     obj.slices{3} = 1;
-end;
+end
 
 % generate the log text
 log_text = sprintf('Delete color channel(s) %s', mat2str(channel1));

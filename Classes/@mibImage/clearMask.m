@@ -27,6 +27,13 @@ function clearMask(obj, options)
 % Updates
 % 01.11.2017, IB, updated syntax
 
+
+% check for the virtual stacking mode and return
+if obj.Virtual.virtual == 1
+    obj.maskImg{1} = NaN;
+    return;
+end
+
 if nargin < 2; options = []; end
 wb = waitbar(0, sprintf('Clearing the mask\nPlease wait...'), 'Name', 'Clear the Mask');
 if isempty(options) % clear the whole mask

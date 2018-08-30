@@ -26,6 +26,14 @@ function menuDatasetTrasform_Callback(obj, mode)
 % Updates
 % 13.03.2018 IB, added Add Frame mode
 
+% check for the virtual stacking mode and close the controller
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'transformations';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s are not yet available in the virtual stacking mode\nplease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 obj.mibModel.U.clearContents(); % clear undo history
 
 switch mode

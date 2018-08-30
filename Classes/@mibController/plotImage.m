@@ -34,7 +34,7 @@ rgbOptions.blockModeSwitch = 1;
 rgbOptions.roiId = -1;
 if nargin < 3   % generate Ishown from the dataset
     if obj.mibModel.I{obj.mibModel.Id}.volren.show == 0
-        obj.mibView.Ishown = obj.mibModel.getRGBimage(rgbOptions);
+        [obj.mibView.Ishown, obj.mibView.Iraw] = obj.mibModel.getRGBimage(rgbOptions);  % obj.mibView.Iraw is used only in the virtual stacking mode
     else
         imPanPos = obj.mibView.handles.mibImageAxes.Position;
         options.Mview = obj.mibModel.I{obj.mibModel.Id}.volren.viewer_matrix;

@@ -444,7 +444,6 @@ classdef mibAnnotationsController < handle
                     obj.updateWidgets();
                     notify(obj.mibModel, 'plotImage');  % notify to plot the image
                 case 'Jump'     % jump to the highlighted annotation
-                    tic
                     if isempty(obj.indices); return; end
                     if isempty(obj.View.handles.annotationTable.Data); return; end
                     
@@ -480,13 +479,12 @@ classdef mibAnnotationsController < handle
                         notify(obj.mibModel, 'updateTimeSlider', eventdata);
                     end
                     % change z
-                    if size(obj.mibModel.I{obj.mibModel.Id}.img{1}, orientation) > 1
+                    if obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(orientation) > 1 %size(obj.mibModel.I{obj.mibModel.Id}.img{1}, orientation) > 1
                         eventdata = ToggleEventData(round(z));
                         notify(obj.mibModel, 'updateLayerSlider', eventdata);
                     else
                         notify(obj.mibModel, 'plotImage');
                     end
-                    toc
                 case 'Count'    % count selected annotations
                     if isempty(obj.indices); return; end
                     data = obj.View.handles.annotationTable.Data;

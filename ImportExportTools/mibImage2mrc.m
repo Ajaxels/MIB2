@@ -7,12 +7,12 @@ function result = mibImage2mrc(O, Options)
 % Parameters:
 % O: a dataset, [1:height,1:width,1:thickness] or [1:height,1:width,1,1:thickness]
 % Options: a structure:
-% - .volumeFilename a filename, use 'mrc' extension
-% - .pixSize.x - physical width of the voxels
-% - .pixSize.y - physical height of the voxels
-% - .pixSize.z physical thickness of the voxels
-% - .pixSize.units - physical units
-% - .showWaitbar - if @b 1 - show the wait bar, if @b 0 - do not show
+% @li .volumeFilename a filename, use 'mrc' extension
+% @li .pixSize.x - physical width of the voxels
+% @li .pixSize.y - physical height of the voxels
+% @li .pixSize.z physical thickness of the voxels
+% @li .pixSize.units - physical units
+% @li .showWaitbar - if @b 1 - show the wait bar, if @b 0 - do not show
 %
 % Return values:
 % result: result of the function run, @b 1 - success, @b 0 - fail

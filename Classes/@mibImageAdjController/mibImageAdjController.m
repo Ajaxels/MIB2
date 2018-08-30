@@ -191,8 +191,8 @@ classdef mibImageAdjController < handle
             end
             if val <= obj.mibModel.I{obj.mibModel.Id}.viewPort.min(channel)
                 obj.mibModel.I{obj.mibModel.Id}.viewPort.max(channel) = obj.mibModel.I{obj.mibModel.Id}.viewPort.min(channel) + 1;
-            elseif val >= double(intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1})))
-                obj.mibModel.I{obj.mibModel.Id}.viewPort.max(channel) = double(intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1})));
+            elseif val >= obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt')
+                obj.mibModel.I{obj.mibModel.Id}.viewPort.max(channel) = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
             else
                 obj.mibModel.I{obj.mibModel.Id}.viewPort.max(channel) = val;
             end
@@ -260,10 +260,24 @@ classdef mibImageAdjController < handle
             % function findMinBtn_Callback(obj)
             % a callback for obj.View.handles.findMinBtn update; find a
             % minimal intensity point for the dataset
+            wb = waitbar(0, sprintf('Calculating the minimal value\nPlease wait...'));
             colorCh = obj.View.handles.colorChannelCombo.Value;
-            minval = min(min(min(min(obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,colorCh,:,:)))));
+            if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
+                minval = min(min(min(min(obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,colorCh,:,:)))));
+                waitbar(0.99, wb);
+            else
+                minval = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
+                for z=1:obj.mibModel.I{obj.mibModel.Id}.depth
+                    img = cell2mat(obj.mibModel.getData2D('image', z, 4, colorCh));
+                    minval = min([minval, min(img(:))]);
+                    if minval == 0; break; end
+                    waitbar(z/obj.mibModel.I{obj.mibModel.Id}.depth, wb);
+                end
+            end
             obj.View.handles.minEdit.String = num2str(minval);
+            waitbar(1, wb);
             obj.minEdit_Callback();
+            delete(wb);
         end
         
         % --- Executes on button press in findMaxBtn.
@@ -271,10 +285,24 @@ classdef mibImageAdjController < handle
             % function findMaxBtn_Callback(obj)
             % a callback for obj.View.handles.findMaxBtn update; find a
             % maximal intensity point for the dataset
+            wb = waitbar(0, sprintf('Calculating the maximal value\nPlease wait...'));
             colorCh = obj.View.handles.colorChannelCombo.Value;
-            maxval = max(max(max(max(obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,colorCh,:,:)))));
+            if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
+                maxval = max(max(max(max(obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,colorCh,:,:)))));
+                waitbar(0.99, wb);
+            else
+                maxval = 0;
+                for z=1:obj.mibModel.I{obj.mibModel.Id}.depth
+                    img = cell2mat(obj.mibModel.getData2D('image', z, 4, colorCh));
+                    maxval = max([maxval, max(img(:))]);
+                    if maxval == obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt'); break; end
+                    waitbar(z/obj.mibModel.I{obj.mibModel.Id}.depth, wb);
+                end
+            end
             obj.View.handles.maxEdit.String = num2str(maxval);
+            waitbar(1, wb);
             obj.maxEdit_Callback();
+            delete(wb);
         end
         
         function minSlider_ButtonDownFcn(obj)
@@ -287,7 +315,7 @@ classdef mibImageAdjController < handle
         function maxSlider_ButtonDownFcn(obj)
             % function maxSlider_ButtonDownFcn(obj)
             % a callback for button press over obj.View.handles.maxSlider
-            obj.View.handles.maxSlider.Value = double(intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1})));
+            obj.View.handles.maxSlider.Value = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
             obj.maxSlider_Callback();
         end
         
@@ -335,7 +363,7 @@ classdef mibImageAdjController < handle
             viewPort = obj.mibModel.getImageProperty('viewPort');
             
             obj.View.handles.imHist.XLim = ...
-                [min([viewPort.min(channel)+1 intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1}))-3]) ...
+                [min([viewPort.min(channel)+1 obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt')-3]) ...
                  max([viewPort.max(channel)-1 2]) ];
             if logscale
                 obj.View.handles.imHist.YScale = 'Log';
@@ -386,7 +414,7 @@ classdef mibImageAdjController < handle
             obj.View.handles.minEdit.String = num2str(min_val);
             
             obj.View.handles.maxSlider.Min = min_val;
-            obj.View.handles.maxSlider.Max = double(intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1} )));
+            obj.View.handles.maxSlider.Max = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
             obj.View.handles.maxSlider.Value = max_val;
             obj.View.handles.maxEdit.String = num2str(max_val);
             
@@ -413,14 +441,22 @@ classdef mibImageAdjController < handle
             % a callback for press of obj.View.handles.applyBtn to
             % recalculate intensities for the dataset
             
+            % check for the virtual stacking mode
+            if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+                toolname = 'It is not yet possible to recalculate intensities';
+                warndlg(sprintf('!!! Warning !!!\n\n%sin the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
+                    toolname), 'Not implemented');
+                return;
+            end
+            
             res = questdlg(sprintf('You are going to recalculate intensities of the original image by stretching!\n\nAre you sure?'),'!!! Warning !!!','Proceed','Cancel','Cancel');
-            if strcmp(res,'Cancel'); return; end;
+            if strcmp(res,'Cancel'); return; end
             
             wb = waitbar(0,'Please wait...','Name','Adjusting...');
             
             maxZ = obj.mibModel.getImageProperty('depth');
             maxT = obj.mibModel.getImageProperty('time');
-            if maxT == 1; obj.mibModel.mibDoBackup('image', 1); end;
+            if maxT == 1; obj.mibModel.mibDoBackup('image', 1); end
             max_int = double(intmax(class( obj.mibModel.I{obj.mibModel.Id}.img{1} )));
             channel = obj.View.handles.colorChannelCombo.Value;
             viewPort = obj.mibModel.getImageProperty('viewPort');
@@ -450,6 +486,15 @@ classdef mibImageAdjController < handle
         function stretchCurrent_Callback(obj)
             % function stretchCurrent_Callback(obj)
             % a callback for press of obj.View.handles.stretchCurrent to recalculate intensities for the currently shown slice of the dataset
+            
+            % check for the virtual stacking mode
+            if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+                toolname = 'It is not yet possible to recalculate intensities';
+                warndlg(sprintf('!!! Warning !!!\n\n%sin the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
+                    toolname), 'Not implemented');
+                return;
+            end
+            
             obj.mibModel.mibDoBackup('image', 0);
             max_int = double(intmax(class( obj.mibModel.I{obj.mibModel.Id}.img{1} )));
             channel = obj.View.handles.colorChannelCombo.Value;

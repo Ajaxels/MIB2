@@ -29,14 +29,14 @@ if isnan(col_channel)
     if numel(obj.mibView.handles.mibColChannelCombo.String)-1 > numel(obj.mibModel.I{obj.mibModel.Id}.slices{3})
         strText = sprintf('Would you like to invert shown or all channels?');
         button = questdlg(strText, 'Invert Image', 'Shown channels', 'All channels', 'Cancel', 'Shown channels');
-        if strcmp(button, 'Cancel'); return; end;
+        if strcmp(button, 'Cancel'); return; end
         if strcmp(button, 'All channels')
             col_channel = 0;
         end
     end
 end
         
-maxval = intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1}));
+maxval = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
 
 % tweak when only one time point
 if strcmp(sel_switch, '4D') && obj.mibModel.I{obj.mibModel.Id}.time == 1
@@ -63,7 +63,7 @@ showWaitbar = 0;
 if ~strcmp(sel_switch,'2D')
     wb = waitbar(0,sprintf('Inverting image...\nPlease wait...'),'Name','Invert...','WindowStyle','modal');
     start_no=1;
-    end_no=size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation);
+    end_no = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
     showWaitbar = 1;
     max_size2 = (end_no-start_no+1)*(t2-t1+1);
 end

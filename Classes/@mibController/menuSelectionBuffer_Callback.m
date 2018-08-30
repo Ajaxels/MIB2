@@ -19,8 +19,16 @@ function menuSelectionBuffer_Callback(obj, parameter)
 % Updates
 % 26.04.2017, IB, added paste to all z-slices
 
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = '';
+    warndlg(sprintf('!!! Warning !!!\n\nThis action is%s not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 % do nothing is selection is disabled
-if obj.mibModel.preferences.disableSelection == 1; return; end;
+if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
 options.blockModeSwitch = 0;
 
 switch parameter
@@ -30,7 +38,7 @@ switch parameter
         if isempty(obj.mibModel.storedSelection)
             msgbox(sprintf('Error!\nThe buffer is empty!'),'Error!','error','modal');
             return;
-        end;
+        end
         currSelection = cell2mat(obj.mibModel.getData2D('selection', NaN, NaN, NaN, options));
         if min(size(currSelection) == size(obj.mibModel.storedSelection)) == 1
             obj.mibModel.mibDoBackup('selection', 0);
@@ -43,7 +51,7 @@ switch parameter
         if isempty(obj.mibModel.storedSelection)
             msgbox(sprintf('Error!\nThe buffer is empty!'), 'Error!', 'error', 'modal');
             return;
-        end;
+        end
         wb = waitbar(0, sprintf('Pasting selection to layers\nPlease wait...'), 'Name', 'Paste selection', 'WindowStyle', 'modal');
         options.blockModeSwitch = 0;
         currSelection = cell2mat(obj.mibModel.getData2D('selection', NaN, NaN, NaN, options));

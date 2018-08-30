@@ -28,6 +28,19 @@ classdef mibImportOmeroController < handle
             guiName = 'mibImportOmeroGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
+            % check for the virtual stacking mode and disable it
+            if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+                result = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(0, obj.mibModel.preferences.disableSelection);  % switch to the memory-resident mode
+                if isempty(result) || result == 1
+                    obj.closeWindow();
+                    return;
+                end
+                obj.mibModel.I{obj.mibModel.Id}.clearContents();
+                eventdata = ToggleEventData(obj.mibModel.Id);
+                notify(obj.mibModel, 'newDataset', eventdata);
+                notify(obj.mibModel, 'plotImage');
+            end
+            
             % resize all elements x1.25 times for macOS
             mibRescaleWidgets(obj.View.gui);
             
@@ -54,7 +67,7 @@ classdef mibImportOmeroController < handle
             result = mibOmeroLoginDlg();
             if isempty(fieldnames(result))
                 return;
-            end;
+            end
             %obj.client = omero.client(result.server, result.port);
             obj.client = connectOmero(result.server, result.port);
             

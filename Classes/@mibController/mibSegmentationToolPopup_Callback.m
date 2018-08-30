@@ -67,11 +67,11 @@ switch selectedTool
             obj.mibView.handles.mibFilterSelectionPopup.String = list;
             obj.mibView.handles.mibFilterSelectionPopup.Value = 1;
         end
-        if strcmp(list{obj.mibView.handles.mibFilterSelectionPopup.Value'}, 'Brush') && obj.mibModel.preferences.disableSelection == 0
+        if strcmp(list{obj.mibView.handles.mibFilterSelectionPopup.Value'}, 'Brush') && obj.mibModel.I{obj.mibModel.Id}.disableSelection == 0
             obj.mibView.showBrushCursor = 1;
         end
     case {'Spot', '3D ball'}
-        if obj.mibModel.preferences.disableSelection == 0
+        if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 0
             obj.mibView.showBrushCursor = 1;
         end
         obj.mibView.handles.mibSegmSpotPanel.Visible = 'on';
@@ -84,7 +84,7 @@ switch selectedTool
         obj.mibView.handles.mibSuperpixelsCompactEdit.Visible = 'off';
     case 'Brush'
         obj.mibView.handles.mibSegmSpotPanel.Visible = 'on';
-        if obj.mibModel.preferences.disableSelection == 0
+        if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 0
             obj.mibView.showBrushCursor = 1;
         end
         obj.mibView.handles.mibSpotPanelClusteringText.Visible = 'on';

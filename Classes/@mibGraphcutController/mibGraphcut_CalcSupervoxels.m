@@ -117,12 +117,32 @@ function Graphcut = mibGraphcut_CalcSupervoxels(Graphcut, img, parLoopOptions)
         [Graphcut.Edges{1}, Graphcut.EdgesValues{1}] = imRichRAG(Graphcut.slic, 1, img);
         Graphcut.noPix = double(max(max(max(Graphcut.slic))));
         
-        % remove very small clusters that gets accedently selected
+        % remove very small clusters that are accedently selected
         vec = sort(unique(Graphcut.Edges{1}));
         excludeSupervoxels = find(diff(vec)>1);
         if ~isempty(excludeSupervoxels)
             vec2 = 1:numel(excludeSupervoxels);
             excludeSupervoxels = excludeSupervoxels+vec2';
+            
+%             excludeIndices = find(ismember(Graphcut.slic, excludeSupervoxels)>0);
+%             [height1, width1, depth1] = size(Graphcut.slic);
+%             for exIndex = 1:numel(excludeIndices)
+%                 [~, ~, Z1] = ind2sub([height1, width1, depth1], excludeIndices(exIndex));
+%                 if excludeIndices(exIndex) > 1 
+%                     % check the z-index of the previous pixel
+%                     [~, ~, Z2] = ind2sub([height1, width1, depth1], excludeIndices(exIndex)-1); 
+%                     if Z2 == Z1     % if it is on the same slice -> assign
+%                         Graphcut.slic(excludeIndices(exIndex)) = Graphcut.slic(excludeIndices(exIndex)-1);
+%                     else            % otherwise, take the following pixel
+%                         Graphcut.slic(excludeIndices(exIndex)) = Graphcut.slic(excludeIndices(exIndex)+1);
+%                     end
+%                 else    % check for the first pixel of the dataset and fuse it to the second pixel
+%                     Graphcut.slic(excludeIndices(exIndex)) = Graphcut.slic(excludeIndices(exIndex)+1);
+%                 end
+%             end
+            % commented an old code, where the excluded pixels were
+            % assigned to zero, now they are connected to a neighbouring
+            % pixel
             Graphcut.slic(ismember(Graphcut.slic, excludeSupervoxels)) = 0;
         end
         
@@ -135,6 +155,23 @@ function Graphcut = mibGraphcut_CalcSupervoxels(Graphcut, img, parLoopOptions)
         Graphcut.dilateMode = 'pre';
         if strcmp(Graphcut.dilateMode, 'pre')
             Graphcut.slic = imdilate(Graphcut.slic, ones([3 3 3]));
+        end
+        
+        excludeIndices = find(Graphcut.slic == 0);
+        [height1, width1, depth1] = size(Graphcut.slic);
+        for exIndex = 1:numel(excludeIndices)
+            [~, ~, Z1] = ind2sub([height1, width1, depth1], excludeIndices(exIndex));
+            if excludeIndices(exIndex) > 1
+                % check the z-index of the previous pixel
+                [~, ~, Z2] = ind2sub([height1, width1, depth1], excludeIndices(exIndex)-1);
+                if Z2 == Z1     % if it is on the same slice -> assign
+                    Graphcut.slic(excludeIndices(exIndex)) = Graphcut.slic(excludeIndices(exIndex)-1);
+                else            % otherwise, take the following pixel
+                    Graphcut.slic(excludeIndices(exIndex)) = Graphcut.slic(excludeIndices(exIndex)+1);
+                end
+            else    % check for the first pixel of the dataset and fuse it to the second pixel
+                Graphcut.slic(excludeIndices(exIndex)) = Graphcut.slic(excludeIndices(exIndex)+1);
+            end
         end
     end
         

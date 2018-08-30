@@ -16,6 +16,23 @@
 % is implemented using <http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard *IMCLIPBOARD*> function
 % by  Jiro Doke, MathWorks, 2010.
 %
+%% Virtual mode switch
+% 
+% <<images/toolbar_virtmode.png>>
+%
+% By default MIB works in memory-resident mode, when each dataset is loaded
+% completely to computer memory. For large datasets it may take long time
+% to load the datasets, in this case the virtual (harddrive-resident) mode
+% can be used to browser the datasets. The virtual mode is enabled when
+% this button has a HDD icon. It is possible to open datasets in the HDF5
+% format and datasets that are compatible with the
+% <https://www.openmicroscopy.org/bio-formats Bio-Formats library>. In
+% later case, please make sure that the Bio checkbox of the <ug_panel_dir.html Directory Contents panel> is enabled.
+%
+% The virtual mode is more limited comparing to the memory-resident mode
+% and yet can't be used for image segmentation. The only segmentation tools
+% available in the virtual mode for MIB version 2.40 are <ug_panel_segm_tools.html Annotations and 3D Lines>.
+%
 %% Development shortcut...
 % 
 % <<images/toolbar_development.jpg>>

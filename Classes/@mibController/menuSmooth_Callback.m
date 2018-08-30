@@ -19,7 +19,7 @@ function menuSmooth_Callback(obj, type)
 % 
 
 % do nothing is selection is disabled
-if obj.mibModel.preferences.disableSelection == 1
+if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1
     warndlg(sprintf('The selection layer is switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),...
         'The selection layer is disabled', 'modal');
     return; 

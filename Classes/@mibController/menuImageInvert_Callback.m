@@ -21,12 +21,20 @@ function menuImageInvert_Callback(obj, mode)
 % Updates
 % 
 
-if nargin < 2; mode = '4D'; end;
+% check for the virtual stacking mode and close the controller
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'image invert is';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
+if nargin < 2; mode = '4D'; end
 colChannel = NaN;
 if numel(obj.mibView.handles.mibColChannelCombo.String)-1 > numel(obj.mibModel.I{obj.mibModel.Id}.slices{3})
     strText = sprintf('Would you like to invert shown or all channels?');
     button = questdlg(strText, 'Invert Image', 'Shown channels', 'All channels', 'Cancel', 'Shown channels');
-    if strcmp(button, 'Cancel'); return; end;
+    if strcmp(button, 'Cancel'); return; end
     if strcmp(button, 'All channels')
         colChannel = 0;
     end

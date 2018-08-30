@@ -34,7 +34,7 @@ function [bitmap, par] = amiraMesh2bitmap(filename, options)
 % ver 1.07 - 09.01.2018, added extraction of embedded containers in the amiramesh headers
 
 % -- debug block starts --
-%filename = 'e:\3View\2011\1115_YukiOhsiki_2nd\120207_Huh7_SeipinKO_OA\R04_P2\Huh7_SeipinKO_r4_Pos2.am';
+%filename = '.am';
 %nargin = 1;
 % -- debug block ends --
 

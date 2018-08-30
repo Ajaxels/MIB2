@@ -167,7 +167,7 @@ for fn_index = 1:no_files
             
             if bb_info_exist == 1   % use information from the BoundingBox parameter for pixel sizes if it is exist
                 spaces = strfind(curr_text,' ');
-                if numel(spaces) < 7; spaces(7) = numel(curr_text); end;
+                if numel(spaces) < 7; spaces(7) = numel(curr_text); end
                 tab_pos = strfind(curr_text,sprintf('\t'));
                 pos = min([spaces(7) tab_pos]);
                 bb = str2num(curr_text(spaces(1):pos)); %#ok<ST2NM>
@@ -331,6 +331,8 @@ if isa(img, 'uint32') && options.imgStretch==1  % convert to 16 bit image format
     %minVal = mean(minVal);
     img = img-minVal;
     img = uint16(img/((maxVal-minVal)/65535));
+    
+    img_info('MaxInt') = double(intmax('uint16'));
 end
 
 img_info('Height') = height;

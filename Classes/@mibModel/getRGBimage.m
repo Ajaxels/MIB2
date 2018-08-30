@@ -1,5 +1,5 @@
-function imgRGB = getRGBimage(obj, options, sImgIn)
-% function imgRGB =  getRGBimage(obj, options, sImgIn)
+function [imgRGB, imgRAW] = getRGBimage(obj, options, sImgIn)
+% function [imgRGB, imgRAW] =  getRGBimage(obj, options, sImgIn)
 % Generate RGB image from all layers that have to be shown on the screen.
 %
 % Parameters:
@@ -18,6 +18,8 @@ function imgRGB = getRGBimage(obj, options, sImgIn)
 %
 % Return values:
 % imgRGB: - RGB image with combined layers, [1:height, 1:width, 1:3]
+% imgRAW: - RAW image, used only when mibImage.Virtual.virtual == 1, i.e.
+% in the virtual stacking mode
 %
 %| @b Examples:
 % @code options.blockModeSwitch = 1; @endcode
@@ -74,7 +76,6 @@ end
 % get image
 if nargin < 3
     sImgIn = cell2mat(obj.getData2D('image', sliceToShowIdx, NaN, NaN, options));
-    
     colortype = obj.I{obj.Id}.meta('ColorType');
     currViewPort = obj.I{obj.Id}.viewPort;    % copy view port information
     showModelSwitch = obj.mibModelShowCheck;  % whether or not show model above the image
@@ -114,6 +115,12 @@ else
     end
 end
 clear sImgIn;
+
+% generate imgRAW dataset for the virtual stacking mode
+imgRAW = [];
+if obj.I{obj.Id}.Virtual.virtual == 1
+    imgRAW = sImg;
+end
 
 % hide image
 if obj.mibHideImageCheck == 1 % hide image
@@ -168,7 +175,7 @@ else
 end
 
 % get the selection model
-if obj.preferences.disableSelection == 0
+if obj.I{obj.Id}.disableSelection == 0
     selectionModel = cell2mat(obj.getData2D('selection', sliceToShowIdx, NaN, NaN, options));
     if panModeException == 0 && magnificationFactor > 1
         if strcmp(imageResizeMethod,'nearest')  || strcmp(colortype, 'indexed')   % because no matter of the resampling way, the indexed images are resampled via nearest

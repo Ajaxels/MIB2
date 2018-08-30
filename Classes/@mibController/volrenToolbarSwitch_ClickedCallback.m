@@ -18,7 +18,16 @@ function volrenToolbarSwitch_ClickedCallback(obj, parameter)
 % Updates
 % 
 
-if nargin < 2; parameter = ''; end;
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1 && strcmp(obj.mibView.handles.volrenToolbarSwitch.State, 'on') 
+    toolname = 'rendering of datasets is';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    obj.mibView.handles.volrenToolbarSwitch.State = 'off';
+    return;
+end
+
+if nargin < 2; parameter = ''; end
 
 if strcmp(parameter, 'toolbar') && strcmp(obj.mibView.handles.volrenToolbarSwitch.State, 'on')
     getDataOptions.blockModeSwitch = 0;

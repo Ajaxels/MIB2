@@ -43,6 +43,11 @@ global mibPath;
 if nargin < 3;     options = struct(); end
 if nargin < 2;     connImaris = []; end
 
+if mibImage.Virtual.virtual == 1 % virtual stack
+    errordlg(sprintf('!!! Error !!!\n\nThis mode is not yet implemented for the virtual stacking mode'), 'Not implemented');
+    return;
+end
+
 if ~isfield(options, 'type'); options.type = 'image'; end
 if ~isfield(options, 'modelIndex'); options.modelIndex = NaN; end
 
@@ -75,7 +80,7 @@ if sizeX*sizeY*sizeZ > 134217728 % = 512 x 512 x 512
 end
 if strcmp(options.type, 'image')
     noColors = numel(mibImage.slices{3});  % number of shown colors
-    dataClass = class(mibImage.img{1});
+    dataClass = mibImage.meta('imgClass');
 else
     if isnan(options.modelIndex)
         noColors = numel(mibImage.modelMaterialNames);  % number of shown colors
@@ -105,7 +110,7 @@ else
             insertInto = mibInputDlg({mibPath}, ...
                 sprintf('!!! Warning !!!\n\nA 5D dataset is open in Imaris!\nPlease enter a time point to update (starting from 0)\nor type "-1" to replace dataset completely'), ...
                 'Time point', mibImage.slices{5}(1));
-            if isempty(insertInto);            return;        end;
+            if isempty(insertInto);            return;        end
         else
             insertInto = options.insertInto;
         end

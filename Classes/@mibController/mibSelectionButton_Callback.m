@@ -19,7 +19,7 @@ function mibSelectionButton_Callback(obj, action)
 % 
 
 % do nothing is selection is disabled
-if obj.mibModel.preferences.disableSelection == 1; return; end;
+if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
 
 if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 1    % Selection to Model
     layerTo = 'mask';

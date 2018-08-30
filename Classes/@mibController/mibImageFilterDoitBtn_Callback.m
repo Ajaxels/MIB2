@@ -17,6 +17,14 @@ function mibImageFilterDoitBtn_Callback(obj)
 % Updates
 % 
 
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'Image filters are';
+    warndlg(sprintf('!!! Warning !!!\n\n%s not yet available in the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 filter_val = obj.mibView.handles.mibImageFilterPopup.Value;
 filter_list = obj.mibView.handles.mibImageFilterPopup.String;
 

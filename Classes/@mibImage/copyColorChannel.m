@@ -49,13 +49,14 @@ wb = waitbar(0,sprintf('Copy intensities from color channel %d to %d\n\nPlease w
 if channel2 > obj.colors
     obj.img{1}(:,:,channel2,:,:) = obj.img{1}(:,:,channel1,:,:);
     obj.colors = obj.colors + 1;
+    obj.dim_yxczt(3) = obj.colors;
     obj.viewPort.min(obj.colors) = 0;
-    obj.viewPort.max(obj.colors) = double(intmax(class(obj.img{1})));
+    obj.viewPort.max(obj.colors) = obj.meta('MaxInt');
     obj.viewPort.gamma(obj.colors) = 1;
     obj.meta('ColorType') = 'truecolor';
 else
     button = questdlg(sprintf('You are going to overwrite color intensities in the channel %d\nAre you sure?', channel2),'!! Warning !!','Overwrite','Cancel','Cancel'); 
-    if strcmp(button, 'Cancel'); delete(wb); return; end;
+    if strcmp(button, 'Cancel'); delete(wb); return; end
     obj.img{1}(:,:,channel2,:,:) = obj.img{1}(:,:,channel1,:,:);
     
     obj.viewPort.min(channel2) = obj.viewPort.min(channel1);

@@ -14,7 +14,8 @@ function varargout = mibBoundingBoxGUI(varargin)
 
 %| 
 % @b Examples:
-% @code answer = mibBoundingBoxGUI(NaN,'Please enter a number in the edit box below','Test title','123');
+% @code 
+% answer = mibBoundingBoxGUI(NaN,'Please enter a number in the edit box below','Test title','123');
 % if size(answer) == 0; return; end; 
 % @endcode
 

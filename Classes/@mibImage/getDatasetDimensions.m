@@ -64,17 +64,17 @@ time = obj.time;
 
 if options.blockModeSwitch == 0     % get the full size dataset
     if orient == 4 % yx
-        height = size(obj.img{1},1);
-        width = size(obj.img{1},2);
-        depth = size(obj.img{1},4);
+        height = obj.dim_yxczt(1);
+        width = obj.dim_yxczt(2);
+        depth = obj.dim_yxczt(4);
     elseif orient==1     % xz
-        height = size(obj.img{1},2);
-        width = size(obj.img{1},4);
-        depth = size(obj.img{1},1);
+        height = obj.dim_yxczt(2);
+        width = obj.dim_yxczt(4);
+        depth = obj.dim_yxczt(1);
     elseif orient==2 % yz
-        height = size(obj.img{1},1);
-        width = size(obj.img{1},4);
-        depth = size(obj.img{1},2);
+        height = obj.dim_yxczt(1);
+        width = obj.dim_yxczt(4);
+        depth = obj.dim_yxczt(2);
     end
 else        % get the shown block
     if orient == 4    % get dataset dimensions for the yx direction
@@ -84,10 +84,10 @@ else        % get the shown block
 %              width = obj.slices{2}(2)-obj.slices{2}(1)+1;
 %              depth = obj.slices{4}(2)-obj.slices{4}(1)+1;
         elseif options.orientation==2 % yz
-            error('to fix')
-             height = abs(diff([min([Ylim(2) obj.height]) max([Ylim(1) 1])]))+1;
-             width = size(obj.img,2);
-             depth = abs(diff([min([Xlim(2) obj.no_stacks]) max([Xlim(1) 1])]))+1;
+            error('to fix');
+            % height = abs(diff([min([Ylim(2) obj.height]) max([Ylim(1) 1])]))+1;
+            % width = obj.dim_yxczt(2);
+            % depth = abs(diff([min([Xlim(2) obj.depth]) max([Xlim(1) 1])]))+1;
         elseif options.orientation==4 % yx
             %height = abs(diff([max([Ylim(1) 1]) min([Ylim(2) obj.height])]))+1;
             %width = abs(diff([min([Xlim(2) obj.width]) max([Xlim(1) 1])]))+1;

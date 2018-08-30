@@ -17,7 +17,7 @@ function menuMaskSaveAs_Callback(obj)
 
 % Save mask layer to a file in Matlab format
 if obj.mibModel.I{obj.mibModel.Id}.maskExist == 0
-    disp('Cancelled: No mask information found!'); 
+    warndlg(sprintf('!!! Warning !!!\n\nThe mask layer is not present!'), 'Missing the mask'); 
     return; 
 end
 if isnan(obj.mibModel.I{obj.mibModel.Id}.maskImgFilename)

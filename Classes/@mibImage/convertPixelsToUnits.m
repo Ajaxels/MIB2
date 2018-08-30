@@ -8,9 +8,11 @@ function [x, y, z] = convertPixelsToUnits(obj, x, y, z)
 % z -> z - coordinate in pixels
 % 
 % Return values:
-% x -> x - coordinate in physical units, i.e. um
-% y -> y - coordinate in physical units, i.e. um
-% z -> z - coordinate in physical units, i.e. um
+% x: -> x - coordinate in physical units, i.e. um
+% y: -> y - coordinate in physical units, i.e. um
+% z: -> z - coordinate in physical units, i.e. um
+%
+% @note See also similar function in the Tools\convertPixelsToUnits
 
 %| 
 % @b Examples:

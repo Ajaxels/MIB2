@@ -24,7 +24,7 @@ classdef Lines3D < matlab.mixin.Copyable
     %           294 172 40;...
     %           387 198 42;...
     %           400 252 25;
-    %           314 270 19];    // coordinates of nodes in pixels
+    %           314 270 19];    // coordinates of nodes in pixels, [x, y, z]
     %
     % s = [1 2 3 4 4 6 7];      // input node indices
     % t = [2 3 4 5 6 7 8];      // output node indices
@@ -281,6 +281,20 @@ classdef Lines3D < matlab.mixin.Copyable
                 Graph.Nodes.Properties.UserData.pixSize.z = 1;
                 Graph.Nodes.Properties.UserData.pixSize.units = 'um';
                 Graph.Nodes.Properties.UserData.pixSize.tunits = 's';
+            end
+            
+            % recalculate pixels to image units
+            pointsXYZindex = find(ismember(Graph.Nodes.Properties.VariableNames, 'PointsXYZ'));
+            if strcmp(Graph.Nodes.Properties.VariableUnits{pointsXYZindex}, 'pixel')
+                orientation = 4;    % assuming xy orientation
+                [Graph.Nodes.PointsXYZ(:,1), Graph.Nodes.PointsXYZ(:,2), Graph.Nodes.PointsXYZ(:,3)] = ...
+                    convertPixelsToUnits(Graph.Nodes.PointsXYZ(:,1), Graph.Nodes.PointsXYZ(:,2), Graph.Nodes.PointsXYZ(:,3),...
+                    Graph.Nodes.Properties.UserData.BoundingBox, Graph.Nodes.Properties.UserData.pixSize, orientation);
+                
+                Graph.Nodes.Properties.VariableUnits{1} =  Graph.Nodes.Properties.UserData.pixSize.units;
+                if ismember('Edges', Graph.Edges.Properties.VariableNames)
+                    Graph.Edges.Edges = [];   % remove edges, they will be recalculated in the Lines3D.replaceGraph function
+                end
             end
             
             % add variable units if they are missing
@@ -855,13 +869,13 @@ classdef Lines3D < matlab.mixin.Copyable
             obj.G = rmnode(obj.G, nodeId);  % remove node and split the graph
             obj.noTrees = obj.noTrees + numel(N)-1;  % increase tree counter
             
-%             if nodeId == obj.activeNodeId
-%                 %obj.activeNodeId = [];
-%                 obj.activeNodeId = obj.activeNodeId - 1;    % decrease by 1 due to remove of the node
-%             else
-%                 obj.activeNodeId = obj.activeNodeId - 1;    % decrease by 1 due to remove of the node
-%             end
-%             if obj.activeNodeId == 0; obj.activeNodeId = []; end
+            %             if nodeId == obj.activeNodeId
+            %                 %obj.activeNodeId = [];
+            %                 obj.activeNodeId = obj.activeNodeId - 1;    % decrease by 1 due to remove of the node
+            %             else
+            %                 obj.activeNodeId = obj.activeNodeId - 1;    % decrease by 1 due to remove of the node
+            %             end
+            %             if obj.activeNodeId == 0; obj.activeNodeId = []; end
             if ~isempty(N)
                 obj.activeNodeId = min(N);
             else
@@ -951,7 +965,7 @@ classdef Lines3D < matlab.mixin.Copyable
                 obj.G = rmnode(obj.G, nodeId);
                 
                 N(N>nodeId) = N(N>nodeId) - 1;  % decrease N by 1 because the node was removed
-
+                
                 if findedge(obj.G, N(1), N(2)) == 0   % if edge already exist skip formation of a new one
                     node1 = N(1);
                     node2 = N(2);
@@ -960,7 +974,7 @@ classdef Lines3D < matlab.mixin.Copyable
                     EndNodesClip.Edges(1:3) = obj.G.Nodes(node1,:).PointsXYZ;
                     EndNodesClip.Edges(4:6) = obj.G.Nodes(node2,:).PointsXYZ;
                     obj.G = addedge(obj.G, EndNodesClip);
-
+                    
                     % recalculate length of edges
                     options.nodeId = EndNodesClip.EndNodes;
                     obj.G = obj.calculateLengthOfNodes(obj.G, options);
@@ -1070,14 +1084,35 @@ classdef Lines3D < matlab.mixin.Copyable
             % the following codes are quite slow: 140ms, putting the
             % clipEdge3d into a try block seems to be faster
             
-            %if isempty(obj.G.Edges); edge = []; edgeIds =[]; return; end
+            % if isempty(obj.G.Edges); edge = []; edgeIds =[]; return; end
             %if size(obj.G.Edges, 1) < 1; edge = []; edgeIds =[]; return; end
             %if ismember('Edges', obj.G.Edges.Properties.VariableNames) == 0
             %    edge = []; edgeIds =[]; return;
             %end
             
             try
-                edge = clipEdge3d(obj.G.Edges.Edges, Box);
+                % remove edges that are outside the bounding box
+                % speeds up clipEdge3d in about 5-10 times
+                Edges = obj.G.Edges.Edges;  % [x1 y1 z1 x2 y2 z2]
+                Edges(Edges(:,1) < Box(1) & Edges(:,4) < Box(1), :) = [];
+                Edges(Edges(:,1) > Box(2) & Edges(:,4) > Box(2), :) = [];
+                Edges(Edges(:,2) < Box(3) & Edges(:,5) < Box(3), :) = [];
+                Edges(Edges(:,2) > Box(4) & Edges(:,5) > Box(4), :) = [];
+                Edges(Edges(:,3) < Box(5) & Edges(:,6) < Box(5), :) = [];
+                Edges(Edges(:,3) > Box(6) & Edges(:,6) > Box(6), :) = [];
+                
+                % version 2, ~2 time slower
+                % remove edges that are outside the bounding box
+                %               xOut = obj.G.Edges.Edges(:,1) < Box(1) & obj.G.Edges.Edges(:,4) < Box(2);
+                %                xOut2 = obj.G.Edges.Edges(:,1) > Box(1) & obj.G.Edges.Edges(:,4) > Box(2);
+                %                yOut = obj.G.Edges.Edges(:,2) < Box(3) & obj.G.Edges.Edges(:,5) < Box(4);
+                %                yOut2 = obj.G.Edges.Edges(:,2) > Box(3) & obj.G.Edges.Edges(:,5) > Box(4);
+                %                zOut = obj.G.Edges.Edges(:,3) < Box(5) & obj.G.Edges.Edges(:,6) < Box(6);
+                %                 zOut2 = obj.G.Edges.Edges(:,3) > Box(5) & obj.G.Edges.Edges(:,6) > Box(6);
+                %                 edgesOut = xOut | xOut2 | yOut | yOut2 | zOut | zOut2;
+                %                 Edges = obj.G.Edges.Edges(~edgesOut,:);
+                
+                edge = clipEdge3d(Edges, Box);
             catch err
                 edge = []; edgeIds =[]; return;
             end
@@ -1164,7 +1199,7 @@ classdef Lines3D < matlab.mixin.Copyable
             end
             
             % get coordinates of the edges
-            [edgePnts, edgeIds] = obj.clipEdge(Box);   % [x1 y1 z1 x2 y2 z2]
+            [edgePnts, edgeIds] = obj.clipEdge(Box);   % result as [x1 y1 z1 x2 y2 z2]
             noEdges = size(edgePnts, 1);
             
             % find edges that belong to the active tree
@@ -1387,7 +1422,7 @@ classdef Lines3D < matlab.mixin.Copyable
             if nargin < 2; filename = []; end
             
             if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1; end
-                
+            
             
             % obtain filename if it is not provided
             if isempty(filename)
@@ -1532,6 +1567,9 @@ classdef Lines3D < matlab.mixin.Copyable
                     end
                     amiraOptions.overwrite = 1;
                     
+                    extraNodeFieldsLocal = [];
+                    extraEdgeFieldsLocal = [];
+                    
                     if ~isempty(obj.extraNodeFields)
                         extraNodeFieldsLocal = obj.extraNodeFields(obj.extraNodeFieldsNumeric>0);
                     end
@@ -1583,7 +1621,8 @@ classdef Lines3D < matlab.mixin.Copyable
                     Graph.G.Nodes.XData = Graph.G.Nodes.PointsXYZ(:,1);
                     Graph.G.Nodes.YData = Graph.G.Nodes.PointsXYZ(:,2);
                     Graph.G.Nodes.ZData = Graph.G.Nodes.PointsXYZ(:,3);
-                    Graph.G.Nodes = removevars(Graph.G.Nodes, 'PointsXYZ');     % remove PointsXYZ
+                    %Graph.G.Nodes = removevars(Graph.G.Nodes, 'PointsXYZ');     % remove PointsXYZ
+                    Graph.G.Nodes.PointsXYZ = [];   % remove PointsXYZ
                     
                     % generate points for edge segments
                     % require to have two points (starting and ending) for each

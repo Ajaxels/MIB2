@@ -16,8 +16,15 @@ function menuImageToolsArithmetics_Callback(obj)
 %
 % Updates
 % 
-
 global mibPath;
+
+% check for the virtual stacking mode and close the controller
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'image arithmetics tools are';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
 
 prompts = {'Input A:'; 'Destination class'; 'Destination buffer'; ...
     'Input B (optional):'; 'Input C (optional):'; 'Convert via uint32';...

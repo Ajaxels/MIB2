@@ -133,7 +133,7 @@ classdef mibModel < handle
         
         pixSize = getPixSize(obj, id)        % get pixSize structure for the currently shown or id dataset
         
-        imgRGB = getRGBimage(obj, options, sImgIn)        % Generate RGB image from all layers that have to be shown on the screen
+        [imgRGB, imgRAW] = getRGBimage(obj, options, sImgIn)        % Generate RGB image from all layers that have to be shown on the screen
         
         imgRGB = getRGBvolume(obj, img, options)        % Generate RGB volume rendering image of the stack
         

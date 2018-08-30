@@ -27,32 +27,32 @@ function clearSelection(obj, y, x, z, t, blockModeSwitch)
 % Updates
 % 
 
-if nargin < 6; blockModeSwitch = 0; end;
-if nargin < 5; t = NaN; end;
-if nargin < 4; z = NaN; end;
-if nargin < 3; x = NaN; end;
-if nargin < 2; y = NaN; end;
+if nargin < 6; blockModeSwitch = 0; end
+if nargin < 5; t = NaN; end
+if nargin < 4; z = NaN; end
+if nargin < 3; x = NaN; end
+if nargin < 2; y = NaN; end
 
 if isnan(t(1))
     t = 1:obj.time; 
 elseif numel(t) == 2   % t = [minT, maxT] format
     t = max([1 t(1)]):min([t(2) obj.time]); 
-end;
+end
 if isnan(z(1))
     z = 1:obj.depth; 
 elseif numel(z) == 2    % z = [minZ, maxZ] format
     z = max([1 z(1)]):min([z(2) obj.depth]); 
-end;
+end
 if isnan(x(1))
     x = 1:obj.width; 
 elseif numel(x) == 2    % x = [minX, maxX] format
     x = max([1 x(1)]):min([x(2) obj.width]); 
-end;
+end
 if isnan(y(1))
     y = 1:obj.height; 
 elseif numel(y) == 2  && ~ischar(y)   % y = [minY, maxY] format
     y = max([1 y(1)]):min([y(2) obj.height]); 
-end;
+end
 
 if ischar(y)
     getDataOptions.blockModeSwitch = blockModeSwitch;
@@ -80,7 +80,7 @@ else
             obj.selection{1}(y, x, z, t) = 0;
         end
     else
-        if isnan(obj.model{1}(1)); return; end;    % selection is disabled
+        if isnan(obj.model{1}(1)); return; end    % selection is disabled
         if nargin < 2
             obj.model{1} = bitset(obj.model{1}, 8, 0);
         else

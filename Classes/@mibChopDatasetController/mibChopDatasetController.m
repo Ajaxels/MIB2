@@ -88,7 +88,7 @@ classdef mibChopDatasetController < handle
             % callback for obj.View.handles.selectDirBtn select directory
             % for the export
             folder_name = uigetdir(obj.View.handles.dirEdit.String, 'Select directory');
-            if isequal(folder_name, 0); return; end;
+            if isequal(folder_name, 0); return; end
             
             obj.View.handles.dirEdit.String = folder_name;
             obj.outputDir = folder_name;
@@ -172,14 +172,22 @@ classdef mibChopDatasetController < handle
                         options.z = [zMin, zMax];
                         imOut = cell2mat(obj.mibModel.getData3D('image', timePnt, 4, 0, options));
                         
-                        imgOut2 = mibImage(imOut, obj.mibModel.getImageProperty('meta'), 63);
+                        mibImageOptions = struct();
+                        mibImageOptions.modelType = 63;
+                        mibImageOptions.virtual = 0;
+                        % get meta copy of the current meta-data
+                        meta2 = containers.Map(keys(obj.mibModel.I{obj.mibModel.Id}.meta), values(obj.mibModel.I{obj.mibModel.Id}.meta));
+                        meta2('Height') = yMax - yMin + 1;  % update Height, Width, Depth fields, 
+                        meta2('Width') = xMax - xMin + 1;   % because they are used to initialize 
+                        meta2('Depth') = zMax - zMin + 1;   % mibImage class variables
+                        imgOut2 = mibImage(imOut, meta2, mibImageOptions);
                         imgOut2.pixSize = obj.mibModel.getImageProperty('pixSize');
                         
                         % update Bounding Box
                         xyzShift = [(xMin-1)*imgOut2.pixSize.x (yMin-1)*imgOut2.pixSize.y (zMin-1)*imgOut2.pixSize.z];
                         imgOut2.updateBoundingBox(NaN, xyzShift);
                         
-                        log_text = sprintf('Chop: [y1:y2,x1:x2,:,z1:z2,t]: %d:%d,%d:%d,:,%d:%d,%d:%d', yMin,yMax,xMin,xMax, zMin,zMax, timePnt);
+                        log_text = sprintf('Chop: [y1:y2,x1:x2,:,z1:z2,t]: %d:%d,%d:%d,:,%d:%d,%d', yMin,yMax,xMin,xMax, zMin,zMax, timePnt);
                         imgOut2.updateImgInfo(log_text);
                         
                         % generate filename

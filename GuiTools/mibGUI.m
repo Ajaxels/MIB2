@@ -22,7 +22,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 18-May-2018 10:05:45
+% Last Modified by GUIDE v2.5 30-Jul-2018 14:28:30
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -457,6 +457,11 @@ end
 function devTest_ClickedCallback(~, ~, handles)
 % kept for developmental purposes
 handles.mibController.devTest_ClickedCallback();
+end
+
+function toolbarVirtualMode_ClickedCallback(hObject, eventdata, handles)
+% switch between loading datasets to memory or reading from HDD modes
+handles.mibController.toolbarVirtualMode_ClickedCallback();
 end
 
 function zoomPush_ClickedCallback(hObject, ~, handles)
@@ -902,12 +907,11 @@ end
 function mibSegmentationBW_Update(hObject, eventdata, handles)
 % function mibSegmentationBW_Update(hObject, eventdata, handles)
 % do black and white thresholding
-
 handles = guidata(hObject);
 if strcmp(hObject.Tag, 'mibSegmBWthres4D')
     if hObject.Value == 1
         button = questdlg(sprintf('!!! Warning !!!\n\nYou are going to do black-and-white thresholding over complete dataset\nThis may take a lot of time, are you sure?'),'Warning','Continue','Cancel','Cancel');
-        if strcmp(button, 'Cancel'); hObject.Value = 0; return; end;
+        if strcmp(button, 'Cancel'); hObject.Value = 0; return; end
     end
 end
 
@@ -1664,13 +1668,13 @@ end
 %% ------------------ File menu ------------------ 
 function menuFileImportImage_Callback(hObject, eventdata, handles, parameter)
 % a callback from Menu->File->Import 
-if nargin < 4;     parameter = 'matlab'; end;
+if nargin < 4;     parameter = 'matlab'; end
 handles.mibController.menuFileImportImage_Callback(parameter);
 end
 
 function menuFileExportImage_Callback(hObject, eventdata, handles, parameter)
 % a callback from Menu->File->Export
-if nargin < 4;     parameter = 'matlab'; end;
+if nargin < 4;     parameter = 'matlab'; end
 handles.mibController.menuFileExportImage_Callback(parameter);
 end
 
@@ -1853,14 +1857,11 @@ end
 
 
 % --------------------------------------------------------------------
-function menuModelsSaveAs_Callback(hObject, eventdata, handles)
-handles.mibController.menuModelsSaveAs_Callback('saveas');
+function menuModelsSaveAs_Callback(hObject, eventdata, handles, parameter)
+% parameter: 'save' or 'saveas'
+handles.mibController.menuModelsSaveAs_Callback(parameter);
 end
 
-% --------------------------------------------------------------------
-function menuModelsSave_Callback(hObject, eventdata, handles)
-handles.mibController.menuModelsSaveAs_Callback();
-end
 
 % --------------------------------------------------------------------
 function menuModelsRender_Callback(hObject, eventdata, handles, type)

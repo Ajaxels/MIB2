@@ -48,14 +48,15 @@ switch obj.mibView.handles.mibGUI.SelectionType
             options.waitbar = 1;        % show progress dialog
             options.Font = obj.mibModel.preferences.Font;    % pass font settings
             options.mibPath = mibPath;      % path to MIB, an optional parameter to mibInputDlg.m 
+            options.virtual = obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual;  % to use or not the virtual stacking
             %obj.mibModel.I{obj.mibModel.Id}.clearContents();  % remove the current dataset
             obj.mibModel.U.clearContents();  % clear Undo history
-            % load a single image
             
+            % load a single image
             fn = fullfile(obj.mibModel.myPath, filename{1});
             [img, img_info, pixSize] = mibLoadImages(cellstr(fn), options);
             
-            if ~isnan(img(1))
+            if ~isempty(img)
                 obj.mibModel.I{obj.mibModel.Id}.clearContents(img, img_info, obj.mibModel.preferences.disableSelection);
                 obj.mibModel.I{obj.mibModel.Id}.pixSize = pixSize;
                 notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details
@@ -65,6 +66,7 @@ switch obj.mibView.handles.mibGUI.SelectionType
                 %obj.mibView.handles = obj.mibView.handles.Img{obj.mibView.handles.Id}.I.updateAxesLimits(obj.mibView.handles, 'resize');
                 %obj.mibView.handles.Img{obj.mibView.handles.Id}.I.updateDisplayParameters();
                 %obj.mibView.handles = updateGuiWidgets(obj.mibView.handles);
+                obj.updateFilelist();
             end
             %obj.mibView.handles = obj.mibView.handles.Img{obj.mibView.handles.Id}.I.plotImage(obj.mibView.handles.imageAxes, obj.mibView.handles, 1);
             obj.plotImage(1);

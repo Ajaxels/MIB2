@@ -43,7 +43,14 @@ if nargin > 2
 else
     obj.childControllers{id} = fh(obj.mibModel);    % initialize child controller
 end
+
 % add listener to the closeEvent of the child controller
-addlistener(obj.childControllers{id}, 'closeEvent', @(src,evnt) mibController.purgeControllers(obj, src, evnt));   % static
+addlistener(obj.childControllers{id}, 'closeEvent', @(src, evnt) mibController.purgeControllers(obj, src, evnt));   % static
 %addlistener(obj.childControllers{id}, 'closeEvent', @(src, evnt) obj.purgeControllers(src, evnt)); % dynamic
+
+p = fieldnames(obj.childControllers{id});
+if ismember('noGui', p)
+    notify(obj.childControllers{id}, 'closeEvent');
+end
+
 end

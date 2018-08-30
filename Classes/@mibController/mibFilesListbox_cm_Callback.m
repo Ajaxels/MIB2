@@ -70,12 +70,21 @@ end
 switch parameter
     case {'load' 'nth','loadPart','combinecolors'}
         if val < 3; return; end
+        
+        if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1 && strcmp(parameter, 'combinecolors')
+            toolname = 'The colors can not be combined in the virtual stacking mode.';
+            warndlg(sprintf('!!! Warning !!!\n\n%s\nPlease switch to the memory-resident mode and try again', ...
+                toolname), 'Not implemented');
+            return;
+        end
+        
         if strcmp(parameter, 'loadPart')
             options.customSections = 1;     % to load part of the dataset, for AM only
         end
+        options.virtual = obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual;
         [img, img_info, pixSize] = mibLoadImages(fn, options);
-        if isnan(img(1))
-            errordlg(sprintf('!!! Error !!!\n\nIt is not possible to load the dataset...'),'Wrong file','modal');
+        if isempty(img)
+            errordlg(sprintf('!!! Error !!!\n\nIt is not possible to load the dataset...\nDimensions mismatch, perhaps?'), 'Wrong file', 'modal');
             return;
         end
         if strcmp(parameter, 'combinecolors') 
@@ -122,9 +131,15 @@ switch parameter
 %         [img, img_info, ~] = mibLoadImages(fn, options);
 %         obj.mibModel.I{obj.mibModel.Id}.insertSlice(img, insertPosition, img_info);
         
+        %if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1; error('not implemented!'); end
+
         prompts = {'Dimension:'; ...
             sprintf('Position\n1 - beginning of the open dataset\n0 - end of the open dataset\nor type any number to define position')};
-        defAns = {{'depth', 'time', 1}; '0'};
+        if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
+            defAns = {{'depth', 'time', 1}; '0'};
+        else
+            defAns = {{'depth', 1}; '0'};    
+        end
         options.PromptLines = [1, 4];
         dlgtitle = 'Insert dataset';
         options.Title = 'Where the new dataset should be inserted?';
@@ -134,13 +149,14 @@ switch parameter
         if isempty(output); return; end
         insertPosition = str2double(output{2});
         options.dim = output{1};
+        options.virtual = obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual;
         [img, img_info, ~] = mibLoadImages(fn, options);
         obj.mibModel.I{obj.mibModel.Id}.insertSlice(img, insertPosition, img_info, options);
         
         if obj.mibView.handles.mibLutCheckbox.Value == 1
-            obj.mibModel.I{obj.mibModel.Id}.slices{3} = 1:size(obj.mibModel.I{obj.mibModel.Id}.img{1},3);
+            obj.mibModel.I{obj.mibModel.Id}.slices{3} = 1:obj.mibModel.I{obj.mibModel.Id}.meta('Colors');
         else
-            obj.mibModel.I{obj.mibModel.Id}.slices{3} = 1:min([size(obj.mibModel.I{obj.mibModel.Id}.img{1},3) 3]);
+            obj.mibModel.I{obj.mibModel.Id}.slices{3} = 1:min([obj.mibModel.I{obj.mibModel.Id}.meta('Colors') 3]);
         end
         notify(obj.mibModel, 'newDataset');   % notify mibView about a new dataset; see function obj.mibView.Listner2_Callback for details
         obj.plotImage(1);
@@ -175,8 +191,15 @@ switch parameter
         msgbox(sprintf('Filename: %s\nDate: %s\nSize: %.3f KB', properties.name, properties.date, properties.bytes/1000),...
             'File info');
     case {'addchannel' 'addchannel_nth'}   % add color channel
+        if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+            toolname = 'The color channels can not be added in the virtual stacking mode.';
+            warndlg(sprintf('!!! Warning !!!\n\n%s\nPlease switch to the memory-resident mode and try again', ...
+                toolname), 'Not implemented');
+            return;
+        end
+
         [img, img_info, ~] = mibLoadImages(fn, options);
-        if isnan(img(1)); return; end
+        if isempty(img(1)); return; end
         
         if isKey(img_info, 'lutColors')
             lutColors = img_info('lutColors');

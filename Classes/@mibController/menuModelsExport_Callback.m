@@ -17,6 +17,15 @@ function menuModelsExport_Callback(obj, parameter)
 %
 % Updates
 % 
+
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'export of models is';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 global mibPath;
 if strcmp(parameter, 'matlab')
     prompt = {'Variable for the structure to keep the model:'};

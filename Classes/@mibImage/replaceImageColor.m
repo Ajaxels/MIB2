@@ -39,7 +39,7 @@ else
     t1 = time_pnt;
     t2 = time_pnt;
 end
-max_slice = size(obj.img{1}, obj.orientation);
+max_slice = obj.dim_yxczt(obj.orientation);
 if slice_id == 0
     start_no = 1;
     end_no = max_slice;
@@ -61,7 +61,7 @@ for t=t1:t2
     for sliceNumber = start_no:end_no
         getDataOptions.z = [sliceNumber, sliceNumber];
         mask_img = obj.getData(type, NaN, 0, getDataOptions);
-        if sum(sum(mask_img)) < 1; continue; end;
+        if sum(sum(mask_img)) < 1; continue; end
         
         curr_img = obj.getData('image', NaN, 0, getDataOptions);
         for channel = start_ch:end_ch
@@ -70,7 +70,7 @@ for t=t1:t2
             curr_img(:,:,channel) = img2;
         end
         obj.setData('image', curr_img, NaN, 0, getDataOptions);
-        if mod(sliceNumber, 10)==0; waitbar((sliceNumber-start_no)/totalnumber,wb); end;
+        if mod(sliceNumber, 10)==0; waitbar((sliceNumber-start_no)/totalnumber,wb); end
     end
 end
 

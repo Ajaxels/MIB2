@@ -32,14 +32,14 @@ function dataset = getData(obj, type, orient, col_channel, options, custom_img) 
 % @code dataset = obj.getData('image', 4, 2); // get complete dataset in the XY orientation with only second color channel @endcode
 
 % Copyright (C) 06.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
 % as published by the Free Software Foundation; either version 2
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+%
 
 if nargin < 6; custom_img = NaN; end
 if nargin < 5; options=struct(); end
@@ -51,6 +51,12 @@ if orient == 0 || isnan(orient); orient=obj.orientation; end
 
 if ~isfield(options, 'level'); options.level = 1; end
 level = 2^(options.level-1);    % resampling factor
+
+if obj.Virtual.virtual == 1
+    % get virtual dataset
+    dataset = obj.getDataVirt(type, orient, col_channel, options);
+    return;
+end
 
 blockModeSwitchLocal = 0;
 if isfield(options, 'y') || isfield(options, 'x') || isfield(options, 'z') || (isfield(options, 't') && obj.time > 1)
@@ -85,7 +91,10 @@ if blockModeSwitchLocal == 1
         if isfield(options, 'y'); Ylim = floor(options.y(1,:)/level); end
         if isfield(options, 'z'); Zlim = options.z(1,:); end
     end
-    if isfield(options, 't'); Tlim = options.t; end
+    if isfield(options, 't')
+        if numel(options.t) == 1; options.t = [options.t options.t]; end
+        Tlim = options.t; 
+    end
     
     % make sure that the coordinates within the dimensions of the dataset
     Xlim = [max([Xlim(1) 1]) min([Xlim(2) floor(obj.width/level)])];
@@ -135,12 +144,14 @@ if obj.modelType > 63
         end
     else    % get sub block
         if strcmp(type,'image')
+            
             dataset = obj.img{level}(Ylim(1):Ylim(2),Xlim(1):Xlim(2),col_channel,Zlim(1):Zlim(2),Tlim(1):Tlim(2));
             if orient==1     % permute to xz
                 dataset = permute(dataset,[2 4 3 1 5]);
             elseif orient==2 % permute to yz
                 dataset = permute(dataset,[1 4 3 2 5]);
             end
+            
         elseif strcmp(type,'model')
             dataset = obj.model{level}(Ylim(1):Ylim(2),Xlim(1):Xlim(2),Zlim(1):Zlim(2),Tlim(1):Tlim(2));
             if orient==1     % xz
@@ -161,7 +172,7 @@ if obj.modelType > 63
             elseif orient==2 % yz
                 dataset = permute(dataset,[1 3 2 4]);
             end
-        elseif strcmp(type,'selection')   
+        elseif strcmp(type,'selection')
             dataset = obj.selection{level}(Ylim(1):Ylim(2),Xlim(1):Xlim(2),Zlim(1):Zlim(2),Tlim(1):Tlim(2));
             if orient==1     % xz
                 dataset = permute(dataset,[2 3 1 4]);
@@ -174,12 +185,14 @@ else            % ************ uint6 model type with 63 materials
     % the following part of the code is broken into two sections because it is faster
     if blockModeSwitchLocal == 0     % get the full size dataset
         if strcmp(type,'image')
+            
             dataset = obj.img{level}(:,:,col_channel,:,:);
             if orient==1    % xz; get permuted dataset
                 dataset = permute(dataset,[2 4 3 1 5]);
             elseif orient==2    % yz; get permuted dataset
                 dataset = permute(dataset,[1 4 3 2 5]);
             end
+            
         else
             if orient == 4 % yx
                 dataset = obj.model{level};
@@ -205,12 +218,14 @@ else            % ************ uint6 model type with 63 materials
         end
     else        % get the shown block
         if strcmp(type,'image')
+            
             dataset = obj.img{level}(Ylim(1):Ylim(2),Xlim(1):Xlim(2),col_channel,Zlim(1):Zlim(2),Tlim(1):Tlim(2));
             if orient==1     % permute to xz
                 dataset = permute(dataset,[2 4 3 1 5]);
             elseif orient==2 % permute to yz
                 dataset = permute(dataset,[1 4 3 2 5]);
             end
+            
         else
             dataset = obj.model{level}(Ylim(1):Ylim(2),Xlim(1):Xlim(2),Zlim(1):Zlim(2),Tlim(1):Tlim(2));
             if orient==1     % permute to xz

@@ -42,6 +42,14 @@ classdef mibPluginController < handle
             guiName = 'mibPluginGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
+			% check for the virtual stacking mode and close the controller if the plugin is not compatible with the virtual stacking mode
+            if isprop(obj.mibModel.I{obj.mibModel.Id}, 'Virtual') && obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+                warndlg(sprintf('!!! Warning !!!\n\nThis plugin is not compatible with the virtual stacking mode!\nPlease switch to the memory-resident mode and try again'), ...
+                    'Not implemented');
+                obj.closeWindow();
+                return;
+            end
+			
             % move the window to the left hand side of the main window
             obj.View.gui = moveWindowOutside(obj.View.gui, 'left');
             

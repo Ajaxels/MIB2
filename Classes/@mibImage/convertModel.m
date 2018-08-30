@@ -25,6 +25,14 @@ function convertModel(obj, type)
 % Updates
 % 04.12.2017, IB, added 4294967295 materials
 
+% check for the virtual stacking mode and close the controller
+if obj.Virtual.virtual == 1
+    toolname = 'models are';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 if nargin < 2
     if obj.modelType == 255
         type = 63;

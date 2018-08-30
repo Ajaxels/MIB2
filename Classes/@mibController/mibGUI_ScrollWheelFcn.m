@@ -31,7 +31,7 @@ if strcmp(modifier, 'control') | strcmp(cell2mat(modifier), 'shiftcontrol') | st
     step = 1;   % step of the brush size change
     if strcmp(cell2mat(modifier), 'shiftcontrol') || strcmp(cell2mat(modifier), 'shiftcontrolalt')
         step = 5;
-    end;
+    end
     toolList = obj.mibView.handles.mibSegmentationToolPopup.String;
     toolName = strtrim(toolList{obj.mibView.handles.mibSegmentationToolPopup.Value});
     switch toolName
@@ -58,7 +58,7 @@ if strcmp(modifier, 'control') | strcmp(cell2mat(modifier), 'shiftcontrol') | st
     colon = strfind(text,':');
     text = str2double(text(strfind(text,'(')+1:colon(2)-1));
     colorText = 1;
-    if text < double(intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1}))/2)
+    if text < obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt')/2
         colorText = 2;
     end
     
@@ -76,7 +76,7 @@ if strcmp(modifier, 'control') | strcmp(cell2mat(modifier), 'shiftcontrol') | st
         val = val + step;
     else
         val = val - step;
-        if val < 1; val = 1; end;
+        if val < 1; val = 1; end
     end
     
     % add cursor text
@@ -128,7 +128,7 @@ if strcmp(obj.mibView.handles.mouseWheelToolbarSw.State,'on') & ...
     end
 
     new_index = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1) + eventdata.VerticalScrollCount*shift;
-    if new_index < 1;  new_index = 1; end;
+    if new_index < 1;  new_index = 1; end
     if new_index > obj.mibModel.I{obj.mibModel.Id}.time; new_index = obj.mibModel.I{obj.mibModel.Id}.time; end;
     obj.mibView.handles.mibChangeTimeSlider.Value = new_index;     % update slider value
     obj.mibChangeTimeSlider_Callback();
@@ -157,8 +157,8 @@ elseif strcmp(obj.mibView.handles.mouseWheelToolbarSw.State,'off')              
     xl = axesX;
     yl = axesY;
     % zoom will work only when the mouse is above the image
-    if curPt(1)<xl(1) || curPt(1)>xl(2); return; end;
-    if curPt(2)<yl(1) || curPt(2)>yl(2); return; end;
+    if curPt(1)<xl(1) || curPt(1)>xl(2); return; end
+    if curPt(2)<yl(1) || curPt(2)>yl(2); return; end
     
     midX = mean(xl);
     rngXhalf = diff(xl) / 2; % half-width of the shown image
@@ -177,10 +177,10 @@ elseif strcmp(obj.mibView.handles.mouseWheelToolbarSw.State,'off')              
     lims = curPt + newLimSpan;
     
     % check out of image bounds conditions
-    if lims(1,1) < 0 && lims(2,1) < 0; return; end;
-    if lims(1,2) < 0 && lims(2,2) < 0; return; end;
-    if lims(1,1) > obj.mibModel.I{obj.mibModel.Id}.width && lims(2,1) > obj.mibModel.I{obj.mibModel.Id}.width; return; end;
-    if lims(1,2) > obj.mibModel.I{obj.mibModel.Id}.height && lims(2,2) > obj.mibModel.I{obj.mibModel.Id}.height; return; end;
+    if lims(1,1) < 0 && lims(2,1) < 0; return; end
+    if lims(1,2) < 0 && lims(2,2) < 0; return; end
+    if lims(1,1) > obj.mibModel.I{obj.mibModel.Id}.width && lims(2,1) > obj.mibModel.I{obj.mibModel.Id}.width; return; end
+    if lims(1,2) > obj.mibModel.I{obj.mibModel.Id}.height && lims(2,2) > obj.mibModel.I{obj.mibModel.Id}.height; return; end
     
     obj.mibModel.setMagFactor(magFactor*r);    % update magFactor
     obj.mibModel.setAxesLimits(lims(:,1)', lims(:,2)');    % update axes limits
@@ -192,8 +192,9 @@ else    % slice change with the mouse wheel
         shift = 1;
     end
     new_index = obj.mibModel.I{obj.mibModel.Id}.slices{obj.mibModel.I{obj.mibModel.Id}.orientation}(1) - eventdata.VerticalScrollCount*shift;
-    if new_index < 1;  new_index = 1; end;
-    if new_index > size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation); new_index = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation); end;
+    if new_index < 1;  new_index = 1; end
+    if new_index > obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation); new_index = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation); end
+    
     obj.mibView.handles.mibChangeLayerSlider.Value = new_index;     % update slider value
     obj.mibChangeLayerSlider_Callback();
 end

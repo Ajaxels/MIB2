@@ -4,7 +4,7 @@ function result = addColorChannel(obj, img, channelId, lutColors)
 %
 % Parameters:
 % img: new 2D/3D image stack to add
-% channelId: @b [optional] number (single!) of the channel to add, if NaN a new color channel is created
+% channelId: @b [optional] number (single) of the channel to add, if NaN a new color channel is created
 % lutColors: @b [optional] a matrix (channelNumber, R G B) for the colors. The colors should be in range between 0 and 1
 %
 % Return values:

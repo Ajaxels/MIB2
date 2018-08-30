@@ -29,6 +29,9 @@ function result = setData4D(obj, type, dataset, orient, col_channel, options)
 % @li .level -> [@em optional], index of image level from the image pyramid
 % @li .id -> [@em optional], an index dataset from 1 to 9, defalt = currently shown dataset
 % @li .replaceDatasetSwitch -> [@em optional], force to replace dataset completely with a new dataset
+% @li .keepModel -> [@em optional], do not resize the model/selection
+% layers when type='image' and submitting complete dataset; as result the selection/model layers have to be
+% modified manually layer. Used in mibResampleController. Default = 1;
 %
 % Return values:
 % result: -> @b 1 - success, @b 0 - error

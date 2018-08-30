@@ -24,7 +24,9 @@ function devTest_ClickedCallback(obj)
 %
 % Updates
 %
-%%
+% %%
+% 
+
 
 % obj.mibModel.mibDoBackup('image', 1);
 % img = cell2mat(obj.mibModel.getData3D('image', 1, 4));
@@ -50,6 +52,12 @@ function devTest_ClickedCallback(obj)
 % toc
 % obj.plotImage();
 % return
+
+% options.y = [10, 110];
+% options.x = [1, 450];
+% options.z = [100, 169];
+% timePnt = 1;
+% imOut = cell2mat(obj.mibModel.getData3D('image', timePnt, 4, 0, options));
 
 
 % prompts = {'Enter a text Enter a text Enter a text Enter a text'; 'Select the option'; 'Are you sure?'; 'Are you sure again?'; 'This is very very very very very very very very very very long prompt:';...

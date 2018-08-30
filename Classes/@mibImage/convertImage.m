@@ -43,17 +43,17 @@ if strcmp(format, 'grayscale')   % -> grayscale
         case 'truecolor'    % truecolor->grayscale
             from = 'truecolor';
             if size(obj.img{1}, 3) > 3
-                I = zeros([obj.height, obj.width, 1, obj.depth, obj.time], class(obj.img{1})); %#ok<ZEROLIKE>
+                I = zeros([obj.height, obj.width, 1, obj.depth, obj.time], obj.meta('imgClass'));
                 selectedColorsLUT = obj.lutColors(obj.slices{3},:);     % take LUT colors for the selected color channels
-                max_int = double(intmax(class(obj.img{1})));
+                max_int = obj.meta('MaxInt');
                 
                 index = 0;
                 for t=1:obj.time
                     for sliceId=1:obj.depth
                         sliceImg = obj.img{1}(:, :, obj.slices{3}, sliceId, t);    % get slice
-                        R = zeros([size(sliceImg,1), size(sliceImg,2)], class(obj.img{1})); %#ok<ZEROLIKE>
-                        G = zeros([size(sliceImg,1), size(sliceImg,2)], class(obj.img{1})); %#ok<ZEROLIKE>
-                        B = zeros([size(sliceImg,1), size(sliceImg,2)], class(obj.img{1})); %#ok<ZEROLIKE>
+                        R = zeros([size(sliceImg,1), size(sliceImg,2)], obj.meta('imgClass')); 
+                        G = zeros([size(sliceImg,1), size(sliceImg,2)], obj.meta('imgClass'));
+                        B = zeros([size(sliceImg,1), size(sliceImg,2)], obj.meta('imgClass')); 
                         for colorId=1:numel(obj.slices{3})
                             adjImg = imadjust(sliceImg(:,:,colorId), ...
                                 [obj.viewPort.min(obj.slices{3}(colorId))/max_int obj.viewPort.max(obj.slices{3}(colorId))/max_int], ...
@@ -65,7 +65,7 @@ if strcmp(format, 'grayscale')   % -> grayscale
                         imgRGB = cat(3,R,G,B);
                         I(:,:,1,sliceId,t) = rgb2gray(imgRGB);
                         index = index + 1;
-                        if mod(index, 10)==0; waitbar(index/maxCounter, wb); end; 
+                        if mod(index, 10)==0; waitbar(index/maxCounter, wb); end
                     end
                 end
                 obj.img{1} = I;
@@ -82,7 +82,7 @@ if strcmp(format, 'grayscale')   % -> grayscale
                 for t=1:obj.time
                     for i=1:obj.depth
                         obj.img{1}(:,:,1,i,t) = rgb2gray(I(:,:,:,i,t));
-                        if mod(index, 10)==0; waitbar(index/maxCounter, wb); end; 
+                        if mod(index, 10)==0; waitbar(index/maxCounter, wb); end 
                         index = index + 1;
                     end
                 end
@@ -99,7 +99,7 @@ if strcmp(format, 'grayscale')   % -> grayscale
             for t=1:obj.time
                 for i=1:obj.depth
                     obj.img{1}(:,:,1,i,t) = ind2gray(I(:,:,:,i,t), obj.meta('Colormap'));
-                    if mod(index,10)==0; waitbar(index/maxCounter, wb); end; 
+                    if mod(index,10)==0; waitbar(index/maxCounter, wb); end 
                     index = index + 1;
                 end
             end
@@ -127,7 +127,7 @@ elseif strcmp(format, 'truecolor')   % ->truecolor
             for t=1:obj.time
                 for i=1:obj.depth
                     obj.img{1}(:,:,:,i,t) = uint8(hsv2rgb(double(I(:,:,:,i,t))/255)*255);
-                	if mod(index,10)==0; waitbar(index/maxCounter, wb); end; 
+                	if mod(index,10)==0; waitbar(index/maxCounter, wb); end 
                     index = index + 1;
                 end
             end
@@ -141,7 +141,7 @@ elseif strcmp(format, 'truecolor')   % ->truecolor
             for t=1:obj.time
                 for i=1:obj.depth
                     obj.img{1}(:,:,:,i,t) = ind2rgb(I(:,:,:,i,t), obj.meta('Colormap'))*max_int;
-                    if mod(index,10)==0; waitbar(index/maxCounter, wb); end; 
+                    if mod(index,10)==0; waitbar(index/maxCounter, wb); end 
                     index = index + 1;
                 end
             end
@@ -193,7 +193,7 @@ elseif strcmp(format,'indexed')   % ->indexed
     end
     %answer = inputdlg(sprintf('Please enter number of graylevels\n [1-65535]'),'Convert to indexed image',1,{'255'});
     answer = mibInputDlg({mibPath}, sprintf('Please enter number of graylevels\n [1-65535]'), 'Convert to indexed image', '255');
-    if isempty(answer);  delete(wb); return; end;
+    if isempty(answer);  delete(wb); return; end
     levels = round(str2double(cell2mat(answer)));
     if levels >= 1 && levels <=255
         class_id = 'uint8';
@@ -213,7 +213,7 @@ elseif strcmp(format,'indexed')   % ->indexed
             for t=1:obj.time
                 for i=1:obj.depth
                     [obj.img{1}(:,:,1,i,t), obj.meta('Colormap')] =  gray2ind(I(:,:,1,i,t),levels);
-                    if mod(index,10)==0; waitbar(index/maxCounter, wb); end; 
+                    if mod(index,10)==0; waitbar(index/maxCounter, wb); end
                     index = index + 1;
                 end
             end
@@ -222,14 +222,14 @@ elseif strcmp(format,'indexed')   % ->indexed
             if size(obj.img{1},3) > 3
                 I = zeros([size(obj.img,1), size(obj.img,2), 1, size(obj.img,4), size(obj.img,5)], class_id);
                 selectedColorsLUT = obj.lutColors(obj.slices{3});     % take LUT colors for the selected color channels
-                max_int = double(intmax(class(obj.img{1})));
+                max_int = obj.meta('MaxInt');
                 index = 0;
                 for t=1:obj.time
                     for sliceId=1:obj.depth
                         sliceImg = obj.img{1}(:,:,obj.slices{3},sliceId,t);    % get slice
-                        R = zeros([size(sliceImg,1), size(sliceImg,2)], class(obj.img{1})); %#ok<ZEROLIKE>
-                        G = zeros([size(sliceImg,1), size(sliceImg,2)], class(obj.img{1})); %#ok<ZEROLIKE>
-                        B = zeros([size(sliceImg,1), size(sliceImg,2)], class(obj.img{1})); %#ok<ZEROLIKE>
+                        R = zeros([size(sliceImg,1), size(sliceImg,2)], obj.meta('imgClass')); 
+                        G = zeros([size(sliceImg,1), size(sliceImg,2)], obj.meta('imgClass')); 
+                        B = zeros([size(sliceImg,1), size(sliceImg,2)], obj.meta('imgClass')); 
                         for colorId=1:numel(obj.slices{3})
                             adjImg = imadjust(sliceImg(:,:,colorId),[obj.viewPort.min(obj.slices{3}(colorId))/max_int obj.viewPort.max(obj.slices{3}(colorId))/max_int],[0 1],obj.viewPort.gamma(obj.slices{3}(colorId)));
                             R = R + adjImg*selectedColorsLUT(colorId, 1);
@@ -263,12 +263,12 @@ elseif strcmp(format, 'uint8')   % -> uint8
         delete(wb);
         return;
     end
-    switch class(obj.img{1})
+    switch obj.meta('imgClass')
         case 'uint8'
             delete(wb);
             return;
         case 'uint16'       % uint16->uint8 
-            from = class(obj.img{1});
+            from = obj.meta('imgClass');
             if max(obj.viewPort.min) > 0 || max(obj.viewPort.max)<65535 || mean(obj.viewPort.gamma) ~= 1
                 img = zeros(size(obj.img{1}), 'uint8');
                 maxIndex = size(obj.img{1}, 5) * size(obj.img{1}, 3) * size(obj.img{1}, 4);
@@ -292,33 +292,37 @@ elseif strcmp(format, 'uint8')   % -> uint8
                 obj.img{1}= uint8(obj.img{1} / (double(intmax('uint16'))/double(intmax('uint8'))));
             end
         case 'uint32'       % uint32->uint8
-            from = class(obj.img{1});
+            from = obj.meta('imgClass');
             obj.img{1} = uint8(obj.img{1} / (double(intmax('uint32'))/double(intmax('uint8'))));
     end
+    obj.meta('imgClass') = 'uint8';
+    obj.meta('MaxInt') = double(intmax('uint8'));
 elseif strcmp(format,'uint16')   % -> uint16
     if strcmp(obj.meta('ColorType'),'indexed')
         msgbox('Convert to RGB or Grayscale first','Error','error');
         delete(wb);
         return;
     end
-    switch class(obj.img{1})
+    switch obj.meta('imgClass')
         case 'uint16'
             delete(wb);
             return;
         case 'uint8'       % uint8->uint16 
-            from = class(obj.img{1});
+            from = obj.meta('imgClass');
             obj.img{1} = uint16(obj.img{1})*(double(intmax('uint16'))/double(intmax('uint8')));
         case 'uint32'    % uint32->uint16
-            from = class(obj.img{1});
+            from = obj.meta('imgClass');
             obj.img{1} = uint32(obj.img{1})*(double(intmax('uint32'))/double(intmax('uint8')));
     end
+    obj.meta('imgClass') = 'uint16';
+    obj.meta('MaxInt') = double(intmax('uint16'));
 elseif strcmp(format,'uint32')   % -> uint32
     if strcmp(obj.meta('ColorType'),'indexed')
         msgbox('Convert to RGB or Grayscale first','Error','error');
         delete(wb);
         return;
     end
-    switch class(obj.img{1})
+    switch obj.meta('imgClass')
         case 'uint32'
             delete(wb);
             return;
@@ -326,15 +330,17 @@ elseif strcmp(format,'uint32')   % -> uint32
             msgbox('Not implemented','Error','error');
             delete(wb);
             return;
-            %from = class(obj.img{1});
+            %from = obj.meta('imgClass');
             %obj.img{1} = uint32(obj.img{1})*(double(intmax('uint32'))/double(intmax('uint8')));
         case 'uint16'      % uint16->uint32
             msgbox('Not implemented','Error','error');
             delete(wb);
             return;
-            %from = class(obj.img{1});
+            %from = obj.meta('imgClass');
             %obj.img{1} = uint32(obj.img{1})*(double(intmax('uint32'))/double(intmax('uint16')));
     end
+    obj.meta('imgClass') = 'uint32';
+    obj.meta('MaxInt') = double(intmax('uint32'));
 end
 
 obj.colors = size(obj.img{1}, 3);

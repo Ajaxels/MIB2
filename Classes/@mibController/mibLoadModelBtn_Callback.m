@@ -33,6 +33,14 @@ function mibLoadModelBtn_Callback(obj, model, options)
 % Updates
 %
 
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'models are';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 tic
 obj.mibModel.setImageProperty('blockModeSwitch', 0);  % disable the blockMode
 if nargin < 2   % model and options were not provided

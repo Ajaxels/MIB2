@@ -17,7 +17,7 @@ function varargout = mibGraphcutGUI(varargin)
 
 % Edit the above text to modify the response to help mibGraphcutGUI
 
-% Last Modified by GUIDE v2.5 02-Nov-2017 20:04:13
+% Last Modified by GUIDE v2.5 23-Aug-2018 10:39:18
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -202,4 +202,9 @@ poolobj = gcp('nocreate'); % If no pool, do not create new one.
 if isempty(poolobj)
     parpool(feature('numCores'));
 end
+end
+
+% --- Executes on button press in segmentAllBtn.
+function segmentAllBtn_Callback(hObject, eventdata, handles)
+handles.winController.segmentAllBtn_Callback();
 end

@@ -19,7 +19,7 @@ function mibSelectionClearBtn_Callback(obj, sel_switch)
 % Updates
 
 % do nothing is selection is disabled
-if obj.mibModel.preferences.disableSelection == 1; return; end;
+if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
 
 if nargin < 2
     modifier = obj.mibView.gui.CurrentModifier;

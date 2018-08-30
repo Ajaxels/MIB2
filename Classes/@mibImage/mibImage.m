@@ -27,12 +27,17 @@ classdef mibImage < matlab.mixin.Copyable
         current_yxz
         % a vector to remember last selected slice number of each 'yx', 'zx', 'zy' planes,
         % @note dimensions: @code [1 1 1] @endcode
+        dim_yxczt
+        % a matrix with dimensions of the dataset [height, width, colors, depth, time]
+        % equal to size obj.img{1} for non-virtual datasets
         depth
         % number of stacks in the dataset
         defaultAnnotationText
         % default text for the annotations
         defaultAnnotationValue
         % default value for the annotations
+        disableSelection
+        % a switch (0/1) to enable or not the selection, mask, model layers
         height
         % image height, px
         hLabels
@@ -75,6 +80,8 @@ classdef mibImage < matlab.mixin.Copyable
         % @li @b Depth
         % @li @b Colors
         % @li @b Time
+        % @li @b MaxInt - maximal number that can be stored in the image container (255 for 8bit, 65535 for 16 bit)
+        % @li @b imgClass - a string with image class, 'uint8', 'uint16', 'uint32';
         model
         % @em model is a property to keep the 'Model' layer
         % @note The model dimensions are @code [1:height, 1:width, 1:no_stacks] @endcode
@@ -143,6 +150,24 @@ classdef mibImage < matlab.mixin.Copyable
         % @li .min - a vector with minimal value for intensity stretching for each color channel
         % @li .max - a vector with maximal value for intensity stretching for each color channel
         % @li .gamma a vector with gamma factor for contrast adjustment for each color channel
+        Virtual
+        % a structure to work with virtual stacks
+        % @li filenames -  a cell array with filenames for each reader,
+        % needed for deep copy of bio-format readers
+        % @li .objectType - a cell array that defines type of the reader: 'bioformats', 'matlab.hdf5'
+        % @li .readerId - define readerId, which is a vector with length equal to the total
+        %       number of slices. Each element identifies the reader index for
+        %       desired slice number of the combined dataset:
+        %       readerId(5) = 3; indicates that slice number 5 is stored in
+        %       the reader 3. Obtained from the 'Virtual_readerId' key of
+        %       the metadata
+        % @li .seriesName - a cell array that defines series name for each file: numbers for bioformats; strings for hdf5
+        % @li .slicesPerFile - an array that specifies how many slices each
+        %       reader contains. Obtained from the 'Virtual_slicesPerFile' key of
+        %       the metadata
+        % @li .virtual - a main switch, when = 1, indicates that the
+        % dataset is in the virtual stack mode, i.e. disk resident, which
+        % is opposed to the normal memory resident mode
         volren
         % a structure with parameters for the volume rendering the fields are
         % @li .show - a switch show or not the volume rendering
@@ -154,19 +179,30 @@ classdef mibImage < matlab.mixin.Copyable
         % image width, px
     end
     
-    properties (SetObservable)
-
-    end
+%     properties (SetAccess = private, GetAccess = private)
+%         listener
+%         % a cell array with handles to listeners
+%     end
+    
+    %properties (SetObservable)
+    %    Virtual
+    %end
+    
+%     events
+%         closeVirtualDatasets
+%     end
     
     methods
         % declaration of functions in the external files, keep empty line in between for the doc generator
         result = addColorChannel(obj, img, channelId, lutColors)        % Add a new color channel to the existing dataset
         
-        clearContents(obj, img, meta, disableSelection)        % set all elements of the class to default values
+        clearContents(obj, img, metaIn, disableSelection)        % set all elements of the class to default values
         
         clearMask(obj, options)        % clear the 'Mask' layer. It is also possible to specify the area where the 'Mask' layer should be cleared
         
         clearSelection(obj, height, width, z, t, blockModeSwitch)        % Clear the 'Selection' layer. It is also possible to specify the area where the Selection layer should be cleared.
+        
+        closeVirtualDataset(obj) % Close opened virtual dataset readers. Used in the 'closeVirtualDatasets' % event of the mibImage class
         
         status = convertImage(obj, format)  % Convert image to specified format: 'grayscale', 'truecolor', 'indexed' and 'uint8', 'uint16', 'uint32' class
         
@@ -184,7 +220,7 @@ classdef mibImage < matlab.mixin.Copyable
         
         createModel(obj, model_type, modelMaterialNames)        % Create an empty model: allocate memory for a new model
         
-        cropDataset(obj, cropF)        % Crop image and all corresponding layers of the opened dataset
+        result = cropDataset(obj, cropF)        % Crop image and all corresponding layers of the opened dataset
         
         deleteColorChannel(obj, channel1)        % Delete specified color channel from the dataset
         
@@ -201,6 +237,8 @@ classdef mibImage < matlab.mixin.Copyable
         timePnt = getCurrentTimePoint(obj)        % Get time point of the currently shown image
         
         dataset = getData(obj, type, orient, col_channel, options, custom_img)        % get dataset from the class
+        
+        dataset = getDataVirt(obj, type, orient, col_channel, options, custom_img)        % get virtual dataset from the class
         
         [height, width, color, depth, time] = getDatasetDimensions(obj, type, orient, color, options)        % Get dimensions of the dataset
         
@@ -242,18 +280,22 @@ classdef mibImage < matlab.mixin.Copyable
         
         swapColorChannels(obj, channel1, channel2)        % Swap two color channels of the dataset
         
+        newMode = switchVirtualStackingMode(obj, newMode, disableSelection)   % switch on/off the virtual stacking mode
+        
         transpose(obj, new_orient)        % change orientation of the image to the XY, XZ, or YZ plane.
         
         updateBoundingBox(obj, newBB, xyzShift, imgDims)        % Update the bounding box info of the dataset
         
         updateDisplayParameters(obj)        % Update display parameters for visualization (mibImage.viewPort structure)
         
+        updateServiceMetadata(obj, metaIn)  % update service metadata of MIB based on obj.img and metaIn
+        
         updateSlicesStructure(obj, axesX, axesY)        % Update the slices structure of the dataset from current axesX, axesY
         
         updateImgInfo(obj, addText, action, entryIndex)        % Update action log
         
-        function obj = mibImage(img, meta, modelType)
-            % obj = mibImage(img, meta, modelType)
+        function obj = mibImage(img, meta, options)
+            % obj = mibImage(img, meta, options)
             % mibImage class constructor
             %
             % Constructor for the mibImage class. Create a new instance of
@@ -262,21 +304,33 @@ classdef mibImage < matlab.mixin.Copyable
             % Parameters:
             % img: a new 2D-5D image stack
             % meta: a 'containers'.'Map' class with parameters of the dataset, can be @e []
-            % modelType: an integer that defines type of the model to use: 63 (default) or 255, can be @e []
+            % options: a structure with additional options for the initialization of the instance 
+            % .modelType - an integer that defines type of the model to use, 63 (default)
+            %   @li 0 - an overlay type model with indices from -128 to 128
+            %   @li 63 - maximum  63 material for the model
+            %   @li 255 - maximum 255 material for the model
+            %   @li 65535 - maximum 65535 material for the model
+            %   @li 4294967295 - maximum 4294967295 material for the model
+            % .virtual - switch indicating that the dataset should be in the virtual mode,
+            %   @li 0 (default) - indicates that the dataset is in the memory mode
+            %   @li 1 - indicates that the dataset is in the virtual mode (i.e. the images are not loaded to memory)
             
-            if nargin < 3; modelType = []; end
+            if nargin < 3; options = struct(); end
             if nargin < 2; meta = []; end
             if nargin < 1; img = []; end
             
-            if isempty(modelType)
-                obj.modelType = 63;
+            if ~isfield(options, 'modelType')
+                options.modelType = 63; 
             else
-                if ismember(modelType, [63 255]) == 0
-                    errordlg('Wrong model type, please use a number 63 or 255 for the modelType parameter during initialization of mibImage');
+                if ismember(options.modelType, [0 63 255 65535 4294967295]) == 0
+                    errordlg('Wrong model type, please use one of the following numbers: 0, 63, 255, 65535, 4294967295 for the options.modelType parameter during initialization of mibImage');
                     return;
                 end
-                obj.modelType = modelType;
             end
+            if ~isfield(options, 'virtual'); options.virtual = 0; end
+            
+            obj.modelType = options.modelType;
+            obj.Virtual.virtual = options.virtual;
             
             obj.defaultAnnotationText = 'Feature 1';
             obj.defaultAnnotationValue = 1;
@@ -286,6 +340,28 @@ classdef mibImage < matlab.mixin.Copyable
             else
                 obj.clearContents(img, meta);
             end
+            
+            %obj.listener{1} = addlistener(obj, 'Virtual', 'PostSet', @(src,evnt) mibImage.Listner_Callback(obj, src, evnt));     % for static
+            %obj.listener{1} = addlistener(obj, 'closeVirtualDatasets', @(src,evnt) mibImage.Listner2_Callback(obj, src, evnt));
+            
         end
     end
+    
+%     methods (Static)
+% %         function Listner_Callback(obj, src, evnt)
+% %             switch src.Name
+% %                 case {'Virtual'}  
+% %                     fprintf('Virtual changed: %s\n', toc);
+% %                     obj.Virtual
+% %             end
+% %         end
+%         
+%         function Listner2_Callback(obj, src, evnt)
+%             switch evnt.EventName
+%                 case 'closeVirtualDatasets'
+%                     obj.closeVirtualDataset();  % close virtual datasets, otherwise files stay locked
+%             end
+%         end
+%     end
+    
 end

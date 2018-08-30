@@ -15,7 +15,7 @@ function varargout = mibSelectModelTypeDlg(varargin)
 % @code answer = mibSelectModelTypeDlg({[]});
 %       if size(answer) == 0; return; end; @endcode
 % @code global mibPath;
-% @code answer = mibSelectModelTypeDlg({mibPath});
+% answer = mibSelectModelTypeDlg({mibPath});
 %       if size(answer) == 0; return; end; @endcode
 
 % Copyright (C) 26.04.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)

@@ -51,6 +51,15 @@ classdef mibObjSepController  < handle
             guiName = 'mibObjSepGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
+            % check for the virtual stacking mode and close the controller
+            if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+                toolname = 'object separation is';
+                warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
+                    toolname), 'Not implemented');
+                obj.closeWindow();
+                return;
+            end
+            
             % resize all elements x1.25 times for macOS
             mibRescaleWidgets(obj.View.gui);
             

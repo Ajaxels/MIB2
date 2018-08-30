@@ -44,6 +44,14 @@ classdef GuiTutorialController < handle
             guiName = 'GuiTutorialGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
+            % check for the virtual stacking mode and close the controller
+            if isprop(obj.mibModel.I{obj.mibModel.Id}, 'Virtual') && obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+                warndlg(sprintf('!!! Warning !!!\n\nThis plugin is not compatible with the virtual stacking mode!\nPlease switch to the memory-resident mode and try again'), ...
+                    'Not implemented');
+                obj.closeWindow();
+                return;
+            end
+            
             % resize all elements of the GUI
             mibRescaleWidgets(obj.View.gui);
             

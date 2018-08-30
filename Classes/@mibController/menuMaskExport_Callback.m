@@ -21,6 +21,14 @@ function menuMaskExport_Callback(obj, parameter)
 global mibPath;
 if nargin < 2; parameter = 'matlab'; end
 
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'Export of masks is';
+    warndlg(sprintf('!!! Warning !!!\n\n%s not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 switch parameter
     case 'matlab'
         prompt = {'Variable for the mask image:'};

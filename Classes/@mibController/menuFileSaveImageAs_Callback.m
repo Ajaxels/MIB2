@@ -19,7 +19,7 @@ function menuFileSaveImageAs_Callback(obj)
 
 
 % save image as...
-if size(obj.mibModel.I{obj.mibModel.Id}.img{1}, 1) < 1; msgbox('No image detected!','Error!','error','modal'); return; end;
+if size(obj.mibModel.I{obj.mibModel.Id}.img{1}, 1) < 1; msgbox('No image detected!','Error!','error','modal'); return; end
 
 fn_out = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
 if isempty(strfind(fn_out,'/')) && isempty(strfind(fn_out,'\'))

@@ -26,11 +26,11 @@ function updateAxesLimits(obj, mode, index, newMagFactor)
 % Updates
 % 
 
-if nargin <  4; newMagFactor=1; end;
-if nargin <  3; index=[]; end;
-if nargin <  2; mode='resize'; end;
+if nargin <  4; newMagFactor=1; end
+if nargin <  3; index=[]; end
+if nargin <  2; mode='resize'; end
 
-if isempty(index); index = obj.mibModel.Id; end;
+if isempty(index); index = obj.mibModel.Id; end
 
 % get the scaling coefficient
 if obj.mibModel.I{index}.orientation == 4     % xy

@@ -18,6 +18,10 @@ function mibFijiImport(obj)
 % 
 
 global mibPath;
+% define type of the dataset
+datasetTypeValue = obj.mibView.handles.mibFijiConnectTypePopup.Value;
+datasetTypeList = obj.mibView.handles.mibFijiConnectTypePopup.String;
+datasetType = datasetTypeList{datasetTypeValue};
 
 % check for MIJ
 if exist('MIJ','class') == 8
@@ -35,7 +39,21 @@ else
 end
 
 datasetName = mibFijiSelectDataset();
-if isnan(datasetName); return; end;
+if isnan(datasetName); return; end
+
+% check for the virtual stacking mode and disable it
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    if ismember(datasetType, {'model','mask','selection'})
+        toolname = datasetType;
+        warndlg(sprintf('!!! Warning !!!\n\nIt is not yet possible to import %s in the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
+            toolname), 'Not implemented');
+        return;
+    end
+    
+    % this code is ok when started from mibController
+    result = obj.toolbarVirtualMode_ClickedCallback(0);  % switch to the memory-resident mode
+    if isempty(result) || result == 1; return; end
+end
 
 img = MIJ.getImage(datasetName);
 minVal = double(min(min(min(min(img)))));
@@ -61,11 +79,6 @@ else
         'Problem!','error');
     return;
 end
-
-% define type of the dataset
-datasetTypeValue = obj.mibView.handles.mibFijiConnectTypePopup.Value;
-datasetTypeList = obj.mibView.handles.mibFijiConnectTypePopup.String;
-datasetType = datasetTypeList{datasetTypeValue};
 
 roiNo = obj.mibModel.I{obj.mibModel.Id}.selectedROI;
 % cancel if more than one roi selected

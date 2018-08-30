@@ -32,6 +32,13 @@ function mibDoBackup(obj, type, switch3d, getDataOptions)
 % Updates
 % 
 
+% check for the virtual stacking mode and return
+if obj.I{obj.Id}.Virtual.virtual == 1
+    if ismember(type, {'mask','selection','model','everything'})    % disable backup for these modes
+        return;
+    end
+end
+
 % cancel if the undo system is disabled
 if obj.U.enableSwitch == 0; return; end
 if nargin < 4; getDataOptions = struct(); end
@@ -47,6 +54,7 @@ if obj.I{obj.Id}.modelType == 63
         type = 'everything';
     end
 end
+
 % return when no mask
 if strcmp(type, 'mask') && obj.I{obj.Id}.maskExist == 0;  return;   end
 
@@ -173,7 +181,7 @@ if switch3d == 1        % 3D mode
     elseif strcmp(type, 'measurements')
         obj.U.store(type, {obj.I{obj.Id}.hMeasure.Data}, NaN);
     else
-        if obj.preferences.disableSelection == 1; return; end    % do not make backups if selection is disabled
+        if obj.I{obj.Id}.disableSelection == 1; return; end    % do not make backups if selection is disabled
         if strcmp(type, 'image')
             obj.U.store(type, obj.getData3D(type, NaN, getDataOptions.orient, 0, getDataOptions), NaN, getDataOptions);
         else
@@ -190,7 +198,7 @@ else                    % 2D mode
     elseif strcmp(type, 'measurements')
         obj.U.store(type, {obj.I{obj.Id}.hMeasure.Data}, NaN, getDataOptions);
     else
-        if obj.preferences.disableSelection == 1; return; end    % do not make backups if selection is disabled
+        if obj.I{obj.Id}.disableSelection == 1; return; end    % do not make backups if selection is disabled
         if strcmp(type, 'image')
             obj.U.store(type, obj.getData2D(type, getDataOptions.z(1), getDataOptions.orient, 0, getDataOptions), NaN, getDataOptions);
         else

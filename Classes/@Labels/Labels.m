@@ -258,7 +258,7 @@ classdef Labels < matlab.mixin.Copyable
             % - @b a @b single @b number @b or @b a @b column @b of @b numbers:     remove label that have index equal to the number
             % - @b a @b matrix:     remove all labels that have coordinates specified in the matrix [labelIndex, z x y t]
             % - @b a @b cell @b array:     remove all labels that have text specified in the cell array 
-            % newLabelText:     a cell or a char string with new text for the label
+            % newLabelText,     a cell or a char string with new text for the label
             %
             % Return values:
             % labels:   - cell array with labels of annotations

@@ -30,9 +30,9 @@ function result = copySlice(obj, sliceNumberFrom, sliceNumberTo, orient)
 % Updates
 % 
 
-if nargin < 4; orient = obj.orientation; end;
-if isnan(orient); orient = obj.orientation; end;
-if orient==0; orient = obj.orientation; end;
+if nargin < 4; orient = obj.orientation; end
+if isnan(orient); orient = obj.orientation; end
+if orient==0; orient = obj.orientation; end
 
 result = 0;
 maxSliceNumber = size(obj.img{1}, orient);
@@ -42,10 +42,10 @@ if sliceNumberFrom > maxSliceNumber || sliceNumberTo > maxSliceNumber || sliceNu
 end
 
 h = waitbar(0, sprintf('Copy slice %d -> %d\nPlease wait...', sliceNumberFrom, sliceNumberTo), 'Name', 'Copy the slice...');
-maxT = size(obj.img{1},5);
-maxZ = size(obj.img{1},4);
-maxH = size(obj.img{1},1);
-maxW = size(obj.img{1},2);
+maxT = obj.dim_yxczt(5); 
+maxZ = obj.dim_yxczt(4);
+maxH = obj.dim_yxczt(1);
+maxW = obj.dim_yxczt(2);
 
 % delete slice from obj.img
 if orient == 4     % xy orientation

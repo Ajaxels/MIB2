@@ -6,6 +6,7 @@ function result = saveBigDataViewerFormat(filename, I, options)
 %
 % Parameters:
 % filename: name of the file: xml or h5
+% I: image dataset, [1:height, 1:width, 1:colors, 1:depth, 1:time]
 % options:  [@em optional], a structure with extra parameters
 %   .ChunkSize - [@em optional], a matrix that defines chunking layout
 %   .Deflate - [@em optional], a number that defines gzip compression level (0-9).
@@ -35,18 +36,18 @@ function result = saveBigDataViewerFormat(filename, I, options)
 %
 
 result = 0;
-if nargin < 3; options = struct(); end;
+if nargin < 3; options = struct(); end
 
 [path, baseName, ext] = fileparts(filename);
 
 options.Datatype = class(I);     % Possible: double,uint64,uint32,uint16,uint8,single,int64,int32,int16,int8
 
 % check options
-if ~isfield(options, 'ChunkSize'); options.ChunkSize = [64, 64, 64]; end;
-if ~isfield(options, 'Deflate'); options.Deflate = 0; end;
-if ~isfield(options, 'SubSampling'); options.SubSampling = '1,1,1'; end;
-if ~isfield(options, 'ResamplingMethod'); options.ResamplingMethod = 'bicubic'; end;
-if ~isfield(options, 't'); options.t = 1; end;
+if ~isfield(options, 'ChunkSize'); options.ChunkSize = [64, 64, 64]; end
+if ~isfield(options, 'Deflate'); options.Deflate = 0; end
+if ~isfield(options, 'SubSampling'); options.SubSampling = '1,1,1'; end
+if ~isfield(options, 'ResamplingMethod'); options.ResamplingMethod = 'bicubic'; end
+if ~isfield(options, 't'); options.t = 1; end
 
 height = size(I,1);
 width = size(I,2);

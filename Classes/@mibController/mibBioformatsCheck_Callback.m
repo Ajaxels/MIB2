@@ -22,7 +22,7 @@ position = obj.mibView.handles.mibFileFilterPopup.UserData;     % get previous p
 obj.mibView.handles.mibFileFilterPopup.UserData = obj.mibView.handles.mibFileFilterPopup.Value; % update position in the list
 
 if obj.mibView.handles.mibBioformatsCheck.Value == 1     % use bioformats reader
-    extentions = {'mov','pic','ics','ids','lei','stk','nd','nd2','sld','pict'...
+    extentions = {'am','mov','pic','ics','ids','lei','stk','nd','nd2','sld','pict'...
         ,'lsm','mdb','psd','img','hdr','svs','dv','r3d','dcm','dicom','fits','liff'...
         ,'jp2','lif','l2d','mnc','mrc','oib','oif','pgm','zvi','gel','ims','dm3','naf'...
         ,'seq','xdce','ipl','mrw','mng','nrrd','ome','amiramesh','labels','fli'...
@@ -32,14 +32,19 @@ if obj.mibView.handles.mibBioformatsCheck.Value == 1     % use bioformats reader
     obj.mibView.handles.mibFileFilterPopup.String = extentions;
     obj.mibView.handles.mibFileFilterPopup.Value = position;
 else
-    image_formats = imformats;  % get readable image formats
-    if obj.matlabVersion < 8.0
-        video_formats = mmreader.getFileFormats(); %#ok<DMMR> % get readable image formats
+    if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
+        image_formats = imformats;  % get readable image formats
+        if obj.matlabVersion < 8.0
+            video_formats = mmreader.getFileFormats(); %#ok<DMMR> % get readable image formats
+        else
+            video_formats = VideoReader.getFileFormats(); % get readable image formats
+        end
+        extentions = ['all known' sort([image_formats.ext 'mrc' 'rec' 'am' 'nrrd' 'h5' 'xml' 'st' 'preali' {video_formats.Extension}])];
     else
-        video_formats = VideoReader.getFileFormats(); % get readable image formats
+        extentions = {'all known','h5','hdf5','xml'};
     end
-    extentions = ['all known' sort([image_formats.ext 'mrc' 'rec' 'am' 'nrrd' 'h5' 'xml' 'st' 'preali' {video_formats.Extension}])];
     obj.mibView.handles.mibFileFilterPopup.String = extentions;
+    if position > numel(extentions); position = 1; end
     obj.mibView.handles.mibFileFilterPopup.Value = position;
 end
 obj.updateFilelist();

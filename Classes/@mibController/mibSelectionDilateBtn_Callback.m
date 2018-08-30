@@ -19,7 +19,7 @@ function mibSelectionDilateBtn_Callback(obj, sel_switch)
 % 30.08.2017 IB added clipping with mask
 
 % do nothing is selection is disabled
-if obj.mibModel.preferences.disableSelection == 1; return; end
+if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
 
 if nargin < 2
     modifier = obj.mibView.gui.CurrentModifier;
@@ -167,7 +167,7 @@ else                % do in 2d
     else
         wb = waitbar(0,sprintf('Dilating selection...\nStrel size: %dx%d px', se_size(1),se_size(2)),'Name','Dilating...','WindowStyle','modal');
         start_no=1;
-        end_no=size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation);
+        end_no = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
     end
     
     max_size2 = (end_no-start_no+1)*(t2-t1+1);

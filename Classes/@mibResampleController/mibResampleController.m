@@ -74,7 +74,7 @@ classdef mibResampleController  < handle
             % update all widgets of the current window
             
             options.blockModeSwitch = 0;
-            [obj.height, obj.width, obj.color, obj.depth] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, NaN, options);
+            [obj.height, obj.width, obj.color, obj.depth] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, 0, options);
             obj.color = numel(obj.color);
             
             obj.View.handles.modelsMethod.String = 'nearest';
@@ -182,8 +182,6 @@ classdef mibResampleController  < handle
                 return;
             end
             
-            obj.mibModel.U.clearContents();      % clear Undo history
-            
             % define resampled ratio for resampling ROIs
             resampledRatio = [newW/obj.width, newH/obj.height, newZ/obj.depth];
             
@@ -203,14 +201,14 @@ classdef mibResampleController  < handle
                 obj.height, obj.width, obj.color, obj.depth, newH, newW, obj.color, newZ), 'Name', 'Resampling ...', 'WindowStyle', 'modal');
             
             options.blockModeSwitch=0;
-            imgOut = zeros([newH, newW, obj.color, newZ, maxT], class(obj.mibModel.I{obj.mibModel.Id}.img{1}));   %#ok<ZEROLIKE> % allocate space
+            imgOut = zeros([newH, newW, obj.color, newZ, maxT], obj.mibModel.I{obj.mibModel.Id}.meta('imgClass'));   %#ok<ZEROLIKE> % allocate space
             options.height = newH;
             options.width = newW;
             options.depth = newZ;
             options.method = methodImage;
             options.imgType = '4D';
             for t=1:maxT
-                img = cell2mat(obj.mibModel.getData3D('image', t, 4, NaN, options));
+                img = cell2mat(obj.mibModel.getData3D('image', t, 4, 0, options));
                 waitbar(0.05,wb);
                 % resample image
                 if strcmp(resamplingFunction, 'interpn')
@@ -230,7 +228,16 @@ classdef mibResampleController  < handle
             clear img;
             clear imgOut2;
             waitbar(0.5,wb);
-            obj.mibModel.setData4D('image', imgOut, 4, NaN, options);
+            
+            if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
+                obj.mibModel.setData4D('image', imgOut, 4, 0, options);
+            else
+                %obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual = 0;
+                %obj.mibModel.I{obj.mibModel.Id}.disableSelection = obj.mibModel.preferences.disableSelection;  % should be before cropDataset
+                newMode = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(0);   % switch to the memory resident mode
+                if isempty(newMode); delete(wb); return; end
+                obj.mibModel.setData4D('image', imgOut, 4, 0, options);
+            end
             waitbar(0.55,wb);
             
             % update pixel dimensions
@@ -247,11 +254,17 @@ classdef mibResampleController  < handle
             options.method = modelsMethod;
             options.imgType = '3D';
             % resample model and mask
+            modelDataType = 'model'; 
             if obj.mibModel.I{obj.mibModel.Id}.modelExist
                 waitbar(0.75,wb,sprintf('Resampling model...\n[%d %d %d %d]->[%d %d %d %d]', ...
                     obj.height, obj.width, obj.color, obj.depth, newH, newW, obj.color, newZ));
                 imgOut = zeros([newH, newW, newZ, maxT], 'uint8');
-                model = cell2mat(obj.mibModel.getData4D('model', 4, NaN, options));  % have to use getData4D, because getData3D returns the cropped model because of already resized image
+                
+                if obj.mibModel.I{obj.mibModel.Id}.modelType == 63 && strcmp(modelsMethod,'nearest')
+                    modelDataType = 'everything';   % resample all layers
+                end
+                
+                model = cell2mat(obj.mibModel.getData4D(modelDataType, 4, NaN, options));  % have to use getData4D, because getData3D returns the cropped model because of already resized image
                 matetialsNumber = numel(obj.mibModel.getImageProperty('modelMaterialNames'));
                 for t=1:maxT
                     if strcmp(resamplingFunction, 'interpn')
@@ -281,8 +294,7 @@ classdef mibResampleController  < handle
                 end
                 waitbar(0.95,wb);
                 obj.mibModel.I{obj.mibModel.Id}.model{1} = zeros(size(imgOut), 'uint8');  % reinitialize .model
-                
-                obj.mibModel.setData4D('model', imgOut, 4, NaN, options);
+                obj.mibModel.setData4D(modelDataType, imgOut, 4, NaN, options);
             elseif obj.mibModel.I{obj.mibModel.Id}.modelType == 63     % when no model, reset handles.Img{andles.Id}.I.model variable
                 obj.mibModel.I{obj.mibModel.Id}.model{1} = zeros([size(imgOut,1), size(imgOut,2), size(imgOut,4) size(imgOut,5)], 'uint8');    % clear the old model
             end
@@ -311,8 +323,10 @@ classdef mibResampleController  < handle
                 remove(obj.mibModel.I{obj.mibModel.Id}.meta, 'SliceName');
             end
             
-            obj.mibModel.I{obj.mibModel.Id}.clearSelection();     % will not resample selection
-            obj.mibModel.I{obj.mibModel.Id}.clearMask();          % will not resample mask
+            if ~strcmp(modelDataType, 'everything')
+                obj.mibModel.I{obj.mibModel.Id}.clearSelection();     % will not resample selection
+                obj.mibModel.I{obj.mibModel.Id}.clearMask();          % will not resample mask
+            end
             waitbar(1,wb);
             delete(wb)
             toc;

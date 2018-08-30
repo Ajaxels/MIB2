@@ -1351,7 +1351,7 @@ classdef mibStatisticsController < handle
                         end_id = start_id;
                     else
                         start_id = 1;
-                        end_id = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, orientation);
+                        end_id = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(orientation);
                     end
 
                     customProps = {'EndpointsLength','CurveLength','HolesArea'};

@@ -99,12 +99,12 @@ for fieldIdx = 1:numel(fields)
             currKey2 = strrep(currKey2, sprintf('\xC5'), 'A');   % replace Angstrem with A
             currKey2 = strrep(currKey2, sprintf('\xB5'), 'u');   % replace mu with u
         
-            if isstruct(img_info(fields{fieldIdx}).(extraFields{extraFieldId}))
+            if isstruct(img_info(fields{fieldIdx}).(extraFields{extraFieldId})) || numel(img_info(fields{fieldIdx}).(extraFields{extraFieldId})) > 1
                 fprintf(fid, '\t\t%s_%s skipped,\n',currKey, currKey2);
-            elseif ~ischar(img_info(fields{fieldIdx}).(extraFields(extraFieldId)))
-                fprintf(fid, '\t\t%s_%s %s,\n',currKey, currKey2, num2str(img_info(fields{fieldIdx}).(extraFields(extraFieldId))));
+            elseif ~ischar(img_info(fields{fieldIdx}).(extraFields{extraFieldId}))
+                fprintf(fid, '\t\t%s_%s %s,\n',currKey, currKey2, num2str(img_info(fields{fieldIdx}).(extraFields{extraFieldId})));
             else
-                fprintf(fid, '\t\t%s_%s %s,\n',currKey, currKey2, img_info(fields{fieldIdx}).(extraFields(extraFieldId)));
+                fprintf(fid, '\t\t%s_%s %s,\n',currKey, currKey2, img_info(fields{fieldIdx}).(extraFields{extraFieldId}));
             end
         end
     elseif iscell(img_info(fields{fieldIdx}))

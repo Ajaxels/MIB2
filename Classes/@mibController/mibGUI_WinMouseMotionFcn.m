@@ -40,19 +40,37 @@ if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer with
     obj.mibView.handles.mibGUI.Pointer = 'crosshair';
     
     if x > 0 && y > 0 && x<=size(obj.mibView.Ishown,2) && y<=size(obj.mibView.Ishown,1) && ~isempty(obj.mibView.imh.CData) % mouse pointer inside the image dimensions
-        [x,y,sliceNo] = obj.mibModel.convertMouseToDataCoordinates(x, y, 'shown');
+        if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+            % in the virtual mode intensity of pixels is obtained from obj.mibView.Iraw, which is a raw dataset displayed on the screen 
+            if obj.mibModel.I{obj.mibModel.Id}.magFactor < 1
+                [xImg, yImg] = obj.mibModel.convertMouseToDataCoordinates(x, y, 'blockmode');
+            else
+                xImg = ceil(x);     
+                yImg = ceil(y);
+            end
+            xImg = ceil(xImg);     
+            yImg = ceil(yImg);
+        end
+        
+        % recalculate mouse coordinates to coordinates of the dataset
+        [x, y, sliceNo] = obj.mibModel.convertMouseToDataCoordinates(x, y, 'shown');
         x = ceil(x);
         y = ceil(y);
         
-        %sprintf('X: %d; Y: %d', x, y)
+        %fprintf('x=%d, y=%d\n', x, y)
+        
         %sliceNo = obj.handles.Img{obj.handles.Id}.I.getCurrentSliceNumber();
         modelValues = [];
         try
             if obj.mibModel.I{obj.mibModel.Id}.orientation == 4   % yx
-                colorValues = obj.mibModel.I{obj.mibModel.Id}.img{1}(y,x,...
-                    obj.mibModel.I{obj.mibModel.Id}.slices{3}, sliceNo, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1));
-                if obj.mibModel.I{obj.mibModel.Id}.modelExist
-                    modelValues = obj.mibModel.I{obj.mibModel.Id}.model{1}(y,x, sliceNo, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1));
+                if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0     % normal mode, memory-resident
+                    colorValues = obj.mibModel.I{obj.mibModel.Id}.img{1}(y, x,...
+                        obj.mibModel.I{obj.mibModel.Id}.slices{3}, sliceNo, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1));
+                    if obj.mibModel.I{obj.mibModel.Id}.modelExist
+                        modelValues = obj.mibModel.I{obj.mibModel.Id}.model{1}(y,x, sliceNo, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1));
+                    end    
+                else    % virtual stacking mode, hdd-resident
+                    colorValues = obj.mibView.Iraw(yImg, xImg, :);
                 end
             elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 1 % zx
                 colorValues = obj.mibModel.I{obj.mibModel.Id}.img{1}(sliceNo,y,...

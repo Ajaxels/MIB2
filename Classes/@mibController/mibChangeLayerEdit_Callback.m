@@ -23,8 +23,8 @@ function mibChangeLayerEdit_Callback(obj, parameter)
 if nargin < 2
     val = str2double(obj.mibView.handles.mibChangeLayerEdit.String);
     status = obj.mibView.editbox_Callback(obj.mibView.handles.mibChangeLayerEdit,...
-        'pint',1,[1 size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation)]);
-    if status == 0; return; end;
+        'pint',1,[1 obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation)]);
+    if status == 0; return; end
 else
     if obj.mibModel.I{obj.mibModel.Id}.orientation == 4   % xy
         maxVal = obj.mibModel.I{obj.mibModel.Id}.depth;

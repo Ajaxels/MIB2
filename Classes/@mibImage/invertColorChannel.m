@@ -27,13 +27,13 @@ global mibPath; % path to mib installation folder
 if nargin < 2
     prompt = {sprintf('Which color channel to invert:')};
     answer = mibInputDlg({mibPath}, prompt, 'Invert color channel', {num2str(obj.slices{3}(1))});
-    if size(answer) == 0; return; end;
+    if size(answer) == 0; return; end
     channel1 = str2double(answer{1});
 end
 
 wb = waitbar(0,sprintf('Inverting color channel: %d\n\nPlease wait...', channel1), 'Name', 'Invert color channel', 'WindowStyle', 'modal');
 
-maxval = intmax(class(obj.img{1}));
+maxval = obj.meta('MaxInt');
 waitbar(0.1, wb);
 obj.img{1}(:,:,channel1,:,:) = maxval - obj.img{1}(:, :, channel1, :, :);
 waitbar(0.95, wb);

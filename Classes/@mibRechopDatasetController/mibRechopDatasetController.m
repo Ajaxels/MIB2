@@ -220,7 +220,9 @@ classdef mibRechopDatasetController < handle
                     img_info{1}('Width') = width;
                     img_info{1}('Depth') = stacks;
                     
-                    obj.mibModel.I{obj.mibModel.Id} = mibImage(imgOut, img_info{1}, obj.mibModel.I{obj.mibModel.Id}.modelType);
+                    mibImageOptions = struct();
+                    mibImageOptions.modelType = obj.mibModel.I{obj.mibModel.Id}.modelType;
+                    obj.mibModel.I{obj.mibModel.Id} = mibImage(imgOut, img_info{1}, mibImageOptions);
                     
                     % update the bounding box
                     bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();

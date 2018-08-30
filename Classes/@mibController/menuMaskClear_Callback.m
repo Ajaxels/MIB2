@@ -20,7 +20,4 @@ obj.mibModel.I{obj.mibModel.Id}.clearMask();
 obj.mibView.handles.mibMaskShowCheck.Value = 0;
 obj.mibMaskShowCheck_Callback();
 obj.plotImage();
-
-
-
 end

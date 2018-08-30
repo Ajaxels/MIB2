@@ -23,8 +23,16 @@ function mibSegmentationBlackWhiteThreshold(obj, parameter)
 % Updates
 %
 
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'black-and-white thresholding is';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 % do black and white thresholding for segmentation
-maxVal = intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1}));
+maxVal = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
 switch parameter
     case 'mibSegmLowEdit'
         val = round(str2double(obj.mibView.handles.mibSegmLowEdit.String));

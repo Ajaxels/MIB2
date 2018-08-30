@@ -29,7 +29,7 @@ else
     if isa(obj.img{1},'uint32')
         [obj.viewPort.max(1:obj.colors)] = deal(65535);
     else
-        [obj.viewPort.max(1:obj.colors)] = deal(double(intmax(class(obj.img{1}))));
+        [obj.viewPort.max(1:obj.colors)] = deal(obj.meta('MaxInt'));
     end
 end
 [obj.viewPort.gamma(1:obj.colors)] = deal(1);

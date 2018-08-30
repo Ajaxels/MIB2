@@ -2,11 +2,11 @@ function res = points2amira(filename, points, pntLabels, pntValues, options)
 % generate AM file for Amira with cloud of points, their labels and values
 %
 % Parameters:
-% filename - filename to save data
-% points - a matrix with points [point number, x, y, z]
-% pntLabels - a cell array with labels for each point; can be empty (@em default: " ")
-% pntValues - an array of values for each point; can be empty (@em default: 1)
-% options - a structure with additional options
+% filename: filename to save data
+% points: a matrix with points [point number, x, y, z]
+% pntLabels: a cell array with labels for each point; can be empty (@em default: " ")
+% pntValues: an array of values for each point; can be empty (@em default: 1)
+% options: a structure with additional options
 %   .overwrite - 1-automatically overwrite existing files
 %   .format - a string with format: 'binary' or 'ascii'
 %   

@@ -228,7 +228,6 @@ classdef mibCropController  < handle
             if obj.View.handles.interactiveRadio.Value    % interactive
                 obj.View.gui.Visible = 'off';
                 
-                %disableSelectionSwitch = obj.mibModel.preferences.disableSelection;
                 obj.mibModel.disableSegmentation = 1;  % disable segmentation
                 
                 h =  imrect(obj.mibImageAxes);
@@ -301,10 +300,12 @@ classdef mibCropController  < handle
                 obj.mibModel.mibImageDeepCopy(bufferId, obj.mibModel.Id);
             else
                 bufferId = obj.mibModel.Id;
-                obj.mibModel.U.clearContents();  % clear undo history
             end
+            
             crop_factor = [crop_factor obj.roiPos{1}(7) obj.roiPos{1}(8)-obj.roiPos{1}(7)+1];
-            obj.mibModel.I{bufferId}.cropDataset(crop_factor);
+            obj.mibModel.I{bufferId}.disableSelection = obj.mibModel.preferences.disableSelection;  % should be before cropDataset
+            result = obj.mibModel.I{bufferId}.cropDataset(crop_factor);
+            if result == 0; return; end
             obj.mibModel.I{bufferId}.hROI.crop(crop_factor);
             obj.mibModel.I{bufferId}.hLabels.crop(crop_factor);
             log_text = ['ImCrop: [x1 y1 dx dy z1 dz t1 dt]: [' num2str(crop_factor) ']'];

@@ -56,6 +56,15 @@ classdef mibImageMorphOpsController < handle
             guiName = 'mibImageMorphOpsGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
+            % check for the virtual stacking mode and close the controller
+            if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+                toolname = 'morphological operations are';
+                warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode\nplease switch to the memory-resident mode and try again', ...
+                    toolname), 'Not implemented');
+                obj.closeWindow();
+                return;
+            end
+            
             % resize all elements x1.25 times for macOS
             mibRescaleWidgets(obj.View.gui);
             
@@ -451,7 +460,7 @@ classdef mibImageMorphOpsController < handle
                     obj.mibModel.setData3D('image', img, t, 4, colChannel, getDataOptions);
                 else
                     startSlice = 1;
-                    endSlice = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation);
+                    endSlice = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
                     if strcmp(obj.mode,'mode2d_Slice')
                         startSlice = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
                         endSlice = startSlice;

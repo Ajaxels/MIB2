@@ -12,7 +12,7 @@ function varargout = mibOmeroLoginDlg(varargin)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 17.08.2018, updated to Java password edit box
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -83,6 +83,15 @@ set(handles.serverPopup,'Value',handles.serverIdx);
 set(handles.omeroServerPortEdit,'String',handles.port);
 set(handles.usernameEdit,'String',handles.username);
 
+% Create Password Entry Box
+% based on example by Jesse Lai from  
+% https://se.mathworks.com/matlabcentral/fileexchange/19729-passwordentrydialog
+handles.passwordEdit.Units = 'pixels';
+handles.java_Password = javax.swing.JPasswordField();
+handles.passwordEdit.Visible = 'off';
+[handles.java_Password, handles.edit_Password] = javacomponent(handles.java_Password, handles.passwordEdit.Position, handles.mibOmeroLoginDlg);
+handles.java_Password.setFocusable(true);
+
 % move the window
 hObject = moveWindowOutside(hObject, 'center', 'center');
 
@@ -115,7 +124,8 @@ serverIdx = get(handles.serverPopup,'value');
 handles.output.server = serverList{serverIdx};
 handles.output.port = str2double(get(handles.omeroServerPortEdit,'String'));
 handles.output.username = get(handles.usernameEdit,'String');
-handles.output.password = handles.password;
+%handles.output.password = handles.password;
+handles.output.password = handles.java_Password.Password';
 
 omeroSettings.servers = handles.servers;
 omeroSettings.serverIdx = handles.serverIdx;
@@ -157,7 +167,7 @@ function passwordEdit_KeyPressFcn(hObject, eventdata, handles)
 handles = guidata(handles.mibOmeroLoginDlg);
 switch eventdata.Key
     case {'backspace', 'delete'}
-        if numel(handles.password) == 0; return; end;
+        if numel(handles.password) == 0; return; end
         handles.password = handles.password(1:end-1);
     case {'leftarrow','rightarrow','downarrow',  'uparrow', 'shift', 'alt', 'control',...
             'escape', 'insert', 'home', 'pageup', 'pagedown', 'end'}
@@ -212,7 +222,7 @@ function removeServerBtn_Callback(hObject, eventdata, handles)
 serverList = get(handles.serverPopup,'string');
 serverValue = get(handles.serverPopup,'value');
 button = questdlg(sprintf('You are going to remove:\n%s\nfrom the list!', serverList{serverValue}),'Remove server','Cancel','Remove','Cancel');
-if strcmp(button, 'Cancel'); return; end;
+if strcmp(button, 'Cancel'); return; end
 i = 1:numel(serverList);
 handles.servers = serverList(i~=serverValue)';
 set(handles.serverPopup,'string',handles.servers);

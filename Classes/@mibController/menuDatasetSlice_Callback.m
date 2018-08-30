@@ -22,10 +22,18 @@ function menuDatasetSlice_Callback(obj, parameter)
 
 global mibPath;
 
+% check for the virtual stacking mode and close the controller
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'slice actions';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s are not yet available in the virtual stacking mode\nplease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 switch parameter
     case 'copySlice'
         currentSlice = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
-        maxSlice = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation);
+        maxSlice = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
         prompt = {'Replace or insert slice at the destination:', 'Index of the source slice:', 'Index of the destination slice (use 0 to insert the slice at the end of the dataset):'};
         defAns = {{'Replace','Insert', 1}, num2str(currentSlice), num2str(min([currentSlice+1 maxSlice]))};
         mibInputMultiDlgOptions.Title = sprintf('Please enter the slice numbers (1-%d)', maxSlice);
@@ -52,7 +60,7 @@ switch parameter
         end
     case 'insertSlice'
         currentSlice = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
-        maxSlice = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation);
+        maxSlice = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
         imgClass = class(obj.mibModel.I{obj.mibModel.Id}.img{1}(1));
         maxIntValue = intmax(imgClass);
         prompt = {'Destination index (use 0 to insert a slice into the end of the dataset):', sprintf('Intensity of the color (0 for black-%d for white)', maxIntValue)};
@@ -76,7 +84,7 @@ switch parameter
         notify(obj.mibModel, 'newDataset');  % notify newDataset 
     case 'deleteSlice'
         currentSlice = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
-        maxSlice = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation);
+        maxSlice = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
 
         answer=mibInputDlg({mibPath}, sprintf('Please enter slice number(s) to delete (1:%d):\nfor example: 1,5,10,15:20', maxSlice), ...
             'Enter slice number', num2str(currentSlice));

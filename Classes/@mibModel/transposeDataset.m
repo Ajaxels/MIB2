@@ -28,13 +28,13 @@ tic
 cMax = numel(cMax);
 switch mode
     case 'xy2zx'
-        imgOut = zeros([zMax, xMax, cMax, yMax, tMax], class(obj.I{obj.Id}.img{1})); %#ok<ZEROLIKE>
+        imgOut = zeros([zMax, xMax, cMax, yMax, tMax], obj.I{obj.Id}.meta('imgClass')); %#ok<ZEROLIKE>
         outputDims = [zMax, xMax, cMax, yMax, tMax];
     case 'xy2zy'
-        imgOut = zeros([yMax, zMax, cMax, xMax tMax], class(obj.I{obj.Id}.img{1})); %#ok<ZEROLIKE>
+        imgOut = zeros([yMax, zMax, cMax, xMax tMax], obj.I{obj.Id}.meta('imgClass')); %#ok<ZEROLIKE>
         outputDims = [yMax, zMax, cMax, xMax tMax];
     case 'zx2zy'
-        imgOut = zeros([xMax, yMax, cMax, zMax, tMax], class(obj.I{obj.Id}.img{1})); %#ok<ZEROLIKE>
+        imgOut = zeros([xMax, yMax, cMax, zMax, tMax], obj.I{obj.Id}.meta('imgClass')); %#ok<ZEROLIKE>
         outputDims = [xMax, yMax, cMax, zMax, tMax];
     case 'z2t'
         obj.transposeZ2T();
@@ -58,7 +58,7 @@ obj.setData4D('image', imgOut, 4, 0, options);   % set dataset (image) back
 clear imgOut;
 
 % transpose other layers
-if obj.I{obj.Id}.modelType == 63 && obj.preferences.disableSelection == 0
+if obj.I{obj.Id}.modelType == 63 && obj.I{obj.Id}.disableSelection == 0
     waitbar(0.5, wb, sprintf('Transposing other layers\nPlease wait...'));
     img = obj.I{obj.Id}.model{1};  % get everything
     obj.I{obj.Id}.model{1} = zeros([outputDims(1), outputDims(2), outputDims(4), outputDims(5)], 'uint8');
@@ -66,7 +66,7 @@ if obj.I{obj.Id}.modelType == 63 && obj.preferences.disableSelection == 0
         obj.setData3D('everything', transposeme(img(:,:,:,t), mode), t, 4, NaN, options);   % set dataset (everything) back
         waitbar(t/tMax, wb);
     end
-elseif  obj.preferences.disableSelection == 0
+elseif  obj.I{obj.Id}.disableSelection == 0
     % transpose selection layer
     waitbar(0.25, wb, sprintf('Transposing the selection layer\nPlease wait...'));
     img = obj.I{obj.Id}.selection{1};  % get selection

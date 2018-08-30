@@ -67,7 +67,7 @@ if strcmp(filter_type, 'anisodiff') %|| strcmp(filter_type,'diplib')   % do dipl
     switch sel_filter
         case 'Perona Malik anisotropic diffusion' 
             options.Filter = 'anisodiff'; 
-            options.KSigma = options.KSigma/100*double(intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1})));   % convert K from %% to numbers
+            options.KSigma = options.KSigma/100*obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');   % convert K from %% to numbers
 %         case 'Diplib: Perona Malik anisotropic diffusion'; options.Filter = 'pmd';
 %         case 'Diplib: Robust Anisotropic Diffusion'; options.Filter = 'aniso';
 %         case 'Diplib: Mean Curvature Diffusion'; options.Filter = 'mcd';

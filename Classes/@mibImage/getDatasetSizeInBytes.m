@@ -35,7 +35,7 @@ if ~ispc
     return;
 end
 
-switch class(obj.img{1})
+switch obj.meta('imgClass')
     case 'uint8'
         memoryMultiplier = 1;   % one byte per pixel
     case 'uint16'
@@ -45,7 +45,7 @@ switch class(obj.img{1})
 end
 
 imSize = size(obj.img{1});
-if numel(imSize) < 5; imSize(5) = 1; end;
+if numel(imSize) < 5; imSize(5) = 1; end
 imSize = imSize(1)*imSize(2)*imSize(3)*imSize(4)*imSize(5)*memoryMultiplier;
 
 memoryMultiplier = 1;

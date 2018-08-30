@@ -16,7 +16,7 @@ function mibChannelMixerTable_CellSelectionCallback(obj, Indices)
 % Updates
 % 
 
-if isempty(Indices); return; end;
+if isempty(Indices); return; end
 obj.mibView.handles.mibChannelMixerTable.UserData = Indices;   % store selected position
 
 if Indices(1, 2) == 3 % start color selection dialog
@@ -27,7 +27,7 @@ if Indices(1, 2) == 3 % start color selection dialog
     figTitle = ['Set color for channel ' num2str(Indices(1))];
     lutColors = obj.mibModel.getImageProperty('lutColors');
     c = uisetcolor(lutColors(Indices(1),:), figTitle);
-    if length(c) == 1; return; end;
+    if length(c) == 1; return; end
     lutColors(Indices(1),:) = c;
     obj.mibModel.setImageProperty('lutColors', lutColors);
     obj.updateGuiWidgets();

@@ -34,31 +34,28 @@ function varargout = imclipboard(clipmode, varargin)
 %   See also CLIPBOARD.
 
 % Jiro Doke
-% Copyright 2010 The MathWorks, Inc.
+% Copyright 2010-2017 The MathWorks, Inc.
 % Sept 12, 2010
+%
+% Updates:
+% Jan 2017 - fixed java getDefaultToolkit error.
 
-%error(nargchk(1, 3, nargin, 'struct'));
-narginchk(1,3);
+narginchk(1, 3);
 error(javachk('awt', 'IMCLIPBOARD'));
 
 % Import necessary Java classes
-import java.awt.Toolkit.*
+import java.awt.Toolkit
 import java.awt.image.BufferedImage
 import java.awt.datatransfer.DataFlavor
 
 % Get System Clipboard object (java.awt.Toolkit)
-try
-    cb = getDefaultToolkit.getSystemClipboard();
-catch err
-    % updated for R2015b, where the old call does not work
-    cb = java.awt.Toolkit.getDefaultToolkit.getSystemClipboard();
-end
+cb = Toolkit.getDefaultToolkit.getSystemClipboard();
 
 clipmode = validatestring(clipmode, {'copy', 'paste'}, mfilename, 'CLIPMODE');
 
 switch clipmode
     case 'copy'
-        error(nargoutchk(0, 0, nargout, 'struct'));
+        nargoutchk(0, 0);
 
         % Add java class (ImageSelection) to the path
         if ~exist('ImageSelection', 'class')
@@ -91,7 +88,7 @@ switch clipmode
         cb.setContents(imSelection, []);
                 
     case 'paste'
-        error(nargoutchk(0, 2, nargout, 'struct'));
+        nargoutchk(0, 2);
 
         filename = validatePasteInput(varargin{:});
         

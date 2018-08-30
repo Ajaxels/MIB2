@@ -43,10 +43,18 @@ function mibMoveLayers(obj, obj_type_from, obj_type_to, layers_id, action_type, 
 % Updates
 % 
 
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = [];
+    warndlg(sprintf('!!! Warning !!!\n\nThis %saction is not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 t1 = tic;
 % when the Selection layer is disabled and obj_type_from/to is selection ->
 % return
-if obj.mibModel.preferences.disableSelection == 1
+if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1
     warndlg(sprintf('The models, selection and mask layers are switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),'The models are disabled','modal');
     return; 
 end

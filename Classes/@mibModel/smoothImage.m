@@ -21,6 +21,14 @@ function smoothImage(obj, type)
 % Updates
 % 
 
+% check for the virtual stacking mode and return
+if obj.I{obj.Id}.Virtual.virtual == 1
+    toolname = 'smoothing is';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 defAns = {{'2D', '3D'}, '5', '5', '5'};
 prompt = {'Mode:',...
           'XY Kernel size:', ...

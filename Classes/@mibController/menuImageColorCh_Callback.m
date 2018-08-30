@@ -21,6 +21,14 @@ function menuImageColorCh_Callback(obj, parameter)
 % Updates
 % 
 
+% check for the virtual stacking mode and close the controller
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'color channel actions';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s are not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 switch parameter
     case 'insert'
         obj.mibModel.I{obj.mibModel.Id}.insertEmptyColorChannel();

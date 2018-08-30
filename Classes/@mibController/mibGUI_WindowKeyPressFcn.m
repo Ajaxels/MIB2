@@ -91,7 +91,7 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
         case 'Add measurement (Measure tool)'   % add measurement, works with Measure Tool, default 'm'
             notify(obj.mibModel.I{obj.mibModel.Id}.hMeasure, 'addMeasurement');
         case 'Switch dataset to XY orientation'         % default 'Alt + 1'
-            if obj.mibModel.I{obj.mibModel.Id}.orientation == 4 || isnan(inImage) %|| x < 1 || x > handles.Img{handles.Id}.I.no_stacks;
+            if obj.mibModel.I{obj.mibModel.Id}.orientation == 4 || isnan(inImage) || obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual %|| x < 1 || x > handles.Img{handles.Id}.I.no_stacks;
                 return;
             elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 1
                 obj.mibModel.I{obj.mibModel.Id}.current_yxz(2) = y;
@@ -103,7 +103,7 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             moveMouseSw = 1;   % move the mouse cursor to the point where the plane was changed
             obj.mibToolbarPlaneToggle(obj.mibView.handles.xyPlaneToggle, moveMouseSw)
         case 'Switch dataset to ZX orientation'         % default 'Alt + 2'
-            if obj.mibModel.I{obj.mibModel.Id}.orientation == 1 || isnan(inImage)
+            if obj.mibModel.I{obj.mibModel.Id}.orientation == 1 || isnan(inImage) || obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual
                 return;
             elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 2
                 obj.mibModel.I{obj.mibModel.Id}.current_yxz(1) = y;
@@ -117,7 +117,7 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             moveMouseSw = 1;   % move the mouse cursor to the point where the plane was changed
             obj.mibToolbarPlaneToggle(obj.mibView.handles.zxPlaneToggle, moveMouseSw);
         case 'Switch dataset to ZY orientation'         % default 'Alt + 3'
-            if obj.mibModel.I{obj.mibModel.Id}.orientation == 2 || isnan(inImage)
+            if obj.mibModel.I{obj.mibModel.Id}.orientation == 2 || isnan(inImage) || obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual
                 return;
             elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 1
                 obj.mibModel.I{obj.mibModel.Id}.current_yxz(1) = obj.mibModel.I{obj.mibModel.Id}.slices{1}(1);
@@ -136,7 +136,7 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             obj.mibInvertImage();
         case 'Add to selection to material'     % default 'a'/'Shift+a'
             % do nothing is selection is disabled
-            if obj.mibModel.preferences.disableSelection == 1; return; end
+            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
             
             if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 1    % Selection to Model
                 selectionTo = 'mask';
@@ -152,7 +152,7 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             end
         case 'Subtract from material'   % default 's'/'Shift+s'
             % do nothing is selection is disabled
-            if obj.mibModel.preferences.disableSelection == 1; return; end
+            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
 
             if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 1   % Selection to Model
                 selectionTo = 'mask';
@@ -168,7 +168,7 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             end
         case 'Replace material with current selection'  % default 'r'/'Shift+r'
             % do nothing is selection is disabled
-            if obj.mibModel.preferences.disableSelection == 1; return; end
+            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
         
             if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 1    % Selection to Model
                 selectionTo = 'mask';
@@ -186,14 +186,14 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
              obj.mibSelectionClearBtn_Callback();
         case 'Fill the holes in the Selection layer'   % default 'f'/'Shift+f'
             % do nothing is selection is disabled
-            if obj.mibModel.preferences.disableSelection == 1; return; end
+            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
             obj.mibSelectionFillBtn_Callback();
         case 'Erode the Selection layer'    % default 'z'/'Shift+z'
             % do nothing is selection is disabled
-            if obj.mibModel.preferences.disableSelection == 1; return; end
+            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
             obj.mibSelectionErodeBtn_Callback();
         case 'Dilate the Selection layer'   % default 'x'/'Shift + x'
-            if obj.mibModel.preferences.disableSelection == 1; return; end
+            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
             obj.mibSelectionDilateBtn_Callback();
         case {'Zoom out/Previous slice','Previous slice'}       % default 'q' / 'downarrow'
             % do nothing if the mouse not above the image
@@ -259,8 +259,8 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
                         shift = obj.mibView.handles.mibChangeLayerSlider.UserData.sliderStep;
                     end
                     new_index = obj.mibModel.I{obj.mibModel.Id}.slices{obj.mibModel.I{obj.mibModel.Id}.orientation}(1) + shift;
-                    if new_index > size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation)
-                        new_index = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation);
+                    if new_index > obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation)
+                        new_index = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
                     end
                     obj.mibModel.I{obj.mibModel.Id}.slices{obj.mibModel.I{obj.mibModel.Id}.orientation} = [new_index, new_index];
                     obj.mibView.handles.mibChangeLayerSlider.Value = new_index;

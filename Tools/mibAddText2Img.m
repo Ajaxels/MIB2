@@ -22,7 +22,7 @@ function img = mibAddText2Img(img, textArray, positionList, options)
 % Return values:
 %   img: -> image 2D
 %
-% @Note: if you need to print special characters generate them using
+% @note: if you need to print special characters generate them using
 % char(dec_index) command. For example to replace all \mu with a proper u character use char(956) command:
 % textArray = strrep(textArray, '\mu', char(956));
 % see more codes: https://unicode-table.com/en/

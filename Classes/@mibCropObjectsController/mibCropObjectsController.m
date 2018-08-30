@@ -252,8 +252,8 @@ classdef mibCropObjectsController < handle
                     getDataOptions.z = [zMin, zMax];
                     getDataOptions.t = [t, t];
                     imOut = obj.mibModel.I{obj.mibModel.Id}.getData('image', 4, 0, getDataOptions);
-                    
-                    imgOut2 = mibImage(imOut, [], 63);
+
+                    imgOut2 = mibImage(imOut);
                     imgOut2.pixSize = obj.mibModel.getImageProperty('pixSize');
                     imgOut2.meta('ImageDescription') = obj.mibModel.I{obj.mibModel.Id}.meta('ImageDescription');
                     % update Bounding Box

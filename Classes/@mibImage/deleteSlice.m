@@ -30,9 +30,9 @@ function result = deleteSlice(obj, sliceNumber, orient)
 % Updates
 % 
 
-if nargin < 3; orient = obj.orientation; end;
-if isnan(orient); orient = obj.orientation; end;
-if orient==0; orient = obj.orientation; end;
+if nargin < 3; orient = obj.orientation; end
+if isnan(orient); orient = obj.orientation; end
+if orient==0; orient = obj.orientation; end
 
 result = 0;
 maxSliceNumber = size(obj.img{1}, orient);
@@ -89,6 +89,25 @@ if ~isnan(obj.model{1}(1))
         obj.model{1}=obj.model{1}(:,:,:,indexList);        
     end
 end
+
+% shift labels
+[labelsList, labelValues, labelPositions, indices] = obj.hLabels.getLabels();   % [labelIndex, z x y t]
+if numel(labelsList) > 0 
+    for sliceId = numel(sliceNumber):-1:1
+        currSlice = sliceNumber(sliceId);
+        if orient == 4     % xy orientation
+            labelPositions(labelPositions(:,1)>=currSlice,1) = labelPositions(labelPositions(:,1)>=currSlice,1)-1;
+        elseif orient == 1     % zx orientation
+            labelPositions(labelPositions(:,3)>=currSlice,3) = labelPositions(labelPositions(:,3)>=currSlice,3)-1;
+        elseif orient == 2     % zy orientation
+            labelPositions(labelPositions(:,2)>=currSlice,2) = labelPositions(labelPositions(:,2)>=currSlice,2)-1;
+        elseif orient == 5     % t orientation
+            labelPositions(labelPositions(:,4)>=currSlice,4) = labelPositions(labelPositions(:,4)>=currSlice,4)-1;       
+        end
+    end
+    obj.hLabels.replaceLabels(labelsList, labelPositions, labelValues);
+end
+
 waitbar(0.7, h);
 
 % delete slice from mask
@@ -109,6 +128,8 @@ obj.height = size(obj.img{1}, 1);
 obj.width = size(obj.img{1}, 2);
 obj.depth = size(obj.img{1}, 4);
 obj.time = size(obj.img{1}, 5);
+obj.dim_yxczt = [obj.height, obj.width, obj.colors, obj.depth, obj.time];
+
 obj.meta('Height') = size(obj.img{1}, 1);
 obj.meta('Width') = size(obj.img{1}, 2);
 obj.meta('Depth') = size(obj.img{1}, 4);

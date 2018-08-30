@@ -18,15 +18,23 @@ function menuMaskImageReplace_Callback(obj, type)
 % Updates
 % 
 
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = '';
+    warndlg(sprintf('!!! Warning !!!\n\nThis action is%s not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 if strcmp(obj.mibModel.I{obj.mibModel.Id}.meta('ColorType'), 'indexed')
     msgbox('Not compatible with indexed images!');
     return;
 end
-max_slice = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation);
+max_slice = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
 max_time = obj.mibModel.I{obj.mibModel.Id}.time;
 
 prompt = {sprintf('Please provide intensity of a new color [0-%d]:', ...
-                        intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1}))); ...
+                        obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt')); ...
     sprintf('Time point (1-%d; 0 for all):', max_time); ...
     sprintf('Slice number (1-%d; 0 for all):', max_slice); ...
     'Color channels (0 for all):'};

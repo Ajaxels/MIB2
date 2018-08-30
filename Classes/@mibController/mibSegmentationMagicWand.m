@@ -46,7 +46,7 @@ if col_channel == 0
     end
 end
 
-if obj.mibModel.getImageProperty('depth') < 3; switch3d = 0; end;
+if obj.mibModel.getImageProperty('depth') < 3; switch3d = 0; end
 magicWandRadius = str2double(obj.mibView.handles.mibMagicWandRadius.String);
 
 if ~switch3d    % do magic wand in 2d

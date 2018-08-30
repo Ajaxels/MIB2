@@ -342,6 +342,8 @@ classdef mibSnapshotController < handle
             if obj.View.handles.shownAreaRadio.Value   % saving only the shown area
                 options.blockModeSwitch = 1;
                 options.mode = 'shown';
+            elseif obj.View.handles.roiRadio.Value 
+                options.blockModeSwitch = obj.mibModel.I{obj.mibModel.Id}.blockModeSwitch;
             end
             
             slices = obj.mibModel.getImageProperty('slices');

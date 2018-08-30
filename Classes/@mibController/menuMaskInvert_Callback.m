@@ -21,10 +21,18 @@ function menuMaskInvert_Callback(obj, type)
 if obj.mibModel.preferences.disableSelection == 1
     warndlg(sprintf('The selection layer is switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),'The selection layer is disabled','modal');
     return; 
-end;
+end
+
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'invert action is';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
 
 if strcmp(type, 'mask')
-    if obj.mibModel.I{obj.mibModel.Id}.maskExist == 0; return; end;
+    if obj.mibModel.I{obj.mibModel.Id}.maskExist == 0; return; end
 end
 obj.mibModel.mibDoBackup(type, 1);
 

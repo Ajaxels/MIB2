@@ -26,11 +26,10 @@ global mibPath;
 unFocus(obj.mibView.handles.mibAddMaterialBtn); % remove focus from hObject
 
 % do nothing is selection is disabled
-if obj.mibModel.preferences.disableSelection == 1
+if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1
     warndlg(sprintf('The models are switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),'The models are disabled');
     return;
 end
-
 
 list = obj.mibModel.getImageProperty('modelMaterialNames');
 if isempty(list); list = cell(0); end    % remove empty entry from the list

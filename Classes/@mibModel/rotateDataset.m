@@ -29,7 +29,7 @@ wb = waitbar(0,sprintf('Rotating image\nPlease wait...'), 'Name', 'Rotate datase
 [hMax, wMax, cMax, zMax, tMax] = obj.I{obj.Id}.getDatasetDimensions('image', 4, 0, options);
 cMax = numel(cMax);
 
-imgOut = zeros([wMax, hMax, cMax, zMax, tMax], class(obj.I{obj.Id}.img{1})); %#ok<ZEROLIKE>
+imgOut = zeros([wMax, hMax, cMax, zMax, tMax], obj.I{obj.Id}.meta('imgClass')); %#ok<ZEROLIKE>
 % rotate image
 for t=1:tMax
     img = cell2mat(obj.getData3D('image', t, 4, 0, options));   % get z-stack (image)
@@ -40,7 +40,7 @@ obj.setData4D('image', imgOut, 4, 0, options);   % set dataset (image) back
 clear imgOut;
 
 % rotate other layers
-if obj.I{obj.Id}.modelType == 63 && obj.preferences.disableSelection == 0
+if obj.I{obj.Id}.modelType == 63 && obj.I{obj.Id}.disableSelection == 0
     waitbar(0.5, wb, sprintf('Rotating other layers\nPlease wait...'));
     img = obj.I{obj.Id}.model{1};  % get everything
     obj.I{obj.Id}.model{1} = zeros([wMax, hMax, zMax, tMax], 'uint8');
@@ -48,7 +48,7 @@ if obj.I{obj.Id}.modelType == 63 && obj.preferences.disableSelection == 0
         obj.setData3D('everything', rotateme(img(:,:,:,t), mode), t, 4, NaN, options);   % set dataset (everything) back
         waitbar(t/tMax, wb);
     end
-elseif  obj.preferences.disableSelection == 0
+elseif  obj.I{obj.Id}.disableSelection == 0
     % Rotate selection layer
     waitbar(0.25, wb, sprintf('Rotating the selection layer\nPlease wait...'));
     img = obj.I{obj.Id}.selection{1};  % get selection

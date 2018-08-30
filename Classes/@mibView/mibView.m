@@ -50,6 +50,11 @@ classdef mibView < handle
         % a handle to the cursor gui object
         imh
         % handle for the currently shown image; should be obj.imh = matlab.graphics.primitive.Image('CData', []); when no image
+        Iraw
+        % a property to keep the currently displayed image in RAW format,
+        % used only in the virtual stacking mode to see pixel intensities
+        % under the cursor
+        % @note 'Iraw' dimensions: @code [1:height, 1:width, 1:colors] @endcode
         Ishown
         % a property to keep the currently displayed image in RGB format
         % @note 'Ishown' dimensions: @code [1:height, 1:width, 1:colors] @endcode

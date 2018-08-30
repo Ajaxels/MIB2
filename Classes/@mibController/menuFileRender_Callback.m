@@ -26,6 +26,10 @@ switch parameter
     case 'fiji'
         mibRenderVolumeWithFiji(img, obj.mibModel.I{obj.mibModel.Id}.pixSize);
     case 'volviewer'
+        if size(img, 3) > 1
+            errordlg(sprintf('!!! Error !!!\n\nVolume viewer is not compatible with multicolor images;\nplease keep only a single color channel displayed and try again!'), 'Not implemented');
+            return;
+        end
         if obj.matlabVersion >= 9.4
             tform = zeros(4);
             tform(1,1) = obj.mibModel.I{obj.mibModel.Id}.pixSize.x;

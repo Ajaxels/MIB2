@@ -1185,7 +1185,7 @@ classdef mibLines3DController < handle
                     
                     % do not jump when the node out of image boundaries
                     if x>imgW || y>imgH || z>imgZ
-                        warndlg('The node is outside of the image boundaries!', 'Wrong coordinates');
+                        warndlg(sprintf('The node is outside of the image boundaries!'), 'Wrong coordinates');
                         return;
                     end
                     
@@ -1199,7 +1199,7 @@ classdef mibLines3DController < handle
                     %                 end
                     
                     % change z
-                    if size(obj.mibModel.I{obj.mibModel.Id}.img{1}, orientation) > 1
+                    if obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(orientation) > 1
                         eventdata = ToggleEventData(round(z));
                         notify(obj.mibModel, 'updateLayerSlider', eventdata);
                     else

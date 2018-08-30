@@ -21,8 +21,24 @@ function menuFileImportImage_Callback(obj, parameter)
 %
 
 global mibPath;
-
 if nargin < 2;     parameter = 'matlab'; end
+
+% check for the virtual stacking mode and disable it
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    % this code is ok when started from mibController
+    result = obj.toolbarVirtualMode_ClickedCallback(0);  % switch to the memory-resident mode
+    if isempty(result) || result == 1; return; end
+    
+    % this code is ok when used from subcontrollers
+%     result = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(0, obj.mibModel.preferences.disableSelection);  % switch to the memory-resident mode
+%     if isempty(result) || result == 1
+%         return;
+%     end
+%     eventdata = ToggleEventData(obj.mibModel.Id);
+%     notify(obj.mibModel, 'newDataset', eventdata);
+%     notify(obj.mibModel, 'plotImage');
+end
+
 switch parameter
     case 'matlab'
         % get list of available variables

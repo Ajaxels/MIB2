@@ -16,11 +16,19 @@ function menuImageMode_Callback(obj, hObject)
 % Updates
 % 
 
+% check for the virtual stacking mode and close the controller
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'image conversion tools';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s are not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 if obj.mibModel.getImageProperty('time') < 2; obj.mibModel.mibDoBackup('image', 1); end
 
 switch get(hObject,'tag')
     case 'menuImageGrayscale'
-        if strcmp(obj.mibModel.I{obj.mibModel.Id}.meta('ColorType'), 'truecolor') && size(obj.mibModel.I{obj.mibModel.Id}.img{1}, 3) > 3
+        if strcmp(obj.mibModel.I{obj.mibModel.Id}.meta('ColorType'), 'truecolor') && obj.mibModel.I{obj.mibModel.Id}.colors > 3
             button = questdlg(sprintf('!!! Attention !!!\n\nDirect conversion of the multichannel image to greyscale is not possible\nHowever it is possible to perform conversion using the LUT colors'),'Multiple color channels','Convert','Cancel','Cancel');
             if strcmp(button, 'Cancel'); return; end
             if obj.mibModel.useLUT == 0
@@ -35,7 +43,7 @@ switch get(hObject,'tag')
     case 'menuImageHSVColor'
         obj.mibModel.I{obj.mibModel.Id}.convertImage('hsvcolor');
     case 'menuImageIndexed'
-        if strcmp(obj.mibModel.I{obj.mibModel.Id}.meta('ColorType'), 'truecolor') && size(obj.mibModel.I{obj.mibModel.Id}.img{1}, 3) > 3
+        if strcmp(obj.mibModel.I{obj.mibModel.Id}.meta('ColorType'), 'truecolor') && obj.mibModel.I{obj.mibModel.Id}.colors > 3
             button = questdlg(sprintf('!!! Attention !!!\n\nDirect conversion of the multichannel image to greyscale is not possible\nHowever it is possible to perform conversion using the LUT colors'),...
                 'Multiple color channels', 'Convert', 'Cancel', 'Cancel');
             if strcmp(button, 'Cancel'); return; end

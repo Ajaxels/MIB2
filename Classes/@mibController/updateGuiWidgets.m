@@ -21,7 +21,7 @@ obj.mibView.updateCursor();  % update size of the cursor
 obj.mibModel.disableSegmentation = 0;    % reenable segmentation tools if they were accidentaly turned off
 
 %% update checkboxes in the menu
-switch class(obj.mibModel.I{obj.mibModel.Id}.img{1})
+switch obj.mibModel.I{obj.mibModel.Id}.meta('imgClass')
     case 'uint8'
         obj.mibView.handles.menuImage8bit.Checked = 'on';
         obj.mibView.handles.menuImage16bit.Checked = 'off';
@@ -141,8 +141,9 @@ else
 end
 obj.mibView.handles.toolbarShowROISwitch.State = 'off';
 
-obj.toolbarInterpolation_ClickedCallback('keepcurrent');
+obj.toolbarInterpolation_ClickedCallback('keepcurrent');      % update the selection interpolation button
 obj.toolbarResizingMethod_ClickedCallback('keepcurrent');     % update the image interpolation button icon
+obj.toolbarVirtualMode_ClickedCallback('keepcurrent');         % update the virtual stack button
 
 if obj.mibModel.I{obj.mibModel.Id}.blockModeSwitch == 0
     obj.mibView.handles.toolbarBlockModeSwitch.State = 'off';
@@ -151,8 +152,9 @@ else
 end
 
 
+
 %% Update sliders
-max_val = double(intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1})));
+max_val = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
 % update sliders and checkboxes in the black-and-white thresholding panel (handles.mibSegmThresPanel)
 if obj.mibView.handles.mibSegmLowSlider.Value > max_val; obj.mibView.handles.mibSegmLowSlider.Value = max_val; end
 if obj.mibView.handles.mibSegmHighSlider.Value > max_val; obj.mibView.handles.mibSegmHighSlider.Value = max_val; end
@@ -211,6 +213,7 @@ end
 
 % clear trackerYXZ variable of the membrane clicktracker tool
 obj.mibView.trackerYXZ = [NaN;NaN;NaN];
+
 
 %% update ROI stuff
 % update roi list box
@@ -290,6 +293,17 @@ for i=1:obj.mibModel.maxId
         obj.mibView.handles.(bufferId).TooltipString = 'Use the left mouse button to select the dataset and the right mouse button for additional menu';     % make a tooltip as filename
     end
 end
+
+%% Virtual stacking mode related changes
+obj.mibBioformatsCheck_Callback();  % update the list of available extensions
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    obj.mibView.handles.zyPlaneToggle.Enable = 'off';
+    obj.mibView.handles.zxPlaneToggle.Enable = 'off';
+else
+    obj.mibView.handles.zyPlaneToggle.Enable = 'on';
+    obj.mibView.handles.zxPlaneToggle.Enable = 'on';
+end
+
 
 %% redraw tables
 obj.redrawMibChannelMixerTable();

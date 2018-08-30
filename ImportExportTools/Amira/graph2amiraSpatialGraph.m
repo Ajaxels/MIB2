@@ -4,15 +4,15 @@ function res = graph2amiraSpatialGraph(filename, G, options)
 %
 % Parameters:
 % filename: filename to save data
-% G - a standard matlab graph object, see 'graph' function for details, with the following properties
-% @li .Nodes - a table with following columns:
+% G: a standard matlab graph object, see 'graph' function for details, with the following properties
+% @li .Nodes - a table with following columns,
 %   .XData - x coordinate of the node
 %   .YData - y coordinate of the node
 %   .ZData - z coordinate of the node
 %   .PointsXYZ - alternative way (instead of XData, YData, ZData) to
 %   specify the points. In this case is is a matrix [nodeId][x,y,z]
 %   .Values - [@em optional] values for the nodes
-% @li .Edges - a table with following columns:
+% @li .Edges - a table with following columns,
 %   .EndNodes - connectivity matrix for the nodes starting from 0
 %   .Points - [@em optional] a cell array with coordinates of points for each of the edges, in minimalistic
 %   case should have at least 2 points, starting and ending; format {edgeId}[pointId, x y z]

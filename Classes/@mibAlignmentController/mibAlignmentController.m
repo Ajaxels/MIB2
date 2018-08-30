@@ -92,9 +92,17 @@ classdef mibAlignmentController < handle
             obj.mibModel = mibModel;    % assign model
             guiName = 'mibAlignmentGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
+
+            % check for the virtual stacking mode and close the controller
+            if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+                toolname = 'alignment tool';
+                warndlg(sprintf('!!! Warning !!!\n\nThe %s is not yet available in the virtual stacking mode\nplease switch to the memory-resident mode and try again', ...
+                    toolname), 'Not implemented');
+                obj.closeWindow();
+                return;
+            end
             
             obj.varname = 'I';  % variable for import
-            
             obj.updateWidgets();
         end
         
@@ -481,7 +489,7 @@ classdef mibAlignmentController < handle
                                 if strcmp(parameters.backgroundColor,'black')
                                     backgroundColor = 0;
                                 elseif strcmp(parameters.backgroundColor,'white')
-                                    backgroundColor = intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1}));
+                                    backgroundColor = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
                                 else
                                     backgroundColor = mean(mean(cell2mat(obj.mibModel.getData2D('image', layer, NaN, parameters.colorCh, optionsGetData))));
                                 end
@@ -895,7 +903,12 @@ classdef mibAlignmentController < handle
                     maxYshift = 0;                              % Y shift in units vs the first slice
                 end
                 obj.mibModel.I{obj.mibModel.Id}.updateBoundingBox(NaN, [maxXshift, maxYshift, maxZshift]);
-                obj.mibModel.I{obj.mibModel.Id}.updateImgInfo(sprintf('Aligned using %s; relative to %d', algorithmText{obj.View.handles.methodPopup.Value}, parameters.refFrame));
+
+                if exist('halfwidth', 'var')    % add halfwidth text
+                    obj.mibModel.I{obj.mibModel.Id}.updateImgInfo(sprintf('Aligned using %s; relative to %d; run-average correction: %d', algorithmText{obj.View.handles.methodPopup.Value}, parameters.refFrame, halfwidth));
+                else
+                    obj.mibModel.I{obj.mibModel.Id}.updateImgInfo(sprintf('Aligned using %s; relative to %d', algorithmText{obj.View.handles.methodPopup.Value}, parameters.refFrame));    
+                end
                 
                 if obj.View.handles.saveShiftsCheck.Value     % use preexisting parameters
                     fn = obj.View.handles.saveShiftsXYpath.String;
@@ -941,7 +954,7 @@ classdef mibAlignmentController < handle
                     w1 = max([size(obj.mibModel.I{obj.mibModel.Id}.img{1}, 2) size(img, 2)]);
                     h1 = max([size(obj.mibModel.I{obj.mibModel.Id}.img{1}, 1) size(img, 1)]);
                     
-                    I = zeros([h1, w1, 2], class(obj.mibModel.I{obj.mibModel.Id}.img{1})) + ...
+                    I = zeros([h1, w1, 2], obj.mibModel.I{obj.mibModel.Id}.meta('imgClass')) + ...
                         mean(mean(obj.mibModel.I{obj.mibModel.Id}.img{1}(:, :, parameters.colorCh, end, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1))));
                     I(1:obj.mibModel.I{obj.mibModel.Id}.height, 1:obj.mibModel.I{obj.mibModel.Id}.width, 1) = ...
                         obj.mibModel.I{obj.mibModel.Id}.img{1}(:, :, parameters.colorCh, end, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1));
@@ -1107,7 +1120,7 @@ classdef mibAlignmentController < handle
                 if strcmp(parameters.backgroundColor,'black')
                     backgroundColor = 0;
                 elseif strcmp(parameters.backgroundColor,'white')
-                    backgroundColor = intmax(class(obj.mibModel.I{obj.mibModel.Id}.img{1}));
+                    backgroundColor = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
                 else
                     backgroundColor = mean(mean(cell2mat(obj.mibModel.getData2D('image', 1, NaN, parameters.colorCh, optionsGetData))));
                 end

@@ -5,7 +5,18 @@
 %
 %
 %
-%% 2.301 / 18.05.2018 (21.06.2018)
+%% 2.40 / 31.08.2018
+% * Added virtual mode for datasets that are compatible with the BioFormats
+% library or in HDF5 format
+% * Added shift of annotations when inserting a slice
+% * Added shift of annotations when deleting a slice or a frame
+% * Added Segment All function to the graphcut image segmentation in the
+% grid mode to enable segmentation of all subvolumes
+% * Improved performance when showing multiple 3D lines
+% * Updated BioFormats to 5.9.1
+% * Bug fixes
+%
+%% 2.302 / 18.05.2018 (03.07.2018)
 % * Added Lines3D class for 3D measurements and generation of 3D skeletons and graphs 
 % * Added the Image arithmetics dialog (|Menu->Image->Tools for images->Image arithmetics...|)
 % * Added the Rename and Shuffle tool (|Menu->File->Rename and Shuffle|) to
@@ -26,6 +37,8 @@
 % * Added export of TransformationMatrix with AmiraMesh files
 % * Fix of cropping objects to files from the Get Statistics tool
 % * [2.301] Added filter for filenames to the Shuffle and rename tool
+% * [2.302] Fixed export of 3D lines to Amira Mesh format
+% * [2.302] Fixed recalculation of pixels into the physical units when initializing 3D lines programically
 %
 %% 2.22 / 16.03.2018
 % * Added value field for the annotations, thus each annotation can be weighted based on its value

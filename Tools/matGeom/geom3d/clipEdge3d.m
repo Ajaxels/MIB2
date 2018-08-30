@@ -15,8 +15,16 @@ function clipped = clipEdge3d(edge, box)
 % Created: 2018-04-12,    using Matlab 9.3.0.713579 (R2017b)
 % Copyright 2018 INRA - Cepia Software Platform.
 
+% Ilya Belevich, 28.06.2018 added text below
+
 % compute supporting line of edge
 line = [edge(:, 1:3) edge(:,4:6)-edge(:,1:3)];
+
+% IB added a code to modulate the edge when two nodes overlap
+zeroIndices = find(sum(ismember(line(:,4:6), [0 0 0]), 2) == 3);
+if ~isempty(zeroIndices)
+    line(zeroIndices,4:6) = repmat([.000000001 .000000001 0], [numel(zeroIndices),1]);
+end
 
 % clip supporting line
 clipped = clipLine3d(line, box);

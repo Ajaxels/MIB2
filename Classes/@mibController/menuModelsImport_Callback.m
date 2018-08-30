@@ -18,8 +18,16 @@ function menuModelsImport_Callback(obj)
 
 global mibPath;
 
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'models are';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 % do nothing is selection is disabled
-if obj.mibModel.preferences.disableSelection == 1
+if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1
     warndlg(sprintf('The model layer is switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),...
         'The models are disabled', 'modal');
     return;

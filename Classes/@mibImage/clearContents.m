@@ -1,10 +1,10 @@
-function clearContents(obj, img, meta, disableSelection)
-% function clearContents(obj, img, meta, disableSelection)
+function clearContents(obj, img, metaIn, disableSelection)
+% function clearContents(obj, img, metaIn, disableSelection)
 % Set all elements of the class to default values
 %
 % Parameters:
 % img: @b [optional], image to use to initialize the imageData class
-% meta: @b [optional], 'containers'.'Map' class with parameters of the dataset, can be @e []
+% metaIn: @b [optional], 'containers'.'Map' class with parameters of the dataset, can be @e []
 % disableSelection: a switch (0 or 1) to enable/disable selection layer
 %
 % Return values:
@@ -43,34 +43,59 @@ obj.selectedAddToMaterial = 1; % index of the selected material for the Add to i
 obj.selectedColorChannel = 1;   % selected color channel
 obj.modelType = 63;     % set by default the model type to 63
 
+if isempty(obj.Virtual); obj.Virtual.virtual = 0; end   % define default mode to non-virtual
 
 if nargin < 4; disableSelection = 0; end
-if nargin < 3;    meta = []; end
-if nargin < 2
-    obj.img{1} = imread('im_browser_dummy.jpg'); % dummy image
+if nargin < 3; metaIn = containers.Map(); end
+if nargin < 2; img = []; end
+
+if isempty(metaIn)
+    meta = containers.Map(); 
+else
+    % create a copy of meta, otherwise the handle is copied
+    meta = containers.Map(keys(metaIn), values(metaIn));
+end
+
+if isempty(img)
+    if obj.Virtual.virtual == 0
+        obj.img{1} = imread('im_browser_dummy.jpg'); % dummy image
+    else
+        obj.closeVirtualDataset();    % close open bio-format readers, otherwise the files locked
+        obj.img{1} = 'im_browser_dummy.h5'; % dummy image
+    end
 else
     if isa(img, 'double') || isa(img, 'single')
         % find maximal value
-        % 
         maxVal = max(img(:));
         if maxVal < 256
             img = uint8(img);   % convert to 8bit
-            sprintf('MIB: image was converted to 8bit\n');
+            fprintf('MIB: image was converted to 8bit\n');
         elseif maxVal < 65536
             img = uint16(img);   % convert to 16bit 
-            sprintf('MIB: image was converted to 16bit\n');
+            fprintf('MIB: image was converted to 16bit\n');
         elseif maxVal < 4294967296
             img = uint32(img);   % convert to 32bit
-            sprintf('MIB: image was converted to 32bit\n');
+            fprintf('MIB: image was converted to 32bit\n');
         else
             errordlg(sprintf('!!! Wrong data type !!!\n\nThis dataset is not compatible with MIB'));
             return;
         end
     end
-    obj.img{1} = img; % initialize with an image
+    obj.closeVirtualDataset();    % close open bio-format readers, otherwise the files locked
+        
+    if ~iscell(img)
+        obj.img{1} = img; % initialize with an image
+    else
+        obj.img = img;
+    end
 end
+obj.disableSelection = disableSelection;
 
-if disableSelection == 0
+% disable selection for virtual stacks
+if obj.Virtual.virtual == 1;  obj.disableSelection = 1;  end
+
+% allocate memory for service layers
+if obj.disableSelection == 0
     if obj.modelType == 255
         obj.maskImg{1} = zeros([size(obj.img{1},1) size(obj.img{1},2) size(obj.img{1},4) size(obj.img{1},5)], 'uint8'); % bw filter data
         obj.selection{1} = zeros([size(obj.img{1},1) size(obj.img{1},2) size(obj.img{1},4) size(obj.img{1},5)], 'uint8'); % selection mask image
@@ -85,99 +110,28 @@ if disableSelection == 0
         obj.model{1} = NaN; % model image
     end
 else
-    obj.selection = NaN;
-    obj.model = NaN;
-    obj.maskImg = NaN;
+    obj.selection{1} = NaN;
+    obj.model{1} = NaN;
+    obj.maskImg{1} = NaN;
 end
 
-obj.height = size(obj.img{1}, 1);   % height of the dataset
-obj.width = size(obj.img{1}, 2);    % width of the dataset
-obj.depth = size(obj.img{1}, 4);    % number of stacks in the dataset
-obj.colors = size(obj.img{1}, 3); % number of color channels
-obj.time = size(obj.img{1}, 5);    % number of time points
 obj.axesX = NaN;
 obj.axesY = NaN;
 obj.magFactor = 1;
+obj.selectedROI = -1;
 
-% define pixel sizes
-obj.pixSize.x = 1;
-obj.pixSize.y = 1;
-obj.pixSize.z = 1;
-obj.pixSize.t = 1;
-obj.pixSize.tunits = 's';
-obj.pixSize.units = 'um';
-
-R = [0 0 0];
-S = [1*obj.magFactor,...
-     1*obj.magFactor,...
-     1*obj.pixSize.x/obj.pixSize.z*obj.magFactor];
-T = [0 0 0];
-
-obj.volren.show = 0;    % do not show the volume rendering
-obj.volren.viewer_matrix = [];
-obj.volren.previewImg = [];
-obj.volren.showFullRes = 1;
-obj.volren.viewer_matrix = makeViewMatrix(R, S, T);
-
-% obj.bbox = [0, (max([obj.width 2])-1) * obj.pixSize.x,...   % max([obj.width 2]) - tweek for amira bounding box of a single layer
-%             0, (max([obj.height 2])-1) * obj.pixSize.y,...
-%             0, (max([obj.depth 2])-1) * obj.pixSize.z];
+% allocate slices
+obj.slices{1} = [1, 1];
+obj.slices{2} = [1, 1];
+obj.slices{3} = 1;
+obj.slices{4} = [1, 1];
+obj.slices{5} = [1 1];
 
 obj.orientation = 4;
 obj.current_yxz = [1 1 1];
 
-obj.viewPort.min = zeros([obj.colors, 1]);
-obj.viewPort.max = zeros([obj.colors, 1]) + double(intmax(class(obj.img{1})));
-obj.viewPort.gamma = zeros([obj.colors, 1]) + 1;
-%obj.model_diff_max = 255;
-%obj.trackerYXZ = [NaN;NaN;NaN];
-obj.slices{1} = [1, size(obj.img{1},1)];   % height [min, max]
-obj.slices{2} = [1, size(obj.img{1},2)];   % width [min, max]
-obj.slices{3} = 1:size(obj.img{1},3);      % list of shown color channels [1, 2, 3, 4...]
-obj.slices{4} = [1, 1];                 % z-values, [min, max]
-obj.slices{5} = [1, 1];                 % time points, [min, max]
-
-[SliceName{1:obj.depth}] = deal('none.tif');
-keySet = {'ColorType','ImageDescription','Filename','SliceName', 'Height', 'Width', 'Depth', 'Colors', 'Time'};
-valueSet = {'grayscale', sprintf('|'), 'none.tif', SliceName, obj.height, obj.width, obj.depth, obj.colors, obj.time};
-if obj.colors > 1
-    valueSet{1} = 'truecolor';
-end
-if isempty(meta)
-    obj.meta = containers.Map(keySet, valueSet);
-else
-    Keys = keys(meta);
-    Keys = [keySet, Keys];
-    Values = values(meta);
-    Values = [valueSet, Values];
-    obj.meta = containers.Map(Keys, Values);
-    [obj.meta, obj.pixSize] = mibUpdatePixSizeAndResolution(obj.meta);  % update pixsize and resolution
-end
-
-% add colors to the LUT color table
-if obj.colors > size(obj.lutColors,1)
-    for i=size(obj.lutColors,1)+1:obj.colors
-        obj.lutColors(i,:) = [rand(1) rand(1) rand(1)];
-    end
-end
-
-% modify filename for the mask
-if isnan(obj.maskImgFilename) 
-    pathStr = fileparts(obj.meta('Filename'));
-    if ~isempty(pathStr)
-        [pathStr, filenameStr] = fileparts(obj.meta('Filename'));
-        obj.maskImgFilename = fullfile(pathStr, ['Mask_' filenameStr '.mask']);
-    end
-end
-
-% extract lut colors from meta data
-if isa(meta,'containers.Map')
-    if isKey(meta, 'lutColors')
-        if ischar(meta('lutColors')); meta('lutColors') = str2num(meta('lutColors')); end %#ok<ST2NM>
-        obj.lutColors(1:size(meta('lutColors'),1), :) = meta('lutColors');
-    end
-end
-obj.selectedROI = -1;
+% update obj.meta and class variables
+obj.updateServiceMetadata(meta);
 
 % 
 % if nargin == 2

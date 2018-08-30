@@ -10,7 +10,7 @@
 % to individual pixels but to groups of pixels (superpixels (2D), or supervoxels(3D)) that may be generated either using
 % the <http://ivrl.epfl.ch/research/superpixels *SLIC algorithm*> written by Radhakrishna Achanta, 
 % Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine
-% Süsstrunk or by the *Waterhed algorithm*. The objects that have intensity
+% S?sstrunk or by the *Waterhed algorithm*. The objects that have intensity
 % contrast are best described with the _SLIC superpixels_, while the objects
 % that have distinct boundaries with the _Watershed superpixels_. Utilization of superpixels requires some time to calculate
 % them but pays off during the following segmentation.
@@ -67,7 +67,8 @@
 % dataset individually</li>
 % <li><b>3D, volume</b>, performs 3D segmentation for complete or selected portion (<em>see Selected Area section below</em>) of the dataset</li>
 % <li><b>3D, volume, grid</b>, a special mode of 3D graphcut, where the dataset is chopped into several subvolumes (defined by Chop edit boxes, see below) and the dataset which is centered 
-% at the Image View panel is gets segmented. Chopping of large volume into several small subvolumes (<em>e.g.</em>400x400x400 pixels allows effective interactive segmentation of this large volume</li>
+% at the Image View panel is gets segmented. Chopping of large volume into several small subvolumes (<em>e.g.</em>400x400x400 pixels allows effective interactive segmentation of this large volume
+% To segment all subvolumes press the <b>Segment All</b> button</li>
 % </ul>
 % </td>
 % </tr>
@@ -246,7 +247,7 @@
 % * <http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow *Matlab
 % wrapper*> for maxflow is written by Michael Rubinstein.
 % * <http://ivrl.epfl.ch/research/superpixels *SLIC superpixels and supervoxels*> by Radhakrishna Achanta, 
-% Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine Süsstrunk. 
+% Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk. 
 % * <http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag- *Region Adjacency Graph (RAG)*> and its modification for watershed 
 % was written by David Legland, INRA, France, 2013-2015 and was used in
 % calculation of adjusent superpixels

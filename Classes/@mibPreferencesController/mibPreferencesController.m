@@ -105,7 +105,7 @@ classdef mibPreferencesController < handle
                 obj.View.handles.imresizePopup.Value = 3;
             end
             
-            if obj.preferences.disableSelection == 0
+            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 0
                 obj.View.handles.disableSelectionPopup.Value = 1;
             else
                 obj.View.handles.disableSelectionPopup.Value = 2;
@@ -427,6 +427,7 @@ classdef mibPreferencesController < handle
                 obj.mibModel.setImageProperty('maskExist', 0);
                 obj.mibModel.U.clearContents();  % delete backup history
             end
+            obj.mibModel.I{obj.mibModel.Id}.disableSelection = obj.preferences.disableSelection;
             
             % update font size
             obj.preferences.fontSizeDir = str2double(obj.View.handles.fontSizeDirEdit.String);
@@ -489,6 +490,7 @@ classdef mibPreferencesController < handle
                 end
                 obj.mibModel.U.clearContents();  % delete backup history
             end
+            obj.mibModel.I{obj.mibModel.Id}.disableSelection = obj.preferences.disableSelection;
             
             % remove the brush cursor
             obj.mibController.mibSegmentationToolPopup_Callback();

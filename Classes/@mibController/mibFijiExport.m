@@ -18,6 +18,19 @@ function mibFijiExport(obj)
 % 
 
 global mibPath;
+% define type of the dataset
+datasetTypeValue = obj.mibView.handles.mibFijiConnectTypePopup.Value;
+datasetTypeList = obj.mibView.handles.mibFijiConnectTypePopup.String;
+datasetType = datasetTypeList{datasetTypeValue};
+
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    if ismember(datasetType, {'model','mask','selection'})
+        toolname = datasetType;
+        warndlg(sprintf('!!! Warning !!!\n\nIt is not yet possible to export %s in the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
+            toolname), 'Not implemented');
+        return;
+    end
+end
 
 % check for MIJ
 if exist('MIJ','class') == 8
@@ -45,20 +58,15 @@ if roiNo > -1 && numel(roiNo) > 1
 end
 
 answer = mibInputDlg({mibPath}, 'Please name for the dataset:', 'Set name', fn);
-if isempty(answer); return; end;
+if isempty(answer); return; end
 
 pause(0.1);     % for some strange reason have to put pause here, otherwise everything is freezing...
-
-% define type of the dataset
-datasetTypeValue = obj.mibView.handles.mibFijiConnectTypePopup.Value;
-datasetTypeList = obj.mibView.handles.mibFijiConnectTypePopup.String;
-datasetType = datasetTypeList{datasetTypeValue};
 
 options.roiId = roiNo;
 options.blockModeSwitch = 0;
 
 img = obj.mibModel.getData3D(datasetType, NaN, 4, NaN, options);
-if size(img{1}, 3) == 1; img{1} = squeeze(img{1}); end;
+if size(img{1}, 3) == 1; img{1} = squeeze(img{1}); end
 
 if isa(img{1}, 'uint16')
     if ndims(img{1}) == 4

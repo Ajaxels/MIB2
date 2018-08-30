@@ -19,7 +19,7 @@ function mibSelectionErodeBtn_Callback(obj, sel_switch)
 % 
 
 % do nothing is selection is disabled
-if obj.mibModel.preferences.disableSelection == 1; return; end;
+if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
 
 if nargin < 2
     modifier = obj.mibView.gui.CurrentModifier;
@@ -121,7 +121,7 @@ else    % do in 2d layer by layer
         obj.mibModel.setData2D('selection', {eroded_img});
     else
         wb = waitbar(0,sprintf('Eroding selection...\nStrel size: %dx%d px', se_size(1),se_size(2)),'Name','Eroding...','WindowStyle','modal');
-        max_size = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation);
+        max_size = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
         max_size2 = max_size*(t2-t1+1);
         index = 1;
         

@@ -21,6 +21,14 @@ function menuModelsRender_Callback(obj, type)
 % Updates
 % 28.03.2018, IB, added rendering using Matlab volume viewer
 
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'models are';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 if nargin < 2; type = 'matlab'; end
 
 switch type

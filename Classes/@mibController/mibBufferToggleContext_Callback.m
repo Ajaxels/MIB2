@@ -84,7 +84,7 @@ switch parameter
             
             if strcmp(parameter, 'sync_xyz') || strcmp(parameter, 'sync_xyzt')   % sync in z, t as well
                 destZ = obj.mibModel.I{destinationButton}.slices{obj.mibModel.I{destinationButton}.orientation}(1);
-                if destZ > size(obj.mibModel.I{buttonID}.img{1}, obj.mibModel.I{buttonID}.orientation)
+                if destZ > obj.mibModel.I{buttonID}.dim_yxczt(obj.mibModel.I{buttonID}.orientation)
                     warndlg(sprintf('The second dataset has the Z value higher than the Z-dimension of the first dataset!\n\nThe synchronization was done in the XY mode.'),'Dimensions mismatch!');
                     return;
                 end
@@ -108,15 +108,19 @@ switch parameter
         end
         obj.plotImage(0);
     case 'clear'    % clear dataset
+        mibImageOptions = struct();
+        mibImageOptions.virtual = obj.mibModel.I{buttonID}.Virtual.virtual;
+        
         obj.mibView.gui.WindowButtonMotionFcn = [];  % have to turn off windowbuttonmotionfcn, otherwise give error after delete(obj.mibView.handles.Img{button}.I); during mouse movement
+        obj.mibModel.I{buttonID}.closeVirtualDataset();    % close the virtual datasets 
+        
         delete(obj.mibModel.I{buttonID});
-        obj.mibModel.I{buttonID} = mibImage();    % create instanse for keeping images;
+        obj.mibModel.I{buttonID} = mibImage([], [], mibImageOptions);    % create instance for keeping images;
         
         eventdata = ToggleEventData(buttonID);
         notify(obj.mibModel, 'newDataset', eventdata);
         
         if buttonID == obj.mibModel.Id                       % delete the currently shown dataset
-            obj.mibModel.U.clearContents();  % clear undo history
             obj.plotImage(1);
         end
     case 'clearAll'     % clear all stored datasets
@@ -128,14 +132,17 @@ switch parameter
         obj.mibModel.Id = 1;   % number of the selected buffer
         obj.mibView.gui.WindowButtonMotionFcn = [];  % have to turn off windowbuttonmotionfcn, otherwise give error after delete(obj.mibView.handles.Img{button}.I); during mouse movement
         for button=1:obj.mibModel.maxId
+            mibImageOptions = struct();
+            mibImageOptions.virtual = obj.mibModel.I{button}.Virtual.virtual;
+            obj.mibModel.I{button}.closeVirtualDataset();    % close the virtual datasets
+            
             delete(obj.mibModel.I{button});
-            obj.mibModel.I{button} = mibImage();    % create instanse for keeping images;
+            obj.mibModel.I{button} = mibImage([],[],mibImageOptions);    % create instanse for keeping images;
             obj.updateAxesLimits('resize', button);
             bufferId = sprintf('mibBufferToggle%d', button);
             obj.mibView.handles.(bufferId).Value = 0;
         end
         obj.mibView.handles.mibBufferToggle1.Value = 1;
-        obj.mibModel.U.clearContents();  % clear undo history
         notify(obj.mibModel, 'newDataset');  % notify about a new dataset
         obj.plotImage(1);
 end

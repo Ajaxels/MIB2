@@ -23,6 +23,14 @@ function mibAutoBrightnessBtn_Callback(obj)
 % Updates
 % 
 
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'Adjustment of brightness is';
+    warndlg(sprintf('!!! Warning !!!\n\n%s not yet available in the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 prompt = {'Enter low limit of saturation [0-1], %%:';...
           'Enter high limit of saturation [0-1], %%:'};
 defAns = {'0.01','0.99'};
@@ -47,9 +55,9 @@ end
 
 wb = waitbar(0,'Auto brightness adjustment...', 'Name', 'Auto brightness', 'WindowStyle', 'modal');
 
-max_layer = size(obj.mibModel.I{obj.mibModel.Id}.img{1}, obj.mibModel.I{obj.mibModel.Id}.orientation);
+max_layer = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
 maxT = obj.mibModel.getImageProperty('time');
-if maxT == 1; obj.mibModel.mibDoBackup('image', 1); end;
+if maxT == 1; obj.mibModel.mibDoBackup('image', 1); end
 
 options.roiId = [];
 for t=1:maxT

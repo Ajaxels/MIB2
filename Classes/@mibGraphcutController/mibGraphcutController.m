@@ -81,6 +81,15 @@ classdef mibGraphcutController  < handle
             guiName = 'mibGraphcutGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
+            % check for the virtual stacking mode and close the controller
+            if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+                toolname = 'graphcut segmentation is';
+                warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
+                    toolname), 'Not implemented');
+                obj.closeWindow();
+                return;
+            end
+            
             % resize all elements if needed
             mibRescaleWidgets(obj.View.gui);
             
@@ -334,6 +343,7 @@ classdef mibGraphcutController  < handle
                 obj.clearPreprocessBtn_Callback();    % clear preprocessed data
             end
             obj.mode = hObject.Tag;
+            
             obj.superpixTypePopup_Callback();
             hObject.Value = 1;
         end
@@ -442,43 +452,6 @@ classdef mibGraphcutController  < handle
             
             hObject.String = sprintf('%d; %d',val(1), val(2));
             obj.clearPreprocessBtn_Callback();    % clear preprocessed data
-        end
-        
-        function segmentBtn_Callback(obj)
-            % function segmentBtn_Callback(obj)
-            % callback for press segmentBtn; start segmentation
-            
-            tic
-            % backup current data
-            if ~strcmp(obj.mode, 'mode2dCurrentRadio')
-                obj.mibModel.mibDoBackup('mask', 1);
-            else
-                obj.mibModel.mibDoBackup('mask', 0);
-            end
-            
-            if strcmp(obj.mode, 'mode3dGridRadio')
-                obj.shownLabelObj = cell([numel(obj.graphcut(1).grid.bb) 1]);  % indices of currently displayed superpixels for the objects
-                obj.seedObj = cell([numel(obj.graphcut(1).grid.bb) 1]);
-                obj.seedBg = cell([numel(obj.graphcut(1).grid.bb) 1]);
-            elseif strcmp(obj.mode, 'mode2dRadio')
-                obj.shownLabelObj = cell([obj.graphcut(1).grid.bb(1).depth 1]);
-                obj.seedObj = cell(1);
-                obj.seedBg = cell(1);
-            else
-                obj.shownLabelObj = cell(1);
-                obj.seedObj = cell(1);
-                obj.seedBg = cell(1);
-            end
-            
-            realtimeSwitchLocal = obj.realtimeSwitch;
-            obj.realtimeSwitch = 0;
-            obj.doGraphcutSegmentation();
-            obj.realtimeSwitch = realtimeSwitchLocal;
-            obj.mibModel.I{obj.mibModel.Id}.maskExist = 1;
-            notify(obj.mibModel, 'showMask');
-            obj.timerElapsed = toc;
-            fprintf('Elapsed time: %f seconds\n', obj.timerElapsed)
-            notify(obj.mibModel, 'plotImage');
         end
         
         function doGraphcutSegmentation(obj)
@@ -841,9 +814,15 @@ classdef mibGraphcutController  < handle
                     for sliceId = 1:size(obj.graphcut(graphId).slic, 3)
                         currSlicImg = obj.graphcut(graphId).slic(:, :, sliceId);
                         currSeedImg = seedImg(:, :, sliceId);
+                        
                         obj.seedObj{graphId}{sliceId} = unique(currSlicImg(currSeedImg==seedMaterialId));
+                        
                         if noMaterials == 2
                             obj.seedBg{graphId}{sliceId} = unique(currSlicImg(currSeedImg==bgMaterialId));
+                            if ~isempty(find(obj.seedBg{graphId}{sliceId}==0))
+                                0
+                            end
+                            
                         else
                             % combine bg and all other materials to background    
                             obj.seedBg{graphId}{sliceId} = unique(currSlicImg(~ismember(currSeedImg, [0 seedMaterialId])));
@@ -863,6 +842,7 @@ classdef mibGraphcutController  < handle
                 
                 % when two seeds overlap give preference to the background
                 labelBg = vertcat(obj.seedBg{graphId}{:});
+                    
                 for sliceId = 1:size(obj.graphcut(graphId).slic, 3)
                     [commonVal, bgIdx] = intersect(obj.seedObj{graphId}{sliceId}, labelBg);
                     obj.seedObj{graphId}{sliceId}(bgIdx) = [];
@@ -879,11 +859,15 @@ classdef mibGraphcutController  < handle
                 if obj.timerElapsed > obj.timerElapsedMax
                     waitbar(.45, wb, sprintf('Generating data term\nPlease wait...'));
                 end
-                T = zeros([obj.graphcut(graphId).noPix, 2])+0.5;
-                T(labelObj, 1) = 0;
-                T(labelObj, 2) = 999999;
-                T(labelBg, 1) = 999999;
-                T(labelBg, 2) = 0;
+                try
+                    T = zeros([obj.graphcut(graphId).noPix, 2])+0.5;
+                    T(labelObj, 1) = 0;
+                    T(labelObj, 2) = 999999;
+                    T(labelBg, 1) = 999999;
+                    T(labelBg, 2) = 0;
+                catch err
+                    0
+                end
                 
                 %T(labelObj, 2) = 0;
                 %T(labelObj, 1) = 999999;
@@ -1750,6 +1734,7 @@ classdef mibGraphcutController  < handle
             obj.View.handles.chopYedit.Enable = 'off';
             obj.View.handles.chopZedit.Enable = 'off';
             obj.View.handles.parforCheck.Enable = 'off';
+            obj.View.handles.segmentAllBtn.Enable = 'off';
             if strcmp(popupText{popupVal}, 'SLIC')      % SLIC superpixels
                 obj.View.handles.superpixelEdit.String = num2str(obj.slic_size);
                 obj.View.handles.compactnessText.Enable = 'on';
@@ -1778,6 +1763,7 @@ classdef mibGraphcutController  < handle
                 obj.View.handles.chopYedit.Enable = 'on';
                 obj.View.handles.chopZedit.Enable = 'on';
                 obj.View.handles.parforCheck.Enable = 'on';
+                obj.View.handles.segmentAllBtn.Enable = 'on';
             end
             if ~strcmp(parameter, 'keep')
                 obj.clearPreprocessBtn_Callback();    % clear preprocessed data
@@ -1862,6 +1848,86 @@ classdef mibGraphcutController  < handle
             end
             delete(wb);
         end
+        
+        function segmentBtn_Callback(obj)
+            % function segmentBtn_Callback(obj)
+            % callback for press segmentBtn; start segmentation
+            
+            tic
+            % backup current data
+            if ~strcmp(obj.mode, 'mode2dCurrentRadio')
+                obj.mibModel.mibDoBackup('mask', 1);
+            else
+                obj.mibModel.mibDoBackup('mask', 0);
+            end
+            
+            if strcmp(obj.mode, 'mode3dGridRadio')
+                obj.shownLabelObj = cell([numel(obj.graphcut(1).grid.bb) 1]);  % indices of currently displayed superpixels for the objects
+                obj.seedObj = cell([numel(obj.graphcut(1).grid.bb) 1]);
+                obj.seedBg = cell([numel(obj.graphcut(1).grid.bb) 1]);
+            elseif strcmp(obj.mode, 'mode2dRadio')
+                obj.shownLabelObj = cell([obj.graphcut(1).grid.bb(1).depth 1]);
+                obj.seedObj = cell(1);
+                obj.seedBg = cell(1);
+            else
+                obj.shownLabelObj = cell(1);
+                obj.seedObj = cell(1);
+                obj.seedBg = cell(1);
+            end
+            
+            realtimeSwitchLocal = obj.realtimeSwitch;
+            obj.realtimeSwitch = 0;
+            obj.doGraphcutSegmentation();
+            obj.realtimeSwitch = realtimeSwitchLocal;
+            obj.mibModel.I{obj.mibModel.Id}.maskExist = 1;
+            notify(obj.mibModel, 'showMask');
+            obj.timerElapsed = toc;
+            fprintf('Elapsed time: %f seconds\n', obj.timerElapsed)
+            notify(obj.mibModel, 'plotImage');
+        end
+        
+        function segmentAllBtn_Callback(obj)
+            % function segmentAllBtn_Callback(obj)
+            % callback for press segmentAllBtn; start segmentation for the
+            % complete dataset in the grid mode
+            
+            tic
+            wb = waitbar(0, sprintf('Segmenting dataset\nPlease wait...'));
+            % backup current data
+            if ~strcmp(obj.mode, 'mode2dCurrentRadio')
+                obj.mibModel.mibDoBackup('mask', 1);
+            else
+                obj.mibModel.mibDoBackup('mask', 0);
+            end
+            
+            obj.shownLabelObj = cell([numel(obj.graphcut(1).grid.bb) 1]);  % indices of currently displayed superpixels for the objects
+            obj.seedObj = cell([numel(obj.graphcut(1).grid.bb) 1]);
+            obj.seedBg = cell([numel(obj.graphcut(1).grid.bb) 1]);
+            
+            realtimeSwitchLocal = obj.realtimeSwitch;
+            obj.realtimeSwitch = 0;
+            for areaId = 1:numel(obj.shownLabelObj)
+                posX = round(mean(obj.graphcut(1).grid.bb(areaId).x));
+                posY = round(mean(obj.graphcut(1).grid.bb(areaId).y));
+                posZ = round(mean(obj.graphcut(1).grid.bb(areaId).z));
+                obj.mibModel.I{obj.mibModel.Id}.moveView(posX, posY, 4);
+                eventdata = ToggleEventData(posZ);
+                notify(obj.mibModel, 'updateLayerSlider', eventdata);
+                drawnow;
+                obj.doGraphcutSegmentation();
+                waitbar(areaId/numel(obj.shownLabelObj), wb);
+            end
+            obj.realtimeSwitch = realtimeSwitchLocal;
+            obj.mibModel.I{obj.mibModel.Id}.maskExist = 1;
+            notify(obj.mibModel, 'showMask');
+            obj.timerElapsed = toc;
+            fprintf('Elapsed time: %f seconds\n', obj.timerElapsed)
+            notify(obj.mibModel, 'plotImage');
+            waitbar(1, wb);
+            delete(wb);
+        end
+        
+        
     end
 end
 

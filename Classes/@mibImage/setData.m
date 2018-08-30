@@ -23,6 +23,9 @@ function result = setData(obj, type, dataset, orient, col_channel, options)
 % @li .t -> [@em optional], [tmin, tmax] coordinates of the dataset to take after transpose, time
 % @li .level -> [@em optional], index of image level from the image pyramid
 % @li .replaceDatasetSwitch -> [@em optional], force to replace dataset completely with a new dataset
+% @li .keepModel -> [@em optional], do not resize the model/selection
+% layers when type='image' and submitting complete dataset; as result the selection/model layers have to be
+% modified manually layer. Used in mibResampleController. Default = 1;
 %
 % Return values:
 % result: -> @b 1 - success, @b 0 - error
@@ -45,6 +48,9 @@ function result = setData(obj, type, dataset, orient, col_channel, options)
 result = 0; %#ok<NASGU>
 if isempty(dataset); return; end
 
+% the virtual mode is not implemented yet
+if obj.Virtual.virtual == 1;     return; end
+
 if nargin < 6; options = struct(); end
 if nargin < 5; col_channel = NaN; end
 if nargin < 4; orient=obj.orientation; end
@@ -60,6 +66,7 @@ if level ~= 1
 end
 
 if ~isfield(options, 'replaceDatasetSwitch'); options.replaceDatasetSwitch = 0; end % defines whether the dataset should be replaced, in a situation when width/height mismatch
+if ~isfield(options, 'keepModel'); options.keepModel = 1; end % defines whether the model/selection layers should not be resized to the size of the image
 
 blockModeSwitchLocal = 0;
 if isfield(options, 'y') || isfield(options, 'x') || isfield(options, 'z') || (isfield(options, 't') && obj.time > 1)
@@ -71,10 +78,11 @@ end
 if strcmp(type,'image')
     if isnan(col_channel); col_channel=obj.slices{3}; end
     if col_channel(1) == 0; col_channel = 1:obj.colors; end
+    
     if (size(dataset,1) ~= size(obj.img{1}, 1) ...
             || size(dataset,2) ~= size(obj.img{1},2) ...
             || size(dataset,4) ~= size(obj.img{1},4) || ...
-            ~strcmp(class(dataset), class(obj.img{1}))) && blockModeSwitchLocal == 0
+            ~strcmp(class(dataset), obj.meta('imgClass'))) && blockModeSwitchLocal == 0
         options.replaceDatasetSwitch = 1;
     end
 end
@@ -102,7 +110,10 @@ if blockModeSwitchLocal == 1
         if isfield(options, 'y'); Ylim = options.y(1,:); end
         if isfield(options, 'z'); Zlim = options.z(1,:); end
     end
-    if isfield(options, 't'); Tlim = options.t; end
+    if isfield(options, 't')
+        if numel(options.t) == 1; options.t = [options.t options.t]; end
+        Tlim = options.t; 
+    end
     
     % make sure that the coordinates within the dimensions of the dataset
     Xlim = [max([Xlim(1) 1]) min([Xlim(2) obj.width])];
@@ -121,6 +132,13 @@ if obj.modelType > 63  % uint8/int8 type of the model
                     obj.img{1} = permute(dataset, [4 1 3 2 5]);
                 elseif orient==2    % yz; get permuted dataset
                     obj.img{1} = permute(dataset, [1 4 3 2 5]);
+                end
+                
+                % create a model layer for selection
+                if obj.Virtual.virtual == 0
+                    if obj.disableSelection == 0 && options.keepModel == 0
+                        obj.selection{1} = zeros([size(obj.img{1},1), size(obj.img{1},2), size(obj.img{1},4), size(obj.img{1},5)], 'uint8');
+                    end
                 end
             else
                 if orient == 4 % yx
@@ -228,6 +246,13 @@ else        % ************ uint6 model type
                 elseif orient==2    % yz; get permuted dataset
                     obj.img{1} = permute(dataset, [1 4 3 2 5]);
                 end
+                
+                % create a model layer for selection
+                if obj.Virtual.virtual == 0
+                    if obj.disableSelection == 0 && options.keepModel == 0
+                        obj.model{1} = zeros([size(obj.img{1},1), size(obj.img{1},2), size(obj.img{1},4), size(obj.img{1},5)], 'uint8');
+                    end
+                end
             else
                 if orient == 4 % yx
                     obj.img{1}(:,:,col_channel,:,:) = dataset;
@@ -310,28 +335,54 @@ else        % ************ uint6 model type
 end
 
 % update obj.height, obj.width, etc
-if strcmp(type,'image') && blockModeSwitchLocal == 0
-    obj.height = size(obj.img{1}, 1);
-    obj.width = size(obj.img{1}, 2);
-    obj.colors = size(obj.img{1}, 3);
-    obj.depth = size(obj.img{1}, 4);
-    obj.time = size(obj.img{1}, 5);
-    
+if strcmp(type,'image') && (blockModeSwitchLocal == 0 || options.replaceDatasetSwitch)
+    % update metadata  
     obj.meta('Height') = size(obj.img{1}, 1);
     obj.meta('Width') = size(obj.img{1}, 2);
+    obj.meta('Colors') = size(obj.img{1}, 3);
     obj.meta('Depth') = size(obj.img{1}, 4);
     obj.meta('Time') = size(obj.img{1}, 5);
     
-    % update I.slices
+    % update things based on changed colors
+    if obj.meta('Colors') ~= obj.colors
+        if obj.meta('Colors') > 1
+            obj.meta('ColorType') = 'truecolor';
+        else
+            obj.meta('ColorType') = 'grayscale';
+        end
+        obj.colors = size(obj.img{1}, 3);
+        % add colors to the LUT color table and update it
+        if obj.colors > size(obj.lutColors,1)
+            for i=size(obj.lutColors,1)+1:obj.colors
+                obj.lutColors(i,:) = [rand(1) rand(1) rand(1)];
+            end
+        end
+    end
+    
+    if ~strcmp(obj.meta('imgClass'), class(obj.img{1}(1)))
+        obj.meta('imgClass') = class(obj.img{1}(1));    % get string with class name for images
+        obj.meta('MaxInt') = double(intmax(obj.meta('imgClass')));
+    end
+    
+    % update class variables
+    obj.height = size(obj.img{1}, 1);
+    obj.width = size(obj.img{1}, 2);
+    obj.depth = size(obj.img{1}, 4);
+    obj.time = size(obj.img{1}, 5);   
+    obj.dim_yxczt = [obj.height, obj.width, obj.colors, obj.depth, obj.time];
+    
+    % update obj.slices
     currSlices = obj.slices;
     obj.slices{1} = [1, obj.height];
     obj.slices{2} = [1, obj.width];
     obj.slices{3} = 1:obj.colors;
-    obj.slices{4} = [1, size(obj.depth,4)];
+    obj.slices{4} = [1, obj.depth];
     obj.slices{5} = [1, 1];
+    % update service metadata and class variables
+    %obj.updateServiceMetadata(obj.meta);
     
-    if currSlices{obj.orientation}(1) > size(obj.img{1}, obj.orientation)
-        obj.slices{obj.orientation} = [size(obj.img{1}, obj.orientation), size(obj.img{1}, obj.orientation)];
+    if currSlices{obj.orientation}(1) > obj.dim_yxczt(obj.orientation)
+        obj.slices{obj.orientation} = [obj.dim_yxczt(obj.orientation), obj.dim_yxczt(obj.orientation)];
     else
         obj.slices{obj.orientation} = currSlices{obj.orientation};
     end

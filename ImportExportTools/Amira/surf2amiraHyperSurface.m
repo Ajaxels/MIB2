@@ -2,11 +2,11 @@ function res = surf2amiraHyperSurface(filename, surface, options)
 % generate amira Hypersurface Ascii file
 % 
 % Parameters:
-% filename - filename to save data
-% surface - structure with surface information
+% filename: filename to save data
+% surface: a structure with surface information
 %       .vertices - coordinates of vertices [Nx3]
 %       .faces    - indeces of vertices for each face/triangle
-% options - a structure with additional options
+% options: a structure with additional options
 %   .overwrite - 1-automatically overwrite existing files
 %   .format - a string with format: 'binary' or 'ascii'
 %   

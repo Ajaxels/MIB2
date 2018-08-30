@@ -132,7 +132,10 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
     %% Start segmentation mode
     %y = round(xy(1,2));
     %x = round(xy(1,1));
-    if obj.mibModel.preferences.disableSelection == 1 && ~strcmp(tool, 'Annotations'); return; end    % no selection layer
+    if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1 && ~ismember(tool, {'Annotations', '3D lines'})
+        return; 
+    end    % no selection layer
+    
     if xy(1,1) < 1 || xy(1,2) < 1 || xy(1,1) > size(obj.mibView.Ishown,2) || xy(1,2) > size(obj.mibView.Ishown,1)
         return; 
     end
@@ -172,7 +175,7 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
             return;
         case 'Lasso'
             % Lasso mode
-            if strcmp(obj.mibView.handles.mibSegmObjectPickerPanelSub2Select.Enable, 'on'); return; end;   % cancel when the manual mode is enabled
+            if strcmp(obj.mibView.handles.mibSegmObjectPickerPanelSub2Select.Enable, 'on'); return; end   % cancel when the manual mode is enabled
             modifier = '';
             % have to define subtract action differently for the lasso type of tools
             if obj.mibView.handles.mibSegmObjectPickerPanelAddPopup.Value == 2 % subtract mode

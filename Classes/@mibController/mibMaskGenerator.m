@@ -20,8 +20,15 @@ function mibMaskGenerator(obj, type)
 % Updates
 % 
 
-tic
+% check for the virtual stacking mode and return
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'mask generators are';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s not yet available in the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
 
+tic
 pos = obj.mibView.handles.mibMaskGenTypePopup.Value;
 fulllist = obj.mibView.handles.mibMaskGenTypePopup.String;
 text_str = fulllist{pos};

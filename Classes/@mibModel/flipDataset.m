@@ -30,7 +30,7 @@ tic
 options.blockModeSwitch = 0;    % overwrite blockmode switch
 wb = waitbar(0,sprintf('Flipping image\nPlease wait...'), 'Name', 'Flip dataset', 'WindowStyle', 'modal');
 time = obj.getImageProperty('time');
-if time < 2; obj.mibDoBackup('image', 1); end;
+if time < 2; obj.mibDoBackup('image', 1); end
 
 if strcmp(mode, 'flipT')
     img = cell2mat(obj.getData4D('image', 4, 0, options));   % get dataset (image)
@@ -42,7 +42,7 @@ if strcmp(mode, 'flipT')
     end
     
     % flip other layers
-    if obj.getImageProperty('modelType') == 63 && obj.preferences.disableSelection == 0
+    if obj.getImageProperty('modelType') == 63 && obj.I{obj.Id}.disableSelection == 0
         waitbar(0.5, wb, sprintf('Flipping other layers\nPlease wait...'));
         img = cell2mat(obj.getData4D('everything', 4, 0, options));   % get dataset (image)
         index = 1;
@@ -51,7 +51,7 @@ if strcmp(mode, 'flipT')
             index = index + 1;
             waitbar(index/time, wb);
         end
-    elseif obj.preferences.disableSelection == 0
+    elseif obj.I{obj.Id}.disableSelection == 0
         % flip selection layer
         waitbar(0.25, wb, sprintf('Flipping the selection layer\nPlease wait...'));
         img = cell2mat(obj.getData4D('selection', 4, 0, options));   % get dataset (image)
@@ -113,7 +113,7 @@ end
 clear img;
 
 % flip other layers
-if obj.getImageProperty('modelType') == 63 && obj.preferences.disableSelection == 0
+if obj.getImageProperty('modelType') == 63 && obj.I{obj.Id}.disableSelection == 0
     waitbar(0.5, wb, sprintf('Flipping other layers\nPlease wait...'));
     if time < 2
         obj.mibDoBackup('everything', 1);  % backup other layers
@@ -128,7 +128,7 @@ if obj.getImageProperty('modelType') == 63 && obj.preferences.disableSelection =
         obj.setData3D('everything', img, t, 4, NaN, options);   % set dataset (image) back
         waitbar(t/time, wb);
     end
-elseif obj.preferences.disableSelection == 0
+elseif obj.I{obj.Id}.disableSelection == 0
     % flip selection layer
     waitbar(0.25, wb, sprintf('Flipping the selection layer\nPlease wait...'));
     for t=1:time

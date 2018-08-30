@@ -21,9 +21,9 @@ function invertImage(obj, mode, colChannel)
 % Updates
 %
 
-if nargin < 3; colChannel = 0; end;
+if nargin < 3; colChannel = 0; end
 
-maxval = intmax(class(obj.I{obj.Id}.img{1}));
+maxval = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
 
 % tweak when only one time point
 if strcmp(mode, '4D') && obj.I{obj.Id}.time == 1

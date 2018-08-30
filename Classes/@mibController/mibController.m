@@ -10,7 +10,7 @@ classdef mibController < handle
     %
     
     properties
-        mibVersion = 'ver. 2.301 / 21.06.2018';  % ATTENTION! it is important to have the version number between "ver." and "/"
+        mibVersion = 'ver. 2.40 / 31.08.2018';  % ATTENTION! it is important to have the version number between "ver." and "/"
         % version of MIB
         mibModel
         % handles to the model
@@ -324,6 +324,8 @@ classdef mibController < handle
         
         toolbarUndo_ClickedCallback(obj)        % do one step back in the undo history
         
+        newMode = toolbarVirtualMode_ClickedCallback(obj, options)     % switch between loading datasets to memory or reading from HDD modes
+        
         updateAxesLimits(obj, index, mode, newMagFactor)        % Updates the obj.mibView.axesX and obj.mibView.axesY during fit screen, resize, or new dataset drawing
         
         updateFilelist(obj, filename)        % Update list of files in the current working directory (obj.mibModel.myPath) 
@@ -455,10 +457,13 @@ classdef mibController < handle
 
             obj.mibView = mibView(obj);
             
-            % update LUT colors and non-63 materials models
+            % update parameters for mibImages
             for i=1:obj.mibModel.maxId
                 obj.mibModel.I{i}.modelMaterialColors = obj.mibModel.preferences.modelMaterialColors;
                 obj.mibModel.I{i}.lutColors = obj.mibModel.preferences.lutColors;
+                if obj.mibModel.preferences.disableSelection ~= obj.mibModel.I{i}.disableSelection
+                    obj.mibModel.I{i}.clearContents([], [], obj.mibModel.preferences.disableSelection);
+                end
                 obj.updateAxesLimits('resize', i);
             end
             
@@ -583,6 +588,7 @@ classdef mibController < handle
                     end
                     obj.updateGuiWidgets();
                     obj.mibModel.newDatasetSwitch = abs(obj.mibModel.newDatasetSwitch) - 1;
+                    obj.mibModel.U.clearContents();  % clear undo history
                 case 'plotImage'
                     if ismember('Parameter', fieldnames(evnt))
                         if isa(evnt.Parameter, 'double')   % if number, use evnt.Parameter as resize switch in plotImage

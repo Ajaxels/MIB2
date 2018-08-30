@@ -1135,12 +1135,12 @@ classdef mibRoiRegion < matlab.mixin.Copyable
             
             if nargin < 6
                 blockModeSwitch = obj.mibImage.blockModeSwitch;
-            end;
-            if nargin < 5 || isnan(orient); orient = obj.mibImage.orientation; end;
+            end
+            if nargin < 5 || isnan(orient); orient = obj.mibImage.orientation; end
             if nargin < 3 || isnan(Height)
                 options.orientation = orient;
                 [Height, Width, color, depth] = obj.mibImage.getDatasetDimensions('image', NaN, NaN, options);
-            end;
+            end
             
             mask = zeros(Height, Width, 'uint8');
             

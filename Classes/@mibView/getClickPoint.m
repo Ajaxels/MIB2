@@ -33,9 +33,9 @@ function [xData,yData,zData, xClick, yClick] = getClickPoint(obj, nTimes, permut
 % 
 
 
-if nargin < 3; permuteSw = 1;  end;
-if nargin < 2; nTimes = []; end;
-if isempty(nTimes); nTimes = 1; end;
+if nargin < 3; permuteSw = 1;  end
+if nargin < 2; nTimes = []; end
+if isempty(nTimes); nTimes = 1; end
 
 % xData, yData, zData - coordinates of the click in the dataset
 % xClick, yClick - coordinates of the click in the axes

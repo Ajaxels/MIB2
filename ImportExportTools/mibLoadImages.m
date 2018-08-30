@@ -16,6 +16,7 @@ function [img, img_info, pixSize] = mibLoadImages(filenames, options)
 %           .FontName 
 %           .FontUnits
 %           .FontSize 
+%     - .virtual - a switch to open dataset in the virtual mode
 %
 % Return values:
 % img: - a dataset, [1:height, 1:width, 1:colors, 1:no_stacks]
@@ -49,6 +50,7 @@ if ~isfield(options, 'customSections');     options.customSections = 0; end
 if ~isfield(options, 'mibPath');    options.mibPath = mibPath;  end
 if ~isfield(options, 'imgStretch');    options.imgStretch = 1;  end
 if ~isfield(options, 'Font');    options.Font = Font;  end
+if ~isfield(options, 'virtual');    options.virtual = 0;  end
 
 autoCropSw = 0;     % auto crop images that have dimension mismatch
 
@@ -68,7 +70,81 @@ for i=1:no_files
 end
 [img_info, files, pixSize] = mibGetImageMetadata(filenames, options); % get meta data for the datasets
 if isempty(keys(img_info))
-    img = NaN;
+    img = [];
+    return;
+end
+
+% dealing with virtual stacks
+if options.virtual == 1
+    % check files
+    errorText = [];
+    if numel(unique([files.height])) > 1; errorText = 'Heights'; end
+    if numel(unique([files.width])) > 1; errorText = 'Widths'; end
+    if numel(unique([files.color])) > 1; errorText = 'Colors'; end
+    if ~isempty(errorText)
+        %errordlg(sprintf('!!! Error !!!\n\n%s of images mismatch!', errorText));
+        img = [];
+        return;
+    end
+    
+    if files(1).color == 1
+        img_info('ColorType') = 'grayscale';
+    else
+        img_info('ColorType') = 'truecolor';
+    end
+    img_info('Height') = files(1).height; % files(1).hDataset.getSizeY();
+    img_info('Width') = files(1).width; % files(1).hDataset.getSizeX();
+    img_info('Colors') = files(1).color; % files(1).hDataset.getSizeC();
+    img_info('Time') = files(1).dim_xyczt(1,5); % files(1).hDataset.getSizeT();
+    img_info('imgClass') = files(1).imgClass; 
+    
+    slicesPerFile = arrayfun(@(ind) files(ind).noLayers, 1:numel(files), 'UniformOutput', 1); % slicesPerFile = arrayfun(@(ind) files(ind).hDataset.getSizeZ(), 1:numel(files), 'UniformOutput', 1);
+    slicesPerFile = slicesPerFile';
+    img_info('Depth') = sum(slicesPerFile);
+    % define readerId, which is a vector with length equal to the total
+    % number of slices. Each element identifies the reader index for
+    % desired slice number of the combined dataset:
+    % readerId(5) = 3; indicates that slice number 5 is stored in the reader 3
+    readerId = zeros([img_info('Depth'), 1]);   
+    index = 0;
+    for id=1:numel(slicesPerFile)
+        for sliceId = 1:slicesPerFile(id)
+            index = index + 1;
+            readerId(index) = id;
+        end
+    end
+    img_info('Virtual_slicesPerFile') = slicesPerFile;
+    img_info('Virtual_readerId') = readerId;
+    img_info('Virtual_filenames') = filenames';     % get filenames, needed for deep copy of the reader
+    
+    Virtual_objectType = cell([numel(files), 1]);
+    Virtual_seriesName = cell([numel(files), 1]);
+    
+    if ~isKey(img_info,'ImageDescription'); img_info('ImageDescription') = ''; end
+    [img_info, pixSize] = mibUpdatePixSizeAndResolution(img_info, pixSize);
+    img = cell([numel(files), 1]);
+    for i=1:numel(files)
+        switch files(i).object_type
+            case 'bioformats'
+                img{i} = files(i).hDataset;   % get readers
+            case {'matlab.hdf5', 'hdf5_image'}
+                img{i} = files(i).filename;   % get readers
+            %case 'amiramesh'
+            %    img{i} = files(i).filename;   % get readers
+            otherwise
+                errordlg('This format is not yet implemented for the virtual mode!');
+                img = [];
+                return; 
+        end
+        Virtual_objectType{i} = files(i).object_type;
+        if iscell(files(i).seriesName)
+            Virtual_seriesName(i) = files(i).seriesName;
+        else
+            Virtual_seriesName{i} = files(i).seriesName;
+        end
+    end
+    img_info('Virtual_objectType') = Virtual_objectType;
+    img_info('Virtual_seriesName') = Virtual_seriesName;
     return;
 end
 
@@ -80,7 +156,7 @@ if options.imgStretch == 1
             'Image Format Warning!', ...
             'Sure','Cancel','Sure');
         if strcmp(choice, 'Cancel')
-            img = NaN;
+            img = [];
             return;
         end
     end
@@ -89,7 +165,7 @@ end
 if numel(unique(cell2mat({files.color}))) > 1 || numel(unique(cell2mat({files.height}))) > 1 || numel(unique(cell2mat({files.width}))) > 1 && autoCropSw==0
     answer = mibInputDlg({options.mibPath}, sprintf('!!! Warning !!!\nThe XY dimensions or number of color channels mismatch!\nContinue anyway?\n\nEnter the background color intensity (0-%d):', intmax(files(1).imgClass)),'Dimensions mismatch', num2str(intmax(files(1).imgClass)));
     if isempty(answer)
-        img=NaN;
+        img=[];
         return;
     end
     files(1).backgroundColor = str2double(answer{1});   % add information about background color

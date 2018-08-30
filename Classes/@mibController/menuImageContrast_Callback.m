@@ -22,6 +22,14 @@ function menuImageContrast_Callback(obj, parameter)
 % Updates
 % 
 
+% check for the virtual stacking mode and close the controller
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+    toolname = 'contrast adjustment';
+    warndlg(sprintf('!!! Warning !!!\n\nThe %s are not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
+        toolname), 'Not implemented');
+    return;
+end
+
 if numel(obj.mibModel.I{obj.mibModel.Id}.slices{3}) ~= 1    % get color channel from the selected in the Selection panel
     colCh = obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel;
     if colCh == 0
