@@ -69,6 +69,7 @@ classdef mibRandomRestoreDatasetController < handle
             % update details of the project in the file
             if isempty(fieldnames(obj.Settings)); return; end
             
+            if isempty(obj.View.handles.randomDirsList.Value);  obj.View.handles.randomDirsList.Value = 1; end
             obj.View.handles.randomDirsList.String = obj.Settings.outputDirName;
             obj.View.handles.destinationDirsList.String = obj.Settings.inputDirName;
             obj.View.handles.numImagesText.String = sprintf('Total number of images: %d', numel(obj.Settings.InputImagesCombined));
@@ -158,7 +159,9 @@ classdef mibRandomRestoreDatasetController < handle
         function restoreBtn_Callback(obj)
             % function restoreBtn_Callback(obj)
             % restore the dataset
-            includeMasks = obj.View.handles.includeMaskCheck.Value;   % switch to include or not model files that are places in the input folders
+            includeModels = obj.View.handles.includeModelCheck.Value;   % switch to include or not model files that are places in the input folders
+            includeMasks = obj.View.handles.includeMaskCheck.Value;   % switch to include or not mask files that are places in the input folders
+            includeAnnotations = obj.View.handles.includeAnnotationsCheck.Value;   % switch to include or not annotations files that are places in the input folders
             
             filename = obj.inputFilename;
             if exist(filename, 'file') == 0   % file does not exist
@@ -187,81 +190,94 @@ classdef mibRandomRestoreDatasetController < handle
                 
                 for i=1:numel(fileList)
                     [~,~,ext] = fileparts(fileList{i});
-                    if ismember(ext, {'.model'})
-                        inputModelFilenames{dirId} = fullfile(obj.Settings.outputDirName{dirId}, fileList{i}); %#ok<AGROW>
-                        InputModels{dirId} = load(inputModelFilenames{dirId}, '-mat'); %#ok<AGROW>
+                    if includeModels
+                        if ismember(ext, {'.model'})
+                            inputModelFilenames{dirId} = fullfile(obj.Settings.outputDirName{dirId}, fileList{i}); %#ok<AGROW>
+                            InputModels{dirId} = load(inputModelFilenames{dirId}, '-mat'); %#ok<AGROW>
+                        end
                     end
                     
                     % get filenames for masks
                     if includeMasks
                         if ismember(ext, {'.mask'})
-                            inputMaskFilenames{dirId} = fullfile(obj.Settings.outputDirName{dirId}, fileList{i}); %#ok<NASGU>
+                            inputMaskFilenames{dirId} = fullfile(obj.Settings.outputDirName{dirId}, fileList{i}); %#ok<AGROW,NASGU>
                         end
                     end
+                    
+                    % get filenames for masks
+                    if includeAnnotations
+                        if ismember(ext, {'.ann'})
+                            inputAnnotationsFilenames{dirId} = fullfile(obj.Settings.outputDirName{dirId}, fileList{i}); %#ok<AGROW,NASGU>
+                        end
+                    end
+                    
                 end
             end
-            if isempty(InputModels)
-                errordlg('Directories with shuffled images should contain .model files!', 'No models');
-                delete(wb);
-                return;
-            end
+
             waitbar(0.5, wb, sprintf('Generating restored models\nPlease wait...'));
             
-            modelVariable = InputModels{1}.modelVariable;
-            modelMaterialColors = InputModels{1}.modelMaterialColors;
-            modelMaterialNames = InputModels{1}.modelMaterialNames;
-            modelType = InputModels{1}.modelType;
-            
-            % get model dimensions
-            height = size(InputModels{1}.(InputModels{1}.modelVariable),1);
-            width = size(InputModels{1}.(InputModels{1}.modelVariable),2);
-            
-            indexShift = 0;     % this is shift of linear indices when progressing from one unrandomized folder to another
-            for dirId = 1:numel(obj.Settings.inputDirName)
-                outputIndices = find(obj.Settings.inputIndices==dirId);     % find linear indices for each unrandomized directory
-                mibModel = zeros([height, width, numel(outputIndices)], class(InputModels{1}.(InputModels{1}.modelVariable)));  % allocate space
-                % define labels
-                labelPosition = [];
-                labelText = {};
-                labelValues = [];
-            
-                for sliceIndex = 1:numel(outputIndices)
-                    outputDirId = 0;
-                    sliceNumber = [];
-                    while isempty(sliceNumber)  % look for the slice number in the randomized model
-                        outputDirId = outputDirId + 1;
-                        sliceNumber = find(obj.Settings.OutputIndicesSorted{outputDirId} == sliceIndex+indexShift);
-                    end
-                    % copy the slice to a restored model
-                    mibModel(:,:,sliceIndex) = InputModels{outputDirId}.(InputModels{outputDirId}.modelVariable)(:,:,sliceNumber);
-                    
-                    % add and shift annotations
-                    if isfield(InputModels{outputDirId}, 'labelPosition')
-                        labelIndices = find(InputModels{outputDirId}.labelPosition(:,1)==sliceNumber);
-                        currPos = InputModels{outputDirId}.labelPosition(labelIndices,:);
-                        currPos(:,1) = sliceIndex;  % replace z-value
-                        labelPosition = [labelPosition; currPos];
-                        labelText = [labelText; InputModels{outputDirId}.labelText(labelIndices,:)];
-                        labelValues = [labelValues; InputModels{outputDirId}.labelValues(labelIndices,:)];
-                    end
+            if includeModels
+                if isempty(InputModels)
+                    errordlg('Directories with shuffled images should contain .model files!', 'No models');
+                    delete(wb);
+                    return;
                 end
-                indexShift = indexShift + numel(outputIndices);     % add index shift
-                
-                % generate the data-tag for the model filenames
-                formatOut = 'yymmdd';
-                dateTag = datestr(now, formatOut);
-                
-                % generate model filename
-                modelFilename = fullfile(obj.Settings.inputDirName{dirId}, sprintf('Labels_RestoreRand_%s.model', dateTag));
-                
-                % save the model
-                if isempty(labelPosition)
-                    save(modelFilename, 'mibModel','modelVariable','modelMaterialColors','modelMaterialNames','modelType', '-mat', '-v7.3');
-                else
-                    save(modelFilename, 'mibModel','modelVariable','modelMaterialColors','modelMaterialNames','modelType',...
-                        'labelPosition', 'labelText', 'labelValues', '-mat', '-v7.3');
+                modelVariable = InputModels{1}.modelVariable;
+                modelMaterialColors = InputModels{1}.modelMaterialColors;
+                modelMaterialNames = InputModels{1}.modelMaterialNames;
+                modelType = InputModels{1}.modelType;
+            
+                % get model dimensions
+                height = size(InputModels{1}.(InputModels{1}.modelVariable),1);
+                width = size(InputModels{1}.(InputModels{1}.modelVariable),2);
+            
+                indexShift = 0;     % this is shift of linear indices when progressing from one unrandomized folder to another
+                for dirId = 1:numel(obj.Settings.inputDirName)
+                    outputIndices = find(obj.Settings.inputIndices==dirId);     % find linear indices for each unrandomized directory
+                    mibModel = zeros([height, width, numel(outputIndices)], class(InputModels{1}.(InputModels{1}.modelVariable)));  %#ok<PROP> % allocate space
+                    % define labels
+                    labelPosition = [];
+                    labelText = {};
+                    labelValue = [];
+
+                    for sliceIndex = 1:numel(outputIndices)
+                        outputDirId = 0;
+                        sliceNumber = [];
+                        while isempty(sliceNumber)  % look for the slice number in the randomized model
+                            outputDirId = outputDirId + 1;
+                            sliceNumber = find(obj.Settings.OutputIndicesSorted{outputDirId} == sliceIndex+indexShift);
+                        end
+                        % copy the slice to a restored model
+                        mibModel(:,:,sliceIndex) = InputModels{outputDirId}.(InputModels{outputDirId}.modelVariable)(:,:,sliceNumber); %#ok<PROP>
+
+                        % add and shift annotations
+                        if isfield(InputModels{outputDirId}, 'labelPosition')
+                            labelIndices = find(InputModels{outputDirId}.labelPosition(:,1)==sliceNumber);
+                            currPos = InputModels{outputDirId}.labelPosition(labelIndices,:);
+                            currPos(:,1) = sliceIndex;  % replace z-value
+                            labelPosition = [labelPosition; currPos];
+                            labelText = [labelText; InputModels{outputDirId}.labelText(labelIndices,:)];
+                            labelValue = [labelValue; InputModels{outputDirId}.labelValue(labelIndices,:)];
+                        end
+                    end
+                    indexShift = indexShift + numel(outputIndices);     % add index shift
+
+                    % generate the data-tag for the model filenames
+                    formatOut = 'yymmdd';
+                    dateTag = datestr(now, formatOut);
+
+                    % generate model filename
+                    modelFilename = fullfile(obj.Settings.inputDirName{dirId}, sprintf('Labels_RestoreRand_%s.model', dateTag));
+
+                    % save the model
+                    if isempty(labelPosition)
+                        save(modelFilename, 'mibModel','modelVariable','modelMaterialColors','modelMaterialNames','modelType', '-mat', '-v7.3');
+                    else
+                        save(modelFilename, 'mibModel','modelVariable','modelMaterialColors','modelMaterialNames','modelType',...
+                            'labelPosition', 'labelText', 'labelValue', '-mat', '-v7.3');
+                    end
+                    clear mibModel;
                 end
-                clear mibModel;
             end
             
             if includeMasks    % restore also the masks
@@ -301,6 +317,46 @@ classdef mibRandomRestoreDatasetController < handle
                     
                     % save mask
                     save(maskFilename, 'maskImg', '-mat', '-v7.3');
+                end
+            end
+            
+            if includeAnnotations    % restore also the masks
+                waitbar(0.9, wb, sprintf('Generating the annotation files\nPlease wait...'));
+                % load randomized annotations
+                for dirId=1:numel(obj.Settings.outputDirName)
+                    InputModels{dirId} = load(inputAnnotationsFilenames{dirId}, '-mat'); %#ok<AGROW>
+                end
+                
+                for dirId = 1:numel(obj.Settings.inputDirName)
+                    outputIndices = find(obj.Settings.inputIndices==dirId);     % find linear indices for each unrandomized directory
+                    labelPosition = [];
+                    labelText = {};
+                    labelValue = [];
+                    
+                    for sliceIndex = 1:numel(outputIndices)
+                        dirInId = obj.Settings.outputIndices(outputIndices(sliceIndex));   % index of the randomized directory
+                        randomSliceNumber = find(obj.Settings.OutputIndicesSorted{dirInId} == outputIndices(sliceIndex));  % slice number of the randomized dataset that correspond to sliceIndex of the non-rand dataset
+                        
+                        posIndices = find(InputModels{dirInId}.labelPosition(:,1) == randomSliceNumber);    % find annotations in the random dataset
+                        
+                        if ~isempty(posIndices)
+                            currPos = InputModels{dirInId}.labelPosition(posIndices, :);
+                            currPos(:,1) = sliceIndex;
+                            labelPosition = [labelPosition; currPos]; %#ok<AGROW>
+                            labelText = [labelText; InputModels{dirInId}.labelText(posIndices)]; %#ok<AGROW>
+                            labelValue = [labelValue; InputModels{dirInId}.labelValue(posIndices)]; %#ok<AGROW>
+                        end
+                    end
+                    
+                    % generate the data-tag for the model filenames
+                    formatOut = 'yymmdd';
+                    dateTag = datestr(now, formatOut);
+                    
+                    % generate model filename
+                    annotationFilename = fullfile(obj.Settings.inputDirName{dirId}, sprintf('Annotations_RestoreRand_%s.ann', dateTag));
+                    
+                    % save mask
+                    save(annotationFilename, 'labelPosition', 'labelText', 'labelValue', '-mat', '-v7.3');
                 end
             end
             

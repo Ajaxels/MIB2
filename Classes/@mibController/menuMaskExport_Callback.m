@@ -47,7 +47,7 @@ switch parameter
         destinationBuffer = 1:obj.mibModel.maxId;
         destinationButton = 1;
         for i=1:obj.mibModel.maxId
-            if strcmp(obj.mibModel.I{i}.meta('Filename'), 'none.tif') == 0
+            if strcmp(obj.mibModel.I{i}.meta('Filename'), 'none.tif') == 0 && i ~= obj.mibModel.Id
                 destinationButton = i;
                 break;
             end

@@ -5,6 +5,37 @@
 %
 %
 %
+%% 2.50 / 17.12.2018
+% * Added hardware accelerated 3D volume rendering (Menu->File->Render
+% volume->MIB rendering). The volume rendering can be used also for making
+% snapshots and animations. Requires Matlab R2018b or newer!
+% * Added automatic image alignment using detected features
+% * Added 20 distinct colors palette
+% * Added center point marker for the image axes (Toolbar -> center point button)
+% * Added shuffling of annotations to the randomizer tool (Menu->File->Rename and shuffle)
+% * Added delete multiple materials from the model at once (the '-' button in the Segmentation panel)
+% * Added split color channel mode for videos (Menu->File->Make movie)
+% * Added possibility to change default filters for images (Directory contents panel->Filter combobox->Right mouse click)
+% * Added contrast normalization for all layers 
+% * Added fuse of annotations during fusing of cropped models (Menu->File->Chopped images->Import->Fuse)
+% * Added auto removal of spaces in material names when exporting models to Amira
+% * Added loading of masks that are smaller or larger than the depth of the dataset
+% * Added alternative way to specify a frame around the dataset (Menu->Dataset->Transform->Add frame)
+% * Improved Lasso mode in the segmentation tools
+% * Updated Bio-Formats to version 5.9.2
+% * Fixed some compatibility issues with R2018b
+% * Fixed a bug in the object separator tool
+% * Fixed instructions how to calibrate dataset using the scale bar tool
+% * Fixed update of the current color channel after conversion to grayscale
+% * Fixed conversion from multicolors to grayscale
+% * Fixed insert of a new datasets into the open dataset
+% * Fixed a bug of non working scroll wheel after aligning two datasets
+% * Fixed combine files as color channels mode
+% * Fixed missing values for annotations when imported from matlab workspace together with the model
+% * Fixed computation of statistics for the models with 255 materials
+% * Fixed of cropping of the selection layer for models with more than 63 materials
+% * Fixed alignment for models with more than 63 materials
+%
 %% 2.40 / 31.08.2018
 % * Added virtual mode for datasets that are compatible with the BioFormats
 % library or in HDF5 format

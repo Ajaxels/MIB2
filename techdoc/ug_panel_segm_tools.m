@@ -369,10 +369,10 @@
 % <ul>
 % <li>Press and release the selection mouse key (default: left mouse button) above the
 % image to initialize the lasso tool</li>
-% <li>Press the <em>left mouse button</em> to start selection of areas</li>
-% <li>Release the <em>left mouse button</em> to accept selection</li>
-% <li>When working in the <em>Polyline mode</em> selection is finished using a double
-% click of the <em>left mouse button</em></li>
+% <li>Press the <em>left mouse button</em> and drag the mouse to start selection of areas</li>
+% <li>Release the <em>left mouse button</em> to finish selection</li>
+% <li>Modify selected area, if needed</li>
+% <li>Accept selection using a double click of the <em>left mouse button</em></li>
 % </ul>
 % When the <em>Add mode</em> is switched to the <em>Subtract mode</em> the
 % selected area is removed from the Selection layer.

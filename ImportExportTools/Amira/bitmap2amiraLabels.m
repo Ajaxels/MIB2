@@ -36,8 +36,9 @@ function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list
 % 10.08.2010 - added voxel size
 % 02.09.2011 - added minimal coordinates of the bounding box
 % 07.07.2016 - added possibility to have color_list and modelMaterialNames empty
-% 15.03.2018, IB added saving of models with more than 255 materials
-% 04.06.2018 save TransformationMatrix with AmiraMesh
+% 15.03.2018 - added saving of models with more than 255 materials
+% 04.06.2018 - save TransformationMatrix with AmiraMesh
+% 11.12.2018 - added auto remove of spaces in material names
 
 result = 0;
 %warning('off','MATLAB:gui:latexsup:UnableToInterpretTeXString');    % switch off warnings for latex
@@ -88,6 +89,14 @@ if useMaterialNames
         maxColor = max(max(max(bitmap)));
         for color=1:maxColor
             modelMaterialNames(color) = cellstr(num2str(color));
+        end
+    else
+        % remove spaces
+        for i=1:numel(modelMaterialNames)
+            matName = strtrim(modelMaterialNames{i});
+            spaceIndices = ismember(matName, ' ');
+            matName(spaceIndices) = [];     % remove spaces
+            modelMaterialNames{i} = matName;
         end
     end
 

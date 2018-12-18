@@ -10,7 +10,7 @@ classdef mibController < handle
     %
     
     properties
-        mibVersion = 'ver. 2.40 / 31.08.2018';  % ATTENTION! it is important to have the version number between "ver." and "/"
+        mibVersion = 'ver. 2.50 / 17.12.2018';  % ATTENTION! it is important to have the version number between "ver." and "/"
         % version of MIB
         mibModel
         % handles to the model
@@ -45,6 +45,51 @@ classdef mibController < handle
             % clear the handle
             obj.childControllers(id) = [];
             obj.childControllersIds(id) = [];
+        end
+        
+        %         function ViewListner_Callback(obj, src, evnt)
+%             switch src.Name
+%                 case {'Id', 'newDatasetSwitch'}     % added in mibChildView
+%                     obj.updateGuiWidgets();
+%             end
+%         end
+        
+        function Listner2_Callback(obj, src, evnt)
+            switch evnt.EventName
+                case 'updateId'
+                    obj.updateGuiWidgets();
+                case 'newDataset'
+                    if ismember('Parameter', fieldnames(evnt))
+                        obj.updateAxesLimits('resize', evnt.Parameter);
+                    else
+                        obj.updateAxesLimits('resize');
+                    end
+                    obj.updateGuiWidgets();
+                    obj.mibModel.newDatasetSwitch = abs(obj.mibModel.newDatasetSwitch) - 1;
+                    obj.mibModel.U.clearContents();  % clear undo history
+                case 'plotImage'
+                    if ismember('Parameter', fieldnames(evnt))
+                        if isa(evnt.Parameter, 'double')   % if number, use evnt.Parameter as resize switch in plotImage
+                            obj.plotImage(evnt.Parameter);
+                        else                            % if number of dimensions > 1, use evnt.Parameter as sImgIn, a preview image to show in mibView.handles.mibImageAxes
+                            obj.plotImage(0, evnt.Parameter);
+                        end
+                    else
+                        obj.plotImage(0);
+                    end
+                case 'updateLayerSlider'
+                    obj.mibView.handles.mibChangeLayerEdit.String = evnt.Parameter;
+                    obj.mibChangeLayerEdit_Callback(evnt.Parameter);
+                case 'updateTimeSlider'
+                    obj.mibView.handles.mibChangeTimeEdit.String = evnt.Parameter;
+                    obj.mibChangeTimeEdit_Callback(evnt.Parameter);                    
+                case 'showMask'
+                    obj.mibView.handles.mibMaskShowCheck.Value = 1;
+                    obj.mibMaskShowCheck_Callback();
+                case 'showModel'
+                    obj.mibView.handles.mibModelShowCheck.Value = 1;
+                    obj.mibModelShowCheck_Callback();
+            end
         end
     end
     
@@ -179,6 +224,8 @@ classdef mibController < handle
         mibFijiImport(obj)        % import dataset from Fiji to MIB
         
         mibFijiRunMacro(obj)        % run command or macro on Fiji
+        
+        mibFileFilterPopup_cm(obj, parameter)  % context menu for mibFileFilterPopup
         
         mibFilesListbox_Callback(obj)        % navigation in the file list, i.e. open file or change directory
         
@@ -315,6 +362,8 @@ classdef mibController < handle
         startPlugin(obj, pluginName)        % start plugin from mib menu
         
         toolbarBlockModeSwitch_ClickedCallback(obj)        % callback for press of obj.mibView.toolbarBlockModeSwitch in the toolbar of MIB
+        
+        toolbarCenterPointShow_ClickedCallback(obj)  % callback for press of obj.mibView.toolbarCenterPointShow in the toolbar
         
         toolbarInterpolation_ClickedCallback(obj, options)        % Function to set the state of the interpolation button in the toolbar
         
@@ -567,52 +616,4 @@ classdef mibController < handle
            
         end
     end
-    
-    methods (Static)
-%         function ViewListner_Callback(obj, src, evnt)
-%             switch src.Name
-%                 case {'Id', 'newDatasetSwitch'}     % added in mibChildView
-%                     obj.updateGuiWidgets();
-%             end
-%         end
-        
-        function Listner2_Callback(obj, src, evnt)
-            switch evnt.EventName
-                case 'updateId'
-                    obj.updateGuiWidgets();
-                case 'newDataset'
-                    if ismember('Parameter', fieldnames(evnt))
-                        obj.updateAxesLimits('resize', evnt.Parameter);
-                    else
-                        obj.updateAxesLimits('resize');
-                    end
-                    obj.updateGuiWidgets();
-                    obj.mibModel.newDatasetSwitch = abs(obj.mibModel.newDatasetSwitch) - 1;
-                    obj.mibModel.U.clearContents();  % clear undo history
-                case 'plotImage'
-                    if ismember('Parameter', fieldnames(evnt))
-                        if isa(evnt.Parameter, 'double')   % if number, use evnt.Parameter as resize switch in plotImage
-                            obj.plotImage(evnt.Parameter);
-                        else                            % if number of dimensions > 1, use evnt.Parameter as sImgIn, a preview image to show in mibView.handles.mibImageAxes
-                            obj.plotImage(0, evnt.Parameter);
-                        end
-                    else
-                        obj.plotImage(0);
-                    end
-                case 'updateLayerSlider'
-                    obj.mibView.handles.mibChangeLayerEdit.String = evnt.Parameter;
-                    obj.mibChangeLayerEdit_Callback(evnt.Parameter);
-                case 'updateTimeSlider'
-                    obj.mibView.handles.mibChangeTimeEdit.String = evnt.Parameter;
-                    obj.mibChangeTimeEdit_Callback(evnt.Parameter);                    
-                case 'showMask'
-                    obj.mibView.handles.mibMaskShowCheck.Value = 1;
-                    obj.mibMaskShowCheck_Callback();
-                case 'showModel'
-                    obj.mibView.handles.mibModelShowCheck.Value = 1;
-                    obj.mibModelShowCheck_Callback();
-            end
-        end
-    end
-    
 end

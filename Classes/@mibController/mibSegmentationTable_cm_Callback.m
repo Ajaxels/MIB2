@@ -9,6 +9,7 @@ function mibSegmentationTable_cm_Callback(obj, hObject, type)
 % @li ''rename'' - Rename material
 % @li ''set color'' - Set color of the selected material
 % @li ''statistics'' - Get statistics for material
+% @li ''mib'' - render as volume, R2018b and newer
 % @li ''isosurface'' - Show isosurface (Matlab)
 % @li ''isosurface2imaris'' - render isosurface in Matlab and export to Imaris
 % @li ''volumeFiji'' - Show as volume (Fiji)
@@ -132,6 +133,40 @@ switch type
             end
         end
         mibRenderModel(model{1}, contIndex, obj.mibModel.I{obj.mibModel.Id}.pixSize, bb, modelMaterialColors, image, Options);
+    case 'mib'
+        if obj.matlabVersion < 9.5
+            errordlg(sprintf('!!! Error !!!\n\nHardware accelerated rendering is only available in Matlab R2018b or newer!'), 'Matlab version is too old');
+            return;
+        end
+        
+        contIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
+        options.fillBg = 0;
+        
+        if isfield(obj.mibModel.sessionSettings, 'VolumeRendering')
+            options.Settings = obj.mibModel.sessionSettings.VolumeRendering;
+        end
+        
+        if contIndex == -1
+            if obj.mibModel.I{obj.mibModel.Id}.maskExist == 0
+                errordlg(sprintf('!!! Error !!!\n\nMask was not found!'), 'Missing mask');
+                return;
+            end
+            options.dataType = 'mask';
+            options.colorChannel = 1;
+            options.Settings.IsoColor = obj.mibModel.preferences.maskcolor;
+        else
+            options.dataType = 'model';
+            modelMaterialColors = obj.mibModel.getImageProperty('modelMaterialColors');
+            if contIndex > 0
+                options.Settings.IsoColor = modelMaterialColors(contIndex,:);
+            end
+        end
+                
+        options.mode = 'Isosurface'; % 'VolumeRendering', 'MaximumIntensityProjection', 'Isosurface'
+        options.colorChannel = contIndex;
+        
+        obj.startController('mibVolRenController', options);
+        
     case 'volumeFiji'
         contIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
         options.fillBg = 0;
@@ -142,7 +177,7 @@ switch type
             modelMaterialColors = obj.mibModel.preferences.maskcolor;
         else
             model = obj.mibModel.getData3D('model', NaN, NaN, NaN, options);
-            if obj.mibModel.showAllMaterials == 1; contIndex = 0; end;      % show all materials
+            if obj.mibModel.showAllMaterials == 1; contIndex = 0; end      % show all materials
             modelMaterialColors = obj.mibModel.getImageProperty('modelMaterialColors');
         end
         

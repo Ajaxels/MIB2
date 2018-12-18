@@ -49,7 +49,10 @@ if Indices(2) == 2        % selection of Material
     if unlink == 0
         obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial = selectedMaterial;
         jTable.setValueAt(java.lang.Boolean(0), prevMaterial-1, 2);
-        drawnow;
+        
+        %drawnow limitrate nocallbacks;     % this syntax does not work with R2014b
+        refreshdata(obj.mibView.handles.mibSegmentationTable);  % instead of drawnow, seems to be faster
+        
         jTable.setValueAt(java.lang.Boolean(1), selectedMaterial-1, 2);
     end
     obj.mibView.handles.mibSegmentationTable.UserData = userData;
@@ -124,7 +127,10 @@ if ~isempty(prevMaterial)
         else
                 jTable.setValueAt(java.lang.String(colergen(sprintf('''rgb(%d,%d,%d)''', fontColor(1), fontColor(2), fontColor(3)), ...
                     obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{prevMaterial-2})), prevMaterial-1,1); % clear background
-                drawnow;
+                
+                %drawnow limitrate nocallbacks;     % this syntax does not work with R2014b
+                refreshdata(obj.mibView.handles.mibSegmentationTable);  % instead of drawnow, seems to be faster
+                
                 if obj.mibModel.showAllMaterials == 0
                     jTable.setValueAt(java.lang.String(colergen(sprintf('''rgb(%d, %d, %d)''', 255, 255, 255),'&nbsp;')),prevMaterial-1,0); % clear color field
                 end

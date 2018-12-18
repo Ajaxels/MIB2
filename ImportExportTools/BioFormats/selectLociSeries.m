@@ -114,7 +114,11 @@ end
 % r.setMetadataStore(loci.formats.MetadataTools.createOMEXMLMetadata());
 % r.setId(handles.filename);
 
-r = bfGetReader(handles.filename);
+if numel(varargin) > 2
+    r = varargin{3};
+else
+    r = bfGetReader(handles.filename);
+end
 
 numSeries = r.getSeriesCount();
 data = cell(numSeries,6);  % prepare data for the table

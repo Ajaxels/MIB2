@@ -38,6 +38,10 @@ classdef mibView < handle
         %   .std - standard deviation of intensities for the initial selection
         %   .factor - factor that defines variation of STD variation
         % @note the 'brushSelection' is modified with respect to @code magFactor @endcode and crop of the image within the viewing window
+        centerSpotHandle
+        % a handle to ROI point class that marks the center of the image axes
+        % .handle - a handle to the spot roi class
+        % .enable - a switch, 1-enable; 0-disable
         ctrlPressed
         % set a variable to deal with the increase of the brush size during the erasing action. Ctrl+left mouse button
         % obj.ctrlPressed:
@@ -115,6 +119,9 @@ classdef mibView < handle
             obj.imh = matlab.graphics.primitive.Image('CData', []);   
             obj.ctrlPressed = 0;   % status of the control key (unpressed)
             obj.lastSegmSelection = [2 1];  % last selected contours for use with the 'e' button
+            
+            obj.centerSpotHandle.handle = [];
+            obj.centerSpotHandle.enable = 0;
             
             obj.showBrushCursor = 1;
             

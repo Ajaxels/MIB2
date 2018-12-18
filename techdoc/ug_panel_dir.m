@@ -69,11 +69,19 @@
 %
 %% 3. Filter
 % Filter list of files with available image type filters.
+% The lost of available extensions depends on whether the standard or
+% bioformats reader is used and whether or not the virtual mode is enabled.
+% All together there are 4 different configurations for image format
+% filters. 
 %
-% am, asf, asx, avi, bmp, cur, fits, fts, gif, hdf, ico, j2c, j2k, jp2,
-% jpeg, jpf, jpg, jpx, mj2, m4v, mj2, mov, mpg, mrc, nrrd, pbm, pcx, pgm, png, pnm, ppm, ras,
-% rec, tif, tiff, wmv, xwd.
+% The list of filters can be modified by pressing the right mouse key over
+% the |Filter| combobox and select one of the options:
 %
+% 
+% * 'Register extension' - to add extensions to the lists
+% * 'Remove selected extension' - to remove selected extension from the list
+% 
+% 
 %% 4. The Update button
 % Updates the file list in the Directory contents window.
 %

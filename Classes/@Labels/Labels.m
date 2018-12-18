@@ -16,7 +16,7 @@ classdef Labels < matlab.mixin.Copyable
     properties
         labelText
         % a cell array with labels
-        labelValues
+        labelValue
         % an array with values for labels
         labelPosition
         % a matrix with coordinates of the labels [pointIndex, z  x  y  t]
@@ -52,7 +52,7 @@ classdef Labels < matlab.mixin.Copyable
             % @code clearContents(obj); // Call within the class @endcode
             
             obj.labelText = {};   %  a cell array with labels
-            obj.labelValues = [];    % an array with values for the labels
+            obj.labelValue = [];    % an array with values for the labels
             obj.labelPosition = [];  % a matrix with coordinates of the labels [pointIndex, z, x, y  t]
         end
         
@@ -98,7 +98,7 @@ classdef Labels < matlab.mixin.Copyable
                 values = values';
             end
             obj.labelText = [obj.labelText; labels];
-            obj.labelValues = [obj.labelValues; values];
+            obj.labelValue = [obj.labelValue; values];
             
             if size(positions,2) == 3   % fix for old position lists with z,x,y coordinates only
                 positions = [positions ones([size(positions,1),1])];
@@ -194,7 +194,7 @@ classdef Labels < matlab.mixin.Copyable
             if nargin < 2; rangeZ = NaN; end
             % fetch Z
             labelsList = obj.labelText;
-            labelValues = obj.labelValues;
+            labelValues = obj.labelValue;
             labelPositions = obj.labelPosition;
             indices = 1:numel(labelsList);
             
@@ -284,14 +284,14 @@ classdef Labels < matlab.mixin.Copyable
             if iscell(labelId)   % get specified with labelText label
                 indices = strcmp(labelId, obj.labelText);
                 labels = obj.labelText(indices);
-                values = obj.labelValues(indices);
+                values = obj.labelValue(indices);
                 positions = obj.labelPosition(indices,:);
                 return;
             end
             
             if size(labelId, 2) == 1 % a get number update specified index
                 labels = obj.labelText(labelId);
-                values = obj.labelValues(labelId);
+                values = obj.labelValue(labelId);
                 positions = obj.labelPosition(labelId,:);
                 indices = labelId;
                 return;
@@ -300,7 +300,7 @@ classdef Labels < matlab.mixin.Copyable
                 if sum(indices) ~= 1; return; end % no matches were found
                 
                 labels = obj.labelText(indices);
-                values = obj.labelValues(indices);
+                values = obj.labelValue(indices);
                 positions = obj.labelPosition(indices,:);
                 return;
             end
@@ -391,7 +391,7 @@ classdef Labels < matlab.mixin.Copyable
                 for i=1:numel(labels)
                     indices = strcmp(labels(i),obj.labelText);
                     obj.labelText(indices) = [];
-                    obj.labelValues(indices) = [];
+                    obj.labelValue(indices) = [];
                     obj.labelPosition(indices,:) = [];
                 end
                 return;
@@ -399,14 +399,14 @@ classdef Labels < matlab.mixin.Copyable
             
             if size(labels, 2) == 1 % a single number or a column, remove specified indices
                     obj.labelText(labels) = [];
-                    obj.labelValues(labels) = [];
+                    obj.labelValue(labels) = [];
                     obj.labelPosition(labels,:) = [];
                 return;
             else    % find and remove specified points
                 for i = 1:size(labels,1)
                     indices = ismember(obj.labelPosition, labels(i,:), 'rows');
                     obj.labelText(indices) = [];
-                    obj.labelValues(indices) = [];
+                    obj.labelValue(indices) = [];
                     obj.labelPosition(indices,:) = [];
                 end
                 return;
@@ -499,7 +499,7 @@ classdef Labels < matlab.mixin.Copyable
             end
             
             obj.labelText = labels;
-            obj.labelValues = values;
+            obj.labelValue = values;
             obj.labelPosition = positions;
         end
         
@@ -541,7 +541,7 @@ classdef Labels < matlab.mixin.Copyable
             if iscell(oldLabel)   % update specified with labelText label
                     indices = strcmp(oldLabel,obj.labelText);
                     obj.labelText(indices) = newLabelText;
-                    obj.labelValues(indices) = newLabelValues;
+                    obj.labelValue(indices) = newLabelValues;
                     obj.labelPosition(indices,:) = newLabelPos;
                     result = 1;
                 return;
@@ -550,14 +550,14 @@ classdef Labels < matlab.mixin.Copyable
             if size(oldLabel, 2) == 1 % a single number update specified index
                     obj.labelText(oldLabel) = newLabelText;
                     obj.labelPosition(oldLabel,:) = newLabelPos;
-                    obj.labelValues(oldLabel) = newLabelValues;
+                    obj.labelValue(oldLabel) = newLabelValues;
                     result = 1;
                 return;
             else    % find and update the specified point
                 indices = ismember(obj.labelPosition, oldLabel, 'rows');
                 if sum(indices) ~= 1; return; end % no matches were found
                 obj.labelText(indices) = newLabelText;
-                obj.labelValues(indices) = newLabelValues;
+                obj.labelValue(indices) = newLabelValues;
                 obj.labelPosition(indices,:) = repmat(newLabelPos, [numel(sum(indices)), 1] );
                 result = 1;
                 return;
@@ -595,7 +595,7 @@ classdef Labels < matlab.mixin.Copyable
                 case 'name'     % re-sort by label name
                     [~, indices] = sort(obj.labelText);
                 case 'value'    % re-sort by label value
-                    [~, indices] = sort(obj.labelValues);
+                    [~, indices] = sort(obj.labelValue);
                 case 'x'        % re-sort by x coordinate
                     [~, indices] = sort(obj.labelPosition(:, 2), direction);
                 case 'y'        % re-sort by y coordinate
@@ -607,7 +607,7 @@ classdef Labels < matlab.mixin.Copyable
             end
             if strcmp(direction, 'descend'); indices = indices(end:-1:1); end
             obj.labelText = obj.labelText(indices);
-            obj.labelValues = obj.labelValues(indices);
+            obj.labelValue = obj.labelValue(indices);
             obj.labelPosition = obj.labelPosition(indices,:);
         end
         

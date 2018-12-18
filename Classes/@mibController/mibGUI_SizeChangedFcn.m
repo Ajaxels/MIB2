@@ -98,7 +98,12 @@ obj.mibView.handles.mibBufferTogglesButtonGroup.Position(2) = obj.mibView.handle
 
 obj.mibView.handles.mibFilesListbox.Position(2) = obj.mibView.handles.mibDirSubpanel.Position(2) + obj.mibView.handles.mibDirSubpanel.Position(4)+checkH/5;
 obj.mibView.handles.mibFilesListbox.Position(3) = verticalPanelShift-checkH;
-obj.mibView.handles.mibFilesListbox.Position(4) = obj.mibView.handles.mibDirectoryPanel.Position(4)-obj.mibView.handles.mibDirSubpanel.Position(4)-obj.mibView.handles.mibBufferTogglesButtonGroup.Position(4)-checkH*1.5;
+panelHeight = obj.mibView.handles.mibDirectoryPanel.Position(4)-obj.mibView.handles.mibDirSubpanel.Position(4)-obj.mibView.handles.mibBufferTogglesButtonGroup.Position(4)-checkH*1.5;
+if panelHeight < 1
+    warndlg(sprintf('!!! Warning !!!\n\nThe height of the Directory contents is too small!\nPlease increase its height\nor do not decrease the height of MIB any further'),...
+        'Height limitation', 'modal');
+end
+obj.mibView.handles.mibFilesListbox.Position(4) = panelHeight;
 
 % resize the width of mibSeparatingPanel2
 separatingPanelPos2(3) = verticalPanelShift - checkH/3;

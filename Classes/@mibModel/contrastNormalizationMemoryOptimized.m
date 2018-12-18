@@ -19,7 +19,8 @@ function contrastNormalizationMemoryOptimized(obj, type_switch, colorChannel)
 %   - ''mask'' - normalize contrast using intensities of only masked area at each slice
 %   - ''bgMean'' - shift intensities of each image based on background
 %   intensity that is marked as the mask
-% colorChannel: index of the color channel to use for normalization
+% colorChannel: index of the color channel to use for normalization, or
+% list of indices, or 0 for all color channels
 %
 % Return values:
 % 
@@ -49,7 +50,10 @@ function contrastNormalizationMemoryOptimized(obj, type_switch, colorChannel)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 27.11.2018, IB added multiple color channels option
+
+
+global mibPath;
 
 if nargin < 3; colorChannel = 1; end
 
@@ -60,6 +64,27 @@ if strcmp(obj.I{obj.Id}.meta('ColorType'), 'indexed')
 end
 
 [maxH, maxW, maxC, maxZ, maxT] = obj.I{obj.Id}.getDatasetDimensions('image', NaN);
+if colorChannel == 0; colorChannel=1:maxC; end
+
+if numel(colorChannel) > 1
+    colChList = cell([numel(colorChannel)+2, 1]);
+    colChList{1} = 'All channels';
+    for i=1:numel(colorChannel)
+        colChList{i+1} = sprintf('Color channel %d', i);
+    end
+    colChList{end} = 1;
+    
+    prompts = {'Select the color channel'};
+    defAns = {colChList};
+    dlgTitle = 'Contrast normalization';
+    options.PromptLines = 1; 
+    options.TitleLines = 5;
+    options.WindowWidth = 1.2; 
+    options.Title = {'Confirm selection of the color channels.';'';'Please note that the "All channels" mode normalizes contrast separately for each color channel, which may shift intensity balance between color channels'}; 
+    [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+    if isempty(answer); return; end
+    if selIndex > 1; colorChannel = selIndex-1; end
+end
 
 % define time points
 t1 = obj.I{obj.Id}.getCurrentTimePoint;
@@ -125,6 +150,7 @@ tic;
 wb = waitbar(0, sprintf('Normalizing dataset slice by slice\nPlease wait...'), 'Name', 'Normalizing layers...');
 
 counter = 1;
+maxC = numel(colorChannel);
 
 waitbar(0.01, wb);
 
@@ -152,128 +178,133 @@ if strcmp(type_switch, 'normalZ')
         case 'Exclude blacks'
             outliers = 0;
         case 'Exclude whites'
-            options.t = [1 1];
-            curr_img = cell2mat(obj.getData2D('image', 1, NaN, colorChannel, options));
-            outliers = intmax(class(curr_img));
+            %options.t = [1 1];
+            %curr_img = cell2mat(obj.getData2D('image', 1, NaN, colorChannel(1), options));
+            %outliers = intmax(class(curr_img));
+            outliers  = obj.I{obj.Id}.meta('MaxInt');
     end
 end
 
-if ~strcmp(type_switch, 'normalT')
-    mean_val = zeros(maxZ, 1);
-    std_val = zeros(maxZ, 1);
-    
-    for t=t1:t2
-        options.t = [t t];
-        % calculate sdt and mean
-        for z=z1:z2
-            curr_img = cell2mat(obj.getData2D('image', z, NaN, colorChannel, options));
-            
-            if useMask == 0
-                if isempty(outliers)
-                    mean_val(z) = mean2(curr_img);
-                    std_val(z) = std2(curr_img);
-                else
-                    if outliers == 0
-                        mean_val(z) = mean(curr_img(curr_img>0));
-                        std_val(z) = std(double(curr_img(curr_img>0)));
+maxWaitbarIndex = maxZ*maxT*maxC;
+
+for colCh = 1:numel(colorChannel)
+    if ~strcmp(type_switch, 'normalT')
+        mean_val = zeros(maxZ, 1);
+        std_val = zeros(maxZ, 1);
+
+        for t=t1:t2
+            options.t = [t t];
+            % calculate sdt and mean
+            for z=z1:z2
+                curr_img = cell2mat(obj.getData2D('image', z, NaN, colorChannel(colCh), options));
+
+                if useMask == 0
+                    if isempty(outliers)
+                        mean_val(z) = mean2(curr_img);
+                        std_val(z) = std2(curr_img);
                     else
-                        mean_val(z) = mean(curr_img(curr_img<outliers));
-                        std_val(z) = std(double(curr_img(curr_img<outliers)));
+                        if outliers == 0
+                            mean_val(z) = mean(curr_img(curr_img>0));
+                            std_val(z) = std(double(curr_img(curr_img>0)));
+                        else
+                            mean_val(z) = mean(curr_img(curr_img<outliers));
+                            std_val(z) = std(double(curr_img(curr_img<outliers)));
+                        end
                     end
+                else
+                    mask = cell2mat(obj.getData2D(layer_id, z, NaN, colorChannel(colCh), options));
+                    if max(mask(:)) == 0
+                        mean_val(z) = NaN;
+                        std_val(z) = NaN;
+                        continue;
+                    end
+                    mean_val(z) = mean2(curr_img(mask==1));
+                    std_val(z) = std2(curr_img(mask==1));
+                end
+            end
+
+            % find nan indices
+            nanIds = find(isnan(mean_val));
+            valIds = find(~isnan(mean_val));
+
+            imgMean = mean(mean_val(valIds));
+            imgStd = mean(std_val(valIds));
+
+            % fill gaps in the vectors
+            for i=1:numel(nanIds)
+                valIndex = find(valIds > nanIds(i), 1);
+                if isempty(valIndex)
+                    valIndex = find(valIds < nanIds(i), 1, 'last');
+                end
+                mean_val(nanIds(i)) = mean_val(valIds(valIndex));
+                std_val(nanIds(i)) = std_val(valIds(valIndex));
+            end
+
+            if strcmp(type_switch, 'bgMean')    % intensities based on mean background value in the mask area
+                for z=z1:z2
+                    curr_img = cell2mat(obj.getData2D('image', z, NaN, colorChannel(colCh), options));
+                    curr_img = double(curr_img) - mean_val(z) + imgMean;
+                    obj.setData2D('image', curr_img, z, NaN, colorChannel(colCh), options);
+                    if mod(counter,10)==0; waitbar(counter/maxWaitbarIndex,wb); end
+                    counter = counter + 1;
                 end
             else
-                mask = cell2mat(obj.getData2D(layer_id, z, NaN, colorChannel, options));
-                if max(mask(:)) == 0
-                    mean_val(z) = NaN;
-                    std_val(z) = NaN;
-                    continue;
-                end
-                mean_val(z) = mean2(curr_img(mask==1));
-                std_val(z) = std2(curr_img(mask==1));
-            end
-        end
-        
-        % find nan indices
-        nanIds = find(isnan(mean_val));
-        valIds = find(~isnan(mean_val));
-        
-        imgMean = mean(mean_val(valIds));
-        imgStd = mean(std_val(valIds));
-        
-        % fill gaps in the vectors
-        for i=1:numel(nanIds)
-            valIndex = find(valIds > nanIds(i), 1);
-            if isempty(valIndex)
-                valIndex = find(valIds < nanIds(i), 1, 'last');
-            end
-            mean_val(nanIds(i)) = mean_val(valIds(valIndex));
-            std_val(nanIds(i)) = std_val(valIds(valIndex));
-        end
-        
-        if strcmp(type_switch, 'bgMean')    % intensities based on mean background value in the mask area
-            for z=z1:z2
-                curr_img = cell2mat(obj.getData2D('image', z, NaN, colorChannel, options));
-                curr_img = double(curr_img) - mean_val(z) + imgMean;
-                obj.setData2D('image', curr_img, z, NaN, colorChannel, options);
-                if mod(counter,10)==0; waitbar(counter/maxZ*maxT,wb); end
-                counter = counter + 1;
-            end
-        else
-            for z=z1:z2
-                ratio = imgStd/std_val(z);
-                curr_img = cell2mat(obj.getData2D('image', z, NaN, colorChannel, options));
-                I1 = double(curr_img) - mean_val(z);
-                I1 = I1 * ratio;
-                
-                if isempty(outliers)
-                    curr_img = I1 + imgMean;
-                else
-                    if outliers == 0
-                        curr_img(curr_img>0) = I1(curr_img>0) + imgMean;
+                for z=z1:z2
+                    ratio = imgStd/std_val(z);
+                    curr_img = cell2mat(obj.getData2D('image', z, NaN, colorChannel(colCh), options));
+                    I1 = double(curr_img) - mean_val(z);
+                    I1 = I1 * ratio;
+
+                    if isempty(outliers)
+                        curr_img = I1 + imgMean;
                     else
-                        curr_img(curr_img<outliers) = I1(curr_img<outliers) + imgMean;
+                        if outliers == 0
+                            curr_img(curr_img>0) = I1(curr_img>0) + imgMean;
+                        else
+                            curr_img(curr_img<outliers) = I1(curr_img<outliers) + imgMean;
+                        end
                     end
+                    obj.setData2D('image', curr_img, z, NaN, colorChannel(colCh), options);
+
+                    if mod(counter,10)==0; waitbar(counter/maxWaitbarIndex,wb); end
+                    counter = counter + 1;
                 end
-                obj.setData2D('image', curr_img, z, NaN, colorChannel, options);
-                
-                if mod(counter,10)==0; waitbar(counter/maxZ*maxT,wb); end
-                counter = counter + 1;
             end
         end
-    end
-else
-    mean_val = zeros(maxT, 1);
-    std_val = zeros(maxT, 1);
-    for t=t1:t2
-        options.t = [t t];
-        if strcmp(normalTmode, '2D slice')
-            curr_img = double(cell2mat(obj.getData2D('image', z1, NaN, colorChannel, options)));
-        else
-            curr_img = double(cell2mat(obj.getData3D('image', t, colorChannel)));
+    else
+        mean_val = zeros(maxT, 1);
+        std_val = zeros(maxT, 1);
+        for t=t1:t2
+            options.t = [t t];
+            if strcmp(normalTmode, '2D slice')
+                curr_img = double(cell2mat(obj.getData2D('image', z1, NaN, colorChannel(colCh), options)));
+            else
+                curr_img = double(cell2mat(obj.getData3D('image', t, colorChannel(colCh))));
+            end
+            mean_val(t) = mean(curr_img(:));
+            std_val(t) = std(curr_img(:));
+            waitbar(t/t2,wb);
         end
-        mean_val(t) = mean(curr_img(:));
-        std_val(t) = std(curr_img(:));
-        waitbar(t/t2,wb);
-    end
-    imgMean = mean(mean_val);
-    imgStd = mean(std_val);
-        
-    for t=t1:t2
-        options.t = [t t];
-        ratio = imgStd/std_val(t);
-        for z=1:maxZ
-            curr_img = cell2mat(obj.getData2D('image', z, NaN, colorChannel, options));
-            I1 = double(curr_img) - mean_val(t);
-            I1 = I1 * ratio;
-            curr_img = I1 + imgMean;
-            obj.setData2D('image', curr_img, z, NaN, colorChannel, options);
+        imgMean = mean(mean_val);
+        imgStd = mean(std_val);
+
+        for t=t1:t2
+            options.t = [t t];
+            ratio = imgStd/std_val(t);
+            for z=1:maxZ
+                curr_img = cell2mat(obj.getData2D('image', z, NaN, colorChannel(colCh), options));
+                I1 = double(curr_img) - mean_val(t);
+                I1 = I1 * ratio;
+                curr_img = I1 + imgMean;
+                obj.setData2D('image', curr_img, z, NaN, colorChannel(colCh), options);
+            end
+            waitbar(t/t2,wb);
         end
-        waitbar(t/t2,wb);
     end
 end
 
 % update the log
-log_text = sprintf('Normalize contrast, mode: %s, Ch: %d', type_switch, colorChannel);
+log_text = sprintf('Normalize contrast, mode: %s, Ch: %s', type_switch, num2str(colorChannel));
 obj.I{obj.Id}.updateImgInfo(log_text);
 
 delete(wb);

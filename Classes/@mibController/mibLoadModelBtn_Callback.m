@@ -10,7 +10,7 @@ function mibLoadModelBtn_Callback(obj, model, options)
 % @li .modelMaterialColors - a matrix with colors for materials
 % @li .labelText - a cell array with labels
 % @li .labelPosition - a matrix [x, y, z, t] with coordinates of labels
-% @li .labelValues - an array of numbers for values of labels
+% @li .labelValue - an array of numbers for values of labels
 % @li .modelType - a double with type of the model: 63, 255
 % @li .modelVariable - an optional string with the name of the model variable
 %
@@ -114,7 +114,8 @@ if nargin < 2   % model and options were not provided
             if isfield(res, 'labelText')
                 options.labelText = res.labelText;
                 options.labelPosition = res.labelPosition;
-                if isfield(res, 'labelValues'); options.labelValues = res.labelValues; end
+                if isfield(res, 'labelValues'); options.labelValue = res.labelValues; end   % old naming of the field before 2.5
+                if isfield(res, 'labelValue'); options.labelValue = res.labelValue; end
             end
             clear res;
         elseif strcmp(filename{fnId}(end-1:end),'am') % loading amira mesh
@@ -258,14 +259,9 @@ else
     end
     [pathTemp, fnTemplate] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
     
-    if ~isfield(options, 'model_fn')
-        options.model_fn = fullfile(pathTemp, ['Labels_' fnTemplate '.model']);
-    end
-    
-    
-    if ~isfield(options, 'modelVariable')
-        options.modelVariable = 'mibModel';
-    end
+    if ~isfield(options, 'model_fn'); options.model_fn = fullfile(pathTemp, ['Labels_' fnTemplate '.model']); end
+    if ~isfield(options, 'modelVariable'); options.modelVariable = 'mibModel'; end
+    if isfield(options, 'labelValues'); options.labelValue = options.labelValues; options = rmfield(options, 'labelValues'); end    % old name of the field, before MIB 2.5
     
     % check H/W/Z dimensions
     if size(model, 1) ~= obj.mibModel.I{obj.mibModel.Id}.height || size(model,2) ~= obj.mibModel.I{obj.mibModel.Id}.width || size(model,3) ~= obj.mibModel.I{obj.mibModel.Id}.depth
@@ -295,7 +291,7 @@ else
         end
     end
     
-    if options.modelType ~= obj.mibModel.I{obj.mibModel.Id}.modelType
+    if options.modelType ~= obj.mibModel.I{obj.mibModel.Id}.modelType && obj.mibModel.I{obj.mibModel.Id}.modelExist
         obj.mibModel.I{obj.mibModel.Id}.convertModel(options.modelType);
     end
     
@@ -365,8 +361,8 @@ end
 % add annotations
 if isfield(options, 'labelText')
     obj.mibModel.I{obj.mibModel.Id}.hLabels.clearContents();    % clear current labels
-    if isfield(options, 'labelValues')
-        obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(options.labelText, options.labelPosition, options.labelValues);
+    if isfield(options, 'labelValue')
+        obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(options.labelText, options.labelPosition, options.labelValue);
     else
         obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(options.labelText, options.labelPosition);
     end

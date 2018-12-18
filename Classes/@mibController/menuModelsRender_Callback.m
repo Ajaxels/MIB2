@@ -32,6 +32,21 @@ end
 if nargin < 2; type = 'matlab'; end
 
 switch type
+    case 'mib'
+        contIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
+        modelMaterialNames = obj.mibModel.getImageProperty('modelMaterialNames');
+        if contIndex < 0
+            textStr = 'Mask';
+        elseif contIndex == 0
+            textStr = 'Exterior';
+        else
+            textStr = modelMaterialNames{contIndex};
+        end
+        
+        answer = questdlg(sprintf('!!! Attention !!!\n\nThe volume rendering will display a material selected in the Segmentation table!\nCurrent selection is "%s"', textStr),...
+            'Warning', 'Continue', 'Cancel', 'Continue');
+        if strcmp(answer, 'Cancel'); return; end
+        obj.mibSegmentationTable_cm_Callback([], 'mib');
     case 'matlab'
         obj.mibSegmentationTable_cm_Callback([], 'isosurface');
     case 'matlabImaris'

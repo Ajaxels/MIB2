@@ -1,6 +1,7 @@
 function addFrame(obj)
 % function addFrame(obj)
 % Add a frame around the dataset
+% see also mibModel.addFrameToImage function
 %
 % Parameters:
 %
@@ -166,6 +167,10 @@ elseif selIndex(5) == 3     % post
     bb(4) = bb(4)+extW*obj.I{obj.Id}.pixSize.y;
 end
 obj.I{obj.Id}.updateBoundingBox(bb);  % update bounding box
+
+crop_factor = [-extW+1, -extH+1, NaN, NaN, 1, NaN, 1, NaN];
+obj.I{obj.Id}.hROI.crop(crop_factor);
+obj.I{obj.Id}.hLabels.crop(crop_factor);
 
 if selIndex(4) == 1     % use the pad value
     log_text = sprintf('Add frame: padValue=%d, direction=%s', padval, direction);

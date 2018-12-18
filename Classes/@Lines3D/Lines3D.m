@@ -283,20 +283,6 @@ classdef Lines3D < matlab.mixin.Copyable
                 Graph.Nodes.Properties.UserData.pixSize.tunits = 's';
             end
             
-            % recalculate pixels to image units
-            pointsXYZindex = find(ismember(Graph.Nodes.Properties.VariableNames, 'PointsXYZ'));
-            if strcmp(Graph.Nodes.Properties.VariableUnits{pointsXYZindex}, 'pixel')
-                orientation = 4;    % assuming xy orientation
-                [Graph.Nodes.PointsXYZ(:,1), Graph.Nodes.PointsXYZ(:,2), Graph.Nodes.PointsXYZ(:,3)] = ...
-                    convertPixelsToUnits(Graph.Nodes.PointsXYZ(:,1), Graph.Nodes.PointsXYZ(:,2), Graph.Nodes.PointsXYZ(:,3),...
-                    Graph.Nodes.Properties.UserData.BoundingBox, Graph.Nodes.Properties.UserData.pixSize, orientation);
-                
-                Graph.Nodes.Properties.VariableUnits{1} =  Graph.Nodes.Properties.UserData.pixSize.units;
-                if ismember('Edges', Graph.Edges.Properties.VariableNames)
-                    Graph.Edges.Edges = [];   % remove edges, they will be recalculated in the Lines3D.replaceGraph function
-                end
-            end
-            
             % add variable units if they are missing
             if isempty(Graph.Nodes.Properties.VariableUnits)
                 for varNameId = 1:numel(Graph.Nodes.Properties.VariableNames)
@@ -308,6 +294,20 @@ classdef Lines3D < matlab.mixin.Copyable
                         otherwise
                             Graph.Nodes.Properties.VariableUnits{varNameId} = '';
                     end
+                end
+            end
+            
+            % recalculate pixels to image units
+            pointsXYZindex = find(ismember(Graph.Nodes.Properties.VariableNames, 'PointsXYZ'));
+            if strcmp(Graph.Nodes.Properties.VariableUnits{pointsXYZindex}, 'pixel')
+                orientation = 4;    % assuming xy orientation
+                [Graph.Nodes.PointsXYZ(:,1), Graph.Nodes.PointsXYZ(:,2), Graph.Nodes.PointsXYZ(:,3)] = ...
+                    convertPixelsToUnits(Graph.Nodes.PointsXYZ(:,1), Graph.Nodes.PointsXYZ(:,2), Graph.Nodes.PointsXYZ(:,3),...
+                    Graph.Nodes.Properties.UserData.BoundingBox, Graph.Nodes.Properties.UserData.pixSize, orientation);
+                
+                Graph.Nodes.Properties.VariableUnits{1} =  Graph.Nodes.Properties.UserData.pixSize.units;
+                if ismember('Edges', Graph.Edges.Properties.VariableNames)
+                    Graph.Edges.Edges = [];   % remove edges, they will be recalculated in the Lines3D.replaceGraph function
                 end
             end
             

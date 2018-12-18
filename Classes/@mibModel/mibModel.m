@@ -46,6 +46,9 @@ classdef mibModel < handle
         % show or not 3D lines
         mibSegmShowTypePopup
         % type of model visualization: @b 1 - filled; @b 2 - contour
+        sessionSettings
+        % a structure with settings for some tools used during the current session of MIB
+        % .automaticAlignmentOptions -> a structure used in mibAlignmentController
         storedSelection
         % a buffer to store selection with press of Ctrl+C button, and restore with Ctrl+V
         % @note dimensions are @code {1}[1:height, 1:width] or [] @endcode
@@ -184,6 +187,7 @@ classdef mibModel < handle
             obj.disableSegmentation = 0;    % disable segmentation switch
             obj.storedSelection = [];   % initialize stored selection
             obj.connImaris = [];    % empty connection to Imaris
+            obj.sessionSettings = struct();     % current session settings
             
             for i=1:obj.maxId   % initialize mibImage 
                 obj.I{i}= mibImage();

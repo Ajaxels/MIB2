@@ -4,10 +4,9 @@
 % 
 % <html>
 % A demonstration is available in the following videos:<br>
-% <a href="https://youtu.be/-qwoO5z02aA"><img
-% style="vertical-align:middle;" src="images\youtube2.png">
-% https://youtu.be/-qwoO5z02aA</a><br>
-% <a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube2.png">Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a>
+% <a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/-qwoO5z02aA</a><br>
+% <a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube2.png"> Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a><br>
+% <a href="https://youtu.be/-en5zD5Ou9s"><img style="vertical-align:middle;" src="images\youtube2.png"> Automatic feature-based</a><br>
 % </html>
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_dataset.html *Dataset*>
@@ -52,6 +51,21 @@
 %       </td>
 %       </td>
 %     </tr>
+%     <tr>
+%       <td><b>Automatic feature-based</b></td>
+%       <td><a href="https://www.youtube.com/embed/-en5zD5Ou9s"><img src="images/youtube.png"></a> The automatic image alignement based on features (blobs,
+%       regions or corners) detected on consecutive slices.<br>
+%       The available
+%       transfomations are 'similarity', 'affine', or 'projective' (see
+%       below for details). The resulting datasets can be cropped to the
+%       size and around the position of the first image (the cropped mode)
+%       or extended.<br>
+%       Use the Preview button to check the number and
+%       positions of the detected points.<br>
+%       Please refer to the documentation of the <a href="https://se.mathworks.com/help/vision/ref/matchfeatures.html">matchFeatures</a> function of
+%       Matlab for more details.
+%       </td>
+%     </tr>     
 %     <tr>
 %       <td><b>Single landmark point</b></td>
 %       <td>The Single landmark point mode is a manual mode, where user marks

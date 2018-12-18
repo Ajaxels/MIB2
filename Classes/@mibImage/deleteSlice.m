@@ -91,7 +91,7 @@ if ~isnan(obj.model{1}(1))
 end
 
 % shift labels
-[labelsList, labelValues, labelPositions, indices] = obj.hLabels.getLabels();   % [labelIndex, z x y t]
+[labelsList, labelValue, labelPositions, indices] = obj.hLabels.getLabels();   % [labelIndex, z x y t]
 if numel(labelsList) > 0 
     for sliceId = numel(sliceNumber):-1:1
         currSlice = sliceNumber(sliceId);
@@ -105,7 +105,7 @@ if numel(labelsList) > 0
             labelPositions(labelPositions(:,4)>=currSlice,4) = labelPositions(labelPositions(:,4)>=currSlice,4)-1;       
         end
     end
-    obj.hLabels.replaceLabels(labelsList, labelPositions, labelValues);
+    obj.hLabels.replaceLabels(labelsList, labelPositions, labelValue);
 end
 
 waitbar(0.7, h);

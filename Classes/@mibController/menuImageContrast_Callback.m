@@ -30,7 +30,8 @@ if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
     return;
 end
 
-if numel(obj.mibModel.I{obj.mibModel.Id}.slices{3}) ~= 1    % get color channel from the selected in the Selection panel
+if numel(obj.mibModel.I{obj.mibModel.Id}.slices{3}) ~= 1  && ~ismember(parameter, {'NormalizeZ','NormalizeT','NormalizeMask','NormalizeBg'}) 
+            % get color channel from the selected in the Selection panel
     colCh = obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel;
     if colCh == 0
         msgbox('Please select the color channel!', 'Error!', 'error', 'modal');

@@ -13,7 +13,7 @@ function menuMaskLoad_Callback(obj)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 12.12.2018 added loading of masks that are smaller or larger than the depth of the dataset
 
 % check for the virtual stacking mode and return
 if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
@@ -59,6 +59,7 @@ if obj.mibModel.I{obj.mibModel.Id}.maskExist == 0 && ...
     obj.mibModel.I{obj.mibModel.Id}.maskExist = 1;
 end
 setDataOptions.blockModeSwitch = 0;
+[height, width, color, depth, time] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, NaN, setDataOptions);
 
 for fnId = 1:numel(filename)
     if strcmp(filename{1}(end-1:end),'am') % loading amira mesh
@@ -76,9 +77,9 @@ for fnId = 1:numel(filename)
     end
     
     % check dimensions
-    if size(res,1) == obj.mibModel.I{obj.mibModel.Id}.height && size(res,2) == obj.mibModel.I{obj.mibModel.Id}.width
+    if size(res,1) == height && size(res,2) == width
         % do nothing
-    elseif size(res,1) == obj.mibModel.I{obj.mibModel.Id}.width && size(res,2) == obj.mibModel.I{obj.mibModel.Id}.height
+    elseif size(res,1) == width && size(res,2) == height
         % permute
         res = permute(res, [2 1 3 4]);
     else
@@ -97,13 +98,35 @@ for fnId = 1:numel(filename)
 %         return;
 %     end
     
-    if size(res, 4) > 1 && size(res, 4) == obj.mibModel.I{obj.mibModel.Id}.time   % update complete 4D dataset
+    if size(res, 4) > 1 && size(res, 4) == time   % update complete 4D dataset
         obj.mibModel.setData4D('mask', res, 4, 0, setDataOptions);
-    elseif size(res, 4) == 1 && size(res,3) == obj.mibModel.I{obj.mibModel.Id}.depth  % update complete 3D dataset
+    elseif size(res, 4) == 1 && size(res,3) == depth  % update complete 3D dataset
         if numel(filename) > 1
             obj.mibModel.setData3D('mask', res, fnId, 4, 0, setDataOptions);
         else
             obj.mibModel.setData3D('mask', res, NaN, 4, 0, setDataOptions);
+        end
+    elseif size(res, 4) == 1 && size(res,3) < depth  % mask is smaller than the dataset
+        setDataOptions.z = [1 size(res,3)];
+        
+        answer = questdlg(sprintf('!!! Warning !!!\n\nDepth of the Mask is smaller than the size of the dataset\nDataset dimensions:\nheight x width x colors x depth x time: %d x %d x %d x %d x %d\n\nMask dimensions: %s\n\nWould you like to load it?', ...
+            height, width, color, depth, time, num2str(size(res))), 'Load a mask', 'Load', 'Cancel', 'Load');
+        if strcmp(answer, 'Cancel'); delete(wb); return; end
+        
+        if numel(filename) > 1
+            obj.mibModel.setData3D('mask', res, fnId, 4, 0, setDataOptions);
+        else
+            obj.mibModel.setData3D('mask', res, NaN, 4, 0, setDataOptions);
+        end
+    elseif size(res, 4) == 1 && size(res,3) > depth  % mask is larger than the dataset
+        answer = questdlg(sprintf('!!! Warning !!!\n\nDepth of the Mask is larger than the size of the dataset\nDataset dimensions:\nheight x width x colors x depth x time: %d x %d x %d x %d x %d\n\nMask dimensions: %s\n\nWould you like to load it?', ...
+            height, width, color, depth, time, num2str(size(res))), 'Load a mask', 'Load', 'Cancel', 'Load');
+        if strcmp(answer, 'Cancel'); delete(wb); return; end
+        
+        if numel(filename) > 1
+            obj.mibModel.setData3D('mask', res, fnId(1:depth), 4, 0, setDataOptions);
+        else
+            obj.mibModel.setData3D('mask', res(:,:,1:depth), NaN, 4, 0, setDataOptions);
         end
     elseif size(res, 3) == 1
         if numel(filename) > 1

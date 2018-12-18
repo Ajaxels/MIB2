@@ -20,12 +20,43 @@ function menuFileRender_Callback(obj, parameter)
 % Updates
 % 25.03.2018, updated to use also Matlab volume viewer app, previously
 % named as menuFileRenderFiji_Callback
+global mibPath;
 
-img = cell2mat(obj.mibModel.getData3D('image', NaN, 4));
 switch parameter
+    case 'mib'  % hardware rendering in MIB, from R2018b
+        if obj.matlabVersion < 9.5
+            errordlg(sprintf('!!! Error !!!\n\nHardware accelerated rendering is only available in Matlab R2018b or newer!'),'Matlab version is too old');
+            return;
+        end
+        colorsNo = obj.mibModel.getImageProperty('colors');
+        if colorsNo > 1
+            colCh = cell([colorsNo, 1]);
+            for i=1:colorsNo
+                colCh{i} = sprintf('Color channel %d', i);
+            end
+            colCh{end+1} = max([1, obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel]);
+            prompts = {'Select color channel'};
+            defAns = {colCh};
+            dlgTitle = 'Select color channel';
+            options.Title = sprintf('The volume rendering is only available for a single color channel!\nPlease select the color channel to render');
+            options.TitleLines = 3;                 
+            [answer, colCh] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+            if isempty(answer); return; end
+        else
+            colCh = 1;
+        end
+        options.mode = 'VolumeRendering'; % 'VolumeRendering', 'MaximumIntensityProjection','Isosurface'
+        options.dataType = 'image';
+        options.colorChannel = colCh; 
+        if isfield(obj.mibModel.sessionSettings, 'VolumeRendering')
+            options.Settings = obj.mibModel.sessionSettings.VolumeRendering;
+        end
+        obj.startController('mibVolRenController', options);
     case 'fiji'
+        img = cell2mat(obj.mibModel.getData3D('image', NaN, 4));
         mibRenderVolumeWithFiji(img, obj.mibModel.I{obj.mibModel.Id}.pixSize);
     case 'volviewer'
+        img = cell2mat(obj.mibModel.getData3D('image', NaN, 4));
         if size(img, 3) > 1
             errordlg(sprintf('!!! Error !!!\n\nVolume viewer is not compatible with multicolor images;\nplease keep only a single color channel displayed and try again!'), 'Not implemented');
             return;

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Dataset Menu</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-08-28"><meta name="DC.source" content="ug_gui_menu_dataset.m"><style type="text/css">
+      --><title>Dataset Menu</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-12-18"><meta name="DC.source" content="ug_gui_menu_dataset.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -75,7 +75,11 @@ A brief demonstration is available in the following video:<br>
 </p><p><img vspace="5" hspace="5" src="images/MenuDatasetResample.png" alt=""> </p><h2 id="5">Transform</h2><p>Transformation of dataset: image and all other layers. The following modes are possible</p><p>
 <table>
 <tr>
-<td><b>Add frame</b></td>
+<td><b>Add frame -> provide new width/height</b></td>
+<td>specify the frame by providing new width and height of the dataset.</td>
+</tr>
+<tr>
+<td><b>Add frame -> provide dX/dY</b></td>
 <td>pads dataset in X (<em>Frame width, px</em>) and Y (<em>Frame height,
 px</em>) directions with a distinct number (<em>Intensity pad value</em>)
 or using various repetition methods:<br>
@@ -120,7 +124,7 @@ Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img style="vertical-align:mid
 </p><h2 id="6">Slice</h2><p>Manipulations with individual slices of the dataset. The following actions are possible</p><div><ul><li><b>Copy slice...</b> - allows to copy slice from one position to another position within the same dataset (the 'Replace' options) or to insert one slice to another position in the dataset (the 'Insert' option). <a href="https://youtu.be/iGA4US2PHXw">A short demo</a>.</li><li><b>Insert an empty slice</b> - insert a uniformly colored slice to any position inside the dataset. <a href="https://youtu.be/iGA4US2PHXw">A short demo</a>.</li><li><b>Delete slice(s)...</b> - removes desired slice(s) from a Z-stack of the dataset. <i>For example, type " <tt>5:10</tt> " to delete all slices from slice 5 to slice 10.</i></li><li><b>Delete frame(s)...</b> - removes desired frame(s) from a time series of the dataset.</li></ul></div><h2 id="7">Scale bar</h2><p>Scale bar is a tool that allows to use a scale bar printed on the image to calibrate physical size (X and Y) for pixels in MIB.</p><p>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/NZO0HG1d8ys"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/NZO0HG1d8ys</a>
-</p><p>How to use:</p><p><img vspace="5" hspace="5" src="images/menuDatasetScalebar.jpg" alt=""> </p><h2 id="8">Bounding Box...</h2><p>Bounding Box defines position of the dataset in the 3D space; the bounding box information is important for positioning of datasets in the visualization software, such as Amira. The bounding box can be shifted based on its minimal or centeral coordinates. The current coordinates of the bounding box are shown under the <i>Current Bounding Box</i> text.</p><p><b>Attention!</b> For 3D images the bounding box is calculated as the smallest box containing all voxel centers, but not all voxels as is! <i>I.e.</i> it's defined by the voxel centers, which means that a 1/2 voxel on both sides of the bounding box are subtracted, resulting in a bounding box that is 1 voxel smaller in all three directions.</p><p>
+</p><h2 id="8">Bounding Box...</h2><p>Bounding Box defines position of the dataset in the 3D space; the bounding box information is important for positioning of datasets in the visualization software, such as Amira. The bounding box can be shifted based on its minimal or centeral coordinates. The current coordinates of the bounding box are shown under the <i>Current Bounding Box</i> text.</p><p><b>Attention!</b> For 3D images the bounding box is calculated as the smallest box containing all voxel centers, but not all voxels as is! <i>I.e.</i> it's defined by the voxel centers, which means that a 1/2 voxel on both sides of the bounding box are subtracted, resulting in a bounding box that is 1 voxel smaller in all three directions.</p><p>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/lY0XjNy4Dr8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/lY0XjNy4Dr8</a>
 </p><p><img vspace="5" hspace="5" src="images/MenuDatasetBoundingBox.png" alt=""> </p><div><ul><li><b>X, Y, Z, min</b> - defines minimal coordinates of the bounding box</li><li><b>X, Y, center</b> - defines central coordinates of the dataset. When the central coordinates are used the <tt>X, min</tt> and <tt>Y, min</tt> coordinates are going to be recalculated.</li><li><b>*X, Y, Z max</b> - maximal values of the bounding box. When entered together with the <b>X, Y, Z min</b> coordinates - MIB recalculates the voxel sizes.</li><li><b>Stage rotation bias, degrees</b> - implemented only when entering X, Y center coordinates. Allows recalculation of the coordinates for the cases when the stage has some rotation bias, for example, Gatan 3View has 45 degrees stage bias.</li><li><b>Import from Clipboard</b>, parses text in the system clipboard and automatically extracts the following parameters (syntax: <i>[ParameterName] = [ParameterValue]</i>):</li></ul></div><p>
@@ -150,7 +154,7 @@ A brief demonstration is available in the following video:<br>
   <td style="width=150px;">Rotation</td><td>Rotation BIAS<br><b>Note!</b><br><em>Since it is designed for Gatan 3View system MIB adds 45 degrees to the detected rotation value</em></td>
 </tr>
 </table>
-</p><p>Example of text that can be copied to the system clipboard for automatic detection of paramters:</p><p><img vspace="5" hspace="5" src="images/menuDatasetBoundingBox2.jpg" alt=""> </p><h2 id="9">Parameters</h2><p>Modifies parameters of the dataset: voxels sizes, frame rate for movies and units. Enter of new voxels results in recalculation of the bounding box.</p><p><img vspace="5" hspace="5" src="images/menuDatasetParameters.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+</p><p>Example of text that can be copied to the system clipboard for automatic detection of paramters:</p><p><img vspace="5" hspace="5" src="images/menuDatasetBoundingBox2.jpg" alt=""> </p><h2 id="9">Parameters</h2><p>Modifies parameters of the dataset: voxels sizes, frame rate for movies and units. Enter of new voxels results in recalculation of the bounding box.</p><p><img vspace="5" hspace="5" src="images/menuDatasetParameters.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Dataset Menu
 % Modify parameters such as voxel sizes and the bounding box for the
@@ -216,7 +220,11 @@ A brief demonstration is available in the following video:<br>
 % <html>
 % <table>
 % <tr>
-% <td><b>Add frame</b></td>
+% <td><b>Add frame -> provide new width/height</b></td>
+% <td>specify the frame by providing new width and height of the dataset.</td>
+% </tr>
+% <tr>
+% <td><b>Add frame -> provide dX/dY</b></td>
 % <td>pads dataset in X (<em>Frame width, px</em>) and Y (<em>Frame height,
 % px</em>) directions with a distinct number (<em>Intensity pad value</em>)
 % or using various repetition methods:<br>
@@ -285,10 +293,6 @@ A brief demonstration is available in the following video:<br>
 % <a href="https://youtu.be/NZO0HG1d8ys"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/NZO0HG1d8ys</a>
 % </html>
 % 
-% How to use:
-%
-% 
-% <<images/menuDatasetScalebar.jpg>>
 % 
 %% Bounding Box...
 % Bounding Box defines position of the dataset in the 3D space; the

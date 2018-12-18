@@ -72,7 +72,7 @@ else
             storeOptions.viewPort = obj.mibModel.I{obj.mibModel.Id}.viewPort;
             obj.mibModel.U.replaceItem(newDataIndex, type, dataStore, obj.getMeta(), storeOptions);
         elseif strcmp(type, 'labels')
-            [labels.labelText, labels.labelValues, labels.labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
+            [labels.labelText, labels.labelValue, labels.labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
             obj.mibModel.U.replaceItem(newDataIndex, type, {labels}, NaN, storeOptions);
         elseif strcmp(type, 'measurements')
             obj.mibModel.U.replaceItem(newDataIndex, type, {obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data}, NaN, storeOptions);
@@ -96,7 +96,7 @@ else
             storeOptions.viewPort = obj.mibModel.I{obj.mibModel.Id}.viewPort;
             obj.mibModel.U.replaceItem(newDataIndex, type, dataStore, obj.getMeta(), storeOptions);
         elseif strcmp(type, 'labels')
-            [labels.labelText, labels.labelValues, labels.labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
+            [labels.labelText, labels.labelValue, labels.labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
             obj.mibModel.U.replaceItem(newDataIndex, type, {labels}, NaN, storeOptions);
         elseif strcmp(type, 'lines3d')          
             obj.mibModel.U.replaceItem(newDataIndex, type, {obj.mibModel.I{obj.mibModel.Id}.hLines3D}, NaN, storeOptions);
@@ -151,7 +151,7 @@ if storeOptions.switch3d     % 3D case
                 obj.mibModel.setData3D(type, data{cellId}, storeOptions.t(1), storeOptions.orient, NaN, setDataOptions);
             case 'labels'
                 data = data{cellId};
-                obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(data.labelText, data.labelPosition, data.labelValues);
+                obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(data.labelText, data.labelPosition, data.labelValue);
                 notify(obj.mibModel, 'updatedAnnotations');
             case 'measurements'
                 data = data{cellId};
@@ -183,7 +183,7 @@ else        % 2D case
                 obj.mibModel.setData2D(type, data{cellId}, storeOptions.z(1), storeOptions.orient, NaN, setDataOptions);
             case 'labels'
                 data = data{cellId};
-                obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(data.labelText, data.labelPosition, data.labelValues);
+                obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(data.labelText, data.labelPosition, data.labelValue);
                 notify(obj.mibModel, 'updatedAnnotations');
             case 'lines3d'
                 obj.mibModel.I{obj.mibModel.Id}.hLines3D = copy(data{cellId});

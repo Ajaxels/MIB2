@@ -24,7 +24,7 @@ function mibUpdateFontSize(hFig, Font)
 % Updates
 % 
 
-tempList = findall(hFig,'Style','text');   % set font to text
+tempList = findall(hFig, 'Style', 'text');   % set font to text
 for i=1:numel(tempList)
     set(tempList(i), Font);
     % combine text and tooltip
@@ -36,7 +36,18 @@ for i=1:numel(tempList)
         end
     else
         if isempty(TooltipStr) || numel(textStr) > numel(TooltipStr) || strcmp(TooltipStr(1:numel(textStr)), textStr) == 0
+            if size(textStr,1) > 1  % reformat the char to lines
+                for ind = 2:size(textStr,1)
+                    if ind==2
+                        textOut = [strtrim(textStr(1,:)), '\n' strtrim(textStr(ind,:))];
+                    else
+                        textOut = [textOut, '\n' strtrim(textStr(ind,:))]; %#ok<AGROW>
+                    end
+                end
+                textStr = textOut;
+            end
             tempList(i).TooltipString = sprintf('%s; %s', textStr, TooltipStr);
+            tempList(i).TooltipString = sprintf([textStr '; ' TooltipStr]);
         end
     end
 end

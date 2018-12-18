@@ -32,7 +32,7 @@ function varargout = mibRandomDatasetGUI(varargin)
 
 % Edit the above text to modify the response to help mibRandomDatasetGUI
 
-% Last Modified by GUIDE v2.5 29-May-2018 09:23:49
+% Last Modified by GUIDE v2.5 14-Dec-2018 14:07:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -153,5 +153,12 @@ function includeMaskCheck_Callback(hObject, eventdata, handles)
 if handles.includeMaskCheck.Value == 1
     warndlg(sprintf('!!! Warning !!!\n\nPlease make sure:\n1. Each folder has only one mask file in the *.mask format\n2. The width/height deminsions of images should be the same for all files'));
 end
+end
 
+
+% --- Executes on button press in includeAnnotationsCheck.
+function includeAnnotationsCheck_Callback(hObject, eventdata, handles)
+if handles.includeAnnotationsCheck.Value == 1
+    warndlg(sprintf('!!! Warning !!!\n\nPlease make sure:\n1. Each folder has only one annotation file in the *.ann format'));
+end
 end

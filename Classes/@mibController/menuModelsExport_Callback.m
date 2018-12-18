@@ -41,7 +41,7 @@ if strcmp(parameter, 'matlab')
     O.modelType = obj.mibModel.I{obj.mibModel.Id}.modelType;    % store the model type
 
     if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber() > 1  % save annotations
-        [O.labelText, O.labelValues, O.labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+        [O.labelText, O.labelValue, O.labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
     end
     
     assignin('base', answer{1}, O);

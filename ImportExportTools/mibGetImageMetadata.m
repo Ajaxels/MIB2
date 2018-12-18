@@ -51,6 +51,7 @@ if ~isfield(options, 'waitbar');    options.waitbar = 0; end
 if ~isfield(options, 'mibPath');    options.mibPath = mibPath;  end
 if ~isfield(options, 'Font');    options.Font = Font;  end
 if ~isfield(options, 'customSections');    options.customSections = 0; end
+if ~isfield(options, 'virtual');    options.virtual = 0; end
 
 pixSize.x = 1;
 pixSize.y = 1;
@@ -615,7 +616,7 @@ for fn_index = 1:no_files
             numSeries = r.getSeriesCount();
             if numSeries > 1
                 [filesTemp.seriesIndex, filesTemp.hDataset, metaSwitch, filesTemp.dim_xyczt, filesTemp.seriesRealName] = ...
-                    selectLociSeries(filenames(fn_index), options.Font);  % select series with BioFormats
+                    selectLociSeries(filenames(fn_index), options.Font, r);  % select series with BioFormats
             else    % do not show the series selection dialog
                 filesTemp.seriesIndex = 1;
                 r.setSeries(0);
@@ -634,14 +635,19 @@ for fn_index = 1:no_files
             %             % remove setMetadataStore when bfGetReader is used
             %             r.setMetadataStore(loci.formats.MetadataTools.createOMEXMLMetadata());
             %             r.setId(filenames(fn_index));
+            
+            %filesTemp.dim_xyczt = [];
+            
             r = bfGetReader(filenames{fn_index});
             r.setSeries(filesTemp.seriesIndex(1)-1);
+            %r.setSeries(files(1).seriesName(1)-1);
             filesTemp.hDataset = r;
-            filesTemp.dim_xyczt(1) = r.getSizeX();
-            filesTemp.dim_xyczt(2) = r.getSizeY();
-            filesTemp.dim_xyczt(3) = r.getSizeC();
-            filesTemp.dim_xyczt(4) = r.getSizeZ();
-            filesTemp.dim_xyczt(5) = r.getSizeT();
+            noSeriesTemp = numel(filesTemp.seriesIndex);
+            filesTemp.dim_xyczt(1:noSeriesTemp, 1) = r.getSizeX();
+            filesTemp.dim_xyczt(1:noSeriesTemp, 2) = r.getSizeY();
+            filesTemp.dim_xyczt(1:noSeriesTemp, 3) = r.getSizeC();
+            filesTemp.dim_xyczt(1:noSeriesTemp, 4) = r.getSizeZ();
+            filesTemp.dim_xyczt(1:noSeriesTemp, 5) = r.getSizeT();
         end
         
         if strcmp(filesTemp.seriesIndex, 'Cancel'); if options.waitbar==1; delete(wb); end; return; end
@@ -660,7 +666,12 @@ for fn_index = 1:no_files
         for fileSubIndex = 1:numel(filesTemp.seriesIndex)
             files(layer_id).filename = cell2mat(filenames(fn_index));
             files(layer_id).object_type = 'bioformats';
-            files(layer_id).hDataset = filesTemp.hDataset;
+            if fileSubIndex > 1
+                files(layer_id).hDataset = bfGetReader(filenames{fn_index});
+            else
+                files(layer_id).hDataset = filesTemp.hDataset;
+            end
+            
             files(layer_id).hDataset.setSeries(filesTemp.seriesIndex(fileSubIndex)-1);
             files(layer_id).seriesName = filesTemp.seriesIndex(fileSubIndex);
             files(layer_id).dim_xyczt = filesTemp.dim_xyczt;
@@ -766,7 +777,7 @@ for fn_index = 1:no_files
             
             files(layer_id).height = filesTemp.dim_xyczt(fileSubIndex, 2);
             files(layer_id).width = filesTemp.dim_xyczt(fileSubIndex, 1);
-            if filesTemp.dim_xyczt(fileSubIndex, 4) == 1 && filesTemp.dim_xyczt(fileSubIndex, 5) > 1
+            if filesTemp.dim_xyczt(fileSubIndex, 4) == 1 && filesTemp.dim_xyczt(fileSubIndex, 5) > 1 && options.virtual == 0
                 files(layer_id).noLayers = max([filesTemp.dim_xyczt(fileSubIndex, 4) filesTemp.dim_xyczt(fileSubIndex, 5)]);
                 files(fn_index).time = 1;
             else
@@ -889,7 +900,14 @@ if isKey(img_info,'ImageDescription') && ~isempty(img_info('ImageDescription'))
     img_info('ImageDescription') = strrep(strrep(img_info('ImageDescription'), sprintf('%s', 13), ' '), sprintf('%s', 10), '');
 end
 
-img_info('MaxInt') = double(intmax(files(1).imgClass));
+switch files(1).imgClass
+    case {'single', 'double'}
+        img_info('MaxInt') = realmax(files(1).imgClass);
+    otherwise
+        img_info('MaxInt') = double(intmax(files(1).imgClass));
+end
+img_info('Colors') = files(1).color;
+img_info('imgClass') = files(1).imgClass; 
 
 % generate layerNames, which are the file names of the datasets that were
 % used to generate a stack

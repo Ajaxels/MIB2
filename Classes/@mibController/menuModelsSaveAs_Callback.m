@@ -85,9 +85,9 @@ if FilterIndex == 1 || FilterIndex == 6    % matlab file
         modelType = obj.mibModel.I{obj.mibModel.Id}.modelType;  %#ok<NASGU> % type of the model
         
         if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber() > 1  % save annotations
-            [labelText, labelValues, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+            [labelText, labelValue, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
             str1 = ['save ''' fullfile(path, filename) ''' ' obj.mibModel.I{obj.mibModel.Id}.modelVariable ...
-                ' modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType labelText labelValues labelPosition -mat -v7.3'];
+                ' modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType labelText labelValue labelPosition -mat -v7.3'];
         else    % save without annotations
             str1 = ['save ''' fullfile(path, filename) ''' ' obj.mibModel.I{obj.mibModel.Id}.modelVariable ...
                 ' modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType -mat -v7.3'];
@@ -100,7 +100,7 @@ if FilterIndex == 1 || FilterIndex == 6    % matlab file
         bounding_box = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox(); %#ok<NASGU>
         model_var = obj.mibModel.I{obj.mibModel.Id}.modelVariable;  %#ok<NASGU>    % name of a variable that has the dataset
         if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber() > 1  % save annotations
-            [labelText, labelValues, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+            [labelText, labelValue, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
             str1 = ['save ''' fullfile(path, filename) ''' ' obj.mibModel.I{obj.mibModel.Id}.modelVariable ' material_list color_list bounding_box model_var labelText labelPosition -mat -v7.3'];
         else    % save without annotations
             str1 = ['save ''' fullfile(path, filename) ''' ' obj.mibModel.I{obj.mibModel.Id}.modelVariable ' material_list color_list bounding_box model_var -mat -v7.3'];

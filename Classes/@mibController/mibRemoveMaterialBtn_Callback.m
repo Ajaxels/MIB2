@@ -21,29 +21,51 @@ function mibRemoveMaterialBtn_Callback(obj)
 %
 % Updates
 % 16.08.2017 IB added waitbar
+% 15.11.2018, IB, added selection of materials
+global mibPath;
 
 unFocus(obj.mibView.handles.mibRemoveMaterialBtn); % remove focus from hObject
 
-if obj.mibModel.I{obj.mibModel.Id}.selectedMaterial < 3; return; end  % can't delete Mask/Exterior
-value = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
-
+if obj.mibModel.I{obj.mibModel.Id}.selectedMaterial >= 3
+    value = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
+else
+    value = '';
+end  
+prompts = {sprintf('Specify indices of materials to be removed\n(for example, 2,4,6:8)')};
+defAns = {num2str(value)};
+dlgTitle = 'Delete materials';
+options.WindowStyle = 'modal'; 
+options.PromptLines = 2;  
+answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+if isempty(answer); return; end
+value = str2num(answer{1});
 modelMaterialNames = obj.mibModel.getImageProperty('modelMaterialNames');    % list of materials of the model
-msg = sprintf('You are going to delete material "%s"\nwhich has a number: %d\n\nAre you sure?', modelMaterialNames{value}, value);
-button =  questdlg(msg,'Delete contour?','Yes','Cancel','Cancel');
+
+matListString = sprintf('%s, ', modelMaterialNames{value});
+matIndexString = sprintf('%d, ', value);
+msg = sprintf('You are going to delete material(s):\n"%s",\nwith indices: %s\n\nAre you sure?', matListString(1:end-2), matIndexString(1:end-2));
+button =  questdlg(msg, 'Delete materials?', 'Yes', 'Cancel', 'Cancel');
 if strcmp(button, 'Cancel') == 1; return; end
 
-wb = waitbar(0, sprintf('Removing material\nPlease wait...'), 'Name', 'Remove material');
+wb = waitbar(0, sprintf('Deleting materials\nPlease wait...'), 'Name', 'Deleting materials');
+value = sort(value,'descend');
 
 options.blockModeSwitch=0;
 waitbar(0.05, wb);
+maxIndex = obj.mibModel.getImageProperty('time')*numel(value);
+curIndex = 0;
 for t=1:obj.mibModel.getImageProperty('time')
     model = cell2mat(obj.mibModel.getData3D('model', t, 4, NaN, options));
-
-    model(model==value) = 0;
-    model(model>value) = model(model > value) - 1;
+    model(ismember(model, value)) = 0;  % make 0 all pixels in the selected materials
+    for modelId = 1:numel(value)
+        model(model>value(modelId)) = model(model>value(modelId)) - 1;
+        
+        curIndex = curIndex + 1;
+        waitbar(curIndex/maxIndex , wb);
+    end
     obj.mibModel.setData3D('model', model, t, 4, NaN, options);
-    waitbar(t/obj.mibModel.getImageProperty('time') , wb);
 end
+
 obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(value,:) = [];  % remove color of the removed material
 obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames(value) = [];  % remove material name from the list of materials
 

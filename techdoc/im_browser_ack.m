@@ -137,6 +137,7 @@
 % easily distinguishahle colors for all color vision types. Proc Spie 6807 (2008)> 
 % * <http://colorbrewer2.org/ Cynthia Brewer, Mark Harrower, Ben Sheesley,
 % Andy Woodruff, David Heyman. ColorBrewer 2.0>
+% * <https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/ Sasha Trubetskoy, List of 20 Simple, Distinct Colors>
 %
 %
 % Some icons used in MIB were provided by Icons8.com

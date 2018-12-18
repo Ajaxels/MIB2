@@ -25,6 +25,7 @@
 % * <http://se.mathworks.com/products/statistics/ Statistics and Machine Learning Toolbox> (_optional_) for alternative to the Random Forest classifiers
 % * <http://se.mathworks.com/products/statistics/ Statistics Toolbox> (_optional_) for alternative to the Random Forest classifiers
 % * <http://se.mathworks.com/products/optimization/ Optimization Toolbox> (_optional_) for alternative to the Random Forest classifiers
+% * <https://se.mathworks.com/help/vision/index.html Computer Vision System Toolbox> for automatic alignement using detected image features
 % 
 %% Bio-Formats
 % The Bio-Formats library brings support of multiple microscopy image formats. To use the library check the Bio checkbox in the Directory Contents panel of MIB.

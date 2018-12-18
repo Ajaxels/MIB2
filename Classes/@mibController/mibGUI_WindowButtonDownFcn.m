@@ -55,6 +55,9 @@ end
 if strcmp(seltype,'normal') %& strcmp(modifier,'alt')
     %%     % Start the pan mode
     obj.mibView.gui.WindowKeyPressFcn = [];  % turn off callback for the keys during the panning
+    if obj.mibView.centerSpotHandle.enable
+        obj.mibView.centerSpotHandle.handle.Visible = 'off';
+    end
     
     % check for the mouse inside the image axes
     xlim = obj.mibView.handles.mibImageAxes.XLim;

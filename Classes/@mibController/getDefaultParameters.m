@@ -253,6 +253,25 @@ obj.mibModel.preferences.Font.FontUnits = 'points';
 obj.mibModel.preferences.Font.FontSize = 8;
 obj.mibModel.preferences.fontSizeDir = 9;        % font size for files and directories
 
+% define file extensions
+bioList = {'mov','pic','ics','ids','lei','stk','nd','nd2','sld','pict'...
+    ,'lsm','mdb','psd','img','hdr','svs','dv','r3d','dcm','dicom','fits','liff'...
+    ,'jp2','lif','l2d','mnc','mrc','oib','oif','pgm','zvi','gel','ims','dm3','naf'...
+    ,'seq','xdce','ipl','mrw','mng','nrrd','ome','amiramesh','labels','fli'...
+    ,'arf','al3d','sdt','czi','c01','flex','ipw','raw','ipm','xv','lim','nef','apl','mtb'...
+    ,'tnb','obsep','cxd','vws','xys','xml','dm4'};
+image_formats = imformats;  % get readable image formats
+if obj.matlabVersion < 8.0
+    video_formats = mmreader.getFileFormats(); %#ok<DMMR> % get readable image formats
+else
+    video_formats = VideoReader.getFileFormats(); % get readable image formats
+end
+stdList = [image_formats.ext 'mrc' 'rec' 'am' 'nrrd' 'h5' 'xml' 'st' 'preali' {video_formats.Extension}];
+obj.mibModel.preferences.Filefilter.stdExt = sort(stdList);
+obj.mibModel.preferences.Filefilter.stdVirtExt = sort({'h5','hdf5','xml'});
+obj.mibModel.preferences.Filefilter.bioExt = sort(bioList);
+obj.mibModel.preferences.Filefilter.bioVirtExt = sort([{'am'}, bioList]);
+
 %% update preferences
 if exist('mib_pars', 'var') && isfield(mib_pars, 'preferences')
     realFields = fieldnames(obj.mibModel.preferences);
@@ -428,6 +447,9 @@ else
         obj.mibModel.preferences.dirs.imarisInstallationPath = [];
     end
 end
+
+% set file filter extensions
+
 
 end
 

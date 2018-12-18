@@ -23,7 +23,7 @@ end
 if isnan(obj.mibModel.I{obj.mibModel.Id}.maskImgFilename)
     [pathstr, name] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
     fn_out = fullfile(pathstr, ['Mask_' name '.mask']);
-    if isempty(strfind(fn_out,'/')) && isempty(strfind(fn_out,'\'))
+    if isempty(strfind(fn_out,'/')) && isempty(strfind(fn_out,'\')) %#ok<STREMP>
         fn_out = fullfile(obj.mibModel.myPath, fn_out);
     end
     if isempty(fn_out)
@@ -40,7 +40,7 @@ end
     '*.tif',  'TIF format (*.tif)'; ...
     '*.*',  'All Files (*.*)'}, ...
     'Save mask data...', fn_out);
-if isequal(filename,0); return; end; % check for cancel
+if isequal(filename,0); return; end % check for cancel
 
 %warning('off','MATLAB:gui:latexsup:UnableToInterpretTeXString');    % switch off warnings for latex
 curInt = get(0, 'DefaulttextInterpreter'); 

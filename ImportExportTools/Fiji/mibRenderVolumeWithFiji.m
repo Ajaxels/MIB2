@@ -106,7 +106,7 @@ height = ceil(size(Volume,1)/factorY);
 thick = ceil(size(Volume,4)/factorZ);
 
 waitbar(0.3, wb, ...
-    sprintf('Reducing the volume to %d x %d x %d px ...',height, width, thick));
+    sprintf('Reducing the volume to %d x %d x %d px ...', height, width, thick));
 if factorX ~= 1 || factorY ~= 1 || factorZ ~=1
     binVolume = zeros(height,width,size(Volume,3),thick,class(Volume));
     for color = 1:size(Volume,3)

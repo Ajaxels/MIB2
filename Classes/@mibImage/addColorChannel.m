@@ -71,6 +71,11 @@ else
     end
 end
 
+% fix orientation of .min .max and .gamma fields
+if size(obj.viewPort.min, 1) < size(obj.viewPort.min, 2); obj.viewPort.min = obj.viewPort.min'; end
+if size(obj.viewPort.max, 1) < size(obj.viewPort.max, 2); obj.viewPort.max = obj.viewPort.max'; end
+if size(obj.viewPort.gamma, 1) < size(obj.viewPort.gamma, 2); obj.viewPort.gamma = obj.viewPort.gamma'; end
+
 waitbar(1, wb);
 delete(wb);
 result = 1;

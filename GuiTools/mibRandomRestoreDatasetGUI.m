@@ -32,7 +32,7 @@ function varargout = mibRandomRestoreDatasetGUI(varargin)
 
 % Edit the above text to modify the response to help mibRandomRestoreDatasetGUI
 
-% Last Modified by GUIDE v2.5 18-May-2018 16:02:56
+% Last Modified by GUIDE v2.5 14-Dec-2018 16:08:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -164,4 +164,12 @@ end
 % --- Executes on button press in restoreBtn.
 function restoreBtn_Callback(hObject, eventdata, handles)
 handles.winController.restoreBtn_Callback();
+end
+
+
+% --- Executes on button press in includeAnnotationsCheck.
+function includeAnnotationsCheck_Callback(hObject, eventdata, handles)
+if handles.includeAnnotationsCheck.Value == 1
+    warndlg(sprintf('!!! Warning !!!\n\nPlease make sure:\n1. Each folder has only one annotation file in the *.ann format'));
+end
 end

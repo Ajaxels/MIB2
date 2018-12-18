@@ -82,14 +82,13 @@ switch parameter
             options.customSections = 1;     % to load part of the dataset, for AM only
         end
         options.virtual = obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual;
-        [img, img_info, pixSize] = mibLoadImages(fn, options);
-        if isempty(img)
-            errordlg(sprintf('!!! Error !!!\n\nIt is not possible to load the dataset...\nDimensions mismatch, perhaps?'), 'Wrong file', 'modal');
-            return;
-        end
-        if strcmp(parameter, 'combinecolors') 
-            img = reshape(img, [size(img,1), size(img,2), size(img,3)*size(img,4)]);
-            img_info('ColorType') = 'truecolor';
+        
+        if ~strcmp(parameter, 'combinecolors') 
+            [img, img_info, pixSize] = mibLoadImages(fn, options);
+            if isempty(img)
+                errordlg(sprintf('!!! Error !!!\n\nIt is not possible to load the dataset...\nDimensions mismatch, perhaps?'), 'Wrong file', 'modal');
+                return;
+            end
             if isKey(img_info, 'lutColors')
                 currColors = img_info('lutColors');
                 lutColors = currColors;
@@ -103,7 +102,47 @@ switch parameter
                 end
                 img_info('lutColors') = lutColors;
             end
+        else
+            for colChannelId = 1:numel(fn)
+                if colChannelId==1
+                    [img_temp, img_info, pixSize] = mibLoadImages(fn(colChannelId), options);
+                    if isempty(img_temp)
+                        errordlg(sprintf('!!! Error !!!\n\nIt is not possible to load the dataset...\nDimensions mismatch, perhaps?'), 'Wrong file', 'modal');
+                        return;
+                    end
+                    img = zeros([img_info('Height'), img_info('Width'), img_info('Colors')*numel(fn), img_info('Depth'), img_info('Time')], img_info('imgClass'));
+                    img(:,:,1:img_info('Colors'),:,:) = img_temp;
+                    lutColors = zeros(img_info('Colors')*numel(fn), 3);
+                    if isKey(img_info, 'lutColors')
+                        lutTemp = img_info('lutColors');
+                        lutColors(1:img_info('Colors'), :) = lutTemp(1:img_info('Colors'));
+                    end
+                else
+                    [img_temp, img_info_temp, pixSize] = mibLoadImages(fn(colChannelId), options);
+                    if isempty(img_temp)
+                        errordlg(sprintf('!!! Error !!!\n\nIt is not possible to load the dataset...\nDimensions mismatch, perhaps?'), 'Wrong file', 'modal');
+                        return;
+                    end
+                    
+                    if img_info('Height') ~= img_info_temp('Height') || img_info('Width') ~= img_info_temp('Width') || ...
+                        img_info('Depth') ~= img_info_temp('Depth') || img_info('Time') ~= img_info_temp('Time')
+                        errordlg(sprintf('!!! Error !!!\n\nDimensions mismatch!\nWhen combining colors please make sure that your images have the same Height, Width, Depth and Time dimensions'),'Dimensions mismatch');
+                        return;
+                    end
+                    img(:,:,colChannelId*img_info('Colors')-img_info('Colors')+1:colChannelId*img_info('Colors'), :, :) = img_temp;
+                    if isKey(img_info_temp, 'lutColors')
+                        lutTemp = img_info_temp('lutColors');
+                        lutColors(colChannelId*img_info('Colors')-img_info('Colors')+1:colChannelId*img_info('Colors'), :) = lutTemp(1:img_info('Colors'));
+                    end
+                end
+            end
+            img_info('ColorType') = 'truecolor';
+            if isKey(img_info, 'lutColors')
+                img_info('lutColors') = lutColors;
+            end
+            img_info('Colors') = img_info('Colors')*numel(fn);
         end
+        
         obj.mibModel.I{obj.mibModel.Id}.clearContents(img, img_info, obj.mibModel.preferences.disableSelection);
         obj.mibModel.I{obj.mibModel.Id}.pixSize = pixSize;
         notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details

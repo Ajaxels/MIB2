@@ -18,7 +18,7 @@ function mibSegmentationLasso(obj, modifier)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 28.11.2018, IB added modification of ROIs after placing them
 
 % check for switch that disables segmentation tools
 if obj.mibModel.disableSegmentation == 1; return; end
@@ -34,12 +34,16 @@ obj.mibView.gui.WindowButtonDownFcn = [];
 switch type
     case 'Lasso'
         h = imfreehand(obj.mibView.handles.mibImageAxes);
+        wait(h);
     case 'Rectangle'
         h = imrect(obj.mibView.handles.mibImageAxes); 
+        wait(h);
     case 'Ellipse'
         h = imellipse(obj.mibView.handles.mibImageAxes);
+        wait(h);
     case 'Polyline'
         h =  impoly(obj.mibView.handles.mibImageAxes);
+        wait(h);
 end
 
 try
@@ -75,6 +79,7 @@ elseif orientation == 2
 end
 
 if switch3d     % 3d case
+    wb = waitbar(0, 'Please wait');
     obj.mibModel.mibDoBackup('selection', 1, backupOptions);
     orient = NaN;
     [localHeight, localWidth, localColor, localThick] = obj.mibModel.getImageMethod('getDatasetDimensions', NaN, 'selection', orient, NaN, getDataOptions);
@@ -83,24 +88,29 @@ if switch3d     % 3d case
     for layer_id = 1:size(selarea, 3)
         selarea(:,:,layer_id) = selected_mask;
     end
+    waitbar(0.3, wb);
     
     % limit to the selected material of the model
     if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value == 1
         currModel = cell2mat(obj.mibModel.getData3D('model', NaN, NaN, selcontour, getDataOptions));
         selarea = bitand(selarea, currModel);
     end
+    waitbar(0.6, wb);
     
     % limit selection to the masked area
     if obj.mibView.handles.mibMaskedAreaCheck.Value && obj.mibModel.getImageProperty('maskExist')   % do selection only in the masked areas
         currModel = cell2mat(obj.mibModel.getData3D('mask', NaN, 4, NaN, getDataOptions));
         selarea = bitand(selarea, currModel);
     end
+    waitbar(0.9, wb);
     if isempty(modifier) || strcmp(modifier, 'shift')    % combines selections
         obj.mibModel.setData3D('selection', {bitor(selarea, currSelection)}, NaN, orient, NaN, getDataOptions);
     elseif strcmp(modifier, 'control')  % subtracts selections
         currSelection(selarea==1) = 0;
         obj.mibModel.setData3D('selection', {currSelection}, NaN, orient, NaN, getDataOptions);
     end
+    waitbar(1, wb);
+    delete(wb);
 else    % 2d case
     obj.mibModel.mibDoBackup('selection', 0);
     selarea = selected_mask;

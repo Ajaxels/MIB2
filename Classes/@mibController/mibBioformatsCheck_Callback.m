@@ -22,30 +22,24 @@ position = obj.mibView.handles.mibFileFilterPopup.UserData;     % get previous p
 obj.mibView.handles.mibFileFilterPopup.UserData = obj.mibView.handles.mibFileFilterPopup.Value; % update position in the list
 
 if obj.mibView.handles.mibBioformatsCheck.Value == 1     % use bioformats reader
-    extentions = {'am','mov','pic','ics','ids','lei','stk','nd','nd2','sld','pict'...
-        ,'lsm','mdb','psd','img','hdr','svs','dv','r3d','dcm','dicom','fits','liff'...
-        ,'jp2','lif','l2d','mnc','mrc','oib','oif','pgm','zvi','gel','ims','dm3','naf'...
-        ,'seq','xdce','ipl','mrw','mng','nrrd','ome','amiramesh','labels','fli'...
-        ,'arf','al3d','sdt','czi','c01','flex','ipw','raw','ipm','xv','lim','nef','apl','mtb'...
-        ,'tnb','obsep','cxd','vws','xys','xml','dm4'};
-    extentions = ['all known',sort(extentions)];
+    if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1     % add amiramesh for the virtual mode
+        extentions = ['all known', obj.mibModel.preferences.Filefilter.bioVirtExt];
+    else
+        extentions = ['all known', obj.mibModel.preferences.Filefilter.bioExt];
+    end
     obj.mibView.handles.mibFileFilterPopup.String = extentions;
     obj.mibView.handles.mibFileFilterPopup.Value = position;
 else
-    if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
-        image_formats = imformats;  % get readable image formats
-        if obj.matlabVersion < 8.0
-            video_formats = mmreader.getFileFormats(); %#ok<DMMR> % get readable image formats
-        else
-            video_formats = VideoReader.getFileFormats(); % get readable image formats
-        end
-        extentions = ['all known' sort([image_formats.ext 'mrc' 'rec' 'am' 'nrrd' 'h5' 'xml' 'st' 'preali' {video_formats.Extension}])];
+    if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1     % add amiramesh for the virtual mode
+        extentions = ['all known', obj.mibModel.preferences.Filefilter.stdVirtExt];
     else
-        extentions = {'all known','h5','hdf5','xml'};
+        extentions = ['all known', obj.mibModel.preferences.Filefilter.stdExt];
     end
+
     obj.mibView.handles.mibFileFilterPopup.String = extentions;
     if position > numel(extentions); position = 1; end
     obj.mibView.handles.mibFileFilterPopup.Value = position;
 end
-obj.updateFilelist();
+[~, fn, ext] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
+obj.updateFilelist([fn, ext]);
 end

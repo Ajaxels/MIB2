@@ -62,7 +62,11 @@
 % <html>
 % <table>
 % <tr>
-% <td><b>Add frame</b></td>
+% <td><b>Add frame -> provide new width/height</b></td>
+% <td>specify the frame by providing new width and height of the dataset.</td>
+% </tr>
+% <tr>
+% <td><b>Add frame -> provide dX/dY</b></td>
 % <td>pads dataset in X (<em>Frame width, px</em>) and Y (<em>Frame height,
 % px</em>) directions with a distinct number (<em>Intensity pad value</em>)
 % or using various repetition methods:<br>
@@ -131,10 +135,6 @@
 % <a href="https://youtu.be/NZO0HG1d8ys"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/NZO0HG1d8ys</a>
 % </html>
 % 
-% How to use:
-%
-% 
-% <<images/menuDatasetScalebar.jpg>>
 % 
 %% Bounding Box...
 % Bounding Box defines position of the dataset in the 3D space; the

@@ -124,7 +124,10 @@ for fn_index = 1:no_files
         end
         if isa(hdf5_image,'single')   % convert to unsigned integers
             maxVal = max(max(max(max(max(hdf5_image)))));
-            if maxVal <= 255
+            if maxVal <= 1  % when data is squeezed between 0 and 1
+                hdf5_image = uint8(hdf5_image*255);
+                if layer_id == 1; img = uint8(img); end % correct img class
+            elseif maxVal <= 255
                 hdf5_image = uint8(hdf5_image);
                 if layer_id == 1; img = uint8(img); end % correct img class
             elseif maxVal < 65535
@@ -136,6 +139,8 @@ for fn_index = 1:no_files
             end
             msgbox(sprintf('mibGetImages:\nThe dataset was converted to %s format!',class(hdf5_image)),'Warning!','warn','modal');
         end
+        
+        img_info('MaxInt') = double(intmax(class(hdf5_image)));
         
         % reshape the dataset if needed
         if isfield(files(fn_index), 'transMatrix')
@@ -292,15 +297,17 @@ for fn_index = 1:no_files
                 end
             end
         end
+        % close dataset
+        files(fn_index).hDataset.close();     % close dataset
         
-        % check wheather to close the dataset
-        if fn_index < numel(files)
-            if files(fn_index).hDataset ~= files(fn_index+1).hDataset
-                files(fn_index).hDataset.close();     % close dataset
-            end
-        else
-            files(fn_index).hDataset.close();     % close dataset
-        end
+%         % check wheather to close the dataset
+%         if fn_index < numel(files)
+%             if files(fn_index).hDataset ~= files(fn_index+1).hDataset
+%                 files(fn_index).hDataset.close();     % close dataset
+%             end
+%         else
+%             files(fn_index).hDataset.close();     % close dataset
+%         end
         
     end
 end
@@ -333,11 +340,13 @@ if isa(img, 'uint32') && options.imgStretch==1  % convert to 16 bit image format
     img = uint16(img/((maxVal-minVal)/65535));
     
     img_info('MaxInt') = double(intmax('uint16'));
+    img_info('imgClass') = 'uint16';
 end
 
 img_info('Height') = height;
 img_info('Width') = width;
 img_info('Depth') = maxZ;
+img_info('Time') = maxT;
 
 % adding needed fields to img_info
 if isKey(img_info,'ColorType')

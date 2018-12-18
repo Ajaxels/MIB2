@@ -106,6 +106,7 @@ if strcmp(format, 'grayscale')   % -> grayscale
             obj.meta('Colormap') = '';
     end
     obj.meta('ColorType') = 'grayscale';
+    obj.selectedColorChannel = 1;   % update selected color channel to 1
 elseif strcmp(format, 'truecolor')   % ->truecolor
     switch obj.meta('ColorType')
         case 'grayscale'    % grayscale->truecolor
@@ -344,7 +345,12 @@ elseif strcmp(format,'uint32')   % -> uint32
 end
 
 obj.colors = size(obj.img{1}, 3);
+obj.meta('Colors') = obj.colors;
 obj.slices{3} = 1:obj.colors;   % color slices to show
+numLutColors = size(obj.lutColors,1);
+if numLutColors < obj.colors    % add lut colors
+    obj.lutColors(numLutColors+1:obj.colors, :) = repmat(obj.lutColors(numLutColors,:), [obj.colors-numLutColors, 1]);
+end
 
 % update display parameters
 obj.updateDisplayParameters();

@@ -26,8 +26,9 @@
 % * Images in each folder should have the same width/height
 % * It is recommended that each file has only a single image, _i.e._ no
 % stacking
-% * [MODELS/MASKS] when shuffling also models and masks, only a single model/mask file per directory is allowed
+% * [MODELS/MASKS/ANNOTATIONS] when shuffling also models, masks, annotation only a single model/mask/annotation file per directory is allowed
 % * [MODELS] all model files should contain same materials
+% * 
 % 
 %
 % To start the process, copy images that belong to different conditions into
@@ -47,6 +48,9 @@
 % * *Include mask*, same as above but for masks. *Note!* It
 % is important that each folder contains only a single file in the
 % _*.mask_ format
+% * *Include annotations*, same as above but for annotations. *Note!* It
+% is important that each folder contains only a single file in the
+% _*.ann_ format
 % * *Filename extension*, provide extension for filenames with images
 % * *Filename templalte*, define filename template for the shuffled images
 % * *Output directory*, define the output directory
@@ -67,7 +71,7 @@
 % *Requirements*
 % 
 % * Images in each folder should have the same width/height
-% * [MODELS/MASKS] only a single model/mask file per directory is allowed
+% * [MODELS/MASKS/ANNOTATIONS] only a single model/mask/annotation file per directory is allowed
 % 
 %
 % To start the process it is required to select the project file by
@@ -81,7 +85,7 @@
 % the directory names. 
 %
 % 
-% When the masks are also present in the directories with the shuffled
+% When the masks or annotation are also present in the directories with the shuffled
 % image files, they can also be restored to the destination directories.
 %
 % Press the *Restore shuffled* button to start the process. As result, 

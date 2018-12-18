@@ -69,7 +69,7 @@ else
         case 'top'
             FigPos(2) = GCBFPos(2)+GCBFPos(4)-FigHeight;
         case 'bottom'
-            FigPos(2) = GCBFPos(2);
+            FigPos(2) = GCBFPos(2) - FigHeight;
         case 'center'
             FigPos(2) = (GCBFPos(2) + GCBFPos(4) / 2) - FigHeight / 2;
     end

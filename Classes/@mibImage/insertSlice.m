@@ -78,7 +78,7 @@ D1_t = obj.meta('Time');
 
 % store dimensions of the inserted datasets
 D2_y = meta('Height');
-D2_x = meta('Depth');
+D2_x = meta('Width');
 D2_c = meta('Colors');
 D2_z = meta('Depth');
 D2_t = meta('Time');

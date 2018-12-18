@@ -113,11 +113,29 @@
 % The segmented models can be rendered directly from MIB using one of the
 % following methods:
 %
-%%
+% <html><h3 style="color:#d45600;">MIB rendering</h3></html>
+%
+% Starting from MIB (version 2.5) and Matlab R2018b the materials can be
+% directly visualized in MIB using hardware accelerated volume rendering
+% engine. The datasets for visuzalization can be downsampled during the
+% export. It is possible to make snapshots and animations.
 % 
-% * *Matlab isosurface...*, MIB uses Matlab engine to generate isosurfaces
+% Limitations:
+% 
+% * One material at the time
+% * Scale bar is not yet available
+% 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/4CrfdOiZebk"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/J70V33f7bas</a>
+% </html>
+% 
+% <html><h3 style="color:#d45600;">Matlab isosurface</h3></html>
+%
+% MIB uses Matlab engine to generate isosurfaces
 % from the models and visualize those using a modification of the <http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m view3d> function 
 % written by Torsten Vogel. 
+% 
 %
 %%
 % 
@@ -153,50 +171,62 @@
 % </tr>
 % <tr>
 % <td colspan=2>A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/dMeoIZPaDS4?t=16m56s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/dMeoIZPaDS4?t=16m56s</a>
+% <a href="https://youtu.be/dMeoIZPaDS4?t=16m56s"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/dMeoIZPaDS4?t=16m56s</a>
 % </tr>
 % </table>
+% <br>
 % </html>
-% 
-% * *Matlab isosurface and export to Imaris*, MIB uses Matlab engine to generate isosurfaces
+%
+%
+% <html><h3 style="color:#d45600;">Matlab isosurface and export to Imaris</h3></html>
+%
+% MIB uses Matlab engine to generate isosurfaces
 % from the models and export the resulting surfaces to Imaris for visualization. 
 %
 % <html>
 % A demonstration is available in the following video:<br>
-% <a href="https://youtu.be/nDpC8b8lqo4"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/nDpC8b8lqo4</a>
+% <a href="https://youtu.be/nDpC8b8lqo4"><img style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/nDpC8b8lqo4</a>
+% <br>
 % </html>
 %
-% * *Matlab volume viewer*, render the model using Matlab volume viewer,
+%
+% <html><h3 style="color:#d45600;">Matlab volume viewer</h3></html>
+%
+% *Matlab volume viewer*, render the model using Matlab volume viewer,
 % available only for the Matlab version of MIB and requires R2017b or
 % newer.
 %
 % <html>
 % A demonstration is available in the following video:<br>
-% <a href="https://youtu.be/J70V33f7bas"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/J70V33f7bas</a>
+% <a href="https://youtu.be/J70V33f7bas"><img style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/J70V33f7bas</a>
 % </html>
 %
 %
-% * *Fiji volume...*, uses Fiji 3D viewer for visualization of the model as
+% <html><h3 style="color:#d45600;">Fiji volume</h3></html>
+%
+% MIB can use |Fiji 3D viewer| for visualization of the model as
 % a volume (<http://mib.helsinki.fi/tutorials/VisualizationOverview.html click here for details>. (requires Fiji to be installed,
 % <im_browser_system_requirements.html see here>).
 %
 % <html>
 % A demonstration is available in the following video:<br>
-% <a href="https://youtu.be/DZ1Tj3Fh2HM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/DZ1Tj3Fh2HM</a>
+% <a href="https://youtu.be/DZ1Tj3Fh2HM"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/DZ1Tj3Fh2HM</a>
 % </html>
 %
 %%
 % 
 % <<images\MenuModelsRenderFiji.jpg>>
 % 
-%%
-% * *Imaris surface*, render the model in Imaris; requires Imaris and ImarisXT to be installed,
+%
+% <html><h3 style="color:#d45600;">Imaris surface</h3></html>
+%
+% *Imaris surface*, render the model in Imaris; requires Imaris and ImarisXT to be installed,
 % <im_browser_system_requirements.html see here>
 %
 % <html>
 % A demonstration is available in the following video:<br>
-% Without ImarisXT <a href="https://youtu.be/MbK2JcTrZFw"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/MbK2JcTrZFw</a><br>
-% With ImarisXT <a href="https://youtu.be/yODGYJUzTr0"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/yODGYJUzTr0</a><br>
+% Without ImarisXT <a href="https://youtu.be/MbK2JcTrZFw"><img style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/MbK2JcTrZFw</a><br>
+% With ImarisXT <a href="https://youtu.be/yODGYJUzTr0"><img style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/yODGYJUzTr0</a><br>
 % </html>
 %
 %%
@@ -211,7 +241,7 @@
 %
 % <html>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/3lARjx9dPi0</a>
 % </html>
 %%
 % 

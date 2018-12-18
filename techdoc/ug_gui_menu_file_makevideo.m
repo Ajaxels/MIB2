@@ -34,6 +34,23 @@
 % * *Direction*, (only for 5D datasets), use it to select direction for
 % video generation: "Z-stack" or "Time" for a time series
 %
+%% Options
+%
+% *Split channel* - generate a montage image, where each panel has only
+% one color channel. 
+%
+% The dimensions of the montage image can be specified
+% using the |Cols| (number of horizontal panels) and |Rows| (number of
+% vertical panels) edit boxes. In addition, it is possible to force
+% rendering of individual color channels in the grayscale mode (the
+% |Grayscale| check box).
+% 
+% <<images\menuFileSnapshot_split.jpg>>
+% 
+%
+% * *white Bg* - render background in white color for the split
+% channel mode and the scale bars
+%
 %% Format
 % Select one of the possible formats
 %%

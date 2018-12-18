@@ -196,6 +196,8 @@ classdef mibImage < matlab.mixin.Copyable
         % declaration of functions in the external files, keep empty line in between for the doc generator
         result = addColorChannel(obj, img, channelId, lutColors)        % Add a new color channel to the existing dataset
         
+        result = addFrameToImage(obj, options)        %  Add a frame around the dataset
+        
         clearContents(obj, img, metaIn, disableSelection)        % set all elements of the class to default values
         
         clearMask(obj, options)        % clear the 'Mask' layer. It is also possible to specify the area where the 'Mask' layer should be cleared

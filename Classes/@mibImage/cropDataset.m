@@ -21,10 +21,9 @@ function result = cropDataset(obj, cropF)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 12.12.2018 - fix of cropping of the selection layer for models with more than 63 materials
 
-% Updates
-% 
+
 result = 0;
 wb = waitbar(0,'Please wait...', 'Name', 'Cropping...');
 
@@ -49,6 +48,10 @@ if obj.Virtual.virtual == 0
         waitbar(.7, wb);
         if obj.maskExist     % crop mask
             obj.maskImg{1} = obj.maskImg{1}(cropF(2):cropF(2)+cropF(4)-1, cropF(1):cropF(1)+cropF(3)-1, ...
+                cropF(5):cropF(5)+cropF(6)-1, cropF(7):cropF(7)+cropF(8)-1);
+        end
+        if  ~isnan(obj.selection{1}(1))
+            obj.selection{1} = obj.selection{1}(cropF(2):cropF(2)+cropF(4)-1, cropF(1):cropF(1)+cropF(3)-1, ...
                 cropF(5):cropF(5)+cropF(6)-1, cropF(7):cropF(7)+cropF(8)-1);
         end
     elseif ~isnan(obj.model{1}(1))     % crop model/selectio/mask layer

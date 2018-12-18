@@ -25,6 +25,7 @@ function varargout = mibInputMultiDlg(varargin)
 % .Columns - an integer that defines number of columns
 % .LastItemColumns - [optional] force the last entry to be on a signle column, 1 or 0
 % .Focus - define index of the widget to get focused
+% .okBtnText -  text for the OK button
 %
 % Return values:
 % answer: a cell array with the entered values, or @em empty, when cancelled
@@ -45,9 +46,9 @@ function varargout = mibInputMultiDlg(varargin)
 % options.WindowWidth = 1.2;    // [optional] make window x1.2 times wider
 % options.Columns = 2;    // [optional] define number of columns
 % options.Focus = 1;      // [optional] define index of the widget to get focus
-% options.LastItemColumns = 1; // [optional] force the last entry to be on a signle column
+% options.LastItemColumns = 1; // [optional] force the last entry to be on a single column
 % [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
-% if isempty(answer); return; end; 
+% if isempty(answer); return; end 
 % @endcode
 
 
@@ -138,6 +139,7 @@ if ~isfield(options, 'WindowStyle'); options.WindowStyle = 'modal'; end
 if ~isfield(options, 'Columns'); options.Columns = 1; end
 if ~isfield(options, 'Focus'); options.Focus = 1; end
 if ~isfield(options, 'LastItemColumns'); options.LastItemColumns = 0; end
+if isfield(options, 'okBtnText'); handles.okBtn.String = options.okBtnText; end
 
 if ~isfield(options, 'PromptLines')
     PromptLines = ones([numel(prompts) 1]);
@@ -170,9 +172,10 @@ shiftY = 0; %dt*PromptLines(1);            % shifty
 maxShiftY = 0;  % maximal shift of the Y-coordinate
 widgetId = 1;
 shiftX = 0;
+
 for elementId = 1:numel(prompts)
     if shiftX < floor((elementId-1)/ceil((numel(prompts)-options.LastItemColumns)/options.Columns))*width
-        columnId = floor((elementId-1)/ceil((numel(prompts)-options.LastItemColumns)/options.Columns));
+        columnId = floor((elementId)/ceil((numel(prompts)-options.LastItemColumns)/options.Columns));
         shiftX = columnId*width + de/2*columnId;
         shiftY = 0; %dt*PromptLines(1);
     end

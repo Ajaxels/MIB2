@@ -136,24 +136,24 @@ classdef mibPreferencesController < handle
             end
             
             if materialsNumber > 12
-                paletteList = {'Matlab Jet','Matlab Gray','Matlab Bone','Matlab HSV', 'Matlab Cool', 'Matlab Hot','Random Colors'};
+                paletteList = {'Distinct colors, 20 colors', 'Matlab Jet','Matlab Gray','Matlab Bone','Matlab HSV', 'Matlab Cool', 'Matlab Hot','Random Colors'};
                 obj.View.handles.paletteTypePopup.String = paletteList;
             elseif materialsNumber > 11
-                paletteList = {'Qualitative (Monte Carlo->Half Baked), 3-12 colors','Matlab Jet','Matlab Gray','Matlab Bone','Matlab HSV', 'Matlab Cool', 'Matlab Hot','Random Colors'};
+                paletteList = {'Distinct colors, 20 colors', 'Qualitative (Monte Carlo->Half Baked), 3-12 colors','Matlab Jet','Matlab Gray','Matlab Bone','Matlab HSV', 'Matlab Cool', 'Matlab Hot','Random Colors'};
                 obj.View.handles.paletteTypePopup.String = paletteList;
             elseif materialsNumber > 9
-                paletteList = {'Qualitative (Monte Carlo->Half Baked), 3-12 colors','Diverging (Deep Bronze->Deep Teal), 3-11 colors','Diverging (Ripe Plum->Kaitoke Green), 3-11 colors',...
+                paletteList = {'Distinct colors, 20 colors', 'Qualitative (Monte Carlo->Half Baked), 3-12 colors','Diverging (Deep Bronze->Deep Teal), 3-11 colors','Diverging (Ripe Plum->Kaitoke Green), 3-11 colors',...
                     'Diverging (Bordeaux->Green Vogue), 3-11 colors, 3-11 colors', 'Diverging (Carmine->Bay of Many), 3-11 colors',...
                     'Matlab Jet','Matlab Gray','Matlab Bone','Matlab HSV', 'Matlab Cool', 'Matlab Hot','Random Colors'};
                 obj.View.handles.paletteTypePopup.String = paletteList;
             elseif materialsNumber > 6
-                paletteList = {'Qualitative (Monte Carlo->Half Baked), 3-12 colors','Diverging (Deep Bronze->Deep Teal), 3-11 colors','Diverging (Ripe Plum->Kaitoke Green), 3-11 colors',...
+                paletteList = {'Distinct colors, 20 colors', 'Qualitative (Monte Carlo->Half Baked), 3-12 colors','Diverging (Deep Bronze->Deep Teal), 3-11 colors','Diverging (Ripe Plum->Kaitoke Green), 3-11 colors',...
                     'Diverging (Bordeaux->Green Vogue), 3-11 colors, 3-11 colors', 'Diverging (Carmine->Bay of Many), 3-11 colors','Sequential (Kaitoke Green), 3-9 colors',...
                     'Sequential (Catalina Blue), 3-9 colors', 'Sequential (Maroon), 3-9 colors', 'Sequential (Astronaut Blue), 3-9 colors', 'Sequential (Downriver), 3-9 colors',...
                     'Matlab Jet','Matlab Gray','Matlab Bone','Matlab HSV', 'Matlab Cool', 'Matlab Hot','Random Colors'};
                 obj.View.handles.paletteTypePopup.String = paletteList;
             else
-                paletteList = {'Default, 6 colors', 'Qualitative (Monte Carlo->Half Baked), 3-12 colors','Diverging (Deep Bronze->Deep Teal), 3-11 colors','Diverging (Ripe Plum->Kaitoke Green), 3-11 colors',...
+                paletteList = {'Default, 6 colors', 'Distinct colors, 20 colors', 'Qualitative (Monte Carlo->Half Baked), 3-12 colors','Diverging (Deep Bronze->Deep Teal), 3-11 colors','Diverging (Ripe Plum->Kaitoke Green), 3-11 colors',...
                     'Diverging (Bordeaux->Green Vogue), 3-11 colors', 'Diverging (Carmine->Bay of Many), 3-11 colors','Sequential (Kaitoke Green), 3-9 colors',...
                     'Sequential (Catalina Blue), 3-9 colors', 'Sequential (Maroon), 3-9 colors', 'Sequential (Astronaut Blue), 3-9 colors', 'Sequential (Downriver), 3-9 colors',...
                     'Matlab Jet','Matlab Gray','Matlab Bone','Matlab HSV', 'Matlab Cool', 'Matlab Hot', 'Random Colors'};
@@ -183,6 +183,8 @@ classdef mibPreferencesController < handle
             switch paletteList{selectedVal}
                 case 'Default, 6 colors'
                     obj.View.handles.paletteColorNumberPopup.String = '6';
+                case 'Distinct colors, 20 colors'
+                    obj.View.handles.paletteColorNumberPopup.String = '20';
                 case 'Qualitative (Monte Carlo->Half Baked), 3-12 colors'
                     obj.View.handles.paletteColorNumberPopup.String = num2cell(max([3, materialsNumber]):12);
                 case 'Diverging (Deep Bronze->Deep Teal), 3-11 colors'
@@ -231,6 +233,9 @@ classdef mibPreferencesController < handle
             switch paletteList{selectedVal}
                 case 'Default, 6 colors'
                     obj.preferences.modelMaterialColors = [166 67 33; 71 178 126; 79 107 171; 150 169 213; 26 51 111; 255 204 102 ]/255;
+                case 'Distinct colors, 20 colors'
+                    %obj.preferences.modelMaterialColors = [255 80 5; 255 255 128; 116 10 255; 0 153 143; 66 102 0; 255 168 187; 0 51 128; 194 0 136; 143 124 0; 148 255 181; 255 204 153; 76 0 92; 153 63 0; 0 117 220; 240 163 255; 255 255 0; 153 0 0; 94 241 242; 255 0 16; 255 164 5; 157 204 0; 224 255 102; 0 92 49; 25 25 25; 43 206 72; 128 128 128; 255 255 255]/255;
+                    obj.preferences.modelMaterialColors = [230 25 75; 255 225 25; 0 130 200; 245 130 48; 145 30 180; 70 240 240; 240 50 230; 210 245 60; 250 190 190; 0 128 128; 230 190 255; 170 110 40; 255 250 200; 128 0 0; 170 255 195; 128 128 0; 255 215 180; 0 0 128; 128 128 128; 60 180 75]/255;
                 case 'Qualitative (Monte Carlo->Half Baked), 3-12 colors'
                     switch colorsNo
                         case 3; obj.preferences.modelMaterialColors = [141,211,199; 255,255,179; 190,186,218]/255;

@@ -119,6 +119,12 @@ uimenu(handles.mibPathEdit_cm, 'Label', 'Copy path to clipboard', 'Callback', {@
 uimenu(handles.mibPathEdit_cm, 'Label', 'Open directory in the file explorer', 'Callback', {@mibPathEdit_cm_Callback, 'fileexplorer'});
 handles.mibPathEdit.UIContextMenu = handles.mibPathEdit_cm;
 
+% adding context menu for mibFileFilterPopup
+handles.mibFileFilterPopup_cm = uicontextmenu('Parent',handles.mibGUI);
+uimenu(handles.mibFileFilterPopup_cm, 'Label', 'Register extension', 'Callback', {@mibFileFilterPopup_cm, 'register'});
+uimenu(handles.mibFileFilterPopup_cm, 'Label', 'Remove selected extension', 'Callback', {@mibFileFilterPopup_cm, 'remove'});
+handles.mibFileFilterPopup.UIContextMenu = handles.mibFileFilterPopup_cm;
+
 % adding context menus for change layer slider
 UserData.sliderStep = 1;     % parameters for slider movement
 UserData.sliderShiftStep = 10;
@@ -161,7 +167,8 @@ uimenu(h2,'label','REMOVE (CURRENT)','callback', {@mibGUI_moveLayers, NaN,'model
 uimenu(h2,'label','NEW (ALL SLICES)','Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','mask','3D','replace'});
 uimenu(h2,'label','ADD (ALL SLICES)','callback', {@mibGUI_moveLayers, NaN, 'model','mask','3D','add'});
 uimenu(h2,'label','REMOVE (ALL SLICES)','callback', {@mibGUI_moveLayers, NaN,'model','mask','3D','remove'});
-uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show isosurface (Matlab)...', 'Separator', 'on', 'Callback', {@mibSegmentationTable_cm_Callback, 'isosurface'});
+uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show as volume (MIB)...', 'Separator', 'on', 'Callback', {@mibSegmentationTable_cm_Callback, 'mib'});
+uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show isosurface (Matlab)...', 'Callback', {@mibSegmentationTable_cm_Callback, 'isosurface'});
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show as volume (Fiji)...', 'Callback', {@mibSegmentationTable_cm_Callback, 'volumeFiji'});
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Unlink material from Add to', 'Separator', 'on', 'Callback', {@mibSegmentationTable_cm_Callback, 'unlinkaddto'});
 handles.mibSegmentationTable.UIContextMenu = handles.mibSegmentationTable_cm;
@@ -428,7 +435,7 @@ function mibGUI_CloseRequestFcn(hObject, ~, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 choice = questdlg('You are about to close Microsopy Image Browser?', 'Microscopy Image Browser', 'Close', 'Cancel','Cancel');
-if strcmp(choice, 'Cancel'); return; end;
+if strcmp(choice, 'Cancel'); return; end
 
 % Hint: delete(hObject) closes the figure
 delete(hObject);
@@ -493,6 +500,11 @@ if nargin < 4
 else
     handles.mibController.toolbarResizingMethod_ClickedCallback(options);
 end
+end
+
+function toolbarCenterPointShow_ClickedCallback(hObject, eventdata, handles)
+% callback for press of handles.toolbarCenterPointShow
+    handles.mibController.toolbarCenterPointShow_ClickedCallback();
 end
 
 % --------------------------------------------------------------------
@@ -638,6 +650,13 @@ function mibFilesListbox_cm_Callback(hObject, ~, parameter)
 handles = guidata(hObject);
 handles.mibController.mibFilesListbox_cm_Callback(parameter);
 end
+
+function mibFileFilterPopup_cm(hObject, ~, parameter)
+% callback for the context menu of handles.mibFileFilterPopup
+handles = guidata(hObject);
+handles.mibController.mibFileFilterPopup_cm(parameter);
+end
+
 
 function mibPathEdit_cm_Callback(hObject, ~, parameter)
 handles = guidata(hObject);

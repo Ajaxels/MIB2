@@ -32,7 +32,7 @@ function varargout = mibAlignmentGUI(varargin)
 
 % Edit the above text to modify the response to help mibalignmentgui
 
-% Last Modified by GUIDE v2.5 25-Jan-2017 20:22:11
+% Last Modified by GUIDE v2.5 18-Sep-2018 14:33:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -98,7 +98,7 @@ hObject = moveWindowOutside(hObject, 'left');
 guidata(hObject, handles);
 
 % Make the GUI modal
-set(handles.mibAlignmentGUI,'WindowStyle','modal')
+%set(handles.mibAlignmentGUI,'WindowStyle','modal')
 
 % UIWAIT makes mibalignmentgui wait for user response (see UIRESUME)
 %uiwait(handles.mibAlignmentGUI);
@@ -153,7 +153,7 @@ handles.winController.selectButton_Callback();
 end
 
 function radioButton_Callback(hObject, eventdata, handles)
-if hObject.Value == 0; hObject.Value = 1; return; end;
+if hObject.Value == 0; hObject.Value = 1; return; end
 handles.winController.radioButton_Callback();
 end
 
@@ -162,7 +162,7 @@ handles = guidata(hObject);
 hObject = eventdata.NewValue;
 tagId = hObject.Tag;
 curVal = hObject.Value;
-if curVal == 0; hObject.Value = 1; return; end;
+if curVal == 0; hObject.Value = 1; return; end
 
 if strcmp(tagId, 'twoStacksModeRadio')
     handles.secondDatasetPanel.Visible = 'on';
@@ -197,7 +197,7 @@ function saveShiftsCheck_Callback(hObject, eventdata, handles)
 if handles.saveShiftsCheck.Value
     startingPath = handles.saveShiftsXYpath.String;
     [FileName, PathName] = uiputfile({'*.coefXY','*.coefXY (Matlab format)'; '*.*','All Files'}, 'Select file...', startingPath);
-    if FileName == 0; handles.saveShiftsCheck.Value = 0; return; end;
+    if FileName == 0; handles.saveShiftsCheck.Value = 0; return; end
     handles.saveShiftsXYpath.String = fullfile(PathName, FileName);
     handles.saveShiftsXYpath.Enable = 'on';
 else
@@ -248,6 +248,8 @@ handles.transformationTypePopup.Enable = 'off';
 handles.transformationModePopup.Enable = 'off';
 handles.correlateWithPopup.Enable = 'off';
 handles.transformationDegreePopup.Enable = 'off';
+handles.featureDetectorTypePopup.Enable = 'off';
+handles.previewFeaturesBtn.Enable = 'off';
 
 switch methodSelected
     case 'Drift correction'
@@ -260,6 +262,15 @@ switch methodSelected
         handles.colChPopup.Enable = 'on';
         handles.gradientCheckBox.Enable = 'on';
         handles.correlateWithPopup.Enable = 'on';
+    case 'Automatic feature-based'
+        if handles.transformationTypePopup.Value > 3; handles.transformationTypePopup.Value = 1; end
+        textStr = sprintf('Use automatic feature detection to align slices');
+        handles.transformationTypePopup.Enable = 'on';
+        handles.transformationModePopup.Enable = 'on';
+        handles.featureDetectorTypePopup.Enable = 'on';
+        handles.transformationTypePopup.String = {'similarity', 'affine', 'projective'};
+        handles.previewFeaturesBtn.Enable = 'on';
+        handles.colChPopup.Enable = 'on';
     case 'Single landmark point'
         textStr = sprintf('Use the brush tool to mark two corresponding spots on consecutive slices. The dataset will be translated to align the marked spots');
     case 'Three landmark points'
@@ -268,6 +279,7 @@ switch methodSelected
         textStr = sprintf('Use annotations or selection with brush to mark corresponding spots on consecutive slices. The dataset will be transformed to align the marked areas');
         handles.transformationTypePopup.Enable = 'on';
         handles.transformationModePopup.Enable = 'on';
+        handles.transformationTypePopup.String = {'non reflective similarity', 'similarity', 'affine', 'projective'};
         %handles.transformationDegreePopup.Enable = 'on';
 end
 handles.landmarkHelpText.String = textStr;
@@ -341,4 +353,10 @@ end
 % --- Executes on button press in continueBtn.
 function continueBtn_Callback(hObject, eventdata, handles)
 handles.winController.continueBtn_Callback();
+end
+
+
+% --- Executes on button press in previewFeaturesBtn.
+function previewFeaturesBtn_Callback(hObject, eventdata, handles)
+handles.winController.previewFeaturesBtn_Callback();
 end

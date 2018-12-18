@@ -54,7 +54,7 @@
 %%
 % 
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="width: 800px; border: 0px; line-height:150%">
 % <tr>
 % <td style="border: 0px">
 %   <img src = "images\menuToolsGraphcut_Mode.jpg">
@@ -67,7 +67,7 @@
 % dataset individually</li>
 % <li><b>3D, volume</b>, performs 3D segmentation for complete or selected portion (<em>see Selected Area section below</em>) of the dataset</li>
 % <li><b>3D, volume, grid</b>, a special mode of 3D graphcut, where the dataset is chopped into several subvolumes (defined by Chop edit boxes, see below) and the dataset which is centered 
-% at the Image View panel is gets segmented. Chopping of large volume into several small subvolumes (<em>e.g.</em>400x400x400 pixels allows effective interactive segmentation of this large volume
+% at the Image View panel is gets segmented (for convenience, turn on the marker of the center point, <code>toolbar->center marker button</code>). Chopping of large volume into several small subvolumes (<em>e.g.</em>400x400x400 pixels allows effective interactive segmentation of this large volume
 % To segment all subvolumes press the <b>Segment All</b> button</li>
 % </ul>
 % </td>
@@ -84,7 +84,7 @@
 %%
 % 
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="width: 800px; border: 0px; line-height:150%">
 % <tr>
 % <td style="border: 0px">
 %   <img src = "images\menuToolsWatershed_Subarea.jpg">
@@ -169,7 +169,7 @@
 % Below, description of the *Image segmentation settings*:
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="width: 800px; border: 0px; line-height:150%">
 % <tr>
 % <td style="border: 0px">
 %   <img src = "images\menuToolsGraphcut_ImageSegmSettings.jpg">
@@ -193,7 +193,7 @@
 %% Image segmentation example
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="width: 800px; border: 0px; line-height:150%">
 % <tr>
 % <td style="border: 0px">
 %   <img src = "images\watershed_imsegm_01.jpg">

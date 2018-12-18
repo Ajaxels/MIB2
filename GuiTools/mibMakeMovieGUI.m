@@ -16,7 +16,7 @@ function varargout = mibMakeMovieGUI(varargin)
 % 03.02.2016, updated for 4D datasets
 
 % Begin initialization code - DO NOT EDIT
-gui_Singleton = 1;
+gui_Singleton = 0;
 gui_State = struct('gui_Name',       mfilename, ...
     'gui_Singleton',  gui_Singleton, ...
     'gui_OpeningFcn', @mibMakeMovieGUI_OpeningFcn, ...
@@ -276,4 +276,10 @@ end
 % --- Executes on selection change in roiPopup.
 function roiPopup_Callback(hObject, eventdata, handles)
 handles.winController.roiPopup_Callback();
+end
+
+
+% --- Executes on button press in splitChannelsCheck.
+function splitChannelsCheck_Callback(hObject, eventdata, handles)
+handles.winController.splitChannelsCheck_Callback();
 end

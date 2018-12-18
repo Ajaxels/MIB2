@@ -55,6 +55,8 @@ handles.watershedSourcePanel.SelectionChangeFcn = @distanceRadio_Callback;
 % define the current mode
 handles.mode2dCurrentRadio.Value = 1;
 
+handles.distanceRadio.Value = 1;
+
 % Choose default command line output for mibChildGUI
 handles.output = hObject;
 

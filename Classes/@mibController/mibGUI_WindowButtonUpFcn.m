@@ -69,6 +69,10 @@ obj.mibView.gui.WindowButtonUpFcn = [];
 obj.mibView.gui.WindowButtonDownFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowButtonDownFcn());
 obj.mibView.gui.WindowKeyPressFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowKeyPressFcn(hObject, eventdata)); % turn ON callback for the keys
 
+if obj.mibView.centerSpotHandle.enable
+    obj.mibView.centerSpotHandle.handle.Visible = 'on';
+end
+
 obj.plotImage();
 obj.mibView.updateCursor('dashed');
 obj.mibView.gui.WindowScrollWheelFcn = (@(hObject, eventdata, handles) obj.mibGUI_ScrollWheelFcn(eventdata));   % moved from plotImage

@@ -90,6 +90,8 @@ Model
 % <li><em>NEW (ALL SLICES)</em> removes the selected material from the Selection layer for the whole dataset</li>
 % </ul>
 % <li><b>Material to Mask</b> a copies objects of the selected material to the Mask layer with the options similar to the previous entry</li>
+% <li><b>Show as volume (MIB)..</b> visualize the selected material using
+% MIB rendering, available for Matlab R2018b and newer</li>
 % <li><b>Show isosurface (Matlab)...</b> visualize the model or only the selected material (when <em>Show selected material only</em> is selected), as an isosurface. This functionality is powered by 
 % Matlab and <a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">view3d</a> function written by  Torsten Vogel. Use the <b>"r"</b> shortcut to rotate and <b>"z"</b> to zoom. 
 % See more in the <a hewd="ug_gui_menu_models.html">Render model...</a>section</li>

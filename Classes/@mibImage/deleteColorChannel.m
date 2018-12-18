@@ -33,7 +33,7 @@ end
 
 prompt = {sprintf('Delete color channel\n\nEnter number of the color channel to be deleted:')};
 answer = mibInputDlg({mibPath}, prompt, 'Delete color channel', {num2str(channel1(1)')});
-if size(answer) == 0; return; end;
+if size(answer) == 0; return; end
 channel1 = str2num(answer{1}{1}); %#ok<ST2NM>
 if min(channel1) < 1 || max(channel1) > obj.colors 
     errordlg(sprintf('!!! Error !!!\n\nWrong channel number!\nThe channel numbers should be between 1 and %d', obj.colors),'Error');

@@ -167,6 +167,19 @@ else
         obj.mibView.handles.mibImageAxes.YLim = yl;
         obj.mibView.handles.mibImageAxes.XLim = [xl(1) xl(2)];
     end
+    
+    % display a point that marks the center of the image axes
+    if obj.mibView.centerSpotHandle.enable
+        if isempty(obj.mibView.centerSpotHandle.handle) || isvalid(obj.mibView.centerSpotHandle.handle) == 0
+            % because it gets removed after
+            % obj.mibView.imh = image(obj.mibView.Ishown, 'parent', obj.mibView.handles.mibImageAxes);
+            obj.mibView.centerSpotHandle.handle = drawpoint('Position', [mean(obj.mibView.handles.mibImageAxes.XLim) mean(obj.mibView.handles.mibImageAxes.YLim)], ...
+                'Deletable', false,...
+                'parent', obj.mibView.handles.mibImageAxes,...
+                'Color', 'y');
+        end
+        obj.mibView.centerSpotHandle.handle.Position = [mean(obj.mibView.handles.mibImageAxes.XLim) mean(obj.mibView.handles.mibImageAxes.YLim)];
+    end
    
     % show ROIs
     if obj.mibView.handles.mibRoiShowCheck.Value

@@ -159,6 +159,12 @@ if strcmp(type,'image')
                 timepoint = Tlim(1)+t-2;
                 for z=1:Zlim(2)-Zlim(1)+1
                     planeId = Zlim(1) + z - 1 - sum(obj.Virtual.slicesPerFile(1:readerId(z)-1));
+%                     % update setSeries, for some reasons it does not fixed
+%                     % during init of readers
+%                     if numel(obj.Virtual.seriesName(readerId)) > 1
+%                         obj.img{readerId(z)}.setSeries(obj.Virtual.seriesName{Zlim(1)}-1);
+%                     end
+                    
                     for colCh = 1:numel(col_channel)
                         iPlane = obj.img{readerId(z)}.getIndex(planeId - 1, col_channel(colCh) - 1, timepoint) + 1;
                         dataset(:,:,colCh,z,t) = bfGetPlane(obj.img{readerId(z)}, iPlane, Xlim(1), Ylim(1), Xlim(2)-Xlim(1)+1, Ylim(2)-Ylim(1)+1);

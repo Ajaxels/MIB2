@@ -306,6 +306,8 @@ end
 
 
 %% redraw tables
+%obj.mibView.handles.mibColChannelCombo.Value = min([obj.mibView.handles.mibColChannelCombo.Value obj.mibModel.getImageProperty('colors')+1]);
+obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel = min([obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel obj.mibModel.getImageProperty('colors')]);
 obj.redrawMibChannelMixerTable();
 obj.updateSegmentationTable();
 

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Alignment and Drift Correction</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-08-28"><meta name="DC.source" content="ug_gui_menu_dataset_alignment.m"><style type="text/css">
+      --><title>Alignment and Drift Correction</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-12-18"><meta name="DC.source" content="ug_gui_menu_dataset_alignment.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -68,10 +68,9 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
   </style></head><body><div class="content"><h1>Alignment and Drift Correction</h1><!--introduction--><p>The Alignment and Drift Correction tool can be used either to align slice of the opened dataset or to align two separate datasets.</p><p>
 A demonstration is available in the following videos:<br>
-<a href="https://youtu.be/-qwoO5z02aA"><img
-style="vertical-align:middle;" src="images\youtube2.png">
-https://youtu.be/-qwoO5z02aA</a><br>
-<a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube2.png">Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a>
+<a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/-qwoO5z02aA</a><br>
+<a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube2.png"> Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a><br>
+<a href="https://youtu.be/-en5zD5Ou9s"><img style="vertical-align:middle;" src="images\youtube2.png"> Automatic feature-based</a><br>
 </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_dataset.html"><b>Dataset</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Current dataset panel</a></li><li><a href="#2">Align panel</a></li><li><a href="#3">Options panel</a></li><li><a href="#4">Second stack panel</a></li><li><a href="#5">Reference and Acknowledgements</a></li></ul></div><h2 id="1">Current dataset panel</h2><p>The <b>Current dataset panel</b> displays details of the currently opened dataset, such as its filename, dimensions and pixel size</p><p><img vspace="5" hspace="5" src="images/menuDatasetAlignTool_1.jpg" alt=""> </p><h2 id="2">Align panel</h2><p>The <b>Align panel</b> allows to select main parameters for the alignment and drift correction.</p><p><img vspace="5" hspace="5" src="images/menuDatasetAlignTool_2.jpg" alt=""> </p><p>
 <ul>
   <li>
@@ -95,6 +94,21 @@ https://youtu.be/-qwoO5z02aA</a><br>
       <td>The Template matching mode is best when aligning two stacks and the second stack is smaller than the main stack.<br>
           It is <b>not</b> recommended for alignment of the currently opened stack
       </td>
+      </td>
+    </tr>
+    <tr>
+      <td><b>Automatic feature-based</b></td>
+      <td><a href="https://www.youtube.com/embed/-en5zD5Ou9s"><img src="images/youtube.png"></a> The automatic image alignement based on features (blobs,
+      regions or corners) detected on consecutive slices.<br>
+      The available
+      transfomations are 'similarity', 'affine', or 'projective' (see
+      below for details). The resulting datasets can be cropped to the
+      size and around the position of the first image (the cropped mode)
+      or extended.<br>
+      Use the Preview button to check the number and
+      positions of the detected points.<br>
+      Please refer to the documentation of the <a href="https://se.mathworks.com/help/vision/ref/matchfeatures.html">matchFeatures</a> function of
+      Matlab for more details.
       </td>
     </tr>
     <tr>
@@ -193,7 +207,7 @@ https://youtu.be/-qwoO5z02aA</a><br>
     manually into the <em>ShiftX</em> and <em>ShiftY</em> edit boxes.
   </li>
 </ul>
-</p><h2 id="5">Reference and Acknowledgements</h2><p>The alignment algorithm is based on</p><div><ul><li>JC Russ, The image processing handbook, CRC Press, Boca Raton, FL, 1994</li><li>JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free Matlab Script For Spatial Drift Correction, Microscopy Today &#8212; Volume 22, Number 5, 2014 <a href="https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m">https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m</a></li><li><a href="http://onlinedigeditions.com/publication/?i=223321&amp;p=40">&lt;http://onlinedigeditions.com/publication/?i=223321&amp;p=40</a>&gt;</li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_dataset.html"><b>Dataset</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+</p><h2 id="5">Reference and Acknowledgements</h2><p>The alignment algorithm is based on</p><div><ul><li>JC Russ, The image processing handbook, CRC Press, Boca Raton, FL, 1994</li><li>JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free Matlab Script For Spatial Drift Correction, Microscopy Today &#8212; Volume 22, Number 5, 2014 <a href="https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m">https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m</a></li><li><a href="http://onlinedigeditions.com/publication/?i=223321&amp;p=40">&lt;http://onlinedigeditions.com/publication/?i=223321&amp;p=40</a>&gt;</li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_dataset.html"><b>Dataset</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Alignment and Drift Correction
 % The Alignment and Drift Correction tool can be used either to align slice of the opened dataset or to align two
@@ -201,10 +215,9 @@ https://youtu.be/-qwoO5z02aA</a><br>
 % 
 % <html>
 % A demonstration is available in the following videos:<br>
-% <a href="https://youtu.be/-qwoO5z02aA"><img
-% style="vertical-align:middle;" src="images\youtube2.png">
-% https://youtu.be/-qwoO5z02aA</a><br>
-% <a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube2.png">Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a>
+% <a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/-qwoO5z02aA</a><br>
+% <a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube2.png"> Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a><br>
+% <a href="https://youtu.be/-en5zD5Ou9s"><img style="vertical-align:middle;" src="images\youtube2.png"> Automatic feature-based</a><br>
 % </html>
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_dataset.html *Dataset*>
@@ -249,6 +262,21 @@ https://youtu.be/-qwoO5z02aA</a><br>
 %       </td>
 %       </td>
 %     </tr>
+%     <tr>
+%       <td><b>Automatic feature-based</b></td>
+%       <td><a href="https://www.youtube.com/embed/-en5zD5Ou9s"><img src="images/youtube.png"></a> The automatic image alignement based on features (blobs,
+%       regions or corners) detected on consecutive slices.<br>
+%       The available
+%       transfomations are 'similarity', 'affine', or 'projective' (see
+%       below for details). The resulting datasets can be cropped to the
+%       size and around the position of the first image (the cropped mode)
+%       or extended.<br>
+%       Use the Preview button to check the number and
+%       positions of the detected points.<br>
+%       Please refer to the documentation of the <a href="https://se.mathworks.com/help/vision/ref/matchfeatures.html">matchFeatures</a> function of
+%       Matlab for more details.
+%       </td>
+%     </tr>     
 %     <tr>
 %       <td><b>Single landmark point</b></td>
 %       <td>The Single landmark point mode is a manual mode, where user marks

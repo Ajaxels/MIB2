@@ -125,8 +125,9 @@ classdef mibRandomDatasetController < handle
             outDir = obj.outputDir;     % main output directory
             fnTemplate = obj.View.handles.filenameTemplate.String;  % filename template for generation of output files
             outputDirNum = str2double(obj.View.handles.outputDirNumEdit.String);    % number of output directories
-            includeModels = obj.View.handles.includeModelCheck.Value;   % switch to include or not model files that are places in the input folders
-            includeMasks = obj.View.handles.includeMaskCheck.Value;   % switch to include or not model files that are places in the input folders
+            includeModels = obj.View.handles.includeModelCheck.Value;   % switch to include or not model files that are placed in the input folders
+            includeMasks = obj.View.handles.includeMaskCheck.Value;   % switch to include or not model files that are placed in the input folders
+            includeAnnotations = obj.View.handles.includeAnnotationsCheck.Value;   % switch to include or not annotation files that are placed in the input folders
             filenameExtension = lower(obj.View.handles.filenameExtension.String); % extension for filenames with images
             
             Settings =  struct;     % structure with settings
@@ -167,6 +168,12 @@ classdef mibRandomDatasetController < handle
                     if includeMasks    % find filenames for the masks
                         if ismember(ext, {'.mask'})
                             inputMaskFilenames{dirId} = fullfile(Settings.inputDirName{dirId}, fileList{i}); %#ok<AGROW>
+                        end
+                    end
+                    
+                    if includeAnnotations    % find filenames for the annotations
+                        if ismember(ext, {'.ann'})
+                            inputAnnotationsFilenames{dirId} = fullfile(Settings.inputDirName{dirId}, fileList{i});  %#ok<AGROW>
                         end
                     end
                 end
@@ -230,7 +237,7 @@ classdef mibRandomDatasetController < handle
                     % define labels
                     labelPosition = [];
                     labelText = {};
-                    labelValues = [];
+                    labelValue = [];
                     
                     for sliceIndex = 1:numel(curDirIndices)
                         inputDirIndex = Settings.inputIndices(curDirIndices(sliceIndex));   % index of the input directory with the image
@@ -243,7 +250,7 @@ classdef mibRandomDatasetController < handle
                             currPos(:,1) = sliceIndex;  % replace z-value
                             labelPosition = [labelPosition; currPos];
                             labelText = [labelText; InputModels{inputDirIndex}.labelText(labelIndices,:)];
-                            labelValues = [labelValues; InputModels{inputDirIndex}.labelValues(labelIndices,:)];
+                            labelValue = [labelValue; InputModels{inputDirIndex}.labelValue(labelIndices,:)];
                         end
                     end
                     modelFilename = fullfile(Settings.outputDirName{dirId}, sprintf('Labels_%s_%.3d.model', fnTemplate, dirId));
@@ -251,7 +258,7 @@ classdef mibRandomDatasetController < handle
                         save(modelFilename, 'mibModel','modelVariable','modelMaterialColors','modelMaterialNames','modelType', '-mat', '-v7.3');
                     else
                         save(modelFilename, 'mibModel','modelVariable','modelMaterialColors','modelMaterialNames','modelType',...
-                            'labelPosition', 'labelText', 'labelValues', '-mat', '-v7.3');    
+                            'labelPosition', 'labelText', 'labelValue', '-mat', '-v7.3');    
                     end
                 end
                 clear mibModel;
@@ -279,6 +286,39 @@ classdef mibRandomDatasetController < handle
                     
                     maskFilename = fullfile(Settings.outputDirName{dirId}, sprintf('%s_%.3d.mask', fnTemplate, dirId));
                     save(maskFilename, 'maskImg', '-mat', '-v7.3');
+                end
+            end
+            
+            if includeAnnotations    % randomize also the annotations
+                waitbar(0.9, wb, sprintf('Generating the annotation files\nPlease wait...'));
+                % load annotations
+                for dirId=1:numel(Settings.inputDirName)   
+                    InputModels{dirId} = load(inputAnnotationsFilenames{dirId}, '-mat');
+                end
+                
+                for dirId = 1:outputDirNum
+                    curDirIndices = Settings.OutputIndicesSorted{dirId};
+                    
+                    labelPosition = [];
+                    labelText = {};
+                    labelValue = [];
+                    
+                    for sliceIndex = 1:numel(curDirIndices)
+                        inputDirIndex = Settings.inputIndices(curDirIndices(sliceIndex));   % index of the input directory with the image
+                        sliceNumber = Settings.InputImagesSliceNumber(curDirIndices(sliceIndex));   % index of the slice in the model
+                        
+                        ind = find(InputModels{inputDirIndex}.labelPosition(:,1)==sliceNumber);
+                        if ~isempty(ind)
+                            pos = InputModels{inputDirIndex}.labelPosition(ind,:,:,:);
+                            pos(:,1) = sliceIndex;  % replace z-value
+                            labelPosition = [labelPosition; pos]; %#ok<AGROW>
+                            labelText = [labelText; InputModels{inputDirIndex}.labelText(ind)]; %#ok<AGROW>
+                            labelValue = [labelValue; InputModels{inputDirIndex}.labelValue(ind)]; %#ok<AGROW>
+                        end
+                    end
+                    
+                    annotationFilename = fullfile(Settings.outputDirName{dirId}, sprintf('%s_%.3d.ann', fnTemplate, dirId));
+                    save(annotationFilename, 'labelPosition','labelText','labelValue', '-mat', '-v7.3');
                 end
             end
             

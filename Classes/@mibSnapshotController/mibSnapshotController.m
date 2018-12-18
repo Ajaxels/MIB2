@@ -1,5 +1,5 @@
-classdef mibSnapshotController < handle
-    % classdef mibSnapshotController < handle
+classdef mibSnapshotController < matlab.mixin.Copyable
+    % classdef mibSnapshotController < matlab.mixin.Copyable
     % a controller class for the snapshots subwindow available via
     % MIB->Menu->File->Make snapshot
     
@@ -10,6 +10,8 @@ classdef mibSnapshotController < handle
     % as published by the Free Software Foundation; either version 2
     % of the License, or (at your option) any later version.
     
+    % Updates
+    % 16.11.2018, IB updated for making snapshots from volume viewer
     
     properties
         mibModel
@@ -18,6 +20,8 @@ classdef mibSnapshotController < handle
         % handle to the view
         listener
         % a cell array with handles to listeners
+        extraController
+        % an optional extra controller, used for making snapshots from volume rendering window
         snapshotFilename
         % a cell array {1:obj.mibModel.maxId} with filenames for saving the snapshots
         origHeight
@@ -44,8 +48,20 @@ classdef mibSnapshotController < handle
     end
     
     methods
-        function obj = mibSnapshotController(mibModel)
-            obj.mibModel = mibModel;    % assign model
+        function obj = mibSnapshotController(varargin)
+            % function obj = mibSnapshotController(varargin)
+            % constructor of the class
+            % Parameters:
+            % parameter 1: a handles to mibModel
+            % parameter 2: [@em optional] a handle to extra controllers 
+
+            obj.mibModel = varargin{1};    % assign model
+            if nargin > 1
+                obj.extraController = varargin{2};
+            else
+                obj.extraController = [];
+            end
+            
             guiName = 'mibSnapshotGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
 
@@ -84,6 +100,15 @@ classdef mibSnapshotController < handle
             % function updateWidgets(obj, colorChannelSelection)
             % update widgets of the window
             
+            if ~isempty(obj.extraController)
+                obj.View.handles.fullImageRadio.Enable = 'off';
+                obj.View.handles.shownAreaRadio.Enable = 'off';
+                obj.View.handles.roiRadio.Enable = 'off';
+                obj.View.handles.splitChannelsCheck.Enable = 'off';
+                obj.View.handles.measurementsCheck.Enable = 'off';
+                obj.View.handles.whiteBgCheck.Enable = 'off';
+            end
+            
             if isempty(obj.snapshotFilename{obj.mibModel.Id})
                 filename = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
                 [path, fname] = fileparts(filename);
@@ -105,23 +130,7 @@ classdef mibSnapshotController < handle
             end
             obj.fileFormatPopup_Callback();
             
-            options.blockModeSwitch = obj.View.handles.shownAreaRadio.Value;
-            [height, width] = obj.mibModel.getImageMethod('getDatasetDimensions', NaN, 'image', NaN, NaN, options);
-            obj.origWidth = width;
-            orientation = obj.mibModel.getImageProperty('orientation');
-            pixSize = obj.mibModel.getImageProperty('pixSize');
-            if orientation == 1
-                width = width*pixSize.z/pixSize.x;
-            elseif orientation == 2
-                width = width*pixSize.z/pixSize.y;
-            elseif orientation == 4
-                width = width*pixSize.x/pixSize.y;
-            end
-            obj.View.handles.widthEdit.String = num2str(ceil(width));
-            obj.View.handles.heightEdit.String = num2str(height);
-            
-            obj.origHeight = height;
-            obj.resizedWidth = width;
+            obj.updateWidthHeight();
             
             % update split color channels
             if obj.mibModel.getImageProperty('colors') > 1
@@ -152,6 +161,40 @@ classdef mibSnapshotController < handle
                 end
                 obj.View.handles.roiPopup.String = str2;
             end
+        end
+        
+        function updateWidthHeight(obj)
+            % function updateWidthHeight(obj)
+            % update width/height for the snapshot
+            
+            if isempty(obj.extraController)
+                options.blockModeSwitch = obj.View.handles.shownAreaRadio.Value;
+                [height, width] = obj.mibModel.getImageMethod('getDatasetDimensions', NaN, 'image', NaN, NaN, options);
+                obj.origWidth = width;
+                orientation = obj.mibModel.getImageProperty('orientation');
+                pixSize = obj.mibModel.getImageProperty('pixSize');
+                if orientation == 1
+                    width = width*pixSize.z/pixSize.x;
+                elseif orientation == 2
+                    width = width*pixSize.z/pixSize.y;
+                elseif orientation == 4
+                    width = width*pixSize.x/pixSize.y;
+                end
+                width = ceil(width);
+            else
+                if strcmp(obj.extraController.View.gui.Name, '3D rendering')
+                    curUnits = obj.extraController.View.handles.volViewPanel.Units;
+                    obj.extraController.View.handles.volViewPanel.Units = 'pixels';
+                    height = ceil(obj.extraController.View.handles.volViewPanel.Position(4));
+                    width = ceil(obj.extraController.View.handles.volViewPanel.Position(3));
+                    obj.extraController.View.handles.volViewPanel.Units = curUnits;
+                    obj.origWidth = width;
+                end
+            end
+            obj.View.handles.widthEdit.String = num2str(width);
+            obj.View.handles.heightEdit.String = num2str(height);
+            obj.origHeight = height;
+            obj.resizedWidth = width;
         end
         
         function roiPopup_Callback(obj)
@@ -307,11 +350,21 @@ classdef mibSnapshotController < handle
         function widthEdit_Callback(obj)
             % function widthEdit_Callback(obj)
             % a callback on change of obj.View.handles.widthEdit
-            
-            newWidth = str2double(obj.View.handles.widthEdit.String);
-            ratio = obj.origHeight/obj.resizedWidth;
-            newHeight = round(newWidth*ratio);
-            obj.View.handles.heightEdit.String = num2str(newHeight);
+            newWidth = str2double(obj.View.handles.widthEdit.String);            
+            if isempty(obj.extraController)
+                ratio = obj.origHeight/obj.resizedWidth;
+                newHeight = round(newWidth*ratio);    
+                obj.View.handles.heightEdit.String = num2str(newHeight);
+            else
+                if strcmp(obj.extraController.View.gui.Name, '3D rendering')
+                    screensize = get(groot, 'Screensize');
+                    if screensize(3) < newWidth
+                        warndlg(sprintf('!!! Warning !!!\n\nThe output dimensions should be smaller than the screen size!'), 'Size is too large','modal');
+                        obj.View.handles.widthEdit.String = num2str(obj.resizedWidth);
+                        return;
+                    end
+                end
+            end
         end
    
         function heightEdit_Callback(obj)
@@ -319,9 +372,20 @@ classdef mibSnapshotController < handle
             % a callback on change of obj.View.handles.heightEdit
             
             newHeight = str2double(obj.View.handles.heightEdit.String);
-            ratio = obj.origHeight/obj.resizedWidth;
-            newWidth = round(newHeight/ratio);
-            obj.View.handles.widthEdit.String = num2str(newWidth);
+            if isempty(obj.extraController)
+                ratio = obj.origHeight/obj.resizedWidth;
+                newWidth = round(newHeight/ratio);
+                obj.View.handles.widthEdit.String = num2str(newWidth);
+            else
+                if strcmp(obj.extraController.View.gui.Name, '3D rendering')
+                    screensize = get(groot, 'Screensize');
+                    if screensize(4) < newHeight
+                        warndlg(sprintf('!!! Warning !!!\n\nThe output dimensions should be smaller than the screen size!'), 'Size is too large','modal');
+                        obj.View.handles.heightEdit.String = num2str(obj.origHeight);
+                        return;
+                    end
+                end
+            end
         end
         
         function snapshotBtn_Callback(obj)
@@ -367,118 +431,127 @@ classdef mibSnapshotController < handle
             colorChannels = slices{3};    % store selected color channels
             
             wb = waitbar(0, sprintf('Generating images\nPlease wait...'),'Name', 'Making snapshot');
-            for imageId = 1:maxImageIndex
-                if imageId == maxImageIndex
-                    %set(handles.h.lutCheckbox, 'value', lutCheckBox);
-                    %handles.h.Img{handles.h.Id}.I.slices{3} = colorChannels;
-                    if obj.mibModel.I{obj.mibModel.Id}.volren.show == 0
-                        img = obj.mibModel.getRGBimage(options);
+            
+            if isempty(obj.extraController)     % snapshot from MIB main window
+                for imageId = 1:maxImageIndex
+                    if imageId == maxImageIndex
+                        %set(handles.h.lutCheckbox, 'value', lutCheckBox);
+                        %handles.h.Img{handles.h.Id}.I.slices{3} = colorChannels;
+                        if obj.mibModel.I{obj.mibModel.Id}.volren.show == 0
+                            img = obj.mibModel.getRGBimage(options);
+                        else
+                            volrenOpt.ImageSize = [newHeight, newWidth];
+                            scaleRatio = 1/obj.mibModel.getImageProperty('magFactor');
+                            S = makehgtform('scale', 1/scaleRatio);
+                            volren = obj.mibModel.getImageProperty('volren');
+                            volrenOpt.Mview = S * volren.viewer_matrix;
+                            
+                            %             target=bsxfun(@plus,volrenOpt.Mview(1:3,1:3), volrenOpt.Mview(1:3,end));
+                            %             source=eye(3);
+                            %             E=absor(source, target, 'doScale', 0);
+                            %             R = E.R;
+                            %             x = radtodeg(atan2(R(3,2), R(3,3)));
+                            %             y = radtodeg(atan2(-R(3,1), sqrt(R(3,2)*R(3,2) + R(3,3)*R(3,3))));
+                            %             z = radtodeg(atan2(R(2,1), R(1,1)));
+                            %             z = mod(z, 90);
+                            %             shiftX1 = newWidth*cosd(z);
+                            %             shiftX2 = newHeight*sind(z);
+                            %             shiftY1 = newHeight*sind(z);
+                            %             shiftY2 = newWidth*cosd(z);
+                            %             volrenOpt.ImageSize = [round(shiftY1+shiftY2)*1.2, round(shiftX1+shiftX2)*1.2];
+                            %
+                            timePoint = slices{5}(1);
+                            img = obj.mibModel.getRGBvolume(cell2mat(obj.mibModel.getData3D('image', timePoint, 4, 0)), volrenOpt);
+                        end
                     else
-                        volrenOpt.ImageSize = [newHeight, newWidth];
-                        scaleRatio = 1/obj.mibModel.getImageProperty('magFactor');
-                        S = makehgtform('scale', 1/scaleRatio);
-                        volren = obj.mibModel.getImageProperty('volren');
-                        volrenOpt.Mview = S * volren.viewer_matrix;
+                        if obj.View.handles.grayscaleCheck.Value == 1
+                            options.useLut = 0;
+                        end
                         
-                        %             target=bsxfun(@plus,volrenOpt.Mview(1:3,1:3), volrenOpt.Mview(1:3,end));
-                        %             source=eye(3);
-                        %             E=absor(source, target, 'doScale', 0);
-                        %             R = E.R;
-                        %             x = radtodeg(atan2(R(3,2), R(3,3)));
-                        %             y = radtodeg(atan2(-R(3,1), sqrt(R(3,2)*R(3,2) + R(3,3)*R(3,3))));
-                        %             z = radtodeg(atan2(R(2,1), R(1,1)));
-                        %             z = mod(z, 90);
-                        %             shiftX1 = newWidth*cosd(z);
-                        %             shiftX2 = newHeight*sind(z);
-                        %             shiftY1 = newHeight*sind(z);
-                        %             shiftY2 = newWidth*cosd(z);
-                        %             volrenOpt.ImageSize = [round(shiftY1+shiftY2)*1.2, round(shiftX1+shiftX2)*1.2];
-                        %
-                        timePoint = slices{5}(1);
-                        img = obj.mibModel.getRGBvolume(cell2mat(obj.mibModel.getData3D('image', timePoint, 4, 0)), volrenOpt);
-                    end
-                else
-                    if obj.View.handles.grayscaleCheck.Value == 1
-                        options.useLut = 0;
+                        obj.mibModel.I{obj.mibModel.Id}.slices{3} = colorChannels(imageId);
+                        img = obj.mibModel.getRGBimage(options);
                     end
                     
-                    obj.mibModel.I{obj.mibModel.Id}.slices{3} = colorChannels(imageId);
-                    img = obj.mibModel.getRGBimage(options);
-                end
-                
-                obj.mibModel.I{obj.mibModel.Id}.slices{3} = colorChannels;
-                
-                if obj.View.handles.measurementsCheck.Value
-                    hFig = figure(153);
-                    hFig.Renderer = 'zbuffer';
-                    clf;
-                    warning('off','images:initSize:adjustingMag');
-                    warning('off','MATLAB:print:DeprecateZbuffer');
+                    obj.mibModel.I{obj.mibModel.Id}.slices{3} = colorChannels;
                     
-                    imshow(img);
-                    hold on;
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.addMeasurementsToPlot(obj.mibModel, options.mode, gca);
-                    set(gca, 'xtick', []);
-                    set(gca, 'ytick', []);
-                    % export to img
-                    img2 = export_fig('-native','-zbuffer','-a1');
-                    
-                    delete(153);
-                    warning('on','images:initSize:adjustingMag');
-                    warning('on','MATLAB:print:DeprecateZbuffer');
-                    % crop the frame
-%                     if obj.mibController.matlabVersion < 8.4
-%                         img2 = img2(2:end-1, 2:end-1, :);
-%                     end
-                    % the resulting image is few pixels larger than the original one
-                    img = imresize(img2, [size(img,1) size(img,2)], 'nearest');
-                end
-                
-                if obj.View.handles.roiRadio.Value
-                    roiList = obj.View.handles.roiPopup.String;
-                    roiImg = obj.mibModel.I{obj.mibModel.Id}.hROI.returnMask(roiList{obj.View.handles.roiPopup.Value});
-                    STATS = regionprops(roiImg, 'BoundingBox');
-                    img = imcrop(img, STATS.BoundingBox);
-                end
-                
-                scale = newWidth/size(img, 2);
-                if newWidth ~= obj.origWidth || newHeight ~= obj.origHeight   % resize the image
-                    methodVal = obj.View.handles.resizeMethodPopup.Value;
-                    methodList = obj.View.handles.resizeMethodPopup.String;
-                    img = imresize(img, [newHeight newWidth], methodList{methodVal});
-                end
-                
-                if obj.View.handles.scalebarCheck.Value  % add scale bar
-                    scalebarOptions.orientation = obj.mibModel.I{obj.mibModel.Id}.orientation;
-                    scalebarOptions.bgColor = bgColor;
-                    img = mibAddScaleBar(img, obj.mibModel.I{obj.mibModel.Id}.pixSize, scale, scalebarOptions);
-                end
-                
-                if maxImageIndex == 1
-                    imgOut = img;
-                else
-                    if imageId == 1
-                        outH = size(img, 1);
-                        outW = size(img, 2);
-                        colId = 1;
-                        rowId = 1;
-                        max_int = double(intmax(class(img)));
-                        bgColor2 = bgColor*max_int;
-                        imgOut = zeros([outH*rowNo + (rowNo-1)*imageShift, outW*colNo + (colNo-1)*imageShift, size(img, 3)], class(img)) + bgColor2; %#ok<ZEROLIKE>
+                    if obj.View.handles.measurementsCheck.Value
+                        hFig = figure(153);
+                        hFig.Renderer = 'zbuffer';
+                        clf;
+                        warning('off','images:initSize:adjustingMag');
+                        warning('off','MATLAB:print:DeprecateZbuffer');
+                        
+                        imshow(img);
+                        hold on;
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.addMeasurementsToPlot(obj.mibModel, options.mode, gca);
+                        set(gca, 'xtick', []);
+                        set(gca, 'ytick', []);
+                        % export to img
+                        img2 = export_fig('-native','-zbuffer','-a1');
+                        
+                        delete(153);
+                        warning('on','images:initSize:adjustingMag');
+                        warning('on','MATLAB:print:DeprecateZbuffer');
+                        % crop the frame
+                        %                     if obj.mibController.matlabVersion < 8.4
+                        %                         img2 = img2(2:end-1, 2:end-1, :);
+                        %                     end
+                        % the resulting image is few pixels larger than the original one
+                        img = imresize(img2, [size(img,1) size(img,2)], 'nearest');
                     end
                     
-                    y1 = (rowId-1)*outH+1 + imageShift*(rowId-1);
-                    y2 = y1 + outH - 1;
-                    x1 = (colId-1)*outW+1 + imageShift*(colId-1);
-                    x2 = x1 + outW - 1;
-                    imgOut(y1:y2,x1:x2,:) = img;
-                    colId = colId + 1;
-                    if colId > colNo
-                        colId = 1;
-                        rowId = rowId + 1;
+                    if obj.View.handles.roiRadio.Value
+                        roiList = obj.View.handles.roiPopup.String;
+                        roiImg = obj.mibModel.I{obj.mibModel.Id}.hROI.returnMask(roiList{obj.View.handles.roiPopup.Value});
+                        STATS = regionprops(roiImg, 'BoundingBox');
+                        img = imcrop(img, STATS.BoundingBox);
                     end
+                    
+                    scale = newWidth/size(img, 2);
+                    if newWidth ~= obj.origWidth || newHeight ~= obj.origHeight   % resize the image
+                        methodVal = obj.View.handles.resizeMethodPopup.Value;
+                        methodList = obj.View.handles.resizeMethodPopup.String;
+                        img = imresize(img, [newHeight newWidth], methodList{methodVal});
+                    end
+                    
+                    if obj.View.handles.scalebarCheck.Value  % add scale bar
+                        scalebarOptions.orientation = obj.mibModel.I{obj.mibModel.Id}.orientation;
+                        scalebarOptions.bgColor = bgColor;
+                        img = mibAddScaleBar(img, obj.mibModel.I{obj.mibModel.Id}.pixSize, scale, scalebarOptions);
+                    end
+                    
+                    if maxImageIndex == 1
+                        imgOut = img;
+                    else
+                        if imageId == 1
+                            outH = size(img, 1);
+                            outW = size(img, 2);
+                            colId = 1;
+                            rowId = 1;
+                            max_int = double(intmax(class(img)));
+                            bgColor2 = bgColor*max_int;
+                            imgOut = zeros([outH*rowNo + (rowNo-1)*imageShift, outW*colNo + (colNo-1)*imageShift, size(img, 3)], class(img)) + bgColor2; %#ok<ZEROLIKE>
+                        end
+                        
+                        y1 = (rowId-1)*outH+1 + imageShift*(rowId-1);
+                        y2 = y1 + outH - 1;
+                        x1 = (colId-1)*outW+1 + imageShift*(colId-1);
+                        x2 = x1 + outW - 1;
+                        imgOut(y1:y2,x1:x2,:) = img;
+                        colId = colId + 1;
+                        if colId > colNo
+                            colId = 1;
+                            rowId = rowId + 1;
+                        end
+                    end
+                    waitbar(imageId/maxImageIndex, wb);
                 end
-                waitbar(imageId/maxImageIndex, wb);
+            else
+                maxImageIndex = 1;
+                imageId = 1;
+                if strcmp(obj.extraController.View.gui.Name, '3D rendering')
+                    imgOut = obj.extraController.grabFrame(newWidth, newHeight);
+                end
             end
             
             if obj.View.handles.toFileRadio.Value     % saving to a file

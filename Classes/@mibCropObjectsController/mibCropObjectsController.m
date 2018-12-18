@@ -325,9 +325,9 @@ classdef mibCropObjectsController < handle
                             matlabVar.Model.materials = modelMaterialNames;
                             matlabVar.Model.colors = modelMaterialColors;
                             if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber() > 1  % save annotations
-                                [labelText, labelValues, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+                                [labelText, labelValue, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
                                 matlabVar.labelText = labelText;
-                                matlabVar.labelValues = labelValues;
+                                matlabVar.labelValue = labelValue;
                                 matlabVar.labelPosition = labelPosition;
                             end
                         else
@@ -344,11 +344,11 @@ classdef mibCropObjectsController < handle
                                     modelType = obj.mibModel.I{obj.mibModel.Id}.modelType;  %#ok<NASGU> % type of the model
                                     
                                     if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber() > 1  % save annotations
-                                        %[labelText, labelValues, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
-                                        %save(fnModel, 'imOut', 'modelMaterialNames', 'modelMaterialColors', 'BoundingBox', 'labelText', 'labelValues', 'labelPosition', '-mat', '-v7.3');
+                                        %[labelText, labelValue, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+                                        %save(fnModel, 'imOut', 'modelMaterialNames', 'modelMaterialColors', 'BoundingBox', 'labelText', 'labelValue', 'labelPosition', '-mat', '-v7.3');
                                         
-                                        [labelText, labelValues, labelPosition] = imgOut2.hLabels.getLabels(); %#ok<NASGU,ASGLU>
-                                        str1 = sprintf('save ''%s'' imOut modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType labelText labelValues labelPosition -mat -v7.3', fnModel);
+                                        [labelText, labelValue, labelPosition] = imgOut2.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+                                        str1 = sprintf('save ''%s'' imOut modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType labelText labelValue labelPosition -mat -v7.3', fnModel);
                                     else    % save without annotations
                                         %save(fnModel, 'imOut', 'modelMaterialNames', 'modelMaterialColors', 'BoundingBox', '-mat', '-v7.3');
                                         str1 = sprintf('save ''%s'' imOut modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType -mat -v7.3', fnModel);

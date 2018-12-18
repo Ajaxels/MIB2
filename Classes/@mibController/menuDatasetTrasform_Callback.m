@@ -5,7 +5,8 @@ function menuDatasetTrasform_Callback(obj, mode)
 %
 % Parameters:
 % mode: a string with a transormation mode:
-% @li 'addframe', add a frame around the dataset
+% @li 'addframeShifts', add a frame around the dataset by providing vertical and horizontal shifts
+% @li 'addframeDims', add a frame around the dataset by providing new width and height
 % @li 'flipH', flip the dataset horizontally
 % @li 'flipV', flip the dataset vertically
 % @li 'flipZ', flip the Z-stacks of the dataset
@@ -43,7 +44,11 @@ switch mode
         obj.mibModel.rotateDataset(mode);
     case {'xy2zx', 'xy2zy','zx2zy','z2t'}
         obj.mibModel.transposeDataset(mode);
-    case 'addframe'
+    case 'addframeShifts'
         obj.mibModel.addFrame();
+    case 'addframeDims'
+        obj.mibModel.I{obj.mibModel.Id}.addFrameToImage();
+        notify(obj.mibModel, 'newDataset');  % notify newDataset with the index of the dataset
+        obj.plotImage();
 end
 end

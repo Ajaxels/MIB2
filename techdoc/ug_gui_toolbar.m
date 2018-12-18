@@ -162,6 +162,15 @@
 % <a href="https://youtu.be/T08fJeucn0U"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/T08fJeucn0U</a>
 % </html>
 %
+%% Center marker toggle
+%%
+% 
+% <<images/toolbar_center_marker.jpg>>
+%
+% Switch on/off marker for the center of the image axes. It is helpful when
+% doing the graphcut segmentation using the grid mode.
+%
+%
 %% Block-mode switch
 %%
 % 

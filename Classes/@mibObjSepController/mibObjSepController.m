@@ -395,7 +395,11 @@ classdef mibObjSepController  < handle
                         clear intImg;
                     else
                         waitbar(.1, wb, sprintf('Computing the distance transform\nPlease wait...'));
-                        W = bwdistsc(~img, aspect);
+                        if aspect(1)/aspect(3) > 0.65 && aspect(1)/aspect(3) <= 1.5
+                            W = bwdist(~img);
+                        else
+                            W = bwdistsc(~img, aspect);
+                        end
                         waitbar(.3, wb, sprintf('Complementing the image\nPlease wait'));
                         W = -W;
                         
@@ -418,7 +422,16 @@ classdef mibObjSepController  < handle
                     
                     waitbar(.85, wb, sprintf('Generating resulting image\nPlease wait...'));
                     objInd = unique(W(seedImg~=0));
+                    objInd(objInd==0) = [];     % remove 0 index
                     W = uint8(ismember(W,objInd));
+                   
+                    % % this is alternative option, because the other one
+                    % % did not work at some situations, need to reproduce it
+                    % % again for a fix
+                    % img(W==0) = 0;
+                    % W = img;
+                    %obj.mibModel.setData3D('selection', W, NaN, 4, NaN, getDataOptions);   % set dataset
+                    
                     
                     if binVal(1) ~= 1 || binVal(2) ~= 1
                         %waitbar(.95, wb, sprintf('Re-binning the mask\nPlease wait...'));
@@ -428,6 +441,7 @@ classdef mibObjSepController  < handle
                         resizeOptions.method = 'nearest';
                         W = mibResize3d(W, [], resizeOptions);
                     end
+                    
                     obj.mibModel.setData3D('selection', W, NaN, 4, NaN, getDataOptions);   % set dataset
                     waitbar(1, wb, sprintf('Done!'));
                 else

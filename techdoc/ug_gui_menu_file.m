@@ -41,7 +41,7 @@
 % 
 % <html>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/iR7OL0eJGuw"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iR7OL0eJGuw</a>
+% <a href="https://youtu.be/iR7OL0eJGuw"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/iR7OL0eJGuw</a>
 % </html>
 %
 %% Chopped images...
@@ -69,7 +69,7 @@
 % automatically created. This |containers.Map| can be imported back to |MIB| later together 
 % with the modified dataset to restore parameters of the dataset.<br><br>
 % A brief demonstration on Import/Export is available in the following video:<br>
-% <a href="https://youtu.be/zUJ1RUuTLVs"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/zUJ1RUuTLVs</a>
+% <a href="https://youtu.be/zUJ1RUuTLVs"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/zUJ1RUuTLVs</a>
 % <br><br>
 % <b>- Imaris</b><br>
 % When Imaris is installed, the images can also be exported to Imaris. 
@@ -103,16 +103,48 @@
 % <<images/menuFileSnapshot.png>>
 % 
 %% Render volume
-% Volume rendering of the opened dataset using Fiji 3D image viewer or Matlab Volume Viewer application. 
+% 3D visualization of volumes is available using 3 different ways:
 %
-% *Volume rendering using Fiji 3D viewer*
+% <html><h3 style="color:#d45600;">MIB rendering</h3></html>
+%
+%
+% Starting from MIB (version 2.5) and Matlab R2018b the volumes can be
+% directly visualized in MIB using hardware accelerated volume rendering
+% engine. The datasets for visuzalization can be downsampled during the
+% export. It is possible to make snapshots and animations.
+% 
+% Limitations:
+% 
+% * One volume at the time
+% * Only grayscaled 3D data, i.e. a single color channel
+% * Scale bar is not yet available
+% 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/4CrfdOiZebk"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/J70V33f7bas</a>
+% </html>
+%
+% <html><h3 style="color:#d45600;">Matlab Volume Viewer</h3></html>
+%
+%
+% When MIB is used with Matlab R2017a or newer it is possible to export the
+% open dataset to Volume Viewer application. Please note that this feature
+% is not available for the compliled version of MIB
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/J70V33f7bas"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/J70V33f7bas</a>
+% </html>
+% 
+%
+% <html><h3 style="color:#d45600;">Fiji 3D viewer</h3></html>
 %
 % Please refer to details in the 
 % <im_browser_system_requirements.html Microscopy Image Browser System Requirements Fiji> section for installation of Fiji.
 %
 % <html>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/DZ1Tj3Fh2HM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/DZ1Tj3Fh2HM</a>
+% <a href="https://youtu.be/DZ1Tj3Fh2HM"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/DZ1Tj3Fh2HM</a>
 % </html>
 %
 % Additional dialog prompts for extra parameters for rendering:
@@ -136,16 +168,6 @@
 % the Fiji 3D viewer window: |3D Viewer->Edit->Attributes->Adjust threshold|. 
 %
 %
-% *Volume rendering using Matlab Volume Viewer*
-% When MIB is used with Matlab R2017a or newer it is possible to export the
-% open dataset to Volume Viewer application. Please note that this feature
-% is not available for the compliled version of MIB
-%
-% <html>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/J70V33f7bas"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/J70V33f7bas</a>
-% </html>
-% 
 %% Preferences
 % View and edit preferences of Microscopy Image Browser. Allows to modify colors of the |Selection|, |Model| and |Mask|
 % layers, default behaviour of the mouse wheel and keys, settings of Undo.

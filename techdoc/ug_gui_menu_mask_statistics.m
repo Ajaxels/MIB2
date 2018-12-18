@@ -16,7 +16,9 @@
 % <td style="border: 0px">
 % <ul>
 % <li><b>1. The Objects panel</b> - using combo boxes of this panel it is possible to select material for analysis and type of the dataset: 
-% current slice (<em>2D Slice</em>), current Z-stack (<em>3D Stack</em>) or for the whole volume (<em>4D Dataset</em>)</li>
+% current slice (<em>2D Slice</em>), current Z-stack (<em>3D Stack</em>) or for the whole volume (<em>4D Dataset</em>).<br>
+% For the models with more than 255 materials the upper combo box has a 'Model' option. 
+% When this option is used, the tool quantifies all materials of the model at once; as result each material is described with a single value</li>
 % <li><b>2. The Shape panel</b> - allows selection of type of objects to detect: |2D| or |3D|</li>
 % <li><b>3. The Mode panel</b> - when the <em>Object mode</em> is selected the dialog returns
 % statistic that is based on shape properties of objects, otherwise (<em>Intensity mode</em>) based

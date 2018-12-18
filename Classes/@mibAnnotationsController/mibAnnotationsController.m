@@ -182,13 +182,23 @@ classdef mibAnnotationsController < handle
                         res.labelText = res.labelsList;
                         res = rmfield(res, 'labelsList');
                     end
-                    if ~isfield(res, 'labelValues') 
-                        res.labelValues = zeros([numel(res.labelText), 1]) + 1;
+                    if isfield(res, 'labelValues')     % old variable for values of annotations
+                        res.labelValue = res.labelValues;
+                        res = rmfield(res, 'labelValues');
                     end
-                    if size(res.labelPositions,2) == 3  % missing the t
-                        res.labelPositions(:, 4) = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1);
+                    if isfield(res, 'labelPositions')     % old variable for values of annotations
+                        res.labelPosition = res.labelPositions;
+                        res = rmfield(res, 'labelPositions');
                     end
-                    obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(res.labelText, res.labelPositions, res.labelValues);
+                    
+                    if ~isfield(res, 'labelValue')     % old variable for values of annotations
+                        res.labelValue = zeros([numel(res.labelText), 1]) + 1;
+                    end
+                    
+                    if size(res.labelPosition,2) == 3  % missing the t
+                        res.labelPosition(:, 4) = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1);
+                    end
+                    obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(res.labelText, res.labelPosition, res.labelValue);
             end
             obj.updateWidgets();
             
@@ -203,13 +213,13 @@ classdef mibAnnotationsController < handle
             % save annotations to a file or export to Matlab
             global mibPath;
             
-            [labelText, labelValues, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
+            [labelText, labelValue, labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
             if numel(labelText) == 0; return; end
             
             % rearrange into a structure
             Labels.Text = labelText;
-            Labels.Values = labelValues;
-            Labels.Positions = labelPositions;
+            Labels.Values = labelValue;
+            Labels.Positions = labelPosition;
             
             button =  questdlg(sprintf('Would you like to save annotations to a file or export to the main Matlab workspace?'),'Export/Save annotations','Save to a file','Export to Matlab','Cancel','Save to a file');
             if strcmp(button, 'Cancel'); return; end
@@ -221,25 +231,25 @@ classdef mibAnnotationsController < handle
                 assignin('base', answer{1}, Labels);
                 fprintf('Export annotations: structure ''%s'' with fields .Text, .Values, .Positions was exported to Matlab!\n', answer{1});
             else
-                obj.saveAnnotationsToFile(labelText, labelPositions, labelValues);
+                obj.saveAnnotationsToFile(labelText, labelPosition, labelValue);
             end
         end
         
-        function saveAnnotationsToFile(obj, labelText, labelPositions, labelValues)
-            % function saveAnnotationsToFile(obj, labelText, labelPositions, labelValues)
+        function saveAnnotationsToFile(obj, labelText, labelPosition, labelValue)
+            % function saveAnnotationsToFile(obj, labelText, labelPosition, labelValue)
             % save annotations to a file
             %
             % Parameters:
             % labelText: labels of annotations, cell array
-            % labelPositions: a matrix with coordinates for the annotations
-            % labelValues: an array with annotation values
+            % labelPosition: a matrix with coordinates for the annotations
+            % labelValue: an array with annotation values
             
             fn_out = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
             dotIndex = strfind(fn_out,'.');
             if ~isempty(dotIndex)
                 fn_out = fn_out(1:dotIndex-1);
             end
-            if isempty(strfind(fn_out,'/')) && isempty(strfind(fn_out,'\'))
+            if isempty(strfind(fn_out,'/')) && isempty(strfind(fn_out,'\')) %#ok<STREMP>
                 fn_out = fullfile(obj.mibModel.myPath, fn_out);
             end
             if isempty(fn_out)
@@ -255,8 +265,9 @@ classdef mibAnnotationsController < handle
             [filename, path, FilterIndex] = uiputfile(Filters, 'Save annotations...',fn_out); %...
             if isequal(filename,0); return; end % check for cancel
             fn_out = fullfile(path, filename);
+            
             if strcmp('Matlab format (*.ann)', Filters{FilterIndex,2})    % matlab format
-                save(fn_out, 'labelText', 'labelValues', 'labelPositions', '-mat', '-v7.3');
+                save(fn_out, 'labelText', 'labelValue', 'labelPosition', '-mat', '-v7.3');
             elseif strcmp('Excel format (*.xls)', Filters{FilterIndex,2})    % excel format
                 wb = waitbar(0,'Please wait...','Name','Generating Excel file...','WindowStyle','modal');
                 warning off MATLAB:xlswrite:AddSheet
@@ -273,11 +284,11 @@ classdef mibAnnotationsController < handle
                 roiId = 4;
                 for i=1:numel(labelText)
                     s(roiId+i, 1) = labelText(i);
-                    s{roiId+i, 2} = labelValues(i);
-                    s{roiId+i, 3} = labelPositions(i,1);
-                    s{roiId+i, 4} = labelPositions(i,2);
-                    s{roiId+i, 5} = labelPositions(i,3);
-                    s{roiId+i, 6} = labelPositions(i,4);
+                    s{roiId+i, 2} = labelValue(i);
+                    s{roiId+i, 3} = labelPosition(i,1);
+                    s{roiId+i, 4} = labelPosition(i,2);
+                    s{roiId+i, 5} = labelPosition(i,3);
+                    s{roiId+i, 6} = labelPosition(i,4);
                 end
                 xlswrite2(fn_out, s, 'Sheet1', 'A1');
                 waitbar(1, wb);
@@ -287,7 +298,7 @@ classdef mibAnnotationsController < handle
                     'Recalculate coordinates', 'Recalculate', 'Save as they are', 'Recalculate');
                 
                 % rearrange to [x, y, z] format from [z, x, y]
-                labelPositionsOut = [labelPositions(:,2) labelPositions(:,3) labelPositions(:,1)];
+                labelPositionsOut = [labelPosition(:,2) labelPosition(:,3) labelPosition(:,1)];
                 
                 if strcmp(recalcCoordinates, 'Recalculate')     % recalculate annotations to the real world coordinates
                     bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
@@ -298,7 +309,7 @@ classdef mibAnnotationsController < handle
                 end
                 options.format = 'ascii';
                 options.overwrite = 1;
-                points2psi(fn_out, labelPositionsOut, labelText, labelValues, options);
+                points2psi(fn_out, labelPositionsOut, labelText, labelValue, options);
                 
             else    % landmarks for Amira
                 button = questdlg(sprintf('!!! Warning !!!\n\nWhen exporting points as landmarks for Amira only positions of the annotations are saved!\n\nIf you want to keep labels and values, please use the Amira compatible PSI format!'),...
@@ -309,7 +320,7 @@ classdef mibAnnotationsController < handle
                     'Recalculate coordinates', 'Recalculate', 'Save as they are', 'Recalculate');
                 
                 % rearrange to [x, y, z] format from [z, x, y]
-                labelPositionsOut = [labelPositions(:,2) labelPositions(:,3) labelPositions(:,1)];
+                labelPositionsOut = [labelPosition(:,2) labelPosition(:,3) labelPosition(:,1)];
                 
                 if strcmp(recalcCoordinates, 'Recalculate')     % recalculate annotations to the real world coordinates
                     bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
@@ -513,9 +524,9 @@ classdef mibAnnotationsController < handle
                     if isempty(obj.indices); return; end
                     
                     labelText = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelText(obj.indices(:,1));
-                    labelValues = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelValues(obj.indices(:,1));
-                    labelPositions = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelPosition(obj.indices(:,1), :);
-                    obj.saveAnnotationsToFile(labelText, labelPositions, labelValues);
+                    labelValue = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelValue(obj.indices(:,1));
+                    labelPosition = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelPosition(obj.indices(:,1), :);
+                    obj.saveAnnotationsToFile(labelText, labelPosition, labelValue);
 
                 case 'Imaris' % export annotations to Imaris
                     if isempty(obj.indices); return; end
@@ -524,22 +535,22 @@ classdef mibAnnotationsController < handle
                     annIds = obj.indices(:,1);
                     
                     labelText = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelText(annIds);
-                    labelValues = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelValues(annIds);
+                    labelValue = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelValue(annIds);
 
-                    labelPositions = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelPosition(annIds, :);  % [z, x, y, t];
-                    %labelPositions = data(annIds,2:5);
-                    %labelPositions = cellfun(@str2double, labelPositions);  % generate a matrix [z, x, y, t];
-                    labelPositions = [labelPositions(:,2), labelPositions(:,3), labelPositions(:,1), labelPositions(:,4)];   % reshape to [x, y, z, t]
+                    labelPosition = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelPosition(annIds, :);  % [z, x, y, t];
+                    %labelPosition = data(annIds,2:5);
+                    %labelPosition = cellfun(@str2double, labelPosition);  % generate a matrix [z, x, y, t];
+                    labelPosition = [labelPosition(:,2), labelPosition(:,3), labelPosition(:,1), labelPosition(:,4)];   % reshape to [x, y, z, t]
                     
                     % recalculate position in respect to the bounding box
                     bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
                     pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
-                    labelPositions(:, 1) = labelPositions(:, 1)*pixSize.x + bb(1) - pixSize.x/2;
-                    labelPositions(:, 2) = labelPositions(:, 2)*pixSize.y + bb(3) - pixSize.y/2;
-                    labelPositions(:, 3) = labelPositions(:, 3)*pixSize.z + bb(5) - pixSize.z;
+                    labelPosition(:, 1) = labelPosition(:, 1)*pixSize.x + bb(1) - pixSize.x/2;
+                    labelPosition(:, 2) = labelPosition(:, 2)*pixSize.y + bb(3) - pixSize.y/2;
+                    labelPosition(:, 3) = labelPosition(:, 3)*pixSize.z + bb(5) - pixSize.z;
                     
                     if isnan(obj.imarisOptions.radii)
-                        obj.imarisOptions.radii = (max(labelPositions(:, 1))-min(labelPositions(:, 1)))/50/max(labelValues);
+                        obj.imarisOptions.radii = (max(labelPosition(:, 1))-min(labelPosition(:, 1)))/50/max(labelValue);
                     end
                     prompt = {'Radius scaling factor for spots:', sprintf('Color [R, G, B, A]\nrange from 0 to 1'), 'Name for spots:'};
                     defAns = {num2str(obj.imarisOptions.radii), num2str(obj.imarisOptions.color), labelText{1}};
@@ -551,10 +562,10 @@ classdef mibAnnotationsController < handle
                     obj.imarisOptions.color = str2num(answer{2}); %#ok<ST2NM>
                     obj.imarisOptions.name = answer{3};
                     
-                    options.radii = labelValues * obj.imarisOptions.radii;
+                    options.radii = labelValue * obj.imarisOptions.radii;
                     options.color = obj.imarisOptions.color;
                     options.name = obj.imarisOptions.name;
-                    obj.mibModel.connImaris = mibSetImarisSpots(labelPositions, obj.mibModel.connImaris, options);
+                    obj.mibModel.connImaris = mibSetImarisSpots(labelPosition, obj.mibModel.connImaris, options);
                     
                 case 'Delete'   % delete the highlighted annotation
                     if isempty(obj.indices); return; end
@@ -585,6 +596,7 @@ classdef mibAnnotationsController < handle
             %
             % Return values:
             %
+            obj.mibModel.mibDoBackup('labels', 1);
             
             sortingList = obj.View.handles.resortTablePopup.String;
             sortBy = lower(sortingList{obj.View.handles.resortTablePopup.Value});

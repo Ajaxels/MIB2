@@ -176,7 +176,7 @@ if switch3d == 1        % 3D mode
         getDataOptions.viewPort = obj.I{obj.Id}.viewPort;
         obj.U.store(type, obj.getData3D(type, NaN, getDataOptions.orient, 0, getDataOptions), obj.I{obj.Id}.meta, getDataOptions);
     elseif strcmp(type, 'labels')
-        [labels.labelText, labels.labelValues, labels.labelPosition] = obj.I{obj.Id}.hLabels.getLabels();
+        [labels.labelText, labels.labelValue, labels.labelPosition] = obj.I{obj.Id}.hLabels.getLabels();
         obj.U.store(type, {labels}, NaN);
     elseif strcmp(type, 'measurements')
         obj.U.store(type, {obj.I{obj.Id}.hMeasure.Data}, NaN);
@@ -193,7 +193,7 @@ else                    % 2D mode
         getDataOptions.viewPort = obj.I{obj.Id}.viewPort;
         obj.U.store(type, obj.getData2D(type, getDataOptions.z(1), getDataOptions.orient, 0, getDataOptions), obj.I{obj.Id}.meta, getDataOptions);
     elseif strcmp(type, 'labels')
-        [labels.labelText, labels.labelValues, labels.labelPosition] = obj.I{obj.Id}.hLabels.getLabels();
+        [labels.labelText, labels.labelValue, labels.labelPosition] = obj.I{obj.Id}.hLabels.getLabels();
         obj.U.store(type, {labels}, NaN, getDataOptions);
     elseif strcmp(type, 'measurements')
         obj.U.store(type, {obj.I{obj.Id}.hMeasure.Data}, NaN, getDataOptions);

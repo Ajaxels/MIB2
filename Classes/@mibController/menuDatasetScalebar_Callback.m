@@ -15,7 +15,7 @@ function menuDatasetScalebar_Callback(obj, parameter)
 % 
 global mibPath;
 
-choice = questdlg(sprintf('The following procedure allows to define the pixel size for the dataset using a scale bar displayed on the image.\n\nHow to use:\n1. With the left mouse button mark the end points of the scale bar\n2. Double click on the line to confirm the selection\n3. Enter the length of the scale bar'), ...
+choice = questdlg(sprintf('The following procedure allows to define the pixel size for the dataset using a scale bar displayed on the image.\n\nHow to use:\n1. Specify the length of the scale bar\n2. With the left mouse button mark the end points of the scale bar\n3. Modify the scale bar by moving the end points\n4. Double click on the line to confirm the selection'), ...
     'Scale bar info', 'Continue', 'Cancel', 'Cancel');
 if strcmp(choice, 'Cancel'); return; end
     

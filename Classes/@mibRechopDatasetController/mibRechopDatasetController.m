@@ -10,6 +10,10 @@ classdef mibRechopDatasetController < handle
     % as published by the Free Software Foundation; either version 2
     % of the License, or (at your option) any later version.
     
+    % Updates:
+    % 10.12.2018, added fusing of annotations together with models
+    
+    
     properties
         mibModel
         % handles to the model
@@ -349,9 +353,15 @@ classdef mibRechopDatasetController < handle
                 zOffset = ceil(str2double(obj.View.handles.zOffsetEdit.String));
                 
                 if imgSw == 0 && modelSw == 1
+                    wb = waitbar(0, 'Backing up the model');
                     obj.mibModel.mibDoBackup('model', 1);
+                    waitbar(1, wb);
+                    delete(wb);
                 else
+                    wb = waitbar(0, 'Backing up the image');
                     obj.mibModel.mibDoBackup('image', 1);
+                    waitbar(1, wb);
+                    delete(wb);
                 end
                 
                 opt.blockModeSwitch = 0;
@@ -566,6 +576,24 @@ classdef mibRechopDatasetController < handle
                         opt.y = [y1 y2];
                         opt.z = [z1 z2];
                         obj.mibModel.setData3D('model', {R.(R.modelVariable)}, NaN, 4, NaN, opt);
+                        
+                        % adding annotations
+                        if isfield(R, 'labelText')
+                            R.labelPosition(:,1) = R.labelPosition(:,1) + z1;
+                            R.labelPosition(:,2) = R.labelPosition(:,2) + x1;
+                            R.labelPosition(:,3) = R.labelPosition(:,3) + y1;
+                            if isfield(R, 'labelValues')    % old field name, before MIB 2.5
+                                R.labelValue = R.labelValues;
+                                R = rmfield(R, 'labelValues');
+                            end
+                            if isfield(R, 'labelValue') 
+                                obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(R.labelText, R.labelPosition, R.labelValue);
+                            else
+                                obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(R.labelText, R.labelPosition);
+                            end
+                        end
+                        
+                        
                     end
                     
                     waitbar(fnId/no_files, wb);

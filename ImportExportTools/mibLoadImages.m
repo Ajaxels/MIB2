@@ -151,7 +151,8 @@ end
 % fill img_info and preallocate memory for the dataset
 % check files for dimensions and class
 if options.imgStretch == 1
-    if strcmp(files(1).imgClass, 'int16') || strcmp(files(1).imgClass, 'uint32')
+    if strcmp(files(1).imgClass, 'int16') || strcmp(files(1).imgClass, 'uint32') %|| ...
+        %strcmp(files(1).imgClass, 'single') || strcmp(files(1).imgClass, 'double')    
         choice = questdlg(sprintf('The original image is in the %s format\n\nIt will be converted into uint16 format!', files(1).imgClass), ...
             'Image Format Warning!', ...
             'Sure','Cancel','Sure');

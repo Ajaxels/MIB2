@@ -57,15 +57,15 @@ deltaX = abs(minX) + maxX;
 deltaY = abs(minY) + maxY;
 
 if isnumeric(options.backgroundColor)
-    imgOut = zeros(height+deltaY, width+deltaX, color, depth, class(imgIn))+options.backgroundColor;
+    imgOut = zeros([height+deltaY, width+deltaX, color, depth], class(imgIn))+options.backgroundColor;
 else
     if strcmp(options.backgroundColor,'black')
-        imgOut = zeros(height+deltaY, width+deltaX, color, depth, class(imgIn));
+        imgOut = zeros([height+deltaY, width+deltaX, color, depth], class(imgIn));
     elseif strcmp(options.backgroundColor,'white')
-        imgOut = zeros(height+deltaY, width+deltaX, color, depth, class(imgIn)) + intmax(class(imgIn));
+        imgOut = zeros([height+deltaY, width+deltaX, color, depth], class(imgIn)) + intmax(class(imgIn));
     else
         bgIntensity = mean(mean(mean(mean(imgIn))));
-        imgOut = zeros(height+deltaY, width+deltaX, color, depth, class(imgIn))+bgIntensity;
+        imgOut = zeros([height+deltaY, width+deltaX, color, depth], class(imgIn)) + bgIntensity;
     end
 end
 

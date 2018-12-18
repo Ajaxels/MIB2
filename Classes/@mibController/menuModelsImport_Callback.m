@@ -89,6 +89,7 @@ if (~isempty(answer{1}))
         if isfield(varIn, 'labelText')
             options.labelText = varIn.labelText;
             options.labelPosition = varIn.labelPosition;
+            options.labelValue = varIn.labelValue;
         end
         
         if isfield(varIn, 'modelType')

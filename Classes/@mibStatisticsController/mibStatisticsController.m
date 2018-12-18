@@ -166,7 +166,7 @@ classdef mibStatisticsController < handle
             targetList = {'Mask';'Exterior'};
             if obj.mibModel.getImageProperty('modelExist')
                 materials = obj.mibModel.getImageProperty('modelMaterialNames');
-                if obj.mibModel.I{obj.mibModel.Id}.modelType < 255
+                if obj.mibModel.I{obj.mibModel.Id}.modelType <= 255
                     targetList = [targetList; materials];
                 else
                     targetList = [targetList; 'Model'; materials];
