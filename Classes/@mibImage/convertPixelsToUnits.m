@@ -3,9 +3,9 @@ function [x, y, z] = convertPixelsToUnits(obj, x, y, z)
 % convert pixel with x, y, z coordinate to the physical imaging units
 %
 % Parameters:
-% x -> x - coordinate in pixels
-% y -> y - coordinate in pixels
-% z -> z - coordinate in pixels
+% x: -> x - coordinate in pixels
+% y: -> y - coordinate in pixels
+% z: -> z - coordinate in pixels
 % 
 % Return values:
 % x: -> x - coordinate in physical units, i.e. um
@@ -15,7 +15,7 @@ function [x, y, z] = convertPixelsToUnits(obj, x, y, z)
 % @note See also similar function in the Tools\convertPixelsToUnits
 
 %| 
-% @b Examples:
+% @b Examples
 % @code 
 % [xUnits, xUnits, xUnits] = obj.mibModel.I{obj.mibModel.Id}.convertPixelsToUnits(xPixel, xPixel, xPixel); 
 % @endcode

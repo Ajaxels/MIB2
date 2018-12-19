@@ -1,5 +1,5 @@
-function result = addColorChannel(obj, img, channelId, lutColors)
-% function result = addColorChannel(obj, img, channelId, lutColors)
+function output = addColorChannel(obj, img, channelId, lutColors)
+% function output = addColorChannel(obj, img, channelId, lutColors)
 % Add a new color channel to the existing dataset
 %
 % Parameters:
@@ -8,14 +8,14 @@ function result = addColorChannel(obj, img, channelId, lutColors)
 % lutColors: @b [optional] a matrix (channelNumber, R G B) for the colors. The colors should be in range between 0 and 1
 %
 % Return values:
-% result: result of the function; 1 -success; 0 -fail
-
-%| 
-% @b Example:
+% output: result of the function; 1 -success; 0 -fail
+%
+%
+% @b Example
 % @code mibImage.addColorChannel(img, channelId);     // replace the color channel (channelId) with new img  @endcode
 % @code obj.mibModel.getImageMethod('addColorChannel', NaN, img, channelId); // call from mibController via a wrapper function getImageMethod; to clear the class @endcode
 
-% Copyright (C) 04.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% Copyright (C) 04.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich -at- helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
@@ -24,7 +24,8 @@ function result = addColorChannel(obj, img, channelId, lutColors)
 %
 % Updates
 %
-result = 0;
+
+output = 0;
 if nargin < 4; lutColors = NaN; end
 if nargin < 3; channelId = NaN; end
 
@@ -78,5 +79,5 @@ if size(obj.viewPort.gamma, 1) < size(obj.viewPort.gamma, 2); obj.viewPort.gamma
 
 waitbar(1, wb);
 delete(wb);
-result = 1;
+output = 1;
 end

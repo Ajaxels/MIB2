@@ -3,7 +3,7 @@ classdef mibImage < matlab.mixin.Copyable
     % a basic class to contain individual datasets loaded in MIB. This
     % class is ruled by the mibModel class
     
-    % Copyright (C) 26.12.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+    % Copyright (C) 26.12.2016, Ilya Belevich, University of Helsinki (ilya.belevich -at- helsinki.fi)
     % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
     % This program is free software; you can redistribute it and/or
     % modify it under the terms of the GNU General Public License
@@ -12,6 +12,7 @@ classdef mibImage < matlab.mixin.Copyable
     
     
     properties
+        % properties of the class
         axesX
         % a vector [min, max] with minimal and maximal coordinates of
         % the axes X of the 'mibView.handles.mibImageAxes' axes; use @code mibModel.getAxesLimits() @endcode to
@@ -192,11 +193,12 @@ classdef mibImage < matlab.mixin.Copyable
 %         closeVirtualDatasets
 %     end
     
-    methods
+    methods 
         % declaration of functions in the external files, keep empty line in between for the doc generator
-        result = addColorChannel(obj, img, channelId, lutColors)        % Add a new color channel to the existing dataset
+
+        output = addColorChannel(obj, img, channelId, lutColors)        % Add a new color channel to the existing dataset
         
-        result = addFrameToImage(obj, options)        %  Add a frame around the dataset
+        output = addFrameToImage(obj, options)        %  Add a frame around the dataset
         
         clearContents(obj, img, metaIn, disableSelection)        % set all elements of the class to default values
         

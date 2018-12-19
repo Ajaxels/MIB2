@@ -135,7 +135,15 @@ if isdeployed
     if ismac()
         web('http://mib.helsinki.fi/web-update/MIB2_Mac.dmg', '-browser');
     elseif ispc()
-        web('http://mib.helsinki.fi/web-update/MIB2_Win.exe', '-browser');
+        answer = questdlg('Would you like to download MIB compiled for the current or recent release of Matlab?', 'Matlab version', 'Current', 'Recent', 'Cancel', 'Current');
+        switch answer
+            case 'Cancel' 
+                return;
+            case 'Current'
+                web('http://mib.helsinki.fi/web-update/MIB2_Win.exe', '-browser');
+            case 'Recent'
+                web('http://mib.helsinki.fi/web-update/MIB2_Win_Recent.exe', '-browser');
+        end
     end
 else
     web('http://mib.helsinki.fi/web-update/MIB2_Matlab.zip', '-browser');
@@ -149,7 +157,7 @@ function updateBtn_Callback(hObject, eventdata, handles)
 global mibPath;
 
 answer = mibInputDlg({mibPath}, sprintf('Please check MIB installation directory for:\n'), 'Update MIB', mibPath);
-if isempty(answer); return; end;
+if isempty(answer); return; end
 
 destination = answer{1};
 wb = waitbar(0,sprintf('Updating Microscopy Image Browser...\nIt may take up to few minutes \ndepending on network connection.\n\nPlease wait...'), 'Name', 'Updating...');

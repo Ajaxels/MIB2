@@ -3,14 +3,14 @@ function [x, y, z] = convertUnitsToPixels(obj, x, y, z)
 % convert coordinate with x, y, z in physical units to pixels
 %
 % Parameters:
-% x -> x - coordinate in physical units
-% y -> y - coordinate in physical units
-% z -> z - coordinate in physical units
+% x: -> x - coordinate in physical units
+% y: -> y - coordinate in physical units
+% z: -> z - coordinate in physical units
 % 
 % Return values:
-% x -> x - coordinate in pixels
-% y -> y - coordinate in pixels
-% z -> z - coordinate in pixels
+% x: -> x - coordinate in pixels
+% y: -> y - coordinate in pixels
+% z: -> z - coordinate in pixels
 
 %| 
 % @b Examples:

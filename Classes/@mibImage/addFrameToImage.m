@@ -1,24 +1,26 @@
-function result = addFrameToImage(obj, options)
-% function result = addFrameToImage(obj, options)
+function output = addFrameToImage(obj, options)
+% function output = addFrameToImage(obj, options)
 % Add a frame around the dataset
-% see also mibModel.addFrame function
+% see also addFrame function
 %
 % Parameters:
 % options: an optional structure with parameters
 %
 % Return values:
-% result: status of the operation, 1-success, 0-cancel
+% output: status of the operation, 1-success, 0-cancel
 % .leftFrame - number of pixels, left margin
 % .rightFrame - number of pixels, right margin
 % .topFrame - number of pixels, top margin
 % .bottomFrame - number of pixels, bottom margin
 % .frameColor - a number with the frame color
-%| 
-% @b Examples:
+%
+%
+% @b Examples
 % @code 
-% @code obj.mibModel.I{obj.mibModel.Id}.addFrameToImage();  // call from mibController; add a frame; parameters of the frame will be prompted @endcode
+% obj.mibModel.I{obj.mibModel.Id}.addFrameToImage();  // call from mibController; add a frame; parameters of the frame will be prompted
+% @endcode
 
-% Copyright (C) 13.12.2018, Ilya Belevich (ilya.belevich @ helsinki.fi)
+% Copyright (C) 13.12.2018, Ilya Belevich (ilya.belevich -at- helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
@@ -100,7 +102,7 @@ x2 = newWidth - options.rightFrame;
 y1 = options.topFrame + 1;
 y2 = newHeight - options.bottomFrame;
 
-result = 0;
+output = 0;
 wb = waitbar(0,'Please wait...', 'Name', 'Adding a frame...');
 
 cImg = obj.img{1};
@@ -164,5 +166,5 @@ obj.updateImgInfo(log_text);
 
 waitbar(1, wb);
 delete(wb);
-result = 1;
+output = 1;
 end
