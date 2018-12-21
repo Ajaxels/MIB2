@@ -185,7 +185,9 @@ classdef mibCropObjectsController < handle
             end
             
             timeIter = 1;
+            wb = waitbar(0, 'Please wait...', 'Name', 'Saving objects');
             for t=uniqueTime'   % has to be a horizontal vector
+                waitbar(0, wb, sprintf('Time point: %d\nPlease wait...', t));
                 if obj.View.handles.cropModelCheck.Value == 1
                     modelImg =  cell2mat(obj.mibModel.getData3D('model', t, 4, material_id, dimOpt));
                 end
@@ -276,14 +278,17 @@ classdef mibCropObjectsController < handle
                             case 1  % Amira Mesh
                                 savingOptions = struct('overwrite', 1);
                                 savingOptions.colors = obj.mibModel.getImageProperty('lutColors');   % store colors for color channels 0-1;
+                                savingOptions.showWaitbar = 0;  % do not show the waitbar
                                 bitmap2amiraMesh(filename, imgOut2.img{1}, ...
                                     containers.Map(keys(imgOut2.meta),values(imgOut2.meta)), savingOptions);
                             case 2 % MRC
                                 savingOptions.volumeFilename = filename;
                                 savingOptions.pixSize = imgOut2.pixSize;
+                                savingOptions.showWaitbar = 0;  % do not show the waitbar
                                 mibImage2mrc(imgOut2.img{1}, savingOptions);
                             case 3  % NRRD
                                 savingOptions = struct('overwrite', 1);
+                                savingOptions.showWaitbar = 0;  % do not show the waitbar
                                 bb = imgOut2.getBoundingBox();
                                 bitmap2nrrd(filename, imgOut2.img{1}, bb, savingOptions);
                             case {4, 5}  % LZW TIF / uncompressed TIF
@@ -301,7 +306,7 @@ classdef mibCropObjectsController < handle
                                 
                                 ImageDescription = {imgOut2.meta('ImageDescription')};
                                 savingOptions = struct('Resolution', [imgOut2.meta('XResolution') imgOut2.meta('YResolution')],...
-                                    'overwrite', 1, 'Saving3d', 'multi', 'cmap', cmap, 'Compression', compression);
+                                    'overwrite', 1, 'Saving3d', 'multi', 'cmap', cmap, 'Compression', compression, 'showWaitbar', 0);
                                 mibImage2tiff(filename, imgOut2.img{1}, savingOptions, ImageDescription);
                         end
                     end
@@ -370,7 +375,7 @@ classdef mibCropObjectsController < handle
                                     
                                     Options.volumeFilename = fnModel;
                                     Options.pixSize = imgOut2.pixSize;
-                                    savingOptions.showWaitbar = 0;  % show or not waitbar in exportModelToImodModel
+                                    Options.showWaitbar = 0;  % show or not waitbar in exportModelToImodModel
                                     mibImage2mrc(imOut, Options);
                                 case 4  % NRRD
                                     fnModel = ['Labels_' fnModel '.nrrd']; %#ok<AGROW>
@@ -391,7 +396,7 @@ classdef mibCropObjectsController < handle
                                     ImageDescription = {imgOut2.meta('ImageDescription')};
                                     imOut = reshape(imOut,[size(imOut,1) size(imOut,2) 1 size(imOut,3)]);
                                     savingOptions = struct('Resolution', [imgOut2.meta('XResolution') imgOut2.meta('YResolution')],...
-                                        'overwrite', 1, 'Saving3d', 'multi', 'Compression', compression);
+                                        'overwrite', 1, 'Saving3d', 'multi', 'Compression', compression, 'showWaitbar', 0);
                                     mibImage2tiff(fnModel, imOut, savingOptions, ImageDescription);
                             end
                         end
@@ -428,7 +433,7 @@ classdef mibCropObjectsController < handle
                                     
                                     Options.volumeFilename = fnModel;
                                     Options.pixSize = imgOut2.pixSize;
-                                    savingOptions.showWaitbar = 0;  % show or not waitbar in exportModelToImodModel
+                                    Options.showWaitbar = 0;  % show or not waitbar in exportModelToImodModel
                                     mibImage2mrc(imOut, Options);
                                 case 4  % NRRD
                                     fnModel = ['Mask_' fnModel '.nrrd']; %#ok<AGROW>
@@ -449,7 +454,7 @@ classdef mibCropObjectsController < handle
                                     ImageDescription = {imgOut2.meta('ImageDescription')};
                                     imOut = reshape(imOut,[size(imOut,1) size(imOut,2) 1 size(imOut,3)]);
                                     savingOptions = struct('Resolution', [imgOut2.meta('XResolution') imgOut2.meta('YResolution')],...
-                                        'overwrite', 1, 'Saving3d', 'multi', 'Compression', compression);
+                                        'overwrite', 1, 'Saving3d', 'multi', 'Compression', compression, 'showWaitbar', 0);
                                     mibImage2tiff(fnModel, imOut, savingOptions, ImageDescription);
                             end
                         end
@@ -464,9 +469,12 @@ classdef mibCropObjectsController < handle
                         assignin('base', matlabVarName, matlabVar);
                         fprintf('MIB: %s was exported to Matlab\n', matlabVarName);
                     end
+                    
+                    waitbar(rowId/numel(curTimeObjIndices), wb);
                 end
                 timeIter = timeIter + 1;
             end
+            delete(wb);
             %obj.View.handles.cropBtn.BackgroundColor = [0 1 0];
             obj.closeWindow();
         end

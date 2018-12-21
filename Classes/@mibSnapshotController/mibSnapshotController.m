@@ -437,6 +437,8 @@ classdef mibSnapshotController < matlab.mixin.Copyable
                     if imageId == maxImageIndex
                         %set(handles.h.lutCheckbox, 'value', lutCheckBox);
                         %handles.h.Img{handles.h.Id}.I.slices{3} = colorChannels;
+                        if isfield(options, 'useLut'); options = rmfield(options, 'useLut'); end
+                        
                         if obj.mibModel.I{obj.mibModel.Id}.volren.show == 0
                             img = obj.mibModel.getRGBimage(options);
                         else

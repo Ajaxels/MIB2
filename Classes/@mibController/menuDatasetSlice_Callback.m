@@ -9,6 +9,7 @@ function menuDatasetSlice_Callback(obj, parameter)
 % - 'insertSlice', insert an empty slice
 % - 'deleteSlice', delete slice (a section from a Z-stack) from the dataset
 % - 'deleteFrame', delete frame (a section from a time series) from the dataset
+% - 'swapSlice', swap two or more slices
 
 % Copyright (C) 02.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
@@ -31,11 +32,20 @@ if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
 end
 
 switch parameter
-    case 'copySlice'
+    case {'copySlice', 'swapSlice'}
+        if strcmp(parameter, 'swapSlice')
+            modeIndex = 3;
+            textString1 = 'Index or indices of the source slice(s):';
+            textString2 = 'Index or indices of the destination slice(s):';
+        else
+            modeIndex = 1;
+            textString1 = 'Index of the source slice:';
+            textString2 = 'Index of the destination slice (use 0 to insert the slice at the end of the dataset):';
+        end
         currentSlice = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
         maxSlice = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
-        prompt = {'Replace or insert slice at the destination:', 'Index of the source slice:', 'Index of the destination slice (use 0 to insert the slice at the end of the dataset):'};
-        defAns = {{'Replace','Insert', 1}, num2str(currentSlice), num2str(min([currentSlice+1 maxSlice]))};
+        prompt = {'Replace or insert slice at the destination:', textString1, textString2};
+        defAns = {{'Replace','Insert','Swap', modeIndex}, num2str(currentSlice), num2str(min([currentSlice+1 maxSlice]))};
         mibInputMultiDlgOptions.Title = sprintf('Please enter the slice numbers (1-%d)', maxSlice);
         mibInputMultiDlgOptions.TitleLines = 2;
         mibInputMultiDlgOptions.PromptLines = [1, 1, 2];
@@ -48,15 +58,30 @@ switch parameter
             return;
         end
         
-        if strcmp(answer{1}, 'Replace')
-            orient = obj.mibModel.I{obj.mibModel.Id}.orientation;
-            result = obj.mibModel.I{obj.mibModel.Id}.copySlice(str2num(answer{2}), str2num(answer{3}), orient); %#ok<ST2NM>
-            if result == 0; return; end
-        else
-            getDataOpt.blockmodeSwitch = 0;
-            img = cell2mat(obj.mibModel.getData2D('image', str2double(answer{2}), NaN, NaN, getDataOpt));
-            obj.mibModel.I{obj.mibModel.Id}.insertSlice(img, str2double(answer{3}));
-            notify(obj.mibModel, 'newDataset');  % notify newDataset 
+        switch answer{1}
+            case 'Replace'
+                orient = obj.mibModel.I{obj.mibModel.Id}.orientation;
+                result = obj.mibModel.I{obj.mibModel.Id}.copySlice(str2num(answer{2}), str2num(answer{3}), orient); %#ok<ST2NM>
+                if result == 0; return; end
+            case 'Insert'
+                getDataOpt.blockmodeSwitch = 0;
+                img = cell2mat(obj.mibModel.getData2D('image', str2double(answer{2}), NaN, NaN, getDataOpt));
+                if isKey(obj.mibModel.I{obj.mibModel.Id}.meta, 'SliceName')
+                    SliceName = obj.mibModel.I{obj.mibModel.Id}.meta('SliceName');     
+                    meta = containers.Map;
+                    SliceName = SliceName{str2double(answer{2})};
+                    [~,fn,ext] = fileparts(SliceName);
+                    SliceName = [fn '_copy' ext];
+                    meta('SliceName') = cellstr(SliceName);
+                else
+                    meta = containers.Map;
+                end
+                obj.mibModel.I{obj.mibModel.Id}.insertSlice(img, str2double(answer{3}), meta);
+                notify(obj.mibModel, 'newDataset');  % notify newDataset 
+            case 'Swap'
+                orient = obj.mibModel.I{obj.mibModel.Id}.orientation;
+                result = obj.mibModel.I{obj.mibModel.Id}.swapSlices(str2num(answer{2}), str2num(answer{3}), orient); %#ok<ST2NM>
+                if result == 0; return; end
         end
     case 'insertSlice'
         currentSlice = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();

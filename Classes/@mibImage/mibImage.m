@@ -284,6 +284,8 @@ classdef mibImage < matlab.mixin.Copyable
         
         swapColorChannels(obj, channel1, channel2)        % Swap two color channels of the dataset
         
+        result = swapSlices(obj, sliceNumberFrom, sliceNumberTo, orient)  % Swap specified slices 
+        
         newMode = switchVirtualStackingMode(obj, newMode, disableSelection)   % switch on/off the virtual stacking mode
         
         transpose(obj, new_orient)        % change orientation of the image to the XY, XZ, or YZ plane.

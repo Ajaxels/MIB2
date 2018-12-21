@@ -5,6 +5,11 @@
 %
 %
 %
+%% 2.501 / 24.12.2018
+% * Added swap slices option (Menu->Dataset->Slice->Swap slices)
+% * Fixed rendering of combined image in the split color channel mode with Lut enabled in Snapshot and Make movie tools
+% * Fixed Copy Slice for the Insert mode
+%
 %% 2.50 / 17.12.2018
 % * Added hardware accelerated 3D volume rendering (Menu->File->Render
 % volume->MIB rendering). The volume rendering can be used also for making

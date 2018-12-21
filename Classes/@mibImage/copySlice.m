@@ -101,6 +101,7 @@ if ~isnan(obj.maskImg{1}(1))
 end
 waitbar(0.9, h);
 
+
 % update the log list
 log_text = sprintf('Copy slice: %d->%d, Orient: %d', sliceNumberFrom, sliceNumberTo, orient);
 obj.updateImgInfo(log_text);

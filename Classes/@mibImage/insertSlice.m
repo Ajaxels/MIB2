@@ -46,6 +46,8 @@ if ~isfield(options, 'dim'); options.dim = 'depth'; end
 if ~isKey(meta, 'Height'); meta('Height') = size(img, 1); end
 if ~isKey(meta, 'Width'); meta('Width') = size(img, 2); end
 if ~isKey(meta, 'Colors'); meta('Colors') = size(img, 3); end
+if ~isKey(meta, 'Depth'); meta('Depth') = size(img, 4); end
+if ~isKey(meta, 'Time'); meta('Time') = size(img, 5); end
 
 bgColor = 0;
 if obj.meta('Height') ~= meta('Height') || obj.meta('Width') ~= meta('Width') || obj.meta('Colors') ~= meta('Colors')
@@ -312,7 +314,7 @@ if isKey(obj.meta, 'SliceName')
     % generate vector of slice names
     if numel(sliceNames) == 1; sliceNames = repmat(sliceNames,[D1_z 1]);   end
     
-    if isempty(meta)
+    if isKey(meta, 'SliceName') == 0
         sliceNamesNew = {''};
     else
         sliceNamesNew = meta('SliceName');

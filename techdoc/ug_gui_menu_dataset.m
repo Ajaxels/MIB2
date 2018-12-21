@@ -125,6 +125,7 @@
 % slice 10._
 % * *Delete frame(s)...* - removes desired frame(s) from a time series of the
 % dataset.
+% * *Swap slices...* - spaw two or more slices
 %
 %% Scale bar
 % Scale bar is a tool that allows to use a scale bar printed on the 

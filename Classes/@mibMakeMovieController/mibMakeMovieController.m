@@ -610,6 +610,7 @@ classdef mibMakeMovieController < handle
                     
                     for imageId = 1:maxImageIndex
                         if imageId == maxImageIndex
+                            if isfield(options, 'useLut'); options = rmfield(options, 'useLut'); end
                             obj.mibModel.I{obj.mibModel.Id}.slices{3} = colorChannels;
                             img = obj.mibModel.getRGBimage(options);
                         else
