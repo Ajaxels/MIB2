@@ -175,7 +175,7 @@ shiftX = 0;
 
 for elementId = 1:numel(prompts)
     if shiftX < floor((elementId-1)/ceil((numel(prompts)-options.LastItemColumns)/options.Columns))*width
-        columnId = floor((elementId)/ceil((numel(prompts)-options.LastItemColumns)/options.Columns));
+        columnId = floor((elementId-1)/ceil((numel(prompts)-options.LastItemColumns)/options.Columns));
         shiftX = columnId*width + de/2*columnId;
         shiftY = 0; %dt*PromptLines(1);
     end

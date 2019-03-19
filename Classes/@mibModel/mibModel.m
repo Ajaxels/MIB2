@@ -87,6 +87,8 @@ classdef mibModel < handle
         % eventdata = ToggleEventData(1);   // show the model
         % notify(obj.mibModel, 'showModel', eventdata);
         % @endcode
+        syncBatch
+        % synchromize structure for batch actions
         undoneBackup
         % when the undo is triggered
         updateId   
@@ -110,7 +112,7 @@ classdef mibModel < handle
     methods
         % declaration of functions in the external files, keep empty line in between for the doc generator
         
-        addFrame(obj)   % add a frame around the dataset
+        BatchOptOut = addFrame(obj, BatchOpt)   % add a frame around the dataset
         
         contrastCLAHE(obj, mode, colCh)        % Do CLAHE Contrast-limited adaptive histogram equalization for the dataset
         
@@ -140,7 +142,7 @@ classdef mibModel < handle
         
         imgRGB = getRGBvolume(obj, img, options)        % Generate RGB volume rendering image of the stack
         
-        flipDataset(obj, mode)        % Flip dataset horizontally, vertically or in the Z direction
+        flipDataset(obj, mode, showWaitbar)        % Flip dataset horizontally, vertically or in the Z direction
         
         invertImage(obj, mode, colChannel)        % Invert image
         
@@ -148,7 +150,7 @@ classdef mibModel < handle
         
         mibImageDeepCopy(obj, toId, fromId)        % copy mibImage class from one container to another; used in mibBufferToggleContext_Callback, duplicate
         
-        rotateDataset(obj, mode)        % Rotate dataset in 90 or -90 degrees
+        rotateDataset(obj, mode, showWaitbar)        % Rotate dataset in 90 or -90 degrees
         
         setAxesLimits(obj, axesX, axesY, id)        % set axes limits for the currently shown or id dataset
         
@@ -166,7 +168,7 @@ classdef mibModel < handle
         
         smoothImage(obj, type)        % smooth 'Mask', 'Selection' or 'Model' layer
         
-        transposeDataset(obj, mode)        % Transpose dataset physically between dimensions
+        transposeDataset(obj, mode, showWaitbar)        % Transpose dataset physically between dimensions
         
         transposeZ2T(obj)        % transpose Z to T dimension
         

@@ -81,13 +81,14 @@ switch obj.mibModel.I{obj.mibModel.Id}.modelType
         obj.mibView.handles.menuModelsType4294967295.Checked = 'on';         
 end
 
-% on PC path is file://c:/...
+% on PC path is file://c:/... or //ad.xxxxx.xxx.xx
 % on Mac file:///Volumes/Transcend/...
 if ispc
-    fileText = 'file:/';
+    if mibPath(1) == '\'; fileText = 'file:'; else; fileText = 'file:/'; end    % check for a installation in the network path \\ad.xxxx
 else
     fileText = 'file://';
 end
+
 if obj.mibModel.getImageProperty('modelType') < 256
     %obj.mibView.handles.mibAddMaterialBtn.String = '+';
     btnText = strrep([fileText fullfile(mibPath, 'Resources', 'plus.png')],'\','/'); 

@@ -50,7 +50,7 @@ if str2double(obj.mibView.handles.mibFrangiBWThreshold.String) == 0 && strcmp(te
         'Update existing image!', 'Continue', 'Cancel', 'Cancel');
     if strcmp(button, 'Cancel')
         return;
-    end;
+    end
     outputType = 'image';
 end
 
@@ -59,7 +59,7 @@ if obj.mibModel.getImageProperty('depth') == 1
     all_sw = 0;
     threeD = 0;
 end
-if threeD == 1; all_sw = 1; end;     % use set the all_sw when using the 3D mode
+if threeD == 1; all_sw = 1; end     % use set the all_sw when using the 3D mode
 
 if strcmp(outputType, 'image')
     obj.mibModel.mibDoBackup('image', all_sw);
@@ -143,6 +143,7 @@ for indexId = 1:numel(imgIn)
             Options.type = extraList{obj.mibView.handles.mibMorphPanelTypeSelectPopup.Value};
             Options.h = str2double(obj.mibView.handles.mibMorphPanelThresholdEdit.String);
             Options.conn = str2double(obj.mibView.handles.mibMorphPanelConnectivityEdit.String);
+            Options.Hthres = str2double(obj.mibView.handles.mibMorphPanelHThresholdEdit.String);
             Options.threeD = threeD;
             Options.all_sw = all_sw;
             Options.orientation = orientation;

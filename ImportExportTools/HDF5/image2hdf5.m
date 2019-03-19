@@ -24,6 +24,8 @@ function result = image2hdf5(filename, imageS, options)
 %  - .y - define a minimal Y point for data to store
 %  - .z - define a minimal Z point for data to store
 %  - .t - define a minimal T point for data to store
+%  - .DatasetType - a string, type of the dataset 'image', 'model', 'mask'
+%  - .DatasetClass - a string, image class of the dataset, uint8, uint16...
 %
 % Return values:
 % result: result of the function run, @b 1 - success, @b 0 - fail
@@ -66,6 +68,8 @@ else
     end
 end
 if ~isfield(options, 'ImageDescription'); options.ImageDescription = '';    end
+if ~isfield(options, 'DatasetType'); options.DatasetType = 'image';    end
+if ~isfield(options, 'DatasetClass'); options.DatasetClass = class(imageS);    end
 
 if ~isfield(options, 'order')
     options.order = 'yxczt';    
@@ -101,21 +105,46 @@ if options.t == 1
     if options.showWaitbar; waitbar(.05,wb,sprintf('%s\nCreate file container...',filename)); end
     if ~isempty(options.ChunkSize)   % do not chunk the data
         h5create(filename, options.DatasetName, [options.height, options.width, options.colors, options.depth, options.time], ...
-            'Datatype', class(imageS), 'Deflate', options.Deflate, ...
+            'Datatype', options.DatasetClass, 'Deflate', options.Deflate, ...
             'ChunkSize', [options.ChunkSize(1) options.ChunkSize(2) 1 options.ChunkSize(3) 1]);
     else
-        h5create(filename, options.DatasetName, [options.height, options.width, options.colors, options.depth, options.time], 'Datatype', class(imageS),...
+        h5create(filename, options.DatasetName, [options.height, options.width, options.colors, options.depth, options.time], 'Datatype', options.DatasetClass,...
                 'Deflate', options.Deflate, ...
                 'ChunkSize', [options.height, options.width, 1, options.depth, 1]);
     end
 end
 
 if options.showWaitbar; waitbar(.1,wb,sprintf('%s\nSaving images...',filename)); end
-h5write(filename, options.DatasetName, imageS, ...
+getDataOpt.showWaitbar = 0;     % do not show waitbar in getDataVirt
+maxIndex = options.time*ceil(options.depth/options.ChunkSize(3));
+
+counterIndex = 1;
+if isfield(options, 'mibImage')     % tweak to save HDF5 in the virtual mode, without loaded imageS
+    for t=1:options.time
+        getDataOpt.t = t;
+        for z=1:ceil(options.depth/options.ChunkSize(3))
+            getDataOpt.z = [(z-1)*options.ChunkSize(3)+1, z*options.ChunkSize(3)];
+            for x=1:ceil(options.width/options.ChunkSize(2))
+                getDataOpt.x = [(x-1)*options.ChunkSize(2)+1, x*options.ChunkSize(2)];
+                for y=1:ceil(options.height/options.ChunkSize(1))
+                    getDataOpt.y = [(y-1)*options.ChunkSize(1)+1, y*options.ChunkSize(1)];
+                    img2 = options.mibImage.getDataVirt(options.DatasetType, 4, 0, getDataOpt);
+                    h5write(filename, options.DatasetName, img2, ...
+                        [getDataOpt.y(1), getDataOpt.x(1), 1, getDataOpt.z(1), getDataOpt.t(1)],...
+                        [size(img2,1), size(img2,2), size(img2,3), size(img2,4),size(img2,5)]);
+                end
+            end
+            if options.showWaitbar; waitbar(counterIndex/maxIndex, wb); end
+            counterIndex = counterIndex + 1;
+        end
+    end
+else
+    h5write(filename, options.DatasetName, imageS, ...
         [options.y, options.x, 1, options.z, options.t],...
         [size(imageS,1), size(imageS,2), size(imageS,3), size(imageS,4),size(imageS,5)]);
+end
 
-    if options.showWaitbar; waitbar(.9,wb,sprintf('%s\nSaving metadata...',filename)); end
+if options.showWaitbar; waitbar(.9,wb,sprintf('%s\nSaving metadata...',filename)); end
 
 % generate axistags to be compatible with Ilastik
 % see more here:
@@ -152,8 +181,8 @@ h5writeatt(filename, options.DatasetName, 'axistags', axistags);
 %     h5writeatt(filename,ImageDescription('DatasetName'), metaFields{index}, ImageDescription(metaFields{index}));
 % end
 
-if options.showWaitbar; waitbar(1, wb); end;
+if options.showWaitbar; waitbar(1, wb); end
 disp(['image2hdf5: ' filename ' was created!']);
-if options.showWaitbar; delete(wb); set(0, 'DefaulttextInterpreter', curInt); end;
+if options.showWaitbar; delete(wb); set(0, 'DefaulttextInterpreter', curInt); end
 result = 1;
 end

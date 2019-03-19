@@ -32,6 +32,7 @@ function [bitmap, par] = amiraMesh2bitmap(filename, options)
 % ver 1.05 - 17.10.2014, fix of waitbar for R2014b
 % ver 1.06 - 29.09.2015, added use of amiraLabels2bitmap for Labels
 % ver 1.07 - 09.01.2018, added extraction of embedded containers in the amiramesh headers
+% ver 1.08 - 30.01.2019, updated to be compatible with version AM 3
 
 % -- debug block starts --
 %filename = '.am';
@@ -59,9 +60,9 @@ fid = fopen(filename, 'r');
 
 % define type of data
 tline = fgetl(fid);
-if strcmp(tline, '# AmiraMesh 3D ASCII 2.0')
+if strcmp(tline(1:20), '# AmiraMesh 3D ASCII') % if strcmp(tline, '# AmiraMesh 3D ASCII 2.0')    
     type = 'ascii';
-elseif strcmp(tline, '# AmiraMesh BINARY-LITTLE-ENDIAN 2.1') || strcmp(tline,'# AmiraMesh 3D BINARY 2.0')
+elseif strcmp(tline(1:20), '# AmiraMesh BINARY-L') || strcmp(tline(1:20),'# AmiraMesh 3D BINAR') %elseif strcmp(tline, '# AmiraMesh BINARY-LITTLE-ENDIAN 2.1') || strcmp(tline,'# AmiraMesh 3D BINARY 2.0')
     type = 'binary';
 else
     disp('Error! Unknown type'); return;

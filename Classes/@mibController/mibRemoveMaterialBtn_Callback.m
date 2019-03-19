@@ -22,6 +22,8 @@ function mibRemoveMaterialBtn_Callback(obj)
 % Updates
 % 16.08.2017 IB added waitbar
 % 15.11.2018, IB, added selection of materials
+% 11.01.2019, IB improved performance
+
 global mibPath;
 
 unFocus(obj.mibView.handles.mibRemoveMaterialBtn); % remove focus from hObject
@@ -48,26 +50,30 @@ button =  questdlg(msg, 'Delete materials?', 'Yes', 'Cancel', 'Cancel');
 if strcmp(button, 'Cancel') == 1; return; end
 
 wb = waitbar(0, sprintf('Deleting materials\nPlease wait...'), 'Name', 'Deleting materials');
-value = sort(value,'descend');
+%value = sort(value, 'descend');
+value = sort(value);
+keepMaterials = 1:numel(obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames);
+keepMaterials(ismember(keepMaterials, value)) = [];
 
 options.blockModeSwitch=0;
 waitbar(0.05, wb);
-maxIndex = obj.mibModel.getImageProperty('time')*numel(value);
-curIndex = 0;
+tic
+maxIndex = obj.mibModel.getImageProperty('time');
 for t=1:obj.mibModel.getImageProperty('time')
-    model = cell2mat(obj.mibModel.getData3D('model', t, 4, NaN, options));
-    model(ismember(model, value)) = 0;  % make 0 all pixels in the selected materials
-    for modelId = 1:numel(value)
-        model(model>value(modelId)) = model(model>value(modelId)) - 1;
-        
-        curIndex = curIndex + 1;
-        waitbar(curIndex/maxIndex , wb);
-    end
+    model2 = cell2mat(obj.mibModel.getData3D('model', t, 4, NaN, options));
+    
+    [logicalMember, indexValue] = ismember(model2, keepMaterials);
+    model = zeros(size(model2), class(model2));
+    model(logicalMember==1) = indexValue(logicalMember==1);
+    
     obj.mibModel.setData3D('model', model, t, 4, NaN, options);
+    waitbar(t/maxIndex , wb);
 end
-
+clear model2;
 obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(value,:) = [];  % remove color of the removed material
 obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames(value) = [];  % remove material name from the list of materials
+
+toc
 
 obj.updateSegmentationTable();
 obj.mibView.lastSegmSelection = [2 1];

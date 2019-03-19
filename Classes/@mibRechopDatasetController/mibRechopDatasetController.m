@@ -671,11 +671,15 @@ classdef mibRechopDatasetController < handle
                 case '.tif'
                     getDataOpt.bioformatsCheck = 0;
                     getDataOpt.waitbar = 1;
+                    getDataOpt.id = obj.mibModel.Id;   % id of the current dataset
+                    getDataOpt.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
                     [R.imOut, img_info, ~] = mibLoadImages({fn}, getDataOpt);
                     R.imOut =  squeeze(R.imOut);
                 case '.xml'
                     getDataOpt.bioformatsCheck = 0;
                     getDataOpt.waitbar = 0;
+                    getDataOpt.id = obj.mibModel.Id;   % id of the current dataset
+                    getDataOpt.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
                     [R.imOut, img_info] = mibLoadImages({fn}, getDataOpt);
                     R.imOut = squeeze(R.imOut);
                     if isKey(img_info, 'modelMaterialNames')     % add list of material names

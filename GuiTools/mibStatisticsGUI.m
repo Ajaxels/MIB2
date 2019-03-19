@@ -14,7 +14,7 @@ function varargout = mibStatisticsGUI(varargin)
 % Updates
 % 
 
-% Last Modified by GUIDE v2.5 25-Mar-2018 15:44:29
+% Last Modified by GUIDE v2.5 01-Feb-2019 16:58:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -50,13 +50,6 @@ handles.winController = varargin{1};
 
 repositionSwitch = 1; % reposition the figure, when creating a new figure
 
-handles.sorting_cm = uicontextmenu('Parent',handles.mibStatisticsGUI);
-uimenu(handles.sorting_cm, 'Label', 'Sort by Objects Id', 'Callback', {@sortButtonContext_cb, 'object'});
-uimenu(handles.sorting_cm, 'Label', 'Sort by Value', 'Callback', {@sortButtonContext_cb, 'value'});
-uimenu(handles.sorting_cm, 'Label', 'Sort by Slice number', 'Callback', {@sortButtonContext_cb, 'slice'});
-uimenu(handles.sorting_cm, 'Label', 'Sort by Time number', 'Callback', {@sortButtonContext_cb, 'time'});
-set(handles.sortBtn,'uicontextmenu',handles.sorting_cm);
- 
 handles.statTable_cm = uicontextmenu('Parent',handles.mibStatisticsGUI);
 uimenu(handles.statTable_cm, 'Label', 'New selection', 'Callback', {@tableContextMenu_cb, 'Replace'});
 uimenu(handles.statTable_cm, 'Label', 'Add to selection', 'Callback', {@tableContextMenu_cb, 'Add'});
@@ -142,16 +135,6 @@ end
 function runStatAnalysis_Callback(hObject, eventdata, handles)
 % --- Executes on button press in runStatAnalysis.
 handles.winController.runStatAnalysis_Callback();
-end
-
-function sortButtonContext_cb(hObject, eventdata, parameter)
-handles = guidata(hObject);
-handles.winController.sortButtonContext_cb(parameter);
-end
-
-% --- Executes on button press in sortBtn.
-function sortBtn_Callback(hObject, eventdata, handles, colIndex)
-handles.winController.sortBtn_Callback(colIndex);
 end
 
 function tableContextMenu_cb(hObject, eventdata, parameter)
@@ -276,4 +259,15 @@ end
 % --- Executes on selection change in unitsCombo.
 function unitsCombo_Callback(hObject, eventdata, handles)
 handles.winController.unitsCombo_Callback();
+end
+
+
+% --- Executes on selection change in firstChannelCombo.
+function firstChannelCombo_Callback(hObject, eventdata, handles)
+handles.winController.propertyCombo_Callback();
+end
+
+% --- Executes on selection change in sortingPopup.
+function sortingPopup_Callback(hObject, eventdata, handles)
+handles.winController.updateSortingSettings();
 end

@@ -13,7 +13,6 @@ function [img, img_info] = mibGetImages(files, img_info, options)
 %          - .noLayers -> number of image slices in the file
 %          - .imgClass -> class of the image, ''uint8'',''uint16''...
 %          - .dim_xyczt -> dimensions for hdf5_image and Bioformats, AmiraMesh (binned version)
-%          - .hDataset -> handle to Bioformats dataset
 %          - .depth_start - > [@em optional], for Amira Mesh only, to take only specified sections
 %          - .depth_end - > [@em optional], for Amira Mesh only, to take only specified sections
 %          - .depth_step -> [@em optional], for Amira Mesh only, Z-step to take not all sections
@@ -239,6 +238,11 @@ for fn_index = 1:no_files
                     I = imread(files(fn_index).filename,subLayer);
 %                 end
             end
+            if isa(I, 'single')     % uint32 RGB TIFs may be this class
+                if isKey(img_info, 'MaxSampleValue')
+                    I = bsxfun(@times, I, reshape(img_info('MaxSampleValue'), 1, 1, []));
+                end
+            end
             img(1:maxY,1:maxX,1:maxC,layer_id) = I(1:maxY,1:maxX,1:maxC);
             layer_id = layer_id + 1;
             if options.waitbar && mod(layer_id, ceil(maxZ/20))==0
@@ -285,8 +289,10 @@ for fn_index = 1:no_files
         layer_id = layer_id + files(fn_index).noLayers;
         close(mrcFile);
     elseif strcmp(files(fn_index).object_type,'bioformats')        % bioformats images
+        bfopenOptions.BioFormatsMemoizerMemoDir = files(fn_index).BioFormatsMemoizerMemoDir;
         for serieIndex=1:numel(files(fn_index).seriesName)
-            I  = bfopen3(files(fn_index).hDataset, files(fn_index).seriesName(serieIndex));
+            I  = bfopen4(files(fn_index).origFilename, files(fn_index).seriesName(serieIndex), NaN, bfopenOptions);
+            
             for subLayer=1:files(fn_index).noLayers        % filling image Info structure
                 img(1:maxY,1:maxX,1:maxC,layer_id,1:maxT) = I.img(1:maxY,1:maxX,1:maxC,subLayer,1:maxT);
                 img_info('ColorType') = I.ColorType;
@@ -297,18 +303,6 @@ for fn_index = 1:no_files
                 end
             end
         end
-        % close dataset
-        files(fn_index).hDataset.close();     % close dataset
-        
-%         % check wheather to close the dataset
-%         if fn_index < numel(files)
-%             if files(fn_index).hDataset ~= files(fn_index+1).hDataset
-%                 files(fn_index).hDataset.close();     % close dataset
-%             end
-%         else
-%             files(fn_index).hDataset.close();     % close dataset
-%         end
-        
     end
 end
 

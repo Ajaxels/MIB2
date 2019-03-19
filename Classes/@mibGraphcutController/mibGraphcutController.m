@@ -582,6 +582,12 @@ classdef mibGraphcutController  < handle
                 
                 [~, labels] = maxflow_v222(obj.graphcut(1).Graph{sliceNo}, T);
                 
+                % % test of the standard Matlab maxflow function
+                %matlabGraph = graph(obj.graphcut(1).Graph{sliceNo});
+                %[~,~, cs, ~] = maxflow(matlabGraph, labelObj, labelBg);
+                %labels = zeros([obj.graphcut(1).noPix(sliceNo), 1]);
+                %labels(cs) = 1;
+                
                 if isempty(obj.shownLabelObj{1})
                     obj.shownLabelObj{1} = labels;
                     Mask = zeros(size(seedImg),'uint8');
@@ -1394,47 +1400,121 @@ classdef mibGraphcutController  < handle
             Graphcut = obj.graphcut;
             if isempty(Graphcut(1).noPix); return; end
             
-            button =  questdlg(sprintf('Would you like to export preprocessed data to a file or the main Matlab workspace?'), ...
-                'Export/Save SLIC', 'Save to a file', 'Export to Matlab', 'Cancel', 'Save to a file');
-            if strcmp(button, 'Cancel'); return; end
-            if strcmp(button, 'Export to Matlab')
+            prompts = {'Export to Matlab'; 'Save to a file'; 'Export to a model'};
+            defAns = {false; false; false};
+            dlgTitle = 'Export supervoxels';
+            options.WindowStyle = 'normal';
+            options.Title = 'Please select where to export the supervoxels';
+            [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+            if isempty(answer); return; end
+            
+            if answer{1} == true
                 title = 'Input variable to export';
                 def = 'Graphcut';
-                prompt = {'A variable for the measurements structure:'};
-                answer = mibInputDlg({mibPath}, prompt, title, def);
-                if size(answer) == 0; return; end
-                assignin('base', answer{1}, Graphcut);
-                fprintf('MIB: export superpixel data ("%s") to Matlab -> done!\n', answer{1});
-                return;
+                prompt = {'A variable for the export to Matlab'};
+                answer2 = mibInputDlg({mibPath}, prompt, title, def);
+                if size(answer2) == 0; return; end
+                assignin('base', answer2{1}, Graphcut);
+                fprintf('MIB: export superpixel data ("%s") to Matlab -> done!\n', answer2{1});
             end
-            fn_out = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
-            dotIndex = strfind(fn_out, '.');
-            if ~isempty(dotIndex)
-                fn_out = fn_out(1:dotIndex(end)-1);
-            end
-            if isempty(strfind(fn_out,'/')) && isempty(strfind(fn_out,'\'))
-                fn_out = fullfile(obj.mibModel.myPath, fn_out);
-            end
-            if isempty(fn_out)
-                fn_out = obj.mibModel.myPath;
-            end
-            Filters = {'*.graph;',  'Matlab format (*.graph)'};
+            if answer{2} == true
+                fn_out = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
+                dotIndex = strfind(fn_out, '.');
+                if ~isempty(dotIndex)
+                    fn_out = fn_out(1:dotIndex(end)-1);
+                end
+                if isempty(strfind(fn_out,'/')) && isempty(strfind(fn_out,'\'))
+                    fn_out = fullfile(obj.mibModel.myPath, fn_out);
+                end
+                if isempty(fn_out)
+                    fn_out = obj.mibModel.myPath;
+                end
+                Filters = {'*.graph;',  'Matlab format (*.graph)'};
             
-            [filename, path, FilterIndex] = uiputfile(Filters, 'Save Graph...', fn_out); %...
-            if isequal(filename,0); return; end % check for cancel
-            fn_out = fullfile(path, filename);
-            wb = waitbar(0, sprintf('Saving Graphcut to a file\nPlease wait...'), 'Name', 'Saving to a file');
-            tic
-            
-            if isfield(Graphcut, 'PixelIdxList')
-                Graphcut = rmfield(Graphcut, 'PixelIdxList');   %#ok<NASGU> % remove the PixelIdxList to make save fast
+                [filename, path, FilterIndex] = uiputfile(Filters, 'Save Graph...', fn_out); %...
+                if isequal(filename,0); return; end % check for cancel
+                fn_out = fullfile(path, filename);
+                wb = waitbar(0, sprintf('Saving Graphcut to a file\nPlease wait...'), 'Name', 'Saving to a file');
+                tic
+
+                if isfield(Graphcut, 'PixelIdxList')
+                    Graphcut = rmfield(Graphcut, 'PixelIdxList');   %#ok<NASGU> % remove the PixelIdxList to make save fast
+                end
+                Graphcut = rmfield(Graphcut, 'Graph');   %#ok<NASGU> % remove the PixelIdxList to make save fast
+                save(fn_out, 'Graphcut', '-mat', '-v7.3');
+
+                fprintf('MIB: saving graphcut structure to %s -> done!\n', fn_out);
+                toc
+                delete(wb);
             end
-            Graphcut = rmfield(Graphcut, 'Graph');   %#ok<NASGU> % remove the PixelIdxList to make save fast
-            save(fn_out, 'Graphcut', '-mat', '-v7.3');
+            if answer{3} == true
+                anwser2 = questdlg(sprintf('!!! Warning !!!\n\nIf you continue the existing model will be removed!'),'Export to model', 'Continue','Cancel', 'Cancel');
+                if strcmp(anwser2, 'Cancel'); return; end
+                
+                wb = waitbar(0, sprintf('Exporting to a model\nPlease wait...'), 'Name', 'Export');
+                
+                graphId = 1;
+                if strcmp(obj.mode, 'mode3dGridRadio')
+                    [winWidth, winHeight] = obj.mibModel.getAxesLimits();
+                    centX = mean(winWidth);
+                    centY = mean(winHeight);
+                    centZ = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber;
+                    
+                    bbX = mean(vertcat(obj.graphcut(1).grid.bb.x),2);
+                    bbY = mean(vertcat(obj.graphcut(1).grid.bb.y),2);
+                    bbZ = mean(vertcat(obj.graphcut(1).grid.bb.z),2);
+                    bbCenters = [bbX, bbY, bbZ];
+                    distances = sqrt((bbCenters(:,1)-centX).^2 + (bbCenters(:,2)-centY).^2 + (bbCenters(:,3)-centZ).^2);
+                    [~, graphId] = min(distances);
+                    
+                    % get area for processing
+                    width = obj.graphcut(1).grid.bb(graphId).width;
+                    height = obj.graphcut(1).grid.bb(graphId).height;
+                    depth = obj.graphcut(1).grid.bb(graphId).depth;
+                    % fill structure to use with getSlice and getDataset methods
+                    getDataOptions.x = obj.graphcut(1).grid.bb(graphId).x;
+                    getDataOptions.y = obj.graphcut(1).grid.bb(graphId).y;
+                    getDataOptions.z = obj.graphcut(1).grid.bb(graphId).z;
+                end
+                
+                if Graphcut(graphId).noPix < 65536
+                    modelType = 65535;
+                else
+                    modelType = 4294967295;    
+                end
+                
+                if obj.mibModel.I{obj.mibModel.Id}.modelExist == 0
+                    obj.mibModel.I{obj.mibModel.Id}.createModel(modelType);
+                end
+                waitbar(.1, wb);
+                if modelType ~= obj.mibModel.I{obj.mibModel.Id}.modelType
+                    obj.mibModel.I{obj.mibModel.Id}.convertModel(modelType);
+                end
+                if strcmp(Graphcut(1).mode, 'mode2dCurrentRadio')
+                    obj.mibModel.setData2D('model', {Graphcut(graphId).slic}, NaN, 4);
+                elseif strcmp(Graphcut(1).mode, 'mode3dGridRadio')
+                	obj.mibModel.setData3D('model', {Graphcut(graphId).slic}, NaN, 4, NaN, getDataOptions);   % set dataset
+                else
+                    obj.mibModel.setData4D('model', {Graphcut(graphId).slic}, 4);
+                end
+                obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames = {'1','2'}';
+                waitbar(.9, wb);
+                % adding extra colors if needed
+                if size(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors, 1) < 65535
+                    obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors = [obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors; rand([65535-Graphcut(graphId).noPix, 3])];
+                end
+                [pathTemp, fnTemplate] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
+                model_fn = fullfile(pathTemp, ['Labels_' fnTemplate '.model']);
+                obj.mibModel.I{obj.mibModel.Id}.modelFilename = model_fn;
+                obj.mibModel.I{obj.mibModel.Id}.modelVariable = 'mibModel';
+                waitbar(1, wb);
+                eventdata = ToggleEventData(1); 
+                notify(obj.mibModel, 'showModel', eventdata);
+                notify(obj.mibModel, 'updateId');
+                delete(wb);
+                notify(obj.mibModel, 'plotImage');
+            end
             
-            fprintf('MIB: saving graphcut structure to %s -> done!\n', fn_out);
-            toc
-            delete(wb);
         end
         
         function importSuperpixelsBtn_Callback(obj, noImportSwitch)

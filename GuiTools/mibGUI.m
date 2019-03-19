@@ -22,7 +22,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 30-Jul-2018 14:28:30
+% Last Modified by GUIDE v2.5 07-Mar-2019 09:34:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -1415,7 +1415,9 @@ switch selfilter
         handles.mibImageFiltersTypePopup.String = {'Edges','Regions'};
         handles.mibImageFiltersTypePopup.TooltipString = 'Edges: favours high contrast edges over low contrast ones; Region: favours wide regions over smaller ones';
     case 'External: BMxD'
-        if ~isdeployed
+        if isempty(handles.mibController.mibModel.preferences.dirs.bm3dInstallationPath) || exist(fullfile(handles.mibController.mibModel.preferences.dirs.bm3dInstallationPath, 'BM3D.m'), 'file') ~= 2
+            handles.mibImageFilterDoitBtn.Enable = 'off';
+        else
             res = which('bm4d');
             if ~isempty(res)
                 handles.mibImageFilters3DCheck.Enable = 'on';
@@ -1429,15 +1431,12 @@ switch selfilter
                     'lc, Gauss: low complexity', 'lc, Rice: low complexity'};
                 handles.mibImfiltPar1Edit.Enable = 'off';
             else
-                handles.mibImageFiltersTypePopup.Value = min([handles.mibImageFiltersTypePopup.Value 2]); 
+                handles.mibImageFiltersTypePopup.Value = min([handles.mibImageFiltersTypePopup.Value 2]);
                 handles.mibImageFiltersTypePopup.String = {'np: normal','lc: low complexity'};
                 handles.mibImfiltPar1Edit.Enable = 'off';
             end
             handles.mibImageFiltersTypePopup.TooltipString = 'filtering profile';
-        else
-            handles.mibImageFilterDoitBtn.Enable = 'off';
         end
-        
 %     case {'Edge Enhancing Coherence Filter'}
 %         handles.mibImfiltPar1Edit.Enable = 'off';
 %         handles.mibImfiltPar2Edit.Enable = 'off';
@@ -1614,6 +1613,27 @@ switch eventdata.Source.SelectedObject.Tag
         handles.mibFrangiBeta1.String = '0';
         handles.mibFrangiBeta2.String = '1';
         handles.mibMorphPanelConnectivityEdit.String = '6';
+end
+end
+
+% --- Executes on selection change in mibMorphPanelTypeSelectPopup.
+function mibMorphPanelTypeSelectPopup_Callback(hObject, eventdata, handles)
+currList = handles.mibMorphPanelTypeSelectPopup.String;
+currValue = handles.mibMorphPanelTypeSelectPopup.Value;
+
+handles.mibMorphPanelHThresholdEdit.Visible = 'off';
+handles.mibMorphPanelHThresholdText.Visible = 'off';
+handles.mibMorphPanelThresholdEdit.Visible = 'off';
+handles.mibMorphPanelThresholdText.Visible = 'off';
+switch currList{currValue}
+    case {'H-maxima transform', 'H-minima transform'}
+        handles.mibMorphPanelHThresholdEdit.Visible = 'on';
+        handles.mibMorphPanelHThresholdText.Visible = 'on';
+        handles.mibMorphPanelThresholdEdit.Visible = 'on';
+        handles.mibMorphPanelThresholdText.Visible = 'on';
+    case {'Extended-minima transform','Extended-maxima transform'}
+        handles.mibMorphPanelThresholdEdit.Visible = 'on';
+        handles.mibMorphPanelThresholdText.Visible = 'on';
 end
 end
 
@@ -1822,7 +1842,7 @@ end
 
 % --------------------------------------------------------------------
 function menuImageToolsArithmetics_Callback(hObject, eventdata, handles)
-handles.mibController.menuImageToolsArithmetics_Callback();
+handles.mibController.startController('mibImageArithmeticController');
 end
 
 % --------------------------------------------------------------------
@@ -2017,6 +2037,18 @@ end
 % --------------------------------------------------------------------
 function menuToolsSemiAuto_Callback(hObject, eventdata, handles, parameter)
 switch parameter
+    case 'thresh'
+        % alterative call for the batch mode:
+        % BatchOpt.colChannel = 1;    % color channel for thresholding
+        % BatchOpt.Mode = '3D, Stack';     % mode to use
+        % BatchOpt.Method = 'Otsu';       % thresholding algorithm
+        % %BatchOpt.t = [1 1];     % time points, [t1, t2]
+        % BatchOpt.z = [10 20];    % slices, [z1, z2]
+        % BatchOpt.x = [10 120];    % slices, [z1, z2]
+        % BatchOpt.Orientation = 2;
+        % obj.startController('mibHistThresController', [], BatchOpt);
+        
+        handles.mibController.startController('mibHistThresController');
     case 'graphcut'
         handles.mibController.startController('mibGraphcutController');
     case 'watershed'
@@ -2052,6 +2084,21 @@ else
 end
 end
 
+function menuHelp_Callbacks(hObject, eventdata, handles, parameter)
+switch parameter
+    case 'tip'
+        handles.mibController.mibModel.preferences.tips.showTips = 1;
+        handles.mibController.startController('mibTipsController');
+    case 'support'
+        web('https://forum.image.sc/tags/mib', '-browser');
+    case 'update'
+        handles.mibController.startController('mibUpdateCheckController', handles.mibController);
+    case 'about'
+        handles.mibController.startController('mibAboutController', handles.mibGUI.Name);
+end
+end
+
+
 % --- Executes on button press in mibPathPanelHelpBtn.
 function mibHelpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
@@ -2076,14 +2123,4 @@ switch hObject.Tag
     case 'mibSelectionPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/ug_panel_selection.html'), '-helpbrowser');
     case 'mibViewSettingsPanelHelpBtn';             web(fullfile(mibPath, 'techdoc/html/ug_panel_view_settings.html'), '-helpbrowser');
 end
-end
-
-% --------------------------------------------------------------------
-function menuHelpUpdate_Callback(hObject, eventdata, handles)
-handles.mibController.startController('mibUpdateCheckController', handles.mibController);
-end
-
-% --------------------------------------------------------------------
-function menuHelpAbout_Callback(hObject, eventdata, handles)
-handles.mibController.menuHelpAbout_Callback();
 end

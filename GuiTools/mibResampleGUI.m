@@ -96,6 +96,11 @@ function resampleBtn_Callback(hObject, eventdata, handles)
 handles.winController.resampleBtn_Callback();
 end
 
+function updateBatchOpt(hObject, eventdata, handles)
+% callback for multiple widgets of GUI to update BatchOpt
+handles.winController.updateBatchOptFromGUI(hObject);
+end
+
 function editbox_Callback(hObject, eventdata, handles)
 handles.winController.editbox_Callback(hObject);
 end
@@ -104,29 +109,30 @@ function radio_Callback(hObject, eventdata, handles)
 if hObject.Value == 0
     hObject.Value = 1;
     return;
-end;
-handles.voxX.Enable = 'off';
-handles.voxY.Enable = 'off';
-handles.voxZ.Enable = 'off';
-handles.dimX.Enable = 'off';
-handles.dimY.Enable = 'off';
-handles.dimZ.Enable = 'off';
-handles.percEdit.Enable = 'off';
-
-if handles.dimensionsRadio.Value
-    handles.dimX.Enable = 'on';
-    handles.dimY.Enable = 'on';
-    handles.dimZ.Enable = 'on';
-    uicontrol(handles.dimX);
-elseif handles.voxelsRadio.Value
-    handles.voxX.Enable = 'on';
-    handles.voxY.Enable = 'on';
-    handles.voxZ.Enable = 'on';
-    uicontrol(handles.voxX);
-else
-    handles.percEdit.Enable = 'on';
-    uicontrol(handles.percEdit);
 end
+handles.VoxelX.Enable = 'off';
+handles.VoxelY.Enable = 'off';
+handles.VoxelZ.Enable = 'off';
+handles.DimensionX.Enable = 'off';
+handles.DimensionY.Enable = 'off';
+handles.DimensionZ.Enable = 'off';
+handles.Percentage.Enable = 'off';
+
+if handles.Dimensions.Value
+    handles.DimensionX.Enable = 'on';
+    handles.DimensionY.Enable = 'on';
+    handles.DimensionZ.Enable = 'on';
+    uicontrol(handles.DimensionX);  % set focus
+elseif handles.Voxels.Value
+    handles.VoxelX.Enable = 'on';
+    handles.VoxelY.Enable = 'on';
+    handles.VoxelZ.Enable = 'on';
+    uicontrol(handles.VoxelX);      % set focus
+else
+    handles.Percentage.Enable = 'on';
+    uicontrol(handles.Percentage);  % set focus
+end
+handles.winController.updateBatchOptFromGUI(hObject);
 end
 
 
@@ -136,9 +142,9 @@ handles.winController.updateWidgets();
 end
 
 
-% --- Executes on selection change in resamplingFunction.
-function resamplingFunction_Callback(hObject, eventdata, handles)
-val = handles.resamplingFunction.Value;
+% --- Executes on selection change in ResamplingFunction.
+function ResamplingFunction_Callback(hObject, eventdata, handles)
+val = handles.ResamplingFunction.Value;
 if val == 1     % interpn
     methods = {'nearest', 'linear', 'spline', 'cubic'};
     methodsModel = {'nearest', 'linear', 'spline', 'cubic'};
@@ -149,8 +155,10 @@ else
     methods = {'nearest', 'linear', 'cubic'};
     methodsModel = {'nearest', 'linear', 'cubic'};
 end
-if handles.imageMethod.Value > numel(methods); handles.imageMethod.Value = 1; end;
-if handles.modelsMethod.Value > numel(methodsModel); handles.modelsMethod.Value = 1; end;
-handles.imageMethod.String = methods;
-handles.modelsMethod.String = methodsModel;
+if handles.ResamplingMethod.Value > numel(methods); handles.ResamplingMethod.Value = 1; end
+if handles.ResamplingMethodModels.Value > numel(methodsModel); handles.ResamplingMethodModels.Value = 1; end;
+handles.ResamplingMethod.String = methods;
+handles.ResamplingMethodModels.String = methodsModel;
+
+handles.winController.updateBatchOptFromGUI(hObject);
 end

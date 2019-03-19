@@ -16,7 +16,7 @@ function menuFileSaveImageAs_Callback(obj)
 %
 % Updates
 % 04.06.2018 save TransformationMatrix with AmiraMesh
-
+% 22.01.2019 added saving of amira mesh files as 2D sequence
 
 % save image as...
 if size(obj.mibModel.I{obj.mibModel.Id}.img{1}, 1) < 1; msgbox('No image detected!','Error!','error','modal'); return; end
@@ -29,38 +29,29 @@ if isempty(fn_out)
     fn_out = obj.mibModel.myPath;
 end
 
-Filters = {'*.am;',  'Amira Mesh binary (*.am)';...
-    '*.jpg;',  'Joint Photographic Experts Group (*.jpg)'; ...
-    '*.h5',   'Hierarchical Data Format (*.h5)'; ...
-    '*.mrc;',  'MRC format for IMOD (*.mrc)'; ...
-    '*.nrrd',  'NRRD Data Format (*.nrrd)'; ...
-    '*.png',   'Portable Network Graphics (*.png)'; ...
-    '*.tif;',  'TIF format LZW compression (*.tif)'; ...
-    '*.tif;',  'TIF format uncompressed (*.tif)'; ...
-    '*.xml',   'Hierarchical Data Format with XML header (*.xml)'; ...
-    '*.*',  'All Files (*.*)'};
+Filters = {'*.am',  'Amira Mesh binary (*.am)';...
+           '*.am',  'Amira Mesh binary file sequence (*.am)';...
+           '*.jpg',  'Joint Photographic Experts Group (*.jpg)'; ...
+           '*.h5',   'Hierarchical Data Format (*.h5)'; ...
+           '*.mrc',  'MRC format for IMOD (*.mrc)'; ...
+           '*.nrrd',  'NRRD Data Format (*.nrrd)'; ...
+           '*.png',   'Portable Network Graphics (*.png)'; ...
+           '*.tif',  'TIF format LZW compression (*.tif)'; ...
+           '*.tif',  'TIF format uncompressed (*.tif)'; ...
+           '*.xml',   'Hierarchical Data Format with XML header (*.xml)'; ...
+           '*.*',  'All Files (*.*)'};
 
-[pathStr,fnameStr,ext] = fileparts(fn_out);
-if strcmp('.am', ext)
-    %Filters = Filters([6 1:5 7:end],:);
-elseif strcmp('.jpg', ext)
-    Filters = Filters([2 1 3:end],:);
-    fn_out = fullfile(pathStr, [fnameStr '.jpg']);
-elseif strcmp('.h5', ext)
-    Filters = Filters([3 1:2 4:end],:);
-elseif strcmp('.mrc', ext)     % Volume for IMOD (*.mrc)
-    Filters = Filters([4 1:3 5:end],:);
-elseif strcmp('.nrrd', ext)
-    Filters = Filters([5 1:4 6:end],:);
-elseif strcmp('.png', ext)
-    Filters = Filters([6 1:5 7:end],:);
-elseif strcmp('.tif', ext)
-    Filters = Filters([7 1:6 8:end],:);
-    fn_out = fullfile(pathStr, [fnameStr '.tif']);
-elseif strcmp('.xml', ext)
-    Filters = Filters([9 1:7 9:end],:);
+[pathStr, fnameStr, ext] = fileparts(fn_out);
+extFilter = ['*' ext];
+
+filterListPosition = find(ismember(Filters(:,1), extFilter));
+if isempty(filterListPosition)
+    Filters = Filters([end 1:end-1],:);
 else
-    Filters = Filters([10 1:9],:);
+    filterListPosition = filterListPosition(1);
+    selectedFilter = Filters(filterListPosition, :);
+    Filters(filterListPosition, :) = [];
+    Filters = [selectedFilter; Filters];
 end
 
 [filename, path, FilterIndex] = uiputfile(Filters, 'Save image...',fn_out); %...
@@ -87,7 +78,7 @@ if obj.mibModel.I{obj.mibModel.Id}.time > 1 && isempty(strfind(Filters{FilterInd
     end
 end
 
-[~,filename, ext] = fileparts(filename);
+[~, filename, ext] = fileparts(filename);
 res = obj.mibModel.updateParameters();
 if res == 0; return; end   % cancel
 
@@ -98,26 +89,73 @@ if t1 ~= t2
     wb = waitbar(0,sprintf('Saving %s\nPlease wait...',Filters{FilterIndex,2}),'Name','Saving images...','WindowStyle','modal');
     dT = t2-t1+1;
 end
+
+% check naming of the files during saving of image sequence
+if strcmp(Filters{FilterIndex, 2}, 'Amira Mesh binary file sequence (*.am)')
+    exportAmiraChoice2D = 'Sequential';
+    if isKey(obj.mibModel.I{obj.mibModel.Id}.meta, 'SliceName') && numel(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName')) == obj.mibModel.I{obj.mibModel.Id}.depth
+        exportAmiraChoice2D = questdlg('Would you like to use original or sequential filenaming?','Save as AmiraMesh...','Original', 'Sequential', 'Cancel', 'Sequential');
+        if strcmp(exportAmiraChoice2D, 'Cancel'); return; end
+    end
+end
+
 tic
 getDataOptions.blockModeSwitch = 0;     % disable the blockModeSwitch
 for t=t1:t2
-    if t1~=t2   % generate filename
+    if t1 ~= t2   % generate filename
         fnOut = generateSequentialFilename(filename, t, t2-t1+1, ext);
     else
         fnOut = [filename ext];
     end
     
-    img = cell2mat(obj.mibModel.getData3D('image', t, 4, 0, getDataOptions));
+    % get the obtain the image or keep it empty for the virtual mode
+    % saving, used only for 'matlab.hdf5' options.Format
+    if ismember(Filters{FilterIndex,2}, {'Hierarchical Data Format (*.h5)', 'Hierarchical Data Format with XML header (*.xml)'}) && ...
+          obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1  
+        img = []; 
+    else
+        img = cell2mat(obj.mibModel.getData3D('image', t, 4, 0, getDataOptions));    
+    end
                                 
-    switch Filters{FilterIndex,2}
+    switch Filters{FilterIndex, 2}
         case 'Amira Mesh binary (*.am)'    % am format
             if exist('savingOptions', 'var') == 0   % define parameters for the first time use
                 savingOptions = struct('overwrite', 1);
                 savingOptions.colors = obj.mibModel.I{obj.mibModel.Id}.lutColors;   % store colors for color channels 0-1;
                 savingOptions.showWaitbar = ~showLocalWaitbar;  % show or not waitbar in bitmap2amiraMesh
+                savingOptions.Saving3d = 'multi';    % save all stacks to a single file
             end
             bitmap2amiraMesh(fullfile(path, fnOut), img, ...
                 containers.Map(keys(obj.mibModel.I{obj.mibModel.Id}.meta),values(obj.mibModel.I{obj.mibModel.Id}.meta)), savingOptions);
+        case 'Amira Mesh binary file sequence (*.am)'    % am format, as sequence of files
+            if exist('savingOptions', 'var') == 0   % define parameters for the first time use
+                savingOptions = struct('overwrite', 1);
+                savingOptions.colors = obj.mibModel.I{obj.mibModel.Id}.lutColors;   % store colors for color channels 0-1;
+                savingOptions.showWaitbar = ~showLocalWaitbar;  % show or not waitbar in bitmap2amiraMesh
+                savingOptions.Saving3d = 'sequence';    % save as sequence of files
+            end
+            
+            % generate filenames
+            if strcmp(exportAmiraChoice2D, 'Original')
+                if obj.mibModel.I{obj.mibModel.Id}.time > 1
+                    [~, savingOptions.SliceName] = cellfun(@fileparts, obj.mibModel.I{obj.mibModel.Id}.meta('SliceName'), 'UniformOutput', false);
+                    savingOptions.SliceName = cellfun(@strcat, savingOptions.SliceName, ...
+                        repmat({sprintf('_T%03d', t)}, [numel(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName')), 1]), ...
+                        repmat({ext}, [numel(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName')), 1]), 'UniformOutput', false);
+                else
+                    [~, savingOptions.SliceName] = cellfun(@fileparts, obj.mibModel.I{obj.mibModel.Id}.meta('SliceName'), 'UniformOutput', false);
+                    savingOptions.SliceName = cellfun(@strcat, savingOptions.SliceName, repmat({ext}, [numel(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName')), 1]), 'UniformOutput', false);
+                end
+            else    % Sequential
+                if obj.mibModel.I{obj.mibModel.Id}.time > 1
+                    savingOptions.SliceName = arrayfun(@(i) generateSequentialFilename(sprintf('%s_T%03d', filename, t), i, size(img, 4), ext), 1:size(img, 4), 'UniformOutput', false)';
+                else
+                    savingOptions.SliceName = arrayfun(@(i) generateSequentialFilename(filename, i, size(img, 4), ext), 1:size(img, 4), 'UniformOutput', false)';
+                end
+            end
+            
+            bitmap2amiraMesh(fullfile(path, fnOut), img, ...
+                    containers.Map(keys(obj.mibModel.I{obj.mibModel.Id}.meta),values(obj.mibModel.I{obj.mibModel.Id}.meta)), savingOptions);
         case {'Hierarchical Data Format (*.h5)', 'Hierarchical Data Format with XML header (*.xml)' }   % hdf5 format
             if t==t1    % getting parameters for saving dataset
                 options = mibSaveHDF5Dlg(obj.mibModel.I{obj.mibModel.Id});
@@ -137,10 +175,10 @@ for t=t1:t2
             end
             
             if t==t1    % updating parameters for saving dataset
-                options.height = size(img, 1);
-                options.width = size(img, 2);
-                options.colors = size(img, 3);
-                options.depth = size(img, 4);
+                options.height = obj.mibModel.I{obj.mibModel.Id}.height;
+                options.width = obj.mibModel.I{obj.mibModel.Id}.width;
+                options.colors = obj.mibModel.I{obj.mibModel.Id}.colors;
+                options.depth = obj.mibModel.I{obj.mibModel.Id}.depth;
                 options.time = obj.mibModel.I{obj.mibModel.Id}.time;
                 options.pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;    % !!! check .units = 'um'
                 options.showWaitbar = ~showLocalWaitbar;        % show or not waitbar in data saving function
@@ -149,7 +187,11 @@ for t=t1:t2
                 options.DatasetName = filename; 
                 options.overwrite = 1;
                 options.DatasetType = 'image';
-            
+                options.DatasetClass = obj.mibModel.I{obj.mibModel.Id}.meta('imgClass');
+                if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1 && strcmp(options.Format, 'matlab.hdf5')
+                    options.mibImage = obj.mibModel.I{obj.mibModel.Id};
+                end
+                
                 % saving xml file if needed
                 if options.xmlCreate
                     saveXMLheader(options.filename, options);
@@ -252,7 +294,7 @@ for t=t1:t2
     if showLocalWaitbar;        waitbar(t/dT, wb);    end
 end
 obj.updateFilelist([filename ext]);     % update list of files, use filename to highlight the saved file
-if showLocalWaitbar; delete(wb); end;
+if showLocalWaitbar; delete(wb); end
 toc;
 end
 

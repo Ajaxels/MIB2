@@ -26,7 +26,7 @@ classdef mibExternalDirsController < handle
             obj.View = mibChildView(obj, guiName); % initialize the view
             
             externalPaths = [{'Fiji installation folder'}, {'Omero installation folder', 'Imaris installation folder'},...
-                              {'BM3D filter'}, {'BM4D filter'}];
+                              {'BM3D filter'}, {'BM4D filter'}, {'BioFormats Memoizer temporary directory'}];
             obj.View.handles.externalToolPopup.String = externalPaths;
             
             % resize all elements x1.25 times for macOS
@@ -61,6 +61,13 @@ classdef mibExternalDirsController < handle
                     obj.View.handles.dirEdit.BackgroundColor = 'r';
                 else
                     obj.View.handles.dirEdit.BackgroundColor = 'w';
+                    if strcmp(obj.View.handles.dirEdit.String, 'C:\Matlab\Scripts\BMxD\BM3D')
+                        answer = questdlg(sprintf('!!! Warning !!!\n\nPlease note that any unauthorized use of BM3D and BM4D filters for industrial or profit-oriented activities is expressively prohibited!'), 'License warning', 'Acknowledge', 'Cancel', 'Cancel');
+                        if strcmp(answer, 'Cancel')
+                            obj.View.handles.dirEdit.String = '';
+                            return;
+                        end
+                    end
                 end
             end
             obj.updatePreferences();    % update local copy of preferences
@@ -72,6 +79,15 @@ classdef mibExternalDirsController < handle
             
             folder_name = uigetdir(obj.View.handles.dirEdit.String, 'Select directory');
             if folder_name==0; return; end
+            
+            if strcmp(obj.View.handles.externalToolPopup.String{obj.View.handles.externalToolPopup.Value}, 'BM3D filter')
+                answer = questdlg(sprintf('!!! Warning !!!\n\nPlease note that any unauthorized use of BM3D and BM4D filters for industrial or profit-oriented activities is expressively prohibited!'), 'License warning', 'Acknowledge', 'Cancel', 'Cancel');
+                if strcmp(answer, 'Cancel')
+                    obj.View.handles.dirEdit.String = '';
+                    return;
+                end
+            end
+            
             obj.View.handles.dirEdit.String = folder_name;
             obj.dirEdit_Callback();
         end
@@ -91,6 +107,8 @@ classdef mibExternalDirsController < handle
                     obj.localPreferences.dirs.bm3dInstallationPath = obj.View.handles.dirEdit.String;
                 case 'BM4D filter'
                     obj.localPreferences.dirs.bm4dInstallationPath = obj.View.handles.dirEdit.String;                    
+                case 'BioFormats Memoizer temporary directory'
+                    obj.localPreferences.dirs.BioFormatsMemoizerMemoDir = obj.View.handles.dirEdit.String;                    
             end
         end
         
@@ -114,6 +132,8 @@ classdef mibExternalDirsController < handle
                     obj.View.handles.dirEdit.String = obj.localPreferences.dirs.bm3dInstallationPath;
                 case 'BM4D filter'
                     obj.View.handles.dirEdit.String = obj.localPreferences.dirs.bm4dInstallationPath;
+                case 'BioFormats Memoizer temporary directory'
+                    obj.View.handles.dirEdit.String = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;
             end
             obj.dirEdit_Callback();
         end
@@ -121,7 +141,7 @@ classdef mibExternalDirsController < handle
         function acceptBtn_Callback(obj)
             % function acceptBtn_Callback(obj)
             % accept directories
-            warndlg(sprintf('!!! Warning !!!\n\nYou need to restart MIB to take the updated directories in use'), 'Attention', 'modal');
+            warndlg(sprintf('!!! Warning !!!\n\nYou may need to restart MIB to take the updated directories in use'), 'Attention', 'modal');
             obj.mibPreferencesController.preferences = obj.localPreferences;
             obj.closeWindow();
         end

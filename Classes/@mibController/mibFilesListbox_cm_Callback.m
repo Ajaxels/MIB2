@@ -24,7 +24,7 @@ function mibFilesListbox_cm_Callback(obj, parameter)
 % of the License, or (at your option) any later version.
 % 
 % Updates
-% 
+% 13.03.2019, fixed for 5D datasets
 
 global mibPath; % path to mib installation folder
 
@@ -36,6 +36,8 @@ filename = list(val);
 options.mibBioformatsCheck = obj.mibView.handles.mibBioformatsCheck.Value;
 options.waitbar = 1;
 options.mibPath = mibPath;
+options.id = obj.mibModel.Id;   % id of the current dataset
+options.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
 index = 1;
 
 if (strcmp(parameter, 'nth') || strcmp(parameter, 'addchannel_nth')) && numel(filename) == 1     % combines all files in the directory starting from the selected

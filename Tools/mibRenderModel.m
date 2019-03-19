@@ -19,7 +19,7 @@ function p = mibRenderModel(Volume, Index, pixSize, boundingBox, color_list, Ima
 % @li .maxFaces - maximal number of faces (no limit when 0)
 % @li .slice - show orthoslice (enter a number slice number, or NaN)
 % @li .exportToImaris - an optional switch to export the model to Imaris
-% @li .modelMaterialNames - a cell array for material names, for export to Imaris
+% @li .modelMaterialNames - a cell array for material names
 %
 % Return values:
 % p: triangulated patch defined by FV (a structure with fields 'vertices'
@@ -60,13 +60,14 @@ if nargin < 7
     Options.smooth = str2double(answer{2});
     Options.maxFaces = str2double(answer{3});
     Options.slice = str2double(answer{4});
+    Options.modelMaterialNames = repmat(cellstr('Material'), [max(max(max(Volume))), 1]);
     Options.exportToImaris = 0;
     if isnan(Options.slice); Options.slice = 0; end
 end
-
 if ~isfield(Options, 'exportToImaris'); Options.exportToImaris = 0; end
+if ~isfield(Options, 'modelMaterialNames'); Options.modelMaterialNames = repmat(cellstr('Material'), [max(max(max(Volume))), 1]); end
 
-if nargin < 6   % initializa Image
+if nargin < 6   % initialize Image
     Image = NaN;
 end
     
@@ -79,11 +80,7 @@ end
 wb = waitbar(0, 'Smoothing the volume...','Name','Isosurface');
 if isnan(Index); Index = 0; end
 if Index==0
-    minIndex = 1;
-    maxIndex = max(max(max(Volume)));
-else
-    minIndex = Index;
-    maxIndex = Index;
+    Index = 1:numel(Options.modelMaterialNames);
 end
 
 bb = boundingBox;
@@ -107,14 +104,15 @@ set(gcf, 'Renderer', 'opengl');
 clf;
 %daspect([pixSize.x/pixSize.x/factorX pixSize.x/pixSize.y/factorY pixSize.x/pixSize.z/factorZ]);
 daspect([1 1 1]);
+maxIndex = numel(Index);
 
-for contIndex=minIndex:maxIndex
+for contIndex = Index
     subVolume = Volume==contIndex;
 
     % smooth the volume
     if kernelX ~= 0
         waitbar(0.2*contIndex/maxIndex, wb,  sprintf('Material %d: Smoothing the surface...', contIndex));
-        subVolume = uint8(smooth3(subVolume,'box',[kernelX kernelY kernelZ]));
+        subVolume = uint8(smooth3(subVolume, 'box', [kernelX kernelY kernelZ]));
     end
     waitbar(0.4*contIndex/maxIndex, wb,  sprintf('Material %d: Reducing the volume...', contIndex));
     [~,~,~,subVolume] = reducevolume(subVolume,[factorX,factorY,factorZ]);
@@ -222,7 +220,7 @@ if Options.slice ~= 0
     yValue = yValue(1:end-1);
     [xValue, yValue] = meshgrid(xValue, yValue);
     
-    zValue = Options.slice*pixSize.z*factorZ+bb(5);
+    zValue = Options.slice*pixSize.z+bb(5);
     surf(xValue, yValue, zValue+zeros([size(img, 1) size(img, 2)]), img, 'EdgeColor', 'none')
     colormap('gray');   
     hold off;

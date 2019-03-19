@@ -15,10 +15,10 @@ function mibAddIcons(handles)
 % add icons to buttons
 global mibPath;
 
-% on PC path is file://c:/...
+% on PC path is file://c:/... or //ad.xxxxx.xxx.xx
 % on Mac file:///Volumes/Transcend/...
 if ispc
-    fileText = 'file:/';
+    if mibPath(1) == '\'; fileText = 'file:'; else; fileText = 'file:/'; end    % check for a installation in the network path \\ad.xxxx
 else
     fileText = 'file://';
 end
@@ -215,12 +215,16 @@ drawnow;    % set delay
     Item = jHelpMenu.getMenuComponent(0);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'help.png')));
     Item = jHelpMenu.getMenuComponent(1);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'classhelp.png')));
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'lamp.png')));
+    Item = jHelpMenu.getMenuComponent(2);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'image-sc.png')));
     Item = jHelpMenu.getMenuComponent(3);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'update.png')));
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'classhelp.png')));
     Item = jHelpMenu.getMenuComponent(5);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'update.png')));
+    Item = jHelpMenu.getMenuComponent(7);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'copyright.png')));
-    Item = jHelpMenu.getMenuComponent(6);
+    Item = jHelpMenu.getMenuComponent(8);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'about.png')));
 
 % unselect Help entry

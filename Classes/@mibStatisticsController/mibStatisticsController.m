@@ -4,12 +4,12 @@ classdef mibStatisticsController < handle
     % MIB->Menu->Models->Model statistics
     
     % Copyright (C) 26.12.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+    % part of Microscopy Image Browser, http:\\mib.helsinki.fi
     % This program is free software; you can redistribute it and/or
     % modify it under the terms of the GNU General Public License
     % as published by the Free Software Foundation; either version 2
     % of the License, or (at your option) any later version.
-
+    
     
     properties
         mibModel
@@ -30,16 +30,18 @@ classdef mibStatisticsController < handle
         % version of Matlab
         obj2DType
         % index of the selected mode for the object mode
-        obj3DType     
+        obj3DType
         % index of the selected mode for the object mode
         runId
         % a vector [datasetId, materialId] for which dataset statistics was calculated
-        sel_model    
+        sel_model
         % selected material, stored in obj.mibModel.I{obj.mibModel.Id}.selectedMaterial-2;
         selectedProperties
         % list of selected properties to calculate, used to be handles.properties in MIB1
-        sorting
-        % a variable to keep sorting status for columns
+        sortingDirection
+        % a variable to keep sorting status for columns, sorting==1 for ascend, sorting==0 for descent
+        sortingColIndex
+        % a number with the index of the column to use for sorting (i.e. 1, 2, 3, or 4)
         statProperties
         % list of properties to calculate
         STATS
@@ -63,23 +65,26 @@ classdef mibStatisticsController < handle
             switch evnt.EventName
                 case 'updateId'
                     obj.updateWidgets();
-                case 'newDataset' 
+                case 'newDataset'
                     % dataset was reloaded
                     if ~isempty(obj.runId)
                         if obj.runId(1) == obj.mibModel.Id
                             obj.STATS = struct;
                             data = cell([1,4]);
                             obj.View.handles.statTable.Data = data;     % clear table contents
-                            obj.runId = []; % clear runId 
+                            obj.runId = []; % clear runId
                             obj.updateWidgets();
                         end
                     end
                     
             end
-        end 
+        end
         
         function purgeControllers(obj, src, evnt)
-            % find index of the child controller
+            % function purgeControllers(obj, src, evnt)
+            % find index of the child controller and purge it
+            %
+            
             id = obj.findChildId(class(src));
             
             % delete the child controller
@@ -96,7 +101,7 @@ classdef mibStatisticsController < handle
         function obj = mibStatisticsController(mibModel, contIndex)
             % obj = mibStatisticsController(mibModel, contIndex)
             % constructor for mibStatisticsController
-            % 
+            %
             % Parameters:
             % mibModel:     a handle to mibModel
             % contIndex: index of the dataset for statistics (1-mask, 2-Exterior, 3, 4 materials of the model)
@@ -115,7 +120,8 @@ classdef mibStatisticsController < handle
             obj.obj2DType = 1;              % index of the selected mode for the object mode
             obj.obj3DType = 1;              % index of the selected mode for the object mode
             obj.statProperties = {'Area'};  % list of properties to calculate
-            obj.sorting = 1;                % a variable to keep sorting status for columns
+            obj.sortingDirection = 0;                % a variable to keep sorting status for columns
+            obj.sortingColIndex = 2;        % default sort by value
             obj.indices = [];               % indices for selected rows
             obj.histLimits = [0 1];     % limits for the histogram
             obj.STATS = struct();
@@ -130,7 +136,7 @@ classdef mibStatisticsController < handle
             obj.childControllers = {};    % initialize child controllers
             obj.childControllersIds = {};
             
-            if contIndex > 1 
+            if contIndex > 1
                 contIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial;
                 obj.View.handles.targetPopup.Value = contIndex;
             else
@@ -140,12 +146,14 @@ classdef mibStatisticsController < handle
             obj.targetPopup_Callback();
             
             % add listner to obj.mibModel and call controller function as a callback
-            obj.listener{1} = addlistener(obj.mibModel, 'updateId', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt)); 
-            obj.listener{2} = addlistener(obj.mibModel, 'newDataset', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt)); 
+            obj.listener{1} = addlistener(obj.mibModel, 'updateId', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));
+            obj.listener{2} = addlistener(obj.mibModel, 'newDataset', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));
         end
         
         function closeWindow(obj)
+            % function purgeControllers(obj, src, evnt)
             % closing mibStatisticsController window
+            
             if isvalid(obj.View.gui)
                 delete(obj.View.gui);   % delete childController window
             end
@@ -160,6 +168,9 @@ classdef mibStatisticsController < handle
         end
         
         function updateWidgets(obj)
+            % function updateWidgets(obj)
+            % update widgets of the GUI
+            
             %fprintf('childController:updateWidgets: %g\n', toc);
             % populate targetPopup
             targetPopupValue = obj.View.handles.targetPopup.Value;
@@ -229,7 +240,14 @@ classdef mibStatisticsController < handle
             %
             % Parameters:
             % parameter: a string that specify parameter for the callback
-            % @ 'mean'
+            % @li 'mean' - calculate an average of all selected numbers
+            % @li 'sum' - calculate a sum of all selected numbers
+            % @li 'min' - find the minimum value of all selected numbers
+            % @li 'max' - find the maximum value of all selected numbers
+            % @li 'crop' - crop selected objects to a file or Matlab
+            % @li 'hist' - show histogram distribution for the selected objects
+            % @li 'newLabel', 'addLabel', 'removeLabel' - generate or update the MIB annotations
+            
             global mibPath;
             
             data = obj.View.handles.statTable.Data;
@@ -306,88 +324,101 @@ classdef mibStatisticsController < handle
                     notify(obj.mibModel, 'updatedAnnotations');
                     notify(obj.mibModel, 'plotImage');
                     
-%                     % update the annotation window
-%                     windowId = findall(0,'tag','ib_labelsGui');
-%                     if ~isempty(windowId)
-%                         hlabelsGui = guidata(windowId);
-%                         cb = get(hlabelsGui.refreshBtn,'callback');
-%                         feval(cb, hlabelsGui.refreshBtn, []);
-%                     end
+                    %                     % update the annotation window
+                    %                     windowId = findall(0,'tag','ib_labelsGui');
+                    %                     if ~isempty(windowId)
+                    %                         hlabelsGui = guidata(windowId);
+                    %                         cb = get(hlabelsGui.refreshBtn,'callback');
+                    %                         feval(cb, hlabelsGui.refreshBtn, []);
+                    %                     end
                 otherwise
                     obj.statTable_CellSelectionCallback([], parameter);
             end
         end
         
-        
-        function sortButtonContext_cb(obj, parameter)
-            % function sortButtonContext_cb(obj, parameter)
-            % a callback for context menu for obj.View.handles.sortBtn
-            %
-            % Parameters:
-            % parameter: a string with sorting choice
-            % @li 'object' - sort by object id
-            % @li 'value' - sort by object value
-            % @li 'slice' - sort by slice number
-            % @li 'time' - sort by time point
+        function updateSortingSettings(obj)
+            % function updateSortingSettings(obj)
+            % update settings for sorting the columns of the table
+            % obj.sortingDirection
+            % obj.sortingColIndex
             
-            if strcmp(parameter, 'object')
-                colIndex = 1;
-            elseif strcmp(parameter, 'value')
-                colIndex = 2;
-            elseif strcmp(parameter, 'slice')
-                colIndex = 3;
-            elseif strcmp(parameter, 'time')
-                colIndex = 4;
+            val = obj.View.handles.sortingPopup.Value;
+            list = obj.View.handles.sortingPopup.String;
+            switch list{val}
+                case 'Value, ascent'
+                    obj.sortingDirection = 1;
+                    obj.sortingColIndex = 2;
+                case 'Value, descent'
+                    obj.sortingDirection = 0;
+                    obj.sortingColIndex = 2;
+                case 'ObjectID, ascent'
+                    obj.sortingDirection = 1;
+                    obj.sortingColIndex = 1;
+                case 'ObjectID, descent'
+                    obj.sortingDirection = 0;
+                    obj.sortingColIndex = 1;
+                case 'SliceNo, ascent'
+                    obj.sortingDirection = 1;
+                    obj.sortingColIndex = 3;
+                case 'SliceNo, descent'
+                    obj.sortingDirection = 0;
+                    obj.sortingColIndex = 3;
+                case 'TimePnt, ascent'
+                    obj.sortingDirection = 1;
+                    obj.sortingColIndex = 4;
+                case 'TimePnt, descent'
+                    obj.sortingDirection = 0;
+                    obj.sortingColIndex = 4;
             end
-            obj.sortBtn_Callback(colIndex);
+            obj.sortBtn_Callback();
         end
         
-        function sortBtn_Callback(obj, colIndex)
-            % function sortBtn_Callback(obj, colIndex)
-            % sort the obj.View.handles.statTable
+        function data = sortBtn_Callback(obj, data)
+            % function sortBtn_Callback(obj, data)
+            % sort the table
             %
-            % Paremters:
-            % colIndex: a number with the index of the column to use for
-            % sorting (i.e. 1, 2, 3, or 4)
+            % Parameters:
+            % data: a matrix with contents of the table
             
-            data = obj.View.handles.statTable.Data;
+            if nargin < 2; data = obj.View.handles.statTable.Data; end
+            
             if iscell(data); return; end   % nothing to sort
-            if obj.sorting == 1     % ascend sorting
-                [data(:,colIndex), index] = sort(data(:,colIndex), 'ascend');
-                obj.sorting = 0;
+            if obj.sortingDirection == 1     % ascend sorting
+                [data(:,obj.sortingColIndex), index] = sort(data(:, obj.sortingColIndex), 'ascend');
             else
-                [data(:,colIndex), index] = sort(data(:,colIndex), 'descend');
-                obj.sorting = 1;
+                [data(:, obj.sortingColIndex), index] = sort(data(:, obj.sortingColIndex), 'descend');
             end
             
-            if colIndex == 2
+            if obj.sortingColIndex == 2
                 data(:,1) = data(index, 1);
                 data(:,3) = data(index, 3);
                 data(:,4) = data(index, 4);
-            elseif colIndex == 1
+            elseif obj.sortingColIndex == 1
                 data(:,2) = data(index, 2);
                 data(:,3) = data(index, 3);
                 data(:,4) = data(index, 4);
-            elseif colIndex == 3
+            elseif obj.sortingColIndex == 3
                 data(:,1) = data(index, 1);
                 data(:,2) = data(index, 2);
                 data(:,4) = data(index, 4);
-            elseif colIndex == 4
+            elseif obj.sortingColIndex == 4
                 data(:,1) = data(index, 1);
                 data(:,2) = data(index, 2);
                 data(:,3) = data(index, 3);
             end
-            obj.View.handles.statTable.Data = data;
+            if nargin < 2
+                obj.View.handles.statTable.Data = data;
+            end
         end
         
         function targetPopup_Callback(obj)
-        % function targetPopup_Callback(obj)
-        % a callback for obj.View.handles.targetPopup
-        
-        val = obj.View.handles.targetPopup.Value;
-        targetList = obj.View.handles.targetPopup.String;
-        obj.View.gui.Name = sprintf('"%s" stats...', targetList{val});
-        obj.sel_model = val-2;
+            % function targetPopup_Callback(obj)
+            % a callback for obj.View.handles.targetPopup
+            
+            val = obj.View.handles.targetPopup.Value;
+            targetList = obj.View.handles.targetPopup.String;
+            obj.View.gui.Name = sprintf('"%s" stats...', targetList{val});
+            obj.sel_model = val-2;
         end
         
         function propertyCombo_Callback(obj)
@@ -419,6 +450,12 @@ classdef mibStatisticsController < handle
             end
             selectedProperty = list{value};
             
+            % rename selectedProperty for intensity measurements
+            if ismember(selectedProperty, {'SumIntensity', 'StdIntensity', 'MeanIntensity', 'MaxIntensity', 'MinIntensity'})
+                colCh = obj.View.handles.firstChannelCombo.Value;
+                selectedProperty = sprintf('%s_Ch%d', selectedProperty, colCh);
+            end
+            
             if obj.View.handles.multipleCheck.Value
                 % update table if possible
                 if isfield(obj.STATS, selectedProperty)
@@ -432,9 +469,10 @@ classdef mibStatisticsController < handle
                         end
                         data(:, 4) = [obj.STATS(data(:,1)).TimePnt];
                     end
+                    data = obj.sortBtn_Callback(data);
+                    
                     obj.View.handles.statTable.Data = data;
                     data = data(:,2);
-                    
                     [a,b] = hist(data, 256);
                     bar(obj.View.handles.histogram, b, a);
                     obj.histLimits = [min(b) max(b)];
@@ -447,7 +485,7 @@ classdef mibStatisticsController < handle
             end
             
             if obj.View.handles.multipleCheck.Value == 0
-                obj.selectedProperties = cellstr(selectedProperty);
+                obj.selectedProperties = list(value);
             end
         end
         
@@ -503,7 +541,7 @@ classdef mibStatisticsController < handle
         end
         
         function highlightSelection(obj, object_list, mode, sliceNumbers)
-            % function highlightSelection(obj, object_list, mode)
+            % function highlightSelection(obj, object_list, mode, sliceNumbers)
             % highlight selected objects
             %
             % Parameters:
@@ -511,7 +549,7 @@ classdef mibStatisticsController < handle
             % mode: a string
             % 'Add' - add selected objects to the selection layer
             % 'Remove' - remove selected objects from the selection layer
-            % 'Replace' - replace the selection layer with selected objects 
+            % 'Replace' - replace the selection layer with selected objects
             % 'obj2model' - generate a new model, where each selected object will be assigned to own index
             % sliceNumbers: indices of slices for each selected object
             
@@ -774,6 +812,7 @@ classdef mibStatisticsController < handle
         end
         
         function unitsCombo_Callback(obj)
+            % function unitsCombo_Callback(obj)
             % callback for change of the unitCombo combo
             curValue = obj.View.handles.unitsCombo.String{obj.View.handles.unitsCombo.Value};
             
@@ -783,7 +822,7 @@ classdef mibStatisticsController < handle
                     'Attention!!!', 'Confirm', 'Cancel', 'Confirm');
                 if strcmp(answer, 'Cancel')
                     obj.View.handles.unitsCombo.Value = 1;
-                    return; 
+                    return;
                 end
                 obj.anisotropicVoxelsAgree = 1;
             end
@@ -791,8 +830,10 @@ classdef mibStatisticsController < handle
         end
         
         function multipleBtn_Callback(obj)
+            % function multipleBtn_Callback(obj)
             % a callback for obj.View.handles.multipleBtn, selecting multiple
             % properties for calculation
+            
             obj3d = 1;
             if obj.View.handles.object2dRadio.Value == 1
                 obj3d = 0;
@@ -993,8 +1034,8 @@ classdef mibStatisticsController < handle
         function runStatAnalysis_Callback(obj)
             % function runStatAnalysis_Callback(obj)
             % start quantification analysis
-            tic
             
+            tic
             contents = obj.View.handles.propertyCombo.String;
             selectedProperty = contents{obj.View.handles.propertyCombo.Value};
             selectedProperty = strtrim(selectedProperty);
@@ -1014,19 +1055,24 @@ classdef mibStatisticsController < handle
             mode = obj.View.handles.shapePanel.SelectedObject.String;   % 2d/3d objects
             mode2 = obj.View.handles.modePanel.SelectedObject.String;   % object/intensity stats
             connectivity = obj.View.handles.connectivityCombo.Value;    % if 1: connectivity=4(2d) and 6(3d), if 2: 8(2d)/26(3d)
-            colorChannel = obj.View.handles.firstChannelCombo.Value;
+            if obj.View.handles.multipleCheck.Value == 1
+                colorChannel = 1:obj.mibModel.I{obj.mibModel.Id}.colors;
+            else
+                colorChannel = obj.View.handles.firstChannelCombo.Value;
+            end
+            colorChannel1 = obj.View.handles.firstChannelCombo.Value;   % for correlation
             colorChannel2 = obj.View.handles.secondChannelCombo.Value;  % for correlation
             
-            selectedMaterial = obj.View.handles.targetPopup.Value-2;  % selected material: 
-                % for models <= 255: -1=Mask; 0=Ext; 1-1st material  ...
-                % for models > 255: -1=Mask; 0=Ext; 1-Model, 2-first selected material, 3-second selected material
-
+            selectedMaterial = obj.View.handles.targetPopup.Value-2;  % selected material:
+            % for models <= 255: -1=Mask; 0=Ext; 1-1st material  ...
+            % for models > 255: -1=Mask; 0=Ext; 1-Model, 2-first selected material, 3-second selected material
+            
             if selectedMaterial >= 0    % model
                 if obj.mibModel.getImageProperty('modelExist') == 0
                     errordlg(sprintf('The model is not detected!\n\nPlease create a new model using:\nMenu->Models->New model'),'Missing model');
                     return;
                 end
-
+                
                 %list = obj.mibModel.getImageProperty('modelMaterialNames');
                 list = obj.View.handles.targetPopup.String;
                 
@@ -1039,7 +1085,7 @@ classdef mibStatisticsController < handle
                         obj.sel_model = str2double(list{obj.View.handles.targetPopup.Value});
                     end
                 end
-
+                
                 if selectedMaterial == 0
                     materialName = 'Exterior';
                 else
@@ -1078,9 +1124,12 @@ classdef mibStatisticsController < handle
             property{end+1} = 'TimePnt';
             property{end+1} = 'BoundingBox';
             
-            obj.STATS = cell2struct(cell(size(property)), property, 2);
-            obj.STATS = orderfields(obj.STATS);
-            obj.STATS(1) = [];
+            %obj.STATS = cell2struct(cell(size(property)), property, 2);
+            %obj.STATS = orderfields(obj.STATS);
+            %obj.STATS(1) = [];
+            
+            obj.STATS = [];
+            intProps = {'SumIntensity', 'StdIntensity', 'MeanIntensity', 'MaxIntensity', 'MinIntensity'};
             
             pixSize = obj.mibModel.getImageProperty('pixSize');
             
@@ -1126,8 +1175,6 @@ classdef mibStatisticsController < handle
                     else
                         img = cell2mat(obj.mibModel.getData3D('model', t, 4, obj.sel_model, getDataOptions));
                     end
-                    
-                    intProps = {'SumIntensity', 'StdIntensity', 'MeanIntensity', 'MaxIntensity', 'MinIntensity'};
                     
                     if sum(ismember(property, 'HolesArea')) > 0
                         img = imfill(img, conn, 'holes') - img;
@@ -1182,6 +1229,7 @@ classdef mibStatisticsController < handle
                         [STATS.HolesArea] = STATS2.Area;
                     end
                     waitbar(0.2,wb);
+                    
                     % calculate Eccentricity for 3D objects
                     prop1 = property(ismember(property, {'MeridionalEccentricity', 'EquatorialEccentricity'}));
                     if ~isempty(prop1)
@@ -1239,37 +1287,45 @@ classdef mibStatisticsController < handle
                             maxVal = max(DD(:));
                             [row, col] = find(DD == maxVal,1);
                             STATS3(objId).EndpointsLength = sqrt(...
-                                    ((minPoints(row,1) - maxPoints(col,1))*xPix)^2 + ...
-                                    ((minPoints(row,2) - maxPoints(col,2))*yPix)^2 + ...
-                                    ((minZ - maxZ)*zPix)^2 );    
+                                ((minPoints(row,1) - maxPoints(col,1))*xPix)^2 + ...
+                                ((minPoints(row,2) - maxPoints(col,2))*yPix)^2 + ...
+                                ((minZ - maxZ)*zPix)^2 );
                         end
                         [STATS.EndpointsLength] = deal(STATS3.EndpointsLength);
                     end
                     waitbar(0.6,wb);
+                    
                     % calculate Intensities
                     prop1 = property(ismember(property, intProps));
                     if ~isempty(prop1)
-                        img = squeeze(cell2mat(obj.mibModel.getData3D('image', t, 4, colorChannel, getDataOptions)));
-                        STATS2 = regionprops(CC, img, 'PixelValues');
-                        if sum(ismember(property, 'MinIntensity')) > 0
-                            calcVal = cellfun(@min, struct2cell(STATS2),'UniformOutput', false);
-                            [STATS.MinIntensity] = calcVal{:};
-                        end
-                        if sum(ismember(property, 'MaxIntensity')) > 0
-                            calcVal = cellfun(@max, struct2cell(STATS2),'UniformOutput', false);
-                            [STATS.MaxIntensity] = calcVal{:};
-                        end
-                        if sum(ismember(property, 'MeanIntensity')) > 0
-                            calcVal = cellfun(@mean, struct2cell(STATS2),'UniformOutput', false);
-                            [STATS.MeanIntensity] = calcVal{:};
-                        end
-                        if sum(ismember(property, 'SumIntensity')) > 0
-                            calcVal = cellfun(@sum, struct2cell(STATS2),'UniformOutput', false);
-                            [STATS.SumIntensity] = calcVal{:};
-                        end
-                        if sum(ismember(property, 'StdIntensity')) > 0
-                            calcVal = cellfun(@std2, struct2cell(STATS2),'UniformOutput', false);
-                            [STATS.StdIntensity] = calcVal{:};
+                        for i = 1:numel(colorChannel)
+                            img = squeeze(cell2mat(obj.mibModel.getData3D('image', t, 4, colorChannel(i), getDataOptions)));
+                            STATS2 = regionprops(CC, img, 'PixelValues');
+                            if sum(ismember(property, 'MinIntensity')) > 0
+                                calcVal = cellfun(@min, struct2cell(STATS2),'UniformOutput', false);
+                                fieldName = sprintf('MinIntensity_Ch%d', colorChannel(i));
+                                [STATS.(fieldName)] = calcVal{:};
+                            end
+                            if sum(ismember(property, 'MaxIntensity')) > 0
+                                calcVal = cellfun(@max, struct2cell(STATS2),'UniformOutput', false);
+                                fieldName = sprintf('MaxIntensity_Ch%d', colorChannel(i));
+                                [STATS.(fieldName)] = calcVal{:};
+                            end
+                            if sum(ismember(property, 'MeanIntensity')) > 0
+                                calcVal = cellfun(@mean, struct2cell(STATS2),'UniformOutput', false);
+                                fieldName = sprintf('MeanIntensity_Ch%d', colorChannel(i));
+                                [STATS.(fieldName)] = calcVal{:};
+                            end
+                            if sum(ismember(property, 'SumIntensity')) > 0
+                                calcVal = cellfun(@sum, struct2cell(STATS2),'UniformOutput', false);
+                                fieldName = sprintf('SumIntensity_Ch%d', colorChannel(i));
+                                [STATS.(fieldName)] = calcVal{:};
+                            end
+                            if sum(ismember(property, 'StdIntensity')) > 0
+                                calcVal = cellfun(@std2, struct2cell(STATS2),'UniformOutput', false);
+                                fieldName = sprintf('StdIntensity_Ch%d', colorChannel(i));
+                                [STATS.(fieldName)] = calcVal{:};
+                            end
                         end
                     end
                     
@@ -1332,11 +1388,15 @@ classdef mibStatisticsController < handle
                             STATS(ooId).BoundingBox(1)= STATS(ooId).BoundingBox(1) + xMin - 1;
                             STATS(ooId).BoundingBox(2)= STATS(ooId).BoundingBox(2) + yMin - 1;
                         end
-                    end                    
-                    
-                    obj.STATS = [obj.STATS orderfields(STATS')];
+                    end
+                    if isempty(obj.STATS)
+                        obj.STATS = STATS;
+                        obj.STATS = orderfields(STATS');
+                    else
+                        obj.STATS = [obj.STATS orderfields(STATS')];
+                    end
                     waitbar(0.95,wb);
-                else    % 2D objects
+                else    % ---------------- 2D objects -------------------
                     if connectivity == 1
                         conn = 4;
                     else
@@ -1353,12 +1413,11 @@ classdef mibStatisticsController < handle
                         start_id = 1;
                         end_id = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(orientation);
                     end
-
+                    
                     customProps = {'EndpointsLength','CurveLength','HolesArea'};
                     shapeProps = {'Solidity', 'Perimeter', 'Orientation', 'MinorAxisLength', 'MajorAxisLength', 'FilledArea', 'Extent', 'EulerNumber',...
-                            'EquivDiameter', 'Eccentricity', 'ConvexArea', 'Area'};
+                        'EquivDiameter', 'Eccentricity', 'ConvexArea', 'Area'};
                     shapeProps3D = {'FirstAxisLength','SecondAxisLength'};     % these properties are calculated by regionprops3mib
-                    intProps = {'SumIntensity','StdIntensity','MeanIntensity','MaxIntensity','MinIntensity'};
                     intCustomProps = 'Correlation';
                     commonProps = {'PixelIdxList', 'Centroid', 'BoundingBox'};
                     
@@ -1406,23 +1465,23 @@ classdef mibStatisticsController < handle
                             STATS2 = regionprops(CC, prop1);
                             fieldNames = fieldnames(STATS2);
                             %if strcmp(obj.units, 'pixels')
-                                for i=1:numel(fieldNames)
-                                    [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
-                                end
-%                             else
-%                                 for i=1:numel(fieldNames)
-%                                     switch fieldNames{i}
-%                                         case {'Area', 'ConvexArea', 'FilledArea'}
-%                                             STATSTEMP = cell2struct(num2cell([STATS2.(fieldNames{i})]* pixSize.x * pixSize.y), (fieldNames{i}),1);
-%                                             [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
-%                                         case {'MajorAxisLength','MinorAxisLength','EquivDiameter','Perimeter'}
-%                                             STATSTEMP = cell2struct(num2cell([STATS2.(fieldNames{i})] * (pixSize.x + pixSize.y)/2), (fieldNames{i}),1);
-%                                             [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
-%                                         otherwise
-%                                             [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
-%                                     end
-%                                 end
-%                             end
+                            for i=1:numel(fieldNames)
+                                [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
+                            end
+                            %                             else
+                            %                                 for i=1:numel(fieldNames)
+                            %                                     switch fieldNames{i}
+                            %                                         case {'Area', 'ConvexArea', 'FilledArea'}
+                            %                                             STATSTEMP = cell2struct(num2cell([STATS2.(fieldNames{i})]* pixSize.x * pixSize.y), (fieldNames{i}),1);
+                            %                                             [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
+                            %                                         case {'MajorAxisLength','MinorAxisLength','EquivDiameter','Perimeter'}
+                            %                                             STATSTEMP = cell2struct(num2cell([STATS2.(fieldNames{i})] * (pixSize.x + pixSize.y)/2), (fieldNames{i}),1);
+                            %                                             [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
+                            %                                         otherwise
+                            %                                             [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
+                            %                                     end
+                            %                                 end
+                            %                             end
                         end
                         
                         % calculate regionprop3mib shape properties
@@ -1452,7 +1511,7 @@ classdef mibStatisticsController < handle
                         % calculate curve length in pixels
                         prop1 = property(ismember(property,'CurveLength'));
                         if ~isempty(prop1)
-                            STATS2 = mibCalcCurveLength(slice, [], CC);
+                            STATS2 = mibCalcCurveLength(CC);
                             if isstruct(STATS2)
                                 [STATS.CurveLength] = deal(STATS2.CurveLengthInPixels);
                             end
@@ -1468,33 +1527,41 @@ classdef mibStatisticsController < handle
                         % calculate intensity properties
                         prop1 = property(ismember(property, intProps));
                         if ~isempty(prop1)
-                            STATS2 = regionprops(CC, cell2mat(obj.mibModel.getData2D('image', lay_id, orientation, colorChannel, getDataOptions)), 'PixelValues');
-                            if sum(ismember(property, 'MinIntensity')) > 0
-                                calcVal = cellfun(@min, struct2cell(STATS2),'UniformOutput', false);
-                                [STATS.MinIntensity] = calcVal{:};
-                            end
-                            if sum(ismember(property, 'MaxIntensity')) > 0
-                                calcVal = cellfun(@max, struct2cell(STATS2),'UniformOutput', false);
-                                [STATS.MaxIntensity] = calcVal{:};
-                            end
-                            if sum(ismember(property, 'MeanIntensity')) > 0
-                                calcVal = cellfun(@mean, struct2cell(STATS2),'UniformOutput', false);
-                                [STATS.MeanIntensity] = calcVal{:};
-                            end
-                            if sum(ismember(property, 'SumIntensity')) > 0
-                                calcVal = cellfun(@sum, struct2cell(STATS2),'UniformOutput', false);
-                                [STATS.SumIntensity] = calcVal{:};
-                            end
-                            if sum(ismember(property, 'StdIntensity')) > 0
-                                calcVal = cellfun(@std2, struct2cell(STATS2),'UniformOutput', false);
-                                [STATS.StdIntensity] = calcVal{:};
+                            for i = 1:numel(colorChannel)
+                                STATS2 = regionprops(CC, cell2mat(obj.mibModel.getData2D('image', lay_id, orientation, colorChannel(i), getDataOptions)), 'PixelValues');
+                                if sum(ismember(property, 'MinIntensity')) > 0
+                                    calcVal = cellfun(@min, struct2cell(STATS2),'UniformOutput', false);
+                                    fieldName = sprintf('MinIntensity_Ch%d', colorChannel(i));
+                                    [STATS.(fieldName)] = calcVal{:};
+                                    %[STATS.MaxIntensity3] = deal([calcVal{:}; calcVal{:}])
+                                end
+                                if sum(ismember(property, 'MaxIntensity')) > 0
+                                    calcVal = cellfun(@max, struct2cell(STATS2),'UniformOutput', false);
+                                    fieldName = sprintf('MaxIntensity_Ch%d', colorChannel(i));
+                                    [STATS.(fieldName)] = calcVal{:};
+                                end
+                                if sum(ismember(property, 'MeanIntensity')) > 0
+                                    calcVal = cellfun(@mean, struct2cell(STATS2),'UniformOutput', false);
+                                    fieldName = sprintf('MeanIntensity_Ch%d', colorChannel(i));
+                                    [STATS.(fieldName)] = calcVal{:};
+                                end
+                                if sum(ismember(property, 'SumIntensity')) > 0
+                                    calcVal = cellfun(@sum, struct2cell(STATS2),'UniformOutput', false);
+                                    fieldName = sprintf('SumIntensity_Ch%d', colorChannel(i));
+                                    [STATS.(fieldName)] = calcVal{:};
+                                end
+                                if sum(ismember(property, 'StdIntensity')) > 0
+                                    calcVal = cellfun(@std2, struct2cell(STATS2),'UniformOutput', false);
+                                    fieldName = sprintf('StdIntensity_Ch%d', colorChannel(i));
+                                    [STATS.(fieldName)] = calcVal{:};
+                                end
                             end
                         end
                         % calculate correlation between channels
                         prop1 = property(ismember(property, 'Correlation'));
                         if ~isempty(prop1)
                             img = cell2mat(obj.mibModel.getData2D('image', lay_id, orientation, 0, getDataOptions));
-                            img1 = img(:, :, colorChannel);
+                            img1 = img(:, :, colorChannel1);
                             img2 = img(:, :, colorChannel2);
                             for object=1:numel(STATS)
                                 STATS(object).Correlation = corr2(img1(STATS(object).PixelIdxList),img2(STATS(object).PixelIdxList));
@@ -1509,7 +1576,7 @@ classdef mibStatisticsController < handle
                         % recalculate to units if needed
                         if ~strcmp(obj.units, 'pixels')
                             fieldNames = fieldnames(STATS);
-                        
+                            
                             for i=1:numel(fieldNames)
                                 switch fieldNames{i}
                                     case {'Area', 'ConvexArea', 'FilledArea', 'HolesArea'}
@@ -1536,7 +1603,12 @@ classdef mibStatisticsController < handle
                             STATS = arrayfun(@(s) setfield(s, 'BoundingBox', [s.BoundingBox(1) s.BoundingBox(2) lay_id s.BoundingBox(3) s.BoundingBox(4) 1]), STATS);
                         end
                         [STATS.TimePnt] = deal(t);  % add time points
-                        obj.STATS = [obj.STATS orderfields(STATS')];
+                        if isempty(obj.STATS)
+                            obj.STATS = STATS;
+                            obj.STATS = orderfields(STATS');
+                        else
+                            obj.STATS = [obj.STATS orderfields(STATS')];
+                        end
                     end
                 end
             end
@@ -1548,10 +1620,15 @@ classdef mibStatisticsController < handle
             waitbar(.9,wb, sprintf('Reformatting the indices\nPlease wait...'));
             data = zeros(numel(obj.STATS),4);
             if numel(data) ~= 0
+                % rename selected property MaxIntensity -> MaxIntensity_Ch3
+                if ismember(selectedProperty, intProps)
+                    selectedProperty = sprintf('%s_Ch%d', selectedProperty, colorChannel1);
+                end
+                
                 if isfield(obj.STATS, selectedProperty)
-                    [data(:,2), data(:,1)] = sort(cat(1, obj.STATS.(selectedProperty)),'descend');
+                    [data(:,2), data(:,1)] = sort(cat(1, obj.STATS.(selectedProperty)), 'descend');
                 else
-                    [data(:,2), data(:,1)] = sort(cat(1, obj.STATS.(property{1})),'descend');
+                    [data(:,2), data(:,1)] = sort(cat(1, obj.STATS.(property{1})), 'descend');
                 end
                 dataWidth = obj.mibModel.getImageProperty('width');
                 dataHeight = obj.mibModel.getImageProperty('height');
@@ -1565,9 +1642,10 @@ classdef mibStatisticsController < handle
             end
             
             waitbar(1,wb);
+            data = obj.sortBtn_Callback(data);
             obj.View.handles.statTable.Data = data;
-            data = data(:,2);
             
+            data = data(:,2);
             [a,b] = hist(data, 256);
             bar(obj.View.handles.histogram, b, a);
             obj.histLimits = [min(b) max(b)];

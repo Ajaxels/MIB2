@@ -57,11 +57,11 @@ if strcmp(os, 'Windows_NT')
     end
 else        % linux
     try
-        save([mibPath filesep 'mib.mat'], 'mib_pars');
+        fn = fullfile(tempdir, 'mib.mat');
+        save(fn, 'mib_pars');
     catch err
         try     % try to save it into linux temp folder
-            fn = fullfile(tempdir, 'mib.mat');
-            save(fn, 'mib_pars');
+            save([mibPath filesep 'mib.mat'], 'mib_pars');
         catch err
             msgbox(sprintf('There is a problem with saving settings\n%s', err.identifier),'Error','error','modal');
         end

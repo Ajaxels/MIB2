@@ -6,7 +6,7 @@ function STATS = mibCalcCurveLength(slice, pixSize, CC)
 % curves have width of 1 pixel.
 %
 % Parameters:
-% slice: a 2D slice [1:height, 1:width], class uint8 with drawn curves.
+% slice: a 2D slice [1:height, 1:width], class uint8 with drawn curves or a structure with detected labels, returned by @em regionprops function
 % pixSize: [@em optional] a structure with pixel sizes. The required fields @b .x and @b .y; can be @em empty
 % CC: [@em optional] a structure with detected labels, returned by @em regionprops function
 %
@@ -24,11 +24,16 @@ function STATS = mibCalcCurveLength(slice, pixSize, CC)
 %
 % Updates
 % 20.09.2017 IB updated to include smoothing of points
+% 18.01.2019 IB first argument can be CC structure
 
 % fill default pixel size
 fieldName = 'CurveLengthInUnits';
 if nargin < 3
-    CC = bwconncomp(slice, 8);
+    if isstruct(slice)
+        CC = slice;
+    else
+        CC = bwconncomp(slice, 8);
+    end
 end
 if nargin < 2
     pixSize.x = 1;

@@ -31,6 +31,18 @@ ymax = size(img,1);
 zmax = size(img,4);
 mask = zeros(size(img,1), size(img,2), size(img,4), 'uint8');
 
+% get current parallel pool object
+try
+    poolobj = gcp('nocreate');
+    if isempty(poolobj)
+        noCores = 0; 
+    else
+        noCores = poolobj.NumWorkers;
+    end
+catch
+    noCores = 0;
+end
+
 if Options.all_sw == 1
     start_no = 1;
     end_no = max_layers;
@@ -40,13 +52,17 @@ else
 end
 
 if Options.threeD       % apply filter in 3d space
-    wb = waitbar(0,sprintf('Generating %s 3D mask...\nPlease wait...', Options.type),'Name',Options.type,'WindowStyle','modal');
+    wb = waitbar(0,sprintf('Generating %s 3D mask...\nPlease wait...', Options.type), 'Name',Options.type, 'WindowStyle', 'modal');
     waitbar(0.1, wb);
     switch Options.type
         case 'Extended-maxima transform'
-            mask = imextendedmax(squeeze(img),Options.h,Options.conn);
+            mask = imextendedmax(squeeze(img), Options.h, Options.conn);
         case 'Extended-minima transform'
-            mask = imextendedmin(squeeze(img),Options.h,Options.conn);
+            mask = imextendedmin(squeeze(img), Options.h, Options.conn);
+        case 'H-maxima transform'
+            mask = imhmax(squeeze(img), Options.h, Options.conn);
+        case 'H-minima transform'
+            mask = imhmin(squeeze(img), Options.h, Options.conn);
         case 'Regional maxima'
             mask = imregionalmax(squeeze(img),Options.conn);
         case 'Regional minima'
@@ -61,12 +77,19 @@ else    % apply filter slice by slice in 2D
     wb = waitbar(0,sprintf('Generating %s 2D mask...\nPlease wait...', Options.type),'Name',Options.type,'WindowStyle','modal');
     type = Options.type;
     if Options.orientation == 4     % xy plane
-        parfor layer=start_no:end_no
+        tic
+        parfor (layer=start_no:end_no, noCores)
+        %for layer=start_no:end_no
+        %parfor layer=start_no:end_no
             switch type
                 case 'Extended-maxima transform'
                     bw = imextendedmax(img(:,:,:,layer), Options.h, Options.conn);
                 case 'Extended-minima transform'
                     bw = imextendedmin(img(:,:,:,layer), Options.h, Options.conn);
+                case 'H-maxima transform'
+                    bw = imhmax(img(:,:,:,layer), Options.h, Options.conn);
+                case 'H-minima transform'
+                    bw = imhmin(img(:,:,:,layer), Options.h, Options.conn);
                 case 'Regional maxima'
                     bw = imregionalmax(img(:,:,:,layer), Options.conn);
                 case 'Regional minima'
@@ -74,13 +97,18 @@ else    % apply filter slice by slice in 2D
             end
             mask(:,:,layer) = bw;
         end
+        toc
     elseif Options.orientation == 1     % xz plane
-        parfor layer=start_no:end_no
+        parfor (layer=start_no:end_no, noCores)
             switch type
                 case 'Extended-maxima transform'
                     bw = imextendedmax(squeeze(img(layer,:,:,:)), Options.h, Options.conn);
                 case 'Extended-minima transform'
                     bw = imextendedmin(squeeze(img(layer,:,:,:)), Options.h, Options.conn);
+                case 'H-maxima transform'
+                    bw = imhmax(squeeze(img(layer,:,:,:)), Options.h, Options.conn);
+                case 'H-minima transform'
+                    bw = imhmin(squeeze(img(layer,:,:,:)), Options.h, Options.conn);
                 case 'Regional maxima'
                     bw = imregionalmax(squeeze(img(layer,:,:,:)), Options.conn);
                 case 'Regional minima'
@@ -89,12 +117,16 @@ else    % apply filter slice by slice in 2D
             mask(layer,:,:) = bw;
         end
     elseif Options.orientation == 2     % yz plane
-        parfor layer=start_no:end_no
+        parfor (layer=start_no:end_no, noCores)
             switch type
                 case 'Extended-maxima transform'
                     bw = imextendedmax(squeeze(img(:,layer,:,:)), Options.h, Options.conn);
                 case 'Extended-minima transform'
                     bw = imextendedmin(squeeze(img(:,layer,:,:)), Options.h, Options.conn);
+                case 'H-maxima transform'
+                    bw = imhmax(squeeze(img(:,layer,:,:)), Options.h, Options.conn);
+                case 'H-minima transform'
+                    bw = imhmin(squeeze(img(:,layer,:,:)), Options.h, Options.conn);
                 case 'Regional maxima'
                     bw = imregionalmax(squeeze(img(:,layer,:,:)), Options.conn);
                 case 'Regional minima'
@@ -105,6 +137,11 @@ else    % apply filter slice by slice in 2D
     else
         error('[Error] Morphological Mask Filter: unsupported dimention/orientation!');
     end
+end
+% do additional thresholding for H-max H-min transforms
+if ismember(type, {'H-maxima transform', 'H-minima transform'})
+    mask(mask < Options.Hthres) = 0;
+    mask(mask >= Options.Hthres) = 1;
 end
 delete(wb);
 end

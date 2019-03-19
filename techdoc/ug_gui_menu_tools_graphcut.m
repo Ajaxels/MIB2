@@ -151,7 +151,7 @@
 % considered as an artefact of the method.
 % * *Superpixels/Graph* press this button to initiate generation of superpixels and their final organization into a graph</li>
 % * *Import* press to import superpixels and the generated graph from a disk or Matlab</li>
-% * *Export* press to export superpixels and the generated graph to a disk or Matlab</li>
+% * *Export* press to export superpixels and the generated graph to a file, Matlab or as a new model</li>
 % * *Preview superpixels* the generated superpixels may be previewed by pressing this button</li>
 %
 %

@@ -112,10 +112,7 @@ switch parameter
         end
     case 'buffer'
         % find buffers that have the mask layer
-        sourceBuffer = zeros([obj.mibModel.maxId 1]);
-        for i=1:obj.mibModel.maxId
-            sourceBuffer(i) = obj.mibModel.I{i}.maskExist;
-        end
+        sourceBuffer = arrayfun(@(i) obj.mibModel.I{i}.maskExist, 1:obj.mibModel.maxId);
         sourceBuffer = find(sourceBuffer==1);   % find buffer indices
         sourceBuffer = sourceBuffer(sourceBuffer~=obj.mibModel.Id);     % remove currently opened buffer from the list
         

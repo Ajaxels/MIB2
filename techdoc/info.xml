@@ -3,7 +3,7 @@ xsi:noNamespaceSchemaLocation="optional">
     <?xml-stylesheet type="text/xsl"href="optional"?>
     <!-- info.xml file for the Microscopy Image Browser -->
     <!-- Author: Ilya Belevich -->
-    <!-- Copyright 2010-2017 Electron Microscopy Unit, Institute of Biotechnology, University of Helsinki -->
+    <!-- Copyright 2010-2019 Electron Microscopy Unit, Institute of Biotechnology, University of Helsinki -->
     
     <!-- Release element is not used, but provides documentation -->
     <matlabrelease>2014b</matlabrelease>

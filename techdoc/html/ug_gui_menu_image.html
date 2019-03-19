@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Image Menu</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-12-21"><meta name="DC.source" content="ug_gui_menu_image.m"><style type="text/css">
+      --><title>Image Menu</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-19"><meta name="DC.source" content="ug_gui_menu_image.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -79,6 +79,9 @@ A brief demonstration is available in the following video:<br>
 <table>
 <tr>
 <td colspan = 2><b>Image arithmetics</b><br>
+Use Matlab syntax to apply custom arithmetic expression with one, two or
+three open datasets. The expression should start with "A = ", see more in
+a brief video below and some examples.<br>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
 </td>
@@ -89,22 +92,24 @@ A brief demonstration is available in the following video:<br>
 <ul>
 <b>Parameters and options:</b><br><br>
 <li><b>Input A</b>, specify index of the MIB container with the source image. The image in the specified container will be referenced as "A"</li>
-<li><b>Destination class</b>, the result of the operation will be stored in one of these classes</li>
-<li><b>Destination buffer</b>, the result of the operation will be stored in this container</li>
 <li><b>Input B</b>, an optional input to specify a second MIB container to use. The image in the specified container will be referenced as "B"</li>
 <li><b>Input C</b>, an optional input to specify a third MIB container to use. The image in the specified container will be referenced as "C"</li>
-<li><b>Convert via uint32</b>, use this checkbox to ensure that before the operations images are converted to unit32 container and highlights are not clipped away</li>
+<li><b>Destination container</b>, the result of the operation will be stored in container with this index</li>
+<li><b>Destination class</b>, the result of the operation will be stored in one of these image classes</li>
+<li><b>Convert via uint32</b>, use this checkbox to ensure that before the operations images are converted to unit32 class so that the highlights are not clipped away</li>
+<li><b>Previous expresson</b>, a list of previous successfully executed expressions. Selection of any expression from this list will populate the expression edit box</li>
 <li><b>Expression</b>, an expression with arithmetic operation to perform, see below for some examples</li>
 </ul>
 <br>
 <ul>
 Examples:
-<li><b>A=A+100</b>, increase intensity of all pixels in image A by 100</li>
-<li><b>A=A*2</b>, increase intensity of all pixels in image A in 2 times</li>
-<li><b>A=A+B-C</b>, add image B to image A and subtract image C from the result</li>
-<li><b>A=A+mean(B(:))</b>, add mean value of image B to image A</li>
-<li><b>A=A-min(B(:))</b>, subtract the min-value of image B from image A</li>
-<li><b>A(:,:,2,:)=A(:,:,2,:)*1.4</b>, increase image intensity of the second color channel in 1.4 times</li>
+<li><b>A = A + 100</b>, increase intensity of all pixels in image A by 100</li>
+<li><b>A = A * 2</b>, increase intensity of all pixels in image A in 2 times</li>
+<li><b>A = A + B - C</b>, add image B to image A and subtract image C from the result</li>
+<li><b>A = A + mean(B(:))</b>, add mean value of image B to image A</li>
+<li><b>A = A - min(B(:))</b>, subtract the min-value of image B from image A</li>
+<li><b>A(:,:,2,:) = A(:,:,2,:)*1.4</b>, increase image intensity of the second color channel in 1.4 times</li>
+<li><b>A(A==0) = A(A==0)+100</b>, increase image intensity of the black areas by 100 intensity counts</li>
 </ul>
 </td>
 </tr>
@@ -127,6 +132,10 @@ Calculate one of the following intensity projections:
 <li><b>minimum intensity projection</b>, project the voxel with the smallest value on every view throughout the volume onto a 2D image</li>
 <li><b>mean intensity projection</b>, project the mean value of voxels on every view throughout the volume onto a 2D image</li>
 <li><b>median intensity projection</b>, project the median value of voxels on every view throughout the volume onto a 2D image</li>
+<li><a href="https://youtu.be/5L0xMSFVxiU"><img style="vertical-align:middle;" src="images\youtube.png"></a> <b>focus stacking</b>, Generate extended depth-of-field image from focus sequence using noise-robust selective all-in-focus algorithm (<a href="https://ieeexplore.ieee.org/document/6373725">Pertuz et. al. "Generation of all-in-focus images by
+  noise-robust selective fusion of limited depth-of-field
+  images" IEEE Trans. Image Process, 22(3):1242 - 1251, 2013</a>)
+</li>
 </td>
 </tr>
 </table>
@@ -152,7 +161,7 @@ color for the <em>Image</em> layer.
 </p><h2 id="7">Morphological operations</h2><p>This section contains number of morphological operations that can be applied to images. The processed image may be also added or subtracted from the existing image (see the settings in the <tt>Additional action to the result</tt> panel).</p><p>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/itbVLFm0FKQ"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/itbVLFm0FKQ</a>
-</p><p><img vspace="5" hspace="5" src="images\MenuImageMorphOps.png" alt=""> </p><p>List of available morphological operations</p><div><ul><li><b>Bottom-hat filtering (imbothat)</b> computes the morphological closing of the image (using imclose`) and then subtracts the result from the original image</li><li><b>Clear border (imclearborder)</b> suppresses light structures connected to image border</li><li><b>Morphological closing (imclose)</b> morphologically closes the image: a dilation followed by an erosion</li><li><b>Dilate image (imdilate)</b></li><li><b>Erode image (imerode)</b></li><li><b>Fill regions (imfill)</b> fills holes in the image, where a hole is defined as an area of dark pixels surrounded by lighter pixels</li><li><b>H-maxima transform (imhmax)</b> suppresses all maxima in the image whose height is less than H</li><li><b>H-mminima transform (imhmin)</b> uppresses all minima in the image whose depth is less than H</li><li><b>Morphological opening (imopen)</b> morphologically opens image: an erosion followed by a dilation</li><li><b>Top-hat filtering (imtophat)</b> computes the morphological opening of the image (using imopen) and then subtracts the result from the original image</li></ul></div><h2 id="8">Intensity profile</h2><p>Generate an intensity profile of the image data. The profiles can be obtained in two modes:</p><div><ul><li><b>Line</b></li><li><b>Arbitrary</b></li></ul></div><p>For intensity profiles it is recommended to use the <a href="ug_gui_menu_tools_measure.html">Measure length tool</a>.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+</p><p><img vspace="5" hspace="5" src="images\MenuImageMorphOps.png" alt=""> </p><p>List of available morphological operations</p><div><ul><li><b>Bottom-hat filtering (imbothat)</b> computes the morphological closing of the image (using imclose`) and then subtracts the result from the original image</li><li><b>Clear border (imclearborder)</b> suppresses light structures connected to image border</li><li><b>Morphological closing (imclose)</b> morphologically closes the image: a dilation followed by an erosion</li><li><b>Dilate image (imdilate)</b></li><li><b>Erode image (imerode)</b></li><li><b>Fill regions (imfill)</b> fills holes in the image, where a hole is defined as an area of dark pixels surrounded by lighter pixels</li><li><b>H-maxima transform (imhmax)</b> suppresses all maxima in the image whose height is less than H</li><li><b>H-mminima transform (imhmin)</b> uppresses all minima in the image whose depth is less than H</li><li><b>Morphological opening (imopen)</b> morphologically opens image: an erosion followed by a dilation</li><li><b>Top-hat filtering (imtophat)</b> computes the morphological opening of the image (using imopen) and then subtracts the result from the original image</li></ul></div><h2 id="8">Intensity profile</h2><p>Generate an intensity profile of the image data. The profiles can be obtained in two modes:</p><div><ul><li><b>Line</b></li><li><b>Arbitrary</b></li></ul></div><p>For intensity profiles it is recommended to use the <a href="ug_gui_menu_tools_measure.html">Measure length tool</a>.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Image Menu
 % Image processing functions
@@ -252,6 +261,9 @@ A brief demonstration is available in the following video:<br>
 % <table>
 % <tr>
 % <td colspan = 2><b>Image arithmetics</b><br>
+% Use Matlab syntax to apply custom arithmetic expression with one, two or
+% three open datasets. The expression should start with "A = ", see more in
+% a brief video below and some examples.<br>
 % A brief demonstration is available in the following video:<br>
 % <a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
 % </td>
@@ -262,22 +274,24 @@ A brief demonstration is available in the following video:<br>
 % <ul>
 % <b>Parameters and options:</b><br><br>
 % <li><b>Input A</b>, specify index of the MIB container with the source image. The image in the specified container will be referenced as "A"</li>
-% <li><b>Destination class</b>, the result of the operation will be stored in one of these classes</li>
-% <li><b>Destination buffer</b>, the result of the operation will be stored in this container</li>
 % <li><b>Input B</b>, an optional input to specify a second MIB container to use. The image in the specified container will be referenced as "B"</li>
 % <li><b>Input C</b>, an optional input to specify a third MIB container to use. The image in the specified container will be referenced as "C"</li>
-% <li><b>Convert via uint32</b>, use this checkbox to ensure that before the operations images are converted to unit32 container and highlights are not clipped away</li>
+% <li><b>Destination container</b>, the result of the operation will be stored in container with this index</li>
+% <li><b>Destination class</b>, the result of the operation will be stored in one of these image classes</li>
+% <li><b>Convert via uint32</b>, use this checkbox to ensure that before the operations images are converted to unit32 class so that the highlights are not clipped away</li>
+% <li><b>Previous expresson</b>, a list of previous successfully executed expressions. Selection of any expression from this list will populate the expression edit box</li> 
 % <li><b>Expression</b>, an expression with arithmetic operation to perform, see below for some examples</li> 
 % </ul>
 % <br>
 % <ul>
 % Examples:
-% <li><b>A=A+100</b>, increase intensity of all pixels in image A by 100</li>
-% <li><b>A=A*2</b>, increase intensity of all pixels in image A in 2 times</li>
-% <li><b>A=A+B-C</b>, add image B to image A and subtract image C from the result</li>
-% <li><b>A=A+mean(B(:))</b>, add mean value of image B to image A</li>
-% <li><b>A=A-min(B(:))</b>, subtract the min-value of image B from image A</li>
-% <li><b>A(:,:,2,:)=A(:,:,2,:)*1.4</b>, increase image intensity of the second color channel in 1.4 times</li>
+% <li><b>A = A + 100</b>, increase intensity of all pixels in image A by 100</li>
+% <li><b>A = A * 2</b>, increase intensity of all pixels in image A in 2 times</li>
+% <li><b>A = A + B - C</b>, add image B to image A and subtract image C from the result</li>
+% <li><b>A = A + mean(B(:))</b>, add mean value of image B to image A</li>
+% <li><b>A = A - min(B(:))</b>, subtract the min-value of image B from image A</li>
+% <li><b>A(:,:,2,:) = A(:,:,2,:)*1.4</b>, increase image intensity of the second color channel in 1.4 times</li>
+% <li><b>A(A==0) = A(A==0)+100</b>, increase image intensity of the black areas by 100 intensity counts</li>
 % </ul>
 % </td>
 % </tr>
@@ -300,6 +314,10 @@ A brief demonstration is available in the following video:<br>
 % <li><b>minimum intensity projection</b>, project the voxel with the smallest value on every view throughout the volume onto a 2D image</li>
 % <li><b>mean intensity projection</b>, project the mean value of voxels on every view throughout the volume onto a 2D image</li>
 % <li><b>median intensity projection</b>, project the median value of voxels on every view throughout the volume onto a 2D image</li>
+% <li><a href="https://youtu.be/5L0xMSFVxiU"><img style="vertical-align:middle;" src="images\youtube.png"></a> <b>focus stacking</b>, Generate extended depth-of-field image from focus sequence using noise-robust selective all-in-focus algorithm (<a href="https://ieeexplore.ieee.org/document/6373725">Pertuz et. al. "Generation of all-in-focus images by
+%   noise-robust selective fusion of limited depth-of-field
+%   images" IEEE Trans. Image Process, 22(3):1242 - 1251, 2013</a>)
+% </li>
 % </td>
 % </tr>
 % </table>

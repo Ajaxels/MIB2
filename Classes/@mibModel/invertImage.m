@@ -23,7 +23,7 @@ function invertImage(obj, mode, colChannel)
 
 if nargin < 3; colChannel = 0; end
 
-maxval = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
+maxval = obj.I{obj.Id}.meta('MaxInt');
 
 % tweak when only one time point
 if strcmp(mode, '4D') && obj.I{obj.Id}.time == 1
@@ -73,12 +73,12 @@ for t=t1:t2     % loop across time points
         getDataOptions.t = [t t];
         obj.setData2D('image', img, obj.I{obj.Id}.getCurrentSliceNumber(), NaN, colChannel, getDataOptions);
     end
-    if showWaitbar==1; waitbar(index/max_size2, wb); end;
+    if showWaitbar==1; waitbar(index/max_size2, wb); end
 end
 
-if isnan(colChannel); colChannel = obj.I{obj.Id}.slices{3}; end;
+if isnan(colChannel); colChannel = obj.I{obj.Id}.slices{3}; end
 log_text = sprintf('Invert, ColCh: %s', num2str(colChannel));
 obj.I{obj.Id}.updateImgInfo(log_text);
-if showWaitbar==1; delete(wb); end;
+if showWaitbar==1; delete(wb); end
 notify(obj, 'plotImage');
 end

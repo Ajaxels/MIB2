@@ -46,12 +46,22 @@ switch parameter
         % find buffers that have the mask layer
         destinationBuffer = 1:obj.mibModel.maxId;
         destinationButton = 1;
-        for i=1:obj.mibModel.maxId
-            if strcmp(obj.mibModel.I{i}.meta('Filename'), 'none.tif') == 0 && i ~= obj.mibModel.Id
+        bufferListIds = obj.mibModel.Id:-1:1;   % get the previous container if possible
+        bufferListIds = [bufferListIds, obj.mibModel.Id:obj.mibModel.maxId];
+        bufferListIds(bufferListIds==obj.mibModel.Id) = [];
+        for i = bufferListIds
+            if strcmp(obj.mibModel.I{i}.meta('Filename'), 'none.tif') == 0
                 destinationButton = i;
                 break;
             end
         end
+        
+        %for i=1:obj.mibModel.maxId
+        %    if strcmp(obj.mibModel.I{i}.meta('Filename'), 'none.tif') == 0 && i ~= obj.mibModel.Id
+        %        destinationButton = i;
+        %        break;
+        %    end
+        %end
 
         destinationBuffer = arrayfun(@(x) {num2str(x)}, destinationBuffer);   % convert to string cell array
         prompts = {'Enter destination to export the Mask layer:'};

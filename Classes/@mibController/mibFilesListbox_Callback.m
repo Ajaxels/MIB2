@@ -49,6 +49,9 @@ switch obj.mibView.handles.mibGUI.SelectionType
             options.Font = obj.mibModel.preferences.Font;    % pass font settings
             options.mibPath = mibPath;      % path to MIB, an optional parameter to mibInputDlg.m 
             options.virtual = obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual;  % to use or not the virtual stacking
+            options.id = obj.mibModel.Id;   % id of the current dataset
+            options.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
+            
             %obj.mibModel.I{obj.mibModel.Id}.clearContents();  % remove the current dataset
             obj.mibModel.U.clearContents();  % clear Undo history
             

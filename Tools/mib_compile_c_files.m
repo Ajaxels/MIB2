@@ -27,8 +27,8 @@ mex -compatibleArrayDims -v rk4.c
 waitbar(0.1, wb, sprintf('Compiling Frangi\nPlease wait...'));
 currDir = fullfile(mibDir, 'Tools','Frangi');
 cd(currDir);
-mex('eig3volume.c' ,'-v');
-mex('imgaussian.c' ,'-v');
+mex -compatibleArrayDims -v eig3volume.c
+mex -compatibleArrayDims -v imgaussian.c
 
 %% Compiling Membrane Detection 
 waitbar(0.15, wb, sprintf('Compiling Membrane Detection\nPlease wait...'));

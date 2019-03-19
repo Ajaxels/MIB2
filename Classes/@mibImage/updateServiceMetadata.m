@@ -75,7 +75,7 @@ else
         metaOut('Colors') = size(obj.img{1}, 3); % number of color channels
         metaOut('Time') = size(obj.img{1}, 5);    % number of time points
     else                            % hdd resident mode
-        if isa(obj.img{1}, 'loci.formats.ChannelSeparator')     % bio-formats
+        if strcmp(obj.Virtual.objectType{1}, 'bioformats')     % bio-formats
             metaOut('Height') = obj.img{1}.getSizeY();   % height of the dataset
             metaOut('Width') = obj.img{1}.getSizeX();    % width of the dataset
             metaOut('Colors') = obj.img{1}.getSizeC(); % number of color channels
@@ -95,7 +95,7 @@ else
     if obj.Virtual.virtual == 0     % memory resident mode
         metaOut('Depth') = size(obj.img{1}, 4);      % number of slices in the dataset
     else                            % hdd resident mode
-        if isa(obj.img{1}, 'loci.formats.ChannelSeparator')     % bio-formats
+        if strcmp(obj.Virtual.objectType{1}, 'bioformats')    % bio-formats
             slicePerFile = arrayfun(@(ind) obj.img{ind}.getSizeZ(), 1:numel(obj.img), 'UniformOutput', 1);
             metaOut('Depth') = sum(slicePerFile);  % number of stacks in the combined dataset
         else
@@ -114,7 +114,7 @@ else
     if obj.Virtual.virtual == 0     % memory resident mode
         metaOut('imgClass') = class(obj.img{1}(1));    % get string with class name for images
     else                            % hdd resident mode
-        if isa(obj.img{1}, 'loci.formats.ChannelSeparator')     % bio-formats
+        if strcmp(obj.Virtual.objectType{1}, 'bioformats')     % bio-formats
             switch obj.img{1}.getPixelType
                 case 1
                     metaOut('imgClass') = 'uint8';
@@ -196,7 +196,7 @@ obj.time = metaOut('Time');
 obj.dim_yxczt = [obj.height, obj.width, obj.colors obj.depth obj.time];     % needed for virtual datasets as replacement of size(obj.img{1})
 
 obj.viewPort.min = zeros([obj.colors, 1]);
-obj.viewPort.max = zeros([obj.colors, 1]) + metaOut('MaxInt');
+obj.viewPort.max = zeros([obj.colors, 1]) + double(metaOut('MaxInt'));
 obj.viewPort.gamma = zeros([obj.colors, 1]) + 1;
 
 % obj.slices{1} = [1, obj.height];   % height [min, max]

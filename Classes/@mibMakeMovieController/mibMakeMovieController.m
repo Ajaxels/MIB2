@@ -78,7 +78,6 @@ classdef mibMakeMovieController < handle
             for i=1:obj.mibModel.maxId
                 obj.movieFilename{i} = [];
             end
-            
             obj.updateWidgets();
             
             % add listner to obj.mibModel and call controller function as a callback

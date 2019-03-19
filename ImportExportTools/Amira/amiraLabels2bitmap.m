@@ -18,6 +18,7 @@ function [bitmap] = amiraLabels2bitmap(filename)
 % Updates
 % ver 1.01 - 18.05.2012 - updated read procedure
 % ver 1.02 - 06.08.2012 - compatible with RLE compression algorithm
+% ver 1.03 - 30.01.2019, IB updated to be compatible with version 3
 
 tic
 bitmap = NaN;
@@ -34,9 +35,9 @@ fid = fopen(filename, 'r');
 
 % define type of data
 tline = fgetl(fid);
-if strcmp(tline, '# AmiraMesh 3D ASCII 2.0')
+if strcmp(tline(1:20), '# AmiraMesh 3D ASCII') % strcmp(tline, '# AmiraMesh 3D ASCII 2.0')
     type = 'ascii';
-elseif strcmp(tline, '# AmiraMesh BINARY-LITTLE-ENDIAN 2.1')
+elseif strcmp(tline(1:20), '# AmiraMesh BINARY-L') % strcmp(tline, '# AmiraMesh BINARY-LITTLE-ENDIAN 2.1')
     type = 'binary';
 else
     disp('Error! Unknown type'); return;

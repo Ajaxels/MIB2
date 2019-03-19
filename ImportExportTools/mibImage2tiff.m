@@ -85,7 +85,7 @@ end
 if options.overwrite == 0
     if exist(filename,'file') == 2
         reply = input('File exists! Overwrite? [y/N]:','s');
-        if ~strcmp(reply,'y'); disp('Cancel, nothing was saved!'); return; end;
+        if ~strcmp(reply,'y'); disp('Cancel, nothing was saved!'); return; end
     end
 end
 % if numel(size(imageS)) == 3 && size(imageS,3) ~= 3
@@ -112,7 +112,7 @@ if isnan(options.cmap)  % grayscale or rgb image
     end
 end
 
-files_no = size(imageS,4);
+files_no = size(imageS, 4);
 if options.showWaitbar
     wb = waitbar(0,sprintf('%s\nPlease wait...',filename),'Name','Saving images','WindowStyle','modal');
     set(findall(wb,'type','text'),'Interpreter','none');
@@ -189,14 +189,14 @@ elseif strcmp(options.Saving3d,'sequence')
         else            % indexed image
             imwrite(imageS(:,:,:,num),options.cmap,options.SliceName{num},'tif','Compression',options.Compression,'Description',cell2mat(ImageDescription(num)),'Resolution',options.Resolution);
         end
-        if options.showWaitbar; waitbar(num/files_no,wb); end;
+        if options.showWaitbar; waitbar(num/files_no,wb); end
     end
 else
     error('Error: wrong saving type, use ''multi'' or ''sequence''');
 end
-if options.showWaitbar; waitbar(1); end;
+if options.showWaitbar; waitbar(1); end
 disp(['image2tiff: ' options.SliceName{1} ' was/were created!']);
-if options.showWaitbar; delete(wb); end;
+if options.showWaitbar; delete(wb); end
 set(0, 'DefaulttextInterpreter', curInt); 
 result = 1;
 end
