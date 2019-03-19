@@ -357,13 +357,11 @@ if strcmp(type,'image') && (blockModeSwitchLocal == 0 || options.replaceDatasetS
                 obj.lutColors(i,:) = [rand(1) rand(1) rand(1)];
             end
         end
-        obj.updateDisplayParameters();
     end
     
     if ~strcmp(obj.meta('imgClass'), class(obj.img{1}(1)))
         obj.meta('imgClass') = class(obj.img{1}(1));    % get string with class name for images
         obj.meta('MaxInt') = double(intmax(obj.meta('imgClass')));
-        obj.updateDisplayParameters();
     end
     
     % update class variables

@@ -11,9 +11,6 @@ function result = bitmap2amiraMesh(filename, bitmap, img_info, options)
 % - .showWaitbar - if @b 1 - show the wait bar, if @b 0 - do not show
 % - .colors - [@em optional] - a matrix of colors for multiple color channels, format: [color channel][Red Green Blue] in
 % range from 0-1. Applicable to the @em HxMultiChannelField3 type of data saving.
-% - .Saving3d: ''multi'' - save all stacks into a single file
-%              ''sequence'' - generate a sequence of files
-% - .SliceName: [optional] a cell array with filenames without path
 %
 % Return values:
 % result: result of the function run, @b 1 - success, @b 0 - fail
@@ -30,7 +27,6 @@ function result = bitmap2amiraMesh(filename, bitmap, img_info, options)
 % ver 1.02 - 07.11.2013, added .colors
 % ver 1.03 - 17.09.2014, fix for saving parameters that are in structures
 % ver 1.04 - 04.06.2018 save TransformationMatrix with AmiraMesh
-% ver 1.05 - 22.01.2019 added saving of amira mesh files as 2D sequence
 
 result = 0;
 if nargin < 2
@@ -46,7 +42,6 @@ if nargin < 4
 end
 if ~isfield(options, 'overwrite'); options.overwrite = 0; end
 if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1; end
-if ~isfield(options, 'Saving3d'); options.Saving3d = 'multi'; end
 
 % overwrite lutColors in the img_info
 if isfield(options, 'colors')
@@ -60,64 +55,18 @@ if options.overwrite == 0
     end
 end
 
+HxMultiChannelField3 = 0;
+%if size(bitmap,3)==2 || size(bitmap,3)>3 % save as HxMultiChannelField3
+if size(bitmap,3) > 1 % save as HxMultiChannelField3
+    HxMultiChannelField3 = 1;
+end
 if options.showWaitbar
   %warning('off','MATLAB:gui:latexsup:UnableToInterpretTeXString');    % switch off warnings for latex
   curInt = get(0, 'DefaulttextInterpreter'); 
   set(0, 'DefaulttextInterpreter', 'none'); 
-  wb = waitbar(0,sprintf('%s\nPlease wait...',filename), 'Name', 'Saving images as Amira Mesh...', 'WindowStyle', 'modal');
-  set(findall(wb, 'type', 'text'), 'Interpreter', 'none');
+  wb = waitbar(0,sprintf('%s\nPlease wait...',filename),'Name','Saving images as Amira Mesh...','WindowStyle','modal');
+  set(findall(wb,'type','text'),'Interpreter','none');
   waitbar(0, wb);
-else
-    wb = [];
-end
-
-if strcmp(options.Saving3d, 'multi')    % save dataset as a single stack
-    saveAmFile(filename, bitmap, img_info, options, wb);
-else    % save dataset as sequence of images
-    [saveDir, saveFn, saveExt] = fileparts(filename);
-    if ~isfield(options, 'SliceName') || numel(options.SliceName) ~= size(bitmap, 4)
-        options.SliceName = arrayfun(@(i) generateSequentialFilename(saveFn, i, size(bitmap, 4), saveExt), 1:size(bitmap, 4), 'UniformOutput', false)';
-    end
-    
-    for fnId = 1:size(bitmap, 4)
-        saveAmFile(fullfile(saveDir, options.SliceName{fnId}), bitmap(:,:,:,fnId), img_info, options, wb);
-    end
-end
-
-disp(['bitmap2amiraMesh: ' filename ' was created!']);
-result = 1;
-if options.showWaitbar; set(0, 'DefaulttextInterpreter', curInt); delete(wb); end
-end
-
-% supporting function to generate sequential filenames
-function fn = generateSequentialFilename(name, num, files_no, ext)
-% name - a filename template
-% num - sequential number to generate
-% files_no - total number of files in sequence
-% ext - string with extension
-if files_no == 1
-    fn = [name ext];
-elseif files_no < 100
-    fn = [name '_' sprintf('%02i',num) ext];
-elseif files_no < 1000
-    fn = [name '_' sprintf('%03i',num) ext];
-elseif files_no < 10000
-    fn = [name '_' sprintf('%04i',num) ext];
-elseif files_no < 100000
-    fn = [name '_' sprintf('%05i',num) ext];
-elseif files_no < 1000000
-    fn = [name '_' sprintf('%06i',num) ext];
-elseif files_no < 10000000
-    fn = [name '_' sprintf('%07i',num) ext];
-end
-end
-
-function saveAmFile(filename, bitmap, img_info, options, wb)
-
-HxMultiChannelField3 = 0;
-%if size(bitmap,3)==2 || size(bitmap,3)>3 % save as HxMultiChannelField3
-if size(bitmap, 3) > 1 % save as HxMultiChannelField3
-    HxMultiChannelField3 = 1;
 end
 
 fid = fopen(filename, 'w');
@@ -125,7 +74,7 @@ fid = fopen(filename, 'w');
 fprintf(fid,'# AmiraMesh BINARY-LITTLE-ENDIAN 2.1\n\n\n');
 
 % saving the header
-fprintf(fid,'define Lattice %d %d %d\n\n', size(bitmap,2), size(bitmap,1), size(bitmap,4));
+fprintf(fid,'define Lattice %d %d %d\n\n',size(bitmap,2),size(bitmap,1),size(bitmap,4));
 fprintf(fid,'Parameters {\n');
 
 if isKey(img_info,'Content'); remove(img_info,'Content'); end
@@ -186,7 +135,7 @@ if HxMultiChannelField3
             lutColors = img_info('lutColors');
             fprintf(fid, '\t\tColor %f %f %f\n', lutColors(ch,1), lutColors(ch,2), lutColors(ch,3));
         elseif isKey(img_info, fieldName)
-            fprintf(fid, '\t\tColor %s\n', img_info(fieldName));
+            fprintf(fid, '\t\tColor %s\n',img_info(fieldName));
         else
             if isfield(options, 'colors')
                 fprintf(fid, '\t\tColor %f %f %f\n', options.colors(ch,1), options.colors(ch,2), options.colors(ch,3));
@@ -203,7 +152,7 @@ else
     else
         imgClass = 'ushort';
     end
-    fprintf(fid,'\tContent "%dx%dx%d %s, uniform coordinates",\n', size(bitmap,2), size(bitmap,1), size(bitmap,4), imgClass);
+    fprintf(fid,'\tContent "%dx%dx%d %s, uniform coordinates",\n',size(bitmap,2),size(bitmap,1),size(bitmap,4),imgClass);
 end
 
 bb = [0 max([size(bitmap,2) 2])-1 0 max([size(bitmap,1) 2])-1 0 max([size(bitmap,4) 2])-1];
@@ -236,7 +185,7 @@ end
 if options.showWaitbar; waitbar(.05,wb); end
 maxZ = size(bitmap,4);
 
-if size(bitmap, 3) == 1  % grayscale images
+if size(bitmap,3) == 1  % grayscale images
     fprintf(fid,'Lattice { %s Data } @1\n\n', imgClass);
     fprintf(fid,'# Data section follows\n');
     fprintf(fid,'@1\n');
@@ -289,4 +238,7 @@ else
 end
 fprintf(fid,'\n');
 fclose(fid);
+disp(['bitmap2amiraMesh: ' filename ' was created!']);
+result = 1;
+if options.showWaitbar; set(0, 'DefaulttextInterpreter', curInt); delete(wb); end
 end

@@ -1335,27 +1335,11 @@ classdef mibLines3DController < handle
             %
             % Parameters:
             % treeId: [@em optional] index of tree to visualize
-            global mibPath;
             
             if nargin < 2; treeId = 0; end
             
-            % check to show or not a slice
-            prompts = {'Use default colors?', 'Add an orthoslice of the visualization?', 'Slice number:'};
-            defAns = {true, false, num2str(obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber())};
-            dlgTitle = 'Add slice';
-            answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle);
-            if isempty(answer); return; end
-            
-            if answer{2} == 1
-                showSlice = str2double(answer{3});
-            else
-                showSlice = [];
-            end
-            
-            defaultColors = answer{1};
-            
             if isempty(obj.hFig)
-                obj.hFig = figure();
+                obj.hFig = figure(); 
                 obj.hAx = axes();
             elseif ~isvalid(obj.hFig)
                 obj.hFig = figure(); 
@@ -1371,59 +1355,15 @@ classdef mibLines3DController < handle
                 Graph.Nodes.Name = cellstr(num2str(nodeIds'));
             end
             
-            pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
-            
             obj.hPlot = plot(obj.hAx, Graph);
             obj.hPlot.XData = Graph.Nodes.PointsXYZ(:,1);
             obj.hPlot.YData = Graph.Nodes.PointsXYZ(:,2);
             obj.hPlot.ZData = Graph.Nodes.PointsXYZ(:,3);
-            obj.hAx.XLabel.String = ['X, ', pixSize.units];
-            obj.hAx.YLabel.String = ['Y, ', pixSize.units];
-            obj.hAx.ZLabel.String = ['Z, ', pixSize.units];
+            obj.hAx.XLabel.String = 'X';
+            obj.hAx.YLabel.String = 'Y';
+            obj.hAx.ZLabel.String = 'Z';
             obj.hAx.DataAspectRatio = [1 1 1];
             grid(obj.hAx, 'on');
-            obj.hAx.XAxis.TickValues = obj.hAx.XAxis.Limits(1):diff(obj.hAx.XAxis.Limits)/5:obj.hAx.XAxis.Limits(2);
-            obj.hAx.YAxis.TickValues = obj.hAx.YAxis.Limits(1):diff(obj.hAx.YAxis.Limits)/5:obj.hAx.YAxis.Limits(2);
-            obj.hAx.ZAxis.TickValues = obj.hAx.ZAxis.Limits(1):diff(obj.hAx.ZAxis.Limits)/5:obj.hAx.ZAxis.Limits(2);
-            if defaultColors == 0
-                obj.hPlot.LineWidth = obj.mibModel.I{obj.mibModel.Id}.hLines3D.edgeThickness;
-                obj.hPlot.MarkerSize = obj.mibModel.I{obj.mibModel.Id}.hLines3D.nodeRadius;
-                obj.hPlot.EdgeColor =  obj.mibModel.I{obj.mibModel.Id}.hLines3D.edgeActiveColor;
-                obj.hPlot.NodeColor = obj.mibModel.I{obj.mibModel.Id}.hLines3D.nodeColor;
-            end
-            
-            % add an orthoslice to the image
-            if ~isempty(showSlice)
-                if showSlice > obj.mibModel.getImageProperty('depth')
-                    showSlice = obj.mibModel.getImageProperty('depth');
-                else
-                    showSlice = max([1 showSlice]);
-                end
-                getRGBOptions.sliceNo = showSlice;
-                getRGBOptions.mode = 'full';
-                getRGBOptions.resize = 'no';
-                
-                img = obj.mibModel.getRGBimage(getRGBOptions);
-                bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
-                
-                hold on;
-                xValue = deal(bb(1):(bb(2)-bb(1))/size(img,2):bb(2));
-                xValue = xValue(1:end-1);
-                yValue = deal(bb(3):(bb(4)-bb(3))/size(img,1):bb(4));
-                yValue = yValue(1:end-1);
-                [xValue, yValue] = meshgrid(xValue, yValue);
-                
-                zValue = showSlice*pixSize.z+bb(5);
-                surf(xValue, yValue, zValue+zeros([size(img, 1) size(img, 2)]), img, 'EdgeColor', 'none')
-                colormap('gray');
-                hold off;
-                % update the z-limits
-                %zlim = get(gca, 'zlim');
-                %set(gca, 'zlim', [1 zlim(2)]);
-                %set(gca, 'zlim', [1 zlim(2)]);
-            end
-            disp('Hint: render image to file with the following command:')
-            disp('print(''MIB-snapshot.tif'', ''-dtiff'', ''-r600'',''-opengl'');');
         end
         
     end

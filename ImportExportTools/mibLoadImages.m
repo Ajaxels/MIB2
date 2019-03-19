@@ -17,8 +17,6 @@ function [img, img_info, pixSize] = mibLoadImages(filenames, options)
 %           .FontUnits
 %           .FontSize 
 %     - .virtual - a switch to open dataset in the virtual mode
-%     - .id - id of the current dataset, needed to generate filename for Memoizer class of BioFormats
-%     - .BioFormatsMemoizerMemoDir -> obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
 %
 % Return values:
 % img: - a dataset, [1:height, 1:width, 1:colors, 1:no_stacks]
@@ -43,6 +41,7 @@ function [img, img_info, pixSize] = mibLoadImages(filenames, options)
 global mibPath;
 global Font;
 
+tic
 if nargin < 2; options = struct(); end
 
 if ~isfield(options, 'mibBioformatsCheck');    options.mibBioformatsCheck = 0; end
@@ -52,8 +51,6 @@ if ~isfield(options, 'mibPath');    options.mibPath = mibPath;  end
 if ~isfield(options, 'imgStretch');    options.imgStretch = 1;  end
 if ~isfield(options, 'Font');    options.Font = Font;  end
 if ~isfield(options, 'virtual');    options.virtual = 0;  end
-if ~isfield(options, 'id');    options.id = 1;  end
-if ~isfield(options, 'BioFormatsMemoizerMemoDir');    options.BioFormatsMemoizerMemoDir = 'c:\temp';  end
 
 autoCropSw = 0;     % auto crop images that have dimension mismatch
 
@@ -76,7 +73,6 @@ if isempty(keys(img_info))
     img = [];
     return;
 end
-tic
 
 % dealing with virtual stacks
 if options.virtual == 1
@@ -130,8 +126,7 @@ if options.virtual == 1
     for i=1:numel(files)
         switch files(i).object_type
             case 'bioformats'
-                %img{i} = files(i).hDataset;   % get readers
-                img{i} = files(i).origFilename;
+                img{i} = files(i).hDataset;   % get readers
             case {'matlab.hdf5', 'hdf5_image'}
                 img{i} = files(i).filename;   % get readers
             %case 'amiramesh'
@@ -150,7 +145,6 @@ if options.virtual == 1
     end
     img_info('Virtual_objectType') = Virtual_objectType;
     img_info('Virtual_seriesName') = Virtual_seriesName;
-    toc;
     return;
 end
 

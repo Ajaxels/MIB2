@@ -101,19 +101,14 @@ function cropBtn_Callback(hObject, eventdata, handles)
 handles.winController.cropBtn_Callback(hObject);
 end
 
-% --- Executes on button press in croptoBtn.
-function cropToBtn_Callback(hObject, eventdata, handles)
-handles.winController.cropToBtn_Callback();
-end
-
 function radio_Callback(hObject, eventdata, handles)
 hObject.Value = 1;
 handles.winController.radio_Callback(hObject);
 end
 
-% --- Executes on selection change in SelectROI.
-function SelectROI_Callback(hObject, eventdata, handles)
-handles.winController.SelectROI_Callback();
+% --- Executes on selection change in roiPopup.
+function roiPopup_Callback(hObject, eventdata, handles)
+handles.winController.roiPopup_Callback();
 end
 
 % --- Executes on button press in resetBtn.
@@ -121,8 +116,9 @@ function resetBtn_Callback(hObject, eventdata, handles)
 handles.winController.resetBtn_Callback();
 end
 
+
+
 function editboxes_Callback(hObject, eventdata, handles)
-handles.Manual.Value = 1;
+handles.manualRadio.Value = 1;
 handles.winController.editboxes_Callback();
-handles.winController.updateBatchOptFromGUI(hObject);
 end

@@ -21,8 +21,6 @@ classdef mibImage < matlab.mixin.Copyable
         % a vector [min, max] with minimal and maximal coordinates of
         % the axes Y of the 'mibView.handles.mibImageAxes' axes; use @code mibModel.getAxesLimits() @endcode to
         % read this property
-        BioFormatsMemoizerMemoDir
-        % path to directory where BioFormats Memoizer is storing memo files
         blockModeSwitch
         % a variable to hold a status of the block mode (mibView.handles.toolbarBlockModeSwitch), 1 - enabled, 0 - disabled
         colors
@@ -200,7 +198,7 @@ classdef mibImage < matlab.mixin.Copyable
 
         output = addColorChannel(obj, img, channelId, lutColors)        % Add a new color channel to the existing dataset
         
-        output = addFrameToImage(obj, BatchOpt)        %  Add a frame around the dataset
+        output = addFrameToImage(obj, options)        %  Add a frame around the dataset
         
         clearContents(obj, img, metaIn, disableSelection)        % set all elements of the class to default values
         

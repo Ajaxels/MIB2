@@ -33,7 +33,7 @@ function varargout = selectLociSeries(varargin)
 
 % Edit the above text to modify the response to help selectLociSeries
 
-% Last Modified by GUIDE v2.5 30-Jan-2019 10:56:19
+% Last Modified by GUIDE v2.5 12-Dec-2013 09:53:39
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -107,6 +107,12 @@ if ~isdeployed
         javaaddpath(fullfile(fileparts(mfilename('fullpath')), 'bioformats_package.jar'));
     end
 end
+
+% r = loci.formats.ChannelFiller();
+% r = loci.formats.ChannelSeparator(r);
+% %r = loci.formats.gui.BufferedImageReader(r);
+% r.setMetadataStore(loci.formats.MetadataTools.createOMEXMLMetadata());
+% r.setId(handles.filename);
 
 if numel(varargin) > 2
     r = varargin{3};
@@ -302,7 +308,7 @@ sliceNumber = round(handles.sliceNumberSlider.Value);
 % end
 % handles.imagePreview.Units = axesUnits;
 
-templateImage = bfopen4(handles.output2, handles.output(1), sliceNumber);
+templateImage = bfopen3(handles.output2, handles.output(1), sliceNumber);
 templateImage = imresize(templateImage.img, 128/size(templateImage.img,1));
 if size(templateImage,3) == 1
     templateImage2 = templateImage;
@@ -378,22 +384,4 @@ if isequal(hObject.CurrentKey, 'return')
     continueBtn_Callback(handles.continueBtn, eventdata, handles)
 end    
 
-end
-
-
-% --- Executes on key press with focus on seriesTable and none of its controls.
-function seriesTable_KeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to seriesTable (see GCBO)
-% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
-%	Key: name of the key that was pressed, in lower case
-%	Character: character interpretation of the key(s) that was pressed
-%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
-% handles    structure with handles and user data (see GUIDATA)
-if isequal(eventdata.Key, 'return')
-    % a fix needed because return shift the cell index to the following row
-    handles.output2.setSeries(handles.output(1)-1);    % set desired series
-    drawnow;    % needed otherwise the section id is not updated
-end
-selectLociSeries_KeyPressFcn(handles.selectLociSeries, eventdata, handles);
-return;
 end

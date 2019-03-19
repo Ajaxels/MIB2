@@ -10,7 +10,7 @@ classdef mibController < handle
     %
     
     properties
-        mibVersion = 'ver. 2.51 / 13.03.2019';  % ATTENTION! it is important to have the version number between "ver." and "/"
+        mibVersion = 'ver. 2.50 / 17.12.2018';  % ATTENTION! it is important to have the version number between "ver." and "/"
         % version of MIB
         mibModel
         % handles to the model
@@ -60,11 +60,9 @@ classdef mibController < handle
                     obj.updateGuiWidgets();
                 case 'newDataset'
                     if ismember('Parameter', fieldnames(evnt))
-                        obj.updateAxesLimits('resize', evnt.Parameter);     % where evnt.Parameter is index if the container to update
-                        obj.mibModel.I{evnt.Parameter}.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;   % update BioFormatsMemoizer directory
+                        obj.updateAxesLimits('resize', evnt.Parameter);
                     else
                         obj.updateAxesLimits('resize');
-                        obj.mibModel.I{obj.mibModel.Id}.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir; % update BioFormatsMemoizer directory
                     end
                     obj.updateGuiWidgets();
                     obj.mibModel.newDatasetSwitch = abs(obj.mibModel.newDatasetSwitch) - 1;
@@ -107,13 +105,13 @@ classdef mibController < handle
         
         imageRedraw(obj)        % redraw image in the handles.mibImageAxes after press of handles.mibHideImageCheck or transparency sliders
         
-        result = menuDatasetParameters_Callback(obj, pixSize, BatchOptIn)        % Update mibImage.pixelSize, mibImage.meta(''XResolution'') and mibImage.meta(''XResolution'') and mibView.volren
+        result = menuDatasetParameters_Callback(obj, pixSize)        % Update mibImage.pixelSize, mibImage.meta(''XResolution'') and mibImage.meta(''XResolution'') and mibView.volren
         
         menuDatasetScalebar_Callback(obj, parameter)        % callback to Menu->Dataset->Scale bar; calibrate pixel size from an existing scale bar
         
         menuDatasetSlice_Callback(obj, parameter)        % callback to Menu->Dataset->Slice; do actions with individual slices
         
-        menuDatasetTrasform_Callback(obj, mode, BatchOpt)        % callback to Menu->Dataset->Transform... do different transformation with the dataset
+        menuDatasetTrasform_Callback(obj, mode)        % callback to Menu->Dataset->Transform... do different transformation with the dataset
         
         menuFileChoppedImage_Callback(obj, parameter)        % callback to Menu->File->Chopped images, chop/rechop dataset to/from smaller subsets
         
@@ -127,6 +125,8 @@ classdef mibController < handle
         
         menuFileSaveImageAs_Callback(obj)        % callback to the mibGUI.handles.menuFileSaveImageAs, saves image to a file
         
+        menuHelpAbout_Callback(obj)        % callback to Menu->Help->About; show the About window
+        
         menuImageColorCh_Callback(obj, parameter)        % callback to Menu->Image->Color Channels do actions with individual color channels
         
         menuImageContrast_Callback(obj, parameter)        % callback to Menu->Image->Contrast; do contrast enhancement
@@ -135,7 +135,9 @@ classdef mibController < handle
         
         menuImageInvert_Callback(obj, mode)        % callback for Menu->Image->Invert image; start invert image 
         
-        menuImageMode_Callback(obj, hObject, BatchOpt)        % callback to Menu->Image->Mode, convert image to different formats
+        menuImageMode_Callback(obj, hObject)        % callback to Menu->Image->Mode, convert image to different formats
+        
+        menuImageToolsArithmetics_Callback(obj)     % callback for Menu->Image->Tools->Image Arithmetics
         
         menuImageToolsProjection_Callback(obj)      % callback for Menu->Image->Tools->Intensity projection
         
@@ -496,11 +498,10 @@ classdef mibController < handle
             obj.childControllersIds = {};
             
             obj.mibModel = mibModel;
-            
-            mibPath = obj.mibPath;
             obj.getDefaultParameters();          % restore default/stored parameters
             
             Font = obj.mibModel.preferences.Font;
+            mibPath = obj.mibPath;
             scalingGUI = obj.mibModel.preferences.gui;
 
             obj.mibView = mibView(obj);
@@ -570,14 +571,6 @@ classdef mibController < handle
                     currStr{end+1} = 'External: BMxD';
                     obj.mibView.handles.mibImageFilterPopup.String = currStr;
                 end
-            else
-                if ~isempty(obj.mibModel.preferences.dirs.bm3dInstallationPath)
-                    if exist(fullfile(obj.mibModel.preferences.dirs.bm3dInstallationPath, 'BM3D.m'), 'file') == 2
-                        currStr = obj.mibView.handles.mibImageFilterPopup.String;
-                        currStr{end+1} = 'External: BMxD';
-                        obj.mibView.handles.mibImageFilterPopup.String = currStr;
-                    end
-                end
             end
             
             if exist('frame','var')     % close splash window
@@ -620,10 +613,7 @@ classdef mibController < handle
             % add callbacks for keys
             obj.mibView.handles.mibGUI.WindowKeyPressFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowKeyPressFcn(eventdata));   % turn ON callback for the keys
             obj.mibView.handles.mibGUI.WindowKeyReleaseFcn = (@(hObject, eventdata) obj.mibGUI_WindowKeyReleaseFcn(eventdata));   % turn ON callback for the keys
-            
-            if obj.mibModel.preferences.tips.showTips == 1
-                obj.startController('mibTipsController');
-            end
+           
         end
     end
 end

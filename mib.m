@@ -69,7 +69,6 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'Tools','FastMarching','functions'));
     addpath(fullfile(func_dir, 'Tools','FastMarching','shortestpath'));
     addpath(fullfile(func_dir, 'Tools','Frangi'));
-    addpath(fullfile(func_dir, 'Tools','HistThresh'));
     addpath(fullfile(func_dir, 'Tools','imclipboard'));
     addpath(fullfile(func_dir, 'Tools','matGeom'));
     addpath(fullfile(func_dir, 'Tools','matGeom','geom2d'));

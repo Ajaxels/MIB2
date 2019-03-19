@@ -501,7 +501,7 @@ classdef mibAnnotationsController < handle
                     data = obj.View.handles.annotationTable.Data;
                     if isempty(data); return; end
                     
-                    annIds = unique(obj.indices(:,1));
+                    annIds = obj.indices(:,1);
                     labelsList = data(annIds,1);
                     labelsList = strtrim(labelsList);   % remove the blank spaces
                     labelsValues = cellfun(@(a) str2double(a), data(annIds,2));

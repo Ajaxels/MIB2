@@ -60,14 +60,14 @@ handles.edgesViewAdditionalField.Parent = handles.nodesViewAdditionalField.Paren
 handles.edgesViewAdditionalField.Position = handles.nodesViewAdditionalField.Position;
 handles.edgesViewAdditionalField.Visible = 'off';
 
-% on PC path is file://c:/... or //ad.xxxxx.xxx.xx
+% add icon to the preview button
+% on PC path is file://c:/...
 % on Mac file:///Volumes/Transcend/...
 if ispc
-    if mibPath(1) == '\'; fileText = 'file:'; else; fileText = 'file:/'; end    % check for a installation in the network path \\ad.xxxx
+    fileText = 'file:/';
 else
     fileText = 'file://';
 end
-
 btnText = strrep([fileText fullfile(mibPath, 'Resources', 'settings.png')],'\','/'); 
 btnText = ['<html><img src="' btnText '"/></html>']; 
 handles.settingsBtn.String = btnText;

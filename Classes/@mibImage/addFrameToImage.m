@@ -1,22 +1,23 @@
-function BatchOpt = addFrameToImage(obj, BatchOpt)
-% function BatchOpt = addFrameToImage(obj, BatchOpt)
+function output = addFrameToImage(obj, options)
+% function output = addFrameToImage(obj, options)
 % Add a frame around the dataset
 % see also addFrame function
 %
 % Parameters:
-% BatchOpt: an optional structure with parameters
-% .Position - a cell string with position of the current image one of these options: {'Center', 'Left-upper corner', 'Right-upper corner', 'Left-bottom corner','Right-bottom corner'};
-% .NewImageWidth - a string with new image width in pixels
-% .NewImageHeight - a string with new image height in pixels
-% .FrameColorIntensity - a string with new image frame color intensity
-% .showWaitbar - logical, show or not the waitbar
+% options: an optional structure with parameters
 %
 % Return values:
-% BatchOpt: structure with parameters
+% output: status of the operation, 1-success, 0-cancel
+% .leftFrame - number of pixels, left margin
+% .rightFrame - number of pixels, right margin
+% .topFrame - number of pixels, top margin
+% .bottomFrame - number of pixels, bottom margin
+% .frameColor - a number with the frame color
+%
 %
 % @b Examples
 % @code 
-% BatchOpt = obj.mibModel.I{obj.mibModel.Id}.addFrameToImage();  // call from mibController; add a frame; parameters of the frame will be prompted
+% obj.mibModel.I{obj.mibModel.Id}.addFrameToImage();  // call from mibController; add a frame; parameters of the frame will be prompted
 % @endcode
 
 % Copyright (C) 13.12.2018, Ilya Belevich (ilya.belevich -at- helsinki.fi)
@@ -27,7 +28,7 @@ function BatchOpt = addFrameToImage(obj, BatchOpt)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 12.03.2019, IB updated for the batch mode
+% 
 
 global mibPath;
 
@@ -35,10 +36,10 @@ if obj.Virtual.virtual == 1
     errordlg('Not yet implemented!');
     return;
 end
-getDataOpt.blockModeSwitch = 0;
-[height, width, colors, depth, time] = obj.getDatasetDimensions('image', NaN, 0, getDataOpt);
+options.blockModeSwitch = 0;
+[height, width, colors, depth, time] = obj.getDatasetDimensions('image', NaN, 0, options);
 
-if nargin < 2 || ~isfield(BatchOpt, 'Position') || ~isfield(BatchOpt, 'NewImageWidth') || ~isfield(BatchOpt, 'NewImageHeight') || ~isfield(BatchOpt, 'FrameColorIntensity') 
+if nargin < 2
     options = struct(); 
     prompts = {'Position of the image:'; 'New image width:'; 'New image height:'; 'Frame color intensity:'};
     defAns = {{'Center', 'Left-upper corner', 'Right-upper corner', 'Left-bottom corner','Right-bottom corner', 1}; num2str(width); num2str(height); '0'};
@@ -49,79 +50,78 @@ if nargin < 2 || ~isfield(BatchOpt, 'Position') || ~isfield(BatchOpt, 'NewImageW
     [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
     if isempty(answer); return; end 
     
-    BatchOpt.Position = answer(1);
-    BatchOpt.NewImageWidth = answer{2};
-    BatchOpt.NewImageHeight = answer{3};
-    frameColor = min([str2double(answer{4}) obj.meta('MaxInt')]);
-    frameColor = max([frameColor 0]);
-    BatchOpt.FrameColorIntensity = num2str(frameColor);
-    BatchOpt.showWaitbar = true;
+    newWidth = str2double(answer{2});
+    newHeight = str2double(answer{3});
+    options.frameColor = min([str2double(answer{4}) obj.meta('MaxInt')]);
+    options.frameColor = max([options.frameColor 0]);
+    
+    if newWidth < width || newHeight < height
+        errordlg(sprintf('!!! Error !!!\n\nThe new width and height should be larger than the current width and height!'), 'Wrong dimensions', 'modal');
+        return;
+    end
+    switch answer{1}
+        case 'Center'
+            options.leftFrame = round((newWidth-width)/2);
+            options.rightFrame = newWidth - width - options.leftFrame;
+            options.topFrame = round((newHeight-height)/2);
+            options.bottomFrame = newHeight - height - options.topFrame;
+        case 'Left-upper corner'
+            options.leftFrame = 0;
+            options.rightFrame = newWidth - width;
+            options.topFrame = 0;
+            options.bottomFrame = newHeight - height;
+        case 'Right-upper corner'
+            options.leftFrame = newWidth - width;
+            options.rightFrame = 0;
+            options.topFrame = 0;
+            options.bottomFrame = newHeight - height;
+        case 'Left-bottom corner'
+            options.leftFrame = 0;
+            options.rightFrame = newWidth - width;
+            options.topFrame = newHeight - height;
+            options.bottomFrame = 0;
+        case 'Right-bottom corner'
+            options.leftFrame = newWidth - width;
+            options.rightFrame = 0;
+            options.topFrame = newHeight - height;
+            options.bottomFrame = 0;
+    end
 end
 
-newWidth = str2double(BatchOpt.NewImageWidth);
-newHeight = str2double(BatchOpt.NewImageHeight);
-frameColor = str2double(BatchOpt.FrameColorIntensity);
+if ~isfield(options, 'leftFrame'); options.leftFrame = 0; end
+if ~isfield(options, 'rightFrame'); options.rightFrame = 0; end
+if ~isfield(options, 'topFrame'); options.topFrame = 0; end
+if ~isfield(options, 'bottomFrame'); options.bottomFrame = 0; end
+if ~isfield(options, 'frameColor'); options.frameColor = 0; end
+    
+newWidth = width + options.leftFrame + options.rightFrame;
+newHeight = height + options.topFrame + options.bottomFrame;
 
-if newWidth < width || newHeight < height
-    errordlg(sprintf('!!! Error !!!\n\nThe new width and height should be larger than the current width and height!'), 'Wrong dimensions', 'modal');
-    return;
-end
+x1 = options.leftFrame + 1;
+x2 = newWidth - options.rightFrame;
+y1 = options.topFrame + 1;
+y2 = newHeight - options.bottomFrame;
 
-switch BatchOpt.Position{1}
-    case 'Center'
-        leftFrame = round((newWidth-width)/2);
-        rightFrame = newWidth - width - leftFrame;
-        topFrame = round((newHeight-height)/2);
-        bottomFrame = newHeight - height - topFrame;
-    case 'Left-upper corner'
-        leftFrame = 0;
-        rightFrame = newWidth - width;
-        topFrame = 0;
-        bottomFrame = newHeight - height;
-    case 'Right-upper corner'
-        leftFrame = newWidth - width;
-        rightFrame = 0;
-        topFrame = 0;
-        bottomFrame = newHeight - height;
-    case 'Left-bottom corner'
-        leftFrame = 0;
-        rightFrame = newWidth - width;
-        topFrame = newHeight - height;
-        bottomFrame = 0;
-    case 'Right-bottom corner'
-        leftFrame = newWidth - width;
-        rightFrame = 0;
-        topFrame = newHeight - height;
-        bottomFrame = 0;
-end
-   
-newWidth = width + leftFrame + rightFrame;
-newHeight = height + topFrame + bottomFrame;
-
-x1 = leftFrame + 1;
-x2 = newWidth - rightFrame;
-y1 = topFrame + 1;
-y2 = newHeight - bottomFrame;
-
-if BatchOpt.showWaitbar; wb = waitbar(0,'Please wait...', 'Name', 'Adding a frame...'); end
+output = 0;
+wb = waitbar(0,'Please wait...', 'Name', 'Adding a frame...');
 
 cImg = obj.img{1};
-obj.img{1} = zeros([newHeight, newWidth, numel(colors), depth, time], obj.meta('imgClass')) + frameColor;   %#ok<ZEROLIKE> % allocate space
+obj.img{1} = zeros([newHeight, newWidth, numel(colors), depth, time], obj.meta('imgClass')) + options.frameColor;   %#ok<ZEROLIKE> % allocate space
 obj.img{1}(y1:y2,x1:x2,:,:,:) = cImg;
-if BatchOpt.showWaitbar; waitbar(.4, wb); end
+waitbar(.4, wb);
 if obj.modelType ~= 63
     if obj.modelExist % crop model
         cImg = obj.model{1};
         obj.model{1} = zeros([newHeight, newWidth, depth, time], 'uint8');  
         obj.model{1}(y1:y2,x1:x2,:,:) = cImg;
     end
-    if BatchOpt.showWaitbar; waitbar(.5, wb); end
+    waitbar(.5, wb);
     if ~isnan(obj.maskImg{1}(1))    % crop mask
         cImg = obj.maskImg{1};
         obj.maskImg{1} = zeros([newHeight, newWidth, depth, time], 'uint8');  
         obj.maskImg{1}(y1:y2,x1:x2,:,:) = cImg;
     end
-    if BatchOpt.showWaitbar; waitbar(.6, wb); end
+    waitbar(.6, wb);
     if  ~isnan(obj.selection{1}(1))
         cImg = obj.selection{1};
         obj.selection{1} = zeros([newHeight, newWidth, depth, time], 'uint8');  
@@ -132,7 +132,7 @@ elseif ~isnan(obj.model{1}(1))     % crop model/selectio/mask layer
     obj.model{1} = zeros([newHeight, newWidth, depth, time], 'uint8');  
     obj.model{1}(y1:y2,x1:x2,:,:) = cImg;
 end
-if BatchOpt.showWaitbar; waitbar(.8, wb); end
+waitbar(.8, wb);
 
 obj.height = newHeight;
 obj.width = newWidth;
@@ -150,23 +150,21 @@ obj.slices{1} = [1, obj.height];
 obj.slices{2} = [1, obj.width];
 obj.slices{obj.orientation} = [min([obj.dim_yxczt(obj.orientation) current_layer]), min([obj.dim_yxczt(obj.orientation) current_layer])];
 
-xyzShift = [(leftFrame-1)*obj.pixSize.x (topFrame-1)*obj.pixSize.y 0];
+xyzShift = [(options.leftFrame-1)*obj.pixSize.x (options.topFrame-1)*obj.pixSize.y 0];
 % update BoundingBox Coordinates
 obj.updateBoundingBox(NaN, xyzShift);
-if BatchOpt.showWaitbar; waitbar(9, wb); end
+waitbar(9, wb);
 
-crop_factor = [-leftFrame+1, -topFrame+1, NaN, NaN, 1, NaN, 1, NaN];
+crop_factor = [-options.leftFrame+1, -options.topFrame+1, NaN, NaN, 1, NaN, 1, NaN];
 obj.hROI.crop(crop_factor);
 obj.hLabels.crop(crop_factor);
 
 % update the log
 log_text = sprintf('AddFrame: [left right top bottom]: %d %d %d %d; color=%d', ...
-    leftFrame, rightFrame, topFrame, bottomFrame, frameColor);
+    options.leftFrame, options.rightFrame, options.topFrame, options.bottomFrame, options.frameColor);
 obj.updateImgInfo(log_text);
 
-if BatchOpt.showWaitbar
-    waitbar(1, wb); 
-    delete(wb); 
-end
-
+waitbar(1, wb);
+delete(wb);
+output = 1;
 end

@@ -74,9 +74,6 @@ if nargin < 2   % model and options were not provided
     waitbar(0, wb);
     options = struct();
     options.imgStretch = 0;     % turn off conversion of images from uint32 to uint16 class
-    options.id = obj.mibModel.Id;   % id of the current dataset
-    options.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
-    
     for fnId = 1:numel(filename)
         if ismember(filename{fnId}(end-3:end), {'.mat', 'odel'}) % loading model in the matlab format
             res = load([path filename{fnId}], '-mat');

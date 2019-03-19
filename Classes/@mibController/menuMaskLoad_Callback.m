@@ -71,8 +71,6 @@ for fnId = 1:numel(filename)
     else % loading mask in tif format and other standard formats
         options.bioformatsCheck = 0;
         options.progressDlg = 0;
-        options.id = obj.mibModel.Id;   % id of the current dataset
-        options.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
         [res, ~, ~] = mibLoadImages({fullfile(path, filename{fnId})}, options);
         res =  squeeze(res);
         res = uint8(res>0);    % set masked areas as 1

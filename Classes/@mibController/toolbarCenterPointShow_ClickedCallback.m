@@ -16,20 +16,15 @@ function toolbarCenterPointShow_ClickedCallback(obj)
 % 
 global mibPath;
 
-if obj.matlabVersion < 9.5
-    warndlg(sprintf('!!! Warning !!!\n\nThis feature requires MAtlab R2018b or newer'), 'Matlab version is too old');
-    return; 
-end
-
 if strcmp(obj.mibView.handles.toolbarCenterPointShow.State, 'on')
     % enable the center spot
     obj.mibView.centerSpotHandle.enable = 1;
     
     if isempty(obj.mibView.centerSpotHandle.handle) || isvalid(obj.mibView.centerSpotHandle.handle) == 0
-       obj.mibView.centerSpotHandle.handle = drawpoint('Position', [mean(obj.mibView.handles.mibImageAxes.XLim) mean(obj.mibView.handles.mibImageAxes.YLim)], ...
-                'Deletable', false,...
-                'parent', obj.mibView.handles.mibImageAxes,...
-                'Color', 'y');
+        obj.mibView.centerSpotHandle.handle = drawpoint('Position', [mean(obj.mibView.handles.mibImageAxes.XLim) mean(obj.mibView.handles.mibImageAxes.YLim)], ...
+            'Deletable', false,...
+            'parent', obj.mibView.handles.mibImageAxes,...
+            'Color', 'y');
     end
     obj.mibView.centerSpotHandle.handle.Visible = 'on';
     filename = 'center_cross_on.res';

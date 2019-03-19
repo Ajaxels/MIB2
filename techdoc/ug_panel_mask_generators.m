@@ -93,17 +93,6 @@
 % 
 % <<images\PanelsMaskGeneratorMorphFiltersExtMinTrans.jpg>>
 % 
-% * *H-maxima transform* - suppresses all maxima in the intensity image whose height is less than H-value. 
-% Regional maxima are connected components of pixels with a constant intensity value, and whose external 
-% boundary pixels all have a lower value. The resulting image is then
-% thresholded using the provided |Threshold| value.
-% 
-% <<images\PanelsMaskGeneratorMorphFiltersHMaxTrans.jpg>>
-%
-% * *H-minima transform* - suppresses all minima in the grayscale image whose depth is less than H-value. 
-% Regional minima are connected components of pixels with a constant intensity value (t) whose external boundary pixels all have a value greater than t. 
-% The resulting image is then thresholded using the provided |Threshold| value.
-%
 % * *Regional maxima* - based on |imregionalmax| function of Matlab. Returns the binary mask that identifies the locations of the regional 
 % maxima in the image. In mask, pixels that are set to 1 identify regional
 % maxima; all other pixels are set to 0. Regional maxima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a lower value.

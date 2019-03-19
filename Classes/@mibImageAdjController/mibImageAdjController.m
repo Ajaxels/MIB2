@@ -353,7 +353,7 @@ classdef mibImageAdjController < handle
                 %error('Fix here');
                 %x = 0:256*256:intmax('uint32');
                 %[counts, x] = imhist(img(:), x);
-                [counts,x] = histcounts(img(:), 255);
+                [counts,x] = histcounts(img(:),255);
              end
             
             %bar(obj.View.handles.imHist, x(counts>0), counts(counts>0));

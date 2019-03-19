@@ -170,9 +170,7 @@
 % <td colspan=2><img src="images\render_in_matlab.jpg"</img>
 % </tr>
 % <tr>
-% <td colspan=2>A brief demonstration is available in the following videos:<br>
-% <a href="https://youtu.be/svAFGBRfeoI"><img
-% style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/svAFGBRfeoI</a><br>
+% <td colspan=2>A brief demonstration is available in the following video:<br>
 % <a href="https://youtu.be/dMeoIZPaDS4?t=16m56s"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/dMeoIZPaDS4?t=16m56s</a>
 % </tr>
 % </table>

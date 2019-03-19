@@ -27,10 +27,13 @@ if obj.mibModel.getImageProperty('modelExist') == 1 || obj.mibModel.getImageProp
 end
 
 prompts = {'Projection type'; 'Dimension'; 'Destination buffer'};
-destBuffers = arrayfun(@(x) sprintf('%d', x), 1: obj.mibModel.maxId, 'UniformOutput', false);
+destBuffers = cell([1, obj.mibModel.maxId]);
+for i=1:obj.mibModel.maxId
+    destBuffers{i} = num2str(i);
+end
 destBuffers{end+1} = obj.mibModel.Id;
 if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
-    defAns = {{'Max', 'Min', 'Mean','Median','Focus stacking' 1}; {'Y', 'X', 'C', 'Z', 'T', 4}; destBuffers};
+    defAns = {{'Max', 'Min', 'Mean','Median', 1}; {'Y', 'X', 'C', 'Z', 'T', 4}; destBuffers};
 else
     defAns = {{'Max', 'Min', 'Mean', 1}; {'Z', 1}; destBuffers};
 end
@@ -48,67 +51,43 @@ bufferId = selIndex(3);
 wb = waitbar(0, sprintf('Generating the projection\nPlease wait...'), 'Name', 'Projection');
 
 getDataOptions.blockModeSwitch = 0;
-[height, width, colors, depth, time] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, 0, getDataOptions);
-colors = numel(colors);
-
 if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
-    if strcmp(projectionType, 'focus stacking')
-        if depth < 3
-            errordlg('Focus stacking requires at least 3 images assembled into a Z-stack');
-            delete(wb);
-            return;
-        end
-        if dim ~= 4
-            res = questdlg(sprintf('!!! Warning !!!\n\nThe focus stacking is only available for the Z-dimention!\nContinue?'), 'Dimension issue', 'Continue', 'Cancel', 'Continue');
-            if strcmp(res, 'Cancel'); delete(wb); return; end
-        end
-        dim = 4;    % only available for the Z-stacks
-        I = zeros([height, width, colors, 1, time], obj.mibModel.I{obj.mibModel.Id}.meta('imgClass'));
-        if time > 1
-            fstackOptions.showWaitbar = 0; 
-        else
-            fstackOptions.showWaitbar = 1;
-        end
-        for t = 1:time
-            Iin = cell2mat(obj.mibModel.getData3D('image', t, 4, 0, getDataOptions));
-            I(:,:,:,1,t) = fstack_mib(Iin, fstackOptions);
-        end
-    else
-        I = cell2mat(obj.mibModel.getData4D('image', 4, 0, getDataOptions));
-        waitbar(0.1, wb);
-        switch projectionType
-            case 'min'
-                I = min(I, [], dim);
-            case 'max'
-                I = max(I, [], dim);
-            case 'mean'
-                classOfImg = class(I);
-                I = mean(I, dim);
-                evalStr = sprintf('I = %s(I);', classOfImg);
-                eval(evalStr);
-            case 'median'
-                I = median(I, dim);        
-        end
+    I = cell2mat(obj.mibModel.getData4D('image', 4, 0, getDataOptions));
+    waitbar(0.1, wb);
+    switch projectionType
+        case 'min'
+            I = min(I, [], dim);
+        case 'max'
+            I = max(I, [], dim);
+        case 'mean'
+            classOfImg = class(I);
+            I = mean(I, dim);
+            evalStr = sprintf('I = %s(I);', classOfImg);
+            eval(evalStr);
+        case 'median'
+            I = median(I, dim);
     end
     waitbar(0.8, wb);
     if dim < 3  % permute the matrix
         if dim == 1
-            I = permute(I, [4, 2, 3, 1, 5]);
+            I = permute(I, [4, 2, 3, 1]);
         elseif dim == 2
-            I = permute(I, [1, 4, 3, 2, 5]);
+            I = permute(I, [1, 4, 3, 2]);
         end
     end
     waitbar(0.9, wb);
 else        % virtual stacking mode
+    [height, width, colors, depth, time] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, 0, getDataOptions);
+    
     % allocate space for the output image
     switch projectionType
         case 'min'
             shift = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
-            I = zeros([height, width, colors, 1, time], obj.mibModel.I{obj.mibModel.Id}.meta('imgClass')) + shift;
+            I = zeros([height, width, numel(colors), 1, time], obj.mibModel.I{obj.mibModel.Id}.meta('imgClass')) + shift;
         case 'max'
-            I = zeros([height, width, colors, 1, time], obj.mibModel.I{obj.mibModel.Id}.meta('imgClass'));
+            I = zeros([height, width, numel(colors), 1, time], obj.mibModel.I{obj.mibModel.Id}.meta('imgClass'));
         case 'mean'
-            I = zeros([height, width, colors, 1, time]);
+            I = zeros([height, width, numel(colors), 1, time]);
     end
     waitbar(0.1, wb);
     for t = 1:time
@@ -145,7 +124,6 @@ if bufferId == obj.mibModel.Id
         if isempty(newMode); delete(wb); return; end
     end
     setDataOptions.replaceDatasetSwitch = 1;    % force to replace dataset
-    setDataOptions.keepModel = 0;   % reinitialize the model
     obj.mibModel.setData4D('image', I, 4, 0, setDataOptions);
     if ~strcmp(answer{2}, 'C')
         obj.mibModel.I{obj.mibModel.Id}.viewPort = viewPort;   % restore viewport

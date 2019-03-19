@@ -21,7 +21,6 @@ function dataset = getDataVirt(obj, type, orient, col_channel, options, custom_i
 % @li .z -> [@em optional], [zmin, zmax] coordinates of the dataset to take after transpose, depth
 % @li .t -> [@em optional], [tmin, tmax] coordinates of the dataset to take after transpose, time
 % @li .level -> [@em optional], index of image level from the image pyramid
-% @li .showWaitbar -> [@em optional], show or not the waitbar, default show the waitbar for Z-stacks and T-series
 % custom_img: get dataset from a provided custom image stack, not implemented
 %
 % Return values:
@@ -53,8 +52,6 @@ showWaitbar = 0;    % do not show the waitbar, modified below
 if orient == 0 || isnan(orient); orient=obj.orientation; end
 
 if ~isfield(options, 'level'); options.level = 1; end
-if ~isfield(options, 'showWaitbar'); options.showWaitbar = []; end
-
 level = 2^(options.level-1);    % resampling factor
 
 if strcmp(type,'image')
@@ -93,12 +90,7 @@ Ylim = [max([Ylim(1) 1]) min([Ylim(2) floor(obj.height/level)])];
 Zlim = [max([Zlim(1) 1]) min([Zlim(2) obj.depth])];
 Tlim = [max([Tlim(1) 1]) min([Tlim(2) obj.time])];
 
-if isempty(options.showWaitbar)
-    if Tlim(2)-Tlim(1) > 0 || Zlim(2)-Zlim(1) > 0
-        wb = waitbar(0, sprintf('Loading the dataset\nPlease wait...'));
-        showWaitbar = 1;
-    end
-elseif options.showWaitbar == 1
+if Tlim(2)-Tlim(1) > 0 || Zlim(2)-Zlim(1) > 0
     wb = waitbar(0, sprintf('Loading the dataset\nPlease wait...'));
     showWaitbar = 1;
 end
@@ -166,13 +158,6 @@ if strcmp(type,'image')
             for t=1:maxT
                 timepoint = Tlim(1)+t-2;
                 for z=1:Zlim(2)-Zlim(1)+1
-                    %obj.img{readerId(z)} = loci.formats.Memoizer(bfGetReader(), 0);
-                    % obj.img{readerId(z)}.setId(obj.Virtual.filenames{readerId});
-                    % obj.img{readerId(z)}.setSeries(obj.Virtual.seriesName{readerId}-1);
-                    r = loci.formats.Memoizer(bfGetReader(), 0, java.io.File(obj.BioFormatsMemoizerMemoDir));
-                    r.setId(obj.img{readerId});
-                    r.setSeries(obj.Virtual.seriesName{readerId}-1);
-                    
                     planeId = Zlim(1) + z - 1 - sum(obj.Virtual.slicesPerFile(1:readerId(z)-1));
 %                     % update setSeries, for some reasons it does not fixed
 %                     % during init of readers
@@ -181,12 +166,11 @@ if strcmp(type,'image')
 %                     end
                     
                     for colCh = 1:numel(col_channel)
-                        iPlane = r.getIndex(planeId - 1, col_channel(colCh) - 1, timepoint) + 1;
-                        dataset(:,:,colCh,z,t) = bfGetPlane(r, iPlane, Xlim(1), Ylim(1), Xlim(2)-Xlim(1)+1, Ylim(2)-Ylim(1)+1);
+                        iPlane = obj.img{readerId(z)}.getIndex(planeId - 1, col_channel(colCh) - 1, timepoint) + 1;
+                        dataset(:,:,colCh,z,t) = bfGetPlane(obj.img{readerId(z)}, iPlane, Xlim(1), Ylim(1), Xlim(2)-Xlim(1)+1, Ylim(2)-Ylim(1)+1);
                     end
                 end
                 if showWaitbar; waitbar(t/maxT, wb); end
-                r.close();
             end
     end
 %     if orient==1     % permute to xz

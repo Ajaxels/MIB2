@@ -51,10 +51,10 @@
 % 
 %
 %% Semi-automatic segmentation
-% Methods for automated image segmentation and object separation. 
+% Two methods for automated image segmentation and object separation. Both
+% methods available for 2D and 3D objects.
 %
 %
-% * <ug_gui_menu_tools_global_thresholding.html *Global thresholding*>
 % * <ug_gui_menu_tools_graphcut.html *Graphcut segmentation* (_recommended_)>
 % * <ug_gui_menu_tools_watershed.html *Watershed segmentation*>
 % 

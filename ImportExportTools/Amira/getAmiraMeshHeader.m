@@ -21,7 +21,6 @@ function [par, img_info, dim_xyczt] = getAmiraMeshHeader(filename)
 %
 % Updates
 % 09.01.2018, IB added extraction of embedded containers in the amiramesh headers
-% 30.01.2019, IB updated to be compatible with version 3
 
 img_info = containers.Map;
 if nargin < 1
@@ -36,9 +35,9 @@ fid = fopen(filename, 'r');
 
 % define type of data
 tline = fgetl(fid);
-if strcmp(tline(1:20), '# AmiraMesh 3D ASCII') % if strcmp(tline, '# AmiraMesh 3D ASCII 2.0')    
+if strcmp(tline, '# AmiraMesh 3D ASCII 2.0')
     type = 'ascii';
-elseif strcmp(tline(1:20), '# AmiraMesh BINARY-L') || strcmp(tline(1:20),'# AmiraMesh 3D BINAR') %elseif strcmp(tline, '# AmiraMesh BINARY-LITTLE-ENDIAN 2.1') || strcmp(tline,'# AmiraMesh 3D BINARY 2.0')
+elseif strcmp(tline, '# AmiraMesh BINARY-LITTLE-ENDIAN 2.1') || strcmp(tline,'# AmiraMesh 3D BINARY 2.0')
     type = 'binary';
 else
     disp('Error! Unknown type'); return;

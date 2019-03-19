@@ -22,7 +22,7 @@
 %%
 % 
 % * *Konstantin Kogan*, University of Helsinki for assistance with Mac OS
-% * *Radhakrishna Achanta*, Ecole Polytechnique F?d?rale de Lausanne (EPFL)
+% * *Radhakrishna Achanta*, Ecole Polytechnique Fédérale de Lausanne (EPFL)
 % for the mex code for SLIC supervoxels and superpixels
 % * *David Legland*, INRA, France for modification of the
 % <http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-
@@ -41,7 +41,7 @@
 % * Inspired by <http://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer *IMAGEVIEWER*>
 % by Jiro Doke, MathWorks 2010
 % * Documentation done with <http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools *MTOC++ - Doxygen filter for Matlab and tools*>
-% written by Martin Drohmann (Universit?t M?nster) and Daniel Wirtz (Universit?t Stuttgart), 2011-2013
+% written by Martin Drohmann (Universität Münster) and Daniel Wirtz (Universität Stuttgart), 2011-2013
 % * <http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching
 % *Accurate Fast Marching function*> by Dirk-Jan Kroon, University of Twente, 2011 is utilized in the Membrane Click Tracker tool
 % * <http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff *ANISODIFF*> function written by Peter Kovesi, 2000-2002
@@ -69,10 +69,7 @@
 % *FINDJOBJ*> - find java handles of Matlab graphic objects by Yair Altman, 2007-2013
 % * <http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter 
 % *FRANGI filter*> by Marc Schrijver and Dirk-Jan Kroon, University of Twente 2001-2009
-% * <https://se.mathworks.com/matlabcentral/fileexchange/55115-extended-depth-of-field *FSTACK*> extended depth-of-field image from focus sequence using noise-robust selective all-in-focus algorithm by Said Pertuz, Universitat
-% Rovira i Virgili, Tarragona, Spain 2013
-% * <https://github.com/carandraug/histthresh *HistThresh toolbox*> by Antti Niemist&ouml;, Tampere University of Technology, Finland is used for most of the global histogram-based thresholding methods
-% * <http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox *Image Edge Enhancing Coherence Filter*> Dirk-Jan Kroon, Pascal Getreuer University of Twente. 
+% * <http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox 
 % * <http://www.scs2.net/next/index.php?id=110 *IceImarisConnector*> written by Aaron C. Ponti, ETH Zurich is used for connection
 % to Imaris
 % * <http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility *Image Measurement Utility*> written by Jan Neggers, 
@@ -116,7 +113,7 @@
 % written by  Torsten Vogel, 1999  
 % * <http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html 
 % *SLIC (Simple Linear Iterative Clustering)*> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, 
-% Pascal Fua, and Sabine S?sstrunk, Ecole Polytechnique Federale de
+% Pascal Fua, and Sabine Süsstrunk, Ecole Polytechnique Federale de
 % Lausanne (EPFL), Switzerland, 2015 was utilized for the superpixels mode of the Brush tool and for the Graphcut segmentation.
 % * <http://www.mathworks.com/matlabcentral/fileexchange/20922-stlwrite-filename--varargin-
 % *STLWRITE*> by Sven Holcombe, University of Michigan 2008-2015 for saving models

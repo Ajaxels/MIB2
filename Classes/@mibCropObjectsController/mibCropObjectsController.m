@@ -47,15 +47,6 @@ classdef mibCropObjectsController < handle
             obj.updateWidgets();
             obj.View.gui.WindowStyle = 'modal';     % make window modal
             
-            if verLessThan('matlab',' 9.3')
-                if obj.mibStatisticsController.View.handles.object3dRadio.Value == 1
-                    obj.View.handles.SingleMaskObjectPerDataset.Enable = 'off';     % because it is using bwselect3 function available in R2017b and newer
-                end
-            end
-            if obj.mibStatisticsController.runId(2) ~= 1 % runId is a vector runId(1) index of the dataset, runId(2) index of material runId(2)==1 is mask
-                obj.View.handles.SingleMaskObjectPerDataset.Enable = 'off';     % because the objects were not detected from the mask
-            end
-            
             % add listner to obj.mibModel and call controller function as a callback
             obj.listener{1} = addlistener(obj.mibModel, 'Id', 'PostSet', @(src,evnt) obj.ViewListner_Callback(obj, src, evnt));     % for static
         end
@@ -91,7 +82,6 @@ classdef mibCropObjectsController < handle
             end
             
         end
-        
         
         function selectDirBtn_Callback(obj)
             % function selectDirBtn_Callback(obj)
@@ -161,7 +151,6 @@ classdef mibCropObjectsController < handle
                         material_id = obj.mibStatisticsController.sel_model;
                 end
             end
-            SingleMaskObjectPerDataset = obj.View.handles.SingleMaskObjectPerDataset.Value;     % keep only the main object in the resulting crop
             
             dimOpt.blockModeSwitch = 0;
             [h, w, c, z] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, NaN, dimOpt);
@@ -188,7 +177,7 @@ classdef mibCropObjectsController < handle
             marginZ = str2double(obj.View.handles.marginZEdit.String);
             
             % find uniqueTime - unique time points and their indices uniqueIndex
-            selectedIndices = unique(obj.mibStatisticsController.indices(:,1));
+            selectedIndices = obj.mibStatisticsController.indices(:,1);
             [uniqueTime, ~, uniqueIndex] = unique(data(selectedIndices,4));
             
             if obj.mibModel.getImageProperty('time') > 1
@@ -223,11 +212,6 @@ classdef mibCropObjectsController < handle
                         
                         % recalculate pixelIds from 3D to 2D space
                         CC.PixelIdxList{1} = obj.mibStatisticsController.STATS(objId).PixelIdxList-h*w*(sliceNumber-1);
-                        
-                        % get coordinates of a pixel that belongs to the object
-                        pixelInObject = CC.PixelIdxList{1}(1);
-                        [objPixY, objPixX] = ind2sub([h, w], pixelInObject);
-                        objPixZ = 1;
                     else
                         %filename = fullfile(handles.outputDir, sprintf('%s_%06d%s',  fnTemplate, objId, ext));
                         if obj.mibModel.getImageProperty('time') == 1
@@ -237,10 +221,6 @@ classdef mibCropObjectsController < handle
                         end
                         eval(cmdText);
                         CC.PixelIdxList{1} = obj.mibStatisticsController.STATS(objId).PixelIdxList;
-                        
-                        % get coordinates of a pixel that belongs to the object
-                        pixelInObject = CC.PixelIdxList{1}(1);
-                        [objPixY, objPixX, objPixZ] = ind2sub([h, w, z], pixelInObject);
                     end
                     
                     % get bounding box
@@ -268,11 +248,6 @@ classdef mibCropObjectsController < handle
                     xMax = min([xMax w]);
                     yMax = min([yMax h]);
                     zMax = min([zMax z]);
-                    
-                    % shift objPixY and objPixX
-                    objPixX = objPixX - xMin + 1;
-                    objPixY = objPixY - yMin + 1;
-                    objPixZ = objPixZ - zMin + 1;
                     
                     getDataOptions.y = [yMin, yMax];
                     getDataOptions.x = [xMin, xMax];
@@ -430,22 +405,6 @@ classdef mibCropObjectsController < handle
                     % crop and save mask
                     if obj.View.handles.cropMaskCheck.Value
                         imOut =  maskImg(yMin:yMax, xMin:xMax, zMin:zMax);
-                        if SingleMaskObjectPerDataset   % remove all secondary object from the image
-                            if imOut(objPixY, objPixX, max([objPixZ 1])) ~= 1
-                                SingleMaskObjectPerDataset = 0;
-                            else
-                                if obj.mibStatisticsController.View.handles.object2dRadio.Value == 1  % 2D mode
-                                    imOut = uint8(bwselect(imOut, objPixX, objPixY, CC.Connectivity));
-                                else
-                                    if verLessThan('matlab',' 9.3')     % requires R2017b and newer
-                                        SingleMaskObjectPerDataset = 0;
-                                    else 
-                                        imOut = uint8(bwselect3(imOut, objPixX, objPixY, objPixZ, CC.Connectivity));
-                                    end
-                                end
-                            end
-                        end
-                        % SingleMaskObjectPerDataset objPixX, objPixY
                         if obj.View.handles.matlabRadio.Value == 1   % export to Matlab
                             matlabVar.Mask = imOut;
                         else

@@ -26,9 +26,9 @@ function propertyValue = getImageProperty(obj, propertyName, id)
 % 
 propertyValue = [];
 
-if nargin < 3; id = obj.Id; end
+if nargin < 3; id = obj.Id; end;
 if isprop(obj.I{id}, propertyName) == 0
-    errordlg(sprintf('Error in mibModel: getImageProperty!\n\nWrong property name'), 'Wrong property');
+    errordlg(sprintf('Error in mibModel: getImageProperty!\n\nWrong property name'),'Wrong property');
     return;
 end
 propertyValue = obj.I{id}.(propertyName);

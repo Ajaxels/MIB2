@@ -142,9 +142,6 @@ classdef mibRandomRestoreDatasetController < handle
             selValue = obj.View.handles.(parameter).Value;
             dirName = dirList{selValue};
             
-            if exist(dirName, 'dir') == 0
-                dirName = obj.mibModel.myPath;
-            end
             dirName = uigetdir(dirName, 'Select directory');
             if isequal(dirName, 0); return; end
             
@@ -183,20 +180,6 @@ classdef mibRandomRestoreDatasetController < handle
 %             Settings.OutputIndicesSorted = {};  % sorted indices for each output directory: 
 %              % index = Settings.OutputIndicesSorted{1}(1) - corresponds to Settings.InputImagesCombined(index)
             
-            % check directories
-            for dirId=1:numel(obj.Settings.outputDirName)
-                if exist(obj.Settings.outputDirName{dirId}, 'dir') == 0
-                    errordlg(sprintf('!!! Error !!!\n\nThe specified directory with shuffled images was not found!\n\n%s\n\nMost likely it was renamed or copied somewhere, please use the right mouse click over the directory name to update it', obj.Settings.outputDirName{dirId}));
-                    return;
-                end
-            end
-            for dirId=1:numel(obj.Settings.inputDirName)
-                if exist(obj.Settings.inputDirName{dirId}, 'dir') == 0
-                    errordlg(sprintf('!!! Error !!!\n\nThe specified destination directory was not found!\n\n%s\n\nMost likely it was renamed or copied somewhere, please use the right mouse click over the directory name to update it', obj.Settings.inputDirName{dirId}));
-                    return;
-                end
-            end
-
             wb = waitbar(0, sprintf('Loading models\nPlease wait...'), 'Name', 'Restore shuffled images');
             InputModels = {};
             
@@ -204,46 +187,6 @@ classdef mibRandomRestoreDatasetController < handle
             for dirId=1:numel(obj.Settings.outputDirName)
                 fileList = dir(obj.Settings.outputDirName{dirId});   % list of files in each of the input directories
                 fileList = {fileList.name};
-                
-                % check for number of model, mask and annotation files
-                checkExtensions = {};
-                if includeModels; checkExtensions = [checkExtensions, {'.model'}]; end %#ok<AGROW>
-                if includeMasks; checkExtensions = [checkExtensions, {'.mask'}]; end %#ok<AGROW>
-                if includeAnnotations; checkExtensions = [checkExtensions, {'.ann'}]; end %#ok<AGROW>
-                [~,~,extVec] = cellfun(@fileparts, fileList, 'UniformOutput', false);
-                
-                for i=1:numel(checkExtensions)
-                    currentExtension = checkExtensions{i};
-                    if sum(ismember(extVec, currentExtension)) ~= 1
-                        if strcmp(currentExtension, '.ann')
-                            extraInfo = '';
-                        else
-                            extraInfo = sprintf('\n\nIf you have multiple files they can be combined:\n1. Combine all images in the folder;\n2. Load the %ss, use the Shift key to select multiple %s files\n3. Save the combined %s\n4. Remove all other %s files from the directory', ...
-                                currentExtension(2:end), currentExtension(2:end), currentExtension(2:end), currentExtension(2:end));
-                        end
-                        errordlg(sprintf('!!! Error !!!\nThe *.%s file is missing or there are more then one *.%s file!\n\nPlease make sure that there is a single *.%s file in each directory%s', ...
-                            currentExtension(2:end), currentExtension(2:end), currentExtension(2:end), extraInfo));
-                        delete(wb);
-                        return;
-                    end
-                end
-                
-                if includeModels
-                    [~,~,extVec] = cellfun(@fileparts, fileList, 'UniformOutput', false);
-                    if sum(ismember(extVec, '.model')) ~= 1
-                        errordlg(sprintf('!!! Error !!!\n\nThe *.model file is missing or there are more then one *.model file!\nPlease make sure that there is a single *.model file in each directory\n\nIf you have multiple files they can be combined:\n1. Combine all images in the folder;\n2. Load the models, use the Shift key to select multiple model files\n3. Save the combined model\n4. Remove all other model files from the directory'));
-                        delete(wb);
-                        return;
-                    end
-                end
-                if includeMasks
-                    [~,~,extVec] = cellfun(@fileparts, fileList, 'UniformOutput', false);
-                    if sum(ismember(extVec, '.mask')) ~= 1
-                        errordlg(sprintf('!!! Error !!!\n\nThe *.mask file is missing or there are more then one *.mask file!\nPlease make sure that there is a single *.mask file in each directory\n\nIf you have multiple files they can be combined:\n1. Combine all images in the folder;\n2. Load the masks, use the Shift key to select multiple model files\n3. Save the combined mask\n4. Remove all other mask files from the directory'));
-                        delete(wb);
-                        return;
-                    end
-                end
                 
                 for i=1:numel(fileList)
                     [~,~,ext] = fileparts(fileList{i});

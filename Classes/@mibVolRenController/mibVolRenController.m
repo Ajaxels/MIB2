@@ -125,15 +125,6 @@ classdef mibVolRenController < handle
                 options.Settings.volumeAlphaCurve.y = [1 1 0 0];
                 options.Settings.animationPath = struct();
                 options.Settings.noFramesPreview = 120;     % number of frames for the animation preview mode
-            else
-                if ~isfield(options.Settings, 'ColormapName'); options.Settings.ColormapName = 'gray'; end
-                if ~isfield(options.Settings, 'ColormapInvert'); options.Settings.ColormapInvert = true; end
-                if ~isfield(options.Settings, 'MarkerSize'); options.Settings.MarkerSize = 15; end
-                if ~isfield(options.Settings, 'IsoColor'); options.Settings.IsoColor = [1 0 0]; end
-                if ~isfield(options.Settings, 'BackgroundColor'); options.Settings.BackgroundColor = [0.3 0.75 0.93]; end
-                if ~isfield(options.Settings, 'volumeAlphaCurve'); options.Settings.volumeAlphaCurve.x = [0 .3 .7 1]; options.Settings.volumeAlphaCurve.y = [1 1 0 0]; end
-                if ~isfield(options.Settings, 'animationPath'); options.Settings.animationPath = struct(); end
-                if ~isfield(options.Settings, 'noFramesPreview'); options.Settings.noFramesPreview = 120; end
             end
             obj.renderingMode = options.mode;
             obj.dataType = options.dataType;
@@ -143,19 +134,6 @@ classdef mibVolRenController < handle
             obj.Settings = options.Settings;
             obj.volumeAlphaCurve.x = options.Settings.volumeAlphaCurve.x;
             obj.volumeAlphaCurve.y = options.Settings.volumeAlphaCurve.y;
-            
-%             % TESTS!!!
-%             obj.colorChannel = NaN;
-%             obj.renderingMode = 'VolumeRendering'
-%             obj.volumeAlphaCurve.x = [0, 1/254, 1]; 
-%             obj.volumeAlphaCurve.y = [0, 1, 1];
-%             obj.Settings.ColormapName = 'custom';
-%             obj.volumeColormap = zeros([256, 3]);
-%             obj.volumeColormap(1:size( mibModel.I{mibModel.Id}.modelMaterialColors,1), :) = mibModel.I{mibModel.Id}.modelMaterialColors;
-% %             for i=1:3
-% %                 obj.volumeColormap(i*50:i*50+49,:) = repmat(mibModel.I{mibModel.Id}.modelMaterialColors(i,:), [50,1]);
-% %             end
-%             obj.Settings.ColormapInvert = 0;
             
             obj.childControllers = {};    % initialize child controllers
             obj.childControllersIds = {};
@@ -501,6 +479,8 @@ classdef mibVolRenController < handle
             end
         end
         
+        
+        
         function menuSettingsBackgroundColor_Callback(obj)
             % function menuSettingsBackgroundColor_Callback(obj)
             % set background color
@@ -740,7 +720,6 @@ classdef mibVolRenController < handle
             pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
             
             obj.View.handles.visualizationModePopup.Value = find(ismember(obj.View.handles.visualizationModePopup.String, obj.renderingMode));
-            
             img = obj.mibModel.getData3D(obj.dataType, timePnt, 4, obj.colorChannel);
             
             if numel(img) > 1

@@ -1,14 +1,13 @@
-function transposeDataset(obj, mode, showWaitbar)
-% function transposeDataset(obj, mode, showWaitbar)
+function transposeDataset(obj, mode)
+% function transposeDataset(obj, mode)
 % Transpose dataset physically between dimensions
 %
 % Parameters:
 % mode: -> a string that defines the transpose dimension
-%     - ''Transpose XY -> ZX'' -> transpose so that XY dimension becomes ZX
-%     - ''Transpose XY -> ZY'' -> transpose so that XY dimension becomes ZY
-%     - ''Transpose ZX -> ZY'' -> transpose so that ZX dimension becomes ZY
-%     - ''Transpose Z<->T'' -> transpose so that Z-dimension becomes T-dimension
-% showWaitbar: logical, show or not the waitbar
+%     - ''xy2zx'' -> transpose so that XY dimension becomes ZX
+%     - ''xy2zy'' -> transpose so that XY dimension becomes ZY
+%     - ''zx2zy'' -> transpose so that ZX dimension becomes ZY
+%     - ''z2t'' -> transpose so that Z-dimension becomes T-dimension
 %
 % Return values:
 % 
@@ -23,92 +22,90 @@ function transposeDataset(obj, mode, showWaitbar)
 % Updates
 % 
 
-if nargin < 3; showWaitbar = true; end
-
 options.blockModeSwitch = 0;    % overwrite blockmode switch
 tic
 [yMax, xMax, cMax, zMax, tMax] = obj.I{obj.Id}.getDatasetDimensions('image', 4, NaN, options);
 cMax = numel(cMax);
 switch mode
-    case 'Transpose XY -> ZX'
+    case 'xy2zx'
         imgOut = zeros([zMax, xMax, cMax, yMax, tMax], obj.I{obj.Id}.meta('imgClass')); %#ok<ZEROLIKE>
         outputDims = [zMax, xMax, cMax, yMax, tMax];
-    case 'Transpose XY -> ZY'
+    case 'xy2zy'
         imgOut = zeros([yMax, zMax, cMax, xMax tMax], obj.I{obj.Id}.meta('imgClass')); %#ok<ZEROLIKE>
         outputDims = [yMax, zMax, cMax, xMax tMax];
-    case 'Transpose ZX -> ZY'
+    case 'zx2zy'
         imgOut = zeros([xMax, yMax, cMax, zMax, tMax], obj.I{obj.Id}.meta('imgClass')); %#ok<ZEROLIKE>
         outputDims = [xMax, yMax, cMax, zMax, tMax];
-    case 'Transpose Z<->T'
+    case 'z2t'
         obj.transposeZ2T();
-        log_text = 'Transpose: mode=Z->T';
+        log_text = 'Rotate: mode=Z->T';
         obj.I{obj.Id}.updateImgInfo(log_text);
         notify(obj, 'newDataset');  % notify newDataset with the index of the dataset
         eventdata = ToggleEventData(1);
         notify(obj, 'plotImage', eventdata);
         return;
 end
-if showWaitbar; wb = waitbar(0,sprintf('Transposing the image\nPlease wait...'),...
-    'Name', sprintf('Transpose dataset [%s]', mode), 'WindowStyle', 'modal'); end
+wb = waitbar(0,sprintf('Transposing the image\nPlease wait...'),...
+    'Name', sprintf('Transpose dataset [%s]', mode), 'WindowStyle', 'modal');
 
 % transpose the image layer
 for t=1:tMax
     img = cell2mat(obj.getData3D('image', t, 4, 0, options));   % get z-stack (image)
     imgOut(:,:,:,:,t) = transposeme(img, mode);
-    if showWaitbar; waitbar(t/tMax, wb); end
+    waitbar(t/tMax, wb)
 end
 obj.setData4D('image', imgOut, 4, 0, options);   % set dataset (image) back
 clear imgOut;
 
 % transpose other layers
 if obj.I{obj.Id}.modelType == 63 && obj.I{obj.Id}.disableSelection == 0
-    if showWaitbar; waitbar(0.5, wb, sprintf('Transposing other layers\nPlease wait...')); end
+    waitbar(0.5, wb, sprintf('Transposing other layers\nPlease wait...'));
     img = obj.I{obj.Id}.model{1};  % get everything
     obj.I{obj.Id}.model{1} = zeros([outputDims(1), outputDims(2), outputDims(4), outputDims(5)], 'uint8');
     for t=1:tMax
         obj.setData3D('everything', transposeme(img(:,:,:,t), mode), t, 4, NaN, options);   % set dataset (everything) back
-        if showWaitbar; waitbar(t/tMax, wb); end
+        waitbar(t/tMax, wb);
     end
 elseif  obj.I{obj.Id}.disableSelection == 0
     % transpose selection layer
-    if showWaitbar; waitbar(0.25, wb, sprintf('Transposing the selection layer\nPlease wait...')); end
+    waitbar(0.25, wb, sprintf('Transposing the selection layer\nPlease wait...'));
     img = obj.I{obj.Id}.selection{1};  % get selection
     obj.I{obj.Id}.selection{1} = zeros([outputDims(1), outputDims(2), outputDims(4), outputDims(5)], 'uint8');
     for t=1:tMax
         obj.setData3D('selection', transposeme(img(:,:,:,t), mode), t, 4, NaN, options);   % set dataset (everything) back
-        if showWaitbar; waitbar(t/tMax, wb); end
+        waitbar(t/tMax, wb);
     end
     
     % transpose mask
     if obj.I{obj.Id}.maskExist
-        if showWaitbar; waitbar(0.5, wb, sprintf('Transposing the mask layer\nPlease wait...')); end
+        waitbar(0.5, wb, sprintf('Transposing the mask layer\nPlease wait...'));
         img = obj.I{obj.Id}.maskImg{1};  % get mask
         obj.I{obj.Id}.maskImg{1} = zeros([outputDims(1), outputDims(2), outputDims(4), outputDims(5)], 'uint8');
         for t=1:tMax
             obj.setData3D('mask', transposeme(img(:,:,:,t), mode), t, 4, NaN, options);   % set dataset (everything) back
-            if showWaitbar; waitbar(t/tMax, wb); end
+            waitbar(t/tMax, wb);
         end
     end
     
     % transpose model
     if obj.I{obj.Id}.modelExist
-        if showWaitbar; waitbar(0.75, wb, sprintf('Transposing the model layer\nPlease wait...')); end
+        waitbar(0.75, wb, sprintf('Transposing the model layer\nPlease wait...'));
         img = obj.I{obj.Id}.model{1};  % get model
         obj.I{obj.Id}.model{1} = zeros([outputDims(1), outputDims(2), outputDims(4), outputDims(5)], 'uint8');
         for t=1:tMax
             obj.setData3D('model', transposeme(img(:,:,:,t), mode), t, 4, NaN, options);   % set dataset (everything) back
-            if showWaitbar; waitbar(t/tMax, wb); end
+            waitbar(t/tMax, wb);
         end
     end
 end
-if showWaitbar; waitbar(1, wb, sprintf('Finishing...')); end
+waitbar(1, wb, sprintf('Finishing...'));
 clear img;
 
 % % update the bounding box
 bb = obj.I{obj.Id}.getBoundingBox();    % get current bounding box
 
 switch mode
-    case 'Transpose XY -> ZX'
+    case 'xy2zx'
         % swap pixSize.y and pixSize.z
         dummy = obj.I{obj.Id}.pixSize.y;
         obj.I{obj.Id}.pixSize.y = obj.I{obj.Id}.pixSize.z;
@@ -117,7 +114,7 @@ switch mode
         dummy = bb(3:4);
         bb(3:4) = bb(5:6);
         bb(5:6) = dummy;
-    case 'Transpose XY -> ZY'
+    case 'xy2zy'
         % swap pixSize.x and pixSize.z
         dummy = obj.I{obj.Id}.pixSize.x;
         obj.I{obj.Id}.pixSize.x = obj.I{obj.Id}.pixSize.z;
@@ -126,7 +123,7 @@ switch mode
         dummy = bb(1:2);
         bb(1:2) = bb(5:6);
         bb(5:6) = dummy;
-    case 'Transpose ZX -> ZY'
+    case 'zx2zy'
         % swap pixSize.y and pixSize.x
         dummy = obj.I{obj.Id}.pixSize.x;
         obj.I{obj.Id}.pixSize.x = obj.I{obj.Id}.pixSize.y;
@@ -140,7 +137,7 @@ obj.I{obj.Id}.updateBoundingBox(bb);  % update bounding box
 
 log_text = ['Transpose: mode=' mode];
 obj.I{obj.Id}.updateImgInfo(log_text);
-if showWaitbar; delete(wb); end
+delete(wb);
 toc;
 
 notify(obj, 'newDataset');  % notify newDataset with the index of the dataset
@@ -150,26 +147,26 @@ end
 
 function img = transposeme(img, mode)
 % transpose function
-%     - ''Transpose XY -> ZX'' -> transpose so that XY dimension becomes ZX
-%     - ''Transpose XY -> ZY'' -> transpose so that XY dimension becomes ZY
-%     - ''Transpose ZX -> ZY'' -> transpose so that ZX dimension becomes ZY
+%     - ''xy2zx'' -> transpose so that XY dimension becomes ZX
+%     - ''xy2zy'' -> transpose so that XY dimension becomes ZY
+%     - ''zx2zy'' -> transpose so that ZX dimension becomes ZY
 
 if ndims(img) == 4  % for image
     switch mode
-        case 'Transpose XY -> ZX'
+        case 'xy2zx'
             img = permute(img,[4, 2, 3, 1]);
-        case 'Transpose XY -> ZY'
+        case 'xy2zy'
             img = permute(img,[1, 4, 3, 2]);
-        case 'Transpose ZX -> ZY'
+        case 'zx2zy'
             img = permute(img,[2, 1, 3, 4]);
     end
 else     % for other layers
     switch mode
-        case 'Transpose XY -> ZX'
+        case 'xy2zx'
             img = permute(img,[3, 2, 1]);
-        case 'Transpose XY -> ZY'
+        case 'xy2zy'
             img = permute(img,[1, 3, 2]);
-        case 'Transpose ZX -> ZY'
+        case 'zx2zy'
             img = permute(img,[2, 1, 3]);
     end
 end

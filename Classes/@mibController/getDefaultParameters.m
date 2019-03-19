@@ -41,10 +41,10 @@ if strcmp(os,'Windows_NT')
     end
 else
     start_path = '/';
-    if exist(fullfile(tempdir, 'mib.mat'), 'file') ~= 0
-        fn = fullfile(tempdir, 'mib.mat');
-    elseif exist(fullfile(obj.mibPath, 'mib.mat'), 'file') ~= 0
+    if exist(fullfile(obj.mibPath, 'mib.mat'), 'file') ~= 0
         fn = fullfile(obj.mibPath, 'mib.mat');
+    elseif exist(fullfile(tempdir, 'mib.mat'), 'file') ~= 0
+        fn = fullfile(tempdir, 'mib.mat');
     else
         fn = [];
     end
@@ -116,9 +116,6 @@ obj.mibModel.preferences.superpixels.watershed_invert = 1;
 obj.mibModel.preferences.superpixels.slic_n = 220;
 obj.mibModel.preferences.superpixels.slic_compact = 50;
 
-obj.mibModel.preferences.imagearithmetic.actions = {'A = A*2'};     % cell array with the recent image arithmetic functions
-obj.mibModel.preferences.imagearithmetic.no_stored_actions = 10;
-
 obj.mibModel.preferences.updateChecked = 0;     % time of the previus update check
 
 % size of the grid for BW Mask thresholding
@@ -127,28 +124,6 @@ obj.mibModel.preferences.corrGridrunSize = 200;
 % add default folders
 obj.mibModel.preferences.dirs.fijiInstallationPath = [];
 obj.mibModel.preferences.dirs.omeroInstallationPath = [];
-
-% setting up directory for memoizer
-obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir = fullfile(tempdir, 'mibVirtual');
-if ispc
-    if exist('c:\temp', 'dir') == 7
-        if exist('c:\temp\mibVirtual', 'dir') == 0
-            try
-                mkdir('c:\temp\mibVirtual');
-                obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir = 'c:\temp\mibVirtual';
-            catch
-                
-            end
-        else
-            obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir = 'c:\temp\mibVirtual';
-        end
-    end
-else
-    obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir = fullfile(tempdir, 'mibVirtual');
-    if exist(obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir, 'dir') == 0
-        mkdir(obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir);
-    end
-end
 
 % define gui scaling settings
 obj.mibModel.preferences.gui.scaling = 1;   % scaling factor
@@ -272,17 +247,6 @@ obj.mibModel.preferences.KeyShortcuts.Action{maxShortCutIndex} = 'Add measuremen
 
 obj.mibModel.preferences.recentDirs = {};
 
-% tips of a day settings
-obj.mibModel.preferences.tips.currentTip = 1;   % index of the next tip to show
-obj.mibModel.preferences.tips.showTips = 1;     % show or not the tips during startup
-tipFolder = fullfile(obj.mibPath, 'Resources', 'tips', '*.html');
-tipsFiles = dir(tipFolder);
-
-obj.mibModel.preferences.tips.files = cell([numel(tipsFiles), 1]); % path to the tip files
-for i=1:numel(tipsFiles)
-    obj.mibModel.preferences.tips.files{i} = fullfile(tipsFiles(i).folder, tipsFiles(i).name);  
-end
-
 % define font structure
 obj.mibModel.preferences.Font.FontName = 'Helvetica';
 obj.mibModel.preferences.Font.FontUnits = 'points';
@@ -290,7 +254,7 @@ obj.mibModel.preferences.Font.FontSize = 8;
 obj.mibModel.preferences.fontSizeDir = 9;        % font size for files and directories
 
 % define file extensions
-bioList = {'nii','mov','pic','ics','ids','lei','stk','nd','nd2','sld','pict'...
+bioList = {'mov','pic','ics','ids','lei','stk','nd','nd2','sld','pict'...
     ,'lsm','mdb','psd','img','hdr','svs','dv','r3d','dcm','dicom','fits','liff'...
     ,'jp2','lif','l2d','mnc','mrc','oib','oif','pgm','zvi','gel','ims','dm3','naf'...
     ,'seq','xdce','ipl','mrw','mng','nrrd','ome','amiramesh','labels','fli'...
@@ -323,11 +287,7 @@ if exist('mib_pars', 'var') && isfield(mib_pars, 'preferences')
         end
         % update shortcuts and MIB preferences
         KeyShortcuts = obj.mibModel.preferences.KeyShortcuts;
-        
-        tipFiles = obj.mibModel.preferences.tips.files;     % store tip files
         obj.mibModel.preferences = mib_pars.preferences;
-        obj.mibModel.preferences.tips.files = tipFiles;     % update tip files with the current situation
-        
         numberOfOldShortcuts = numel(mib_pars.preferences.KeyShortcuts.Key);
         numberOfNewShortcuts = numel(KeyShortcuts.Key);
         if numberOfOldShortcuts < numberOfNewShortcuts
@@ -338,17 +298,15 @@ if exist('mib_pars', 'var') && isfield(mib_pars, 'preferences')
             obj.mibModel.preferences.KeyShortcuts.Action(numberOfOldShortcuts+1:numberOfNewShortcuts) = KeyShortcuts.Action(numberOfOldShortcuts+1:numberOfNewShortcuts);
         end
         obj.mibModel.preferences.Font.FontName = fontName;
-        
      end
     % add last path
     if isfield(mib_pars, 'lastpath')
         obj.mibModel.preferences.lastpath = mib_pars.lastpath;
     end
 end
-if isdir(obj.mibModel.preferences.lastpath) == 0 %#ok<ISDIR>
+if isdir(obj.mibModel.preferences.lastpath) == 0
     obj.mibModel.preferences.lastpath = start_path;
 end
-if ~isfield(obj.mibModel.preferences.dirs, 'BioFormatsMemoizerMemoDir');  obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir = 'c:\temp\mibVirtual'; end
 
 %% Update libraries
 % update Fiji and Omero folders if they are present in Matlab path already
@@ -389,18 +347,17 @@ if ~isempty(obj.mibModel.preferences.dirs.omeroInstallationPath)
     end
 end
 
-% add Imaris and BioFormats, createTable java libraries to Java path;
+% add Imaris and BioFormats java libraries to Java path;
 if ~isdeployed
     javapath = javaclasspath('-all');
     
     % add bio-formats java libraries
     if all(cellfun(@isempty, strfind(javapath, 'bioformats_package.jar')))
         % if isempty(cell2mat(strfind(javapath, 'bioformats_package.jar'))); % this call is a bit slower
-        cPath = fullfile(obj.mibPath,'ImportExportTools','BioFormats','bioformats_package.jar');
-        javaaddpath(cPath, '-end');
-        disp(['MIB: adding "' cPath '" to Matlab java path']);
+        lociPath = fullfile(obj.mibPath,'ImportExportTools','BioFormats','bioformats_package.jar');
+        javaaddpath(lociPath, '-end');
+        disp(['MIB: adding "' lociPath '" to Matlab java path']);
     end
-
 end
 
 % add Fiji libraries
@@ -446,18 +403,16 @@ end
 % add bm3d filter
 if ~isfield(obj.mibModel.preferences.dirs, 'bm3dInstallationPath')
     obj.mibModel.preferences.dirs.bm3dInstallationPath = [];
-    if ~isdeployed  
+    if ~isdeployed  % disable in the compiled version due to the license limitations
         res = which('bm3d');
         if isempty(res)
             obj.mibModel.preferences.dirs.bm3dInstallationPath = [];
         else
             obj.mibModel.preferences.dirs.bm3dInstallationPath = fileparts(res);
         end
-    else
-        obj.mibModel.preferences.dirs.bm3dInstallationPath = [];
     end
 end
-if ~isdeployed && exist(obj.mibModel.preferences.dirs.bm3dInstallationPath, 'dir') == 7   
+if ~isdeployed && isdir(obj.mibModel.preferences.dirs.bm3dInstallationPath)    
     addpath(obj.mibModel.preferences.dirs.bm3dInstallationPath); 
 end
 
@@ -470,8 +425,6 @@ if ~isfield(obj.mibModel.preferences.dirs, 'bm4dInstallationPath')
         else
             obj.mibModel.preferences.dirs.bm4dInstallationPath = fileparts(res);
         end
-    else
-        obj.mibModel.preferences.dirs.bm3dInstallationPath = [];    
     end
 end
 if ~isdeployed && isdir(obj.mibModel.preferences.dirs.bm4dInstallationPath)    

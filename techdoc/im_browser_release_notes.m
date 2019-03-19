@@ -5,29 +5,7 @@
 %
 %
 %
-%% 2.51 / 13.03.2019
-% * Added methods for automatic global black-and-white thresholding (|Menu->Tools->Semi-automatic segmentation->Global thresholding|)
-% * Added selection of materials for rendering of Matlab Isosurface models (|Menu->Models->Render model->Matlab isosurface|)
-% * Added calculation of images with extended depth-of-field focus stacking
-% (|Menu->Image->Tools for images->Intensity projection->Focus stacking|)
-% * Added saving of HDF5 format in the virtual mode without loading of complete stack
-% * Added saving of AmiraMesh files as a sequence 2D sections (|Menu->File->Save image as->Amira Mesh binary file sequence|)
-% * Added an option to display an orthoslice during visualization of 3D lines
-% * Added tip of the day window (|Menu->Help->Tip of the day|)
-% * Added H-maxima and H-minima transforms to Mask generators (|Mask generators panel->Morphological filters|)
-% * Added |Single Mask object per dataset| option when cropping objects from the Get Statistics dialog
-% * Added export of the supervoxels from Graphcut to a model
-% * Improved performance when several materials are removed from the model
-% * Improved the Image arithmetics dialog (|Menu->Image->Tools for images->Image arithmetic...|)
-% * Updated BioFormats reader to use Memoizer class, this should hopefully
-% fix Java memory leaks; temporary directory can be specified in
-% |Menu->File->Preferences->External dirs|
-% * Updated sorting of the Get Statistics dialog
-% * Fixed initialization of 3D hardware rendering of models
-% * Fixed pixel size when combining 2D images with different dimensions
-% * Fixed adding icons to buttons when MIB is installed in network path that starts from  "//"
-%
-%% 2.501 / 21.12.2018
+%% 2.501 / 24.12.2018
 % * Added swap slices option (Menu->Dataset->Slice->Swap slices)
 % * Fixed rendering of combined image in the split color channel mode with Lut enabled in Snapshot and Make movie tools
 % * Fixed Copy Slice for the Insert mode

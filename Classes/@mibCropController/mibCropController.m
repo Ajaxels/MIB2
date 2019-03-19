@@ -26,9 +26,7 @@ classdef mibCropController  < handle
         mibImageAxes
         % handle to mibView. mibImageAxes, main image axes of MIB
         currentMode
-        % a string with the selected crop mode: 'Interactive','Manual','ROI'
-        BatchOpt
-        % a structure compatible with batch operation, see details in the contsructor
+        % a string with the selected crop mode: 'interactiveRadio','manualRadio','roiRadio'
     end
     
     events
@@ -47,59 +45,13 @@ classdef mibCropController  < handle
     end
     
     methods
-        function obj = mibCropController(mibModel, mibImageAxes, varargin)
+        function obj = mibCropController(mibModel, mibImageAxes)
             obj.mibModel = mibModel;    % assign model
-            
-            getDataOpt.blockModeSwitch = 0;
-            [height, width, ~, depth, time] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, NaN, getDataOpt);
-            
-            obj.BatchOpt.Width = sprintf('%d:%d', 1, width);   % width for the crop
-            obj.BatchOpt.Height = sprintf('%d:%d', 1, height);   % height for the crop
-            obj.BatchOpt.Depth = sprintf('%d:%d', 1, depth);   % depth for the crop
-            obj.BatchOpt.Time = sprintf('%d:%d', 1, time);   % time for the crop
-            obj.BatchOpt.Interactive = false;
-            obj.BatchOpt.ROI = false;
-            obj.BatchOpt.Manual = true;     % enable manual mode, when the values for crop are provided
-            obj.BatchOpt.Destination = {sprintf('Container %d', obj.mibModel.Id)};  % destination for the crop
-            obj.BatchOpt.SelectROI = {'All'};
-            
-            % add here a code for the batch mode, for example
-            % when the BatchOpt stucture is provided the controller will
-            % use it as the parameters, and performs the function in the
-            % headless mode without GUI
-            if nargin == 3
-                BatchOptInput = varargin{1};
-                if isstruct(BatchOptInput) == 0 
-                    if isnan(BatchOptInput)
-                        obj.returnBatchOpt();   % obtain Batch parameters
-                    else
-                        errordlg(sprintf('A structure as the 4th parameter is required!')); 
-                    end
-                    return;
-                end
-                BatchOptInputFields = fieldnames(BatchOptInput);
-                for i=1:numel(BatchOptInputFields)
-                    obj.BatchOpt.(BatchOptInputFields{i}) = BatchOptInput.(BatchOptInputFields{i}); 
-                end
-                
-                if obj.BatchOpt.Interactive == 1
-                    errordlg(sprintf('!!! Error !!!\n\nCrop tool in the batch mode is not compatible with the "Interactive" option!'), 'Crop: initialization error');
-                end
-                
-                % check the radio button names
-                if obj.BatchOpt.Interactive + obj.BatchOpt.Manual + obj.BatchOpt.ROI > 1
-                    errordlg(sprintf('The wrong initialization of radio buttons!\n\nOnly one of the following options should be used:\n.Manual=true (.Width, .Height, .Depth, .Time)\n.ROI=true (.SelectROI)\n.Interactive - not implemented'), 'Crop: initialization error');
-                    return;
-                end
-                obj.cropBtn_Callback();
-                return;
-            end
-            
             obj.mibImageAxes = mibImageAxes;
             guiName = 'mibCropGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
-            obj.currentMode	= 'Manual';
+            obj.currentMode	= 'manualRadio';
             
 			obj.updateWidgets();
 			
@@ -124,76 +76,23 @@ classdef mibCropController  < handle
             notify(obj, 'closeEvent');      % notify mibController that this child window is closed
         end
         
-        function returnBatchOpt(obj, BatchOptOut)
-            % return structure with Batch Options and possible configurations
-            % via the notify 'syncBatch' event
-            % Parameters:
-            % BatchOptOut: a local structure with Batch Options generated
-            % during Continue callback. It may contain more fields than
-            % obj.BatchOpt structure
-            % 
-            if nargin < 2; BatchOptOut = obj.BatchOpt; end
-            
-            % generate cell array of containers names for popup menus
-            destBuffers = arrayfun(@(x) sprintf('Container %d', x), 1:obj.mibModel.maxId, 'UniformOutput', false);
-            BatchOptOut.Destination{2} = destBuffers;
-            
-            [numberOfROI, indicesOfROI] = obj.mibModel.I{obj.mibModel.Id}.hROI.getNumberOfROI(0);
-            list{1} = 'All';
-            i=2;
-            for idx = indicesOfROI
-                list(i) = obj.mibModel.I{obj.mibModel.Id}.hROI.Data(idx).label; %#ok<AGROW>
-                i = i + 1;
-            end
-            BatchOptOut.SelectROI{2} = list;
-            
-            % add position of the Plugin in the Menu Plugins
-            BatchOptOut.mibBatchSectionName = 'Menu Dataset';
-            BatchOptOut.mibBatchActionName = 'Crop dataset';
-            
-            % trigger syncBatch event to send BatchOptOut to mibBatchController 
-            eventdata = ToggleEventData(BatchOptOut);
-            notify(obj.mibModel, 'syncBatch', eventdata);
-        end
-        
-        function updateBatchOptFromGUI(obj, hObject)
-            % function updateBatchOptFromGUI(obj, hObject)
-            %
-            % update obj.BatchOpt from widgets of GUI
-            % use an external function (Tools\updateBatchOptFromGUI_Shared.m) that is common for all tools
-            % compatible with the Batch mode
-            %
-            % Parameters:
-            % hObject: a handle to a widget of GUI
-            
-            obj.BatchOpt = updateBatchOptFromGUI_Shared(obj.BatchOpt, hObject);
-        end
-        
         function updateWidgets(obj)
             % function updateWidgets(obj)
             % update all widgets of the current window
-            obj.View.handles.Width.String = ['1:' num2str(obj.mibModel.getImageProperty('width'))];
-            obj.View.handles.Height.String = ['1:' num2str(obj.mibModel.getImageProperty('height'))];
-            obj.View.handles.Depth.String = ['1:' num2str(obj.mibModel.getImageProperty('depth'))];
-            obj.View.handles.Time.String = ['1:' num2str(obj.mibModel.getImageProperty('time'))];
-            
+            obj.View.handles.wEdit.String = ['1:' num2str(obj.mibModel.getImageProperty('width'))];
+            obj.View.handles.hEdit.String = ['1:' num2str(obj.mibModel.getImageProperty('height'))];
+            obj.View.handles.zEdit.String = ['1:' num2str(obj.mibModel.getImageProperty('depth'))];
+            obj.View.handles.tEdit.String = ['1:' num2str(obj.mibModel.getImageProperty('time'))];
             obj.roiPos{1} = NaN;
-            
-            if obj.View.handles.Interactive.Value == 1; obj.currentMode = 'Interactive'; end
-            if obj.View.handles.Manual.Value == 1; obj.currentMode = 'Manual'; end
-            if obj.View.handles.ROI.Value == 1; obj.currentMode = 'ROI'; end
             
             [numberOfROI, indicesOfROI] = obj.mibModel.I{obj.mibModel.Id}.hROI.getNumberOfROI(0);     % get all ROI
             if numberOfROI == 0
-                 obj.View.handles.ROI.Enable = 'off';
-                 if obj.BatchOpt.ROI     % disable roi mode when no roi
-                    obj.currentMode = 'Manual';
-                    obj.BatchOpt.ROI = false;
-                    obj.BatchOpt.Manual = true;
-                    obj.View.handles.Manual.Value = 1;
+                 obj.View.handles.roiRadio.Enable = 'off';
+                 if strcmp(obj.currentMode, 'roiRadio')     % disable roi mode when no roi
+                    obj.currentMode = 'manualRadio';
+                    obj.View.handles.manualRadio.Value = 1;
                  end
             end
-            
             obj.radio_Callback(obj.View.handles.(obj.currentMode));
             
             list{1} = 'All';
@@ -202,13 +101,13 @@ classdef mibCropController  < handle
                 list(i) = obj.mibModel.I{obj.mibModel.Id}.hROI.Data(idx).label; %#ok<AGROW>
                 i = i + 1;
             end
-            obj.View.handles.SelectROI.String = list;
+            obj.View.handles.roiPopup.String = list;
             
             if numel(list) > 1
-                obj.View.handles.SelectROI.Value = max([obj.mibModel.I{obj.mibModel.Id}.selectedROI+1 2]);
-                obj.View.handles.ROI.Enable = 'on';
+                obj.View.handles.roiPopup.Value = max([obj.mibModel.I{obj.mibModel.Id}.selectedROI+1 2]);
+                obj.View.handles.roiRadio.Enable = 'on';
             else
-                obj.View.handles.SelectROI.Value = 1;
+                obj.View.handles.roiPopup.Value = 1;
             end
         end
         
@@ -218,75 +117,67 @@ classdef mibCropController  < handle
             %
             % Parameters:
             % hObject: a handle to selected radio button to choose the crop mode
-            % @li handles.Interactive - interactive
-            % @li handles.Manual - manual
-            % @li handles.ROI - from selected ROI
+            % @li handles.interactiveRadio - interactive
+            % @li handles.manualRadio - manual
+            % @li handles.roiRadio - from selected ROI
             
             mode = hObject.Tag;
             
-            obj.View.handles.SelectROI.Enable = 'off';
-            obj.View.handles.Width.Enable = 'off';
-            obj.View.handles.Height.Enable = 'off';
-            obj.View.handles.Depth.Enable = 'off';
+            obj.View.handles.roiPopup.Enable = 'off';
+            obj.View.handles.wEdit.Enable = 'off';
+            obj.View.handles.hEdit.Enable = 'off';
+            obj.View.handles.zEdit.Enable = 'off';
             
             if obj.mibModel.getImageProperty('time') > 1
-                obj.View.handles.Time.Enable = 'on';
+                obj.View.handles.tEdit.Enable = 'on';
             else
-                obj.View.handles.Time.Enable = 'off';
+                obj.View.handles.tEdit.Enable = 'off';
             end
-            if strcmp(mode,'Interactive')
+            if strcmp(mode,'interactiveRadio')
                 text = sprintf('Interactive mode allows to draw a rectangle that will be used for cropping.To start, press the Crop button and use the left mouse button to draw an area, double click over the area to crop');
                 obj.editboxes_Callback();
-            elseif strcmp(mode,'Manual')
-                obj.View.handles.Width.Enable = 'on';
-                obj.View.handles.Height.Enable = 'on';
-                obj.View.handles.Depth.Enable = 'on';
+            elseif strcmp(mode,'manualRadio')
+                obj.View.handles.wEdit.Enable = 'on';
+                obj.View.handles.hEdit.Enable = 'on';
+                obj.View.handles.zEdit.Enable = 'on';
                 text = sprintf('In the manual mode the numbers entered in the edit boxes below will be used for cropping');
                 obj.editboxes_Callback();
-            elseif strcmp(mode,'ROI')
-                obj.View.handles.SelectROI.Enable = 'on';
+            elseif strcmp(mode,'roiRadio')
+                obj.View.handles.roiPopup.Enable = 'on';
                 text = sprintf('Use existing ROIs to crop the image');
-                obj.SelectROI_Callback();
+                obj.roiPopup_Callback();
             end
             obj.View.handles.descriptionText.String = text;
             obj.View.handles.descriptionText.TooltipString = text;
             obj.currentMode = mode;
-            
-            % update obj.BatchOpt
-            obj.BatchOpt.Width = obj.View.handles.Width.String;
-            obj.BatchOpt.Height = obj.View.handles.Height.String;
-            obj.BatchOpt.Depth = obj.View.handles.Depth.String;
-            obj.BatchOpt.Time = obj.View.handles.Time.String;
-            
-            obj.updateBatchOptFromGUI(hObject);
         end
         
         function editboxes_Callback(obj)
             % function editboxes_Callback(obj)
             % update parameters of obj.roiPos based on provided values
             
-            str2 = obj.View.handles.Width.String;
+            str2 = obj.View.handles.wEdit.String;
             obj.roiPos{1}(1) = min(str2num(str2)); %#ok<ST2NM>
             obj.roiPos{1}(2) = max(str2num(str2)); %#ok<ST2NM>
-            str2 = obj.View.handles.Height.String;
+            str2 = obj.View.handles.hEdit.String;
             obj.roiPos{1}(3) = min(str2num(str2)); %#ok<ST2NM>
             obj.roiPos{1}(4) = max(str2num(str2)); %#ok<ST2NM>
-            str2 = obj.View.handles.Depth.String;
+            str2 = obj.View.handles.zEdit.String;
             obj.roiPos{1}(5) = min(str2num(str2)); %#ok<ST2NM>
             obj.roiPos{1}(6) = max(str2num(str2)); %#ok<ST2NM>
-            str2 = obj.View.handles.Time.String;
+            str2 = obj.View.handles.tEdit.String;
             obj.roiPos{1}(7) = min(str2num(str2)); %#ok<ST2NM>
             obj.roiPos{1}(8) = max(str2num(str2)); %#ok<ST2NM>
         end
         
-        function SelectROI_Callback(obj)
-            % function SelectROI_Callback(obj)
-            % callback for change of obj.View.handles.SelectROI with the
+        function roiPopup_Callback(obj)
+            % function roiPopup_Callback(obj)
+            % callback for change of obj.View.handles.roiPopup with the
             % list of ROIs
             
-            val = obj.View.handles.SelectROI.Value - 1;
+            val = obj.View.handles.roiPopup.Value - 1;
             
-            str2 = obj.View.handles.Time.String;
+            str2 = obj.View.handles.tEdit.String;
             tMin = min(str2num(str2)); %#ok<ST2NM>
             tMax = max(str2num(str2)); %#ok<ST2NM>
             if val == 0
@@ -297,68 +188,31 @@ classdef mibCropController  < handle
                     obj.roiPos{i}(7:8) = [tMin, tMax];
                     i = i + 1;
                 end
-                obj.View.handles.Width.String = 'Multi';
-                obj.View.handles.Height.String = 'Multi';
-                obj.View.handles.Depth.String = 'Multi';
+                obj.View.handles.wEdit.String = 'Multi';
+                obj.View.handles.hEdit.String = 'Multi';
+                obj.View.handles.zEdit.String = 'Multi';
             else
                 bb{1} = obj.mibModel.I{obj.mibModel.Id}.getROIBoundingBox(val);
-                obj.View.handles.Width.String = [num2str(bb{1}(1)) ':', num2str(bb{1}(2))];
-                obj.View.handles.Height.String = [num2str(bb{1}(3)) ':', num2str(bb{1}(4))];
-                obj.View.handles.Depth.String = [num2str(bb{1}(5)) ':', num2str(bb{1}(6))];
+                obj.View.handles.wEdit.String = [num2str(bb{1}(1)) ':', num2str(bb{1}(2))];
+                obj.View.handles.hEdit.String = [num2str(bb{1}(3)) ':', num2str(bb{1}(4))];
+                obj.View.handles.zEdit.String = [num2str(bb{1}(5)) ':', num2str(bb{1}(6))];
                 obj.roiPos{1} = bb{1};
                 obj.roiPos{1}(7:8) = [tMin, tMax];
             end
-            % update obj.BatchOpt
-            obj.BatchOpt.Width = obj.View.handles.Width.String;
-            obj.BatchOpt.Height = obj.View.handles.Height.String;
-            obj.BatchOpt.Depth = obj.View.handles.Depth.String;
-            obj.BatchOpt.Time = obj.View.handles.Time.String;
         end
         
         function resetBtn_Callback(obj)
             % function resetBtn_Callback(obj)
             % reset widgets based on current image sizes
-            obj.View.handles.Width.String = ['1:' num2str(obj.mibModel.getImageProperty('width'))];
-            obj.View.handles.Height.String = ['1:' num2str(obj.mibModel.getImageProperty('height'))];
-            obj.View.handles.Depth.String = ['1:' num2str(obj.mibModel.getImageProperty('depth'))];
-            obj.View.handles.Time.String = ['1:' num2str(obj.mibModel.getImageProperty('time'))];
+            obj.View.handles.wEdit.String = ['1:' num2str(obj.mibModel.getImageProperty('width'))];
+            obj.View.handles.hEdit.String = ['1:' num2str(obj.mibModel.getImageProperty('height'))];
+            obj.View.handles.zEdit.String = ['1:' num2str(obj.mibModel.getImageProperty('depth'))];
+            obj.View.handles.tEdit.String = ['1:' num2str(obj.mibModel.getImageProperty('time'))];
             
             obj.roiPos{1} = [1, obj.mibModel.getImageProperty('width'), 1, obj.mibModel.getImageProperty('height'),...
                 1, obj.mibModel.getImageProperty('depth') 1, obj.mibModel.getImageProperty('time')];
             
-            obj.radio_Callback(obj.View.handles.Manual);
-        end
-        
-        function cropToBtn_Callback(obj)
-            % function cropToBtn_Callback(obj)
-            % select destination buffer for the cropping
-            
-            global mibPath; % path to mib installation folder
-
-            if strcmp(obj.BatchOpt.Width, 'Multi')
-                msgbox(sprintf('Oops, not implemented yet!\nPlease select a single ROI from the Select ROI combobox'),'Multiple ROI crop', 'warn');
-                return;
-            end
-            
-            bufferId = obj.mibModel.maxId;
-            for i=1:obj.mibModel.maxId-1
-                if strcmp(obj.mibModel.I{i}.meta('Filename'), 'none.tif')
-                    bufferId = i;
-                    break;
-                end
-            end
-            
-            prompts = {'Enter the destination buffer:'};
-            defAns = {arrayfun(@(x) {num2str(x)}, 1:obj.mibModel.maxId)};
-            defAns{1}(end+1) = {bufferId};
-            title = 'Crop dataset to';
-            
-            answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
-            if isempty(answer); return; end
-            bufferId = str2double(answer{1});
-            
-            obj.BatchOpt.Destination = {sprintf('Container %d', bufferId)};
-            obj.cropBtn_Callback();
+            obj.radio_Callback(obj.View.handles.manualRadio);
         end
         
         function cropBtn_Callback(obj, hObject)
@@ -368,20 +222,15 @@ classdef mibCropController  < handle
             % Parameters:
             % hObject: handle to the pressed button, handles.croptoBtn or
             % handles.cropBtn
-            if nargin > 1
-                if strcmp(hObject.Tag, 'cropBtn')
-                    obj.BatchOpt.Destination = {sprintf('Container %d', obj.mibModel.Id)};
-                end
-            end
             
-            BatchOptLoc = obj.BatchOpt;
+            global mibPath; % path to mib installation folder
             
-            if BatchOptLoc.Interactive    % interactive
+            if obj.View.handles.interactiveRadio.Value    % interactive
                 obj.View.gui.Visible = 'off';
                 
                 obj.mibModel.disableSegmentation = 1;  % disable segmentation
                 
-                h = imrect(obj.mibImageAxes);
+                h =  imrect(obj.mibImageAxes);
                 new_position = wait(h);
                 delete(h);
                 obj.mibModel.disableSegmentation = 0;    % re-enable selection switch 
@@ -418,37 +267,42 @@ classdef mibCropController  < handle
                     crop_factor = [1 position(2) obj.mibModel.I{obj.mibModel.Id}.width position(4)-position(2)+1 position(1) position(3)-position(1)+1]; % x1, y1, dx, dy, z1, dz
                 end
                 obj.View.gui.Visible = 'on';
+            elseif ~isnan(obj.roiPos{1})
+                x1 = obj.roiPos{1}(1);
+                x2 = obj.roiPos{1}(2);
+                y1 = obj.roiPos{1}(3);
+                y2 = obj.roiPos{1}(4);
+                z1 = obj.roiPos{1}(5);
+                z2 = obj.roiPos{1}(6);
+                crop_factor = [x1,y1,x2-x1+1,y2-y1+1,z1,z2-z1+1];
             else
-                if strcmp(BatchOptLoc.Width, 'Multi')
-                    msgbox(sprintf('Oops, not implemented yet!\nPlease select a single ROI from the Select ROI combobox'),'Multiple ROI crop', 'warn');
-                    return;
-                end
-                cropDim = str2num(BatchOptLoc.Width); %#ok<ST2NM>
-                x1 = min(cropDim);
-                x2 = max(cropDim);
-                cropDim = str2num(BatchOptLoc.Height); %#ok<ST2NM>
-                y1 = min(cropDim);
-                y2 = max(cropDim);
-                cropDim = str2num(BatchOptLoc.Depth); %#ok<ST2NM>
-                z1 = min(cropDim);
-                z2 = max(cropDim);
-                crop_factor = [x1, y1, x2-x1+1, y2-y1+1, z1, z2-z1+1];
+                msgbox('Oops, not implemented yet!','Multiple ROI crop','warn');
+                return;
             end
             
-            % check for CropTo use
-            if ~strcmp(BatchOptLoc.Destination{1}, sprintf('Container %d', obj.mibModel.Id))
-                bufferId = str2double(BatchOptLoc.Destination{1}(end));
+            if strcmp(hObject.Tag, 'croptoBtn')
+                bufferId = obj.mibModel.maxId;
+                for i=1:obj.mibModel.maxId-1
+                    if strcmp(obj.mibModel.I{i}.meta('Filename'), 'none.tif')
+                        bufferId = i;
+                        break;
+                    end
+                end
+                prompts = {'Enter the destination buffer:'};
+                defAns = {arrayfun(@(x) {num2str(x)}, 1:obj.mibModel.maxId)};
+                defAns{1}(end+1) = {bufferId};
+                title = 'Crop dataset to';
+                answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
+                if isempty(answer); return; end
+                bufferId = str2double(answer{1});
+                
                 % copy dataset to the destination buffer
                 obj.mibModel.mibImageDeepCopy(bufferId, obj.mibModel.Id);
             else
                 bufferId = obj.mibModel.Id;
             end
             
-            cropDim = str2num(BatchOptLoc.Time); %#ok<ST2NM>
-            tMin = min(cropDim);
-            tMax = max(cropDim);
-            
-            crop_factor = [crop_factor tMin tMax-tMin+1];
+            crop_factor = [crop_factor obj.roiPos{1}(7) obj.roiPos{1}(8)-obj.roiPos{1}(7)+1];
             obj.mibModel.I{bufferId}.disableSelection = obj.mibModel.preferences.disableSelection;  % should be before cropDataset
             result = obj.mibModel.I{bufferId}.cropDataset(crop_factor);
             if result == 0; return; end
@@ -457,32 +311,21 @@ classdef mibCropController  < handle
             log_text = ['ImCrop: [x1 y1 dx dy z1 dz t1 dt]: [' num2str(crop_factor) ']'];
             obj.mibModel.I{bufferId}.updateImgInfo(log_text);
 
+%             
+%             if strcmp(get(hObject, 'tag'), 'croptoBtn')
+% 
+%             else
+%                 obj.updateWidgets();
+%             end
             eventdata = ToggleEventData(bufferId);  
             notify(obj.mibModel, 'newDataset', eventdata);  % notify newDataset with the index of the dataset
-            
-            if strcmp(BatchOptLoc.Destination{1}, sprintf('Container %d', obj.mibModel.Id))
+            if ~strcmp(hObject.Tag, 'croptoBtn')
                 eventdata = ToggleEventData(1);
                 notify(obj.mibModel, 'plotImage', eventdata);
             end
             
-            % do not update widgets for the batch mode
-            if ~isempty(obj.View); obj.updateWidgets(); end
-            
-            % for batch need to generate an event and send the BatchOptLoc
-            % structure with it to the macro recorder / mibBatchController
-            if BatchOptLoc.Interactive
-                BatchOptLoc.Interactive = false;
-                BatchOptLoc.Manual = true;
-                BatchOptLoc.Width = sprintf('%d:%d', crop_factor(1), crop_factor(1)+crop_factor(3)-1);
-                BatchOptLoc.Height = sprintf('%d:%d', crop_factor(2), crop_factor(2)+crop_factor(4)-1);
-                BatchOptLoc.Depth = sprintf('%d:%d', crop_factor(5), crop_factor(5)+crop_factor(6)-1);
-                BatchOptLoc.Time = sprintf('%d:%d', crop_factor(7), crop_factor(7)+crop_factor(8)-1);
-            end
-            if BatchOptLoc.ROI
-                BatchOptLoc.ROI = false;
-                BatchOptLoc.Manual = true;
-            end
-            obj.returnBatchOpt(BatchOptLoc);
+            %obj.closeWindow();
+            obj.updateWidgets();
         end
         
     end
