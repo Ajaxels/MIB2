@@ -20,8 +20,7 @@ function menuDatasetSlice_Callback(obj, parameter)
 %
 % Updates
 % 28.03.2018, IB added insert an empty slice
-
-global mibPath;
+% 20.05.2019, updated for the batch mode
 
 % check for the virtual stacking mode and close the controller
 if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
@@ -34,104 +33,16 @@ end
 switch parameter
     case {'copySlice', 'swapSlice'}
         if strcmp(parameter, 'swapSlice')
-            modeIndex = 3;
-            textString1 = 'Index or indices of the source slice(s):';
-            textString2 = 'Index or indices of the destination slice(s):';
+            obj.mibModel.copySwapSlice([],[],'swap');
         else
-            modeIndex = 1;
-            textString1 = 'Index of the source slice:';
-            textString2 = 'Index of the destination slice (use 0 to insert the slice at the end of the dataset):';
-        end
-        currentSlice = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
-        maxSlice = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
-        prompt = {'Replace or insert slice at the destination:', textString1, textString2};
-        defAns = {{'Replace','Insert','Swap', modeIndex}, num2str(currentSlice), num2str(min([currentSlice+1 maxSlice]))};
-        mibInputMultiDlgOptions.Title = sprintf('Please enter the slice numbers (1-%d)', maxSlice);
-        mibInputMultiDlgOptions.TitleLines = 2;
-        mibInputMultiDlgOptions.PromptLines = [1, 1, 2];
-        
-        answer = mibInputMultiDlg({obj.mibPath}, prompt, defAns, 'Copy slice', mibInputMultiDlgOptions);
-        if isempty(answer); return; end
-        
-        if isnan(str2double(answer{2})) || isnan(str2double(answer{3}))
-            errordlg(sprintf('!!! Error !!!\n\nWrong number!'));
-            return;
-        end
-        
-        switch answer{1}
-            case 'Replace'
-                orient = obj.mibModel.I{obj.mibModel.Id}.orientation;
-                result = obj.mibModel.I{obj.mibModel.Id}.copySlice(str2num(answer{2}), str2num(answer{3}), orient); %#ok<ST2NM>
-                if result == 0; return; end
-            case 'Insert'
-                getDataOpt.blockmodeSwitch = 0;
-                img = cell2mat(obj.mibModel.getData2D('image', str2double(answer{2}), NaN, NaN, getDataOpt));
-                if isKey(obj.mibModel.I{obj.mibModel.Id}.meta, 'SliceName')
-                    SliceName = obj.mibModel.I{obj.mibModel.Id}.meta('SliceName');     
-                    meta = containers.Map;
-                    SliceName = SliceName{str2double(answer{2})};
-                    [~,fn,ext] = fileparts(SliceName);
-                    SliceName = [fn '_copy' ext];
-                    meta('SliceName') = cellstr(SliceName);
-                else
-                    meta = containers.Map;
-                end
-                obj.mibModel.I{obj.mibModel.Id}.insertSlice(img, str2double(answer{3}), meta);
-                notify(obj.mibModel, 'newDataset');  % notify newDataset 
-            case 'Swap'
-                orient = obj.mibModel.I{obj.mibModel.Id}.orientation;
-                result = obj.mibModel.I{obj.mibModel.Id}.swapSlices(str2num(answer{2}), str2num(answer{3}), orient); %#ok<ST2NM>
-                if result == 0; return; end
+            obj.mibModel.copySwapSlice([],[],'replace');
         end
     case 'insertSlice'
-        currentSlice = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
-        maxSlice = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
-        imgClass = class(obj.mibModel.I{obj.mibModel.Id}.img{1}(1));
-        maxIntValue = intmax(imgClass);
-        prompt = {'Destination index (use 0 to insert a slice into the end of the dataset):', sprintf('Intensity of the color (0 for black-%d for white)', maxIntValue)};
-        defAns = {num2str(currentSlice), num2str(maxIntValue)};
-        
-        mibInputMultiDlgOptions.Title = sprintf('Please enter the slice number (1-%d) and intensity of the color', maxSlice);
-        mibInputMultiDlgOptions.TitleLines = 2;
-        mibInputMultiDlgOptions.PromptLines = [2, 1];
-        answer = mibInputMultiDlg({obj.mibPath}, prompt, defAns, 'Copy slice', mibInputMultiDlgOptions);
-        if isempty(answer); return; end
-        
-        if isnan(str2double(answer{1})) || isnan(str2double(answer{2}))
-            errordlg(sprintf('!!! Error !!!\n\nWrong number!'));
-            return;
-        end
-        
-        getDataOpt.blockmodeSwitch = 0;
-        [height, width, colors] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', NaN, NaN, getDataOpt);
-        img = zeros([height, width, colors], imgClass) + str2double(answer{2});
-        obj.mibModel.I{obj.mibModel.Id}.insertSlice(img, str2double(answer{1}));
-        notify(obj.mibModel, 'newDataset');  % notify newDataset 
+        obj.mibModel.insertEmptySlice();
     case 'deleteSlice'
-        currentSlice = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
-        maxSlice = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
-
-        answer=mibInputDlg({mibPath}, sprintf('Please enter slice number(s) to delete (1:%d):\nfor example: 1,5,10,15:20', maxSlice), ...
-            'Enter slice number', num2str(currentSlice));
-        if isempty(answer); return; end
-        
-        orient = obj.mibModel.I{obj.mibModel.Id}.orientation;
-        result = obj.mibModel.I{obj.mibModel.Id}.deleteSlice(str2num(answer{1}), orient); %#ok<ST2NM>
-        if result == 0; return; end
-        notify(obj.mibModel, 'newDataset');  % notify newDataset
+        obj.mibModel.deleteSlice(4);
     case 'deleteFrame'
-        currentSlice = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1);
-        maxSlice = obj.mibModel.I{obj.mibModel.Id}.time;
-        if maxSlice == 1; return; end
-        
-        answer=mibInputDlg({mibPath}, sprintf('Please enter frame number(s) to delete (1:%d):', maxSlice), ...
-            'Enter slice number', num2str(currentSlice));
-        if isempty(answer); return; end
-
-        orient = 5;
-        result = obj.mibModel.I{obj.mibModel.Id}.deleteSlice(str2num(answer{1}), orient); %#ok<ST2NM>
-        if result == 0; return; end
-        notify(obj.mibModel, 'newDataset');  % notify newDataset with the index of the dataset
+        obj.mibModel.deleteSlice(5);
 end
-notify(obj.mibModel, 'plotImage');
+
 end

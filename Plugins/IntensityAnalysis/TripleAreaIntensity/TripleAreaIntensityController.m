@@ -238,7 +238,7 @@ classdef TripleAreaIntensityController < handle
             obj.mibModel.mibDoBackup('selection', 1);
             obj.mibModel.I{obj.mibModel.Id}.hLabels.clearContents();  % remove annotations from the model
             
-            warning off MATLAB:xlswrite:AddSheet
+            warning('off', 'MATLAB:xlswrite:AddSheet');
             % Sheet 1
             s = {'TripleAreaIntensity: triple material intensity analysis and ratio calculation'};
             s(2,1) = {'Image directory:'};

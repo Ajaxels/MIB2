@@ -30,7 +30,7 @@ function varargout = mibCropObjectsGUI(varargin)
 % Updates
 % 07.03.2016, IB, updated for 4D datasets
 
-% Last Modified by GUIDE v2.5 05-Dec-2016 17:21:26
+% Last Modified by GUIDE v2.5 07-Aug-2019 10:26:14
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -92,16 +92,32 @@ end
 
 % --- Executes on button press in distanceRadio.
 function targetPanelRadio_Callback(hObject, eventdata, handles)
+global mibPath;
+
 handles = guidata(hObject);
 hObject = eventdata.NewValue;
 tagId = get(hObject, 'tag');
 
 switch tagId
     case 'fileRadio'
+        updateBatchParameters(handles.formatPopup, eventdata, handles); 
         set(handles.formatPopup, 'enable','on');
         set(handles.selectDirBtn, 'enable','on');
         set(handles.dirEdit, 'enable','on');
     case 'matlabRadio'
+        notOk = 1;
+        while notOk
+            answer = mibInputDlg({mibPath}, sprintf('Enter variable name template for export to Matlab:\n(it should start with a letter)'),'Variable name:', handles.winController.outputVar);
+            if isempty(answer); notOk=0; return; end
+            if ~isnan(str2double(answer{1}(1)))
+                uiwait(errordlg(sprintf('!!! Error !!!\n\nThe first character can not be numerical'), 'Wrong variable name!'));
+            else
+                notOk = 0;
+                handles.winController.outputVar = answer{1};
+            end
+        end
+        
+        handles.winController.updateBatchParameters('CropObjectsTo', 'Crop to Matlab');
         set(handles.formatPopup, 'enable','off');
         set(handles.selectDirBtn, 'enable','off');
         set(handles.dirEdit, 'enable','off');
@@ -151,18 +167,64 @@ end
 
 % --- Executes on button press in cropModelCheck.
 function cropModelCheck_Callback(hObject, eventdata, handles)
-if handles.cropModelCheck.Value == 1 && handles.fileRadio.Value == 1
-    handles.modelFormatPopup.Enable = 'on';
-else
-    handles.modelFormatPopup.Enable = 'off';
+handles.modelFormatPopup.Enable = 'off';
+if handles.fileRadio.Value == 1
+    if handles.cropModelCheck.Value == 1
+        handles.modelFormatPopup.Enable = 'on';
+        updateBatchParameters(handles.modelFormatPopup, eventdata, handles);
+    else
+        handles.winController.updateBatchParameters('CropObjectsIncludeModel', 'Do not include');
+    end
+else    % export to Matlab
+    if handles.cropModelCheck.Value == 1
+        handles.winController.updateBatchParameters('CropObjectsIncludeModel', 'Crop to Matlab');
+    else
+        handles.winController.updateBatchParameters('CropObjectsIncludeModel', 'Do not include');
+    end
 end
 end
 
 % --- Executes on button press in cropMaskCheck.
 function cropMaskCheck_Callback(hObject, eventdata, handles)
-if handles.cropMaskCheck.Value == 1 && handles.fileRadio.Value == 1
-    handles.maskFormatPopup.Enable = 'on';
-else
-    handles.maskFormatPopup.Enable = 'off';
+handles.maskFormatPopup.Enable = 'off';
+if handles.fileRadio.Value == 1
+    if handles.cropMaskCheck.Value == 1
+        handles.maskFormatPopup.Enable = 'on';
+        updateBatchParameters(handles.maskFormatPopup, eventdata, handles);
+    else
+        handles.winController.updateBatchParameters('CropObjectsIncludeMask', 'Do not include');
+    end
+else    % export to Matlab
+    if handles.cropMaskCheck.Value == 1
+        handles.winController.updateBatchParameters('CropObjectsIncludeMask', 'Crop to Matlab');
+    else
+        handles.winController.updateBatchParameters('CropObjectsIncludeMask', 'Do not include');
+    end
 end
+end
+
+
+% --- Executes on selection change in formatPopup.
+function updateBatchParameters(hObject, eventdata, handles)
+switch hObject.Tag
+    case 'formatPopup'
+        type = 'CropObjectsTo';
+        newValue = hObject.String{hObject.Value};
+    case 'modelFormatPopup'
+        type = 'CropObjectsIncludeModel';
+        newValue = hObject.String{hObject.Value};
+    case 'maskFormatPopup'
+        type = 'CropObjectsIncludeMask';
+        newValue = hObject.String{hObject.Value};
+    case 'SingleMaskObjectPerDataset'
+        type = 'SingleMaskObjectPerDataset';
+        newValue = logical(hObject.Value);
+    case 'marginXYEdit'
+        type = 'CropObjectsMarginXY';
+        newValue = hObject.String;
+    case 'marginZEdit'
+        type = 'CropObjectsMarginZ';
+        newValue = hObject.String;
+end
+handles.winController.updateBatchParameters(type, newValue);
 end

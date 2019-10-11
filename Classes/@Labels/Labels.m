@@ -564,6 +564,159 @@ classdef Labels < matlab.mixin.Copyable
             end
         end
         
+        function saveToFile(obj, filename, options)
+            % function saveToFile(obj, filename, options)
+            % save Labels to a file
+            %
+            % Parameters:
+            % filename: full path to file
+            % options: a structure with optional paramters
+            %  .format - a char string
+            %       'ann' - MIB annotation format
+            %       'landmarksAscii' - amira landmarks in the ascii format
+            %       'landmarksBin' - amira landmarks as binaries
+            %       'psi' - PSI format ASCII
+            %       'xls' - Microsoft Excel format
+            %  .showWaitbar - [@em optional] a number 1-show; 0-do not show the waitbar
+            %  .outputDir - [@em optional] output directory
+            %  .convertToUnits - [@em optional] a logical, or not convert pixel coordinates to the units requires bounding box and pixSize information
+            %  .boundingBox - a matrix [x1 width y1 height z1 depth],  required for conversion to units
+            %  .pixSize - a MIB structure with pixel sizes
+            %  .labelText - [@em optional], instead of obj.labelText save provided labelText
+            %  .labelPosition - [@em optional], instead of obj.labelPosition save provided labelPosition
+            %  .labelValue - [@em optional], instead of obj.labelValue save provided labelValue
+            
+            if nargin < 3; options = struct(); end
+            if nargin < 2; filename = []; end
+            if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1; end
+            if ~isfield(options, 'outputDir'); options.outputDir = ''; end
+            if ~isfield(options, 'convertToUnits'); options.convertToUnits = 0; end
+            
+            if options.convertToUnits   % check for required bounding box and pixSize 
+                if ~isfield(options, 'boundingBox') || ~isfield(options, 'pixSize') 
+                    errordlg(sprintf('!!! Error !!!\n\nConversion to units requires additional parameters: boundingBox and pixSize structure'), 'Not enough parameters!');
+                    return;
+                end
+            end
+            
+            % obtain filename if it is not provided
+            if isempty(filename)
+                Filters = {'*.ann;',  'Matlab format (*.ann)';...
+                           '*.landmarksAscii',   'Amira landmarks ASCII (*.landmarksAscii)';...
+                           '*.landmarksBin',   'Amira landmarks BINARY(*.landmarksBin)';...
+                           '*.psi',   'PSI format ASCII(*.psi)';...
+                           '*.xls',   'Excel format (*.xls)'; };
+                
+                [filename, path, FilterIndex] = uiputfile(Filters, 'Save annotations...', options.outputDir); %...
+                if isequal(filename,0); return; end % check for cancel
+                
+                filename = fullfile(path, filename);
+                
+                switch Filters{FilterIndex, 2}
+                    case 'Matlab format (*.ann)'
+                        options.format = 'ann';
+                    case 'Amira landmarks ASCII (*.landmarksAscii)'
+                        options.format = 'landmarksAscii';
+                    case 'Amira landmarks BINARY(*.landmarksBin)'
+                        options.format = 'landmarksBin';
+                    case 'PSI format ASCII(*.psi)'
+                         options.format = 'psi';
+                    case 'Excel format (*.xls)'
+                        options.format = 'xls';
+                end
+            end
+            if options.showWaitbar; wb = waitbar(0, 'Please wait...', 'Name', 'Saving Annotations', 'WindowStyle','modal'); end
+            % obtain format if it is not provided
+            if isempty(options.format)
+                [path, fn, ext] = fileparts(filename);
+                options.format = ext(2:end);
+            end
+            
+            if ~isfield(options, 'labelText')
+                labelText = obj.labelText;  %#ok<*PROPLC>
+            else
+                labelText = options.labelText;
+            end
+            if ~isfield(options, 'labelPosition')
+                labelPosition = obj.labelPosition; 
+            else
+                labelPosition = options.labelPosition;
+            end
+            if ~isfield(options, 'labelValue')
+                labelValue = obj.labelValue;
+            else
+                labelValue = options.labelValue;
+            end
+            
+            switch options.format
+                case 'ann'
+                    save(filename, 'labelText', 'labelValue', 'labelPosition', '-mat', '-v7.3');
+                case 'xls'
+                    warning('off', 'MATLAB:xlswrite:AddSheet');
+                    % Sheet 1
+                    s = {'Annotations export'};
+                    s(3,1) = {'Annotation'};
+                    s(4,1) = {'Text'};
+                    s(4,2) = {'Value'};
+                    s(3,4) = {'Coordinates'};
+                    s(4,3) = {'Z'};
+                    s(4,4) = {'X'};
+                    s(4,5) = {'Y'};
+                    s(4,6) = {'T'};
+                    roiId = 4;
+                    for i=1:numel(labelText)
+                        s(roiId+i, 1) = labelText(i);
+                        s{roiId+i, 2} = labelValue(i);
+                        s{roiId+i, 3} = labelPosition(i,1);
+                        s{roiId+i, 4} = labelPosition(i,2);
+                        s{roiId+i, 5} = labelPosition(i,3);
+                        s{roiId+i, 6} = labelPosition(i,4);
+                    end
+                    if options.showWaitbar; waitbar(0.3, wb); end
+                    xlswrite2(filename, s, 'Sheet1', 'A1');
+                    if options.showWaitbar; waitbar(1, wb); end
+                case 'psi'
+                    %recalcCoordinates = questdlg(sprintf('Recalculate annotations with respect to the current bounding box or save as they are?'),...
+                    %    'Recalculate coordinates', 'Recalculate', 'Save as they are', 'Recalculate');
+                    
+                    % rearrange to [x, y, z] format from [z, x, y]
+                    labelPositionsOut = [labelPosition(:,2) labelPosition(:,3) labelPosition(:,1)];
+                    
+                    if options.convertToUnits      % recalculate annotations to the real world coordinates
+                        bb = options.boundingBox; 
+                        labelPositionsOut(:, 1) = labelPositionsOut(:, 1)*options.pixSize.x + bb(1) - options.pixSize.x/2;
+                        labelPositionsOut(:, 2) = labelPositionsOut(:, 2)*options.pixSize.y + bb(3) - options.pixSize.y/2;
+                        labelPositionsOut(:, 3) = labelPositionsOut(:, 3)*options.pixSize.z + bb(5) - options.pixSize.z;
+                    end
+                    options.format = 'ascii';
+                    options.overwrite = 1;
+                    if options.showWaitbar; waitbar(0.3, wb); end
+                    points2psi(filename, labelPositionsOut, labelText, labelValue, options);
+                    if options.showWaitbar; waitbar(1, wb); end
+                case {'landmarksBin', 'landmarksAscii'}
+                    % rearrange to [x, y, z] format from [z, x, y]
+                    labelPositionsOut = [labelPosition(:,2) labelPosition(:,3) labelPosition(:,1)];
+                    
+                    if options.convertToUnits      % recalculate annotations to the real world coordinates
+                        bb = options.boundingBox; 
+                        labelPositionsOut(:, 1) = labelPositionsOut(:, 1)*options.pixSize.x + bb(1) - options.pixSize.x/2;
+                        labelPositionsOut(:, 2) = labelPositionsOut(:, 2)*options.pixSize.y + bb(3) - options.pixSize.y/2;
+                        labelPositionsOut(:, 3) = labelPositionsOut(:, 3)*options.pixSize.z + bb(5) - options.pixSize.z;
+                    end
+                    if options.showWaitbar; waitbar(0.3, wb); end
+                    if strcmp(options.format, 'landmarksAscii')
+                        options.format = 'ascii';
+                    else
+                        options.format = 'binary';
+                    end
+                    options.overwrite = 1;
+                    points2amiraLandmarks(filename, labelPositionsOut, options);
+                    if options.showWaitbar; waitbar(1, wb); end
+            end
+            fprintf('Saving annotations to %s: done!\n', filename);
+            if options.showWaitbar; delete(wb); end
+        end
+        
         function sortLabels(obj, sortBy, direction)
             % function sortLabels(obj, sortBy, direction)
             % Resort the list of annotation labels

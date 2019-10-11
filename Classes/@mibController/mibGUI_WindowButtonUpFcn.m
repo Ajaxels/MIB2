@@ -35,11 +35,11 @@ if iscell(obj.mibView.brushSelection)  % return after movement of the brush tool
     
     selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
     
-    if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial
         currModel = cell2mat(obj.mibModel.getData2D('model', NaN, NaN, NaN, getDataOptions));
         obj.mibView.brushSelection{1}(currModel~=selcontour) = 0;
     end
-    if obj.mibView.handles.mibMaskedAreaCheck.Value == 1
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMask
         mask = cell2mat(obj.mibModel.getData2D('mask', NaN, NaN, NaN, getDataOptions));
         obj.mibView.brushSelection{1}(mask ~= 1) = 0;
     end

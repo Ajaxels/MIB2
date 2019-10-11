@@ -24,7 +24,7 @@ if isdir(myPath)
     obj.mibModel.myPath = myPath;
     obj.updateFilelist();
     drives = obj.mibView.handles.mibDrivePopup.String;
-    if isa(drives, 'char'); drives = cellstr(drives); end;
+    if isa(drives, 'char'); drives = cellstr(drives); end
     
     if ispc()
         for i = 1:numel(drives)

@@ -85,10 +85,10 @@ if size(options.ChunkSize, 2) ~= noLevels   % when chunk size is defined for one
     options.ChunkSize = repmat(options.ChunkSize,[1, noLevels]);
 end
 
-if options.showWaitbar;    waitbar(0.1, wb); end;
+if options.showWaitbar;    waitbar(0.1, wb); end
 h5Filename = fullfile(path, [baseName '.h5']);
 if options.t(1) == 1
-    if exist(h5Filename, 'file')==2; delete(h5Filename); end;
+    if exist(h5Filename, 'file')==2; delete(h5Filename); end
     
     % % write header
     % datasetName = sprintf('__DATA_TYPES__', colId-1);

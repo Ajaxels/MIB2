@@ -75,6 +75,12 @@ else
     end
 end
 FigPos(3:4)=[FigWidth FigHeight];
-hObject.OuterPosition = FigPos;
+
+try
+    hObject.OuterPosition = FigPos;
+catch
+    FigPos(2) = FigPos(2) - 32;
+    hObject.Position = FigPos;
+end
 hObject.Units = OldUnits;
 end

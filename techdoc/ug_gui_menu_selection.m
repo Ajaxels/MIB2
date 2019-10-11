@@ -3,12 +3,13 @@
 % of three main segmentation layers (|Model, Selection, Mask|) which can be
 % used in combibation with other layer. See more about segmentation layers
 % in <ug_gui_data_layers.html the Data layers of Microscopy Image Browser section>.
-% 
-% <<images\menuSelection.png>>
-% 
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
 %
+%%
+% 
+% <<images\menuSelection.png>>
+% 
 %% Selection to Buffer
 % Allows to Copy (|Ctrl+C| shortcut) the |Selection| of the currently shown slice to a buffer, which later can be pasted to any other slice with the |Ctrl+V| shortcut or to all slices (|Ctrl+Shift+V|).
 % In addition there is an option to clear the buffer

@@ -50,7 +50,25 @@ if nargin < 2;     connImaris = []; end
 % https://se.mathworks.com/matlabcentral/fileexchange/24330-patch-normals
 if ~isfield(surface, 'normals')
     if ~isempty(which('patchnormals'))
-        surface.normals = -patchnormals(surface);
+        %surface.normals = patchnormals(surface);
+        
+        % the code below is a simplified version by Serge from comments for
+        % https://se.mathworks.com/matlabcentral/fileexchange/24330-patch-normals
+        A = surface.faces(:,1);
+        B = surface.faces(:,2);
+        C = surface.faces(:,3);
+        
+        %face normals
+        n = cross(surface.vertices(A,:)-surface.vertices(B,:),surface.vertices(C,:)-surface.vertices(A,:)); %area weighted
+        
+        %vertice normals
+        N = zeros(size(surface.vertices)); %init vertix normals
+        for i = 1:size(surface.faces,1) %step through faces (a vertex can be reference any number of times)
+            N(A(i),:) = N(A(i),:)+n(i,:); %sum face normals
+            N(B(i),:) = N(B(i),:)+n(i,:);
+            N(C(i),:) = N(C(i),:)+n(i,:);
+        end
+        surface.normals = -N;
     else
         % alternative method to calculate normals to make a smooth surface
         vMean = mean(surface.vertices, 1);

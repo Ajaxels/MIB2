@@ -119,8 +119,9 @@ if options.roiId >= 0
             mask = mask(max([1 bb(3)]):bb(4), max([1 bb(1)]):bb(2));
             mask = repmat(mask,[1, 1, size(dataset{roiId2},3), size(dataset{roiId2},4)]);
             
+            setTime = options.t(1);
             for timePnt = 1:size(dataset{roiId2}, timeDimIndex)
-                options.t = [timePnt, timePnt];
+                options.t = [setTime+timePnt-1, setTime+timePnt-1];
                 sliceTemp = obj.I{options.id}.getData(type, orient, col_channel, options);     % get current dataset
                 if typeIsImage
                     datasetTemp = dataset{roiId2}(:,:,:,:,timePnt);

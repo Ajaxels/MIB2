@@ -58,6 +58,25 @@ if ~isempty(Font)
     end
 end
 
+% adding context menu for findMinBtn
+handles.findMinBtn_cm = uicontextmenu('Parent',handles.mibImageAdjustmentGUI);
+uimenu(handles.findMinBtn_cm, 'Label', 'Exclude 0%', 'Callback', {@findMinBtn_cm_Callback, 0});
+uimenu(handles.findMinBtn_cm, 'Label', 'Exclude 0.5%', 'Callback', {@findMinBtn_cm_Callback, 0.5});
+uimenu(handles.findMinBtn_cm, 'Label', 'Exclude 1%', 'Callback', {@findMinBtn_cm_Callback, 1});
+uimenu(handles.findMinBtn_cm, 'Label', 'Exclude 2.5%', 'Callback', {@findMinBtn_cm_Callback, 2.5});
+uimenu(handles.findMinBtn_cm, 'Label', 'Exclude 5%', 'Callback', {@findMinBtn_cm_Callback, 5});
+uimenu(handles.findMinBtn_cm, 'Label', 'Custom value', 'Callback', {@findMinBtn_cm_Callback, NaN});
+handles.findMinBtn.UIContextMenu = handles.findMinBtn_cm;
+
+handles.findMaxBtn_cm = uicontextmenu('Parent',handles.mibImageAdjustmentGUI);
+uimenu(handles.findMaxBtn_cm, 'Label', 'Exclude 0%', 'Callback', {@findMaxBtn_cm_Callback, 0});
+uimenu(handles.findMaxBtn_cm, 'Label', 'Exclude 0.5%', 'Callback', {@findMaxBtn_cm_Callback, 0.5});
+uimenu(handles.findMaxBtn_cm, 'Label', 'Exclude 1%', 'Callback', {@findMaxBtn_cm_Callback, 1});
+uimenu(handles.findMaxBtn_cm, 'Label', 'Exclude 2.5%', 'Callback', {@findMaxBtn_cm_Callback, 2.5});
+uimenu(handles.findMaxBtn_cm, 'Label', 'Exclude 5%', 'Callback', {@findMaxBtn_cm_Callback, 5});
+uimenu(handles.findMaxBtn_cm, 'Label', 'Custom value', 'Callback', {@findMaxBtn_cm_Callback, NaN});
+handles.findMaxBtn.UIContextMenu = handles.findMaxBtn_cm;
+
 % resize all elements x1.25 times for macOS
 mibRescaleWidgets(handles.mibImageAdjustmentGUI);
 % 
@@ -145,10 +164,48 @@ function adjHelpBtn_Callback(hObject, eventdata, handles)
 handles.winController.adjHelpBtn_Callback();
 end
 
+function findMinBtn_cm_Callback(hObject, eventdata, threshold)
+% function findMinBtn_cm_Callback(hObject, eventdata, threshold)
+% callback for popup menu of the findMinBtn
+% Properties:
+% threshold: [number], that indicates %% of points to be excluded from
+% automatic calculation of min
+global mibPath;
+
+handles = guidata(hObject);
+if isnan(threshold)
+    prompt = {'Input %% (0-100) of data points to be excluded from the blacks:'};
+    title = 'Exclude %%';
+    answer = mibInputDlg({mibPath}, prompt, title, '1');
+    if size(answer) == 0; return; end
+    threshold = str2double(answer);
+end
+colorCh = [];
+handles.winController.findMinBtn_Callback(colorCh, threshold);
+end
 
 function findMinBtn_Callback(hObject, eventdata, handles)
 % --- Executes on button press in findMinBtn.
 handles.winController.findMinBtn_Callback();
+end
+
+function findMaxBtn_cm_Callback(hObject, eventdata, threshold)
+% function findMaxBtn_cm_Callback(hObject, eventdata, threshold)
+% callback for popup menu of the findMaxBtn
+% Properties:
+% threshold: [number], that indicates %% of points to be excluded from
+% automatic calculation of max
+global mibPath;
+handles = guidata(hObject);
+if isnan(threshold)
+    prompt = {'Input %% (0-100) of data points to be excluded from the whites:'};
+    title = 'Exclude %%';
+    answer = mibInputDlg({mibPath}, prompt, title, '1');
+    if size(answer) == 0; return; end
+    threshold = str2double(answer);
+end
+colorCh = [];
+handles.winController.findMaxBtn_Callback(colorCh, threshold);
 end
 
 function findMaxBtn_Callback(hObject, eventdata, handles)

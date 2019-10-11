@@ -21,6 +21,8 @@ classdef mibImage < matlab.mixin.Copyable
         % a vector [min, max] with minimal and maximal coordinates of
         % the axes Y of the 'mibView.handles.mibImageAxes' axes; use @code mibModel.getAxesLimits() @endcode to
         % read this property
+        BioFormatsMemoizerMemoDir
+        % path to directory where BioFormats Memoizer is storing memo files
         blockModeSwitch
         % a variable to hold a status of the block mode (mibView.handles.toolbarBlockModeSwitch), 1 - enabled, 0 - disabled
         colors
@@ -39,6 +41,10 @@ classdef mibImage < matlab.mixin.Copyable
         % default value for the annotations
         disableSelection
         % a switch (0/1) to enable or not the selection, mask, model layers
+        fixSelectionToMask
+        % a switch indicating the value of the obj.mibView.handles.mibMaskedAreaCheck
+        fixSelectionToMaterial
+        % a switch indicating the value of the obj.mibView.handles.mibSegmSelectedOnlyCheck
         height
         % image height, px
         hLabels
@@ -53,6 +59,8 @@ classdef mibImage < matlab.mixin.Copyable
         % a cell array to keep the 'Image' layer. The layer img{1} has
         % image in full resolution, img{2} - bin2, img{3} - bin4
         % @note The 'Image' layer dimensions: @code [1:height, 1:width, 1:colors 1:depth, 1:time] @endcode
+        lastSegmSelection
+        % a vector with 2 elements of two previously selected materials for use with the 'e' key shortcut
         lutColors
         % a matrix with LUT colors [1:colorChannel, R G B], (0-1)
         magFactor
@@ -120,7 +128,8 @@ classdef mibImage < matlab.mixin.Copyable
         % @li .units - physical units for x, y, z. Possible values: [m, cm, mm, um, nm]
         selectedAddToMaterial
         % index of selected Add to Material, where the Selection layer
-        % should be targeted, assigned in mibView.handles.mibSegmentationTable
+        % should be targeted, assigned in the AddTo column of the mibView.handles.mibSegmentationTable
+        % @b 1 - Mask; @b 2 - Exterior; @b 3 - first material of the model, @b 4 - second material etc
         selectedColorChannel
         % color channel selected in the Color channel combo box of the
         % Selection panel. 0 - all colors, 1, 2 - 1st, 2nd ...
@@ -146,6 +155,8 @@ classdef mibImage < matlab.mixin.Copyable
         % @li (5,[min max]) - t - time point
         time
         % number of time points in the dataset
+        useLUT
+        % use or not LUT for visualization of image, a number @b 0 - do not use; @b 1 - use a status of mibCpontroller.mibView.handles.mibLutCheckbox.Value
         viewPort    
         % a structure with viewing parameters:
         % @li .min - a vector with minimal value for intensity stretching for each color channel
@@ -198,7 +209,9 @@ classdef mibImage < matlab.mixin.Copyable
 
         output = addColorChannel(obj, img, channelId, lutColors)        % Add a new color channel to the existing dataset
         
-        output = addFrameToImage(obj, options)        %  Add a frame around the dataset
+        output = addFrameToImage(obj, BatchOpt)        %  Add a frame around the dataset
+        
+        bbShiftXY = addStack(obj, I2, shiftX, shiftY, options)  % Add I2 to mibImage and shift stacks according to shiftX, shiftY translation coefficients
         
         clearContents(obj, img, metaIn, disableSelection)        % set all elements of the class to default values
         
@@ -208,7 +221,7 @@ classdef mibImage < matlab.mixin.Copyable
         
         closeVirtualDataset(obj) % Close opened virtual dataset readers. Used in the 'closeVirtualDatasets' % event of the mibImage class
         
-        status = convertImage(obj, format)  % Convert image to specified format: 'grayscale', 'truecolor', 'indexed' and 'uint8', 'uint16', 'uint32' class
+        status = convertImage(obj, format, options)  % Convert image to specified format: 'grayscale', 'truecolor', 'indexed' and 'uint8', 'uint16', 'uint32' class
         
         convertModel(obj, type)        % Convert model from obj.modelType==63 to obj.modelType==255 and other way around
         
@@ -218,17 +231,17 @@ classdef mibImage < matlab.mixin.Copyable
         
         [x, y, z] = convertUnitsToPixels(obj, x, y, z)  % convert coordinate in physical units to pixels
         
-        copyColorChannel(obj, channel1, channel2)        % Copy intensity from the first color channel (@em channel1) to the position of the second color channel (@em channel2)
+        copyColorChannel(obj, channel1, channel2, options)        % Copy intensity from the first color channel (@em channel1) to the position of the second color channel (@em channel2)
         
-        result = copySlice(obj, sliceNumberFrom, sliceNumberTo, orient)        % Copy specified slice from one part of the dataset to another
+        result = copySlice(obj, sliceNumberFrom, sliceNumberTo, orient, options)        % Copy specified slice from one part of the dataset to another
         
         createModel(obj, model_type, modelMaterialNames)        % Create an empty model: allocate memory for a new model
         
         result = cropDataset(obj, cropF)        % Crop image and all corresponding layers of the opened dataset
         
-        deleteColorChannel(obj, channel1)        % Delete specified color channel from the dataset
+        deleteColorChannel(obj, channel1, options)       % Delete specified color channel from the dataset
         
-        result = deleteSlice(obj, sliceNumber, orient)        % Delete specified slice from the dataset
+        result = deleteSlice(obj, sliceNumber, orient, options)        % Delete specified slice from the dataset
         
         generateModelColors(obj)        % Generate list of colors for materials of a model
         
@@ -252,15 +265,17 @@ classdef mibImage < matlab.mixin.Copyable
         
         bb = getROIBoundingBox(obj, roiIndex)        % return the bounding box info for the ROI at the current orientation
         
-        index = getSelectedMaterialIndex(obj)        % return the index of the currently selected material
+        index = getSelectedMaterialIndex(obj, target)      % return the index of the currently selected material
         
         [labelsList, labelValues, labelPositions, indices] = getSliceLabels(obj, sliceNumber, timePoint)        % Get list of labels (mibImage.hLabels) shown at the specified slice
         
-        insertEmptyColorChannel(obj, channel1)        % Insert an empty color channel to the specified position
+        insertEmptyColorChannel(obj, channel1, options)       % Insert an empty color channel to the specified position
         
         insertSlice(obj, img, insertPosition, meta, options)        % Insert a slice or a dataset into the existing volume
         
-        invertColorChannel(obj, channel1)        % Invert color channel of the dataset
+        invertColorChannel(obj, channel1, options)        % Invert color channel of the dataset
+        
+        moveMaskToModelDataset(obj, action_type, options)   % move the mask layer to the model layer
         
         moveMaskToSelectionDataset(obj, action_type, options)        % move the Mask layer to the Selection layer
         
@@ -274,17 +289,23 @@ classdef mibImage < matlab.mixin.Copyable
         
         moveView(obj, x, y, orient)        % Center the image view at the provided coordinates: x, y
         
-        replaceImageColor(obj, type, color_id, channel_id, slice_id, time_pnt)        % replace image intensities in the @em Masked or @em Selected areas with new intensity value
+        replaceImageColor(obj, type, color_id, channel_id, slice_id, time_pnt, options)        % replace image intensities in the @em Masked or @em Selected areas with new intensity value
         
-        rotateColorChannel(obj, channel1)        % Rotate color channel of the dataset
+        rotateColorChannel(obj, channel1, angle, options)        % Rotate color channel of the dataset
+        
+        fnOut = saveImageAsDialog(obj, filename, options)   % save image to a file
+        
+        fnOut = saveMask(obj, filename, options)    % save mask to a file
+        
+        fnOut = saveModel(obj, filename, options)       % save model to a file
         
         result = setData(obj, type, dataset, orient, col_channel, options)        % update contents of the class
         
         result = setPixelIdxList(obj, type, dataset, PixelIdxList, options)      % update dataset using a vector of values and pixel ids
         
-        swapColorChannels(obj, channel1, channel2)        % Swap two color channels of the dataset
+        swapColorChannels(obj, channel1, channel2, options)        % Swap two color channels of the dataset
         
-        result = swapSlices(obj, sliceNumberFrom, sliceNumberTo, orient)  % Swap specified slices 
+        result = swapSlices(obj, sliceNumberFrom, sliceNumberTo, orient, options)  % Swap specified slices 
         
         newMode = switchVirtualStackingMode(obj, newMode, disableSelection)   % switch on/off the virtual stacking mode
         
@@ -293,6 +314,8 @@ classdef mibImage < matlab.mixin.Copyable
         updateBoundingBox(obj, newBB, xyzShift, imgDims)        % Update the bounding box info of the dataset
         
         updateDisplayParameters(obj)        % Update display parameters for visualization (mibImage.viewPort structure)
+        
+        result = updatePixSizeResolution(obj, pixSize)  % Update mibImage.pixelSize, mibImage.meta(''XResolution'') and mibImage.meta(''XResolution'') and mibImage.volren
         
         updateServiceMetadata(obj, metaIn)  % update service metadata of MIB based on obj.img and metaIn
         

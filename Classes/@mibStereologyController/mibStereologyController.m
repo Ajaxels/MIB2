@@ -334,7 +334,7 @@ classdef mibStereologyController < handle
                 delete(fn_out);
                 
                 waitbar(0.98, wb, sprintf('Exporting to Excel\nPlease wait...'));
-                warning off MATLAB:xlswrite:AddSheet;
+                warning('off', 'MATLAB:xlswrite:AddSheet');
                 
                 for t=1:time
                     % Sheet 1

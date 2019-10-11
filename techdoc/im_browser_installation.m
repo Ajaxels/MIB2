@@ -38,14 +38,15 @@
 %% Additional info
 % |im_browser| stores its configuration parameters:
 %
-% * *Windows* in _c:\temp\mib.mat_ or when _c:\temp_ is not available then the configuration parameters can be found in
-% _C:\Users\User-name\AppData\Local\Temp\mib.mat_
-% * *Linux* in the script directory or in the local tmp directory (_/tmp_)
+% * *for Windows* - _C:\Users\Username\Matlab\mib.mat_ or in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
+% The TEMP directory can be found and accessed with |Windows->Start button->%TEMP%| command
+% * *for Linux* - _/home/username/Matlab_ or local TEMP directory
+% * *for MacOS* - _/Users/username/Matlab_ or local TEMP directory
 %
 % The configuration file is automatically created/updated when closing |MIB|.
 %
 % If |MIB| does not start check Matlab path
-% and/or delete _c:\tmp\mib.mat_ file.
+% and/or delete the configuration _mib.mat_ file.
 %
 %
 % *Back to* <im_browser_product_page.html *Index*>

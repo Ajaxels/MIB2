@@ -7,9 +7,11 @@
 % <a href="https://youtu.be/WhpzGMyslZU"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/WhpzGMyslZU</a>
 % </html>
 %
-% <<images\PanelsViewSettingsDisplay.png>>
-%
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*> |*-->*| <ug_panel_view_settings.html *View settings*>
+%
+%%
+%
+% <<images\PanelsViewSettingsDisplay.png>>
 %
 %% Parameters
 % List of widgets:

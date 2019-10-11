@@ -15,23 +15,27 @@ function mibAddIcons(handles)
 % add icons to buttons
 global mibPath;
 
-% on PC path is file://c:/...
+%% Old code for adding icons to buttons, does not work from R2019b, instead
+% changed to CData, see mibController/add icons for buttons section for details
+% on PC path is file://c:/... or //ad.xxxxx.xxx.xx
 % on Mac file:///Volumes/Transcend/...
-if ispc
-    fileText = 'file:/';
-else
-    fileText = 'file://';
-end
 
-btnText = strrep([fileText fullfile(mibPath, 'Resources', 'minus.png')],'\','/'); 
-btnText = ['<html><img src="' btnText '"/></html>']; 
-handles.mibRemoveMaterialBtn.String = btnText;
+% if ispc
+%     if mibPath(1) == '\'; fileText = 'file:'; else; fileText = 'file:/'; end    % check for a installation in the network path \\ad.xxxx
+% else
+%     fileText = 'file://';
+% end
+% 
+% btnText = strrep([fileText fullfile(mibPath, 'Resources', 'minus.png')],'\','/'); 
+% btnText = ['<html><img src="' btnText '"/></html>']; 
+% handles.mibRemoveMaterialBtn.String = btnText;
+% 
+% % add icon to the preview button
+% btnText = strrep([fileText fullfile(mibPath, 'Resources', 'settings.gif')],'\','/'); 
+% btnText = ['<html><img src="' btnText '"/></html>']; 
+% handles.mibBrushPanelInterpolationSettingsBtn.String = btnText;
 
-% add icon to the preview button
-btnText = strrep([fileText fullfile(mibPath, 'Resources', 'settings.png')],'\','/'); 
-btnText = ['<html><img src="' btnText '"/></html>']; 
-handles.mibBrushPanelInterpolationSettingsBtn.String = btnText;
-
+%%
 %jFrame = handles.mibGUI.JavaFrame;
 jFrame = get(handle(handles.mibGUI), 'JavaFrame');
 try
@@ -57,20 +61,22 @@ drawnow;    % set delay
     Item = jFileMenu.getMenuComponent(1);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'omero.png')));
     Item = jFileMenu.getMenuComponent(3);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'chop.png')));
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'protocol.png')));
     Item = jFileMenu.getMenuComponent(4);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'chop.png')));
+    Item = jFileMenu.getMenuComponent(5);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'shuffle.png')));
-    Item = jFileMenu.getMenuComponent(6);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'exportmatlab2.png')));
     Item = jFileMenu.getMenuComponent(7);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'saveas.png')));
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'exportmatlab2.png')));
     Item = jFileMenu.getMenuComponent(8);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'makevideo.png')));
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'saveas.png')));
     Item = jFileMenu.getMenuComponent(9);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'makevideo.png')));
+    Item = jFileMenu.getMenuComponent(10);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'snapshot.png')));
-    Item = jFileMenu.getMenuComponent(11);
+    Item = jFileMenu.getMenuComponent(12);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'render.png')));
-    Item = jFileMenu.getMenuComponent(13);
+    Item = jFileMenu.getMenuComponent(14);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'preferences.png')));
     
 jDatasetMenu = jMenuBar.getComponent(1);
@@ -215,12 +221,16 @@ drawnow;    % set delay
     Item = jHelpMenu.getMenuComponent(0);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'help.png')));
     Item = jHelpMenu.getMenuComponent(1);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'classhelp.png')));
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'lamp.png')));
+    Item = jHelpMenu.getMenuComponent(2);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'image-sc.png')));
     Item = jHelpMenu.getMenuComponent(3);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'update.png')));
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'classhelp.png')));
     Item = jHelpMenu.getMenuComponent(5);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'update.png')));
+    Item = jHelpMenu.getMenuComponent(7);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'copyright.png')));
-    Item = jHelpMenu.getMenuComponent(6);
+    Item = jHelpMenu.getMenuComponent(8);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'about.png')));
 
 % unselect Help entry

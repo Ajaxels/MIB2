@@ -9,6 +9,9 @@ function [img_info, files, pixSize] = mibGetImageMetadata(filenames, options)
 % .waitbar -> @b 0 or @b 1; when @b 1 shows the progress bar
 % .customSections -> @b 0 or @b 1; when @b 1 obtain part of the dataset
 % .mibPath -> [optional] a string with path to MIB directory, an optional parameter to mibInputDlg.m
+% .id - id of the current dataset, needed to generate filename for Memoizer class for the virtual mode
+% .BioFormatsMemoizerMemoDir -> obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
+% .BioFormatsIndices -> numeric, indices of images in file container to be opened with BioFormats 
 % .Font -> [optional] a structure with the font settings from mib
 %    .FontName
 %    .FontUnits
@@ -27,7 +30,7 @@ function [img_info, files, pixSize] = mibGetImageMetadata(filenames, options)
 % - .noLayers -> number of image frames in the file
 % - .imgClass -> class of the image
 % - .dim_xyczt -> dimensions for hdf5_image and Bioformats
-% - .hDataset -> handle to Bioformats dataset
+% - .BioFormatsMemoizerMemoDir -> path to directory containing BioFormats Memoizer memo file, only for BioFormats reader
 % pixSize: a structure with voxel dimensions (.x, .y, .z, .units, .t, .tunits)
 
 % Copyright (C) 06.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
@@ -52,6 +55,8 @@ if ~isfield(options, 'mibPath');    options.mibPath = mibPath;  end
 if ~isfield(options, 'Font');    options.Font = Font;  end
 if ~isfield(options, 'customSections');    options.customSections = 0; end
 if ~isfield(options, 'virtual');    options.virtual = 0; end
+if ~isfield(options, 'id');    options.id = 1;  end
+if ~isfield(options, 'BioFormatsMemoizerMemoDir');    options.BioFormatsMemoizerMemoDir = 'c:\temp';  end
 
 pixSize.x = 1;
 pixSize.y = 1;
@@ -101,15 +106,18 @@ for fn_index = 1:no_files
         
         files(fn_index).object_type = 'movie';
         files(fn_index).noLayers = xyloObj.NumberOfFrames;
-        fields = sort(fieldnames(xyloObj));
         I = read(xyloObj, 1); % read first slice
         files(fn_index).height = size(I,1);
         files(fn_index).width = size(I,2);
         files(fn_index).color = size(I,3);
         files(fn_index).time = 1;
         files(fn_index).imgClass = class(I);
-        for ind = 1:numel(fields)
-            img_info(fields{ind}) = xyloObj.(fields{ind});
+        
+        if fn_index == 1
+            fields = sort(fieldnames(xyloObj));
+            for ind = 1:numel(fields)
+                img_info(fields{ind}) = xyloObj.(fields{ind});
+            end
         end
         if isKey(img_info, 'ColorType')
             if ~strcmp(img_info('ColorType'), 'truecolor')
@@ -160,7 +168,7 @@ for fn_index = 1:no_files
             if noLevels > 1
                 prompt = sprintf('The dataset contains %d image(s)\nPlease choose the one to take (enter "1" to get image in the original size):', noLevels);
                 answer = mibInputDlg({options.mibPath}, prompt, 'Select image', '1');
-                if isempty(answer); if options.waitbar==1; delete(wb); end; img_info = containers.Map; return; end;
+                if isempty(answer); if options.waitbar==1; delete(wb); end; img_info = containers.Map; return; end
                 level = str2double(answer);
                 if level < 1 || level > noLevels
                     if options.waitbar==1; delete(wb); end
@@ -169,16 +177,18 @@ for fn_index = 1:no_files
                     return;
                 end
                 
-                % update dimensions and pixel sizes for the binned datasets
-                xyzVal = info.Groups(offsetIndex).Groups(1).Groups(level).Datasets.Dataspace.Size;    % unbinned
-                pixSize.x = pixSize.x * img_info('Height')/xyzVal(2);
-                pixSize.y = pixSize.y * img_info('Width')/xyzVal(1);
-                pixSize.z = pixSize.z * img_info('Depth')/xyzVal(3);
-                
-                img_info('Height') = xyzVal(2);
-                img_info('Width') = xyzVal(1);
-                img_info('Depth') = xyzVal(3);
-                img_info('ReturnedLevel') = level;
+                if fn_index == 1
+                    % update dimensions and pixel sizes for the binned datasets
+                    xyzVal = info.Groups(offsetIndex).Groups(1).Groups(level).Datasets.Dataspace.Size;    % unbinned
+                    pixSize.x = pixSize.x * img_info('Height')/xyzVal(2);
+                    pixSize.y = pixSize.y * img_info('Width')/xyzVal(1);
+                    pixSize.z = pixSize.z * img_info('Depth')/xyzVal(3);
+
+                    img_info('Height') = xyzVal(2);
+                    img_info('Width') = xyzVal(1);
+                    img_info('Depth') = xyzVal(3);
+                    img_info('ReturnedLevel') = level;
+                end
             end
             
             % detect data type
@@ -276,9 +286,11 @@ for fn_index = 1:no_files
         I = h5read(files(fn_index).filename, cell2mat(files(fn_index).seriesName),ones(1,sum(dim_yxczt>0)),ones(1,sum(dim_yxczt>0)));
         %I = h5read(files(fn_index).filename, cell2mat(files(fn_index).seriesName),ones(1,sum(dim_yxczt>1)),ones(1,sum(dim_yxczt>1)));
         
-        fields = sort(fieldnames(info));
-        for ind = 1:numel(fields)
-            img_info(fields{ind}) = info.(fields{ind});
+        if fn_index == 1
+            fields = sort(fieldnames(info));
+            for ind = 1:numel(fields)
+                img_info(fields{ind}) = info.(fields{ind});
+            end
         end
         
         if dim_yxczt(3) == 1
@@ -327,20 +339,26 @@ for fn_index = 1:no_files
         files(fn_index).time = 1;
         
         files(fn_index).imgClass = datatype;
-        openBr = strfind(meta.spacedirections, '(');
-        closeBr = strfind(meta.spacedirections, ')');
-        voxX = str2num(meta.spacedirections(openBr(1)+1:closeBr(1)-1)); %#ok<ST2NM>
-        pixSize.x = voxX(1);
-        voxY = str2num(meta.spacedirections(openBr(2)+1:closeBr(2)-1)); %#ok<ST2NM>
-        pixSize.y = voxY(2);
-        voxZ = str2num(meta.spacedirections(openBr(3)+1:closeBr(3)-1)); %#ok<ST2NM>
-        pixSize.z = voxZ(3);
-        shiftsXYZ = str2num(meta.spaceorigin(2:end-1)); %#ok<ST2NM>
-        shiftsXYZ(1) = -shiftsXYZ(1);
-        shiftsXYZ(2) = -shiftsXYZ(2);
-        img_info('ImageDescription') = sprintf('BoundingBox %.5f %.5f %.5f %.5f %.5f %.5f', shiftsXYZ(1),shiftsXYZ(1)+pixSize.y*max([1 (files(fn_index).dim_xyczt(1)-1)]),...
-            shiftsXYZ(2),shiftsXYZ(2)+pixSize.x*max([1 (files(fn_index).dim_xyczt(2)-1)]),...
-            shiftsXYZ(3),shiftsXYZ(3)+pixSize.z*max([1 (files(fn_index).dim_xyczt(4)-1)]));
+        if fn_index == 1
+            openBr = strfind(meta.spacedirections, '(');
+            closeBr = strfind(meta.spacedirections, ')');
+            voxX = str2num(meta.spacedirections(openBr(1)+1:closeBr(1)-1)); %#ok<ST2NM>
+            pixSize.x = voxX(1);
+            voxY = str2num(meta.spacedirections(openBr(2)+1:closeBr(2)-1)); %#ok<ST2NM>
+            pixSize.y = voxY(2);
+            voxZ = str2num(meta.spacedirections(openBr(3)+1:closeBr(3)-1)); %#ok<ST2NM>
+            pixSize.z = voxZ(3);
+            if isfield(meta, 'spaceorigin')
+                shiftsXYZ = str2num(meta.spaceorigin(2:end-1)); %#ok<ST2NM>
+                shiftsXYZ(1) = -shiftsXYZ(1);
+                shiftsXYZ(2) = -shiftsXYZ(2);
+            else
+                shiftsXYZ = [0;0;0];
+            end
+            img_info('ImageDescription') = sprintf('BoundingBox %.5f %.5f %.5f %.5f %.5f %.5f', shiftsXYZ(1),shiftsXYZ(1)+pixSize.y*max([1 (files(fn_index).dim_xyczt(1)-1)]),...
+                shiftsXYZ(2),shiftsXYZ(2)+pixSize.x*max([1 (files(fn_index).dim_xyczt(2)-1)]),...
+                shiftsXYZ(3),shiftsXYZ(3)+pixSize.z*max([1 (files(fn_index).dim_xyczt(4)-1)]));
+        end
     elseif numel(strfind('am', ext(2:end))) > 0 && options.mibBioformatsCheck == 0     % Amira Mesh
         files(fn_index).filename = cell2mat(filenames(fn_index));
         files(fn_index).object_type = 'amiramesh';
@@ -401,45 +419,51 @@ for fn_index = 1:no_files
         end
         
         % update pixel size
-        bbStart = strfind(info('ImageDescription'), 'BoundingBox');
-        if ~isempty(bbStart)
-            info('ImageDescription') = strrep(info('ImageDescription'), sprintf('\t'), '|');    % replace tabs (from old MIB versions) with |
-            brakePnt = strfind(info('ImageDescription'), '|');
-            if ~isempty(brakePnt)
-                brakePnt = brakePnt(1);
-                bbString = info('ImageDescription');
-                bb_coord = str2num(bbString(bbStart+11:brakePnt-1)); %#ok<ST2NM>
-                dx = bb_coord(2)-bb_coord(1);
-                dy = bb_coord(4)-bb_coord(3);
-                dz = bb_coord(6)-bb_coord(5);
-            else
-                dx = max([files(fn_index).width 2])-1;
-                dy = max([files(fn_index).height 2])-1;
-                dz = max([files(fn_index).noLayers 2])-1;
+        if fn_index == 1
+            bbStart = strfind(info('ImageDescription'), 'BoundingBox');
+            if ~isempty(bbStart)
+                info('ImageDescription') = strrep(info('ImageDescription'), sprintf('\t'), '|');    % replace tabs (from old MIB versions) with |
+                brakePnt = strfind(info('ImageDescription'), '|');
+                if isempty(brakePnt); brakePnt = numel(info('ImageDescription'))+1; end
+                try
+                    brakePnt = brakePnt(1);
+                    bbString = info('ImageDescription');
+                    bb_coord = str2num(bbString(bbStart+11:brakePnt-1)); %#ok<ST2NM>
+                    dx = bb_coord(2)-bb_coord(1);
+                    dy = bb_coord(4)-bb_coord(3);
+                    dz = bb_coord(6)-bb_coord(5);
+                catch err
+                    dx = max([files(fn_index).width 2])-1;
+                    dy = max([files(fn_index).height 2])-1;
+                    dz = max([files(fn_index).noLayers 2])-1;
+                end
+            end
+
+            pixSize.x = dx/(max([files(fn_index).width 2])-1);  % tweek for saving single layered tifs for Amira
+            pixSize.y = dy/(max([files(fn_index).height 2])-1);
+            pixSize.z = dz/(max([files(fn_index).noLayers 2])-1);
+            if pixSize.z == 0; pixSize.z = min([pixSize.x pixSize.y]); end
+            pixSize.units = 'um';
+            
+            % update img_info
+            info('Filename') = files(fn_index).filename;
+            fields = sort(keys(info));
+            for ind = 1:numel(fields)
+                if ~strcmp(fields{ind}, 'lutColors')
+                    img_info(fields{ind}) = info(fields{ind});
+                else
+                    if ischar(info(fields{ind}))
+                        img_info(fields{ind}) = str2num(info(fields{ind})); %#ok<ST2NM>
+                    end
+                end
             end
         end
-        
-        pixSize.x = dx/(max([files(fn_index).width 2])-1);  % tweek for saving single layered tifs for Amira
-        pixSize.y = dy/(max([files(fn_index).height 2])-1);
-        pixSize.z = dz/(max([files(fn_index).noLayers 2])-1);
-        pixSize.units = 'um';
         
         files(fn_index).color = dim_xyczt(3);
         files(fn_index).time = 1;
         
         files(fn_index).dim_xyczt = dim_xyczt;
         files(fn_index).imgClass = info('imgClass');
-        info('Filename') = files(fn_index).filename;
-        fields = sort(keys(info));
-        for ind = 1:numel(fields)
-            if ~strcmp(fields{ind}, 'lutColors')
-                img_info(fields{ind}) = info(fields{ind});
-            else
-                if ischar(info(fields{ind}))
-                    img_info(fields{ind}) = str2num(info(fields{ind})); %#ok<ST2NM>
-                end
-            end
-        end
     elseif strfind(cell2mat([image_formats.ext]), ext(2:end)) > 0 & options.mibBioformatsCheck == 0 %#ok<AND2> % standard image types
         files(fn_index).filename = cell2mat(filenames(fn_index));
         files(fn_index).object_type = 'image';
@@ -487,14 +511,15 @@ for fn_index = 1:no_files
         files(fn_index).noLayers = NumberOfFrames;
         files(fn_index).time = 1;
         
-        if info(1).BitDepth == 16
-            files(fn_index).imgClass = 'uint16';
-        elseif info(1).BitDepth == 32
-            files(fn_index).imgClass = 'uint32';
-        elseif info(1).BitDepth == 48
-            files(fn_index).imgClass = 'uint16';
-        else
-            files(fn_index).imgClass = 'uint8';
+        switch info(1).BitDepth     % alternative field is info(1).BitsPerSample but not all formats have it
+            case {8, 24}    % grayscale and RGB
+                files(fn_index).imgClass = 'uint8';
+            case {16, 48}   % grayscale and RGB
+                files(fn_index).imgClass = 'uint16';
+            case {32, 96}   % grayscale and RGB
+                files(fn_index).imgClass = 'uint32';
+            otherwise
+                files(fn_index).imgClass = 'single';
         end
         
         if isKey(img_info, 'ColorType')
@@ -512,36 +537,40 @@ for fn_index = 1:no_files
             files(fn_index).color = 1;
         end
         
-        for ind = 1:numel(fields)
-            if strcmp(fields{ind},'StripByteCounts') || strcmp(fields{ind},'StripOffsets') || strcmp(fields{ind},'UnknownTags')  % remove some unwanted fields
-                continue;
-            end
-            img_info(fields{ind}) = info(1).(fields{ind});
-        end
-        
         % update pixel size
-        if isKey(img_info, 'ImageDescription')
-            bbStart = strfind(img_info('ImageDescription'), 'BoundingBox');
-            if ~isempty(bbStart)
-                brakePnt = strfind(img_info('ImageDescription'), '|');
-                if isempty(brakePnt)
-                    brakePnt = strfind(img_info('ImageDescription'), sprintf('\t'));
+        if fn_index == 1
+            % generate img_info taking information from the 1st image
+            currKeys = keys(img_info);
+            fields(ismember(fields, {'StripByteCounts', 'StripOffsets','UnknownTags'})) = [];
+            addFieldsIds = find(ismember(fields, currKeys) == 0);
+            for ind=1:numel(addFieldsIds)
+                img_info(fields{ind}) = info(1).(fields{ind});
+            end
+            
+            if isKey(img_info, 'ImageDescription')
+                bbStart = strfind(img_info('ImageDescription'), 'BoundingBox');
+                if ~isempty(bbStart)
+                    brakePnt = strfind(img_info('ImageDescription'), '|');
                     if isempty(brakePnt)
-                        brakePnt = strfind(img_info('ImageDescription'), sprintf('\n'));
+                        brakePnt = strfind(img_info('ImageDescription'), sprintf('\t'));
+                        if isempty(brakePnt)
+                            brakePnt = strfind(img_info('ImageDescription'), sprintf('\n'));
+                        end
                     end
-                end
-                if ~isempty(brakePnt)
-                    brakePnt = brakePnt(1);
-                    bbString = img_info('ImageDescription');
-                    bb_coord = str2num(bbString(bbStart+11:brakePnt-1)); %#ok<ST2NM>
-                    dx = bb_coord(2)-bb_coord(1);
-                    dy = bb_coord(4)-bb_coord(3);
-                    dz = bb_coord(6)-bb_coord(5);
-                    
-                    pixSize.x = dx/(max([files(fn_index).width 2])-1);  % tweek for saving single layered tifs for Amira
-                    pixSize.y = dy/(max([files(fn_index).height 2])-1);
-                    pixSize.z = dz/(max([files(fn_index).noLayers 2])-1);
-                    pixSize.units = 'um';
+                    if ~isempty(brakePnt)
+                        brakePnt = brakePnt(1);
+                        bbString = img_info('ImageDescription');
+                        bb_coord = str2num(bbString(bbStart+11:brakePnt-1)); %#ok<ST2NM>
+                        dx = bb_coord(2)-bb_coord(1);
+                        dy = bb_coord(4)-bb_coord(3);
+                        dz = bb_coord(6)-bb_coord(5);
+                        
+                        pixSize.x = dx/(max([files(fn_index).width 2])-1);  % tweek for saving single layered tifs for Amira
+                        pixSize.y = dy/(max([files(fn_index).height 2])-1);
+                        pixSize.z = dz/(max([files(fn_index).noLayers 2])-1);
+                        if pixSize.z == 0; pixSize.z = min([pixSize.x pixSize.y]); end
+                        pixSize.units = 'um';
+                    end
                 end
             end
         end
@@ -584,10 +613,13 @@ for fn_index = 1:no_files
         info.Filename = files(fn_index).filename;
         info = rmfield(info, 'labels');
         
-        fields = sort(fieldnames(info));
-        for ind = 1:numel(fields)
-            img_info(fields{ind}) = info.(fields{ind});
+        if fn_index == 1
+            fields = sort(fieldnames(info));
+            for ind = 1:numel(fields)
+                img_info(fields{ind}) = info.(fields{ind});
+            end
         end
+        
         layer_id = layer_id + info.nZ;
         files(fn_index).height = info.nY;
         files(fn_index).width = info.nX;
@@ -610,45 +642,64 @@ for fn_index = 1:no_files
             return;
         end
         close(mrcFile);
-    elseif options.mibBioformatsCheck == 1    % load meta for bio-image formats
+    elseif options.mibBioformatsCheck == 1    % load meta for bio-formats
         if fn_index == 1
-            r = bfGetReader(filenames{fn_index});       % init the reader
-            numSeries = r.getSeriesCount();
+            %r = bfGetReader(filenames{fn_index});       % init the reader
+            % Cache the initialized readers for each file and close the reader
+            filesTemp.hDataset = loci.formats.Memoizer(bfGetReader(), 0, java.io.File(options.BioFormatsMemoizerMemoDir));
+            filesTemp.hDataset.setId(filenames{fn_index});
+            
+            numSeries = filesTemp.hDataset.getSeriesCount();
             if numSeries > 1
-                [filesTemp.seriesIndex, filesTemp.hDataset, metaSwitch, filesTemp.dim_xyczt, filesTemp.seriesRealName] = ...
-                    selectLociSeries(filenames(fn_index), options.Font, r);  % select series with BioFormats
+                if ~isfield(options, 'BioFormatsIndices')
+                    [filesTemp.seriesIndex, filesTemp.hDataset, metaSwitch, filesTemp.dim_xyczt, filesTemp.seriesRealName] = ...
+                        selectLociSeries(filenames(fn_index), options.Font, filesTemp.hDataset);  % select series with BioFormats
+                else
+                    if isempty(options.BioFormatsIndices)
+                        filesTemp.seriesIndex = 1:numSeries;
+                    else
+                        filesTemp.seriesIndex = options.BioFormatsIndices;
+                    end
+                    metaSwitch = 1;
+                    filesTemp.dim_xyczt = zeros(numel(filesTemp.seriesIndex), 5);
+                    filesTemp.seriesRealName = cell([numel(filesTemp.seriesIndex), 1]);
+                    for i=1:numel(filesTemp.seriesIndex)
+                        filesTemp.hDataset.setSeries(i - 1);
+                        filesTemp.dim_xyczt(i, 1) = filesTemp.hDataset.getSizeX();
+                        filesTemp.dim_xyczt(i, 2) = filesTemp.hDataset.getSizeY();
+                        filesTemp.dim_xyczt(i, 3) = filesTemp.hDataset.getSizeC();    % number of color layers
+                        filesTemp.dim_xyczt(i, 4) = filesTemp.hDataset.getSizeZ();
+                        filesTemp.dim_xyczt(i, 5) = filesTemp.hDataset.getSizeT();    % number of time layers
+                        filesTemp.seriesRealName{i} = char(filesTemp.hDataset.getMetadataStore().getImageName(i-1));
+                    end
+                end
             else    % do not show the series selection dialog
                 filesTemp.seriesIndex = 1;
-                r.setSeries(0);
-                filesTemp.hDataset = r;
+                filesTemp.hDataset.setSeries(filesTemp.seriesIndex - 1);
                 metaSwitch = 1;
-                filesTemp.dim_xyczt(1) = r.getSizeX();
-                filesTemp.dim_xyczt(2) = r.getSizeY();
-                filesTemp.dim_xyczt(3) = r.getSizeC();    % number of color layers
-                filesTemp.dim_xyczt(4) = r.getSizeZ();
-                filesTemp.dim_xyczt(5) = r.getSizeT();    % number of time layers
-                filesTemp.seriesRealName{1} = char(r.getMetadataStore().getImageName(0));
+                filesTemp.dim_xyczt(1) = filesTemp.hDataset.getSizeX();
+                filesTemp.dim_xyczt(2) = filesTemp.hDataset.getSizeY();
+                filesTemp.dim_xyczt(3) = filesTemp.hDataset.getSizeC();    % number of color layers
+                filesTemp.dim_xyczt(4) = filesTemp.hDataset.getSizeZ();
+                filesTemp.dim_xyczt(5) = filesTemp.hDataset.getSizeT();    % number of time layers
+                filesTemp.seriesRealName{1} = char(filesTemp.hDataset.getMetadataStore().getImageName(0));
             end
+            
+            omeMeta = filesTemp.hDataset.getMetadataStore();
         else
-            %             r = loci.formats.ChannelFiller();
-            %             r = loci.formats.ChannelSeparator(r);
-            %             % remove setMetadataStore when bfGetReader is used
-            %             r.setMetadataStore(loci.formats.MetadataTools.createOMEXMLMetadata());
-            %             r.setId(filenames(fn_index));
+            filesTemp.hDataset = loci.formats.Memoizer(bfGetReader(), 0, java.io.File(options.BioFormatsMemoizerMemoDir));
+            filesTemp.hDataset.setId(filenames{fn_index});
+            filesTemp.hDataset.setSeries(filesTemp.seriesIndex(1)-1);
             
-            %filesTemp.dim_xyczt = [];
-            
-            r = bfGetReader(filenames{fn_index});
-            r.setSeries(filesTemp.seriesIndex(1)-1);
-            %r.setSeries(files(1).seriesName(1)-1);
-            filesTemp.hDataset = r;
             noSeriesTemp = numel(filesTemp.seriesIndex);
-            filesTemp.dim_xyczt(1:noSeriesTemp, 1) = r.getSizeX();
-            filesTemp.dim_xyczt(1:noSeriesTemp, 2) = r.getSizeY();
-            filesTemp.dim_xyczt(1:noSeriesTemp, 3) = r.getSizeC();
-            filesTemp.dim_xyczt(1:noSeriesTemp, 4) = r.getSizeZ();
-            filesTemp.dim_xyczt(1:noSeriesTemp, 5) = r.getSizeT();
+            filesTemp.dim_xyczt(1:noSeriesTemp, 1) = filesTemp.hDataset.getSizeX();
+            filesTemp.dim_xyczt(1:noSeriesTemp, 2) = filesTemp.hDataset.getSizeY();
+            filesTemp.dim_xyczt(1:noSeriesTemp, 3) = filesTemp.hDataset.getSizeC();
+            filesTemp.dim_xyczt(1:noSeriesTemp, 4) = filesTemp.hDataset.getSizeZ();
+            filesTemp.dim_xyczt(1:noSeriesTemp, 5) = filesTemp.hDataset.getSizeT();
         end
+        % have to implement use of DimensionOrder
+        filesTemp.DimensionOrder = char(filesTemp.hDataset.getDimensionOrder);
         
         if strcmp(filesTemp.seriesIndex, 'Cancel'); if options.waitbar==1; delete(wb); end; return; end
         
@@ -665,16 +716,12 @@ for fn_index = 1:no_files
         
         for fileSubIndex = 1:numel(filesTemp.seriesIndex)
             files(layer_id).filename = cell2mat(filenames(fn_index));
+            files(layer_id).origFilename = files(layer_id).filename;
             files(layer_id).object_type = 'bioformats';
-            if fileSubIndex > 1
-                files(layer_id).hDataset = bfGetReader(filenames{fn_index});
-            else
-                files(layer_id).hDataset = filesTemp.hDataset;
-            end
-            
-            files(layer_id).hDataset.setSeries(filesTemp.seriesIndex(fileSubIndex)-1);
             files(layer_id).seriesName = filesTemp.seriesIndex(fileSubIndex);
             files(layer_id).dim_xyczt = filesTemp.dim_xyczt;
+            files(layer_id).DimensionOrder = filesTemp.DimensionOrder;
+            files(layer_id).BioFormatsMemoizerMemoDir = options.BioFormatsMemoizerMemoDir;    % path to directory containing the memo files
             
             %files(layer_id).seriesRealName = filesTemp.seriesRealName{fileSubIndex};
             [~, files(layer_id).seriesRealName] = fileparts(filesTemp.seriesRealName{fileSubIndex});
@@ -799,14 +846,14 @@ for fn_index = 1:no_files
             
             [path, name, ext] = fileparts(files(layer_id).filename);
             files(layer_id).filename = fullfile(path, [name '__' files(layer_id).seriesRealName ext]);
-            
             layer_id = layer_id + 1;
         end
+        filesTemp.hDataset.close();
         
         % update pixel size
-        omeMeta = filesTemp.hDataset.getMetadataStore();
+        %omeMeta = filesTemp.hDataset.getMetadataStore();
         if fn_index == 1
-            omeMeta = filesTemp.hDataset.getMetadataStore();
+            %omeMeta = filesTemp.hDataset.getMetadataStore();
             omeXML = char(omeMeta.dumpXML());    % to xml
             omeXML = strrep(omeXML, sprintf('\xB5'),'u');     % mu, replace utf-8 characters
             omeXML = strrep(omeXML,sprintf('\xC5'),'A');      % Angstrem
@@ -822,49 +869,51 @@ for fn_index = 1:no_files
             meta = xml2struct(dummyXMLFilename);           % load and convert xml to structure
             delete(dummyXMLFilename);           % delete dummy xml file
             img_info('meta') = meta.OME;
-        end
-        try     % old vws data do not have this option
-            xVal = double(omeMeta.getPixelsPhysicalSizeX(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));
-            if isempty(xVal)
-                pixSize.x = 1;   % in um
-                pixSize.y = 1;   % in um
-            else
-                pixSize.x = double(omeMeta.getPixelsPhysicalSizeX(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
-                pixSize.y = double(omeMeta.getPixelsPhysicalSizeY(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
+            
+            try     % old vws data do not have this option
+                xVal = double(omeMeta.getPixelsPhysicalSizeX(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));
+                if isempty(xVal)
+                    pixSize.x = 1;   % in um
+                    pixSize.y = 1;   % in um
+                else
+                    pixSize.x = double(omeMeta.getPixelsPhysicalSizeX(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
+                    pixSize.y = double(omeMeta.getPixelsPhysicalSizeY(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
+                end
+                zVal = omeMeta.getPixelsPhysicalSizeZ(filesTemp.seriesIndex(fileSubIndex)-1);
+                if isempty(zVal)
+                    pixSize.z = pixSize.y;   % in um
+                else
+                    pixSize.z = double(omeMeta.getPixelsPhysicalSizeZ(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
+                end
+            catch err
+                continue;
             end
-            zVal = omeMeta.getPixelsPhysicalSizeZ(filesTemp.seriesIndex(fileSubIndex)-1);
-            if isempty(zVal)
-                pixSize.z = pixSize.y;   % in um
-            else
-                pixSize.z = double(omeMeta.getPixelsPhysicalSizeZ(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
+            
+            % fix X and Y for dm4
+            [~,~,ext] = fileparts(filenames{fn_index});
+            if strcmp(ext, '.dm4') && pixSize.x ~= pixSize.y
+                pixSize.z = pixSize.x;
+                pixSize.x = pixSize.y;
             end
-        catch err
-            continue;
-        end
-        
-        % fix X and Y for dm4
-        [~,~,ext] = fileparts(filenames{fn_index});
-        if strcmp(ext, '.dm4') && pixSize.x ~= pixSize.y
-            pixSize.z = pixSize.x;
-            pixSize.x = pixSize.y;
-        end
-        
-        pixSize.units = 'um';
-        try
-            dt = omeMeta.getPlaneDeltaT(0,0);
-        catch err
-            dt = [];
-        end
-        if ~isempty(dt)
-            if double(dt.value) == 0    % force pixSize.t be 1
+            
+            pixSize.units = 'um';
+            
+            try
+                dt = omeMeta.getPlaneDeltaT(0,0);
+            catch err
+                dt = [];
+            end
+            if ~isempty(dt)
+                if double(dt.value) == 0    % force pixSize.t be 1
+                    pixSize.t = 1;
+                else
+                    pixSize.t = double(dt.value);
+                end
+            else
                 pixSize.t = 1;
-            else
-                pixSize.t = double(dt.value);
             end
-        else
-            pixSize.t = 1;
+            pixSize.tunits = 's';
         end
-        pixSize.tunits = 's';
         
         % get colors for the color channels
         colorsVec = [files.color];
@@ -898,7 +947,40 @@ end
 % replace CR and LF characters with spaces
 if isKey(img_info,'ImageDescription') && ~isempty(img_info('ImageDescription'))
     img_info('ImageDescription') = strrep(strrep(img_info('ImageDescription'), sprintf('%s', 13), ' '), sprintf('%s', 10), '');
+    if numel(unique([files.width])) > 1 || numel(unique([files.height])) > 1
+        % require to recalculate the bounding box
+        bbStart = strfind(img_info('ImageDescription'), 'BoundingBox');
+        if ~isempty(bbStart)
+            brakePnt = strfind(img_info('ImageDescription'), '|');
+            if isempty(brakePnt); brakePnt = numel(img_info('ImageDescription'))+1; end
+            try
+                brakePnt = brakePnt(1);
+                bbString = img_info('ImageDescription');
+                bb = str2num(bbString(bbStart+11:brakePnt-1)); %#ok<ST2NM>
+            catch err
+                bb = [0 0 0 0 0 0];
+            end
+            bb(2) = max([files.width])*pixSize.x + bb(1);
+            bb(4) = max([files.height])*pixSize.y + bb(3);
+            bb(6) = sum([files.noLayers])*pixSize.z + bb(5);
+            
+            str2 = sprintf('BoundingBox %.5f %.5f %.5f %.5f %.5f %.5f ',bb(1),bb(2),bb(3),bb(4),bb(5),bb(6));
+            curr_text = img_info('ImageDescription');
+            bb_info_exist = strfind(curr_text, 'BoundingBox');
+            if bb_info_exist == 1
+                spaces = strfind(curr_text,'|');
+                if ~isempty(spaces)
+                    img_info('ImageDescription') = [str2 curr_text(spaces(1):end)];
+                else
+                    img_info('ImageDescription') = str2;
+                end
+            else
+                img_info('ImageDescription') = [str2 curr_text];
+            end
+        end
+    end
 end
+
 
 switch files(1).imgClass
     case {'single', 'double'}

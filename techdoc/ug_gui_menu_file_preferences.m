@@ -5,10 +5,10 @@
 % *Please note*, |MIB| stores its configuration parameters in a file that is automatically generated after closing of
 % |MIB|:
 %
-% * *for Windows* - _c:\temp\mib.mat_ or when _c:\temp_ is unavailable in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
+% * *for Windows* - _C:\Users\Username\Matlab\mib.mat_ or in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
 % The TEMP directory can be found and accessed with |Windows->Start button->%TEMP%| command
-% * *for Linux/MacOS* - in a directory where |MIB| is installed, or in the local |tmp| directory (_/tmp_)
-%
+% * *for Linux* - _/home/username/Matlab_ or local TEMP directory
+% * *for MacOS* - _/Users/username/Matlab_ or local TEMP directory
 % 
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_file.html *File Menu*>

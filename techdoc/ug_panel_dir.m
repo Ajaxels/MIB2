@@ -1,10 +1,12 @@
 %% Directory Contents Panel
 % This panel provides the listing of files in the selected directory with a
 % possibility to filter them based on known image and video formats. 
-% 
-% <<images\PanelsDirContents.png>>
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
+%
+%%
+% 
+% <<images\PanelsDirContents.png>>
 %
 %% 1. Multiple buffer buttons
 % These buttons allow fast access to several datasets stored in the memory. The green color of the button indicates that
@@ -25,8 +27,8 @@
 % XYZ coordinates, for 4D-5D datasets
 % * *Sync view, (xyzt) with...*, synchronizes the view with another dataset in the
 % XYZT coordinates, for 5D datasets
-% * *Clear dataset*, removes selected dataset from the memory
-% * *Clear all stored datasets*, removes all stored datasets from the memory
+% * *Close dataset*, removes selected dataset from the memory
+% * *Close all stored datasets*, removes all stored datasets from the memory
 % 
 %% 2. Main list box
 % The major part of the panel is occupied with this list box that shows

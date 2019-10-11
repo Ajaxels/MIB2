@@ -4,9 +4,11 @@
 % used in combibation with other layer. See more about segmentation layers
 % in <ug_gui_data_layers.html the Data layers of Microscopy Image Browser section>.
 %
-% <<images\menuMask.png>>
-%
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
+%
+%%
+%
+% <<images\menuMask.png>>
 %
 %% ..->Selection
 % Allows modification of the |Selection| layer by the |Mask| layer. It

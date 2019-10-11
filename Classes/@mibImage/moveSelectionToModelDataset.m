@@ -13,8 +13,10 @@ function moveSelectionToModelDataset(obj, action_type, options)
 % options: a structure with additional paramters
 % @li @b .contSelIndex    - index of the @em Select @em from material
 % @li @b .contAddIndex    - index of the @em Add @em to material
-% @li @b .selected_sw     - [0 / 1] switch to limit actions to the selected @em Select @em from material only
-% @li @b .maskedAreaSw    - [0 / 1] switch to limit actions to the masked areas
+% @li @b .selected_sw     - optional override switch [0 / 1] to limit actions to the selected @em Select @em from material only, otherwise
+%       obj.fixSelectionToMaterial value is used
+% @li @b .maskedAreaSw    - optional override switch [0 / 1] to limit actions to the masked areas, otherwise
+%       obj.fixSelectionToMask value is used
 % @li @b .level -> [@em optional], index of image level from the image pyramid, default = 1
 %
 % Return values:
@@ -24,7 +26,7 @@ function moveSelectionToModelDataset(obj, action_type, options)
 % @code 
 % userData = obj.mibView.handles.mibSegmentationTable.UserData;     // call from mibController, get user data structure 
 % options.contSelIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex(); // index of the selected material
-% options.contAddIndex = obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2; // index of the target material
+% options.contAddIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'); // index of the target material
 % options.selected_sw = obj.mibView.handles.mibSegmSelectedOnlyCheck.Value;   // when 1- limit selection to the selected material
 % options.maskedAreaSw = obj.mibView.handles.mibMaskedAreaCheck.Value;
 % @endcode
@@ -43,14 +45,16 @@ function moveSelectionToModelDataset(obj, action_type, options)
 % 
 
 % remove fields that are not compatible with this function
-if isfield(options, 'x'); options = rmfield(options, 'x'); end;
-if isfield(options, 'y'); options = rmfield(options, 'y'); end;
-if isfield(options, 'z'); options = rmfield(options, 'z'); end;
-if isfield(options, 't'); options = rmfield(options, 't'); end;
-if ~isfield(options, 'contSelIndex'); options.contSelIndex = obj.selectedMaterial-2; end;
-if ~isfield(options, 'contAddIndex'); options.contAddIndex = obj.selectedAddToMaterial-2; end;
+if isfield(options, 'x'); options = rmfield(options, 'x'); end
+if isfield(options, 'y'); options = rmfield(options, 'y'); end
+if isfield(options, 'z'); options = rmfield(options, 'z'); end
+if isfield(options, 't'); options = rmfield(options, 't'); end
+if ~isfield(options, 'contSelIndex'); options.contSelIndex = obj.getSelectedMaterialIndex(); end
+if ~isfield(options, 'contAddIndex'); options.contAddIndex = obj.getSelectedMaterialIndex('AddTo'); end
+if ~isfield(options, 'selected_sw'); options.selected_sw = obj.fixSelectionToMaterial; end
+if ~isfield(options, 'maskedAreaSw'); options.maskedAreaSw = obj.fixSelectionToMask; end
 
-if ~isfield(options, 'level'); options.level = 1; end;
+if ~isfield(options, 'level'); options.level = 1; end
 
 % % filter the obj_type_from depending on selected_sw and/or maskedAreaSw states
 imgTemp = NaN; % a temporal variable to keep modified version of dataset when selected_sw and/or maskedAreaSw are on
@@ -75,7 +79,7 @@ else            % uint8 type of the model
 end
 
 switch action_type
-    case 'add'  % add selection to mask
+    case 'add'  % add selection to model
         if obj.modelType == 63
             if isnan(imgTemp(1))    % add layers for the whole dataset
                 M = bitand(obj.model{options.level}, 64);  % store existing mask
@@ -92,7 +96,7 @@ switch action_type
             obj.model{options.level}(obj.selection{options.level}==1) = options.contAddIndex;
             obj.selection{options.level} = zeros(size(obj.selection{options.level}), class(obj.selection{options.level}));     % clear selection
         end
-    case 'remove'   % subtract selection from mask
+    case 'remove'   % subtract selection from model
         if obj.modelType == 63
             if isnan(imgTemp(1))    % add layers for the whole dataset
                 M = bitand(obj.model{options.level}, 64);  % store existing mask
@@ -109,7 +113,7 @@ switch action_type
             obj.model{options.level}(obj.selection{options.level}==1) = 0;
             obj.selection{options.level} = zeros(size(obj.selection{options.level}), class(obj.selection{options.level}));     % clear selection
         end
-    case 'replace'  % replace selection with mask
+    case 'replace'  % replace model with selection
         if obj.modelType == 63
             if isnan(imgTemp(1))    % add layers for the whole dataset
                 M = bitand(obj.model{options.level}, 64);  % store existing mask

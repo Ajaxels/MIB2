@@ -58,26 +58,23 @@ end
 % resize all elements x1.25 times for macOS
 mibRescaleWidgets(handles.mibOmeroLoginDlg);
 
-if exist('c:\temp\mib_omero.mat','file') ~= 0
-    load('c:\temp\mib_omero.mat');  % load omero structure with .servers, .port .username fields
+%% Restore preferences from the last time
+prefdir = getPrefDir();
+omeroFn = fullfile(prefdir, 'mib_omero.mat');
+if exist(omeroFn, 'file') ~= 0
+    load(omeroFn);  % load omero structure with .servers, .port .username fields
     handles.servers = omeroSettings.servers;
     handles.serverIdx = omeroSettings.serverIdx;
     handles.username = omeroSettings.username;
     handles.port = omeroSettings.port;
-    fprintf('Loading omero settings from c:\\temp\\mib_omero.mat\n');
-elseif exist(fullfile(tempdir, 'mib_omero.mat'), 'file') ~= 0
-    load(fullfile(tempdir, 'mib_omero.mat'));
-    handles.servers = omeroSettings.servers;
-    handles.serverIdx = omeroSettings.serverIdx;
-    handles.username = omeroSettings.username;
-    handles.port = omeroSettings.port;
-    fprintf('Loading omero settings from %s\n', fullfile(tempdir, 'mib_omero.mat'));
+    fprintf('Loading omero settings from %s\n', omeroFn);
 else
     handles.servers = {'demo.openmicroscopy.org', 'omerovm-1.it.helsinki.fi'};
     handles.serverIdx = 1;
-    handles.username = 'ibelev';
+    handles.username = char(java.lang.System.getProperty('user.name'));
     handles.port = 4064;
 end
+
 set(handles.serverPopup,'String',handles.servers);
 set(handles.serverPopup,'Value',handles.serverIdx);
 set(handles.omeroServerPortEdit,'String',handles.port);
@@ -89,8 +86,12 @@ set(handles.usernameEdit,'String',handles.username);
 handles.passwordEdit.Units = 'pixels';
 handles.java_Password = javax.swing.JPasswordField();
 handles.passwordEdit.Visible = 'off';
+
+warn = warning();
+warning('off', 'MATLAB:ui:javacomponent:FunctionToBeRemoved');
 [handles.java_Password, handles.edit_Password] = javacomponent(handles.java_Password, handles.passwordEdit.Position, handles.mibOmeroLoginDlg);
 handles.java_Password.setFocusable(true);
+warning(warn);
 
 % move the window
 hObject = moveWindowOutside(hObject, 'center', 'center');
@@ -132,17 +133,14 @@ omeroSettings.serverIdx = handles.serverIdx;
 omeroSettings.port = handles.output.port;
 omeroSettings.username = handles.output.username; %#ok<STRNU>
 
+prefdir = getPrefDir();
+omeroFn = fullfile(prefdir, 'mib_omero.mat');
 try
-    save(['c:' filesep 'temp' filesep 'mib_omero.mat'], 'omeroSettings');
+    save(omeroFn, 'omeroSettings');
+    fprintf('Saving Omero settings to %s\n', omeroFn);
 catch err
-    try     % try to save it into windows temp folder (C:\Users\User-name\AppData\Local\Temp\)
-        fn = fullfile(tempdir, 'mib_omero.mat');
-        save(fn, 'omeroSettings');
-    catch err
-        msgbox(sprintf('There is a problem with saving settings\n%s', err.identifier), 'Error', 'error', 'modal');
-    end
+    errordlg(sprintf('There is a problem with saving OMERO settings to\n%s\n%s', omeroFn, err.identifier), 'Error');
 end
-fprintf('Saving Omero settings to %s\n', ['c:' filesep 'temp' filesep 'mib_omero.mat']);
 
 guidata(hObject, handles);
 uiresume(handles.mibOmeroLoginDlg);

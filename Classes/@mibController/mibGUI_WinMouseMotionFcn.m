@@ -154,8 +154,6 @@ try
         yv = ydata+diffY;
         obj.mibView.cursor.XData = xv;
         obj.mibView.cursor.YData = yv;
-        
-        %mean(xv)
     end
 catch err
 end

@@ -11,7 +11,7 @@ for i=1:numel(list_of_files)
     if strcmp(list_of_files(i).name,'im_browser_release_notes_doxygen_beta.m'); continue; end  % this file is for doxegen documentation
     if strcmp(list_of_files(i).name,'im_browser_release_notes_doxygen.m'); continue; end  % this file is for doxegen documentation
     if strcmp(list_of_files(i).name,'MatlabDocMaker.m'); continue; end
-    publish(list_of_files(i).name,'html');
+    publish(list_of_files(i).name, 'html');
 end
 db_path = [path '\html'];
 builddocsearchdb(db_path);

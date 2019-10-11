@@ -13,8 +13,8 @@ function moveMaskToSelectionDataset(obj, action_type, options)
 % options: a structure with additional paramters
 % @li @b .contSelIndex    - index of the @em Select @em from material
 % @li @b .contAddIndex    - index of the @em Add @em to material
-% @li @b .selected_sw     - [0 / 1] switch to limit actions to the selected @em Select @em from material only
-% @li @b .maskedAreaSw    - [0 / 1] switch to limit actions to the masked areas
+% @li @b .selected_sw     - optional override switch [0 / 1] to limit actions to the selected @em Select @em from material only, otherwise
+%       obj.fixSelectionToMaterial value is used
 % @li @b .level -> [@em optional], index of image level from the image pyramid, default = 1
 %
 % Return values:
@@ -24,9 +24,8 @@ function moveMaskToSelectionDataset(obj, action_type, options)
 % @code 
 % userData = obj.mibView.handles.mibSegmentationTable.UserData;     // call from mibController, get user data structure 
 % options.contSelIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex(); // index of the selected material
-% options.contAddIndex = obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2; // index of the target material
+% options.contAddIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'); // index of the target material
 % options.selected_sw = obj.mibView.handles.mibSegmSelectedOnlyCheck.Value;   // when 1- limit selection to the selected material
-% options.maskedAreaSw = obj.mibView.handles.mibMaskedAreaCheck.Value;
 % @endcode
 % @code obj.mibModel.I{obj.mibModel.Id}.moveMaskToSelectionDataset('add', options);     // call from mibController, add mask to selection  @endcode
 % @attention @b NOT @b sensitive to the blockModeSwitch
@@ -43,14 +42,15 @@ function moveMaskToSelectionDataset(obj, action_type, options)
 % 
 
 % remove fields that are not compatible with this function
-if isfield(options, 'x'); options = rmfield(options, 'x'); end;
-if isfield(options, 'y'); options = rmfield(options, 'y'); end;
-if isfield(options, 'z'); options = rmfield(options, 'z'); end;
-if isfield(options, 't'); options = rmfield(options, 't'); end;
-if ~isfield(options, 'contSelIndex'); options.contSelIndex = obj.selectedMaterial; end;
-if ~isfield(options, 'contAddIndex'); options.contAddIndex = obj.selectedAddToMaterial; end;
+if isfield(options, 'x'); options = rmfield(options, 'x'); end
+if isfield(options, 'y'); options = rmfield(options, 'y'); end
+if isfield(options, 'z'); options = rmfield(options, 'z'); end
+if isfield(options, 't'); options = rmfield(options, 't'); end
+if ~isfield(options, 'contSelIndex'); options.contSelIndex = obj.getSelectedMaterialIndex(); end
+if ~isfield(options, 'contAddIndex'); options.contAddIndex = obj.getSelectedMaterialIndex('AddTo'); end
+if ~isfield(options, 'selected_sw'); options.selected_sw = obj.fixSelectionToMaterial; end
 
-if ~isfield(options, 'level'); options.level = 1; end;
+if ~isfield(options, 'level'); options.level = 1; end
 
 % swap options.contSelIndex and options.contAddIndex when selecting
 % mask with fix selection to material switch
@@ -58,8 +58,8 @@ if options.selected_sw && options.contSelIndex == -1
     options.contSelIndex = options.contAddIndex;
 end
 
-% % filter the obj_type_from depending on elected_sw and/or maskedAreaSw states
-imgTemp = NaN; % a temporal variable to keep modified version of dataset when selected_sw and/or maskedAreaSw are on
+% % filter the obj_type_from depending on selected_sw 
+imgTemp = NaN; % a temporal variable to keep modified version of dataset when selected_sw
 if obj.modelType == 63      % uint6 type of the model
     if options.selected_sw && obj.modelExist 
         id = bitset(options.contSelIndex, 7, 1);    % generate id with the 7bit = 1 (mask)

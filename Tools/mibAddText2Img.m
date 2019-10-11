@@ -6,29 +6,30 @@ function img = mibAddText2Img(img, textArray, positionList, options)
 % an old function.
 %
 % Parameters:
-%       img: - > image, 2D
-%       textArray: -> a cell array with text, [textArray{1}='label1'; textArray{2}='label2';]
-%       positionList: -> position of a label [pointNo; x, y]
-%       options: -> a structure with @em optional additional parameters
-%           .color -> [@em optional, default color GREY] a number or a rgb-vector with a color for the text,
+%       img: image, 2D
+%       textArray: a cell array with text, [textArray{1}=''label1''; textArray{2}=''label2'';]
+%       positionList: position of a label [pointNo; x, y]
+%       options: a structure with @em optional additional parameters
+%           .color [@em optional, default color GREY] a number or a rgb-vector with a color for the text,
 %           @em for @em example: [1 0 0] - for red; or 0.5 - for grey
-%           .fontSize -> [@em optional, default font size=2] a number with a font size from 1 to 7, that corresponds to pt8, 10 ... 20 of Ubuntu Mono font.
-%           .markerText -> [@em an @em optional @em string, default
+%           .fontSize [@em optional, default font size=2] a number with a font size from 1 to 7, that corresponds to pt8, 10 ... 20 of Ubuntu Mono font.
+%           .markerText [@em an @em optional @em string, default
 %                           'both'] when @b both show a label next to the position marker,
 %                           when @b marker - show only the marker without the label, when
 %                           @b text - show only text without marker
-%           .AnchorPoint -> text box reference point, 'LeftTop' (default) | 'LeftCenter' | 'LeftBottom' | 'CenterTop' | 'Center' | 'CenterBottom' | 'RightTop' | 'RightCenter' | 'RightBottom'
+%           .AnchorPoint text box reference point, ''LeftTop'' (default) |
+%           ''LeftCenter'' | ''LeftBottom'' | ''CenterTop'' | ''Center'' | ''CenterBottom'' | ''RightTop'' | ''RightCenter'' | ''RightBottom''
 %
 % Return values:
-%   img: -> image 2D
+%   img: image 2D
 %
 % @note: if you need to print special characters generate them using
 % char(dec_index) command. For example to replace all \mu with a proper u character use char(956) command:
-% textArray = strrep(textArray, '\mu', char(956));
+% textArray = strrep(textArray, ''\mu'', char(956));
 % see more codes: https://unicode-table.com/en/
 
-%| @b Examples:
-%
+%| 
+% @b Examples:
 % @code
 % textArray{1}='label1';
 % textArray{2}='label2';

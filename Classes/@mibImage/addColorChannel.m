@@ -9,8 +9,8 @@ function output = addColorChannel(obj, img, channelId, lutColors)
 %
 % Return values:
 % output: result of the function; 1 -success; 0 -fail
-%
-%
+
+%|
 % @b Example
 % @code mibImage.addColorChannel(img, channelId);     // replace the color channel (channelId) with new img  @endcode
 % @code obj.mibModel.getImageMethod('addColorChannel', NaN, img, channelId); // call from mibController via a wrapper function getImageMethod; to clear the class @endcode
@@ -34,6 +34,7 @@ if size(obj.img{1},1) ~= size(img, 1) || size(obj.img{1},2) ~= size(img, 2) || s
     if strcmp(button,'Cancel'); return; end
 end
 wb = waitbar(0,'Please wait...','Name','Add color...','WindowStyle','modal');
+tMax = min([size(obj.img{1},5) size(img,5)]);
 zMax = min([size(obj.img{1},4) size(img,4)]);
 xMax = min([size(obj.img{1},2) size(img,2)]);
 yMax = min([size(obj.img{1},1) size(img,1)]);
@@ -43,7 +44,7 @@ noExtraColors = size(img,3);
 
 if isnan(channelId)     % add img as a new channel
     waitbar(0.1, wb);
-    obj.img{1}(1:yMax,1:xMax,noExistingColors+1:noExistingColors+noExtraColors,1:zMax) = img(1:yMax,1:xMax,:,1:zMax);
+    obj.img{1}(1:yMax,1:xMax,noExistingColors+1:noExistingColors+noExtraColors,1:zMax, 1:tMax) = img(1:yMax,1:xMax,:,1:zMax, 1:tMax);
     waitbar(0.9, wb);
     obj.colors = noExistingColors+noExtraColors;
     obj.meta('ColorType') = 'truecolor';
@@ -53,7 +54,7 @@ if isnan(channelId)     % add img as a new channel
     obj.slices{3} = [obj.slices{3} numel(obj.slices{3})+1];
 else
     waitbar(0.1, wb);
-    obj.img{1}(1:yMax,1:xMax,channelId,1:zMax) = img(1:yMax,1:xMax,1,1:zMax);
+    obj.img{1}(1:yMax,1:xMax,channelId,1:zMax,1:tMax) = img(1:yMax,1:xMax,1,1:zMax,1:tMax);
     waitbar(0.9, wb);
     obj.viewPort.min(channelId) = 0;
     obj.viewPort.max(channelId) = double(intmax(class(img)));

@@ -242,7 +242,7 @@ classdef mibSnapshotController < matlab.mixin.Copyable
             % function scalebarCheck_Callback(obj)
             % enable the scale bar and check of pixel size
             if obj.View.handles.scalebarCheck.Value == 1
-                obj.mibModel.updateParameters();
+                obj.mibModel.I{obj.mibModel.Id}.updatePixSizeResolution();
             end
         end
         

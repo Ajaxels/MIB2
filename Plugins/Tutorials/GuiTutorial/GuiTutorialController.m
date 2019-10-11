@@ -316,7 +316,7 @@ classdef GuiTutorialController < handle
             pixSize.y = ...
                 obj.mibModel.I{obj.mibModel.Id}.pixSize.y/height1*height;
             % update pixels size for the dataset
-            obj.mibModel.updateParameters(pixSize)
+            obj.mibModel.I{obj.mibModel.Id}.updatePixSizeResolution(pixSize)
             
             waitbar(1, wb); % update waitbar
             

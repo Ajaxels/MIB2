@@ -18,7 +18,8 @@
 % <http://www.openmicroscopy.org/site OMERO server>, and direct import from
 % <http://fiji.sc/Fiji Fiji> and <http://www.bitplane.com Imaris>
 % * Generation of multidimentional image stacks (3D/4D, width:height:color:depth:time)
-% * Alignment of multi-dimensional stacks and images within these stacks;
+% * Batch processing mode for automatization of image processing steps
+% * Alignment of multi-dimensional stacks and images within these stacks
 % * Brightness, contrast, gamma, image mode adjustments, resize, crop functions, rotate, etc
 % * Semi-automatic/manual image segmentation with help of filters and interpolation in XY, XZ, or YZ planes
 % * Quantification and statistics for 2D/3D objects

@@ -1,12 +1,8 @@
-function mibSelectionFillBtn_Callback(obj, sel_switch)
-% function mibSelectionFillBtn_Callback(obj, sel_switch)
+function mibSelectionFillBtn_Callback(obj)
+% function mibSelectionFillBtn_Callback(obj)
 % a callback to the mibGUI.handles.mibSelectionFillBtn, allows to fill holes for the Selection layer
 %
 % Parameters:
-% sel_switch: a string that defines where filling of holes should be done:
-% @li when @b '2D' fill holes for the currently shown slice
-% @li when @b '3D' fill holes for the currently shown z-stack
-% @li when @b '4D' fill holes for the whole dataset
 
 % Copyright (C) 19.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
@@ -16,67 +12,25 @@ function mibSelectionFillBtn_Callback(obj, sel_switch)
 % of the License, or (at your option) any later version.
 % 
 % Updates
-% 
+% 25.09.2019, moved to mibModel.fillSelectionOrMask
 
 % do nothing is selection is disabled
 if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
 
-tic;
-selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
-selectedOnly = obj.mibView.handles.mibSegmSelectedOnlyCheck.Value;
 if nargin < 2
     modifier = obj.mibView.gui.CurrentModifier;
     if sum(ismember({'alt','shift'}, modifier)) == 2
-        sel_switch = '4D';
+        sel_switch = '4D, Dataset';
     elseif sum(ismember({'alt','shift'}, modifier)) == 1
-        sel_switch = '3D';
+        sel_switch = '3D, Stack';
     else
-        sel_switch = '2D';
+        sel_switch = '2D, Slice';
     end
 end
 % tweak when only one time point
-if strcmp(sel_switch, '4D') && obj.mibModel.I{obj.mibModel.Id}.time == 1
-    sel_switch = '3D';
+if strcmp(sel_switch, '4D, Dataset') && obj.mibModel.I{obj.mibModel.Id}.time == 1
+    sel_switch = '3D, Stack';
 end
+obj.mibModel.fillSelectionOrMask(sel_switch);
 
-if strcmp(sel_switch,'2D')
-    obj.mibModel.mibDoBackup('selection', 0);
-    filled_img = imfill(cell2mat(obj.mibModel.getData2D('selection')),'holes');
-    if selectedOnly
-        filled_img = filled_img & cell2mat(obj.mibModel.getData2D('model', NaN, NaN, selcontour));
-    end
-    obj.mibModel.setData2D('selection', {filled_img});
-else 
-    if strcmp(sel_switch,'3D') 
-        obj.mibModel.mibDoBackup('selection', 1);
-        t1 = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1);
-        t2 = obj.mibModel.I{obj.mibModel.Id}.slices{5}(2);
-        wb = waitbar(0,'Filling holes in 2D for a whole Z-stack...','WindowStyle','modal');
-    else
-        t1 = 1;
-        t2 = obj.mibModel.I{obj.mibModel.Id}.time;
-        wb = waitbar(0,'Filling holes in 2D for a whole dataset...','WindowStyle','modal');
-    end
-    max_size = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation);
-    max_size2 = max_size*(t2-t1+1);
-    index = 1;
-    
-    for t=t1:t2
-        options.t = [t, t];
-        for layer_id=1:max_size
-            if mod(index, 10)==0; waitbar(layer_id/max_size2, wb); end
-            slice = cell2mat(obj.mibModel.getData2D('selection', layer_id, obj.mibModel.I{obj.mibModel.Id}.orientation, 0, options));
-            if max(max(slice)) < 1; continue; end
-            slice = imfill(slice,'holes');
-            if selectedOnly
-                slice = slice & cell2mat(obj.mibModel.getData2D('model', layer_id, obj.mibModel.I{obj.mibModel.Id}.orientation, selcontour, options));
-            end
-            obj.mibModel.setData2D('selection', {slice}, layer_id, obj.mibModel.I{obj.mibModel.Id}.orientation, 0, options);
-            index = index + 1;
-        end
-    end
-    delete(wb);
-    toc
-end
-obj.plotImage(0);
 end

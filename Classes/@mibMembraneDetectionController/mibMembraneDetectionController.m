@@ -105,10 +105,10 @@ classdef mibMembraneDetectionController < handle
             end
             
             % populating material lists
-            val = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;
+            val = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();   % -1 mask, 0-bg, 1,2,3 - materials
             obj.View.handles.objectPopup.Value = max([val 1]);
             obj.View.handles.objectPopup.String = list;
-            val = obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial - 2;
+            val = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo');    % -1 mask, 0-bg, 1,2,3 - materials
             obj.View.handles.backgroundPopup.Value = max([val 1]);
             obj.View.handles.backgroundPopup.String = list;
             

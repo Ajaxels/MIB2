@@ -1,0 +1,271 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Batch processing...</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-11"><meta name="DC.source" content="ug_gui_menu_file_batch.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Batch processing...</h1><!--introduction--><p>This mode allows automate many of the image processing steps in MIB, the steps may be assigned into a protocol, which may be applied to multiple images.</p><p>
+A demonstration is available in the following video:<br>
+<a href="https://youtu.be/P6Rivp713qM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/P6Rivp713qM</a>
+</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_file.html"><b>File Menu</b></a></p><p>
+<table>
+<tr>
+<td><img src="images\menuFileBatchMode.png"></td>
+<td>
+<ul>
+There are two general modes of usage:<br><br>
+<li>when the <b>Listen for MIB actions</b> checkbox is checked, all recordable MIB operations are
+automatically detected and displayed as the current protocol step.
+<br>When the <b>Auto add to protocol</b> checkbox is checked the detected action are automatically added to the protocol.<br>
+<em><b>Please note</em></b> that not all available operations are detected
+some of them (for example, loading or saving of images) can only be added manually</li>
+<li>alternatively, possible operations can be manually selected using the <b>Protocol steps->Section</b> and
+<b>Protocol steps->Action</b> comboboxes. The selected action with default parameters is acquired and can be added to the protocol</li>
+</ul>
+<br><br>
+Start the protocol by pressing the <b>Run protocol</b> button or,
+whenever is need the protocol may be started from the currently selected
+step (<b>Start from selected</b> button).
+</td>
+</tr>
+</table>
+<br>
+In addition, to the normal image operations, the Batch processing tool
+has also the <b>Service steps</b> section, which allows to stop protocol
+at each moment or to generate Directory or File loops to load images in
+sequence.
+</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Protocol panel</a></li><li><a href="#2">Protocol steps panel</a></li></ul></div><h2 id="1">Protocol panel</h2><p>This section shows the steps of the protocol and allows basic operations with it.</p><p>
+<table>
+<tr>
+<td><img src="images\menuFileBatchMode_2.png"></td>
+<td>
+<ul>
+The right mouse click over the list of actions brings a popup menu with additional options:<br><br>
+<li><b>Show settings</b> displays the parameters for the selected action
+in the Protocol panel at the lower part of the window; from there the the specific parameters may be modified.
+<b><em>Please note</b></em>, when the <b>Show parameters on click</b>
+checkbox is checked the parameters of the selected action are
+automatically displayed in the Protocol steps panel</li>
+<li><b>Duplicate</b> - duplicate the selected action and place it as the
+next step of the protocol</li>
+<li><b>Insert STOP EXECTUTION event</b>, adds a new step (STOP
+EXECTUTION) that stops the protocol allowing to perform any operation
+that can't be implemented with the Batch processing</li>
+<li><b>Move up</b> - move selected action up in the list</li>
+<li><b>Move down</b> - move selected action down in the list</li>
+<li><b>Delete from protocol</b> - delete selected action from the list of
+the protocol steps</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<ul>
+<li><img src="images\menuFileBatchMode_runstep.png" style="vertical-align: text-bottom"> perform the selected step of the protocol</li>
+<li><img src="images\menuFileBatchMode_runstep_advance.png" style="vertical-align: text-bottom"> perform the selected step of the protocol and advance to the next</li>
+<li><b>Listen for MIB actions</b>, when checked automatically detect image processing steps and display them to the Protocol steps panel</li>
+<li><b>Auto add to protocol</b>, when checked automatically detected actions to the list of the protocol steps</li>
+<li><b>Show parameters on click</b>, when checked parameters of the selected action are automatically displated in the Protocol steps panel,
+otherwise please use the <b>Show settings</b> option in the popup menu, see above</li>
+<li><img src="images\menuFileBatchMode_load_save_delete.png" style="vertical-align: text-bottom"> press the buttons to load, save or delete the protocol. Saving of the protocol is
+also available in the Microsoft Excel format</li>
+<li><b>Undo, Redo</b>, press to undo or redo any recent modification of the protocol</li>
+</ul>
+</td>
+</tr>
+</table>
+</p><h2 id="2">Protocol steps panel</h2><p>Individual steps of the protocol can be modified using this panel.</p><p>
+<ul>
+<li><b>Section</b>, allows to select section with the desired action. Sections are groups of actions, defined mostly by their location
+within the main GUI of MIB.
+<br>In addition, there is an extra section
+"Service steps", using this section it is possible to generate loops for
+files or/and directories to load and process images one after another. It
+is important that the LOOP START is followed with LOOP STOP action.
+</li>
+<li><b>Action</b>, allows to select particular action within the list of possible actions of the selected section</li>
+<li><b>Parameters</b> table, displays possible options for each action. Options for the selected parameters are displayed and can be modified
+using widgets on the right hand of the Parameters table</li>
+<li><b>Update protocol</b>, press of this button updates selected entry in the protocol list with the current Protocol step</li>
+<li><b>Add to protocol</b>, adds current protocol step to the end of the protocol list</li>
+<li><b>Insert into protocol</b>, press to insert current protocol step into highlighed step of the protocol list</li>
+</ul>
+</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_file.html"><b>File Menu</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Batch processing...
+% This mode allows automate many of the image processing steps in MIB, the steps may be assigned into a protocol, which may be applied
+% to multiple images. 
+%
+% <html>
+% A demonstration is available in the following video:<br>
+% <a href="https://youtu.be/P6Rivp713qM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/P6Rivp713qM</a>
+% </html>
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_file.html *File Menu*>
+%
+%
+% <html>
+% <table>
+% <tr>
+% <td><img src="images\menuFileBatchMode.png"></td>
+% <td>
+% <ul>
+% There are two general modes of usage:<br><br>
+% <li>when the <b>Listen for MIB actions</b> checkbox is checked, all recordable MIB operations are
+% automatically detected and displayed as the current protocol step.
+% <br>When the <b>Auto add to protocol</b> checkbox is checked the detected action are automatically added to the protocol.<br>
+% <em><b>Please note</em></b> that not all available operations are detected
+% some of them (for example, loading or saving of images) can only be added manually</li>
+% <li>alternatively, possible operations can be manually selected using the <b>Protocol steps->Section</b> and 
+% <b>Protocol steps->Action</b> comboboxes. The selected action with default parameters is acquired and can be added to the protocol</li>
+% </ul>
+% <br><br>
+% Start the protocol by pressing the <b>Run protocol</b> button or,
+% whenever is need the protocol may be started from the currently selected
+% step (<b>Start from selected</b> button).
+% </td>
+% </tr>
+% </table>
+% <br>
+% In addition, to the normal image operations, the Batch processing tool
+% has also the <b>Service steps</b> section, which allows to stop protocol
+% at each moment or to generate Directory or File loops to load images in
+% sequence. 
+% </html>
+%
+%% Protocol panel
+% This section shows the steps of the protocol and allows basic operations
+% with it.
+%
+% <html>
+% <table>
+% <tr>
+% <td><img src="images\menuFileBatchMode_2.png"></td>
+% <td>
+% <ul>
+% The right mouse click over the list of actions brings a popup menu with additional options:<br><br>
+% <li><b>Show settings</b> displays the parameters for the selected action
+% in the Protocol panel at the lower part of the window; from there the the specific parameters may be modified.
+% <b><em>Please note</b></em>, when the <b>Show parameters on click</b>
+% checkbox is checked the parameters of the selected action are
+% automatically displayed in the Protocol steps panel</li>
+% <li><b>Duplicate</b> - duplicate the selected action and place it as the
+% next step of the protocol</li>
+% <li><b>Insert STOP EXECTUTION event</b>, adds a new step (STOP
+% EXECTUTION) that stops the protocol allowing to perform any operation
+% that can't be implemented with the Batch processing</li>
+% <li><b>Move up</b> - move selected action up in the list</li>
+% <li><b>Move down</b> - move selected action down in the list</li>
+% <li><b>Delete from protocol</b> - delete selected action from the list of
+% the protocol steps</li>
+% </ul>
+% </td>
+% </tr>
+% <tr>
+% <td colspan=2>
+% <ul>
+% <li><img src="images\menuFileBatchMode_runstep.png" style="vertical-align: text-bottom"> perform the selected step of the protocol</li>
+% <li><img src="images\menuFileBatchMode_runstep_advance.png" style="vertical-align: text-bottom"> perform the selected step of the protocol and advance to the next</li>
+% <li><b>Listen for MIB actions</b>, when checked automatically detect image processing steps and display them to the Protocol steps panel</li>
+% <li><b>Auto add to protocol</b>, when checked automatically detected actions to the list of the protocol steps</li>
+% <li><b>Show parameters on click</b>, when checked parameters of the selected action are automatically displated in the Protocol steps panel, 
+% otherwise please use the <b>Show settings</b> option in the popup menu, see above</li>
+% <li><img src="images\menuFileBatchMode_load_save_delete.png" style="vertical-align: text-bottom"> press the buttons to load, save or delete the protocol. Saving of the protocol is
+% also available in the Microsoft Excel format</li>
+% <li><b>Undo, Redo</b>, press to undo or redo any recent modification of the protocol</li>
+% </ul>
+% </td>
+% </tr>
+% </table>
+% </html>
+% 
+%% Protocol steps panel
+% Individual steps of the protocol can be modified using this panel. 
+%
+% <html>
+% <ul>
+% <li><b>Section</b>, allows to select section with the desired action. Sections are groups of actions, defined mostly by their location 
+% within the main GUI of MIB. 
+% <br>In addition, there is an extra section
+% "Service steps", using this section it is possible to generate loops for
+% files or/and directories to load and process images one after another. It
+% is important that the LOOP START is followed with LOOP STOP action.
+% </li>
+% <li><b>Action</b>, allows to select particular action within the list of possible actions of the selected section</li>
+% <li><b>Parameters</b> table, displays possible options for each action. Options for the selected parameters are displayed and can be modified 
+% using widgets on the right hand of the Parameters table</li>
+% <li><b>Update protocol</b>, press of this button updates selected entry in the protocol list with the current Protocol step</li>
+% <li><b>Add to protocol</b>, adds current protocol step to the end of the protocol list</li>
+% <li><b>Insert into protocol</b>, press to insert current protocol step into highlighed step of the protocol list</li>
+% </ul>
+% </html>
+%
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_file.html *File Menu*>
+##### SOURCE END #####
+--></body></html>

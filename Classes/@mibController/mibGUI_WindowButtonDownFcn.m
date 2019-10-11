@@ -130,7 +130,6 @@ if strcmp(seltype,'normal') %& strcmp(modifier,'alt')
     
     setptr(obj.mibView.gui, 'closedhand');  % undocumented matlab http://undocumentedmatlab.com/blog/undocumented-mouse-pointer-functions/
     obj.mibView.gui.WindowButtonUpFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowButtonUpFcn());
-    
 elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, or both mouse buttons
     %% Start segmentation mode
     %y = round(xy(1,2));
@@ -152,6 +151,7 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
             % 3D ball: filled shere in 3d with a center at the clicked point
             [w, h, z] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 0);
             obj.mibSegmentation3dBall(ceil(h), ceil(w), ceil(z), modifier);
+            return;
         case '3D lines'
             [w, h, z] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 0);
             obj.mibSegmentationLines3D(h, w, z, modifier);
@@ -175,6 +175,15 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
             return;
         case 'BW Thresholding'
             % Black and white thresholding
+            return;
+        case 'Drag & Drop materials'
+            % Drag and drop selection with the mouse
+            x = round(xy(1,1));
+            y = round(xy(1,2));
+            if isempty(modifier); return; end
+            obj.mibView.gui.WindowScrollWheelFcn = []; % turn off callback for the mouse wheel during the brush selection
+            obj.mibView.gui.WindowKeyPressFcn = [];  % turn off callback for the keys during the brush selection
+            obj.mibSegmentationDragAndDrop(y, x, modifier);
             return;
         case 'Lasso'
             % Lasso mode
@@ -265,6 +274,7 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
             % The spot mode: draw a circle after mouse click
             [w, h, z] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 1);
             obj.mibSegmentationSpot(ceil(h), ceil(w), modifier);
+            return;
     end
     obj.plotImage();
     obj.mibView.gui.WindowButtonMotionFcn = (@(hObject, eventdata, handles) obj.mibGUI_WinMouseMotionFcn());   % moved from plotImage

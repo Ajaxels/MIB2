@@ -16,8 +16,11 @@ function closeVirtualDataset(obj)
 % Updates
 %
 
+% NOTE! this is an old script for MIB < 2.501
+% it now should include delete of the memo files
+
 % close open bio-format readers, otherwise the files locked
-if iscell(obj.img) && isa(obj.img{1}, 'loci.formats.ChannelSeparator')
+if iscell(obj.img) && isa(obj.img{1}, 'loci.formats.Memoizer')
     for imgId = 1:numel(obj.img)
         obj.img{imgId}.close();
     end

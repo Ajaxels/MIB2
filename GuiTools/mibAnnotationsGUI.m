@@ -58,10 +58,12 @@ handles.labelsTable_cm = uicontextmenu('Parent',handles.mibAnnotationsGUI);
 uimenu(handles.labelsTable_cm, 'Label', 'Jump to annotation', 'Callback', {@tableContextMenu_cb, 'Jump'});
 uimenu(handles.labelsTable_cm, 'Label', 'Add annotation...', 'Callback', {@tableContextMenu_cb, 'Add'});
 uimenu(handles.labelsTable_cm, 'Label', 'Rename selected annotations...', 'Callback', {@tableContextMenu_cb, 'Rename'});
+uimenu(handles.labelsTable_cm, 'Label', 'Batch modify selected annotations...', 'Callback', {@tableContextMenu_cb, 'Modify'});
 uimenu(handles.labelsTable_cm, 'Label', 'Count selected annotations', 'Callback', {@tableContextMenu_cb, 'Count'});
-uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations...', 'Callback', {@tableContextMenu_cb, 'Export'}, 'Separator', 'on');
+uimenu(handles.labelsTable_cm, 'Label', 'Copy selected annotations to clipboard', 'Callback', {@tableContextMenu_cb, 'Clipboard'}, 'Separator', 'on');
+uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations...', 'Callback', {@tableContextMenu_cb, 'Export'});
 uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations to Imaris', 'Callback', {@tableContextMenu_cb, 'Imaris'});
-uimenu(handles.labelsTable_cm, 'Label', 'Delete annotation...', 'Separator','on', 'Callback', {@tableContextMenu_cb, 'Delete'});
+uimenu(handles.labelsTable_cm, 'Label', 'Delete selected annotation(s)...', 'Separator','on', 'Callback', {@tableContextMenu_cb, 'Delete'});
 set(handles.annotationTable,'UIContextMenu',handles.labelsTable_cm);
 
 % update font and size

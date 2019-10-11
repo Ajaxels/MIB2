@@ -4,12 +4,12 @@ function menuImageColorCh_Callback(obj, parameter)
 %
 % Parameters:
 % parameter: a string that defines image source:
-% - 'insert', insert an empty color channel to the specified position
-% - 'copy', copy color channel to a new position
-% - 'invert', invert color channel
-% - 'rotate', rotate color channel
-% - 'swap', swap two color channels
-% - 'delete', delete color channel from the dataset
+% - 'Insert empty channel', insert an empty color channel to the specified position
+% - 'Copy channel', copy color channel to a new position
+% - 'Invert channel', invert color channel
+% - 'Rotate channel', rotate color channel
+% - 'Swap channels', swap two color channels
+% - 'Delete channel', delete color channel from the dataset
 
 % Copyright (C) 03.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
@@ -19,7 +19,7 @@ function menuImageColorCh_Callback(obj, parameter)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 26.05.2019, updated for the batch mode
 
 % check for the virtual stacking mode and close the controller
 if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
@@ -29,31 +29,6 @@ if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
     return;
 end
 
-switch parameter
-    case 'insert'
-        obj.mibModel.I{obj.mibModel.Id}.insertEmptyColorChannel();
-        obj.updateGuiWidgets();
-    case 'copy'
-        obj.mibModel.I{obj.mibModel.Id}.copyColorChannel();
-        obj.updateGuiWidgets();
-    case 'invert'
-        if obj.mibModel.I{obj.mibModel.Id}.time < 2
-            obj.mibModel.mibDoBackup('image', 1); 
-        end
-        obj.mibModel.I{obj.mibModel.Id}.invertColorChannel();
-    case 'rotate'
-        if obj.mibModel.I{obj.mibModel.Id}.time < 2
-            obj.mibModel.mibDoBackup('image', 1); 
-        end
-        obj.mibModel.I{obj.mibModel.Id}.rotateColorChannel();        
-    case 'swap'
-        if obj.mibModel.I{obj.mibModel.Id}.time < 2
-            obj.mibModel.mibDoBackup('image', 1); 
-        end
-        obj.mibModel.I{obj.mibModel.Id}.swapColorChannels();
-    case 'delete'
-        obj.mibModel.I{obj.mibModel.Id}.deleteColorChannel();
-        obj.updateGuiWidgets();
-end    
-obj.plotImage(1);
+obj.mibModel.colorChannelActions(parameter);
+
 end

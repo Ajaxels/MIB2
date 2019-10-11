@@ -73,14 +73,14 @@ if mode3D
     end
     
     % limit to the selected material of the model
-    if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial
         selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
         currModel = cell2mat(obj.mibModel.getData3D('model', NaN, NaN, selcontour, backupOptions));
         selarea = bitand(selarea, currModel);
     end
     
     % limit selection to the masked area
-    if obj.mibView.handles.mibMaskedAreaCheck.Value && obj.mibView.getImageProperty('maskExist')   % do selection only in the masked areas
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMask && obj.mibView.getImageProperty('maskExist')   % do selection only in the masked areas
         currModel = cell2mat(obj.mibModel.getData3D('mask', NaN, 4, NaN, backupOptions));
         selarea = bitand(selarea, currModel);
     end
@@ -90,14 +90,14 @@ else
     currSelection = cell2mat(obj.mibModel.getData2D('selection', NaN, NaN, NaN, backupOptions));
     
     % limit to the selected material of the model
-    if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial
         selcontour = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
         currModel = cell2mat(obj.mibModel.getData2D('model', NaN, NaN, selcontour, backupOptions));
         selected_mask = bitand(selected_mask, currModel);
     end
     
     % limit selection to the masked area
-    if obj.mibView.handles.mibMaskedAreaCheck.Value && obj.mibView.getImageProperty('maskExist')
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMask && obj.mibView.getImageProperty('maskExist')
         currModel = cell2mat(obj.mibModel.getData2D('mask', NaN, NaN, NaN, backupOptions));
         selected_mask = bitand(selected_mask, currModel);
     end

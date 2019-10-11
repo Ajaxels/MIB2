@@ -30,7 +30,7 @@ obj.modelFilename = [];    % filename for a model
 obj.modelVariable = 'mibModel'; % variable name in the model mat-file
 obj.modelMaterialNames = {};
 % obj.maskStat = struct();    %%% TO DO
-obj.maskImgFilename = NaN;
+obj.maskImgFilename = [];
 obj.modelExist = 0;
 obj.maskExist = 0;
 obj.hLabels = Labels();     % initialize labels class
@@ -39,9 +39,13 @@ obj.hROI = mibRoiRegion(obj);
 obj.hLines3D = Lines3D();     % initialize Lines3D class
 obj.blockModeSwitch = 0;
 obj.selectedMaterial = 1;   % index of the selected material in mibView.handles.mibSegmentationTable; 1-mask
+obj.fixSelectionToMask = 0;  % unselect fix selection to mask
+obj.fixSelectionToMaterial = 0;  % unselect fix selection to material
 obj.selectedAddToMaterial = 1; % index of the selected material for the Add to in mibView.handles.mibSegmentationTable; 1-mask
 obj.selectedColorChannel = 1;   % selected color channel
 obj.modelType = 63;     % set by default the model type to 63
+obj.useLUT = 0;
+obj.lastSegmSelection = [2 1];  % last selected contours for use with the 'e' button of mibController
 
 if isempty(obj.Virtual); obj.Virtual.virtual = 0; end   % define default mode to non-virtual
 

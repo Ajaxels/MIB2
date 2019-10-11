@@ -16,10 +16,13 @@ function dataset = getData(obj, type, orient, col_channel, options, custom_img) 
 % selected in the imageData.slices{3} variable, when @b 0 - take all colors of the dataset.
 % @li when @b type is 'model' @b col_channel may be @em NaN - to take all materials of the model or an integer to take specific material. In the later case the selected material will have index = 1.
 % options: [@em optional], a structure with extra parameters
-% @li .y -> [@em optional], [ymin, ymax] coordinates of the dataset to take after transpose for level=1, height
-% @li .x -> [@em optional], [xmin, xmax] coordinates of the dataset to take after transpose for level=1, width
-% @li .z -> [@em optional], [zmin, zmax] coordinates of the dataset to take after transpose, depth
-% @li .t -> [@em optional], [tmin, tmax] coordinates of the dataset to take after transpose, time
+% @li .y -> [@em optional], [ymin, ymax] coordinates of the dataset to take
+% after transpose for level=1, when @b 0 takes 1:obj.height; can be a single number
+% @li .x -> [@em optional], [xmin, xmax] coordinates of the dataset to take
+% after transpose for level=1, when @b 0 takes 1:obj.width; can be a single number
+% @li .z -> [@em optional], [zmin, zmax] coordinates of the dataset to take
+% after transpose, when @b 0 takes 1:obj.depth; can be a single number
+% @li .t -> [@em optional], [tmin, tmax] coordinates of the dataset to take after transpose, when @b 0 takes 1:obj.time; can be a single number
 % @li .level -> [@em optional], index of image level from the image pyramid
 % custom_img: get dataset from a provided custom image stack, not implemented
 %
@@ -78,18 +81,24 @@ if blockModeSwitchLocal == 1
     Zlim = [1 obj.depth];
     Tlim = [1 obj.time];
     
+    % deal with cases when options.x/y/z == 0 
+    if isfield(options, 'x') && options.x(1) == 0; options = rmfield(options, 'x'); end
+    if isfield(options, 'y') && options.y(1) == 0; options = rmfield(options, 'y'); end
+    if isfield(options, 'z') && options.z(1) == 0; options = rmfield(options, 'z'); end
+    if isfield(options, 't') && options.t(1) == 0; options = rmfield(options, 't'); end
+    
     if orient==1     % xz
-        if isfield(options, 'x'); Zlim = options.x(1,:); end
-        if isfield(options, 'z'); Ylim = floor(options.z(1,:)/level); end
-        if isfield(options, 'y'); Xlim = floor(options.y(1,:)/level); end
+        if isfield(options, 'x'); Zlim = [options.x(1) options.x(numel(options.x))]; end
+        if isfield(options, 'z'); Ylim = floor([options.z(1) options.z(numel(options.z))]/level); end
+        if isfield(options, 'y'); Xlim = floor([options.y(1) options.y(numel(options.y))]/level); end
     elseif orient==2 % yz
-        if isfield(options, 'x'); Zlim = options.x(1,:); end
-        if isfield(options, 'y'); Ylim = floor(options.y(1,:)/level); end
-        if isfield(options, 'z'); Xlim = floor(options.z(1,:)/level); end
+        if isfield(options, 'x'); Zlim = [options.x(1) options.x(numel(options.x))]; end
+        if isfield(options, 'y'); Ylim = floor([options.y(1) options.y(numel(options.y))]/level); end
+        if isfield(options, 'z'); Xlim = floor([options.z(1) options.z(numel(options.z))]/level); end
     elseif orient==4 % yx
-        if isfield(options, 'x'); Xlim = floor(options.x(1,:)/level); end
-        if isfield(options, 'y'); Ylim = floor(options.y(1,:)/level); end
-        if isfield(options, 'z'); Zlim = options.z(1,:); end
+        if isfield(options, 'x'); Xlim = floor([options.x(1) options.x(numel(options.x))]/level); end
+        if isfield(options, 'y'); Ylim = floor([options.y(1) options.y(numel(options.y))]/level); end
+        if isfield(options, 'z'); Zlim = [options.z(1) options.z(numel(options.z))]; end
     end
     if isfield(options, 't')
         if numel(options.t) == 1; options.t = [options.t options.t]; end
@@ -115,7 +124,8 @@ if obj.modelType > 63
             end
         elseif strcmp(type,'model')
             if ~isnan(col_channel)     % take only specific object
-                dataset = zeros(size(obj.model{level}), class(obj.model{level}));   %#ok<*ZEROLIKE>
+                %dataset = zeros(size(obj.model{level}), class(obj.model{level}));   %#ok<*ZEROLIKE>
+                dataset = zeros(size(obj.model{level}), 'uint8');   % need to have this in uint8, otherwise bitand operations won't work %#ok<*ZEROLIKE>
                 dataset(obj.model{level} == col_channel) = 1;
             else
                 dataset = obj.model{level};

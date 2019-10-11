@@ -6,11 +6,12 @@
 % developed by Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin. This package should be integrated into
 % Fiji.
 % 
+%
+% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
+%%
 % 
 % <<images\PanelsFiji.png>>
 % 
-%
-% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
 %% Video tutorial
 %
 % <html>

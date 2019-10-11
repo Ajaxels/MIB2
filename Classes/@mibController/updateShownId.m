@@ -21,6 +21,7 @@ function updateShownId(obj, Id)
 % Updates
 %
 
+obj.mibModel.mibPrevId = num2str(obj.mibModel.Id);   % update previously shown id
 obj.mibModel.Id = Id;               % update Id
 notify(obj.mibModel, 'updateId');   % notify the controller about updated Id
 obj.plotImage(0);                   % plot image

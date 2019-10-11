@@ -6,11 +6,12 @@
 % the code of the <http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility *Image Measurement Utility*> written by Jan Neggers, 
 % Eindhoven Univeristy of Technology.
 %
-% <<images\PanelsROI.png>>
-%
-%
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
 % 
+%%
+%
+% <<images\PanelsROI.png>>
+%
 %% 1. ROI type combo box
 % Define type of a ROI to add. Several ROI types are available. By default,
 % an inteactive mode for placing of the ROIs is enabled, however it is

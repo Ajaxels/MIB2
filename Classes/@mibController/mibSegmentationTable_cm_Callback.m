@@ -72,31 +72,17 @@ switch type
         options.fillBg = 0;
         if obj.mibView.getRoiSwitch == 1; options.roiId = []; end
         
-        if contIndex == -1
-            model = obj.mibModel.getData3D('mask', NaN, NaN, NaN, options);
-            contIndex = 1;
-            modelMaterialColors = obj.mibModel.preferences.maskcolor;
-        else
-            model = obj.mibModel.getData3D('model', NaN, NaN, NaN, options);
-            if obj.mibModel.showAllMaterials == 1; contIndex = 0; end      % show all materials
-            modelMaterialColors = obj.mibModel.getImageProperty('modelMaterialColors');
-        end
-        if numel(model) > 1
-            msgbox(sprintf('!!! Error !!!\nPlease select which of ROIs you would like to render!'),'Error!','error');
-            return;
-        end
-        
+        [height, width] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions();
         % define parameters for rendering
         prompt = {'Reduce the volume down to, width pixels [no volume reduction when 0]?',...
             'Smoothing 3d kernel, width (no smoothing when 0):',...
             'Maximal number of faces (no limit when 0):',...
             'Show orthoslice (enter a number slice number, or NaN):'};
-        if size(model{1},2) > 500
+        if max([height, width]) > 500
             defAns = {'500','5','300000','1'};
         else
             defAns = {'0','5','300000','1'};
         end
-
         mibInputMultiDlgOpt.PromptLines = [2, 1, 1, 2];
         answer = mibInputMultiDlg({obj.mibPath}, prompt, defAns, 'Isosurface parameters', mibInputMultiDlgOpt);
         if isempty(answer); return; end
@@ -105,6 +91,37 @@ switch type
         Options.smooth = str2double(answer{2});
         Options.maxFaces = str2double(answer{3});
         Options.slice = str2double(answer{4});
+        
+        if contIndex == -1
+            model = obj.mibModel.getData3D('mask', NaN, NaN, NaN, options);
+            contIndex = 1;
+            modelMaterialColors = obj.mibModel.preferences.maskcolor;
+            Options.modelMaterialNames = {'Mask'};
+        else
+            Options.modelMaterialNames = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames;
+            modelMaterialColors = obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors;
+            
+            if obj.mibModel.showAllMaterials == 1
+                prompts = {sprintf('Specify indices of materials to be rendered\nkeep the field empty to render all materials\n(for example, 2,4,6:8)')};
+                defAns = {num2str(contIndex)};
+                dlgTitle = 'Select materials';
+                dlgOptions.WindowStyle = 'modal';
+                dlgOptions.PromptLines = 3;
+                answer2 = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, dlgOptions);
+                if isempty(answer2); return; end    
+                if isempty(answer2{1})
+                    contIndex = NaN;
+                else
+                    contIndex = str2num(answer2{1}); %#ok<ST2NM>
+                end
+            end
+            
+            model = obj.mibModel.getData3D('model', NaN, NaN, NaN, options);
+            if numel(model) > 1
+                msgbox(sprintf('!!! Error !!!\nPlease select which of ROIs you would like to render!'), 'Error!', 'error');
+                return;
+            end
+        end
         
         getRGBOptions.mode = 'full';
         getRGBOptions.resize = 'no';
@@ -126,12 +143,8 @@ switch type
         bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();  % get bounding box
         if strcmp(type, 'isosurface2imaris')
             Options.exportToImaris = 1;
-            if contIndex == -1
-                Options.modelMaterialNames = 'Mask';
-            else
-                Options.modelMaterialNames = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames;    
-            end
         end
+        
         mibRenderModel(model{1}, contIndex, obj.mibModel.I{obj.mibModel.Id}.pixSize, bb, modelMaterialColors, image, Options);
     case 'mib'
         if obj.matlabVersion < 9.5
@@ -197,6 +210,4 @@ switch type
         obj.updateSegmentationTable();
 end
 obj.plotImage(0);
-
-
 end

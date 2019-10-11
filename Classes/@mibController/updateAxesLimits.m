@@ -4,7 +4,7 @@ function updateAxesLimits(obj, mode, index, newMagFactor)
 %
 % Parameters:
 % mode: update mode
-% @li 'resize' -> scale to width/height
+% @li 'resize' -> [@em default] scale to width/height
 % @li 'zoom' -> scale during the zoom
 % index: [@b optional] index of the mibImage to update, when @em [] updates the currently selected dataset
 % newMagFactor: a value of the new magnification factor, only for the 'zoom' mode
@@ -26,11 +26,12 @@ function updateAxesLimits(obj, mode, index, newMagFactor)
 % Updates
 % 
 
-if nargin <  4; newMagFactor=1; end
-if nargin <  3; index=[]; end
-if nargin <  2; mode='resize'; end
+if nargin <  4; newMagFactor = 1; end
+if nargin <  3; index = []; end
+if nargin <  2; mode = []; end
 
 if isempty(index); index = obj.mibModel.Id; end
+if isempty(mode); mode = 'resize'; end
 
 % get the scaling coefficient
 if obj.mibModel.I{index}.orientation == 4     % xy

@@ -108,8 +108,6 @@ switch parameter
     case 'imaris'
         [img, answer{2}, viewPort, lutColors, obj.mibModel.connImaris] = mibGetImarisDataset(obj.mibModel.connImaris);
         if isnan(img(1)); return; end
-        obj.mibView.handles.mibLutCheckbox.Value = 1;
-        obj.mibModel.useLUT = 1;
     case 'url'
         clipboardText = clipboard('paste');
         webLink = 'http://mib.helsinki.fi/images/im_browser_splash.jpg';
@@ -219,7 +217,7 @@ if ~isempty(answer{2})
             info = evalin('base', answer{2});
         catch err
             errordlg(sprintf('!!! Error !!!\nWrong variable for metadata'), 'Wrong variable', 'modal');
-            info = containers.Map('Filename', 'import.tif');
+            info = containers.Map('Filename', fullfile(obj.mibModel.myPath, 'import.tif'));
         end
     else
         info = answer{2};
@@ -230,17 +228,18 @@ if ~isempty(answer{2})
     end
 else
     obj.mibModel.I{obj.mibModel.Id}.clearContents(img, [], obj.mibModel.preferences.disableSelection);
-    obj.mibModel.updateParameters();    % update pixels size, and resolution
-    obj.mibModel.I{obj.mibModel.Id}.meta('Filename') = 'import.tif';
+    obj.mibModel.I{obj.mibModel.Id}.updatePixSizeResolution();    % update pixels size, and resolution
+    obj.mibModel.I{obj.mibModel.Id}.meta('Filename') = fullfile(obj.mibModel.myPath, 'import.tif');
 end
 
 % update viewport
 if strcmp(parameter, 'imaris')
     obj.mibModel.I{obj.mibModel.Id}.viewPort = viewPort;
     obj.mibModel.I{obj.mibModel.Id}.lutColors = lutColors;
+    obj.mibModel.I{obj.mibModel.Id}.useLUT = 1;
 end
 
-obj.mibView.lastSegmSelection = [2 1];  % last selected contour for use with the 'e' button
+obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection = [2 1];  % last selected contour for use with the 'e' button
 notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details
 obj.plotImage(1);
 end

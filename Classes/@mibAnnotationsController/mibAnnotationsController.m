@@ -12,6 +12,7 @@ classdef mibAnnotationsController < handle
     
     % Updates
     % 28.02.2018, IB, updated to be compatible with values
+    % 22.05.2019, IB added batch modification of values via right mouse button menu
     
     
     properties
@@ -32,6 +33,8 @@ classdef mibAnnotationsController < handle
         % java handle to the scroll bar of obj.View.handles.annotationTable
         jTable
         % java handle to the obj.View.handles.annotationTable
+        batchModifyExpression
+        % expression to use with the batch modify mode
     end
     
     events
@@ -66,7 +69,7 @@ classdef mibAnnotationsController < handle
                         
             obj.mibModel.mibShowAnnotationsCheck = 1;
             obj.View.handles.precisionEdit.String = num2str(obj.mibModel.mibAnnValuePrecision);
-            
+            obj.batchModifyExpression = 'A=A*2';
             obj.updateWidgets();
             
             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
@@ -247,7 +250,7 @@ classdef mibAnnotationsController < handle
             fn_out = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
             dotIndex = strfind(fn_out,'.');
             if ~isempty(dotIndex)
-                fn_out = fn_out(1:dotIndex-1);
+                fn_out = [fn_out(1:dotIndex-1) '_Ann'];
             end
             if isempty(strfind(fn_out,'/')) && isempty(strfind(fn_out,'\')) %#ok<STREMP>
                 fn_out = fullfile(obj.mibModel.myPath, fn_out);
@@ -257,60 +260,28 @@ classdef mibAnnotationsController < handle
             end
             
             Filters = {'*.ann;',  'Matlab format (*.ann)';...
-                '*.landmarksAscii',   'Amira landmarks ASCII (*.landmarksAscii)';...
-                '*.landmarksBin',   'Amira landmarks BINARY(*.landmarksBin)';...
-                '*.psi',   'PSI format ASCII(*.psi)';...
-                '*.xls',   'Excel format (*.xls)'; };
+                       '*.landmarksAscii',   'Amira landmarks ASCII (*.landmarksAscii)';...
+                       '*.landmarksBin',   'Amira landmarks BINARY(*.landmarksBin)';...
+                       '*.psi',   'PSI format ASCII(*.psi)';...
+                       '*.xls',   'Excel format (*.xls)'; };
             
             [filename, path, FilterIndex] = uiputfile(Filters, 'Save annotations...',fn_out); %...
             if isequal(filename,0); return; end % check for cancel
             fn_out = fullfile(path, filename);
             
             if strcmp('Matlab format (*.ann)', Filters{FilterIndex,2})    % matlab format
-                save(fn_out, 'labelText', 'labelValue', 'labelPosition', '-mat', '-v7.3');
+                options.format = 'ann';
             elseif strcmp('Excel format (*.xls)', Filters{FilterIndex,2})    % excel format
-                wb = waitbar(0,'Please wait...','Name','Generating Excel file...','WindowStyle','modal');
-                warning off MATLAB:xlswrite:AddSheet
-                % Sheet 1
-                s = {sprintf('Annotations for %s', obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));};
-                s(3,1) = {'Annotation'};
-                s(4,1) = {'Text'};
-                s(4,2) = {'Value'};
-                s(3,4) = {'Coordinates'};
-                s(4,3) = {'Z'};
-                s(4,4) = {'X'};
-                s(4,5) = {'Y'};
-                s(4,6) = {'T'};
-                roiId = 4;
-                for i=1:numel(labelText)
-                    s(roiId+i, 1) = labelText(i);
-                    s{roiId+i, 2} = labelValue(i);
-                    s{roiId+i, 3} = labelPosition(i,1);
-                    s{roiId+i, 4} = labelPosition(i,2);
-                    s{roiId+i, 5} = labelPosition(i,3);
-                    s{roiId+i, 6} = labelPosition(i,4);
-                end
-                xlswrite2(fn_out, s, 'Sheet1', 'A1');
-                waitbar(1, wb);
-                delete(wb);
+                options.format = 'xls';
             elseif strcmp('PSI format ASCII(*.psi)', Filters{FilterIndex,2})    % PSI format, compatible with Amira
                 recalcCoordinates = questdlg(sprintf('Recalculate annotations with respect to the current bounding box or save as they are?'),...
                     'Recalculate coordinates', 'Recalculate', 'Save as they are', 'Recalculate');
-                
-                % rearrange to [x, y, z] format from [z, x, y]
-                labelPositionsOut = [labelPosition(:,2) labelPosition(:,3) labelPosition(:,1)];
-                
-                if strcmp(recalcCoordinates, 'Recalculate')     % recalculate annotations to the real world coordinates
-                    bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
-                    pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
-                    labelPositionsOut(:, 1) = labelPositionsOut(:, 1)*pixSize.x + bb(1) - pixSize.x/2;
-                    labelPositionsOut(:, 2) = labelPositionsOut(:, 2)*pixSize.y + bb(3) - pixSize.y/2;
-                    labelPositionsOut(:, 3) = labelPositionsOut(:, 3)*pixSize.z + bb(5) - pixSize.z;
+                options.format = 'psi';
+                if strcmp(recalcCoordinates, 'Recalculate')
+                    options.convertToUnits = true;
+                    options.boundingBox = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
+                    options.pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
                 end
-                options.format = 'ascii';
-                options.overwrite = 1;
-                points2psi(fn_out, labelPositionsOut, labelText, labelValue, options);
-                
             else    % landmarks for Amira
                 button = questdlg(sprintf('!!! Warning !!!\n\nWhen exporting points as landmarks for Amira only positions of the annotations are saved!\n\nIf you want to keep labels and values, please use the Amira compatible PSI format!'),...
                     'Export to Amira', 'Continue', 'Cancel', 'Cancel');
@@ -319,26 +290,21 @@ classdef mibAnnotationsController < handle
                 recalcCoordinates = questdlg(sprintf('Recalculate annotations with respect to the current bounding box or save as they are?'),...
                     'Recalculate coordinates', 'Recalculate', 'Save as they are', 'Recalculate');
                 
-                % rearrange to [x, y, z] format from [z, x, y]
-                labelPositionsOut = [labelPosition(:,2) labelPosition(:,3) labelPosition(:,1)];
-                
-                if strcmp(recalcCoordinates, 'Recalculate')     % recalculate annotations to the real world coordinates
-                    bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
-                    pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
-                    labelPositionsOut(:, 1) = labelPositionsOut(:, 1)*pixSize.x + bb(1) - pixSize.x/2;
-                    labelPositionsOut(:, 2) = labelPositionsOut(:, 2)*pixSize.y + bb(3) - pixSize.y/2;
-                    labelPositionsOut(:, 3) = labelPositionsOut(:, 3)*pixSize.z + bb(5) - pixSize.z;
-                end
                 if strcmp(Filters{FilterIndex+numel(Filters)/2}, 'Amira landmarks ASCII (*.landmarksAscii)')
-                    options.format = 'ascii';
+                    options.format = 'landmarksAscii';
                 else
-                    options.format = 'binary';
+                    options.format = 'landmarksBin';
                 end
-                options.overwrite = 1;
-                points2amiraLandmarks(fn_out, labelPositionsOut, options);
+                if strcmp(recalcCoordinates, 'Recalculate')
+                    options.convertToUnits = true;
+                    options.boundingBox = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
+                    options.pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
+                end
             end
-            fprintf('Saving annotations to %s: done!\n', fn_out);
-            
+            options.labelText = labelText;
+            options.labelPosition = labelPosition;
+            options.labelValue = labelValue;
+            obj.mibModel.I{obj.mibModel.Id}.hLabels.saveToFile(fn_out, options);
         end
         
         function deleteBtn_Callback(obj)
@@ -406,6 +372,16 @@ classdef mibAnnotationsController < handle
             %
             % Parameters:
             % parameter: a string with selected option
+            % ''Add'' - add annotations
+            % ''Modify'' - batch modify selected annotations
+            % ''Rename'' - rename selected annotations
+            % ''Jump'' - jump to the selected annotation
+            % ''Count'' - count annotations
+            % ''Clipboard'' - copy selected annotations to the system clipboard
+            % ''Export'' - export/save annotations to matlab or to a file
+            % ''Imaris'' - export annotations to Imaris
+            % ''Delete'' - delete selected annotations
+            
             global mibPath;
             orientation = obj.mibModel.getImageProperty('orientation');
             
@@ -437,6 +413,51 @@ classdef mibAnnotationsController < handle
                     labelsPosition(3) = str2double(answer{5});
                     labelsPosition(4) = str2double(answer{6});
                     obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(labelsText, labelsPosition, labelsValue);
+                    obj.updateWidgets();
+                    notify(obj.mibModel, 'plotImage');  % notify to plot the image
+                case 'Modify'   % batch modify selected annotations
+                    if isempty(obj.indices); return; end
+                    inputDlgOptions.Title = sprintf('Input an arithmetic operation to modify the annotations\nFor example,\n   "A=A*2" - multiply each value by 2;\n   "A=round(A)" - rounds each value,\n   where A denotes each selected cell');
+                    inputDlgOptions.TitleLines = 5;
+                    inputDlgOptions.WindowWidth = 1.2;
+                    prompt = {'Expression:'};
+                    defAns = {obj.batchModifyExpression};
+                    answer = mibInputMultiDlg({mibPath}, prompt, defAns, 'Batch modify', inputDlgOptions);
+                    if isempty(answer); return; end
+                    currExpression = [answer{1} ';'];
+                    [labelsList, labelValues, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
+                    
+                    for colId = 1:6
+                        idx = find(obj.indices(:,2) == colId); %#ok<EFIND>
+                        if isempty(idx); continue; end
+                        switch colId
+                            case 1
+                                errordlg(sprintf('!!! Error !!!\nModification of the label names using this function is not yet implemented...'), 'Not implemented');
+                                return;
+                            case 2
+                                A = labelValues(obj.indices(idx,1)); %#ok<NASGU>
+                                try
+                                    eval(currExpression);
+                                catch err
+                                    errordlg(sprintf('Wrong expression!\n\n%s\n%s', err.message, err.identifier), 'Wrong expression');
+                                    return;
+                                end
+                                labelValues(obj.indices(idx,1)) = A;
+                            otherwise
+                                A = labelPositions(obj.indices(idx,1), colId-2); %#ok<NASGU>
+                                try
+                                    eval(currExpression);
+                                catch err
+                                    errordlg(sprintf('Wrong expression!\n\n%s\n%s', err.message, err.identifier), 'Wrong expression');
+                                    return;
+                                end
+                                labelPositions(obj.indices(idx,1), colId-2) = A;
+                        end
+                    end
+                    obj.mibModel.mibDoBackup('labels', 0);
+                    obj.mibModel.I{obj.mibModel.Id}.hLabels.clearContents();    % remove current labels
+                    obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(labelsList, labelPositions, labelValues);     % add updated labels
+                    obj.batchModifyExpression = currExpression(1:end-1);
                     obj.updateWidgets();
                     notify(obj.mibModel, 'plotImage');  % notify to plot the image
                 case 'Rename'
@@ -501,7 +522,7 @@ classdef mibAnnotationsController < handle
                     data = obj.View.handles.annotationTable.Data;
                     if isempty(data); return; end
                     
-                    annIds = obj.indices(:,1);
+                    annIds = unique(obj.indices(:,1));
                     labelsList = data(annIds,1);
                     labelsList = strtrim(labelsList);   % remove the blank spaces
                     labelsValues = cellfun(@(a) str2double(a), data(annIds,2));
@@ -520,6 +541,13 @@ classdef mibAnnotationsController < handle
                     fprintf(output);
                     clipboard('copy', output);
                     msgbox(sprintf('The annotation counts were printed to the Matlab command window and copied to the system clipboard\nYou can paste results using the Ctrl+V key shortcut'), 'Counting annotations');
+                case 'Clipboard'
+                    if isempty(obj.indices); return; end
+                    
+                    data = obj.View.handles.annotationTable.Data;
+                    d = data(unique(obj.indices(:,1)), min(obj.indices(:,2)):max(obj.indices(:,2)));
+                    cell2clip(d);    % copy to clipboard
+                    fprintf('Annotations: %d rows were copied to the system clipboard\n', size(d, 2));
                 case 'Export'
                     if isempty(obj.indices); return; end
                     

@@ -654,7 +654,7 @@ classdef mibMeasureToolController < handle
                        '*.xls',   'Excel format (*.xls)'; };
             
             [filename, path, FilterIndex] = uiputfile(Filters, 'Save measurements...', fn_out); %...
-            if isequal(filename,0); return; end; % check for cancel
+            if isequal(filename,0); return; end  % check for cancel
             fn_out = fullfile(path, filename);
             
             Data = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data; %#ok<NASGU>
@@ -663,7 +663,7 @@ classdef mibMeasureToolController < handle
                 fprintf('MIB: saving measurements to %s -> done!\n', fn_out);
             elseif strcmp('Excel format (*.xls)', Filters{FilterIndex,2})    % excel format
                 wb = waitbar(0,'Please wait...','Name','Generating Excel file...', 'WindowStyle', 'modal');
-                warning off MATLAB:xlswrite:AddSheet
+                warning('off', 'MATLAB:xlswrite:AddSheet');
                 % Sheet 1
                 s = {sprintf('Measurements for %s', obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));};
                 
@@ -749,7 +749,7 @@ classdef mibMeasureToolController < handle
             % function updateVoxelsButton_Callback(obj)
             % a callback for press of obj.View.handles.updateVoxelsButton
             % to update size of voxels for the dataset
-            obj.mibModel.updateParameters();
+            obj.mibModel.I{obj.mibModel.Id}.updatePixSizeResolution();
             obj.mibController.updateAxesLimits('resize');
             obj.mibController.plotImage(1);
             obj.updateWidgets();

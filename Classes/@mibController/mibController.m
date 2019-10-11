@@ -10,7 +10,7 @@ classdef mibController < handle
     %
     
     properties
-        mibVersion = 'ver. 2.50 / 17.12.2018';  % ATTENTION! it is important to have the version number between "ver." and "/"
+        mibVersion = 'ver. 2.60 / 10.10.2019';  % ATTENTION! it is important to have the version number between "ver." and "/"
         % version of MIB
         mibModel
         % handles to the model
@@ -60,9 +60,11 @@ classdef mibController < handle
                     obj.updateGuiWidgets();
                 case 'newDataset'
                     if ismember('Parameter', fieldnames(evnt))
-                        obj.updateAxesLimits('resize', evnt.Parameter);
+                        obj.updateAxesLimits('resize', evnt.Parameter);     % where evnt.Parameter is index if the container to update
+                        obj.mibModel.I{evnt.Parameter}.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;   % update BioFormatsMemoizer directory
                     else
                         obj.updateAxesLimits('resize');
+                        obj.mibModel.I{obj.mibModel.Id}.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir; % update BioFormatsMemoizer directory
                     end
                     obj.updateGuiWidgets();
                     obj.mibModel.newDatasetSwitch = abs(obj.mibModel.newDatasetSwitch) - 1;
@@ -105,13 +107,13 @@ classdef mibController < handle
         
         imageRedraw(obj)        % redraw image in the handles.mibImageAxes after press of handles.mibHideImageCheck or transparency sliders
         
-        result = menuDatasetParameters_Callback(obj, pixSize)        % Update mibImage.pixelSize, mibImage.meta(''XResolution'') and mibImage.meta(''XResolution'') and mibView.volren
+        result = menuDatasetParameters_Callback(obj, pixSize, BatchOptIn)        % Update mibImage.pixelSize, mibImage.meta(''XResolution'') and mibImage.meta(''XResolution'') and mibView.volren
         
         menuDatasetScalebar_Callback(obj, parameter)        % callback to Menu->Dataset->Scale bar; calibrate pixel size from an existing scale bar
         
         menuDatasetSlice_Callback(obj, parameter)        % callback to Menu->Dataset->Slice; do actions with individual slices
         
-        menuDatasetTrasform_Callback(obj, mode)        % callback to Menu->Dataset->Transform... do different transformation with the dataset
+        menuDatasetTrasform_Callback(obj, mode, BatchOpt)        % callback to Menu->Dataset->Transform... do different transformation with the dataset
         
         menuFileChoppedImage_Callback(obj, parameter)        % callback to Menu->File->Chopped images, chop/rechop dataset to/from smaller subsets
         
@@ -125,31 +127,25 @@ classdef mibController < handle
         
         menuFileSaveImageAs_Callback(obj)        % callback to the mibGUI.handles.menuFileSaveImageAs, saves image to a file
         
-        menuHelpAbout_Callback(obj)        % callback to Menu->Help->About; show the About window
-        
         menuImageColorCh_Callback(obj, parameter)        % callback to Menu->Image->Color Channels do actions with individual color channels
         
         menuImageContrast_Callback(obj, parameter)        % callback to Menu->Image->Contrast; do contrast enhancement
         
         menuImageIntensity_Callback(obj, parameter)        % callback to the Menu->Image->Intensity profile; get the image intensity profile 
         
-        menuImageInvert_Callback(obj, mode)        % callback for Menu->Image->Invert image; start invert image 
+        menuImageInvert_Callback(obj, mode, BatchOptIn)        % callback for Menu->Image->Invert image; start invert image 
         
-        menuImageMode_Callback(obj, hObject)        % callback to Menu->Image->Mode, convert image to different formats
+        status = menuImageMode_Callback(obj, hObject, BatchOpt)        % callback to Menu->Image->Mode, convert image to different formats
         
-        menuImageToolsArithmetics_Callback(obj)     % callback for Menu->Image->Tools->Image Arithmetics
+        menuImageToolsProjection_Callback(obj, BatchOptIn)      % callback for Menu->Image->Tools->Intensity projection
         
-        menuImageToolsProjection_Callback(obj)      % callback for Menu->Image->Tools->Intensity projection
+        menuMaskExport_Callback(obj, ExportTo, BatchOptIn)        % callback to Menu->Mask->Export, export the Mask layer to Matlab or another buffer
         
-        menuMaskClear_Callback(obj)        % callback to Menu->Mask->Clear mask, clear the Mask layer
+        menuMaskImageReplace_Callback(obj, type, BatchOptIn)        % callback to Menu->Mask->Replace color; replace image intensities in the @em Masked or @em Selected areas with new intensity value
         
-        menuMaskExport_Callback(obj, parameter)        % callback to Menu->Mask->Export, export the Mask layer to Matlab or another buffer
+        menuMaskImport_Callback(obj, ImportFrom, BatchOptIn)        % callback to Menu->Mask->Import, import the Mask layer from Matlab or another buffer of MIB
         
-        menuMaskImageReplace_Callback(obj, type)        % callback to Menu->Mask->Replace color; replace image intensities in the @em Masked or @em Selected areas with new intensity value
-        
-        menuMaskImport_Callback(obj, parameter)        % callback to Menu->Mask->Import, import the Mask layer from Matlab or another buffer of MIB
-        
-        menuMaskInvert_Callback(obj, type)        % callback to Menu->Mask->Invert; invert the Mask layer
+        menuMaskInvert_Callback(obj, type, BatchOptIn)        % callback to Menu->Mask->Invert; invert the Mask layer
         
         menuMaskLoad_Callback(obj)        % callback to Menu->Mask->Load Mask; load the Mask layer to MIB from a file
         
@@ -157,11 +153,9 @@ classdef mibController < handle
         
         menuModelAnn_Callback(obj, parameter)      % callback to Menu->Model->Annotations; 
         
-        menuModelsConvertModel(obj, modelType)  % callback to Menu->Models->Convert, convert the model to a different modelType
+        menuModelsExport_Callback(obj, ExportTo, BatchOptIn)        % callback to Menu->Models->Export export the Model layer to the main Matlab workspace
         
-        menuModelsExport_Callback(obj, parameter)        % callback to Menu->Models->Export export the Model layer to the main Matlab workspace
-        
-        menuModelsImport_Callback(obj)        % callback to Menu->Models->Import; import the Model layer from the main Matlab workspace
+        menuModelsImport_Callback(obj, BatchOptIn)        % callback to Menu->Models->Import; import the Model layer from the main Matlab workspace
         
         menuModelsRender_Callback(obj, type)        % callback to MIB->Menu->Models->Render model...
         
@@ -173,11 +167,9 @@ classdef mibController < handle
         
         menuSelectionToMaskBorder_Callback(obj)        % callback to Menu->Selection->Expand to Mask border; expand selection to borders of the Masked layer
         
-        menuSmooth_Callback(obj, type)        % callback to the smooth mask, selection or model layer
-        
         menuToolsMeasure_Callback(obj, type)        % callback for selection of obj.mibView.handles.menuToolsMeasure entries
         
-        mibAddMaterialBtn_Callback(obj)        % callback to the obj.mibView.handles.mibAddMaterialBtn, add material to the model
+        mibAddMaterialBtn_Callback(obj, BatchOptIn)        % callback to the obj.mibView.handles.mibAddMaterialBtn, add material to the model
         
         mibAnisotropicDiffusion(obj, filter_type)        % Filter image with Anisotropic diffusion filters
         
@@ -187,9 +179,9 @@ classdef mibController < handle
         
         mibBioformatsCheck_Callback(obj)  % Bioformats that can be read with BioFormats toolbox this function updates the list of file filters in obj.mibView.handles.mibFileFilterPopup
         
-        mibBufferToggle_Callback(obj, Id)            % a callback to press of obj.mibView.handles.mibBufferToggle button
+        mibBufferToggle_Callback(obj, Id, BatchOptIn)            % a callback to press of obj.mibView.handles.mibBufferToggle button
         
-        mibBufferToggleContext_Callback(obj, parameter, buttonID)   % callback function for the popup menu of the buffer buttons in the upper part of the @em Directory @em contents panel. This callback is triggered from all those buttons.
+        mibBufferToggleContext_Callback(obj, parameter, buttonID, BatchOptIn)   % callback function for the popup menu of the buffer buttons in the upper part of the @em Directory @em contents panel. This callback is triggered from all those buttons.
         
         mibBrushPanelInterpolationSettingsBtn_Callback(obj)     % callback for modification of the interpolation settings
 
@@ -197,11 +189,11 @@ classdef mibController < handle
         
         mibBrushSuperpixelsWatershedCheck_Callback(obj, hObject)        % callback for selection of superpixel mode for the brush tool
 
-        mibChangeLayerEdit_Callback(obj, parameter)        % callback for changing the slices of the 3D dataset by entering a new slice number
+        mibChangeLayerEdit_Callback(obj, parameter, BatchOptIn)        % callback for changing the slices of the 3D dataset by entering a new slice number
         
         mibChangeLayerSlider_Callback(obj)        % callback function for mibGUI.mibChangeLayerSlider. Responsible for showing next or previous slice of the dataset
         
-        mibChangeTimeEdit_Callback(obj, parameter)        % callback for changing the time points of the dataset by entering a new time value
+        mibChangeTimeEdit_Callback(obj, parameter, BatchOptIn)        % callback for changing the time points of the dataset by entering a new time value
         
         mibChangeTimeSlider_Callback(obj)        % callback function for mibGUI.mibChangeTimeSlider. Responsible for showing next or previous time point of the dataset
         
@@ -213,7 +205,7 @@ classdef mibController < handle
         
         mibColChannelCombo_Callback(obj)    % callback for modification of obj.View.handles.mibColorChannelCombo box
         
-        mibCreateModelBtn_Callback(obj, modelType, modelMaterialNames)        % Create a new model
+        mibCreateModelBtn_Callback(obj)        % Create a new model
         
         mibDoUndo(obj, newIndex)        % Undo the recent changes with Ctrl+Z shortcut
         
@@ -229,15 +221,17 @@ classdef mibController < handle
         
         mibFilesListbox_Callback(obj)        % navigation in the file list, i.e. open file or change directory
         
-        mibFilesListbox_cm_Callback(obj, parameter)        % a context menu to the to the handles.mibFilesListbox, the menu is called
+        mibFilesListbox_cm_Callback(obj, parameter, BatchOptIn)        % a context menu to the to the handles.mibFilesListbox, the menu is called
         
         mibFindMaterialUnderCursor(obj)     % find material under the mouse cursor, a callback for Ctrl+F key shortcut
         
         mibImageFilterDoitBtn_Callback(obj)        % callback to the obj.mibView.handles.mibImageFilterDoitBtn, apply image filtering using the selected filter
         
-        mibInvertImage(obj, col_channel, sel_switch)        % Invert image
+        menuImageToolsContentAware_Callback(obj)   %  callback to the Menu->Image->Tools->Content-aware fill, fill the selected area using content aware algorithms
         
-        mibLoadModelBtn_Callback(obj, model, options)        % callback to the obj.mibView.handles.mibLoadModelBtn, loads model to MIB from a file
+        mibLoadModelBtn_Callback(obj)        % callback to the obj.mibView.handles.mibLoadModelBtn, loads model to MIB from a file
+        
+        mibMaskedAreaCheck_Callback(obj)       % a callback to the mibGUI.handles.mibMaskedAreaCheck, allows to toggle state of the 'Masked area'
         
         mibMaskGenerator(obj, type)        % generate the 'Mask' later
         
@@ -253,11 +247,9 @@ classdef mibController < handle
         
         mibModelShowCheck_Callback(obj)        % callback to the mibGUI.handles.mibModelShowCheck to toggle the Model layer on/off
         
-        mibMoveLayers(obj, obj_type_from, obj_type_to, layers_id, action_type, options)        % to move datasets between the layers (image, model, mask, selection)
+        mibPixelInfo_Callback(obj, parameter, BatchOptIn)        % center image to defined position it is callback from a popup menu above the pixel information field of the Path panel
         
-        mibPixelInfo_Callback(obj, parameter)        % center image to defined position it is callback from a popup menu above the pixel information field of the Path panel
-        
-        mibRemoveMaterialBtn_Callback(obj)        % callback to the obj.mibView.handles.mibRemoveMaterialBtn, remove material from the model
+        mibRemoveMaterialBtn_Callback(obj, BatchOptIn)        % callback to the obj.mibView.handles.mibRemoveMaterialBtn, remove material from the model
         
         mibRoiAddBtn_Callback(obj)        % callback to handles.mibRoiAddBtn, adds a roi to a dataset
         
@@ -275,15 +267,17 @@ classdef mibController < handle
         
         mibRoiToSelectionBtn_Callback(obj)        % callback to obj.mibView.handles.mibRoiToSelectionBtn, highlight area under the selected ROI in the Selection layer
         
-        mibSegmentation3dBall(obj, y, x, z, modifier)        % Do segmentation using the 3D ball tool
+        mibSegmentation3dBall(obj, y, x, z, modifier, BatchOptIn)        % Do segmentation using the 3D ball tool
         
         mibSegmentationAnnotation(obj, y, x, z, t, modifier)        % Add text annotation to the dataset
         
         mibSegmAnnDeleteAllBtn_Callback(obj)        % callback to Menu->Models->Annotations...->Delete all annotations; delete all annotations of the model
         
-        mibSegmentationBlackWhiteThreshold(obj, parameter)        % Perform black and white thresholding for @em BW @em Threshold tool of the 'Segmentation panel'
+        mibSegmentationBlackWhiteThreshold(obj, parameter, BatchOptIn)        % Perform black and white thresholding for @em BW @em Threshold tool of the 'Segmentation panel'
         
         mibSegmentationBrush(obj, y, x, modifier)        % do segmentation using the brush tool
+        
+        mibSegmentationDragAndDrop(obj, y, x, modifier)        % drag and drop selection with the mouse
         
         mibSegmentationLasso(obj, modifier)        % do segmentation using the lasso tool
         
@@ -297,9 +291,11 @@ classdef mibController < handle
         
         mibSegmentationObjectPicker(obj, yxzCoordinate, modifier)        % Select 2d/3d objects from the Mask or Model layers
         
+        mibSegmentationPanelCheckboxes(obj, BatchOptIn)     % a function of the batch mode that allow to tweak the status of checkboxes of the Segmentation panel
+        
         mibSegmentationRegionGrowing(obj, yxzCoordinate, modifier)        % Do segmentation using the Region Growing method
         
-        mibSegmentationSpot(obj, y, x, modifier)        % Do segmentation using the spot tool
+        mibSegmentationSpot(obj, y, x, modifier, BatchOptIn)        % Do segmentation using the spot tool
         
         mibSegmentationTable_CellSelectionCallback(obj, eventdata)        % callback for cell selection in the handles.mibSegmentationTable table of mibGIU.m
         
@@ -313,19 +309,23 @@ classdef mibController < handle
         
         mibSelectionButton_Callback(obj, action)        % callback to 'A', 'S', 'R' buttons in the Selection panel of obj.mibView.gui
         
-        mibSelectionClearBtn_Callback(obj, sel_switch)        % callback to the mibGUI.handles.mibSelectionClearBtn, allows to clear the Selection layer
+        mibSelectionClearBtn_Callback(obj)       % callback to the mibGUI.handles.mibSelectionClearBtn, allows to clear the Selection layer
         
-        mibSelectionDilateBtn_Callback(obj, sel_switch)        % callback to the mibGUI.handles.mibSelectionDilateBtn, expands the selection layer
+        mibSelectionDilateBtn_Callback(obj)        % callback to the mibGUI.handles.mibSelectionDilateBtn, expands the selection layer
         
-        mibSelectionErodeBtn_Callback(obj, sel_switch)        % callback to the mibGUI.handles.mibSelectionErodeBtn, shrinks the selection layer
+        mibSelectionErodeBtn_Callback(obj)        % callback to the mibGUI.handles.mibSelectionErodeBtn, shrinks the selection layer
         
-        mibSelectionFillBtn_Callback(obj, sel_switch)        % callback to the mibGUI.handles.mibSelectionFillBtn, allows to fill holes for the Selection layer
+        mibSelectionFillBtn_Callback(obj)        % callback to the mibGUI.handles.mibSelectionFillBtn, allows to fill holes for the Selection layer
+        
+        mibSelectionPanelCheckboxes(obj, BatchOptIn) % a function of the batch mode that allow to tweak the status of checkboxes of the Selection panel
         
         mibToolbar_ZoomBtn_ClickedCallback(obj, hObject, recenterSwitch)        % modifies magnification using the zoom buttons in the toolbar of MIB
         
         mibToolbarPlaneToggle(obj, hObject, moveMouseSw)        % callback to the change orientation buttons in the toolbar of MIB; it toggles viewing plane: xy, zx, or zy direction
         
-        mibZoomEdit_Callback(obj)        % callback function for modification of the handles.mibZoomEdit 
+        mibViewSettingsPanelCheckboxes(obj, BatchOptIn) % a function of the batch mode that allow to tweak status of checkboxes of the View Settings panel
+        
+        mibZoomEdit_Callback(obj, BatchOptIn)        % callback function for modification of the handles.mibZoomEdit 
         
         mibGUI_Brush_scrollWheelFcn(obj, eventdata)        % Control callbacks from mouse scroll wheel during the brush tool
         
@@ -342,6 +342,10 @@ classdef mibController < handle
         mibGUI_WindowButtonDownFcn(obj)        % this is callback for the press of a mouse button
         
         mibGUI_WindowButtonUpFcn(obj, brush_switch)        % callback for release of the mouse button
+        
+        mibGUI_WindowButtonUpDragAndDropFcn(obj, mode, diffX, diffY, BatchOptIn)        % callback for release of the mouse button after drag and drop action
+        
+        mibGUI_WindowDragAndDropMotionFcn(obj, selection_layer)     % motion function during drag and drop tool for the selection layer
         
         mibGUI_WindowKeyPressFcn(obj, hObject, eventdata)        % callback for a key press in mibGUI
         
@@ -430,8 +434,19 @@ classdef mibController < handle
                 DejaVuSansMono = 1-imread('DejaVuSansMono.png');   % table with DejaVu font, Pt = 8, 10, 12, 14, 16, 18, 20
             end
             
-            % show splash screen
+            % ---- obtain path to MIB
             try
+                if isdeployed()
+                    obj.mibPath = fileparts(GetExeLocation());
+                else
+                    obj.mibPath = fileparts(which('mib'));
+                end
+            catch err
+                fprintf('%s\n', err.message);
+                obj.mibPath = [];
+            end
+            % try to obtain path differently
+            if isempty(obj.mibPath)
                 if isdeployed
                     if isunix()
                         if ismac()
@@ -455,17 +470,18 @@ classdef mibController < handle
                         [~, result] = system('path');
                         obj.mibPath = char(regexpi(result, 'Path=(.*?);', 'tokens', 'once'));
                     end
-                    img = imread(fullfile(obj.mibPath, 'Resources', 'splash'));  % load splash screen
-                    
-                    % get numbers for the brush size change
-                    obj.brushSizeNumbers = 1-imread(fullfile(obj.mibPath, 'Resources', 'numbers.png'));   % height=16, letter size = 8, +1 pixel border
                 else
                     obj.mibPath = fileparts(which('mib'));
-                    img = imread(fullfile(obj.mibPath, 'Resources', 'splash'));  % load splash screen
-                    
-                    % get numbers for the brush size change
-                    obj.brushSizeNumbers = 1-imread(fullfile(obj.mibPath, 'Resources', 'numbers.png'));   % height=16, letter size = 8, +1 pixel border
                 end
+            end
+            fprintf('MIB installation path: %s\n', obj.mibPath);
+            
+            % show splash screen
+            try
+                img = imread(fullfile(obj.mibPath, 'Resources', 'splash'));  % load splash screen
+                    
+                % get numbers for the brush size change
+                obj.brushSizeNumbers = 1-imread(fullfile(obj.mibPath, 'Resources', 'numbers.png'));   % height=16, letter size = 8, +1 pixel border
                 addTextOptions.color = [1 1 0];
                 addTextOptions.fontSize = 3;
                 addTextOptions.markerText = 'text';
@@ -498,13 +514,29 @@ classdef mibController < handle
             obj.childControllersIds = {};
             
             obj.mibModel = mibModel;
+            
+            mibPath = obj.mibPath;
+            
             obj.getDefaultParameters();          % restore default/stored parameters
             
             Font = obj.mibModel.preferences.Font;
-            mibPath = obj.mibPath;
             scalingGUI = obj.mibModel.preferences.gui;
 
             obj.mibView = mibView(obj);
+            
+            % add icons for buttons
+            imageList = {'plus', 'minus', 'settings', 'next', 'step', 'step_and_advance', 'eye'};
+            for fnId=1:numel(imageList)
+                fn = fullfile(mibPath, 'Resources', [imageList{fnId} '.png']);
+                [I, map, transparency] = imread(fn);
+                transparency = repmat(transparency, [1,1,3]);
+                I = double(I)/255;
+                I(transparency==0) = NaN;
+                obj.mibModel.sessionSettings.guiImages.(imageList{fnId}) = I;
+            end
+            obj.mibView.handles.mibRemoveMaterialBtn.CData = obj.mibModel.sessionSettings.guiImages.minus;
+            obj.mibView.handles.mibBrushPanelInterpolationSettingsBtn.CData = obj.mibModel.sessionSettings.guiImages.settings;
+            
             
             % update parameters for mibImages
             for i=1:obj.mibModel.maxId
@@ -571,6 +603,14 @@ classdef mibController < handle
                     currStr{end+1} = 'External: BMxD';
                     obj.mibView.handles.mibImageFilterPopup.String = currStr;
                 end
+            else
+                if ~isempty(obj.mibModel.preferences.dirs.bm3dInstallationPath)
+                    if exist(fullfile(obj.mibModel.preferences.dirs.bm3dInstallationPath, 'BM3D.m'), 'file') == 2
+                        currStr = obj.mibView.handles.mibImageFilterPopup.String;
+                        currStr{end+1} = 'External: BMxD';
+                        obj.mibView.handles.mibImageFilterPopup.String = currStr;
+                    end
+                end
             end
             
             if exist('frame','var')     % close splash window
@@ -613,7 +653,10 @@ classdef mibController < handle
             % add callbacks for keys
             obj.mibView.handles.mibGUI.WindowKeyPressFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowKeyPressFcn(eventdata));   % turn ON callback for the keys
             obj.mibView.handles.mibGUI.WindowKeyReleaseFcn = (@(hObject, eventdata) obj.mibGUI_WindowKeyReleaseFcn(eventdata));   % turn ON callback for the keys
-           
+            
+            if obj.mibModel.preferences.tips.showTips == 1
+                obj.startController('mibTipsController');
+            end
         end
     end
 end

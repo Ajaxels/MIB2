@@ -93,7 +93,7 @@ if strcmp(modifier, 'control') | strcmp(cell2mat(modifier), 'shiftcontrol') | st
             coord(i) = (find(table == text_str(i))-1)*8 + 1; %#ok<AGROW>
         end
     catch err
-        0
+        err
     end
     valuePointer = zeros([16 16]);
     for index = 1:numel(text_str)
@@ -127,9 +127,9 @@ if strcmp(obj.mibView.handles.mouseWheelToolbarSw.State,'on') & ...
         shift = 1;
     end
 
-    new_index = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1) + eventdata.VerticalScrollCount*shift;
+    new_index = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1) - eventdata.VerticalScrollCount*shift;
     if new_index < 1;  new_index = 1; end
-    if new_index > obj.mibModel.I{obj.mibModel.Id}.time; new_index = obj.mibModel.I{obj.mibModel.Id}.time; end;
+    if new_index > obj.mibModel.I{obj.mibModel.Id}.time; new_index = obj.mibModel.I{obj.mibModel.Id}.time; end
     obj.mibView.handles.mibChangeTimeSlider.Value = new_index;     % update slider value
     obj.mibChangeTimeSlider_Callback();
 elseif strcmp(obj.mibView.handles.mouseWheelToolbarSw.State,'off')                % zoom in/zoom out with the mouse wheel

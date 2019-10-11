@@ -43,6 +43,10 @@ function mib()
 
 % add path to other directories
 tic
+
+% turn off warnings
+warning('off', 'MATLAB:ui:javaframe:PropertyToBeRemoved'); 
+
 if ~isdeployed
     func_name='mib.m';
     func_dir=which(func_name);
@@ -69,6 +73,7 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'Tools','FastMarching','functions'));
     addpath(fullfile(func_dir, 'Tools','FastMarching','shortestpath'));
     addpath(fullfile(func_dir, 'Tools','Frangi'));
+    addpath(fullfile(func_dir, 'Tools','HistThresh'));
     addpath(fullfile(func_dir, 'Tools','imclipboard'));
     addpath(fullfile(func_dir, 'Tools','matGeom'));
     addpath(fullfile(func_dir, 'Tools','matGeom','geom2d'));

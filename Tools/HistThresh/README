@@ -1,0 +1,67 @@
+HistThresh Toolbox
+Copyright (C) 2004-2013 Antti Niemistö
+
+HistThresh toolbox is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+HistThresh toolbox is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with HistThresh toolbox.  If not, see <http://www.gnu.org/licenses/>.
+
+-------------------------------------------------------------------------
+
+The HistThresh Toolbox contains selected histogram-based thresholding
+algorithms for MATLAB. The toolbox has been originally developed with
+MATLAB 6.5 (R13).
+
+
+CURRENT VERSION
+---------------
+
+v1.03 (13 Feb 2013)
+- fixed problem with never entering the loop in th_maxlik.m
+- fixed problem with finding the minimum between the peaks in th_minimum.m
+
+
+INSTALLATION
+------------
+
+Extract the contents of the zip file "HistThresh.zip" into a directory
+from which MATLAB can find the m-files.
+
+
+GETTING STARTED
+---------------
+
+The thresholding algorithms are named with the prefix "th_". For
+example, "th_minimum.m" is the function for the algorithm by Prewitt
+and Mendelsohn that chooses the threshold to be in the valley of a
+bimodal histogram. The threshold for an 8-bit image can be found by
+typing "T = th_minimum(I)". Further help can be obtained by typing
+"help <m-file>" in MATLAB, where "<m-file>" is replaced by the name of
+an m-file.
+
+
+CONTACT
+-------
+
+Antti Niemistö
+Department of Signal Processing
+Tampere University of Technology
+P.O. Box 553
+33101 TAMPERE
+FINLAND
+
+E-mail: antti.niemisto@gmail.com
+
+-------------------------------------
+
+http://www.cs.tut.fi/~ant/histthresh/
+
+-------------------------------------

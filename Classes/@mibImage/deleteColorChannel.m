@@ -1,9 +1,11 @@
-function deleteColorChannel(obj, channel1)
-% function deleteColorChannel(obj, channel1)
+function deleteColorChannel(obj, channel1, options)
+% function deleteColorChannel(obj, channel1, options)
 % Delete specified color channel from the dataset
 %
 % Parameters:
 % channel1: [@em optional] the index of color channel to delete.
+% options: structure with additional parameters
+% .showWaitbar - logical, @b 1 [@em default] - show the waitbar, @b 0 - do not show
 %
 % Return values:
 % status: result of the function: 0-fail/1-success
@@ -26,15 +28,17 @@ function deleteColorChannel(obj, channel1)
 global mibPath; % path to mib installation folder
 
 if obj.colors < 2; errordlg(sprintf('Error!\nThere is only one color available!\nCancelling...'), 'Not enough colors','modal'); return; end
+if nargin < 3; options = struct; end
+if ~isfield(options, 'showWaitbar'); options.showWaitbar = true; end
 
-if nargin < 2
-    channel1 = obj.colors;
+if nargin < 2; channel1 = []; end
+if isempty(channel1)
+    prompt = {sprintf('Delete color channel\n\nEnter number of the color channel to be deleted:')};
+    answer = mibInputDlg({mibPath}, prompt, 'Delete color channel', {num2str(channel1(1)')});
+    if size(answer) == 0; return; end
+    channel1 = str2num(answer{1}{1}); %#ok<ST2NM>
 end
 
-prompt = {sprintf('Delete color channel\n\nEnter number of the color channel to be deleted:')};
-answer = mibInputDlg({mibPath}, prompt, 'Delete color channel', {num2str(channel1(1)')});
-if size(answer) == 0; return; end
-channel1 = str2num(answer{1}{1}); %#ok<ST2NM>
 if min(channel1) < 1 || max(channel1) > obj.colors 
     errordlg(sprintf('!!! Error !!!\n\nWrong channel number!\nThe channel numbers should be between 1 and %d', obj.colors),'Error');
     return;
@@ -45,10 +49,10 @@ end
 %     if strcmp(button, 'Cancel'); return; end;
 % end
 
-wb = waitbar(0,sprintf('Deleting color channel %d from the dataset\n\nPlease wait...',channel1),'Name','Delete color channels','WindowStyle','modal');
+if options.showWaitbar; wb = waitbar(0,sprintf('Deleting color channel %d from the dataset\n\nPlease wait...',channel1),'Name','Delete color channels','WindowStyle','modal'); end
 colorList = 1:obj.colors;
 obj.img{1} = obj.img{1}(:,:,~ismember(colorList, channel1),:,:);
-waitbar(0.66, wb);
+if options.showWaitbar; waitbar(0.66, wb); end
 obj.colors = obj.colors - numel(channel1);
 obj.dim_yxczt(3) = obj.colors;
 
@@ -70,7 +74,7 @@ if isKey(obj.meta, 'lutColors')
     obj.meta('lutColors') = lutColorsLocal;
 end
 
-waitbar(.99, wb);
+if options.showWaitbar; waitbar(.99, wb); end
 
 if obj.colors == 1
     obj.meta('ColorType') = 'grayscale';
@@ -82,7 +86,8 @@ end
 % generate the log text
 log_text = sprintf('Delete color channel(s) %s', mat2str(channel1));
 obj.updateImgInfo(log_text);
-
-waitbar(1, wb);
-delete(wb);
+if options.showWaitbar
+    waitbar(1, wb);
+    delete(wb);
+end
 end

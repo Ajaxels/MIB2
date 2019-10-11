@@ -46,7 +46,7 @@ end
 
 currViewPort = obj.I{obj.Id}.viewPort;
 colorIndices = obj.I{obj.Id}.slices{3};
-if obj.useLUT     % use LUT for colors
+if obj.I{obj.Id}.useLUT     % use LUT for colors
     selectedColorsLUT = obj.I{obj.Id}.lutColors(colorIndices,:);
 else
     selectedColorsLUT = [1 0 0; 0 1 0; 0 0 1];  % RGB
@@ -70,7 +70,7 @@ for colCh = 1:numel(colorIndices)
     %    imgOut = imadjust(imgOut, [currViewPort.min(colorIndices(colCh))/max_int ...
     %        currViewPort.max(colorIndices(colCh))/max_int], [0 1], currViewPort.gamma(colorIndices(colCh)));
     %end    
-    if obj.useLUT == 0 && numel(colorIndices) == 1    % render in grayscale
+    if obj.I{obj.Id}.useLUT == 0 && numel(colorIndices) == 1    % render in grayscale
         R = imgOut*255;
         G = R;
         B = R;

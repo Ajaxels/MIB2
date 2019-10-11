@@ -18,9 +18,9 @@ function Mview=makeViewMatrix(r,s,t)
 %
 % Function is written by D.Kroon University of Twente (October 2008)
 
-R=RotationMatrix(r);
-S=ResizeMatrix(s);
-T=TranslateMatrix(t);
+R=double(RotationMatrix(r));
+S=double(ResizeMatrix(s));
+T=double(TranslateMatrix(t));
 Mview=R*S*T;
 
 function R=RotationMatrix(r)

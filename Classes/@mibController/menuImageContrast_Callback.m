@@ -1,16 +1,16 @@
 function menuImageContrast_Callback(obj, parameter)
-% function menuImageContrast_Callback(obj, parameter)
+% function menuImageContrast_Callback(obj, parameter, BatchOptIn)
 % a callback to Menu->Image->Contrast; do contrast enhancement
 %
 % Parameters:
 % parameter: a string that defines image source:
-% - ''CLAHE_2D'', contrast adjustment with CLAHE method for the current slice
-% - ''CLAHE_3D'', contrast adjustment with CLAHE method for the shown stack
-% - ''CLAHE_4D'', contrast adjustment with CLAHE method for the whole dataset
-% - ''NormalizeZ'', normalize layers in the Z-dimension using intensity analysis of complete slices
-% - ''NormalizeT'', normalize layers in the Time-dimensionusing intensity analysis of complete slices
-% - ''NormalizeMask'', normalize layers using intensity analysis of complete slices
-% - ''NormalizeBg'', normalize layers using intensity analysis of complete slices
+% - ''CLAHE'', contrast adjustment with CLAHE method
+% - ''Z stack'', normalize layers in the Z-dimension using intensity analysis of complete slices
+% - ''Time series'', normalize layers in the Time-dimensionusing intensity analysis of complete slices
+% - ''Masked area'', normalize layers using intensity analysis of complete slices
+% - ''Background'', normalize layers using intensity analysis of complete slices
+% BatchOptIn: a structure for batch processing mode, when NaN return
+% a structure with default options via "syncBatch" event
 
 % Copyright (C) 03.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
@@ -20,47 +20,14 @@ function menuImageContrast_Callback(obj, parameter)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
-
-% check for the virtual stacking mode and close the controller
-if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
-    toolname = 'contrast adjustment';
-    warndlg(sprintf('!!! Warning !!!\n\nThe %s are not yet available in the virtual stacking mode.\nPlease switch to the memory-resident mode and try again', ...
-        toolname), 'Not implemented');
-    return;
-end
-
-if numel(obj.mibModel.I{obj.mibModel.Id}.slices{3}) ~= 1  && ~ismember(parameter, {'NormalizeZ','NormalizeT','NormalizeMask','NormalizeBg'}) 
-            % get color channel from the selected in the Selection panel
-    colCh = obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel;
-    if colCh == 0
-        msgbox('Please select the color channel!', 'Error!', 'error', 'modal');
-        return;
-    end
-else    % when only one color channel is shown, take it
-    colCh = obj.mibModel.I{obj.mibModel.Id}.slices{3};
-end
+% 27.04.2019, simplified for the batch mode
 
 switch parameter
-    case {'CLAHE_2D', 'CLAHE_3D', 'CLAHE_4D'}
-        % adjust contrast
-        obj.mibModel.contrastCLAHE(parameter, colCh);
+    case {'Z stack', 'Time series', 'Masked area', 'Background'}
+        % normalize contrast
+        obj.mibModel.contrastNormalization(parameter);
+    case 'CLAHE'
+        % adjust contrast with CLAHE
+        obj.mibModel.contrastCLAHE();
         obj.plotImage(0);
-    case 'NormalizeZ'
-        obj.mibModel.contrastNormalizationMemoryOptimized('normalZ', colCh);
-        obj.plotImage();
-    case 'NormalizeT'
-        if obj.mibModel.I{obj.mibModel.Id}.time == 1
-            errordlg(sprintf('!!! Error !!!\n\nThe time series normalization requires more than one time point!\nTry Z-stack normalization instead'))
-            return;
-        end
-        obj.mibModel.contrastNormalizationMemoryOptimized('normalT', colCh);
-        obj.plotImage();
-    case 'NormalizeMask'
-        obj.mibModel.contrastNormalizationMemoryOptimized('mask', colCh);
-        obj.plotImage();
-    case 'NormalizeBg'
-        obj.mibModel.contrastNormalizationMemoryOptimized('bgMean', colCh);
-        obj.plotImage();
-end
 end

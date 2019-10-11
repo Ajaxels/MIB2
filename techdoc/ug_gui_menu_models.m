@@ -4,12 +4,12 @@
 % used in combibation with other layer. See more about segmentation layers
 % in <ug_gui_data_layers.html the Data layers of Microscopy Image Browser section>.
 %
+% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
 %
+%%
 % 
 % <<images\menuModel.png>>
 % 
-% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
-%
 %% Type of the model
 % Display type of the current model:
 %
@@ -170,7 +170,9 @@
 % <td colspan=2><img src="images\render_in_matlab.jpg"</img>
 % </tr>
 % <tr>
-% <td colspan=2>A brief demonstration is available in the following video:<br>
+% <td colspan=2>A brief demonstration is available in the following videos:<br>
+% <a href="https://youtu.be/svAFGBRfeoI"><img
+% style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/svAFGBRfeoI</a><br>
 % <a href="https://youtu.be/dMeoIZPaDS4?t=16m56s"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/dMeoIZPaDS4?t=16m56s</a>
 % </tr>
 % </table>
@@ -193,13 +195,22 @@
 % <html><h3 style="color:#d45600;">Matlab volume viewer</h3></html>
 %
 % *Matlab volume viewer*, render the model using Matlab volume viewer,
-% available only for the Matlab version of MIB and requires R2017b or
-% newer.
+% available only for the Matlab version of MIB and requires R2017b - R2019b or
+% newer. For the release R2019b, the materials may be displayed together
+% with the volume, but there are not control for lightning, so it is not very convenient. 
 %
 % <html>
-% A demonstration is available in the following video:<br>
-% <a href="https://youtu.be/J70V33f7bas"><img style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/J70V33f7bas</a>
+% Demonstration of the visualization of models as Volumes:<br>
+% <a href="https://www.youtube.com/watch?v=J70V33f7bas"><img style="vertical-align:middle;"
+% src="images\youtube.png"> https://www.youtube.com/watch?v=J70V33f7bas</a><br>
+% Demonstration of the visualization of models as materials together with the image dataset:<br>
+% <a href="https://youtu.be/GM9V1IxNkTI"><img style="vertical-align:middle;"
+% src="images\youtube.png"> https://youtu.be/GM9V1IxNkTI</a><br>
 % </html>
+% 
+%
+% <<images\MenuModelsRenderMatlabVolumeViewer.jpg>>
+% 
 %
 %
 % <html><h3 style="color:#d45600;">Fiji volume</h3></html>

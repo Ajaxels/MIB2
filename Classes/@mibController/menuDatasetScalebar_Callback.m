@@ -52,7 +52,7 @@ pixSize.x = scaleLength / distPix;
 pixSize.y = scaleLength / distPix;
 pixSize.z = scaleLength / distPix;
 
-obj.mibModel.updateParameters(pixSize);
+obj.mibModel.I{obj.mibModel.Id}.updatePixSizeResolution(pixSize);
 obj.updateAxesLimits('resize');
 obj.plotImage();
 end

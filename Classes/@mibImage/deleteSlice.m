@@ -1,5 +1,5 @@
-function result = deleteSlice(obj, sliceNumber, orient)
-% function result = deleteSlice(obj, sliceNumber, orient)
+function result = deleteSlice(obj, sliceNumber, orient, options)
+% function result = deleteSlice(obj, sliceNumber, orient, options)
 % Delete specified slice from the dataset.
 %
 % Parameters:
@@ -11,7 +11,8 @@ function result = deleteSlice(obj, sliceNumber, orient)
 % @li when @b 3 not used
 % @li when @b 4 remove slice from the yx configuration: [y,x,c,z,t]
 % @li when @b 5 remove slice from the t configuration
-%
+% options: an optional structure with additional paramters
+%   .showWaitbar - logical, @b 1 [@em default] - show the waitbar, @b 0 - do not show
 % Return values:
 % result: result of the function, @b 0 fail, @b 1 success
 
@@ -28,11 +29,14 @@ function result = deleteSlice(obj, sliceNumber, orient)
 % of the License, or (at your option) any later version.
 
 % Updates
-% 
+% 17.05.2019, added extra options
 
+if nargin < 4; options = struct; end
 if nargin < 3; orient = obj.orientation; end
 if isnan(orient); orient = obj.orientation; end
 if orient==0; orient = obj.orientation; end
+
+if ~isfield(options, 'showWaitbar'); options.showWaitbar = true; end
 
 result = 0;
 maxSliceNumber = size(obj.img{1}, orient);
@@ -41,7 +45,7 @@ if sliceNumber > maxSliceNumber
     return;
 end
 
-h = waitbar(0, sprintf('Deleting slice number(s) %s\nPlease wait...', num2str(sliceNumber)), 'Name', 'Deleting the slice...');
+if options.showWaitbar; wb = waitbar(0, sprintf('Deleting slice number(s) %s\nPlease wait...', num2str(sliceNumber)), 'Name', 'Deleting the slice...'); end
 maxT = size(obj.img{1},5);
 maxZ = size(obj.img{1},4);
 maxH = size(obj.img{1},1);
@@ -61,7 +65,7 @@ elseif orient == 5     % t orientation
     indexList = setdiff(1:maxT, sliceNumber);
     obj.img{1}=obj.img{1}(:, :, :, :, indexList);
 end
-waitbar(0.3, h);
+if options.showWaitbar; waitbar(0.3, wb); end
 
 % delete slice from selection
 if ~isnan(obj.selection{1}(1))
@@ -75,7 +79,7 @@ if ~isnan(obj.selection{1}(1))
         obj.selection{1}=obj.selection{1}(:, :, :, indexList);
     end
 end
-waitbar(0.5, h);
+if options.showWaitbar; waitbar(0.5, wb); end
 
 % delete slice from model
 if ~isnan(obj.model{1}(1))
@@ -107,8 +111,7 @@ if numel(labelsList) > 0
     end
     obj.hLabels.replaceLabels(labelsList, labelPositions, labelValue);
 end
-
-waitbar(0.7, h);
+if options.showWaitbar; waitbar(0.7, wb); end
 
 % delete slice from mask
 if ~isnan(obj.maskImg{1}(1))
@@ -122,7 +125,7 @@ if ~isnan(obj.maskImg{1}(1))
         obj.maskImg{1} = obj.maskImg{1}(:,:,:,indexList); 
     end
 end
-waitbar(0.9, h);
+if options.showWaitbar; waitbar(0.9, wb); end
 % update obj.height, obj.width, etc
 obj.height = size(obj.img{1}, 1);
 obj.width = size(obj.img{1}, 2);
@@ -174,7 +177,9 @@ end
 log_text = sprintf('Delete slice: %s, Orient: %d', num2str(sliceNumber), orient);
 obj.updateImgInfo(log_text);
 
-waitbar(1, h);
-delete(h);
+if options.showWaitbar 
+    waitbar(1, wb);
+    delete(wb);
+end
 result = 1;
 end

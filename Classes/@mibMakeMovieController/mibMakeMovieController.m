@@ -78,7 +78,6 @@ classdef mibMakeMovieController < handle
             for i=1:obj.mibModel.maxId
                 obj.movieFilename{i} = [];
             end
-            
             obj.updateWidgets();
             
             % add listner to obj.mibModel and call controller function as a callback
@@ -334,7 +333,7 @@ classdef mibMakeMovieController < handle
             % function scalebarCheck_Callback(obj)
             % enable the scale bar and check of pixel size
             if obj.View.handles.scalebarCheck.Value == 1
-                obj.mibModel.updateParameters();
+                obj.mibModel.I{obj.mibModel.Id}.updatePixSizeResolution();
             end
         end
         

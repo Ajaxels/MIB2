@@ -23,10 +23,10 @@ val = obj.mibView.handles.mibLutCheckbox.Value;
 if val==1 && strcmp(obj.mibModel.I{obj.mibModel.Id}.meta('ColorType'), 'indexed')
     errordlg(sprintf('LUTs are not implemented for the indexed images!\n\nPlease convert the image to the RGB color to use LUT:\nMenu->Image->Mode->RGB Color'),'Color type error!')
     obj.mibView.handles.mibLutCheckbox.Value = 0;
-    obj.mibModel.useLUT = 0;
+    obj.mibModel.I{obj.mibModel.Id}.useLUT = 0;
     return;
 end
-obj.mibModel.useLUT = val;
+obj.mibModel.I{obj.mibModel.Id}.useLUT = val;
 % update handles.channelMixerTable
 obj.redrawMibChannelMixerTable();
 

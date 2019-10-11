@@ -42,9 +42,9 @@ function [img, logText] = mibDoImageFiltering(img, options)
 
 logText = NaN;
 
-if isdeployed && strcmp(options.fitType, 'External: BMxD')
-    error('ib_doImageFiltering: BMxD is not available in the deployed version!'); 
-end
+% if isdeployed && strcmp(options.fitType, 'External: BMxD')
+%     error('ib_doImageFiltering: BMxD is not available in the deployed version!'); 
+% end
 
 if isfield(options,'sigma')
     if options.sigma < 0

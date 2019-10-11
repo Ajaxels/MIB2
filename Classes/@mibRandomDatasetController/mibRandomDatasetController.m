@@ -64,10 +64,14 @@ classdef mibRandomDatasetController < handle
         function addDirBtn_Callback(obj)
             % function addDirBtn_Callback(obj)
             % add directory to the list
-            folder_name = uigetdir(obj.mibModel.myPath, 'Select directory');
+            
+            %folder_name = uigetdir(obj.mibModel.myPath, 'Select directory');
+            folder_name = uigetfile_n_dir(obj.mibModel.myPath, 'Select directory');
             if isequal(folder_name, 0); return; end
             
-            obj.inputDirs{end+1} = folder_name;
+            obj.inputDirs = [obj.inputDirs; folder_name'];
+            
+            %obj.inputDirs(end+numel(folder_name)-1) = folder_name';
             obj.updateWidgets();
             obj.View.handles.inputDirsList.Value = numel(obj.inputDirs);
         end
@@ -329,7 +333,7 @@ classdef mibRandomDatasetController < handle
                 if exist(fnOut, 'file') == 2
                     delete(fnOut);
                 end
-                warning off MATLAB:xlswrite:AddSheet
+                warning('off', 'MATLAB:xlswrite:AddSheet');
                 % Sheet 1
                 s = {'Rename and Shuffle parameters'};
                 s(2,1) = {'Note! MIB opens images sorted in alphabetical order'};

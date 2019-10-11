@@ -17,10 +17,10 @@ function result = setData(obj, type, dataset, orient, col_channel, options)
 % selected in the imageData.slices{3} variable, when @b 0 - take all colors of the dataset.
 % @li when @b type is 'model' @b col_channel may be @em NaN - to take all materials of the model or an integer to take specific material. In the later case the selected material will have index = 1.
 % options: [@em optional], a structure with extra parameters
-% @li .y -> [@em optional], [ymin, ymax] coordinates of the dataset to take after transpose for level=1, height
-% @li .x -> [@em optional], [xmin, xmax] coordinates of the dataset to take after transpose for level=1, width
-% @li .z -> [@em optional], [zmin, zmax] coordinates of the dataset to take after transpose, depth
-% @li .t -> [@em optional], [tmin, tmax] coordinates of the dataset to take after transpose, time
+% @li .y -> [@em optional], [ymin, ymax] coordinates of the dataset to take after transpose for level=1, when @b 0 takes 1:obj.height; can be a single number
+% @li .x -> [@em optional], [xmin, xmax] coordinates of the dataset to take after transpose for level=1, when @b 0 takes 1:obj.width; can be a single number
+% @li .z -> [@em optional], [zmin, zmax] coordinates of the dataset to take after transpose, when @b 0 takes 1:obj.depth; can be a single number
+% @li .t -> [@em optional], [tmin, tmax] coordinates of the dataset to take after transpose, when @b 0 takes 1:obj.time; can be a single number
 % @li .level -> [@em optional], index of image level from the image pyramid
 % @li .replaceDatasetSwitch -> [@em optional], force to replace dataset completely with a new dataset
 % @li .keepModel -> [@em optional], do not resize the model/selection
@@ -97,18 +97,24 @@ if blockModeSwitchLocal == 1
     Zlim = [1 obj.depth];
     Tlim = [1 obj.time];
     
+    % deal with cases when options.x/y/z == 0 
+    if isfield(options, 'x') && options.x(1) == 0; options = rmfield(options, 'x'); end
+    if isfield(options, 'y') && options.y(1) == 0; options = rmfield(options, 'y'); end
+    if isfield(options, 'z') && options.z(1) == 0; options = rmfield(options, 'z'); end
+    if isfield(options, 't') && options.t(1) == 0; options = rmfield(options, 't'); end
+    
     if orient==1     % xz
-        if isfield(options, 'x'); Zlim = options.x(1,:); end
-        if isfield(options, 'z'); Ylim = options.z(1,:); end
-        if isfield(options, 'y'); Xlim = options.y(1,:); end
+        if isfield(options, 'x'); Zlim = [options.x(1) options.x(numel(options.x))]; end
+        if isfield(options, 'z'); Ylim = [options.z(1) options.z(numel(options.z))]; end
+        if isfield(options, 'y'); Xlim = [options.y(1) options.y(numel(options.y))]; end
     elseif orient==2 % yz
-        if isfield(options, 'x'); Zlim = options.x(1,:); end
-        if isfield(options, 'y'); Ylim = options.y(1,:); end
-        if isfield(options, 'z'); Xlim = options.z(1,:); end
+        if isfield(options, 'x'); Zlim = [options.x(1) options.x(numel(options.x))]; end
+        if isfield(options, 'y'); Ylim = [options.y(1) options.y(numel(options.y))]; end
+        if isfield(options, 'z'); Xlim = [options.z(1) options.z(numel(options.z))]; end
     elseif orient==4 % yx
-        if isfield(options, 'x'); Xlim = options.x(1,:); end
-        if isfield(options, 'y'); Ylim = options.y(1,:); end
-        if isfield(options, 'z'); Zlim = options.z(1,:); end
+        if isfield(options, 'x'); Xlim = [options.x(1) options.x(numel(options.x))]; end
+        if isfield(options, 'y'); Ylim = [options.y(1) options.y(numel(options.y))]; end
+        if isfield(options, 'z'); Zlim = [options.z(1) options.z(numel(options.z))]; end
     end
     if isfield(options, 't')
         if numel(options.t) == 1; options.t = [options.t options.t]; end
@@ -273,8 +279,9 @@ else        % ************ uint6 model type
             switch type
                 case 'model'
                     if ~isnan(col_channel)     % set only specific object
-                        obj.model{1}(bitand(dataset, 1)==1) = bitand(obj.model{1}(bitand(dataset, 1)==1), 192);  % 192 = 11000000, remove Material from the model
-                        obj.model{1}(dataset==1) = bitor(obj.model{1}(dataset==1), col_channel);
+                        obj.model{1}(bitand(obj.model{1}, col_channel)==col_channel) = bitand(obj.model{1}(bitand(obj.model{1}, col_channel)==col_channel), 192);  % 192 = 11000000, remove Material from the model
+                        obj.model{1}(dataset==1) = bitand(obj.model{1}(dataset==1), 192);    % empty positions for the new material
+                        obj.model{1}(dataset==1) = bitor(obj.model{1}(dataset==1), col_channel);    % update new material
                     else
                         obj.model{1} = bitand(obj.model{1}, 192); % clear current model
                         obj.model{1} = bitor(obj.model{1}, dataset);
@@ -357,11 +364,13 @@ if strcmp(type,'image') && (blockModeSwitchLocal == 0 || options.replaceDatasetS
                 obj.lutColors(i,:) = [rand(1) rand(1) rand(1)];
             end
         end
+        obj.updateDisplayParameters();
     end
     
     if ~strcmp(obj.meta('imgClass'), class(obj.img{1}(1)))
         obj.meta('imgClass') = class(obj.img{1}(1));    % get string with class name for images
         obj.meta('MaxInt') = double(intmax(obj.meta('imgClass')));
+        obj.updateDisplayParameters();
     end
     
     % update class variables

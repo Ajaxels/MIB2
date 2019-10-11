@@ -148,6 +148,13 @@
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
+%   <td style="font-weight: bold">fstack - extended depth-of-field image</td>
+%   <td>Said Pertuz, Universitat Rovira i Virgili, Tarragona, Spain</td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/55115-extended-depth-of-field">via Matlab Exchange</a></td>
+%   <td>ModifiedBSD,<br> 2013</td>
+%   <td>2.51-</td>
+% </tr>
+% <tr style="">
 %   <td style="font-weight: bold">Hardware accelerated 3D viewer for MATLAB</td>
 %   <td>Jean-Yves Tinevez, Institut Pasteur</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/32344-hardware-accelerated-3d-viewer-for-matlab">via Matlab Exchange</a></td>
@@ -165,8 +172,15 @@
 %   <td style="font-weight: bold">Highly portable JSON-input parser</td>
 %   <td>Nedialko</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser">via Matlab Exchange</a></td>
-%   <td>FreeBSD,<br>2009</td>
+%   <td>GPL,<br> 2013</td>
 %   <td>0.x-2.x</td>
+% </tr>
+% <tr style="">
+%   <td style="font-weight: bold">HistThresh toolbox</td>
+%   <td>Antti Niemist&ouml;, Tampere University of Technology, Finland</td>
+%   <td><a href="https://github.com/carandraug/histthresh">Github</a></td>
+%   <td>GPLv3,<br>2014</td>
+%   <td>2.51 - </td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">IceImarisConnector</td>
@@ -246,8 +260,15 @@
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
+%   <td style="font-weight: bold">MIJ: Running ImageJ and Fiji within Matlab</td>
+%   <td>Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin, EPFL Lausanne</td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/47545-mij-running-imagej-and-fiji-within-matlab">via Matlab Exchange</a></td>
+%   <td>ModifiedBSD,<br>2012-2017</td>
+%   <td>2.6-</td>
+% </tr>
+% <tr style="">
 %   <td style="font-weight: bold">MTOC++</td>
-%   <td>Martin Drohmann (Universität Münster), Daniel Wirtz (Universität Stuttgart)</td>
+%   <td>Martin Drohmann (Universit?t M?nster), Daniel Wirtz (Universit?t Stuttgart)</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools">via Matlab Exchange</a></td>
 %   <td>FreeBSD,<br> 2011-2013</td>
 %   <td>0.x-2.x</td>
@@ -257,6 +278,13 @@
 %   <td>Jeff Mather, the MathWorks, Inc.</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/34653-nrrd-format-file-reader">via Matlab Exchange</a></td>
 %   <td>ModifiedBSD,<br>2012</td>
+%   <td>0.x-2.x</td>
+% </tr>
+% <tr style="">
+%   <td style="font-weight: bold">OMERO Matlab bindings</td>
+%   <td>The Open Microscopy Environment</td>
+%   <td><a href="https://www.openmicroscopy.org/omero/">OME website</a></td>
+%   <td>GPL,<br>2019</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
@@ -311,7 +339,7 @@
 % <tr style="">
 %   <td style="font-weight: bold">SLIC (Simple Linear Iterative Clustering)</td>
 %   <td>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, 
-% Pascal Fua, and Sabine Süsstrunk<br>Ecole Polytechnique Federale de
+% Pascal Fua, and Sabine S?sstrunk<br>Ecole Polytechnique Federale de
 % Lausanne (EPFL), Switzerland</td>
 %   <td><a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html">authors' website</a></td>
 %   <td>ModifiedBSD,<br> 2015</td>
@@ -330,6 +358,13 @@
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28639-struct2xml">via Matlab Exchange</a></td>
 %   <td>FreeBSD,<br> 2010</td>
 %   <td>0.x-2.x</td>
+% </tr>
+% <tr style="">
+%   <td style="font-weight: bold">UIGETFILE_N_DIR</td>
+%   <td>Tiago / Peugas</td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/32555-uigetfile_n_dir-select-multiple-files-and-directories">via Matlab Exchange</a></td>
+%   <td>FreeBSD,<br> 2011</td>
+%   <td>2.6-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">VIEW3D</td>

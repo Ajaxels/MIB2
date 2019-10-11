@@ -16,8 +16,6 @@ function exitProgram(obj)
 % Updates
 %
 
-global mibPath;
-
 % close child controllers
 for i=numel(obj.childControllers):-1:1
     if isvalid(obj.childControllers{i})
@@ -42,29 +40,10 @@ mib_pars = struct();
 mib_pars.lastpath = obj.mibModel.myPath;    % store current path
 mib_pars.preferences = obj.mibModel.preferences; %#ok<STRNU>     % store preferences
 
-os = getenv('OS');
-if strcmp(os, 'Windows_NT')
-    if isdir(['c:' filesep 'temp']) == 0; [~, ~, messageid] = mkdir(['c:' filesep 'temp']);        end    % create a tmp directory for storing im_browser parameters
-    try
-        save(['c:' filesep 'temp' filesep 'mib.mat'],'mib_pars');
-    catch err
-        try     % try to save it into windows temp folder (C:\Users\User-name\AppData\Local\Temp\)
-            fn = fullfile(tempdir, 'mib.mat');
-            save(fn, 'mib_pars');
-        catch err
-            msgbox(sprintf('There is a problem with saving settings\n%s', err.identifier),'Error','error','modal');
-        end
-    end
-else        % linux
-    try
-        save([mibPath filesep 'mib.mat'], 'mib_pars');
-    catch err
-        try     % try to save it into linux temp folder
-            fn = fullfile(tempdir, 'mib.mat');
-            save(fn, 'mib_pars');
-        catch err
-            msgbox(sprintf('There is a problem with saving settings\n%s', err.identifier),'Error','error','modal');
-        end
-    end
+prefdir = getPrefDir();
+try
+    save(fullfile(prefdir, 'mib.mat'), 'mib_pars');
+catch err
+    errordlg(sprintf('There is a problem with saving preferences to\n%s\n%s', fullfile(prefdir, 'mib.mat'), err.identifier), 'Error');
 end
 end

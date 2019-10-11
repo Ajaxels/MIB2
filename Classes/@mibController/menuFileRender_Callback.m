@@ -61,7 +61,20 @@ switch parameter
             errordlg(sprintf('!!! Error !!!\n\nVolume viewer is not compatible with multicolor images;\nplease keep only a single color channel displayed and try again!'), 'Not implemented');
             return;
         end
-        if obj.matlabVersion >= 9.4
+        if obj.matlabVersion >= 9.6
+            answer = 'Only volume';
+            if obj.mibModel.I{obj.mibModel.Id}.modelExist
+                answer = questdlg(sprintf('Would you like to have the model exported together with the volume?'), ...
+                    'Include model', 'Volume with model', 'Only volume', 'Cancel', 'Only volume');
+                if strcmp(answer, 'Cancel'); return; end
+            end
+            if strcmp(answer, 'Only volume')
+                volumeViewer(squeeze(img), 'VolumeType', 'Volume', 'ScaleFactors', [obj.mibModel.I{obj.mibModel.Id}.pixSize.x obj.mibModel.I{obj.mibModel.Id}.pixSize.y obj.mibModel.I{obj.mibModel.Id}.pixSize.z]);
+            else
+                Model = cell2mat(obj.mibModel.getData3D('model'));
+                volumeViewer(squeeze(img), Model, 'ScaleFactors', [obj.mibModel.I{obj.mibModel.Id}.pixSize.x obj.mibModel.I{obj.mibModel.Id}.pixSize.y obj.mibModel.I{obj.mibModel.Id}.pixSize.z]);
+            end
+        elseif obj.matlabVersion >= 9.4
             tform = zeros(4);
             tform(1,1) = obj.mibModel.I{obj.mibModel.Id}.pixSize.x;
             tform(2,2) = obj.mibModel.I{obj.mibModel.Id}.pixSize.y;

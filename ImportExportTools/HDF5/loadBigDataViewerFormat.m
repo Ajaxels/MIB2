@@ -176,6 +176,7 @@ depth = diff(z)+1;
 level = img_info('ReturnedLevel');
 
 dataset = zeros([width, height, depth, numel(c), diff(t)+1], img_info('imgClass'));  % allocate space
+%dataset = zeros([height, width, depth, numel(c), diff(t)+1], img_info('imgClass'));  % allocate space
 timeCount = 0;  % time index for the output
 if options.waitbar; waitbar(0.05, wb, sprintf('Loading HDF5 images\nPlease wait...')); end
 
@@ -187,6 +188,7 @@ for timePnt=t(1):t(2)
         groupName = info.Groups(timeIndex).Groups(ch).Groups(level).Name;
         datasetName = info.Groups(timeIndex).Groups(ch).Groups(level).Datasets.Name;
         dummy = h5read(filename, [groupName '/' datasetName], [x(1), y(1), z(1)], [width, height, depth]);
+        %dummy = h5read(filename, [groupName '/' datasetName], [y(1), x(1), z(1)], [height width depth]);
         
         % have to typecast, otherwise
         % example = h5read('mitosis.h5', '/t00000/s00/0/cells');

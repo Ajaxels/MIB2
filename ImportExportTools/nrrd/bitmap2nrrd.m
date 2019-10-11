@@ -42,24 +42,24 @@ end
 if nargin < 4   
     options = struct();
 end
-if ~isfield(options, 'overwrite'); options.overwrite = 0; end;
-if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1; end;
+if ~isfield(options, 'overwrite'); options.overwrite = 0; end
+if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1; end
 
 if options.overwrite == 0
     if exist(filename,'file') == 2
         choice = questdlg('File exists! Overwrite?', 'Warning!', 'Continue','Cancel','Cancel');
-        if ~strcmp(choice,'Continue'); disp('Canceled, nothing was saved!'); return; end;
-    end;
+        if ~strcmp(choice,'Continue'); disp('Canceled, nothing was saved!'); return; end
+    end
 end
 
-if options.showWaitbar; 
+if options.showWaitbar
   %warning('off','MATLAB:gui:latexsup:UnableToInterpretTeXString');    % switch off warnings for latex
   curInt = get(0, 'DefaulttextInterpreter'); 
   set(0, 'DefaulttextInterpreter', 'none'); 
   wb = waitbar(0,sprintf('%s\nPlease wait...',filename),'Name','Saving images in the nrrd format...','WindowStyle','modal');
   set(findall(wb,'type','text'),'Interpreter','none');
   waitbar(0, wb);
-end;
+end
 
 width = size(bitmap, 2);
 height = size(bitmap, 1);

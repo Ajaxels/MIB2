@@ -1,10 +1,12 @@
 %% Tools Menu
 % Additional tools 
+%
+% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
+%
+%%
 % 
 % <<images\menuTools.png>>
 % 
-% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
-%
 %% Measure length
 % Allows measuring the length on the image.
 %
@@ -51,10 +53,10 @@
 % 
 %
 %% Semi-automatic segmentation
-% Two methods for automated image segmentation and object separation. Both
-% methods available for 2D and 3D objects.
+% Methods for automated image segmentation and object separation. 
 %
 %
+% * <ug_gui_menu_tools_global_thresholding.html *Global thresholding*>
 % * <ug_gui_menu_tools_graphcut.html *Graphcut segmentation* (_recommended_)>
 % * <ug_gui_menu_tools_watershed.html *Watershed segmentation*>
 % 

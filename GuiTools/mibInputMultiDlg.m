@@ -23,7 +23,7 @@ function varargout = mibInputMultiDlg(varargin)
 % .TitleLines - a number that defines number of text lines reserved for the title
 % .WindowWidth - a number scales the standard width of the dialog x times
 % .Columns - an integer that defines number of columns
-% .LastItemColumns - [optional] force the last entry to be on a signle column, 1 or 0
+% .LastItemColumns - [optional] force the last entry to be on a single column, 1 or 0
 % .Focus - define index of the widget to get focused
 % .okBtnText -  text for the OK button
 %
@@ -175,7 +175,7 @@ shiftX = 0;
 
 for elementId = 1:numel(prompts)
     if shiftX < floor((elementId-1)/ceil((numel(prompts)-options.LastItemColumns)/options.Columns))*width
-        columnId = floor((elementId)/ceil((numel(prompts)-options.LastItemColumns)/options.Columns));
+        columnId = floor((elementId-1)/ceil((numel(prompts)-options.LastItemColumns)/options.Columns));
         shiftX = columnId*width + de/2*columnId;
         shiftY = 0; %dt*PromptLines(1);
     end

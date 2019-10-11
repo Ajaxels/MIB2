@@ -23,7 +23,7 @@ if strcmp(cell2mat(modifier), 'shift')
     step = 1;
 elseif strcmp(cell2mat(modifier), 'shiftcontrol')
     step = 5;
-end;
+end
 
 if eventdata.VerticalScrollCount < 0
     obj.mibView.brushSelection{3}.factor = obj.mibView.brushSelection{3}.factor + step;

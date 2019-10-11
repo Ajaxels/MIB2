@@ -81,26 +81,14 @@ switch obj.mibModel.I{obj.mibModel.Id}.modelType
         obj.mibView.handles.menuModelsType4294967295.Checked = 'on';         
 end
 
-% on PC path is file://c:/...
-% on Mac file:///Volumes/Transcend/...
-if ispc
-    fileText = 'file:/';
-else
-    fileText = 'file://';
-end
 if obj.mibModel.getImageProperty('modelType') < 256
-    %obj.mibView.handles.mibAddMaterialBtn.String = '+';
-    btnText = strrep([fileText fullfile(mibPath, 'Resources', 'plus.png')],'\','/'); 
-    btnText = ['<html><img src="' btnText '"/></html>']; 
-    obj.mibView.handles.mibAddMaterialBtn.String = btnText;
+    obj.mibView.handles.mibAddMaterialBtn.CData = obj.mibModel.sessionSettings.guiImages.plus;
     obj.mibView.handles.mibAddMaterialBtn.TooltipString = 'press to add Material to the model';
     obj.mibView.handles.mibRemoveMaterialBtn.Enable = 'on';
     obj.mibView.handles.mibSegmShowTypePopup.Enable = 'on';
 else
     %obj.mibView.handles.mibAddMaterialBtn.String = 'E';
-    btnText = strrep([fileText fullfile(mibPath, 'Resources', 'next.png')],'\','/'); 
-    btnText = ['<html><img src="' btnText '"/></html>']; 
-    obj.mibView.handles.mibAddMaterialBtn.String = btnText;
+    obj.mibView.handles.mibAddMaterialBtn.CData = obj.mibModel.sessionSettings.guiImages.next;
     obj.mibView.handles.mibAddMaterialBtn.TooltipString = 'press to find and select the next empty material';
     obj.mibView.handles.mibRemoveMaterialBtn.Enable = 'off';
     obj.mibView.handles.mibSegmShowTypePopup.Enable = 'off';
@@ -201,6 +189,7 @@ obj.mibView.handles.mibChangeTimeSlider.Value = obj.mibModel.I{obj.mibModel.Id}.
 if obj.mibModel.I{obj.mibModel.Id}.maskExist == 0
     obj.mibView.handles.mibMaskShowCheck.Value = 0;
     obj.mibView.handles.mibMaskedAreaCheck.Value = 0;
+    obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMask = 0;
     obj.mibView.handles.mibMaskedAreaCheck.BackgroundColor = [0.94, 0.94, 0.94];
     obj.mibModel.mibMaskShowCheck = 0;
 end
@@ -209,11 +198,25 @@ end
 if obj.mibView.handles.mibModelShowCheck.Value && obj.mibModel.I{obj.mibModel.Id}.modelExist == 0
     obj.mibView.handles.mibModelShowCheck.Value = 0;
     obj.mibModel.mibModelShowCheck = 0;
+    obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial = 0;
 end
 
 % clear trackerYXZ variable of the membrane clicktracker tool
 obj.mibView.trackerYXZ = [NaN;NaN;NaN];
 
+% update fix selection to material status and redraw mibSegmentationTable
+% using obj.updateSegmentationTable() inside mibSegmSelectedOnlyCheck_Callback
+obj.mibView.handles.mibSegmSelectedOnlyCheck.Value = obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial;
+obj.mibSegmSelectedOnlyCheck_Callback();
+
+% update MaskedAreaCheck status
+if obj.mibView.handles.mibMaskedAreaCheck.Value ~= obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMask
+    obj.mibView.handles.mibMaskedAreaCheck.Value = obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMask;
+    obj.mibMaskedAreaCheck_Callback();
+end
+
+% update useLUT checkbox
+obj.mibView.handles.mibLutCheckbox.Value = obj.mibModel.I{obj.mibModel.Id}.useLUT;
 
 %% update ROI stuff
 % update roi list box
@@ -309,7 +312,6 @@ end
 %obj.mibView.handles.mibColChannelCombo.Value = min([obj.mibView.handles.mibColChannelCombo.Value obj.mibModel.getImageProperty('colors')+1]);
 obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel = min([obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel obj.mibModel.getImageProperty('colors')]);
 obj.redrawMibChannelMixerTable();
-obj.updateSegmentationTable();
 
 %% place callbacks for gui
 obj.mibView.gui.WindowButtonMotionFcn = (@(hObject, eventdata, handles) obj.mibGUI_WinMouseMotionFcn());   

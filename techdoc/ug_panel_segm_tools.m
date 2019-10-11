@@ -179,7 +179,7 @@
     % <li><b>Label + Value</b>, show marker, label and value for each annotation</li>
     % </ul>
 % </li>
-% <li><b>Value eccentric</b> checkbox, when enabled, the first parameter during visualization of annotations is
+% <li><b>Focus on Value</b> checkbox, when enabled, the first parameter during visualization of annotations is
 % value and the second parameter is label.
 % </ul>
 % </td>
@@ -198,13 +198,16 @@
 % <ul>
 % <li>The <b>List of annotations</b> table shows a list of annotations. 
 %   <ul>The <em>right mouse button</em></b> click calls an additional popup menu that allows to 
-%       <li><em><b>Add annotation</em></b>, manually add annotation to the list, position of the first and second fields are defined by the <em>Value eccentric</em> checkbox of the Annotation panel, see above</li>
 %       <li><em><b>Jump to annotation</em></b>, moves the image so that the selected annotation is in the middle of the Image View panel</li>
+%       <li><em><b>Add annotation</em></b>, manually add annotation to the list, position of the first and second fields are defined by the <em>Value eccentric</em> checkbox of the Annotation panel, see above</li>
+%       <li><em><b>Rename selected annotations</em></b>, rename names of the selected annotations</li>
+%       <li><em><b>Batch modify selected annotations</em></b>, modify annotation values or coordinates using a provided expression</li>
 %       <li><em><b>Count selected annotations</em></b>, calculate occurance of each annotation in the list of selected annotations. 
 %           The results are displayed in the Matlab command window and
 %           copied to the system clipboard 
 %           <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a>
 %           </li>
+%       <li><em><b>Copy selected annotations to clipboard</em></b>, the selected annotations are copied to the system clipboard as a text string ready to be pasted to Excel</li>
 %       <li><em><b>Export selected annotations</em></b>, export selected annotations in the Matlab format, landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>), PSI format for Amira and Excel</li>
 %       <li><em><b>Export selected annotations to Imaris</em></b>, export selected annotations to Imaris (<em><b>Note!</em> please first export the dataset!</b>)</li>
 %       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
@@ -350,6 +353,47 @@
 % A brief demonstration is available in the following video:<br>
 % <a href="https://youtu.be/ZcJQb59YzUA?t=4m37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m37s</a>
 % </html>
+%
+%
+%% Drag & Drop materials
+%
+% <html>
+% <table style="width: 800px; border: 0px">
+% <tr>
+% <td style="border: 0px">
+%   <img src = "images\PanelsSegmentationToolsDragDrop.png">
+% </td>
+% <td style="border: 0px">
+% Shift MIB layers (selection, mask, model) to left/right/up/down
+% direction. The tool allows to move individual 2D/3D objects as well as
+% complete contents of the layers in 2D and 3D.
+% <br><br>
+% A combobox offers possibility to choose the layer to be moved. Mouse click or use of the buttons
+% in the panel move the selected layer left/right/up/down by the specified number of pixels.
+% <br><br>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/NGudNrxBbi0"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/NGudNrxBbi0</a>
+% <br><br>
+% </td>
+% </tr>
+% </table>
+% <br><br>
+% <table style="width: 800px; text-align: center;" cellspacing=2px cellpadding=2px >
+% <tr style="font-weight: bold; background: #ffb74d;">
+%   <td>Start by</td>
+%   <td>Modifier</td>
+%   <td>3D checkbox</td>
+%   <td>Action</td>
+% </tr>
+% <tr><td>Mouse click over an object</td><td>Control</td><td>Unchecked</td><td>Move the selected object in 2D</td></tr>
+% <tr><td>Mouse click over an object</td><td>Control</td><td>Checked</td><td>Move the selected 3D object. <b>Note! Only for Matlab version 2017b and newer</b></td></tr>
+% <tr><td>Mouse click</td><td>Shift</td><td>Unchecked</td><td>Move all objects on the shown slice, i.e. 2D movement</td></tr>
+% <tr><td>Mouse click</td><td>Shift</td><td>Checked</td><td>Move all objects on all slices, i.e. 3D movement</td></tr>
+% <tr><td>Left/Right/Up/Down buttons</td><td>-</td><td>Unchecked</td><td>Move all objects on the shown slice by the specified number of pixels, i.e. 2D movement</td></tr>
+% <tr><td>Left/Right/Up/Down buttons</td><td>-</td><td>Checked</td><td>Move all objects on all slices by the specified number of pixels, i.e. 3D movement</td></tr>
+% </table>
+% </html>
+% 
 %
 %% The Lasso tool
 %

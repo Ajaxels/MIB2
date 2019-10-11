@@ -35,7 +35,7 @@ switch parameter
         end
         
         obj.startController('mibRechopDatasetController');
-        obj.mibView.lastSegmSelection = [2 1];  % last selected contour for use with the 'e' button
+        obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection = [2 1];  % last selected contour for use with the 'e' button
     case 'export'
         obj.startController('mibChopDatasetController');
 end

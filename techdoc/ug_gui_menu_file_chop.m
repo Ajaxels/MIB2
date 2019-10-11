@@ -5,6 +5,8 @@
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_file.html *File Menu*>
+%
+%%
 % 
 % <<images\menuFileChopmode.jpg>>
 % 

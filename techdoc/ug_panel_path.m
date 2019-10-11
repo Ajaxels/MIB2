@@ -1,11 +1,12 @@
 %% Path Panel
 % This panel is used to provide the path to the image dataset.
 %
+%
+% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
+%%
 % 
 % <<images\PanelsPath.png>>
 % 
-%
-% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
 %% 1. Logical drive combo box.
 % This combo box is used for fast selection of logical drives. It is initialized during the start of 
 % |MIB| and will show only those logical drives that were available during

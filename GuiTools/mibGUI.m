@@ -22,7 +22,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 30-Jul-2018 14:28:30
+% Last Modified by GUIDE v2.5 06-Oct-2019 23:29:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -94,20 +94,20 @@ for i=1:9
     eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Sync view (x,y) with...'', ''Separator'',''on'',''Callback'', {@mibBufferToggleContext_Callback, ''sync_xy'',%d});', i, i));
     eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Sync view (x,y,z) with...'', ''Callback'', {@mibBufferToggleContext_Callback, ''sync_xyz'',%d});', i, i));
     eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Sync view (x,y,z,t) with...'', ''Callback'', {@mibBufferToggleContext_Callback, ''sync_xyzt'',%d});', i, i));
-    eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Clear dataset'', ''Separator'',''on'',''Callback'', {@mibBufferToggleContext_Callback, ''clear'',%d});', i, i));
-    eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Clear all stored datasets'', ''Callback'', {@mibBufferToggleContext_Callback, ''clearAll'',%d});', i, i));
+    eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Close dataset'', ''Separator'',''on'',''Callback'', {@mibBufferToggleContext_Callback, ''close'',%d});', i, i));
+    eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Close all stored datasets'', ''Callback'', {@mibBufferToggleContext_Callback, ''closeAll'',%d});', i, i));
     eval(sprintf('set(handles.mibBufferToggle%d,''uicontextmenu'',handles.mibBufferToggle%d_cm);', i, i));
 end
 
 % adding context menu for filesListbox
 handles.mibFilesListbox_cm = uicontextmenu('Parent',handles.mibGUI);
-uimenu(handles.mibFilesListbox_cm, 'Label', 'Combine selected datasets...', 'Callback', {@mibFilesListbox_cm_Callback, 'load'});
-uimenu(handles.mibFilesListbox_cm, 'Label', 'Load part of the dataset (*.am only)...', 'Callback', {@mibFilesListbox_cm_Callback, 'loadPart'});
-uimenu(handles.mibFilesListbox_cm, 'Label', 'Load each N-th dataset...', 'Callback', {@mibFilesListbox_cm_Callback, 'nth'});
-uimenu(handles.mibFilesListbox_cm, 'Label', 'Insert into the open dataset...', 'Callback', {@mibFilesListbox_cm_Callback, 'insertData'});
-uimenu(handles.mibFilesListbox_cm, 'Label', 'Combine files as color channels...', 'Separator', 'on', 'Callback', {@mibFilesListbox_cm_Callback, 'combinecolors'});
-uimenu(handles.mibFilesListbox_cm, 'Label', 'Add as a new color channel...', 'Callback', {@mibFilesListbox_cm_Callback, 'addchannel'});
-uimenu(handles.mibFilesListbox_cm, 'Label', 'Add each N-th dataset as a new color channel...', 'Callback', {@mibFilesListbox_cm_Callback, 'addchannel_nth'});
+uimenu(handles.mibFilesListbox_cm, 'Label', 'Combine selected datasets...', 'Callback', {@mibFilesListbox_cm_Callback, 'Combine datasets'});
+uimenu(handles.mibFilesListbox_cm, 'Label', 'Load part of the dataset (*.am only)...', 'Callback', {@mibFilesListbox_cm_Callback, 'Load part of dataset'});
+uimenu(handles.mibFilesListbox_cm, 'Label', 'Load each N-th dataset...', 'Callback', {@mibFilesListbox_cm_Callback, 'Load each N-th dataset'});
+uimenu(handles.mibFilesListbox_cm, 'Label', 'Insert into the open dataset...', 'Callback', {@mibFilesListbox_cm_Callback, 'Insert into open dataset'});
+uimenu(handles.mibFilesListbox_cm, 'Label', 'Combine files as color channels...', 'Separator', 'on', 'Callback', {@mibFilesListbox_cm_Callback, 'Combine files as color channels'});
+uimenu(handles.mibFilesListbox_cm, 'Label', 'Add as a new color channel...', 'Callback', {@mibFilesListbox_cm_Callback, 'Add as new color channel'});
+uimenu(handles.mibFilesListbox_cm, 'Label', 'Add each N-th dataset as a new color channel...', 'Callback', {@mibFilesListbox_cm_Callback, 'Add each N-th dataset as new color channel'});
 uimenu(handles.mibFilesListbox_cm, 'Label', 'Rename selected file...', 'Separator', 'on', 'Callback', {@mibFilesListbox_cm_Callback, 'rename'});
 uimenu(handles.mibFilesListbox_cm, 'Label', 'Delete selected files...', 'Callback', {@mibFilesListbox_cm_Callback, 'delete'});
 uimenu(handles.mibFilesListbox_cm, 'Label', 'File properties', 'Separator', 'on', 'Callback', {@mibFilesListbox_cm_Callback, 'file_properties'});
@@ -154,19 +154,25 @@ uimenu(handles.mibSegmentationTable_cm, 'Label', 'Rename...', 'Separator', 'on',
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Set color...', 'Callback', {@mibSegmentationTable_cm_Callback, 'set color'});
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Get statistics...', 'Callback', {@mibSegmentationTable_cm_Callback, 'statistics'});
 h1=uimenu(handles.mibSegmentationTable_cm,'label','Material to Selection...','Separator','on');
-uimenu(h1,'label','NEW (CURRENT)', 'callback', {@mibGUI_moveLayers, NaN, 'model', 'selection', '2D', 'replace'});
-uimenu(h1,'label','ADD (CURRENT)','callback', {@mibGUI_moveLayers, NaN, 'model','selection','2D','add'});
-uimenu(h1,'label','REMOVE (CURRENT)','callback', {@mibGUI_moveLayers, NaN,'model','selection','2D','remove'});
-uimenu(h1,'label','NEW (ALL SLICES)','Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','selection','3D','replace'});
-uimenu(h1,'label','ADD (ALL SLICES)','callback', {@mibGUI_moveLayers, NaN, 'model','selection','3D','add'});
-uimenu(h1,'label','REMOVE (ALL SLICES)','callback', {@mibGUI_moveLayers, NaN,'model','selection','3D','remove'});
+uimenu(h1,'label','NEW (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'model', 'selection', '2D, Slice', 'replace'});
+uimenu(h1,'label','ADD (2D, Slice)','callback', {@mibGUI_moveLayers, NaN, 'model','selection','2D, Slice','add'});
+uimenu(h1,'label','REMOVE (2D, Slice)','callback', {@mibGUI_moveLayers, NaN,'model','selection','2D, Slice','remove'});
+uimenu(h1,'label','NEW (3D, Stack)','Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','selection','3D, Stack','replace'});
+uimenu(h1,'label','ADD (3D, Stack)','callback', {@mibGUI_moveLayers, NaN, 'model','selection','3D, Stack','add'});
+uimenu(h1,'label','REMOVE (3D, Stack)','callback', {@mibGUI_moveLayers, NaN,'model','selection','3D, Stack','remove'});
+uimenu(h1,'label','NEW (4D, Dataset)','Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','selection','4D, Dataset','replace'});
+uimenu(h1,'label','ADD (4D, Dataset)','callback', {@mibGUI_moveLayers, NaN, 'model','selection','4D, Dataset','add'});
+uimenu(h1,'label','REMOVE (4D, Dataset)','callback', {@mibGUI_moveLayers, NaN,'model','selection','4D, Dataset','remove'});
 h2=uimenu(handles.mibSegmentationTable_cm,'label','Material to Mask...');
-uimenu(h2,'label','NEW (CURRENT)','callback', {@mibGUI_moveLayers, NaN,'model','mask','2D','replace'});
-uimenu(h2,'label','ADD (CURRENT)','callback', {@mibGUI_moveLayers, NaN, 'model','mask','2D','add'});
-uimenu(h2,'label','REMOVE (CURRENT)','callback', {@mibGUI_moveLayers, NaN,'model','mask','2D','remove'});
-uimenu(h2,'label','NEW (ALL SLICES)','Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','mask','3D','replace'});
-uimenu(h2,'label','ADD (ALL SLICES)','callback', {@mibGUI_moveLayers, NaN, 'model','mask','3D','add'});
-uimenu(h2,'label','REMOVE (ALL SLICES)','callback', {@mibGUI_moveLayers, NaN,'model','mask','3D','remove'});
+uimenu(h2,'label','NEW (2D, Slice)','callback', {@mibGUI_moveLayers, NaN,'model','mask','2D, Slice','replace'});
+uimenu(h2,'label','ADD (2D, Slice)','callback', {@mibGUI_moveLayers, NaN, 'model','mask','2D, Slice','add'});
+uimenu(h2,'label','REMOVE (2D, Slice)','callback', {@mibGUI_moveLayers, NaN,'model','mask','2D, Slice','remove'});
+uimenu(h2,'label','NEW (3D, Stack)','Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','mask','3D, Stack','replace'});
+uimenu(h2,'label','ADD (3D, Stack)','callback', {@mibGUI_moveLayers, NaN, 'model','mask','3D, Stack','add'});
+uimenu(h2,'label','REMOVE (3D, Stack)','callback', {@mibGUI_moveLayers, NaN,'model','mask','3D, Stack','remove'});
+uimenu(h2,'label','NEW (4D, Dataset)','Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','mask','4D, Dataset','replace'});
+uimenu(h2,'label','ADD (4D, Dataset)','callback', {@mibGUI_moveLayers, NaN, 'model','mask','4D, Dataset','add'});
+uimenu(h2,'label','REMOVE (4D, Dataset)','callback', {@mibGUI_moveLayers, NaN,'model','mask','4D, Dataset','remove'});
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show as volume (MIB)...', 'Separator', 'on', 'Callback', {@mibSegmentationTable_cm_Callback, 'mib'});
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show isosurface (Matlab)...', 'Callback', {@mibSegmentationTable_cm_Callback, 'isosurface'});
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show as volume (Fiji)...', 'Callback', {@mibSegmentationTable_cm_Callback, 'volumeFiji'});
@@ -175,12 +181,12 @@ handles.mibSegmentationTable.UIContextMenu = handles.mibSegmentationTable_cm;
 
 % adding context menu for Color channels table
 handles.mibChannelMixerTable_cm = uicontextmenu('Parent',handles.mibGUI);
-uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Insert empty channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'insert'});
-uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Copy channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'copy'});
-uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Invert channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'invert'});
-uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Rotate channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'rotate'});
-uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Swap channels', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'swap'});
-uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Delete channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'delete'});
+uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Insert empty channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'Insert empty channel'});
+uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Copy channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'Copy channel'});
+uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Invert channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'Invert channel'});
+uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Rotate channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'Rotate channel'});
+uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Swap channels', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'Swap channels'});
+uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Delete channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'Delete channel'});
 uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Set LUT color', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'set color'}, 'Separator','on');
 handles.mibChannelMixerTable.UIContextMenu = handles.mibChannelMixerTable_cm;
 
@@ -203,6 +209,8 @@ handles.mask_cm = uicontextmenu('Parent',handles.mibGUI);
 uimenu(handles.mask_cm, 'Label', 'Do new mask', 'Callback', {@mibMaskGenBtn_Callback, NaN, 'new'});
 uimenu(handles.mask_cm, 'Label', 'Generate new mask and add it to the existing mask', 'Callback', {@mibMaskGenBtn_Callback, NaN, 'add'});
 handles.mibMaskGenBtn.UIContextMenu = handles.mask_cm;
+
+handles.mibSegmDragDropInfoText.String = sprintf('Control+Mouse -> move selected object\nShift+Mouse -> move all objects');
 
 %%
 % Populate the recent directories popupmenu
@@ -257,6 +265,8 @@ handles.mibSegmMagicPanel.Parent = handles.mibSegmentationPanel;
 handles.mibSegmMagicPanel.Position = pos;
 handles.mibSegmAnnPanel.Parent = handles.mibSegmentationPanel;
 handles.mibSegmAnnPanel.Position = pos;
+handles.mibSegmDragDropPanel.Parent = handles.mibSegmentationPanel;
+handles.mibSegmDragDropPanel.Position = pos;
 handles.mibSegmLines3DPanel.Parent = handles.mibSegmentationPanel;
 handles.mibSegmLines3DPanel.Position = pos;
 handles.mibSegmObjectPickerPanel.Parent = handles.mibSegmentationPanel;
@@ -281,7 +291,8 @@ end
 %% add plugins to the menu
 func_dir = fullfile(handles.mibController.mibPath, 'Plugins');
 
-addpath(func_dir);
+if ~isdeployed(); addpath(func_dir); end
+
 customContents1 = dir(func_dir);
 
 if numel(customContents1) > 2
@@ -851,18 +862,7 @@ end
 
 function mibMaskedAreaCheck_Callback(hObject, eventdata, handles)
 % --- Executes on button press in mibMaskedAreaCheck.
-unFocus(hObject);
-if handles.mibController.mibModel.getImageProperty('maskExist') == 0
-    handles.mibMaskedAreaCheck.Value = 0;
-    handles.mibMaskedAreaCheck.BackgroundColor = [0.94    0.94    0.94];
-    return;
-end
-
-if handles.mibMaskedAreaCheck.Value     % returns toggle state of mibMaskedAreaCheck
-    handles.mibMaskedAreaCheck.BackgroundColor = [1 .6 .784];
-else
-    handles.mibMaskedAreaCheck.BackgroundColor = [0.94    0.94    0.94];
-end
+handles.mibController.mibMaskedAreaCheck_Callback();
 end
 
 % --- Executes on selection change in mibSegmentationToolPopup.
@@ -880,7 +880,7 @@ end
 function mibGUI_moveLayers(hObject, ~, ~, obj_type_from, obj_type_to, layers_id, action_type)
 % move data between layers, a callback to the context menu of mibSegmentationTable
 handles = guidata(hObject);
-handles.mibController.mibMoveLayers(obj_type_from, obj_type_to, layers_id, action_type);
+handles.mibController.mibModel.moveLayers(obj_type_from, obj_type_to, layers_id, action_type);
 end
 
 function mibEraserEdit_Callback(hObject, eventdata, handles)
@@ -1047,7 +1047,32 @@ else        % region growing
     handles.mibMagicUpThresEdit.Visible = 'off';
     handles.mibMagicdashTxt.Visible = 'off';
 end
+end
 
+
+% --- Executes on button press in mibSegmDragDropShift buttons.
+function mibSegmDragDropShift_Callback(hObject, eventdata, handles)
+modifier = handles.mibGUI.CurrentModifier;   % change size of the brush tool, when the Ctrl key is pressed
+if isempty(modifier); modifier = ''; end
+shift = str2double(handles.mibSegmDragDropShift.String);
+dX = 0;
+dY = 0;
+switch hObject.Tag
+    case 'mibSegmDragDropShiftLeft'
+        dX = -shift;
+    case 'mibSegmDragDropShiftRight'
+        dX = shift;
+    case 'mibSegmDragDropShiftUp'
+        dY = -shift;
+    case 'mibSegmDragDropShiftDown'
+        dY = shift;
+end
+
+if handles.mibActions3dCheck.Value == 1 || strcmp(modifier, 'shift')
+    handles.mibController.mibGUI_WindowButtonUpDragAndDropFcn('3D, Stack', dX, dY);
+else
+    handles.mibController.mibGUI_WindowButtonUpDragAndDropFcn('2D, Slice', dX, dY);
+end
 end
 
 %% --------------------- ROI PANEL CALLBACKS ---------------------
@@ -1204,10 +1229,11 @@ end
 function mibActions3dCheck_Callback(hObject, eventdata, handles)
 % --- Executes on button press in mibActions3dCheck.
 if handles.mibActions3dCheck.Value == 1
-    handles.mibMaskRecalcStatsBtn.Enable = 'on';
+    BatchOpt.Checkbox3D = 'Checked';
 else
-    handles.mibMaskRecalcStatsBtn.Enable = 'off';
+    BatchOpt.Checkbox3D = 'Unchecked';
 end
+handles.mibController.mibSelectionPanelCheckboxes(BatchOpt);
 end
 
 % --- Executes on button press in mibAdaptiveDilateCheck.
@@ -1286,7 +1312,6 @@ function mibModelPropertyUpdate(hObject, eventdata, handles, parameter)
 % update switches in the obj.mibModel class that describe states of GUI
 % widgets
 % parameter: a string with the parameter name
-
 handles.mibController.mibModelPropertyUpdate(parameter);
 end
 
@@ -1415,7 +1440,9 @@ switch selfilter
         handles.mibImageFiltersTypePopup.String = {'Edges','Regions'};
         handles.mibImageFiltersTypePopup.TooltipString = 'Edges: favours high contrast edges over low contrast ones; Region: favours wide regions over smaller ones';
     case 'External: BMxD'
-        if ~isdeployed
+        if isempty(handles.mibController.mibModel.preferences.dirs.bm3dInstallationPath) || exist(fullfile(handles.mibController.mibModel.preferences.dirs.bm3dInstallationPath, 'BM3D.m'), 'file') ~= 2
+            handles.mibImageFilterDoitBtn.Enable = 'off';
+        else
             res = which('bm4d');
             if ~isempty(res)
                 handles.mibImageFilters3DCheck.Enable = 'on';
@@ -1429,15 +1456,12 @@ switch selfilter
                     'lc, Gauss: low complexity', 'lc, Rice: low complexity'};
                 handles.mibImfiltPar1Edit.Enable = 'off';
             else
-                handles.mibImageFiltersTypePopup.Value = min([handles.mibImageFiltersTypePopup.Value 2]); 
+                handles.mibImageFiltersTypePopup.Value = min([handles.mibImageFiltersTypePopup.Value 2]);
                 handles.mibImageFiltersTypePopup.String = {'np: normal','lc: low complexity'};
                 handles.mibImfiltPar1Edit.Enable = 'off';
             end
             handles.mibImageFiltersTypePopup.TooltipString = 'filtering profile';
-        else
-            handles.mibImageFilterDoitBtn.Enable = 'off';
         end
-        
 %     case {'Edge Enhancing Coherence Filter'}
 %         handles.mibImfiltPar1Edit.Enable = 'off';
 %         handles.mibImfiltPar2Edit.Enable = 'off';
@@ -1617,6 +1641,27 @@ switch eventdata.Source.SelectedObject.Tag
 end
 end
 
+% --- Executes on selection change in mibMorphPanelTypeSelectPopup.
+function mibMorphPanelTypeSelectPopup_Callback(hObject, eventdata, handles)
+currList = handles.mibMorphPanelTypeSelectPopup.String;
+currValue = handles.mibMorphPanelTypeSelectPopup.Value;
+
+handles.mibMorphPanelHThresholdEdit.Visible = 'off';
+handles.mibMorphPanelHThresholdText.Visible = 'off';
+handles.mibMorphPanelThresholdEdit.Visible = 'off';
+handles.mibMorphPanelThresholdText.Visible = 'off';
+switch currList{currValue}
+    case {'H-maxima transform', 'H-minima transform'}
+        handles.mibMorphPanelHThresholdEdit.Visible = 'on';
+        handles.mibMorphPanelHThresholdText.Visible = 'on';
+        handles.mibMorphPanelThresholdEdit.Visible = 'on';
+        handles.mibMorphPanelThresholdText.Visible = 'on';
+    case {'Extended-minima transform','Extended-maxima transform'}
+        handles.mibMorphPanelThresholdEdit.Visible = 'on';
+        handles.mibMorphPanelThresholdText.Visible = 'on';
+end
+end
+
 
 % --- Executes on button press in mibMaskGenBtn.
 function mibMaskGenBtn_Callback(hObject, eventdata, handles, type)
@@ -1700,6 +1745,11 @@ end
 function menuFileOmeroImport_Callback(hObject, eventdata, handles)
 % import from OMERO
 handles.mibController.startController('mibImportOmeroController');
+end
+
+function menuFileBatchProcessing_Callback(hObject, eventdata, handles)
+% callback to start batch processing tool
+handles.mibController.startController('mibBatchController', handles.mibController);
 end
 
 function menuFileChoppedImage_Callback(hObject, eventdata, handles, parameter)
@@ -1816,13 +1866,23 @@ handles.mibController.menuImageToolsProjection_Callback();
 end
 
 % --------------------------------------------------------------------
+function menuImageToolsContentAware_Callback(hObject, eventdata, handles)
+handles.mibController.menuImageToolsContentAware_Callback();
+end
+
+% --------------------------------------------------------------------
 function menuImageToolsBorder_Callback(hObject, eventdata, handles)
 handles.mibController.startController('mibImageSelectFrameController');
 end
 
 % --------------------------------------------------------------------
+function menuImageToolsDebris_Callback(hObject, eventdata, handles)
+handles.mibController.startController('mibDebrisRemovalController');
+end
+
+% --------------------------------------------------------------------
 function menuImageToolsArithmetics_Callback(hObject, eventdata, handles)
-handles.mibController.menuImageToolsArithmetics_Callback();
+handles.mibController.startController('mibImageArithmeticController');
 end
 
 % --------------------------------------------------------------------
@@ -1854,7 +1914,7 @@ switch hObject.Tag
     case 'menuModelsType4294967295'
         modelType = 4294967295;        
 end
-handles.mibController.menuModelsConvertModel(modelType);
+handles.mibController.mibModel.convertModel(modelType);
 end
 
 % --------------------------------------------------------------------
@@ -1906,7 +1966,7 @@ end
 %% ------------------ Mask menu ------------------ 
 % --------------------------------------------------------------------
 function menuMaskClear_Callback(hObject, eventdata, handles)
-handles.mibController.menuMaskClear_Callback();
+handles.mibController.mibModel.clearMask();
 end
 
 % --------------------------------------------------------------------
@@ -1950,9 +2010,9 @@ end
 % --------------------------------------------------------------------
 function menuMaskSmooth_Callback(hObject, eventdata, handles)
 if strcmp(hObject.Tag, 'menuMaskSmooth')
-    handles.mibController.menuSmooth_Callback('mask');
+    handles.mibController.mibModel.smoothImage('mask');
 elseif strcmp(hObject.Tag, 'menuSelectionSmooth')
-    handles.mibController.menuSmooth_Callback('selection');
+    handles.mibController.mibModel.smoothImage('selection');
 end
 end
 
@@ -1964,7 +2024,7 @@ end
 
 % --------------------------------------------------------------------
 function menuSelection2Mask_Callback(hObject, eventdata, handles, obj_type_from, obj_type_to, layers_id, action_type)
-handles.mibController.mibMoveLayers(obj_type_from, obj_type_to, layers_id, action_type);
+handles.mibController.mibModel.moveLayers(obj_type_from, obj_type_to, layers_id, action_type);
 end
 
 % --------------------------------------------------------------------
@@ -2017,6 +2077,18 @@ end
 % --------------------------------------------------------------------
 function menuToolsSemiAuto_Callback(hObject, eventdata, handles, parameter)
 switch parameter
+    case 'thresh'
+        % alterative call for the batch mode:
+        % BatchOpt.colChannel = 1;    % color channel for thresholding
+        % BatchOpt.Mode = '3D, Stack';     % mode to use
+        % BatchOpt.Method = 'Otsu';       % thresholding algorithm
+        % %BatchOpt.t = [1 1];     % time points, [t1, t2]
+        % BatchOpt.z = [10 20];    % slices, [z1, z2]
+        % BatchOpt.x = [10 120];    % slices, [z1, z2]
+        % BatchOpt.Orientation = 2;
+        % obj.startController('mibHistThresController', [], BatchOpt);
+        
+        handles.mibController.startController('mibHistThresController');
     case 'graphcut'
         handles.mibController.startController('mibGraphcutController');
     case 'watershed'
@@ -2052,6 +2124,21 @@ else
 end
 end
 
+function menuHelp_Callbacks(hObject, eventdata, handles, parameter)
+switch parameter
+    case 'tip'
+        handles.mibController.mibModel.preferences.tips.showTips = 1;
+        handles.mibController.startController('mibTipsController');
+    case 'support'
+        web('https://forum.image.sc/tags/mib', '-browser');
+    case 'update'
+        handles.mibController.startController('mibUpdateCheckController', handles.mibController);
+    case 'about'
+        handles.mibController.startController('mibAboutController', handles.mibGUI.Name);
+end
+end
+
+
 % --- Executes on button press in mibPathPanelHelpBtn.
 function mibHelpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
@@ -2076,14 +2163,4 @@ switch hObject.Tag
     case 'mibSelectionPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/ug_panel_selection.html'), '-helpbrowser');
     case 'mibViewSettingsPanelHelpBtn';             web(fullfile(mibPath, 'techdoc/html/ug_panel_view_settings.html'), '-helpbrowser');
 end
-end
-
-% --------------------------------------------------------------------
-function menuHelpUpdate_Callback(hObject, eventdata, handles)
-handles.mibController.startController('mibUpdateCheckController', handles.mibController);
-end
-
-% --------------------------------------------------------------------
-function menuHelpAbout_Callback(hObject, eventdata, handles)
-handles.mibController.menuHelpAbout_Callback();
 end

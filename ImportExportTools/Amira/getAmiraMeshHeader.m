@@ -21,6 +21,7 @@ function [par, img_info, dim_xyczt] = getAmiraMeshHeader(filename)
 %
 % Updates
 % 09.01.2018, IB added extraction of embedded containers in the amiramesh headers
+% 30.01.2019, IB updated to be compatible with version 3
 
 img_info = containers.Map;
 if nargin < 1
@@ -35,9 +36,9 @@ fid = fopen(filename, 'r');
 
 % define type of data
 tline = fgetl(fid);
-if strcmp(tline, '# AmiraMesh 3D ASCII 2.0')
+if strcmp(tline(1:20), '# AmiraMesh 3D ASCII') % if strcmp(tline, '# AmiraMesh 3D ASCII 2.0')    
     type = 'ascii';
-elseif strcmp(tline, '# AmiraMesh BINARY-LITTLE-ENDIAN 2.1') || strcmp(tline,'# AmiraMesh 3D BINARY 2.0')
+elseif strcmp(tline(1:20), '# AmiraMesh BINARY-L') || strcmp(tline(1:20),'# AmiraMesh 3D BINAR') %elseif strcmp(tline, '# AmiraMesh BINARY-LITTLE-ENDIAN 2.1') || strcmp(tline,'# AmiraMesh 3D BINARY 2.0')
     type = 'binary';
 else
     disp('Error! Unknown type'); return;
@@ -61,6 +62,9 @@ par = struct();
 level = 0;
 % skiping the header
 parIndex = 1;
+removeGroup.Switch = 0;  % indicator to remove certain groups
+removeGroup.Level = 0;  % indicator if the level to remove certain groups
+
 while numel(strfind(tline, 'Lattice')) == 0
     tline = strtrim(fgetl(fid));
     if numel(strfind(tline, 'Lattice')) ~= 0; break; end
@@ -73,7 +77,11 @@ while numel(strfind(tline, 'Lattice')) == 0
         level = level + 1;
         if strcmp(strtrim(tline(1:openGroup(1)-1)),'im_browser')    % remove the group made with im_browser
             field(level) = cellstr('');
+        elseif strcmp(strtrim(tline(1:openGroup(1)-1)),'HistoryLogHead')    % remove the group HistoryLogHead
+            removeGroup.Switch = 1;
+            removeGroup.Level = level;  % indicator if the level to remove certain groups
         elseif tline(end) == '{' && level > 1
+            if removeGroup.Switch == 1; continue; end
             level = level - 1;
             par(parIndex).Name = field{level};
             par(parIndex).Value = cellstr(loopHeader(fid, tline, level));
@@ -83,10 +91,16 @@ while numel(strfind(tline, 'Lattice')) == 0
         end
     elseif isempty(openGroup) & ~isempty(closeGroup)
         level = level - 1;
+        if removeGroup.Switch == 1 && removeGroup.Level == level
+            removeGroup.Switch = 0;
+        end
         if level == -1; break; end  % end of the Parameters section
         field(level+1) = cellstr('');
     else
+        if removeGroup.Switch == 1; continue; end    % skip elements 
+        
         spaces = strfind(strtrim(tline), ' ');
+        if isempty(spaces); continue; end
         parField = '';
         for lev = 1:level
             parField = [parField '_' field{lev}];
@@ -101,6 +115,7 @@ while numel(strfind(tline, 'Lattice')) == 0
         if parField(1) == '_'; parField = parField(2:end); end
         
         value = tline(spaces(1)+1:end);
+        
         if value(end) ~= ',' && ~strcmp(parField,'CoordType')
             tline2 = strtrim(fgetl(fid));
             if tline2(1) ~= '}'
@@ -167,7 +182,7 @@ if HxMultiChannelField3_sw == 1     % each data block is a single color channel
     colorChannels = ones(dataIndex,1)*(dataIndex - 1);
 end
 
-warning off;
+warning_state = warning('off');
 for p=1:numel(par)
     if strcmp(par(p).Name,'BoundingBox')
         bb = str2num(par(p).Value); %#ok<ST2NM>
@@ -180,7 +195,7 @@ for p=1:numel(par)
         img_info(fieldName) = par(p).Value;
     end
 end
-warning on;
+warning(warning_state);     % Switch warning back to initial settings
 img_info('imgClass') = classType{1};
 if max(colorChannels) > 1
     img_info('ColorType') = 'truecolor';
@@ -195,6 +210,7 @@ if isKey(img_info, 'ImageDescription')
         spaces = strfind(curr_text,' ');
         if numel(spaces) < 7; spaces(7) = numel(curr_text); end
         tab_pos = strfind(curr_text,sprintf('\t'));
+        if isempty(tab_pos); tab_pos = strfind(curr_text,sprintf('|')); end
         % 12    14    21    23    28    30
         pos = min([spaces(7) tab_pos]);
         img_info('ImageDescription') = ['BoundingBox ' bb curr_text(pos:end)];

@@ -12,7 +12,7 @@ classdef mibBoundingBoxController < handle
     % of the License, or (at your option) any later version.
 	%
 	% Updates
-	%
+	% 20.05.2019, updated for the batch mode
     
     properties
         mibModel
@@ -27,6 +27,8 @@ classdef mibBoundingBoxController < handle
         % original bounding box
         pixSize
         % a structure with the pixel size information
+        BatchOpt
+        % a structure compatible with batch operation, see details in the contsructor
     end
     
     events
@@ -58,8 +60,64 @@ classdef mibBoundingBoxController < handle
     end
     
     methods
-        function obj = mibBoundingBoxController(mibModel)
+        function obj = mibBoundingBoxController(mibModel, varargin)
             obj.mibModel = mibModel;    % assign model
+            
+            % --------------  fill BatchOpt structure with default values
+            obj.BatchOpt.id = obj.mibModel.Id;  % optional
+            
+            obj.pixSize = obj.mibModel.I{obj.BatchOpt.id}.pixSize;
+            obj.bb = obj.mibModel.I{obj.BatchOpt.id}.getBoundingBox();     % current bounding box
+            obj.BatchOpt.Xmin = num2str(obj.bb(1));
+            obj.BatchOpt.Ymin = num2str(obj.bb(3));
+            obj.BatchOpt.Zmin = num2str(obj.bb(5));
+            obj.BatchOpt.Xcent = '';
+            obj.BatchOpt.Ycent = '';
+            obj.BatchOpt.Xmax = '';
+            obj.BatchOpt.Ymax = '';
+            obj.BatchOpt.Zmax = '';
+            obj.BatchOpt.Zmax = '';
+            obj.BatchOpt.StageRotationBias = '';
+            obj.BatchOpt.ImportFromClipboard = false;
+            % add section name and action name for the batch tool
+            
+            obj.BatchOpt.mibBatchSectionName = 'Menu -> Dataset';
+            obj.BatchOpt.mibBatchActionName = 'Bounding Box';
+            % tooltips that will accompany the BatchOpt
+            obj.BatchOpt.mibBatchTooltip.Xmin = sprintf('Min X point of the bounding box');
+            obj.BatchOpt.mibBatchTooltip.Ymin = sprintf('Min Y point of the bounding box');
+            obj.BatchOpt.mibBatchTooltip.Zmin = sprintf('Min Z point of the bounding box');
+            obj.BatchOpt.mibBatchTooltip.Xcent = sprintf('Center X point of the bounding box');
+            obj.BatchOpt.mibBatchTooltip.Ycent = sprintf('Center Y point of the bounding box');
+            obj.BatchOpt.mibBatchTooltip.Xmax = sprintf('Max X point of the bounding box');
+            obj.BatchOpt.mibBatchTooltip.Ymax = sprintf('Max Y point of the bounding box');
+            obj.BatchOpt.mibBatchTooltip.Zmax = sprintf('Max Z point of the bounding box');
+            obj.BatchOpt.mibBatchTooltip.StageRotationBias = sprintf('Stage rotation bias, used for 3view system, where it is normally 45 degrees');
+            obj.BatchOpt.mibBatchTooltip.ImportFromClipboard = sprintf('Acquire bounding box information from the system clipboard, see more in the Help section');
+
+            % ---- Batch mode processing code
+            % if the BatchOpt stucture is provided the controller is initialized using those parameters
+            % and performs the function in the headless mode without GUI
+            if nargin == 3
+                BatchOptInput = varargin{2};
+                if isstruct(BatchOptInput) == 0 
+                    if isnan(BatchOptInput)
+                        obj.returnBatchOpt();   % obtain Batch parameters
+                    else
+                        errordlg(sprintf('A structure as the 4th parameter is required!')); 
+                    end
+                    return;
+                end
+                
+                % combine fields from input and default structures
+                obj.BatchOpt = updateBatchOptCombineFields_Shared(obj.BatchOpt, BatchOptInput);
+                if obj.BatchOpt.ImportFromClipboard
+                    obj.importBtn_Callback(1);  % 1 - batch mode switch
+                end
+                obj.okBtn_Callback(1);   % 1 - batch mode switch
+                return;
+            end
+            
             guiName = 'mibBoundingBoxGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
@@ -72,6 +130,10 @@ classdef mibBoundingBoxController < handle
                     || ~strcmp(obj.View.handles.textInfo.FontName, Font.FontName)
                 mibUpdateFontSize(obj.View.gui, Font);
             end
+            
+            % update GUI widgets using the provided BatchOpt
+            obj.View = updateGUIFromBatchOpt_Shared(obj.View, obj.BatchOpt);
+            
             obj.updateWidgets();
 			
 			% add listner to obj.mibModel and call controller function as a callback
@@ -101,8 +163,9 @@ classdef mibBoundingBoxController < handle
         function updateWidgets(obj)
             % function updateWidgets(obj)
             % update widgets of this window
-            obj.bb = obj.mibModel.getImageMethod('getBoundingBox');
-            obj.pixSize = obj.mibModel.getImageProperty('pixSize');
+            obj.BatchOpt.id = obj.mibModel.Id;
+            obj.bb = obj.mibModel.I{obj.BatchOpt.id}.getBoundingBox();
+            obj.pixSize = obj.mibModel.I{obj.BatchOpt.id}.pixSize;
             obj.oldBB = obj.bb;
             
             obj.View.handles.textString.String = ...
@@ -114,27 +177,74 @@ classdef mibBoundingBoxController < handle
             obj.View.handles.textInfo.String = ...
                 sprintf('To shift the bounding box it is enough to provide one set of numbers: minimal or central.\nUpdate of both minimal and maximal values results in change of pixel size!');
             
-            obj.View.handles.xMinEdit.String = num2str(obj.bb(1));
-            obj.View.handles.yMinEdit.String = num2str(obj.bb(3));
-            obj.View.handles.zMinEdit.String = num2str(obj.bb(5));
+            obj.View.handles.Xmin.String = num2str(obj.bb(1));
+            obj.View.handles.Ymin.String = num2str(obj.bb(3));
+            obj.View.handles.Zmin.String = num2str(obj.bb(5));
             
-            obj.View.handles.xCenterEdit.String = '';
-            obj.View.handles.yCenterEdit.String = '';
-            obj.View.handles.xMaxEdit.String = '';
-            obj.View.handles.yMaxEdit.String = '';
-            obj.View.handles.zMaxEdit.String = '';
-            obj.View.handles.rotationEdit.String = '';
+            obj.View.handles.Xcent.String = '';
+            obj.View.handles.Ycent.String = '';
+            obj.View.handles.Xmax.String = '';
+            obj.View.handles.Ymax.String = '';
+            obj.View.handles.Zmax.String = '';
+            obj.View.handles.StageRotationBias.String = '';
+            
+            % update BatchOpt structure
+            obj.BatchOpt.Xmin = num2str(obj.bb(1));
+            obj.BatchOpt.Ymin = num2str(obj.bb(3));
+            obj.BatchOpt.Zmin = num2str(obj.bb(5));
+            obj.BatchOpt.Xcent = '';
+            obj.BatchOpt.Ycent = '';
+            obj.BatchOpt.Xmax = '';
+            obj.BatchOpt.Ymax = '';
+            obj.BatchOpt.Zmax = '';
+            obj.BatchOpt.Zmax = '';
+            obj.BatchOpt.StageRotationBias = '';
+            
+            % update GUI widgets using the provided BatchOpt
+            obj.View = updateGUIFromBatchOpt_Shared(obj.View, obj.BatchOpt);
         end
         
-        function importBtn_Callback(obj)
-            % function importBtn_Callback(obj)
+        function returnBatchOpt(obj, BatchOptOut)
+            % return structure with Batch Options and possible configurations
+            % Parameters:
+            % BatchOptOut: a local structure with Batch Options generated
+            % during Continue callback. It may contain more fields than
+            % obj.BatchOpt structure
+             
+            if nargin < 2; BatchOptOut = obj.BatchOpt; end
+            if isfield(BatchOptOut, 'id'); BatchOptOut = rmfield(BatchOptOut, 'id'); end  % remove id field
+            % trigger syncBatch event to send BatchOptOut to mibBatchController 
+            eventdata = ToggleEventData(BatchOptOut);
+            notify(obj.mibModel, 'syncBatch', eventdata);
+        end
+        
+        function updateBatchOptFromGUI(obj, hObject)
+            % function updateBatchOptFromGUI(obj, hObject)
+            %
+            % update obj.BatchOpt from widgets of GUI
+            % use an external function (Tools\updateBatchOptFromGUI_Shared.m) that is common for all tools
+            % compatible with the Batch mode
+            %
+            % Parameters:
+            % hObject: a handle to a widget of GUI
+            
+            obj.BatchOpt = updateBatchOptFromGUI_Shared(obj.BatchOpt, hObject);
+        end
+        
+        function importBtn_Callback(obj, batchModeSw)
+            % function importBtn_Callback(obj, batchModeSw)
             % import from the system clipboard information about the
             % bounding box
+            % Parameters:
+            % batchModeSw: a switch, 1-when called during the BatchMode, 0-normal mode
+            
+            if nargin < 2; batchModeSw = 0; end
+            
             str = clipboard('paste');
             lineFeeds = strfind(str, sprintf('\n'));
             equalSigns = strfind(str, sprintf('='));
             
-            switch obj.mibModel.I{obj.mibModel.Id}.pixSize.units
+            switch obj.mibModel.I{obj.BatchOpt.id}.pixSize.units
                 case 'm'
                     coef = 1e6;
                 case 'cm'
@@ -153,7 +263,7 @@ classdef mibBoundingBoxController < handle
                 ScaleX = str2double(str(equalSigns(find(equalSigns>pos, 1))+1:lineFeeds(find(lineFeeds>pos, 1))));
                 if isnumeric(ScaleX)
                     obj.pixSize.x = ScaleX;
-                    dx = (max([obj.mibModel.I{obj.mibModel.Id}.width 2])-1)*obj.pixSize.x*coef;     % tweek (using the max function) for Amira single layer images max([w 2])
+                    dx = (max([obj.mibModel.I{obj.BatchOpt.id}.width 2])-1)*obj.pixSize.x*coef;     % tweek (using the max function) for Amira single layer images max([w 2])
                     obj.bb(2) = obj.bb(1) + dx;
                 end
             end
@@ -163,7 +273,7 @@ classdef mibBoundingBoxController < handle
                 ScaleY = str2double(str(equalSigns(find(equalSigns>pos, 1))+1:lineFeeds(find(lineFeeds>pos, 1))));
                 if isnumeric(ScaleY)
                     obj.pixSize.y = ScaleY;
-                    dy = (max([obj.mibModel.I{obj.mibModel.Id}.height 2])-1)*obj.pixSize.y*coef;     % tweek for Amira single layer images max([w 2])
+                    dy = (max([obj.mibModel.I{obj.BatchOpt.id}.height 2])-1)*obj.pixSize.y*coef;     % tweek for Amira single layer images max([w 2])
                     obj.bb(4) = obj.bb(3) + dy;
                 end
             end
@@ -177,7 +287,7 @@ classdef mibBoundingBoxController < handle
                     else
                         obj.pixSize.z = ScaleZ;
                     end
-                    dz = (max([obj.mibModel.I{obj.mibModel.Id}.depth 2])-1)*obj.pixSize.z*coef;     % tweek for Amira single layer images max([w 2])
+                    dz = (max([obj.mibModel.I{obj.BatchOpt.id}.depth 2])-1)*obj.pixSize.z*coef;     % tweek for Amira single layer images max([w 2])
                     obj.bb(6) = obj.bb(5) + dz;
                 end
             end
@@ -187,7 +297,10 @@ classdef mibBoundingBoxController < handle
             if ~isempty(pos)
                 centerX = str2double(str(equalSigns(find(equalSigns>pos, 1))+1:lineFeeds(find(lineFeeds>pos, 1))));
                 if isnumeric(centerX)
-                    obj.View.handles.xCenterEdit.String = num2str(centerX);
+                    obj.BatchOpt.Xcent = num2str(centerX);
+                    if batchModeSw == 0
+                        obj.View.handles.Xcent.String = num2str(centerX);
+                    end
                 end
             end
             
@@ -196,7 +309,10 @@ classdef mibBoundingBoxController < handle
             if ~isempty(pos)
                 centerY = str2double(str(equalSigns(find(equalSigns>pos, 1))+1:lineFeeds(find(lineFeeds>pos, 1))));
                 if isnumeric(centerY)
-                    obj.View.handles.yCenterEdit.String = num2str(centerY);
+                    obj.BatchOpt.Ycent = num2str(centerY);
+                    if batchModeSw == 0
+                        obj.View.handles.Ycent.String = num2str(centerY);
+                    end
                 end
             end
             
@@ -205,7 +321,10 @@ classdef mibBoundingBoxController < handle
             if ~isempty(pos)
                 posZ = str2double(str(equalSigns(find(equalSigns>pos, 1))+1:lineFeeds(find(lineFeeds>pos, 1))));
                 if isnumeric(posZ)
-                    obj.View.handles.zMinEdit.String = num2str(posZ);
+                    obj.BatchOpt.Zmin = num2str(posZ);
+                    if batchModeSw == 0
+                        obj.View.handles.Zmin.String = num2str(posZ);
+                    end
                 end
             end
             
@@ -214,34 +333,42 @@ classdef mibBoundingBoxController < handle
             if ~isempty(pos)
                 rotationVal = str2double(str(equalSigns(find(equalSigns>pos, 1))+1:lineFeeds(find(lineFeeds>pos, 1))));
                 if isnumeric(rotationVal)
-                    obj.View.handles.rotationEdit.String = num2str(45-rotationVal);
+                    obj.BatchOpt.StageRotationBias = num2str(45-rotationVal);
+                    if batchModeSw == 0
+                        obj.View.handles.StageRotationBias.String = num2str(45-rotationVal);
+                    end
                 end
             end
+            if batchModeSw == 0
+                obj.View.handles.textString.String = sprintf('xmin-xmax: %g - %g\nymin-ymax: %g - %g\nzmin-zmax: %g - %g\n',...
+                    obj.bb(1),obj.bb(2),obj.bb(3),obj.bb(4),obj.bb(5),obj.bb(6));
             
-            obj.View.handles.textString.String = sprintf('xmin-xmax: %g - %g\nymin-ymax: %g - %g\nzmin-zmax: %g - %g\n',...
-                obj.bb(1),obj.bb(2),obj.bb(3),obj.bb(4),obj.bb(5),obj.bb(6));
-            
-            obj.View.handles.pixSizeText.String = sprintf('X: %g\nY: %g\nZ: %g\n',...
-                obj.pixSize.x, obj.pixSize.y,obj.pixSize.z);
+                obj.View.handles.pixSizeText.String = sprintf('X: %g\nY: %g\nZ: %g\n',...
+                    obj.pixSize.x, obj.pixSize.y,obj.pixSize.z);
+            end
         end
         
-        function okBtn_Callback(obj)
+        function okBtn_Callback(obj, batchModeSw)
             % function okBtn_Callback(obj)
             % update the bounding box
+            % Parameters:
+            % batchModeSw: a switch, 1-when called during the BatchMode, 0-normal mode
+
+            if nargin < 2; batchModeSw = 0; end
             
-            drawnow;     % needed to fix callback after the key press
+            if batchModeSw == 0; drawnow;   end  % needed to fix callback after the key press
             
-            minX = str2double(obj.View.handles.xMinEdit.String);
-            minY = str2double(obj.View.handles.yMinEdit.String);
-            minZ = str2double(obj.View.handles.zMinEdit.String);
-            meanX = str2double(obj.View.handles.xCenterEdit.String);
-            meanY = str2double(obj.View.handles.yCenterEdit.String);
-            maxX = str2double(obj.View.handles.xMaxEdit.String);
-            maxY = str2double(obj.View.handles.yMaxEdit.String);
-            maxZ = str2double(obj.View.handles.zMaxEdit.String);
-            rotXY = str2double(obj.View.handles.rotationEdit.String);
+            minX = str2double(obj.BatchOpt.Xmin);
+            minY = str2double(obj.BatchOpt.Ymin);
+            minZ = str2double(obj.BatchOpt.Zmin);
+            meanX = str2double(obj.BatchOpt.Xcent);
+            meanY = str2double(obj.BatchOpt.Ycent);
+            maxX = str2double(obj.BatchOpt.Xmax);
+            maxY = str2double(obj.BatchOpt.Ymax);
+            maxZ = str2double(obj.BatchOpt.Zmax);
+            rotXY = str2double(obj.BatchOpt.StageRotationBias);
             
-            if isempty(rotXY) || isnan(rotXY); rotXY = 0; end;
+            if isempty(rotXY) || isnan(rotXY); rotXY = 0; end
             
             if isnan(meanX)     % use the min point
                 %minX = max([abs(minX) 0]);
@@ -274,29 +401,35 @@ classdef mibBoundingBoxController < handle
             %minZ = max([abs(minZ) 0]);
             xyzShift(3) = minZ-obj.bb(5);
             
-            obj.mibModel.I{obj.mibModel.Id}.pixSize.x = obj.pixSize.x;
-            obj.mibModel.I{obj.mibModel.Id}.pixSize.y = obj.pixSize.y;
-            obj.mibModel.I{obj.mibModel.Id}.pixSize.z = obj.pixSize.z;
+            obj.mibModel.I{obj.BatchOpt.id}.pixSize.x = obj.pixSize.x;
+            obj.mibModel.I{obj.BatchOpt.id}.pixSize.y = obj.pixSize.y;
+            obj.mibModel.I{obj.BatchOpt.id}.pixSize.z = obj.pixSize.z;
             
             if ~isnan(maxX)  % recalculate pixSize.x
-                obj.mibModel.I{obj.mibModel.Id}.pixSize.x = (maxX-minX)/(max([obj.mibModel.I{obj.mibModel.Id}.width 2])-1);
+                obj.mibModel.I{obj.BatchOpt.id}.pixSize.x = (maxX-minX)/(max([obj.mibModel.I{obj.BatchOpt.id}.width 2])-1);
             end
             if ~isnan(maxY)  % recalculate pixSize.y
-                obj.mibModel.I{obj.mibModel.Id}.pixSize.y = (maxY-minY)/(max([obj.mibModel.I{obj.mibModel.Id}.height 2])-1);
+                obj.mibModel.I{obj.BatchOpt.id}.pixSize.y = (maxY-minY)/(max([obj.mibModel.I{obj.BatchOpt.id}.height 2])-1);
             end
             if ~isnan(maxZ)  % recalculate pixSize.z
-                obj.mibModel.I{obj.mibModel.Id}.pixSize.z = (maxZ-minZ)/(max([obj.mibModel.I{obj.mibModel.Id}.depth 2])-1);
+                obj.mibModel.I{obj.BatchOpt.id}.pixSize.z = (maxZ-minZ)/(max([obj.mibModel.I{obj.BatchOpt.id}.depth 2])-1);
             end
-            obj.mibModel.I{obj.mibModel.Id}.pixSize.units = 'um';
-            resolution = mibCalculateResolution(obj.mibModel.I{obj.mibModel.Id}.pixSize);
-            obj.mibModel.I{obj.mibModel.Id}.meta('XResolution') = resolution(1);
-            obj.mibModel.I{obj.mibModel.Id}.meta('YResolution') = resolution(2);
-            obj.mibModel.I{obj.mibModel.Id}.meta('ResolutionUnit') = 'Inch';
-            obj.mibModel.I{obj.mibModel.Id}.updateBoundingBox();
-            obj.mibModel.I{obj.mibModel.Id}.updateBoundingBox(NaN, xyzShift);
+            obj.mibModel.I{obj.BatchOpt.id}.pixSize.units = 'um';
+            resolution = mibCalculateResolution(obj.mibModel.I{obj.BatchOpt.id}.pixSize);
+            obj.mibModel.I{obj.BatchOpt.id}.meta('XResolution') = resolution(1);
+            obj.mibModel.I{obj.BatchOpt.id}.meta('YResolution') = resolution(2);
+            obj.mibModel.I{obj.BatchOpt.id}.meta('ResolutionUnit') = 'Inch';
+            obj.mibModel.I{obj.BatchOpt.id}.updateBoundingBox();
+            obj.mibModel.I{obj.BatchOpt.id}.updateBoundingBox(NaN, xyzShift);
+            
             notify(obj.mibModel, 'updateImgInfo');
-            obj.updateWidgets();
-            %obj.closeWindow();
+            if batchModeSw == 0
+                obj.updateWidgets(); 
+            else
+                notify(obj.mibModel, 'updateGuiWidgets');
+            end
+            
+            obj.returnBatchOpt(obj.BatchOpt);
         end
         
         

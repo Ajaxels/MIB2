@@ -4,10 +4,11 @@
 % used in combibation with other layer. See more about segmentation layers
 % in <ug_gui_data_layers.html the Data layers of Microscopy Image Browser section>.
 %
+% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
+%
+%%
 % 
 % <<images\PanelsSelection.png>>
-%
-% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
 %
 %% *'A'* button
 % Press to add |Selection| layer to the selected |Model| or |Mask| layer, the destination layer is selected using |Add to|

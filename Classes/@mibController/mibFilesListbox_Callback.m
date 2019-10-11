@@ -25,6 +25,13 @@ filename = list(val);
 switch obj.mibView.handles.mibGUI.SelectionType
     case 'normal'   % single click, do nothing
     case 'open'     % double click, open the image
+        try
+            if isempty(filename{1})
+                0;
+            end
+        catch err
+            err
+        end
         if strcmp(filename{1},'[..]')     % go up in the directory tree
             [dirname, oldDir] = fileparts(obj.mibModel.myPath);
             if ~isequal(dirname, obj.mibModel.myPath)
@@ -49,6 +56,9 @@ switch obj.mibView.handles.mibGUI.SelectionType
             options.Font = obj.mibModel.preferences.Font;    % pass font settings
             options.mibPath = mibPath;      % path to MIB, an optional parameter to mibInputDlg.m 
             options.virtual = obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual;  % to use or not the virtual stacking
+            options.id = obj.mibModel.Id;   % id of the current dataset
+            options.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
+            
             %obj.mibModel.I{obj.mibModel.Id}.clearContents();  % remove the current dataset
             obj.mibModel.U.clearContents();  % clear Undo history
             
@@ -61,7 +71,7 @@ switch obj.mibView.handles.mibGUI.SelectionType
                 obj.mibModel.I{obj.mibModel.Id}.pixSize = pixSize;
                 notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details
                 
-                obj.mibView.lastSegmSelection = [2 1];  % last selected contour for use with the 'e' button
+                obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection = [2 1];  % last selected contour for use with the 'e' button
             else
                 %obj.mibView.handles = obj.mibView.handles.Img{obj.mibView.handles.Id}.I.updateAxesLimits(obj.mibView.handles, 'resize');
                 %obj.mibView.handles.Img{obj.mibView.handles.Id}.I.updateDisplayParameters();

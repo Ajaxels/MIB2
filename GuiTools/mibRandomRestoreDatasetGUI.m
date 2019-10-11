@@ -32,7 +32,7 @@ function varargout = mibRandomRestoreDatasetGUI(varargin)
 
 % Edit the above text to modify the response to help mibRandomRestoreDatasetGUI
 
-% Last Modified by GUIDE v2.5 14-Dec-2018 16:08:51
+% Last Modified by GUIDE v2.5 11-Feb-2019 16:03:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -172,4 +172,27 @@ function includeAnnotationsCheck_Callback(hObject, eventdata, handles)
 if handles.includeAnnotationsCheck.Value == 1
     warndlg(sprintf('!!! Warning !!!\n\nPlease make sure:\n1. Each folder has only one annotation file in the *.ann format'));
 end
+end
+
+
+% --- Executes when mibRandomRestoreDatasetGUI is resized.
+function mibRandomRestoreDatasetGUI_SizeChangedFcn(hObject, eventdata, handles)
+figW = handles.mibRandomRestoreDatasetGUI.Position(3);
+figH = handles.mibRandomRestoreDatasetGUI.Position(4);
+
+buttonH = handles.optionsPanel.Position(2);
+
+handles.optionsPanel.Position(4) = figH - handles.datasetInfoPanel.Position(4) - handles.optionsPanel.Position(2) - handles.helpBtn.Position(4)/12;
+handles.optionsPanel.Position(3) = figW - handles.helpBtn.Position(4)/2;
+handles.datasetInfoPanel.Position(2) = handles.optionsPanel.Position(2) + handles.optionsPanel.Position(4) + handles.helpBtn.Position(4)/12;
+handles.datasetInfoPanel.Position(3) = figW - handles.helpBtn.Position(4)/2;
+
+optW = handles.optionsPanel.Position(3);
+optH = handles.optionsPanel.Position(4);
+handles.lowerSubPanel.Position(4) = (optH - handles.upperSubPanel.Position(4) - handles.helpBtn.Position(4)*2);
+handles.lowerSubPanel.Position(3) = (optW - handles.helpBtn.Position(4)/2);
+handles.upperSubPanel.Position(2) = handles.lowerSubPanel.Position(2) + handles.lowerSubPanel.Position(4);
+handles.upperSubPanel.Position(3) = (optW - handles.helpBtn.Position(4)/2);
+handles.projectFilenameEdit.Position(3) = handles.upperSubPanel.Position(3) - handles.projectFilenameEdit.Position(1)*2;
+
 end

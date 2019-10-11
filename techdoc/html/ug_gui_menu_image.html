@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Image Menu</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-12-21"><meta name="DC.source" content="ug_gui_menu_image.m"><style type="text/css">
+      --><title>Image Menu</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-11"><meta name="DC.source" content="ug_gui_menu_image.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,21 +66,106 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Image Menu</h1><!--introduction--><p>Image processing functions</p><p><img vspace="5" hspace="5" src="images\menuImage.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Mode</a></li><li><a href="#2">Color Channels</a></li><li><a href="#3">Contrast</a></li><li><a href="#5">Invert image</a></li><li><a href="#6">Tools for images</a></li><li><a href="#7">Morphological operations</a></li><li><a href="#8">Intensity profile</a></li></ul></div><h2 id="1">Mode</h2><p>Allows to change mode of the shown dataset, the following options are available:</p><div><ul><li><b>Grayscale</b>, converts image to grayscale by removing any color information</li><li><b>RGB Color</b>, converts image to the RGB color space</li><li><b>HSV Color</b>, converts image to the HSV (hue, saturation, value) color space</li><li><b>Indexed</b>, converts image to the indexed colors (<tt>not implemented for True Color images</tt>)</li><li><b>8 bit</b>, convert dataset to the 8 bit format, the image intensities are scaled to preserve the adjusted from the <tt>View Settings Panel-&gt;Display dialog</tt></li><li><b>16 bit</b>, convert dataset to the 16 bit format, the image intensities are scaled to preserve contrast of the original dataset</li><li><b>32 bit</b>, convert dataset to the 32 bit format, the image intensities are scaled to preserve contrast of the original dataset</li></ul></div><h2 id="2">Color Channels</h2><p>Perform some actions with color channels of the image</p><p>
+  </style></head><body><div class="content"><h1>Image Menu</h1><!--introduction--><p>Image processing functions</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">Mode</a></li><li><a href="#3">Color Channels</a></li><li><a href="#4">Contrast</a></li><li><a href="#6">Invert image</a></li><li><a href="#7">Tools for images --&gt; Content-aware fill</a></li><li><a href="#8">Tools for images --&gt; Debris removal</a></li><li><a href="#9">Tools for images --&gt; Image arithmetics</a></li><li><a href="#10">Tools for images --&gt; Intensity projection</a></li><li><a href="#11">Morphological operations</a></li><li><a href="#12">Intensity profile</a></li></ul></div><p><img vspace="5" hspace="5" src="images\menuImage.png" alt=""> </p><h2 id="2">Mode</h2><p>Allows to change mode of the shown dataset, the following options are available:</p><div><ul><li><b>Grayscale</b>, converts image to grayscale by removing any color information</li><li><b>RGB Color</b>, converts image to the RGB color space</li><li><b>HSV Color</b>, converts image to the HSV (hue, saturation, value) color space</li><li><b>Indexed</b>, converts image to the indexed colors (<tt>not implemented for True Color images</tt>)</li><li><b>8 bit</b>, convert dataset to the 8 bit format, the image intensities are scaled to preserve the adjusted from the <tt>View Settings Panel-&gt;Display dialog</tt></li><li><b>16 bit</b>, convert dataset to the 16 bit format, the image intensities are scaled to preserve contrast of the original dataset</li><li><b>32 bit</b>, convert dataset to the 32 bit format, the image intensities are scaled to preserve contrast of the original dataset</li></ul></div><h2 id="3">Color Channels</h2><p>Perform some actions with color channels of the image</p><p>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/gT-c8TiLcuY"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/gT-c8TiLcuY</a>
-</p><div><ul><li><b>Insert empty channel...</b>, insert an empty channel (intensity of all pixels is 0) to the specified position</li><li><b>Copy channel...</b>, copy one channel to another position</li><li><b>Invert channel...</b>, invert intensities of the specified color channel</li><li><b>Rotate channel...</b>, rotate the specified color channel</li><li><b>Swap channels...</b>, allows to swap two color channels between each other</li><li><b>Delete channel...</b>, deletes specified color channel from the dataset</li></ul></div><p>It is also possible to do color channel operations from the <tt>Colors</tt> table in the <a href="ug_panel_view_settings.html">View settings panel</a>.</p><h2 id="3">Contrast</h2><p>Adjust contrast of the dataset. For the linear contrast stretching it is recommended to use Image Adjustment dialog available via the <a href="ug_panel_adjustments.html">Display button</a> in the <a href="ug_panel_view_settings.html">View Settings panel</a>.</p><p>
+</p><div><ul><li><b>Insert empty channel...</b>, insert an empty channel (intensity of all pixels is 0) to the specified position</li><li><b>Copy channel...</b>, copy one channel to another position</li><li><b>Invert channel...</b>, invert intensities of the specified color channel</li><li><b>Rotate channel...</b>, rotate the specified color channel</li><li><b>Swap channels...</b>, allows to swap two color channels between each other</li><li><b>Delete channel...</b>, deletes specified color channel from the dataset</li></ul></div><p>It is also possible to do color channel operations from the <tt>Colors</tt> table in the <a href="ug_panel_view_settings.html">View settings panel</a>.</p><h2 id="4">Contrast</h2><p>Adjust contrast of the dataset. For the linear contrast stretching it is recommended to use Image Adjustment dialog available via the <a href="ug_panel_adjustments.html">Display button</a> in the <a href="ug_panel_view_settings.html">View Settings panel</a>.</p><p>
 A tutorial on image normalization is available in the following video:<br>
 <a href="https://youtu.be/MmBmdGtuUdM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MmBmdGtuUdM</a>
-</p><div><ul><li><b>Linear contrast</b>, is no longer available in MIB, please use the Display button in the <a href="ug_panel_view_settings.html">View Settings panel</a>.</li><li><b>Contrast-limited adaptive histogram equalization</b>, CLAHE contrast equalization. CLAHE operates on small regions in the image, called tiles, rather than the entire image. Each tile's contrast is enhanced, so that the histogram of the output region approximately matches the histogram specified by the 'Distribution' parameter. The neighboring tiles are then combined using bilinear interpolation to eliminate artificially induced boundaries. The contrast, especially in homogeneous areas, can be limited to avoid amplifying any noise that might be present in the image. For details see documentation for Matlab function <tt>adapthisteq</tt>.</li><li><b>Normalize layers</b>, normalization of image intensities between the slices.  A) calculates mean intensity and standard deviation (std) for the whole dataset; B) calculates mean intensities and standard deviation for each image; C) shifts each image based on difference between mean values of that image and the whole dataset, plus stretches it based on ratio between standard deviation of the whole dataset and each image. For the 4D datasets it is possible to perform normalization also via the time dimension. For the Z stack it is possible to exclude black or white pixels from consideration</li><li><b>Normalize layers based on masked areas</b>, essentially similar to the <i>Normalize layers</i> mode, except that all values are calculated from the masked areas only.</li><li><b>Normalize based on masked background</b>, normalizes image intensities between the slices using background areas that should be masked. A) calculates mean intensity for the masked area for the whole dataset; B) calculates mean intensities for the masked area for each image; C) shifts each image based on difference between mean values of the image and the whole dataset</li></ul></div><h2 id="5">Invert image</h2><p>Invert image intensities, shortcut <tt>Ctrl+i</tt>.</p><p>
+</p><div><ul><li><b>Linear contrast</b>, is no longer available in MIB, please use the Display button in the <a href="ug_panel_view_settings.html">View Settings panel</a>.</li><li><b>Contrast-limited adaptive histogram equalization</b>, CLAHE contrast equalization. CLAHE operates on small regions in the image, called tiles, rather than the entire image. Each tile's contrast is enhanced, so that the histogram of the output region approximately matches the histogram specified by the 'Distribution' parameter. The neighboring tiles are then combined using bilinear interpolation to eliminate artificially induced boundaries. The contrast, especially in homogeneous areas, can be limited to avoid amplifying any noise that might be present in the image. For details see documentation for Matlab function <tt>adapthisteq</tt>.</li><li><b>Normalize layers</b>, normalization of image intensities between the slices.  A) calculates mean intensity and standard deviation (std) for the whole dataset; B) calculates mean intensities and standard deviation for each image; C) shifts each image based on difference between mean values of that image and the whole dataset, plus stretches it based on ratio between standard deviation of the whole dataset and each image. For the 4D datasets it is possible to perform normalization also via the time dimension. For the Z stack it is possible to exclude black or white pixels from consideration</li><li><b>Normalize layers based on masked areas</b>, essentially similar to the <i>Normalize layers</i> mode, except that all values are calculated from the masked areas only.</li><li><b>Normalize based on masked background</b>, normalizes image intensities between the slices using background areas that should be masked. A) calculates mean intensity for the masked area for the whole dataset; B) calculates mean intensities for the masked area for each image; C) shifts each image based on difference between mean values of the image and the whole dataset</li></ul></div><h2 id="6">Invert image</h2><p>Invert image intensities, shortcut <tt>Ctrl+i</tt>.</p><p>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/1DG2w5XYA18"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/1DG2w5XYA18</a>
-</p><div><ul><li><b>Shown slice (2D)</b>, invert only the currently shown slice of the dataset</li><li><b>Current stack (3D)</b>, invert the current stack of the dataset</li><li><b>Complete volume (4D)</b>, invert complete dataset</li></ul></div><h2 id="6">Tools for images</h2><p>In this section, MIB has tools that are targeted for manipulation of the image layer.</p><p>
+</p><div><ul><li><b>Shown slice (2D)</b>, invert only the currently shown slice of the dataset</li><li><b>Current stack (3D)</b>, invert the current stack of the dataset</li><li><b>Complete volume (4D)</b>, invert complete dataset</li></ul></div><h2 id="7">Tools for images --&gt; Content-aware fill</h2><p>
 <table>
 <tr>
-<td colspan = 2><b>Image arithmetics</b><br>
+<td colspan = 2><h2><font color="orange">Content-aware fill</font></h2>
 A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
+<a href="https://youtu.be/H_TVvgA_br4"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/H_TVvgA_br4</a>
+</td>
+</tr>
+<tr>
+<td><img src="images\MenuImageToolsContentAwareFill.png"></td>
+<td>
+<h2><font color="#ef6c00">inpaintCoherent</font></h2>
+<b><em>only for Matlab R2019a and newer</em></b><br>
+Restore specific image regions using coherence transport based image
+inpainting. <br><br>
+The areas for the content-aware fill can be specified using the Mask or
+Selection layers of MIB.<br><br>
+<ul>
+<li><b>Radius</b> - the inpainting radius denotes the radius of the circular
+neighborhood region centered on the pixel to be inpainted<br></li>
+<li><b>Smoothing Factor</b> - smoothing factor is used to compute the
+scales of the Gaussian filters while estimating the coherence
+direction</li>
+</ul>
+<b>References</b><br>
+[1] F. Bornemann and T. März. "Fast Image Inpainting Based on Coherence Transport." Journal of Mathematical Imaging and Vision. Vol. 28, 2007, pp.259–278.
+</td>
+</tr>
+<tr>
+<td><img src="images\MenuImageToolsContentAwareFill2.png"></td>
+<td>
+<h2><font color="#ef6c00">inpaintExemplar</font></h2>
+<b><em>only for Matlab R2019b and newer</em></b><br>
+Fill image regions using exemplar-based image inpainting<br><br>
+The areas for the content-aware fill can be specified using the Mask or
+Selection layers of MIB.<br><br>
+<ul>
+<li><b>PatchSize</b> - size of the image patch, for example, '9' or a
+pair of numbers as '9,9', where the image patches are the image regions
+considered for patch matching and inpainting</li>
+<li><b>FillOrder</b> - the filling order denotes the priority function to
+be used for calculating the patch priority. The patch priority value
+specifies the order of filling of the image patches in target
+regions</li>
+</ul>
+<b>References</b><br>
+[1]  A. Criminisi, P. Perez and K. Toyama. "Region Filling and Object Removal by Exemplar-Based Image Inpainting." IEEE Trans. on Image Processing. Vol. 13, No. 9, 2004, pp. 1200–1212.
+</td>
+</tr>
+</table>
+</p><h2 id="8">Tools for images --&gt; Debris removal</h2><p>
+<table>
+<tr>
+<td colspan = 2><h2><font color="orange">Debris removal</font></h2>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/iM2nHBxTjRw"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iM2nHBxTjRw</a>
+</td>
+</tr>
+<tr>
+<td><img src="images\MenuImageToolsDebrisRemoval2.png"><br>
+<img src="images\MenuImageToolsDebrisRemoval.png">
+</td>
+<td>
+Automatically or manually restore areas of volumetric datasets that are corrupted with debris. The areas can either be automatically detected or manually selected into the Mask or Selection layers<br><br>
+<ul>
+<li><b>Automatic detection</b> - automatic detection of debris areas:
+<ul>
+<li>the tool takes a difference between the current and the previous and the following slices; </li>
+<li>the difference is summarized and thresholded using the <em>Intensity threshold</em> parameter</li>
+<li>the thresholded area that are smaller than the <em>Object size threshold</em> parameter are removed from the consideration</li>
+<li>all other areas are subjected to a series of erosion and dilation morphological operations with the strel size defined in the <em>Strel size</em> field</li>
+<li>finally the detected area is replaced with an average image generated using the previous and the following slice</li>
+</ul>
+<br>
+</li>
+<li><b>Masked areas</b> - the debris removal operation is performed on the specified in the Mask layer areas</li>
+<li><b>Selected areas</b> - the debris removal operation is performed on the specified in the Selection layer areas</li>
+</ul>
+</td>
+</tr>
+</table>
+</p><h2 id="9">Tools for images --&gt; Image arithmetics</h2><p>
+<table>
+<tr>
+<td colspan = 2><h2><font color="orange">Image arithmetics</font></h2><br>
+Use Matlab syntax to apply custom arithmetic expression to Image, Model, Mask or Selection layers, see more in<br>
+a brief video and examples below.<br>
+For MIB 2.60 and newer <a href="https://youtu.be/sDwvnJGLi8Q"><img
+style="vertical-align:middle;" src="images\youtube2.png">
+https://youtu.be/sDwvnJGLi8Q</a><br>
+For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
 </td>
 </tr>
 <tr>
@@ -88,32 +173,43 @@ A brief demonstration is available in the following video:<br>
 <td>
 <ul>
 <b>Parameters and options:</b><br><br>
-<li><b>Input A</b>, specify index of the MIB container with the source image. The image in the specified container will be referenced as "A"</li>
-<li><b>Destination class</b>, the result of the operation will be stored in one of these classes</li>
-<li><b>Destination buffer</b>, the result of the operation will be stored in this container</li>
-<li><b>Input B</b>, an optional input to specify a second MIB container to use. The image in the specified container will be referenced as "B"</li>
-<li><b>Input C</b>, an optional input to specify a third MIB container to use. The image in the specified container will be referenced as "C"</li>
-<li><b>Convert via uint32</b>, use this checkbox to ensure that before the operations images are converted to unit32 container and highlights are not clipped away</li>
+<li><b>Coding:</b>,<br>
+  <ul>
+   <li><b>I, I1, I2 ...</b> -> use I letter to identify the image layer; a number indicates MIB container that has the image, without the number the currently selected dataset is taken</li>
+   <li><b>O, O1, O2 ...</b> -> use O letter to identify the model layer</li>
+   <li><b>M, M1, M2 ...</b> -> use M letter to identify the mask layer</li>
+   <li><b>S, S1, S2 ...</b> -> use S letter to identify the selection layer</li>
+ </ul>
+<li><b>Input variables:</b> list here all datasets that are used in the expression</li>
+<li><b>Output variable:</b> specify here the output variable</li>
+<li><b>Previous expresson</b>, a list of previous successfully executed expressions. Selection of any expression from this list will populate the expression edit box</li>
 <li><b>Expression</b>, an expression with arithmetic operation to perform, see below for some examples</li>
 </ul>
 <br>
 <ul>
 Examples:
-<li><b>A=A+100</b>, increase intensity of all pixels in image A by 100</li>
-<li><b>A=A*2</b>, increase intensity of all pixels in image A in 2 times</li>
-<li><b>A=A+B-C</b>, add image B to image A and subtract image C from the result</li>
-<li><b>A=A+mean(B(:))</b>, add mean value of image B to image A</li>
-<li><b>A=A-min(B(:))</b>, subtract the min-value of image B from image A</li>
-<li><b>A(:,:,2,:)=A(:,:,2,:)*1.4</b>, increase image intensity of the second color channel in 1.4 times</li>
+<li><b>I = I * 2</b>, increase intensity of all pixels of the current image in 2 times</li>
+<li><b>I2 = I2 + 100</b>, increase intensity of all pixels in image 2 by 100</li>
+<li><b>I1 = I1 + I2</b>, add image from container 2 to an image in container 1 and return result back to container 1</li>
+<li><b>I3 = I3 + mean(I3(:))</b>, add mean value of image 3 to image 3</li>
+<li><b>I1 = I1 - min(I1(:))</b>, decrease intensity of pixels in the image 1 by the min value of the dataset</li>
+<li><b>I(:,:,2,:) = I(:,:,2,:)*1.4</b>, increase image intensity of the second color channel in 1.4 times</li>
+<li><b>I(I==0) = I(I==0)+100</b>, increase image intensity of the black areas by 100 intensity counts</li>
+<li><b>M2 = M1</b>, copy mask layer from image 1 to image 2</li>
+<li><b>for z=1:size(I, 4)<br>
+          slice = I(:,:,2,z);<br>
+          mask = M(:,:,z);   <br>
+          slice(mask==1) = 0;<br>
+          I(:,:,2,z) = slice;<br>
+       end</b> - replace intensity of the second color channel in the masked area to 0
 </ul>
 </td>
 </tr>
 </table>
-<br>
-<br>
+</p><h2 id="10">Tools for images --&gt; Intensity projection</h2><p>
 <table>
 <tr>
-<td colspan = 2><b>Intensity projection</b><br>
+<td colspan = 2><h2><font color="orange">Intensity projection</font></h2><br>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/hwFpS_3eP9U</a>
 </td>
@@ -127,6 +223,10 @@ Calculate one of the following intensity projections:
 <li><b>minimum intensity projection</b>, project the voxel with the smallest value on every view throughout the volume onto a 2D image</li>
 <li><b>mean intensity projection</b>, project the mean value of voxels on every view throughout the volume onto a 2D image</li>
 <li><b>median intensity projection</b>, project the median value of voxels on every view throughout the volume onto a 2D image</li>
+<li><a href="https://youtu.be/5L0xMSFVxiU"><img style="vertical-align:middle;" src="images\youtube.png"></a> <b>focus stacking</b>, Generate extended depth-of-field image from focus sequence using noise-robust selective all-in-focus algorithm (<a href="https://ieeexplore.ieee.org/document/6373725">Pertuz et. al. "Generation of all-in-focus images by
+  noise-robust selective fusion of limited depth-of-field
+  images" IEEE Trans. Image Process, 22(3):1242 - 1251, 2013</a>)
+</li>
 </td>
 </tr>
 </table>
@@ -134,7 +234,7 @@ Calculate one of the following intensity projections:
 <br>
 <table>
 <tr>
-<td colspan = 2><b>Select image frame</b><br>
+<td colspan = 2><h2><font color="orange">Select image frame</font></h2><br>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/sWjipmeU5eA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/sWjipmeU5eA</a>
 </td>
@@ -149,19 +249,21 @@ color for the <em>Image</em> layer.
 </td>
 </tr>
 </table>
-</p><h2 id="7">Morphological operations</h2><p>This section contains number of morphological operations that can be applied to images. The processed image may be also added or subtracted from the existing image (see the settings in the <tt>Additional action to the result</tt> panel).</p><p>
+</p><h2 id="11">Morphological operations</h2><p>This section contains number of morphological operations that can be applied to images. The processed image may be also added or subtracted from the existing image (see the settings in the <tt>Additional action to the result</tt> panel).</p><p>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/itbVLFm0FKQ"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/itbVLFm0FKQ</a>
-</p><p><img vspace="5" hspace="5" src="images\MenuImageMorphOps.png" alt=""> </p><p>List of available morphological operations</p><div><ul><li><b>Bottom-hat filtering (imbothat)</b> computes the morphological closing of the image (using imclose`) and then subtracts the result from the original image</li><li><b>Clear border (imclearborder)</b> suppresses light structures connected to image border</li><li><b>Morphological closing (imclose)</b> morphologically closes the image: a dilation followed by an erosion</li><li><b>Dilate image (imdilate)</b></li><li><b>Erode image (imerode)</b></li><li><b>Fill regions (imfill)</b> fills holes in the image, where a hole is defined as an area of dark pixels surrounded by lighter pixels</li><li><b>H-maxima transform (imhmax)</b> suppresses all maxima in the image whose height is less than H</li><li><b>H-mminima transform (imhmin)</b> uppresses all minima in the image whose depth is less than H</li><li><b>Morphological opening (imopen)</b> morphologically opens image: an erosion followed by a dilation</li><li><b>Top-hat filtering (imtophat)</b> computes the morphological opening of the image (using imopen) and then subtracts the result from the original image</li></ul></div><h2 id="8">Intensity profile</h2><p>Generate an intensity profile of the image data. The profiles can be obtained in two modes:</p><div><ul><li><b>Line</b></li><li><b>Arbitrary</b></li></ul></div><p>For intensity profiles it is recommended to use the <a href="ug_gui_menu_tools_measure.html">Measure length tool</a>.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+</p><p><img vspace="5" hspace="5" src="images\MenuImageMorphOps.png" alt=""> </p><p>List of available morphological operations</p><div><ul><li><b>Bottom-hat filtering (imbothat)</b> computes the morphological closing of the image (using imclose`) and then subtracts the result from the original image</li><li><b>Clear border (imclearborder)</b> suppresses light structures connected to image border</li><li><b>Morphological closing (imclose)</b> morphologically closes the image: a dilation followed by an erosion</li><li><b>Dilate image (imdilate)</b></li><li><b>Erode image (imerode)</b></li><li><b>Fill regions (imfill)</b> fills holes in the image, where a hole is defined as an area of dark pixels surrounded by lighter pixels</li><li><b>H-maxima transform (imhmax)</b> suppresses all maxima in the image whose height is less than H</li><li><b>H-mminima transform (imhmin)</b> uppresses all minima in the image whose depth is less than H</li><li><b>Morphological opening (imopen)</b> morphologically opens image: an erosion followed by a dilation</li><li><b>Top-hat filtering (imtophat)</b> computes the morphological opening of the image (using imopen) and then subtracts the result from the original image</li></ul></div><h2 id="12">Intensity profile</h2><p>Generate an intensity profile of the image data. The profiles can be obtained in two modes:</p><div><ul><li><b>Line</b></li><li><b>Arbitrary</b></li></ul></div><p>For intensity profiles it is recommended to use the <a href="ug_gui_menu_tools_measure.html">Measure length tool</a>.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Image Menu
 % Image processing functions
 %
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*>
+%
+%%
 % 
 % <<images\menuImage.png>>
 % 
-%
-% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*>
 %% Mode
 % Allows to change mode of the shown dataset, the following options are available:
 % 
@@ -243,17 +345,107 @@ A brief demonstration is available in the following video:<br>
 % * *Current stack (3D)*, invert the current stack of the dataset
 % * *Complete volume (4D)*, invert complete dataset
 %
-%% Tools for images
-% In this section, MIB has tools that are targeted for manipulation of the
-% image layer.
+%% Tools for images REPLACE_WITH_DASH_DASH> Content-aware fill
 %
-% 
 % <html>
 % <table>
 % <tr>
-% <td colspan = 2><b>Image arithmetics</b><br>
+% <td colspan = 2><h2><font color="orange">Content-aware fill</font></h2>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
+% <a href="https://youtu.be/H_TVvgA_br4"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/H_TVvgA_br4</a>
+% </td>
+% </tr>
+% <tr>
+% <td><img src="images\MenuImageToolsContentAwareFill.png"></td>
+% <td>
+% <h2><font color="#ef6c00">inpaintCoherent</font></h2>
+% <b><em>only for Matlab R2019a and newer</em></b><br>
+% Restore specific image regions using coherence transport based image
+% inpainting. <br><br>
+% The areas for the content-aware fill can be specified using the Mask or
+% Selection layers of MIB.<br><br>
+% <ul>
+% <li><b>Radius</b> - the inpainting radius denotes the radius of the circular
+% neighborhood region centered on the pixel to be inpainted<br></li>
+% <li><b>Smoothing Factor</b> - smoothing factor is used to compute the
+% scales of the Gaussian filters while estimating the coherence
+% direction</li>
+% </ul>
+% <b>References</b><br>
+% [1] F. Bornemann and T. März. "Fast Image Inpainting Based on Coherence Transport." Journal of Mathematical Imaging and Vision. Vol. 28, 2007, pp.259–278.
+% </td>
+% </tr>
+% <tr>
+% <td><img src="images\MenuImageToolsContentAwareFill2.png"></td>
+% <td>
+% <h2><font color="#ef6c00">inpaintExemplar</font></h2>
+% <b><em>only for Matlab R2019b and newer</em></b><br>
+% Fill image regions using exemplar-based image inpainting<br><br>
+% The areas for the content-aware fill can be specified using the Mask or
+% Selection layers of MIB.<br><br>
+% <ul>
+% <li><b>PatchSize</b> - size of the image patch, for example, '9' or a
+% pair of numbers as '9,9', where the image patches are the image regions
+% considered for patch matching and inpainting</li>
+% <li><b>FillOrder</b> - the filling order denotes the priority function to
+% be used for calculating the patch priority. The patch priority value
+% specifies the order of filling of the image patches in target
+% regions</li>
+% </ul>
+% <b>References</b><br>
+% [1]  A. Criminisi, P. Perez and K. Toyama. "Region Filling and Object Removal by Exemplar-Based Image Inpainting." IEEE Trans. on Image Processing. Vol. 13, No. 9, 2004, pp. 1200–1212.
+% </td>
+% </tr>
+% </table>
+% </html>
+%
+%% Tools for images REPLACE_WITH_DASH_DASH> Debris removal
+%
+% <html>
+% <table>
+% <tr>
+% <td colspan = 2><h2><font color="orange">Debris removal</font></h2>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/iM2nHBxTjRw"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iM2nHBxTjRw</a>
+% </td>
+% </tr>
+% <tr>
+% <td><img src="images\MenuImageToolsDebrisRemoval2.png"><br>
+% <img src="images\MenuImageToolsDebrisRemoval.png">
+% </td>
+% <td>
+% Automatically or manually restore areas of volumetric datasets that are corrupted with debris. The areas can either be automatically detected or manually selected into the Mask or Selection layers<br><br>
+% <ul>
+% <li><b>Automatic detection</b> - automatic detection of debris areas:
+% <ul>
+% <li>the tool takes a difference between the current and the previous and the following slices; </li>
+% <li>the difference is summarized and thresholded using the <em>Intensity threshold</em> parameter</li>
+% <li>the thresholded area that are smaller than the <em>Object size threshold</em> parameter are removed from the consideration</li>
+% <li>all other areas are subjected to a series of erosion and dilation morphological operations with the strel size defined in the <em>Strel size</em> field</li>
+% <li>finally the detected area is replaced with an average image generated using the previous and the following slice</li>
+% </ul>
+% <br>
+% </li>
+% <li><b>Masked areas</b> - the debris removal operation is performed on the specified in the Mask layer areas</li>
+% <li><b>Selected areas</b> - the debris removal operation is performed on the specified in the Selection layer areas</li>
+% </ul>
+% </td>
+% </tr>
+% </table>
+% </html>
+%
+%% Tools for images REPLACE_WITH_DASH_DASH> Image arithmetics
+%
+% <html>
+% <table>
+% <tr>
+% <td colspan = 2><h2><font color="orange">Image arithmetics</font></h2><br>
+% Use Matlab syntax to apply custom arithmetic expression to Image, Model, Mask or Selection layers, see more in<br>
+% a brief video and examples below.<br>
+% For MIB 2.60 and newer <a href="https://youtu.be/sDwvnJGLi8Q"><img
+% style="vertical-align:middle;" src="images\youtube2.png">
+% https://youtu.be/sDwvnJGLi8Q</a><br>
+% For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
 % </td>
 % </tr>
 % <tr>
@@ -261,32 +453,47 @@ A brief demonstration is available in the following video:<br>
 % <td>
 % <ul>
 % <b>Parameters and options:</b><br><br>
-% <li><b>Input A</b>, specify index of the MIB container with the source image. The image in the specified container will be referenced as "A"</li>
-% <li><b>Destination class</b>, the result of the operation will be stored in one of these classes</li>
-% <li><b>Destination buffer</b>, the result of the operation will be stored in this container</li>
-% <li><b>Input B</b>, an optional input to specify a second MIB container to use. The image in the specified container will be referenced as "B"</li>
-% <li><b>Input C</b>, an optional input to specify a third MIB container to use. The image in the specified container will be referenced as "C"</li>
-% <li><b>Convert via uint32</b>, use this checkbox to ensure that before the operations images are converted to unit32 container and highlights are not clipped away</li>
+% <li><b>Coding:</b>,<br>
+%   <ul>
+%    <li><b>I, I1, I2 ...</b> -> use I letter to identify the image layer; a number indicates MIB container that has the image, without the number the currently selected dataset is taken</li>
+%    <li><b>O, O1, O2 ...</b> -> use O letter to identify the model layer</li>
+%    <li><b>M, M1, M2 ...</b> -> use M letter to identify the mask layer</li>
+%    <li><b>S, S1, S2 ...</b> -> use S letter to identify the selection layer</li>
+%  </ul>
+% <li><b>Input variables:</b> list here all datasets that are used in the expression</li>
+% <li><b>Output variable:</b> specify here the output variable</li>
+% <li><b>Previous expresson</b>, a list of previous successfully executed expressions. Selection of any expression from this list will populate the expression edit box</li> 
 % <li><b>Expression</b>, an expression with arithmetic operation to perform, see below for some examples</li> 
 % </ul>
 % <br>
 % <ul>
 % Examples:
-% <li><b>A=A+100</b>, increase intensity of all pixels in image A by 100</li>
-% <li><b>A=A*2</b>, increase intensity of all pixels in image A in 2 times</li>
-% <li><b>A=A+B-C</b>, add image B to image A and subtract image C from the result</li>
-% <li><b>A=A+mean(B(:))</b>, add mean value of image B to image A</li>
-% <li><b>A=A-min(B(:))</b>, subtract the min-value of image B from image A</li>
-% <li><b>A(:,:,2,:)=A(:,:,2,:)*1.4</b>, increase image intensity of the second color channel in 1.4 times</li>
+% <li><b>I = I * 2</b>, increase intensity of all pixels of the current image in 2 times</li>
+% <li><b>I2 = I2 + 100</b>, increase intensity of all pixels in image 2 by 100</li>
+% <li><b>I1 = I1 + I2</b>, add image from container 2 to an image in container 1 and return result back to container 1</li>
+% <li><b>I3 = I3 + mean(I3(:))</b>, add mean value of image 3 to image 3</li>
+% <li><b>I1 = I1 - min(I1(:))</b>, decrease intensity of pixels in the image 1 by the min value of the dataset</li>
+% <li><b>I(:,:,2,:) = I(:,:,2,:)*1.4</b>, increase image intensity of the second color channel in 1.4 times</li>
+% <li><b>I(I==0) = I(I==0)+100</b>, increase image intensity of the black areas by 100 intensity counts</li>
+% <li><b>M2 = M1</b>, copy mask layer from image 1 to image 2</li>
+% <li><b>for z=1:size(I, 4)<br>
+%           slice = I(:,:,2,z);<br>
+%           mask = M(:,:,z);   <br>
+%           slice(mask==1) = 0;<br>
+%           I(:,:,2,z) = slice;<br>
+%        end</b> - replace intensity of the second color channel in the masked area to 0
 % </ul>
 % </td>
 % </tr>
 % </table>
-% <br>
-% <br>
+% </html>
+%
+%% Tools for images REPLACE_WITH_DASH_DASH> Intensity projection
+%
+% <html>
 % <table>
 % <tr>
-% <td colspan = 2><b>Intensity projection</b><br>
+% <td colspan = 2><h2><font color="orange">Intensity projection</font></h2><br>
 % A brief demonstration is available in the following video:<br>
 % <a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/hwFpS_3eP9U</a>
 % </td>
@@ -300,6 +507,10 @@ A brief demonstration is available in the following video:<br>
 % <li><b>minimum intensity projection</b>, project the voxel with the smallest value on every view throughout the volume onto a 2D image</li>
 % <li><b>mean intensity projection</b>, project the mean value of voxels on every view throughout the volume onto a 2D image</li>
 % <li><b>median intensity projection</b>, project the median value of voxels on every view throughout the volume onto a 2D image</li>
+% <li><a href="https://youtu.be/5L0xMSFVxiU"><img style="vertical-align:middle;" src="images\youtube.png"></a> <b>focus stacking</b>, Generate extended depth-of-field image from focus sequence using noise-robust selective all-in-focus algorithm (<a href="https://ieeexplore.ieee.org/document/6373725">Pertuz et. al. "Generation of all-in-focus images by
+%   noise-robust selective fusion of limited depth-of-field
+%   images" IEEE Trans. Image Process, 22(3):1242 - 1251, 2013</a>)
+% </li>
 % </td>
 % </tr>
 % </table>
@@ -307,7 +518,7 @@ A brief demonstration is available in the following video:<br>
 % <br>
 % <table>
 % <tr>
-% <td colspan = 2><b>Select image frame</b><br>
+% <td colspan = 2><h2><font color="orange">Select image frame</font></h2><br>
 % A brief demonstration is available in the following video:<br>
 % <a href="https://youtu.be/sWjipmeU5eA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/sWjipmeU5eA</a>
 % </td>

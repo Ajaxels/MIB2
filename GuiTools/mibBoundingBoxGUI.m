@@ -133,7 +133,7 @@ handles = guidata(hObject);
 if isequal(get(hObject,'CurrentKey'),'escape')
     cancelBtn_Callback(hObject, eventdata, handles);
 elseif isequal(get(hObject,'CurrentKey'),'return')
-    okBtn_Callback(hObject, eventdata, handles);
+    %okBtn_Callback(hObject, eventdata, handles);
 end    
 end
 
@@ -146,4 +146,9 @@ end
 % --- Executes on button press in okBtn.
 function okBtn_Callback(hObject, eventdata, handles)
 handles.winController.okBtn_Callback();
+end
+
+function editboxes_Callback(hObject, eventdata, handles)
+% update BatchOpt structure in the controller
+handles.winController.updateBatchOptFromGUI(hObject);
 end

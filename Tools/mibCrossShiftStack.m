@@ -8,8 +8,7 @@ function imgOut = mibCrossShiftStack(imgIn, shiftsX, shiftsY, options)
 % shiftsX: a vector for X-shifts [1:depth]
 % shiftsY: a vector for Y-shifts [1:depth]
 % options: an optional structure with options
-%  - .backgroundColor -> background color: 'black', 'white', 'mean', or a
-%  number
+%  - .backgroundColor -> background color: 'black', 'white', 'mean', or a number
 %  - .waitbar -> [optional] a handle to the opened waitbar
 %
 % Return values:

@@ -27,9 +27,7 @@ function plotImage(obj, resize, sImgIn)
 % Updates
 % 
 
-
 if nargin < 2; resize = 0; end
-
 rgbOptions.blockModeSwitch = 1;
 rgbOptions.roiId = -1;
 if nargin < 3   % generate Ishown from the dataset
@@ -67,7 +65,7 @@ if nargin < 3   % generate Ishown from the dataset
         obj.mibView.handles.mibImageAxes.BusyAction = 'queue';
         obj.mibView.handles.mibImageAxes.HandleVisibility = 'callback';
         
-        %guidata(obj.mibView.gui, handles);
+        if obj.matlabVersion > 9.6;  drawnow nocallbacks limitrate; end     % needs to be here, otherwise in R2019b drawing lags
         return;
     end
 else    % use for Ishown the image provided in the sImgIn
@@ -90,16 +88,17 @@ end
 if isempty(obj.mibView.imh.CData)
     obj.mibView.imh = image(obj.mibView.Ishown, 'parent', obj.mibView.handles.mibImageAxes);
 else
-    obj.mibView.imh.CData = [];
-    obj.mibView.imh.CData = obj.mibView.Ishown;
-    % delete measurements & roi
-    lineObj = findobj(obj.mibView.handles.mibImageAxes, 'tag', 'measurements', '-or', 'tag', 'roi');
-    if ~isempty(lineObj); delete(lineObj); end     % keep it within if, because it is faster
+   obj.mibView.imh.CData = [];
+   obj.mibView.imh.CData = obj.mibView.Ishown;
+   % delete measurements & roi
+   lineObj = findobj(obj.mibView.handles.mibImageAxes, 'tag', 'measurements', '-or', 'tag', 'roi');
+   if ~isempty(lineObj); delete(lineObj); end     % keep it within if, because it is faster
 end
 
 % update size of the cursor
-obj.mibView.updateCursor();
+obj.mibView.updateCursor(); 
 
+%return
 obj.mibView.imh.HitTest = 'off'; % If HitTest is off, clicking this object selects the object below it (which is usually the axes containing it)
 
 %obj.mibView.gui.WindowButtonMotionFcn = {@im_browser_winMouseMotionFcn, handles};
@@ -191,5 +190,8 @@ else
         obj.mibView.handles.mibShowAnnotationsCheck.Value = 1;
         obj.mibModel.I{obj.mibModel.Id}.hMeasure.addMeasurementsToPlot(obj.mibModel, 'shown', obj.mibView.handles.mibImageAxes);
     end
+    if obj.matlabVersion > 9.6 
+        drawnow nocallbacks limitrate; 
+    end     % needs to be here, otherwise in R2019b drawing lags
 end
 end

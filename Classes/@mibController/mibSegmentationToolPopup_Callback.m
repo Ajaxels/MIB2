@@ -29,6 +29,7 @@ obj.mibView.handles.mibSegmObjectPickerPanel.Visible = 'off';
 obj.mibView.handles.mibSegmSpotPanel.Visible = 'off';
 obj.mibView.handles.mibSegmThresPanel.Visible = 'off';
 obj.mibView.handles.mibSegmMembTracerPanel.Visible = 'off';
+obj.mibView.handles.mibSegmDragDropPanel.Visible = 'off';
 obj.mibView.showBrushCursor = 0;
 
 if ~isempty(find(obj.mibModel.preferences.lastSegmTool == val, 1)) % the selected tool is also a fast access tool for the 'd' shortcut
@@ -56,6 +57,8 @@ switch selectedTool
         end
     case 'MagicWand-RegionGrowing'
         obj.mibView.handles.mibSegmMagicPanel.Visible = 'on';
+    case 'Drag & Drop materials'
+        obj.mibView.handles.mibSegmDragDropPanel.Visible = 'on';
     case 'Object Picker'
         obj.mibView.handles.mibSegmObjectPickerPanel.Visible = 'on';
         obj.mibView.handles.mibSegmObjectPickerPanelSub.Visible = 'on';

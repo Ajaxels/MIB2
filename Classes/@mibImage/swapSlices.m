@@ -1,5 +1,5 @@
-function result = swapSlices(obj, sliceNumberFrom, sliceNumberTo, orient)
-% function result = swapSlices(obj, sliceNumberFrom, sliceNumberTo, orient)
+function result = swapSlices(obj, sliceNumberFrom, sliceNumberTo, orient, options)
+% function result = swapSlices(obj, sliceNumberFrom, sliceNumberTo, orient, options)
 % Swap specified slices 
 %
 % Parameters:
@@ -12,6 +12,8 @@ function result = swapSlices(obj, sliceNumberFrom, sliceNumberTo, orient)
 % @li when @b 3 not used
 % @li when @b 4 the yx configuration: [y,x,c,z,t]
 % @li when @b 5 the t configuration
+% options: an optional structure with additional paramters
+%   .showWaitbar - logical, @b 1 [@em default] - show the waitbar, @b 0 - do not show
 %
 % Return values:
 % result: result of the function, @b 0 fail, @b 1 success
@@ -28,11 +30,14 @@ function result = swapSlices(obj, sliceNumberFrom, sliceNumberTo, orient)
 % of the License, or (at your option) any later version.
 
 % Updates
-% 
+% 20.05.2019 addded options to the parameters
 
+if nargin < 5; options = struct; end
 if nargin < 4; orient = obj.orientation; end
 if isnan(orient); orient = obj.orientation; end
 if orient==0; orient = obj.orientation; end
+
+if ~isfield(options, 'showWaitbar'); options.showWaitbar = true; end
 
 result = 0;
 
@@ -47,7 +52,7 @@ if max(sliceNumberFrom) > maxSliceNumber || max(sliceNumberTo) > maxSliceNumber 
     return;
 end
 
-h = waitbar(0, sprintf('Swapping slices %s -> %s\nPlease wait...', num2str(sliceNumberFrom), num2str(sliceNumberTo)), 'Name', 'Swapping slices...');
+if options.showWaitbar; wb = waitbar(0, sprintf('Swapping slices %s -> %s\nPlease wait...', num2str(sliceNumberFrom), num2str(sliceNumberTo)), 'Name', 'Swapping slices...'); end
 maxT = obj.dim_yxczt(5); 
 maxZ = obj.dim_yxczt(4);
 maxH = obj.dim_yxczt(1);
@@ -75,7 +80,7 @@ elseif orient == 5     % t orientation
     obj.img{1}(:, :, :, :, sliceNumberTo) = slices2;
     obj.img{1}(:, :, :, :, sliceNumberFrom) = slices1;
 end
-waitbar(0.3, h);
+if options.showWaitbar; waitbar(0.3, wb); end
 
 % delete slice from selection
 if ~isnan(obj.selection{1}(1))
@@ -101,7 +106,7 @@ if ~isnan(obj.selection{1}(1))
         obj.selection{1}(:, :, :, sliceNumberFrom) = slices1;
     end
 end
-waitbar(0.5, h);
+if options.showWaitbar; waitbar(0.5, wb); end
 
 % delete slice from model
 if ~isnan(obj.model{1}(1))
@@ -127,7 +132,7 @@ if ~isnan(obj.model{1}(1))
         obj.model{1}(:, :, :, sliceNumberFrom) = slices1;       
     end
 end
-waitbar(0.7, h);
+if options.showWaitbar; waitbar(0.7, wb); end
 
 % delete slice from mask
 if ~isnan(obj.maskImg{1}(1))
@@ -153,13 +158,15 @@ if ~isnan(obj.maskImg{1}(1))
         obj.maskImg{1}(:, :, :, sliceNumberFrom) = slices1;             
     end
 end
-waitbar(0.9, h);
+if options.showWaitbar; waitbar(0.9, wb); end
 
 % update the log list
 log_text = sprintf('Swap slices: %s->%s, Orient: %d', num2str(sliceNumberFrom), num2str(sliceNumberTo), orient);
 obj.updateImgInfo(log_text);
 
-waitbar(1, h);
-delete(h);
+if options.showWaitbar
+    waitbar(1, wb);
+    delete(wb);
+end
 result = 1;
 end

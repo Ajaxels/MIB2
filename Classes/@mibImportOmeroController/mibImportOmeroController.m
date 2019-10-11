@@ -453,7 +453,7 @@ classdef mibImportOmeroController < handle
             obj.mibModel.I{obj.mibModel.Id}.pixSize.z = pixSizeZ*stepZ;
             obj.mibModel.I{obj.mibModel.Id}.pixSize.t = pixSizeT*stepT;
             
-            obj.mibModel.updateParameters();    % update pixels size, and resolution
+            obj.mibModel.I{obj.mibModel.Id}.updatePixSizeResolution();    % update pixels size, and resolution
             notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details
             
             eventdata = ToggleEventData(1);

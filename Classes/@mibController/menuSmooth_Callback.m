@@ -4,9 +4,9 @@ function menuSmooth_Callback(obj, type)
 %
 % Parameters:
 % type: a string with type of the layer for the smoothing
-% - ''selection'' - run size exclusion on the 'Selection' layer
-% - ''model'' - - run size exclusion on the 'Model' layer
-% - ''mask'' - - run size exclusion on the 'Mask' layer
+% - ''selection'' - run size exclusion on the Selection layer
+% - ''model'' - - run size exclusion on the Model layer
+% - ''mask'' - - run size exclusion on the Mask layer
 
 % Copyright (C) 10.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 

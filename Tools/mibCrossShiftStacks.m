@@ -31,7 +31,7 @@ function [imgOut, bbShiftXY] = mibCrossShiftStacks(I1, I2, shiftX, shiftY, optio
 
 bbShiftXY = [0, 0];
 
-if nargin < 4;
+if nargin < 4
     errordlg(sprintf('!!! Error !!!\n\nThis function requires 4 parameters: image1, image2, shiftX and shiftY'));
     imgOut = [];
     return;
@@ -44,8 +44,8 @@ if ndims(I1) ~= ndims(I2) && ndims(I1) ~= 2 && ndims(I2) ~= 2
     return;
 end
 
-if ~isfield(options, 'backgroundColor'); options.backgroundColor='black'; end;
-if ~isfield(options, 'modelSwitch'); options.modelSwitch = 0; end;
+if ~isfield(options, 'backgroundColor'); options.backgroundColor='black'; end
+if ~isfield(options, 'modelSwitch'); options.modelSwitch = 0; end
 
 if isfield(options, 'waitbar')
     wb = options.waitbar;

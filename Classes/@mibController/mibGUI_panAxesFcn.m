@@ -68,6 +68,5 @@ if outSwitch == 0
         axesY = axesY + (xy(2)-(pt(1,2)+pt(2,2))/2)*magFactorFixed;
         obj.mibModel.setAxesLimits(axesX, axesY);
     %end
-
 end
 end

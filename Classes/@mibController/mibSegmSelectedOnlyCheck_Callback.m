@@ -18,8 +18,8 @@ function mibSegmSelectedOnlyCheck_Callback(obj)
 % Updates
 % 
 
-val = obj.mibView.handles.mibSegmSelectedOnlyCheck.Value;
-if val == 1 % selected only
+obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial = obj.mibView.handles.mibSegmSelectedOnlyCheck.Value;
+if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1 % selected only
     obj.mibView.handles.mibSegmSelectedOnlyCheck.BackgroundColor = [1 .6 .784];
 else
     obj.mibView.handles.mibSegmSelectedOnlyCheck.BackgroundColor = [0.94    0.94    0.94];

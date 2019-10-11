@@ -27,8 +27,8 @@ mex -compatibleArrayDims -v rk4.c
 waitbar(0.1, wb, sprintf('Compiling Frangi\nPlease wait...'));
 currDir = fullfile(mibDir, 'Tools','Frangi');
 cd(currDir);
-mex('eig3volume.c' ,'-v');
-mex('imgaussian.c' ,'-v');
+mex -compatibleArrayDims -v eig3volume.c
+mex -compatibleArrayDims -v imgaussian.c
 
 %% Compiling Membrane Detection 
 waitbar(0.15, wb, sprintf('Compiling Membrane Detection\nPlease wait...'));
@@ -55,6 +55,12 @@ mex -v -largeArrayDims maxflowmex_v222.cpp maxflow-v2.22/adjacency_list_new_inte
 % currDir = fullfile(mibDir, 'Tools');
 % cd(currDir);
 % mex('patchnormals_double.c' ,'-largeArrayDims', '-v');
+
+%% Compiling GetExeLocation to acquire path to deployed MIB
+waitbar(0.25, wb, sprintf('Compiling GetExeLocation\nPlease wait...'));
+currDir = fullfile(mibDir, 'Tools');
+cd(currDir);
+mex('GetExeLocation.c', '-v');
 
 %% Compiling Region Growing
 waitbar(0.3, wb, sprintf('Compiling Region Growing\nPlease wait...'));

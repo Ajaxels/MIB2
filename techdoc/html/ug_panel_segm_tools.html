@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Segmentation Tools</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-12-21"><meta name="DC.source" content="ug_panel_segm_tools.m"><style type="text/css">
+      --><title>Segmentation Tools</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-11"><meta name="DC.source" content="ug_panel_segm_tools.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Segmentation Tools</h1><!--introduction--><p>This panel hosts different tools that are used for the image segmentation.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a> <tt><b>--&gt;</b></tt> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">The 3D ball</a></li><li><a href="#2">The 3D lines</a></li><li><a href="#3">Annotations</a></li><li><a href="#4">The Brush tool</a></li><li><a href="#7">The Black and White Thresholding tool</a></li><li><a href="#8">The Lasso tool</a></li><li><a href="#9">The Magic Wand+Region Growing tool</a></li><li><a href="#10">The Membrane Click Tracker tool</a></li><li><a href="#11">Object Picker</a></li><li><a href="#12">The Spot tool</a></li></ul></div><h2 id="1">The 3D ball</h2><p>
+  </style></head><body><div class="content"><h1>Segmentation Tools</h1><!--introduction--><p>This panel hosts different tools that are used for the image segmentation.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a> <tt><b>--&gt;</b></tt> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">The 3D ball</a></li><li><a href="#2">The 3D lines</a></li><li><a href="#3">Annotations</a></li><li><a href="#4">The Brush tool</a></li><li><a href="#7">The Black and White Thresholding tool</a></li><li><a href="#8">Drag &amp; Drop materials</a></li><li><a href="#9">The Lasso tool</a></li><li><a href="#10">The Magic Wand+Region Growing tool</a></li><li><a href="#11">The Membrane Click Tracker tool</a></li><li><a href="#12">Object Picker</a></li><li><a href="#13">The Spot tool</a></li></ul></div><h2 id="1">The 3D ball</h2><p>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
@@ -229,7 +229,7 @@ displayed in the <a href="ug_panel_im_view.html">Image View panel</a>.
 <li><b>Label + Value</b>, show marker, label and value for each annotation</li>
 </ul>
 </li>
-<li><b>Value eccentric</b> checkbox, when enabled, the first parameter during visualization of annotations is
+<li><b>Focus on Value</b> checkbox, when enabled, the first parameter during visualization of annotations is
 value and the second parameter is label.
 </ul>
 </td>
@@ -246,13 +246,16 @@ value and the second parameter is label.
 <ul>
 <li>The <b>List of annotations</b> table shows a list of annotations.
   <ul>The <em>right mouse button</em></b> click calls an additional popup menu that allows to
-      <li><em><b>Add annotation</em></b>, manually add annotation to the list, position of the first and second fields are defined by the <em>Value eccentric</em> checkbox of the Annotation panel, see above</li>
       <li><em><b>Jump to annotation</em></b>, moves the image so that the selected annotation is in the middle of the Image View panel</li>
+      <li><em><b>Add annotation</em></b>, manually add annotation to the list, position of the first and second fields are defined by the <em>Value eccentric</em> checkbox of the Annotation panel, see above</li>
+      <li><em><b>Rename selected annotations</em></b>, rename names of the selected annotations</li>
+      <li><em><b>Batch modify selected annotations</em></b>, modify annotation values or coordinates using a provided expression</li>
       <li><em><b>Count selected annotations</em></b>, calculate occurance of each annotation in the list of selected annotations.
           The results are displayed in the Matlab command window and
           copied to the system clipboard
           <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a>
           </li>
+      <li><em><b>Copy selected annotations to clipboard</em></b>, the selected annotations are copied to the system clipboard as a text string ready to be pasted to Excel</li>
       <li><em><b>Export selected annotations</em></b>, export selected annotations in the Matlab format, landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>), PSI format for Amira and Excel</li>
       <li><em><b>Export selected annotations to Imaris</em></b>, export selected annotations to Imaris (<em><b>Note!</em> please first export the dataset!</b>)</li>
       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
@@ -332,7 +335,42 @@ The <b>Adaptive</b> checkbox starts adaptive threshoding with the
 </table>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/ZcJQb59YzUA?t=4m37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m37s</a>
-</p><h2 id="8">The Lasso tool</h2><p>
+</p><h2 id="8">Drag &amp; Drop materials</h2><p>
+<table style="width: 800px; border: 0px">
+<tr>
+<td style="border: 0px">
+  <img src = "images\PanelsSegmentationToolsDragDrop.png">
+</td>
+<td style="border: 0px">
+Shift MIB layers (selection, mask, model) to left/right/up/down
+direction. The tool allows to move individual 2D/3D objects as well as
+complete contents of the layers in 2D and 3D.
+<br><br>
+A combobox offers possibility to choose the layer to be moved. Mouse click or use of the buttons
+in the panel move the selected layer left/right/up/down by the specified number of pixels.
+<br><br>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/NGudNrxBbi0"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/NGudNrxBbi0</a>
+<br><br>
+</td>
+</tr>
+</table>
+<br><br>
+<table style="width: 800px; text-align: center;" cellspacing=2px cellpadding=2px >
+<tr style="font-weight: bold; background: #ffb74d;">
+  <td>Start by</td>
+  <td>Modifier</td>
+  <td>3D checkbox</td>
+  <td>Action</td>
+</tr>
+<tr><td>Mouse click over an object</td><td>Control</td><td>Unchecked</td><td>Move the selected object in 2D</td></tr>
+<tr><td>Mouse click over an object</td><td>Control</td><td>Checked</td><td>Move the selected 3D object. <b>Note! Only for Matlab version 2017b and newer</b></td></tr>
+<tr><td>Mouse click</td><td>Shift</td><td>Unchecked</td><td>Move all objects on the shown slice, i.e. 2D movement</td></tr>
+<tr><td>Mouse click</td><td>Shift</td><td>Checked</td><td>Move all objects on all slices, i.e. 3D movement</td></tr>
+<tr><td>Left/Right/Up/Down buttons</td><td>-</td><td>Unchecked</td><td>Move all objects on the shown slice by the specified number of pixels, i.e. 2D movement</td></tr>
+<tr><td>Left/Right/Up/Down buttons</td><td>-</td><td>Checked</td><td>Move all objects on all slices by the specified number of pixels, i.e. 3D movement</td></tr>
+</table>
+</p><h2 id="9">The Lasso tool</h2><p>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
@@ -358,7 +396,7 @@ selected area is removed from the Selection layer.
 </td>
 </tr>
 </table>
-</p><p>The Lasso tool works also in 3D.</p><h2 id="9">The Magic Wand+Region Growing tool</h2><p>Selection of pixels with the <i>mouse button</i> based on their intensities. The intensity variation is calculated from the intensity of the selected pixel and two threshold values from the <tt>Variation</tt> edit boxes.</p><p>
+</p><p>The Lasso tool works also in 3D.</p><h2 id="10">The Magic Wand+Region Growing tool</h2><p>Selection of pixels with the <i>mouse button</i> based on their intensities. The intensity variation is calculated from the intensity of the selected pixel and two threshold values from the <tt>Variation</tt> edit boxes.</p><p>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/ZcJQb59YzUA?t=1m50s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=1m50s</a>
 <table style="width: 800px; border: 0px">
@@ -375,7 +413,7 @@ A brief demonstration is available in the following video:<br>
 </td>
 </tr>
 </table>
-</p><p>The Magic Wand works also in the 3D mode (the 3D switch in the <a href="ug_panel_selection.html"><tt>Selection panel</tt></a>).</p><p><b>Selection modifiers for the Magic wand tool:</b></p><div><ul><li><b>None + left mouse click</b>, will replace the existing selection with the new one.</li><li><b>Shift + left mouse click</b>, will add new selection to the existing one.</li><li><b>Ctrl + left mouse click</b>, will remove new selection from the current.</li></ul></div><h2 id="10">The Membrane Click Tracker tool</h2><p>This tool tracks membrane-type objects by using 2 mouse clicks that define start and end point of the membrane domain.</p><p>
+</p><p>The Magic Wand works also in the 3D mode (the 3D switch in the <a href="ug_panel_selection.html"><tt>Selection panel</tt></a>).</p><p><b>Selection modifiers for the Magic wand tool:</b></p><div><ul><li><b>None + left mouse click</b>, will replace the existing selection with the new one.</li><li><b>Shift + left mouse click</b>, will add new selection to the existing one.</li><li><b>Ctrl + left mouse click</b>, will remove new selection from the current.</li></ul></div><h2 id="11">The Membrane Click Tracker tool</h2><p>This tool tracks membrane-type objects by using 2 mouse clicks that define start and end point of the membrane domain.</p><p>
 A brief demonstration for 2D is available in the following video:<br>
 <a href="https://youtu.be/ZcJQb59YzUA?t=3m14s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=3m14s</a>
 <br>
@@ -395,7 +433,7 @@ A brief demonstration for 3D is available in the following video:<br>
 </td>
 </tr>
 </table>
-</p><p>The membrane is traced with help of Accurate Fast Marching function <a href="http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching">http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching</a> by Dirk-Jan Kroon, 2011, University of Twente.</p><p><b><i>Note!</i></b> It is highly recommended to compile the corresponding function (see details in the Membrane Click Tracker section of <a href="im_browser_system_requirements.html">the System Requirements page</a> ), otherwise the function is very slow!</p><p><b>Extra parameters:</b></p><div><ul><li>The <b>Scale</b> edit box - during the tracing the image gets enhanced by taking into account intensities of the starting and ending points <tt>img(img&gt;min([val1 val2])-diff([val1 val2])*options.scaleFactor) = maxIntensity;</tt></li><li>The <b>Width</b> edit box - defines a width of the resulting trace</li><li>The <b>BlackSignal</b> checkbox defines whether the signal is Black on White, or White on Black</li><li>The <b>Straight line</b> checkbox - when checked, the points are connected with a straight line</li></ul></div><p><b><i>Note!</i></b> When the 3D switch in the <a href="ug_panel_selection.html"><tt>Selection</tt> panel</a> is enabled the <b>Membrane Click Tracker</b> tool connects points (<i>linearly</i>) in the 3D space (this may be very usefull for tracing microtubules).</p><h2 id="11">Object Picker</h2><p>This mode allows fast selection of objects from the <tt>Mask</tt> or <tt>Model</tt> layers. When the <tt>Mask</tt> and <tt>Model</tt> radio buttons define the target layer for selection.</p><p>
+</p><p>The membrane is traced with help of Accurate Fast Marching function <a href="http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching">http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching</a> by Dirk-Jan Kroon, 2011, University of Twente.</p><p><b><i>Note!</i></b> It is highly recommended to compile the corresponding function (see details in the Membrane Click Tracker section of <a href="im_browser_system_requirements.html">the System Requirements page</a> ), otherwise the function is very slow!</p><p><b>Extra parameters:</b></p><div><ul><li>The <b>Scale</b> edit box - during the tracing the image gets enhanced by taking into account intensities of the starting and ending points <tt>img(img&gt;min([val1 val2])-diff([val1 val2])*options.scaleFactor) = maxIntensity;</tt></li><li>The <b>Width</b> edit box - defines a width of the resulting trace</li><li>The <b>BlackSignal</b> checkbox defines whether the signal is Black on White, or White on Black</li><li>The <b>Straight line</b> checkbox - when checked, the points are connected with a straight line</li></ul></div><p><b><i>Note!</i></b> When the 3D switch in the <a href="ug_panel_selection.html"><tt>Selection</tt> panel</a> is enabled the <b>Membrane Click Tracker</b> tool connects points (<i>linearly</i>) in the 3D space (this may be very usefull for tracing microtubules).</p><h2 id="12">Object Picker</h2><p>This mode allows fast selection of objects from the <tt>Mask</tt> or <tt>Model</tt> layers. When the <tt>Mask</tt> and <tt>Model</tt> radio buttons define the target layer for selection.</p><p>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/mzILHpbg89E"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/mzILHpbg89E</a>
 <br>
@@ -450,7 +488,7 @@ and the mask/model layer. With <em>Ctrl+mouse click</em> the new selection is
 Selection <em>-minus-</em> Mask. This action is sensitive to the 3D checkbox state in the Selection panel.
 </li>
 </ul>
-</p><p><b>Selection modifiers</b>:</p><div><ul><li><b>None / Shift + left mouse click</b>, will add selection with the existing one.</li><li><b>Ctrl + left mouse click</b>, will remove selection from the current.</li></ul></div><h2 id="12">The Spot tool</h2><p>
+</p><p><b>Selection modifiers</b>:</p><div><ul><li><b>None / Shift + left mouse click</b>, will add selection with the existing one.</li><li><b>Ctrl + left mouse click</b>, will remove selection from the current.</li></ul></div><h2 id="13">The Spot tool</h2><p>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
@@ -473,7 +511,7 @@ Works also in 3D.
 </td>
 </tr>
 </table>
-</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a> <tt><b>--&gt;</b></tt> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a> <tt><b>--&gt;</b></tt> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Segmentation Tools
 % This panel hosts different tools that are used for the image
@@ -656,7 +694,7 @@ Works also in 3D.
     % <li><b>Label + Value</b>, show marker, label and value for each annotation</li>
     % </ul>
 % </li>
-% <li><b>Value eccentric</b> checkbox, when enabled, the first parameter during visualization of annotations is
+% <li><b>Focus on Value</b> checkbox, when enabled, the first parameter during visualization of annotations is
 % value and the second parameter is label.
 % </ul>
 % </td>
@@ -675,13 +713,16 @@ Works also in 3D.
 % <ul>
 % <li>The <b>List of annotations</b> table shows a list of annotations. 
 %   <ul>The <em>right mouse button</em></b> click calls an additional popup menu that allows to 
-%       <li><em><b>Add annotation</em></b>, manually add annotation to the list, position of the first and second fields are defined by the <em>Value eccentric</em> checkbox of the Annotation panel, see above</li>
 %       <li><em><b>Jump to annotation</em></b>, moves the image so that the selected annotation is in the middle of the Image View panel</li>
+%       <li><em><b>Add annotation</em></b>, manually add annotation to the list, position of the first and second fields are defined by the <em>Value eccentric</em> checkbox of the Annotation panel, see above</li>
+%       <li><em><b>Rename selected annotations</em></b>, rename names of the selected annotations</li>
+%       <li><em><b>Batch modify selected annotations</em></b>, modify annotation values or coordinates using a provided expression</li>
 %       <li><em><b>Count selected annotations</em></b>, calculate occurance of each annotation in the list of selected annotations. 
 %           The results are displayed in the Matlab command window and
 %           copied to the system clipboard 
 %           <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a>
 %           </li>
+%       <li><em><b>Copy selected annotations to clipboard</em></b>, the selected annotations are copied to the system clipboard as a text string ready to be pasted to Excel</li>
 %       <li><em><b>Export selected annotations</em></b>, export selected annotations in the Matlab format, landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>), PSI format for Amira and Excel</li>
 %       <li><em><b>Export selected annotations to Imaris</em></b>, export selected annotations to Imaris (<em><b>Note!</em> please first export the dataset!</b>)</li>
 %       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
@@ -827,6 +868,47 @@ Works also in 3D.
 % A brief demonstration is available in the following video:<br>
 % <a href="https://youtu.be/ZcJQb59YzUA?t=4m37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m37s</a>
 % </html>
+%
+%
+%% Drag & Drop materials
+%
+% <html>
+% <table style="width: 800px; border: 0px">
+% <tr>
+% <td style="border: 0px">
+%   <img src = "images\PanelsSegmentationToolsDragDrop.png">
+% </td>
+% <td style="border: 0px">
+% Shift MIB layers (selection, mask, model) to left/right/up/down
+% direction. The tool allows to move individual 2D/3D objects as well as
+% complete contents of the layers in 2D and 3D.
+% <br><br>
+% A combobox offers possibility to choose the layer to be moved. Mouse click or use of the buttons
+% in the panel move the selected layer left/right/up/down by the specified number of pixels.
+% <br><br>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/NGudNrxBbi0"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/NGudNrxBbi0</a>
+% <br><br>
+% </td>
+% </tr>
+% </table>
+% <br><br>
+% <table style="width: 800px; text-align: center;" cellspacing=2px cellpadding=2px >
+% <tr style="font-weight: bold; background: #ffb74d;">
+%   <td>Start by</td>
+%   <td>Modifier</td>
+%   <td>3D checkbox</td>
+%   <td>Action</td>
+% </tr>
+% <tr><td>Mouse click over an object</td><td>Control</td><td>Unchecked</td><td>Move the selected object in 2D</td></tr>
+% <tr><td>Mouse click over an object</td><td>Control</td><td>Checked</td><td>Move the selected 3D object. <b>Note! Only for Matlab version 2017b and newer</b></td></tr>
+% <tr><td>Mouse click</td><td>Shift</td><td>Unchecked</td><td>Move all objects on the shown slice, i.e. 2D movement</td></tr>
+% <tr><td>Mouse click</td><td>Shift</td><td>Checked</td><td>Move all objects on all slices, i.e. 3D movement</td></tr>
+% <tr><td>Left/Right/Up/Down buttons</td><td>-</td><td>Unchecked</td><td>Move all objects on the shown slice by the specified number of pixels, i.e. 2D movement</td></tr>
+% <tr><td>Left/Right/Up/Down buttons</td><td>-</td><td>Checked</td><td>Move all objects on all slices by the specified number of pixels, i.e. 3D movement</td></tr>
+% </table>
+% </html>
+% 
 %
 %% The Lasso tool
 %

@@ -24,7 +24,7 @@ function magFactor = getMagFactor(obj, id)
 % Updates
 % 
 
-if nargin < 2; id = obj.Id; end;
+if nargin < 2; id = obj.Id; end
 magFactor = obj.I{id}.magFactor;
 
 end

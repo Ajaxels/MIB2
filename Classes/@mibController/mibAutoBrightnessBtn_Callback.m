@@ -31,9 +31,17 @@ if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
     return;
 end
 
+if isfield(obj.mibModel.sessionSettings, 'AutoContrastMinMaxThreshold')
+    low_lim = obj.mibModel.sessionSettings.AutoContrastMinMaxThreshold(1);
+    high_lim = obj.mibModel.sessionSettings.AutoContrastMinMaxThreshold(2);
+else
+    low_lim = 0.01;
+    high_lim = 0.99;    
+end
+
 prompt = {'Enter low limit of saturation [0-1], %%:';...
           'Enter high limit of saturation [0-1], %%:'};
-defAns = {'0.01','0.99'};
+defAns = {num2str(low_lim), num2str(high_lim)};
 mibInputMultiDlgOptions.Title = sprintf('!!! WARNING !!!\nThis function will recalculate intensities of the images!!!\nIf you want to adjust contrast without modification of intensities, please use the Display button in the View Settings panel!');
 mibInputMultiDlgOptions.TitleLines = 7;
 
@@ -42,6 +50,9 @@ if isempty(answer); return; end
 
 low_lim = str2double(cell2mat(answer(1)));
 high_lim = str2double(cell2mat(answer(2)));
+
+obj.mibModel.sessionSettings.AutoContrastMinMaxThreshold(1) = low_lim;
+obj.mibModel.sessionSettings.AutoContrastMinMaxThreshold(2) = high_lim;
 
 maxC = obj.mibModel.getImageProperty('colors');
 color_id = obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel;

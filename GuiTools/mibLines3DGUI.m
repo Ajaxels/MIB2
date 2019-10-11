@@ -60,18 +60,6 @@ handles.edgesViewAdditionalField.Parent = handles.nodesViewAdditionalField.Paren
 handles.edgesViewAdditionalField.Position = handles.nodesViewAdditionalField.Position;
 handles.edgesViewAdditionalField.Visible = 'off';
 
-% add icon to the preview button
-% on PC path is file://c:/...
-% on Mac file:///Volumes/Transcend/...
-if ispc
-    fileText = 'file:/';
-else
-    fileText = 'file://';
-end
-btnText = strrep([fileText fullfile(mibPath, 'Resources', 'settings.png')],'\','/'); 
-btnText = ['<html><img src="' btnText '"/></html>']; 
-handles.settingsBtn.String = btnText;
-
 %updateTable(handles);
 % indeces of the selected rows
 handles.indices = [];

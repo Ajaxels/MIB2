@@ -21,6 +21,8 @@ classdef mibImageAdjController < handle
         % handle to the view
         listener
         % a cell array with handles to listeners
+        BatchOpt
+        % a structure compatible with batch operation, see more in the constructor
     end
     
     events
@@ -47,8 +49,91 @@ classdef mibImageAdjController < handle
     end
     
     methods
-        function obj = mibImageAdjController(mibModel)
+        function obj = mibImageAdjController(mibModel, varargin)
             obj.mibModel = mibModel;    % assign model
+            
+            PossibleColChannels = arrayfun(@(x) sprintf('ColCh %d', x), 1:obj.mibModel.I{obj.mibModel.Id}.colors, 'UniformOutput', false);
+            PossibleColChannels = ['All channels', PossibleColChannels];
+            obj.BatchOpt.ColChannel = {'All channels'};     % Define color channels for adjustment
+            obj.BatchOpt.ColChannel{2} = PossibleColChannels;
+            viewPort = obj.mibModel.getImageProperty('viewPort');   % get current view port values
+            obj.BatchOpt.Min = num2str(viewPort.min');      % generate Min values for color channels
+            obj.BatchOpt.Max = num2str(viewPort.max');      % generate Max values for color channels
+            obj.BatchOpt.Gamma = num2str(viewPort.gamma');  % generate Gamma values for color channels
+            obj.BatchOpt.detectMinPoint = false;            % switch whether or not automatically detect the min point
+            obj.BatchOpt.detectMinQuantile = '0';           % %% of points to be excluded from the blacks when detectMinPoint is enabled
+            obj.BatchOpt.detectMaxPoint = false;            % switch whether or not automatically detect the max point
+            obj.BatchOpt.detectMaxQuantile = '0';           % %% of points to be excluded from the blacks when detectMaxPoint is enabled
+            % tooltips that will accompany the BatchOpt
+            obj.BatchOpt.mibBatchTooltip.ColChannel = sprintf('Apply Min/Max coefficients to the specified color channels');
+            obj.BatchOpt.mibBatchTooltip.Min = sprintf('Intensities below this value will be shown in black');
+            obj.BatchOpt.mibBatchTooltip.Max = sprintf('Intensities above this value will be shown in white');
+            obj.BatchOpt.mibBatchTooltip.Gamma = sprintf('Value for the gamma curve');
+            obj.BatchOpt.mibBatchTooltip.detectMinPoint = sprintf('When enabled, the min point is automatically calculated from the dataset');
+            obj.BatchOpt.mibBatchTooltip.detectMinQuantile = sprintf('%% of points (0-100) to be excluded from the blacks when detectMinPoint is enabled');
+            obj.BatchOpt.mibBatchTooltip.detectMaxPoint = sprintf('When enabled, the max point is automatically calculated from the dataset');
+            obj.BatchOpt.mibBatchTooltip.detectMaxQuantile = sprintf('%% of points (0-100) to be excluded from the whites when detectMaxPoint is enabled');
+
+            
+            % add here a code for the batch mode, for example
+            if nargin == 3
+                BatchOptInput = varargin{2};
+                if isstruct(BatchOptInput) == 0 
+                    if isnan(BatchOptInput)
+                        obj.returnBatchOpt();   % obtain Batch parameters
+                    else
+                        errordlg(sprintf('A structure as the 4th parameter is required!')); 
+                    end
+                    return
+                end
+                BatchOptInputFields = fieldnames(BatchOptInput);
+                for i=1:numel(BatchOptInputFields)
+                    obj.BatchOpt.(BatchOptInputFields{i}) = BatchOptInput.(BatchOptInputFields{i}); 
+                end
+            
+                % update parameters here
+                if strcmp(obj.BatchOpt.ColChannel{1}, 'All channels')
+                    colList = 1:obj.mibModel.I{obj.mibModel.Id}.colors;
+                else
+                    colList = str2double(obj.BatchOpt.ColChannel{1}(6:end));
+                end
+                
+                minVal = str2num(obj.BatchOpt.Min); %#ok<*ST2NM>
+                maxVal = str2num(obj.BatchOpt.Max);
+                gammaVal = str2num(obj.BatchOpt.Gamma);
+                if numel(minVal) < numel(colList); minVal = repmat(minVal(1), [numel(colList), 1]); end
+                if numel(maxVal) < numel(colList); maxVal = repmat(maxVal(1), [numel(colList), 1]); end
+                if numel(gammaVal) < numel(colList); gammaVal = repmat(gammaVal(1), [numel(colList), 1]); end
+                
+                for colId = 1:numel(colList)
+                    % update min points
+                    if obj.BatchOpt.detectMinPoint
+                        threshold = str2double(obj.BatchOpt.detectMinQuantile);
+                        minVal(colId) = obj.findMinBtn_Callback(colList(colId), threshold);   
+                    end
+                    viewPort.min(colList(colId)) = minVal(colId);
+                    
+                    % update max points
+                    if obj.BatchOpt.detectMaxPoint
+                        threshold = str2double(obj.BatchOpt.detectMaxQuantile);
+                        maxVal(colId) = obj.findMaxBtn_Callback(colList(colId), threshold);   
+                    end
+                    viewPort.max(colList(colId)) = maxVal(colId);
+                    
+                    % update gamma
+                    viewPort.gamma(colList(colId)) = gammaVal(colId);
+                end
+                
+                obj.BatchOpt.Min = num2str(viewPort.min(colList)');
+                obj.BatchOpt.Max = num2str(viewPort.max(colList)');
+                obj.mibModel.I{obj.mibModel.Id}.viewPort = viewPort;    % update view port for the current dataset
+                
+                obj.returnBatchOpt();   % return batch opt structure to mibBatchController 
+
+                notify(obj.mibModel, 'plotImage');  % notify to plot the image
+                return;
+            end
+            
             guiName = 'mibImageAdjustmentGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
@@ -79,6 +164,24 @@ classdef mibImageAdjController < handle
             end
             
             notify(obj, 'closeEvent');      % notify mibController that this child window is closed
+        end
+        
+        function returnBatchOpt(obj, BatchOptOut)
+            % return structure with Batch Options and possible configurations
+            % via the notify 'syncBatch' event
+            % Parameters:
+            % BatchOptOut: a local structure with Batch Options generated
+            % during Continue callback. It may contain more fields than
+            % obj.BatchOpt structure
+            % 
+            
+            if nargin < 2; BatchOptOut = obj.BatchOpt; end
+            
+            BatchOptOut.mibBatchSectionName = 'Panel -> View settings';
+            BatchOptOut.mibBatchActionName = 'Display';
+            
+            eventdata = ToggleEventData(BatchOptOut);
+            notify(obj.mibModel, 'syncBatch', eventdata);
         end
         
         function updateWidgets(obj, colorChannelSelection)
@@ -241,67 +344,143 @@ classdef mibImageAdjController < handle
             seltype = obj.View.gui.SelectionType;
             
             ylims = obj.View.handles.imHist.YLim;
-            if xy(1,2) > ylims(2)+diff(ylims)*.2; return; end; % mouse click away from histogram
+            if xy(1,2) > ylims(2)+diff(ylims)*.2; return; end % mouse click away from histogram
             
             switch seltype
                 case 'normal'       % set the min limit
-                    if xy(1,1) >= str2double(obj.View.handles.maxEdit.String)-3; return; end;
+                    if xy(1,1) >= str2double(obj.View.handles.maxEdit.String)-3; return; end
                     obj.View.handles.minEdit.String = num2str(xy(1,1));
                     obj.minEdit_Callback();
                 case 'alt'          % set the max limit
-                    if xy(1,1) <= str2double(obj.View.handles.minEdit.String)+3; return; end;
+                    if xy(1,1) <= str2double(obj.View.handles.minEdit.String)+3; return; end
                     obj.View.handles.maxEdit.String = num2str(xy(1,1));
                     obj.maxEdit_Callback();
             end
         end
         
         % --- Executes on button press in findMinBtn.
-        function findMinBtn_Callback(obj)
-            % function findMinBtn_Callback(obj)
+        function minval = findMinBtn_Callback(obj, colorCh, threshold)
+            % minval = findMinBtn_Callback(obj, colorCh)
             % a callback for obj.View.handles.findMinBtn update; find a
             % minimal intensity point for the dataset
+            %
+            % Parameters:
+            % colorCh: indices of color channels to obtain the min values
+            % 
+            % Return values:
+            % minval: array of all min values for colCh
+            
+            if nargin < 3; threshold = 0; end
+            if nargin < 2; colorCh = []; end
+            if isempty(colorCh); colorCh = obj.View.handles.colorChannelCombo.Value; end
+            
             wb = waitbar(0, sprintf('Calculating the minimal value\nPlease wait...'));
-            colorCh = obj.View.handles.colorChannelCombo.Value;
+            minval = zeros([numel(colorCh), 1]);
+            
             if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
-                minval = min(min(min(min(obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,colorCh,:,:)))));
-                waitbar(0.99, wb);
+                tic
+                for colId = 1:numel(colorCh)
+                    if threshold == 0
+                        minval(colId) = min(min(min(min(obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,colorCh(colId),:,:)))));
+                    else
+                        img = obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,colorCh(colId),:,:);
+                        %minval2(colId) = max(mink(img(:), round(numel(img)/100*threshold)));
+                        minval(colId) = quantile(img(:), threshold/100);
+                    end
+                    waitbar(colId/numel(colorCh), wb);
+                end
+                toc
             else
-                minval = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
-                for z=1:obj.mibModel.I{obj.mibModel.Id}.depth
-                    img = cell2mat(obj.mibModel.getData2D('image', z, 4, colorCh));
-                    minval = min([minval, min(img(:))]);
-                    if minval == 0; break; end
-                    waitbar(z/obj.mibModel.I{obj.mibModel.Id}.depth, wb);
+                %minval = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
+                if threshold ~= 0
+                    errordlg(sprintf('!!! Error !!!\n\nCalculation of quantiles in the virtual mode is not implemented!'), 'Not implemented');
+                    notify(obj.mibModel, 'stopProtocol');
+                    return;
+                end
+                maxWaitbarIndex = obj.mibModel.I{obj.mibModel.Id}.depth*obj.mibModel.I{obj.mibModel.Id}.time*numel(colorCh);
+                waitbarIndex = 1;
+                for colId = 1:numel(colorCh)
+                    for t=1:obj.mibModel.I{obj.mibModel.Id}.time
+                        getDataOpt.t = [t, t];
+                        for z=1:obj.mibModel.I{obj.mibModel.Id}.depth
+                            img = cell2mat(obj.mibModel.getData2D('image', z, 4, colorCh(colId), getDataOpt));
+                            minval(colId) = min([minval(colId), min(img(:))]);
+                            if minval(colId) == 0; break; end
+                            
+                            waitbar(waitbarIndex/maxWaitbarIndex, wb);
+                            waitbarIndex = waitbarIndex + 1;
+                        end
+                        if minval(colId) == 0; break; end
+                    end
                 end
             end
-            obj.View.handles.minEdit.String = num2str(minval);
+            
+            if ~isempty(obj.View)   % use of function when gui is present
+                obj.View.handles.minEdit.String = num2str(minval);
+                obj.minEdit_Callback();
+            end
             waitbar(1, wb);
-            obj.minEdit_Callback();
             delete(wb);
         end
         
         % --- Executes on button press in findMaxBtn.
-        function findMaxBtn_Callback(obj)
-            % function findMaxBtn_Callback(obj)
+        function maxval = findMaxBtn_Callback(obj, colorCh, threshold)
+            % maxval = findMaxBtn_Callback(obj, colorCh)
             % a callback for obj.View.handles.findMaxBtn update; find a
             % maximal intensity point for the dataset
+            %
+            % Parameters:
+            % colorCh: indices of color channels to obtain the min values
+            % 
+            % Return values:
+            % maxval: array of all max values for colCh
+            
+            if nargin < 3; threshold = 0; end
+            if nargin < 2; colorCh = []; end
+            if isempty(colorCh); colorCh = obj.View.handles.colorChannelCombo.Value; end
+            
             wb = waitbar(0, sprintf('Calculating the maximal value\nPlease wait...'));
-            colorCh = obj.View.handles.colorChannelCombo.Value;
+            maxval = zeros([numel(colorCh), 1]);
+            
             if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
-                maxval = max(max(max(max(obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,colorCh,:,:)))));
-                waitbar(0.99, wb);
+                for colId = 1:numel(colorCh)
+                    if threshold == 0
+                        maxval(colId) = max(max(max(max(obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,colorCh(colId),:,:)))));
+                    else
+                        img = obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,colorCh(colId),:,:);
+                        %minval2(colId) = max(mink(img(:), round(numel(img)/100*threshold)));
+                        maxval(colId) = quantile(img(:), 1-threshold/100);
+                    end
+                    waitbar(colId/numel(colorCh), wb);
+                end
             else
-                maxval = 0;
-                for z=1:obj.mibModel.I{obj.mibModel.Id}.depth
-                    img = cell2mat(obj.mibModel.getData2D('image', z, 4, colorCh));
-                    maxval = max([maxval, max(img(:))]);
-                    if maxval == obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt'); break; end
-                    waitbar(z/obj.mibModel.I{obj.mibModel.Id}.depth, wb);
+                if threshold ~= 0
+                    errordlg(sprintf('!!! Error !!!\n\nCalculation of quantiles in the virtual mode is not implemented!'), 'Not implemented');
+                    notify(obj.mibModel, 'stopProtocol');
+                    return;
+                end
+                maxWaitbarIndex = obj.mibModel.I{obj.mibModel.Id}.depth*obj.mibModel.I{obj.mibModel.Id}.time*numel(colorCh);
+                waitbarIndex = 1;
+                for colId = 1:numel(colorCh)
+                    for t=1:obj.mibModel.I{obj.mibModel.Id}.time
+                        getDataOpt.t = [t, t];
+                        for z=1:obj.mibModel.I{obj.mibModel.Id}.depth
+                            img = cell2mat(obj.mibModel.getData2D('image', z, 4, colorCh(colId), getDataOpt));
+                            maxval(colId) = max([maxval(colId), max(img(:))]);
+                            if maxval(colId) == obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt'); break; end
+                            
+                            waitbar(waitbarIndex/maxWaitbarIndex, wb);
+                            waitbarIndex = waitbarIndex + 1;
+                        end
+                        if maxval(colId) == obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt'); break; end
+                    end
                 end
             end
-            obj.View.handles.maxEdit.String = num2str(maxval);
+            if ~isempty(obj.View)   % use of function when gui is present
+                obj.View.handles.maxEdit.String = num2str(maxval);
+                obj.maxEdit_Callback();
+            end
             waitbar(1, wb);
-            obj.maxEdit_Callback();
             delete(wb);
         end
         
@@ -343,28 +522,21 @@ classdef mibImageAdjController < handle
             img = cell2mat(obj.mibModel.getData2D('image', NaN, NaN, channel, options));
             
             % histcounts is much faster than imhist
-            if isa(img, 'uint8')
-                x = 0:255;
-                counts = histcounts(img(:), x);
-            elseif isa(img, 'uint16')
-                x = 0:256:65535;
-                counts = histcounts(img(:), x);
-            else
-                %error('Fix here');
-                %x = 0:256*256:intmax('uint32');
-                %[counts, x] = imhist(img(:), x);
-                [counts,x] = histcounts(img(:),255);
-             end
+            viewPort = obj.mibModel.I{obj.mibModel.Id}.viewPort;
+            minX = viewPort.min(channel) - 1;
+            maxX = viewPort.max(channel) + 1;
+            viewDiff = ceil((maxX - minX)/255);
+            x = minX:viewDiff:maxX;
+            counts = histcounts(img(:), x);
             
             %bar(obj.View.handles.imHist, x(counts>0), counts(counts>0));
             area(obj.View.handles.imHist, x(counts>0), counts(counts>0), 'linestyle', 'none');
             %stem(obj.View.handles.imHist,x(counts>0),counts(counts>0), 'Marker', 'none');
             
-            viewPort = obj.mibModel.getImageProperty('viewPort');
-            
             obj.View.handles.imHist.XLim = ...
-                [min([viewPort.min(channel)+1 obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt')-3]) ...
-                 max([viewPort.max(channel)-1 2]) ];
+                [min([viewPort.min(channel) obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt')-3]) ...
+                 max([viewPort.max(channel) 2]) ];
+             
             if logscale
                 obj.View.handles.imHist.YScale = 'Log';
             else
@@ -446,6 +618,7 @@ classdef mibImageAdjController < handle
                 toolname = 'It is not yet possible to recalculate intensities';
                 warndlg(sprintf('!!! Warning !!!\n\n%sin the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
                     toolname), 'Not implemented');
+                notify(obj.mibModel, 'stopProtocol');
                 return;
             end
             
@@ -466,7 +639,7 @@ classdef mibImageAdjController < handle
                     obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,channel,i,t) = imadjust(obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,channel,i,t),...
                         [viewPort.min(channel)/max_int viewPort.max(channel)/max_int],...
                         [0 1], viewPort.gamma(channel));
-                    if mod(i, waitbarStep) == 0; waitbar(i/(maxZ*maxT), wb); end;   % update waitbar
+                    if mod(i, waitbarStep) == 0; waitbar(i/(maxZ*maxT), wb); end   % update waitbar
                 end
             end
             
@@ -492,6 +665,7 @@ classdef mibImageAdjController < handle
                 toolname = 'It is not yet possible to recalculate intensities';
                 warndlg(sprintf('!!! Warning !!!\n\n%sin the virtual stacking mode!\nPlease switch to the memory-resident mode and try again', ...
                     toolname), 'Not implemented');
+                notify(obj.mibModel, 'stopProtocol');
                 return;
             end
             

@@ -12,6 +12,7 @@ function connImaris = mibSetImarisDataset(mibImage, connImaris, options)
 % @li .mode -> [@em optional] type of mode for sending ('3D', '4D')
 % @li .insertInto -> [@em optional] a cell with index where to insert the Z-stack, when -1 replaces the whole dataset;
 % @li .lutColors -> [@em optional] a matrix with colors for the color channels
+% @li .showWaitbar -> logical show or not the waitbar
 %
 % Return values:
 % connImaris:  a handle to Imaris connection
@@ -50,6 +51,7 @@ end
 
 if ~isfield(options, 'type'); options.type = 'image'; end
 if ~isfield(options, 'modelIndex'); options.modelIndex = NaN; end
+if ~isfield(options, 'showWaitbar'); options.showWaitbar = true; end
 
 % establish connection to Imaris
 connImaris = mibConnectToImaris(connImaris);
@@ -86,7 +88,7 @@ else
         noColors = numel(mibImage.modelMaterialNames);  % number of shown colors
         options.modelIndex = 1:numel(mibImage.modelMaterialNames);
     else
-        noColors = 1;
+        noColors = numel(options.modelIndex);
     end
     dataClass = class(mibImage.model{1});
 end
@@ -131,7 +133,7 @@ else
         timePointsOut = 1;  % list of time points in the Imaris dataset
     end
 end
-wb = waitbar(0, 'Please wait...', 'Name', 'Export image to Imaris');
+if options.showWaitbar; wb = waitbar(0, 'Please wait...', 'Name', 'Export image to Imaris'); end
 callsId = 0;
 
 if useBlockMode == 0
@@ -179,7 +181,7 @@ for t=timePointsIn
                             colId-1, timePointsOut(tIndex)-1,...
                             size(imgBlock,2), size(imgBlock,1), size(imgBlock,3));
                         callsId = callsId + 1;
-                        waitbar(callsId/maxWaitbarIndex, wb);
+                        if options.showWaitbar; waitbar(callsId/maxWaitbarIndex, wb); end
                     end
                 end
             end
@@ -214,7 +216,7 @@ for t=timePointsIn
             end
             connImaris.mImarisApplication.GetDataSet.SetChannelColorRGBA(colId-1, ColorRGBA);     % update color channel
         end
-        waitbar(callsId/maxWaitbarIndex, wb);
+        if options.showWaitbar; waitbar(callsId/maxWaitbarIndex, wb); end
     end
     tIndex = tIndex + 1;
 end
@@ -274,5 +276,5 @@ else
     connImaris.mImarisApplication.GetDataSet.SetTimePoint(timePointsOut(1)-1, stringTime);
     connImaris.mImarisApplication.GetDataSet.SetTimePointsDelta(mibImage.pixSize.t);
 end
-delete(wb);
+if options.showWaitbar; delete(wb); end
 end

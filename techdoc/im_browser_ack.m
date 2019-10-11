@@ -22,7 +22,7 @@
 %%
 % 
 % * *Konstantin Kogan*, University of Helsinki for assistance with Mac OS
-% * *Radhakrishna Achanta*, Ecole Polytechnique Fédérale de Lausanne (EPFL)
+% * *Radhakrishna Achanta*, Ecole Polytechnique F?d?rale de Lausanne (EPFL)
 % for the mex code for SLIC supervoxels and superpixels
 % * *David Legland*, INRA, France for modification of the
 % <http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-
@@ -41,7 +41,7 @@
 % * Inspired by <http://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer *IMAGEVIEWER*>
 % by Jiro Doke, MathWorks 2010
 % * Documentation done with <http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools *MTOC++ - Doxygen filter for Matlab and tools*>
-% written by Martin Drohmann (Universität Münster) and Daniel Wirtz (Universität Stuttgart), 2011-2013
+% written by Martin Drohmann (Universit?t M?nster) and Daniel Wirtz (Universit?t Stuttgart), 2011-2013
 % * <http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching
 % *Accurate Fast Marching function*> by Dirk-Jan Kroon, University of Twente, 2011 is utilized in the Membrane Click Tracker tool
 % * <http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff *ANISODIFF*> function written by Peter Kovesi, 2000-2002
@@ -63,13 +63,15 @@
 % *Fast 3D/2D Region Growing (MEX)*> by Christian Wuerslin, Stanford
 % University, 2013-2015.
 % * *Fiji Connect* is using <http://bigwww.epfl.ch/sage/soft/mij/ *MIJ*>, a Java package for bi-directional communication and data exchange from Matlab to ImageJ/Fiji,
-% developed by Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin, 2012. MIJ is not supplied with
-% Microscopy Image Browser and should be installed using Fiji
+% developed by Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin, 2012
 % * <http://www.mathworks.com/matlabcentral/fileexchange/14317-findjobj-find-java-handles-of-matlab-graphic-objects 
 % *FINDJOBJ*> - find java handles of Matlab graphic objects by Yair Altman, 2007-2013
 % * <http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter 
 % *FRANGI filter*> by Marc Schrijver and Dirk-Jan Kroon, University of Twente 2001-2009
-% * <http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox 
+% * <https://se.mathworks.com/matlabcentral/fileexchange/55115-extended-depth-of-field *FSTACK*> extended depth-of-field image from focus sequence using noise-robust selective all-in-focus algorithm by Said Pertuz, Universitat
+% Rovira i Virgili, Tarragona, Spain 2013
+% * <https://github.com/carandraug/histthresh *HistThresh toolbox*> by Antti Niemist&ouml;, Tampere University of Technology, Finland is used for most of the global histogram-based thresholding methods
+% * <http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox *Image Edge Enhancing Coherence Filter*> Dirk-Jan Kroon, Pascal Getreuer University of Twente. 
 % * <http://www.scs2.net/next/index.php?id=110 *IceImarisConnector*> written by Aaron C. Ponti, ETH Zurich is used for connection
 % to Imaris
 % * <http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility *Image Measurement Utility*> written by Jan Neggers, 
@@ -85,13 +87,15 @@
 % * <http://pub.ist.ac.at/~vnk/software.html *MAXFLOW/MINCUT algorithm, v.2.22*> written by Yuri Boykov, University of Western Ontario and Vladimir Kolmogorov, Microsoft research, Cambridge. 
 % * <http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow
 % *MAXFLOW/MINCUT Matlab wrapper*> is written by Michael Rubinstein, Google
+% * <https://se.mathworks.com/matlabcentral/fileexchange/8472-num2clip-copy-numerical-arrays-to-clipboard *NUM2CLIP*> function
+% by Grigor Browning, 2005 is used to copy column items to the system clipboard
 % * *NRRD*, Nearly Raw Raster Data format is implemented using  
 % <http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule
 % *Projects:MATLABSlicerExampleModule*> written by John Melonakos for NRRD
 % reading using <http://teem.sourceforge.net/ TEEM>; and a custom function for reading metadata based on
 % <http://www.mathworks.com/matlabcentral/fileexchange/34653-nrrd-format-file-reader
 % *NRRD Format File Reader*> written by Jeff Mather, 2012
-% * <http://www.openmicroscopy.org/site/products/omero/downloads *OMERO Matlab bindings*> (should be downloaded separetly) are used for
+% * <http://www.openmicroscopy.org/site/products/omero/downloads *OMERO Matlab bindings*> (included into the compiled version, but should be downloaded separetly for the Matlab version) are used for
 % connection to OMERO servers
 % * <http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser
 % *P_JSON*>, highly portable JSON parser function is written by Nedialko, 2009
@@ -113,11 +117,13 @@
 % written by  Torsten Vogel, 1999  
 % * <http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html 
 % *SLIC (Simple Linear Iterative Clustering)*> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, 
-% Pascal Fua, and Sabine Süsstrunk, Ecole Polytechnique Federale de
+% Pascal Fua, and Sabine S?sstrunk, Ecole Polytechnique Federale de
 % Lausanne (EPFL), Switzerland, 2015 was utilized for the superpixels mode of the Brush tool and for the Graphcut segmentation.
 % * <http://www.mathworks.com/matlabcentral/fileexchange/20922-stlwrite-filename--varargin-
 % *STLWRITE*> by Sven Holcombe, University of Michigan 2008-2015 for saving models
 % using the STL format
+% * <https://se.mathworks.com/matlabcentral/fileexchange/32555-uigetfile_n_dir-select-multiple-files-and-directories 
+% *UIGETFILE_N_DIR*> by Tiago / Peugas was used for selection of multiple directories
 % * <http://se.mathworks.com/matlabcentral/fileexchange/21993-viewer3d 
 % *VIEWER3D*> by Dirk-Jan Kroon, Focal Machine Vision en Optical Systems
 % was used as a basis for the volume rendering of datasets

@@ -16,7 +16,7 @@ function mibToolbar_ZoomBtn_ClickedCallback(obj, hObject, recenterSwitch)
 % Updates
 % 
 
-if nargin < 3; recenterSwitch = 0; end;
+if nargin < 3; recenterSwitch = 0; end
 % zoom buttons
 xy = obj.mibView.handles.mibImageAxes.CurrentPoint;
 

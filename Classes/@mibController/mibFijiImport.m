@@ -96,7 +96,7 @@ if strcmp(datasetType, 'image')
     end
     if roiNo == -1
         obj.mibModel.I{obj.mibModel.Id}.clearContents(img, [], obj.mibModel.preferences.disableSelection);
-        obj.mibModel.updateParameters();    % update pixels size, and resolution
+        obj.mibModel.I{obj.mibModel.Id}.updatePixSizeResolution();    % update pixels size, and resolution
         obj.mibModel.I{obj.mibModel.Id}.meta('Filename') = datasetName;
         notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details
     else
@@ -115,7 +115,7 @@ else
     end
     if strcmp(datasetType, 'model')
         if roiNo == -1
-            obj.mibCreateModelBtn_Callback();
+            obj.mibModel.createModel();
             obj.mibModel.setData3D('model', img, NaN, 4, NaN, options);
             % update modelMaterialNames
             for i=1:maxVal-minVal
@@ -124,12 +124,12 @@ else
         else
             obj.mibModel.setData3D(datasetType, img, NaN, 4, NaN, options);
         end
-        obj.mibView.handles.mibModelShowCheck.Value = 1;
-        obj.mibModelShowCheck_Callback();
+        eventdata = ToggleEventData(1);   % show the model checkbox on
+        notify(obj.mibModel, 'showModel', eventdata);
     elseif strcmp(datasetType, 'mask')
         img(img>1) = 1;     % convert to 0-1 range
         if roiNo == -1
-            obj.menuMaskClear_Callback();
+            obj.mibModel.clearMask();
             obj.mibModel.setData3D(datasetType, img, NaN, 4, NaN, options);
         else
             obj.mibModel.setData3D(datasetType, img, NaN, 4, NaN, options);

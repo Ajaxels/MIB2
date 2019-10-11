@@ -28,7 +28,7 @@
 %
 % <html>
 % <head>
-% <link rel="stylesheet" type="text/css" href="../style.css">
+% <link rel="stylesheet" type="text/css" href="style.css">
 % </head>
 % <body>
 % <table>
@@ -264,6 +264,10 @@
 % <tr>
 %   <td><kbd>E</kbd></td>
 %   <td>toggle between two recently selected materials</td>
+% </tr>
+% <tr>
+%   <td><kbd>^ Ctrl</kbd>+<kbd>E</kbd></td>
+%   <td>toggle between current and previously selected image buffer</td>
 % </tr>
 % <tr>
 %   <td><kbd>^ Ctrl</kbd>+<kbd>Z</kbd></td>

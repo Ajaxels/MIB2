@@ -22,7 +22,7 @@ if nargin < 2; position = 'current'; end
 
 % check Fix selection to material checkbox
 userData = obj.mibView.handles.mibSegmentationTable.UserData;
-if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value == 1     % selected only
+if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1     % selected only
     fontColor = [200, 200, 200];
 else
     fontColor = [0, 0, 0];

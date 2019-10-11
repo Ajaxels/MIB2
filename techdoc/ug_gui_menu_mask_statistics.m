@@ -57,6 +57,10 @@
 %   <td style="font-weight: bold; border: 0px">Remove from selection<br></td>
 %   <td style="border: 0px">Removes highlighted objects from the selection<br></td>
 % </tr>
+% <tr style="font-weight: normal;background-color: #FFCC80;">
+%   <td style="font-weight: bold; border: 0px">Copy column(s) to clipboard<br></td>
+%   <td style="border: 0px">Copy the content of the highlighted column(s) to the system clipboard<br></td>
+% </tr>
 % <tr style="font-weight: normal;background-color: #FFE4BE;">
 %   <td style="font-weight: bold; border: 0px">New annotations<br></td>
 %   <td style="border: 0px">Makes a new annotation list: adds a label to the selected objects. The annotations can be accessed via <a href="ug_gui_menu_models.html#12">Menu->Models->Annotations</a> or <a href="ug_panel_segm_tools.html#3">Segmentation panel->Selection type->Annotations</a><br></td>
@@ -87,8 +91,20 @@
 % </tr>
 % <tr style="font-weight: normal;background-color: #FFE4BE;">
 %   <td style="font-weight: bold; border: 0px">Crop to a file/matlab<br></td>
-%   <td style="border: 0px">Crops the dataset based on detected 3D objects. It is possible to add margins during the crop and crop both Model and Mask layers. The results can be saved to a file or exported to Matlab<br>
-%   <img src="images/MenuMaskStatisticsCropObj.png"><br>
+%   <td style="border: 0px">Crops the dataset based on detected 3D objects.
+%   It is possible to add margins during the crop and crop both Model and
+%   Mask layers. The results can be saved to a file or exported to
+%   Matlab<br><br>
+%   <img src="images/MenuMaskStatisticsCropObj.png"><br><br>
+%   <ul><b>Parameters</b>
+%   <li><b>Target:</b> where to crop the objects</li>
+%   <li><b>MarginXY:</b> extend the bounding box around the object by the specified number of pixels</li>
+%   <li><b>MarginZ:</b> extend the bounding box around the object by the specified number of pixels in the Z dimension</li>
+%   <li><b>Crop Model:</b> also include cropping of the model</li>
+%   <li><b>Crop Mask:</b> also include cropping of the mask</li>
+%   <li><b>Single Mask object per dataset:</b> keep only a main object in the crop of the Mask, enabled only when the objects were identified from the mask layer</li>
+%   </ul>
+%   <br>
 %   <ul>The data is exported to Matlab as a structure
 %   [Filename_IndexOfTheObject] with the following fields:
 %   <li><b>.img</b> - cropped image [1:height, 1:width, 1:colors, 1:stacks]</li>
@@ -99,7 +115,7 @@
 %   <li><b>.Mask</b> - a matrix with the Mask layer [1:height, 1:width, 1:stacks] that corresponds to the cropped image</li>
 %   </ul>
 %   The exported data can be imported back to MIB using the
-%   Menu->File->Import image from...->Matlab and providing variables to
+%   <code>Menu->File->Import image from...->Matlab</code> and providing variables to
 %   import, for example <em>Filename_IndexOfTheObject.img</em> and
 %   <em>Filename_IndexOfTheObject.meta</em>.<br>
 %   Or for the Model:
@@ -131,15 +147,15 @@
 % * *11. The Auto highlight on a click checkbox* - when checked, each time
 % the object in the table (*8.*) is selected it is highlighted in the Image
 % View panel.
-% * *12. The Log scale checkbox* is for showing the histogram (*8.*) in the logarithmic scale.
-% * *13.* Two edit boxes are used to provides minimal and maximal values for highlighting after press of the |Do| button.
-% * *14. The Run button* starts quantification.
-% * *15. The Details panel* defines a way of object selection: the selected
+% * *12. The Sorting combobox* can be used to change the sorting of the main table.
+% * *13. The Log scale checkbox* is for showing the histogram (*8.*) in the logarithmic scale.
+% * *14.* Two edit boxes are used to provides minimal and maximal values for highlighting after press of the |Do| button.
+% * *15. The Run button* starts quantification.
+% * *16. The Details panel* defines a way of object selection: the selected
 % objects may be added, removed or used for replacement of the |Selection|
 % layer.
-% * *16. The Export button* allows export of the statistic values to Excel or
+% * *17. The Export button* allows export of the statistic values to Excel or
 % Matlab.
-% * *17. The Sort button* sorts the main table values; use a popup menu via the right mouse button to define a column to be sorted.
 %
 %
 %% Statistical properties of 3D objects

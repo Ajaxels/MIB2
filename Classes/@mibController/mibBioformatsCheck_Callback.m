@@ -22,6 +22,20 @@ position = obj.mibView.handles.mibFileFilterPopup.UserData;     % get previous p
 obj.mibView.handles.mibFileFilterPopup.UserData = obj.mibView.handles.mibFileFilterPopup.Value; % update position in the list
 
 if obj.mibView.handles.mibBioformatsCheck.Value == 1     % use bioformats reader
+    % check for temp directory for the Memoizer
+    if ~isfield(obj.mibModel.preferences.dirs, 'BioFormatsMemoizerMemoDir')
+        obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir = 'c:\temp\mibVirtual';
+    end
+    
+    if isdir(obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir) == 0 %#ok<ISDIR>
+        try
+            mkdir(obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir);
+        catch err
+            warndlg(sprintf('!!! Warning !!!\n\nUse of the BioFormats reader requires a directory to keep Memoizer class temporary files!\n\nPlease specify it in\nMenu->File->Preferences->External dirs...'), 'Missing required directory');
+            return;
+        end
+    end
+    
     if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1     % add amiramesh for the virtual mode
         extentions = ['all known', obj.mibModel.preferences.Filefilter.bioVirtExt];
     else

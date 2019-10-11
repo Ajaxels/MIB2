@@ -1,11 +1,13 @@
-function invertColorChannel(obj, channel1)
-% function invertColorChannel(obj, channel1)
+function invertColorChannel(obj, channel1, options)
+% function invertColorChannel(obj, channel1, options)
 % Invert color channel of the dataset
 %
 % The specified @em channel1 will be inverted
 %
 % Parameters:
 % channel1: [@em optional] index of the color channel to invert
+% options: structure with additional parameters
+% .showWaitbar - logical, @b 1 [@em default] - show the waitbar, @b 0 - do not show
 %
 % Return values:
 
@@ -21,27 +23,41 @@ function invertColorChannel(obj, channel1)
 % of the License, or (at your option) any later version.
 
 % Updates
-% 
+% 26.05.2019, added options
+
 global mibPath; % path to mib installation folder
 
-if nargin < 2
-    prompt = {sprintf('Which color channel to invert:')};
-    answer = mibInputDlg({mibPath}, prompt, 'Invert color channel', {num2str(obj.slices{3}(1))});
-    if size(answer) == 0; return; end
-    channel1 = str2double(answer{1});
+if nargin < 3; options = struct; end
+if ~isfield(options, 'showWaitbar'); options.showWaitbar = true; end
+
+if nargin < 2; channel1 = []; end
+
+if isempty(channel1)
+    channel1 = max([1 obj.selectedColorChannel]);
+    PossibleColChannels = arrayfun(@(x) sprintf('ColCh %d', x), 1:obj.colors, 'UniformOutput', false);
+    PossibleColChannels{end+1} = channel1;
+    mibInputMultiDlgOptions.PromptLines = 1;
+    
+    prompt = {'Select color channel to invert'};
+    defAns = {PossibleColChannels};
+    [answer, selIndices] = mibInputMultiDlg({mibPath}, prompt, defAns, 'Invert color channel', mibInputMultiDlgOptions);
+    if isempty(answer); return; end
+    
+    channel1 = selIndices(1);
 end
 
-wb = waitbar(0,sprintf('Inverting color channel: %d\n\nPlease wait...', channel1), 'Name', 'Invert color channel', 'WindowStyle', 'modal');
+if options.showWaitbar; wb = waitbar(0,sprintf('Inverting color channel: %d\n\nPlease wait...', channel1), 'Name', 'Invert color channel', 'WindowStyle', 'modal'); end
 
 maxval = obj.meta('MaxInt');
-waitbar(0.1, wb);
+if options.showWaitbar; waitbar(0.1, wb); end
 obj.img{1}(:,:,channel1,:,:) = maxval - obj.img{1}(:, :, channel1, :, :);
-waitbar(0.95, wb);
+if options.showWaitbar; waitbar(0.95, wb); end
 
 % generate the log text
 log_text = sprintf('Invert color channel %d', channel1);
 obj.updateImgInfo(log_text);
-
-waitbar(1, wb);
-delete(wb);
+if options.showWaitbar
+    waitbar(1, wb);
+    delete(wb);
+end
 end

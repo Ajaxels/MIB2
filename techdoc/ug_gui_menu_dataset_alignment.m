@@ -92,6 +92,20 @@
 %           During alignment the images will be translated/scaled/rotated to
 %           align the marked areas 
 %       </td>
+%       <tr>
+%       <td><b>Color channels, multi points</b></td>
+%       <td>Use landmarks, to register individual color channels. The
+%       landmarks are defined using MIB annotations (<em>Segmentation
+%       panel->Annotations</em>) as <br>
+%       <b>a)</b> the annotation text is used to identify the corresponding points
+%       (i.e. two corresponding points should have the same annotation
+%       text);<br>
+%       <b>b)</b> the annotation value is used to identify the fixed color
+%       channel (as number 1) and the color channel that needs to be
+%       transformed (as number 2)<br><br>
+%       <img src="images/Alignment_Colorchannels.jpg">
+%       </td>
+%     </tr>
 %     </tr>
 %     </table>
 %   </li>

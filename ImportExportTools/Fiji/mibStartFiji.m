@@ -34,7 +34,6 @@ if ~isdeployed
         return;
     end
 end
-
 if exist('MIJ','class') == 8
     if ~isempty(ij.gui.Toolbar.getInstance)
         ij_instance = char(ij.gui.Toolbar.getInstance.toString);

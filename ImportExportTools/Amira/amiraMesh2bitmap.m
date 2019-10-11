@@ -32,6 +32,7 @@ function [bitmap, par] = amiraMesh2bitmap(filename, options)
 % ver 1.05 - 17.10.2014, fix of waitbar for R2014b
 % ver 1.06 - 29.09.2015, added use of amiraLabels2bitmap for Labels
 % ver 1.07 - 09.01.2018, added extraction of embedded containers in the amiramesh headers
+% ver 1.08 - 30.01.2019, updated to be compatible with version AM 3
 
 % -- debug block starts --
 %filename = '.am';
@@ -59,9 +60,9 @@ fid = fopen(filename, 'r');
 
 % define type of data
 tline = fgetl(fid);
-if strcmp(tline, '# AmiraMesh 3D ASCII 2.0')
+if strcmp(tline(1:20), '# AmiraMesh 3D ASCII') % if strcmp(tline, '# AmiraMesh 3D ASCII 2.0')    
     type = 'ascii';
-elseif strcmp(tline, '# AmiraMesh BINARY-LITTLE-ENDIAN 2.1') || strcmp(tline,'# AmiraMesh 3D BINARY 2.0')
+elseif strcmp(tline(1:20), '# AmiraMesh BINARY-L') || strcmp(tline(1:20),'# AmiraMesh 3D BINAR') %elseif strcmp(tline, '# AmiraMesh BINARY-LITTLE-ENDIAN 2.1') || strcmp(tline,'# AmiraMesh 3D BINARY 2.0')
     type = 'binary';
 else
     disp('Error! Unknown type'); return;
@@ -99,6 +100,9 @@ par = struct();
 level = 0;
 % skiping the header
 parIndex = 1;
+removeGroup.Switch = 0;  % indicator to remove certain groups
+removeGroup.Level = 0;  % indicator if the level to remove certain groups
+
 while numel(strfind(tline, 'Lattice')) == 0
     tline = strtrim(fgetl(fid));
     if numel(strfind(tline, 'Lattice')) ~= 0; break; end
@@ -110,7 +114,11 @@ while numel(strfind(tline, 'Lattice')) == 0
         level = level + 1;
         if strcmp(strtrim(tline(1:openGroup(1)-1)),'im_browser')    % remove the group made with im_browser
             field(level) = cellstr('');
+        elseif strcmp(strtrim(tline(1:openGroup(1)-1)),'HistoryLogHead')    % remove the group HistoryLogHead
+            removeGroup.Switch = 1;
+            removeGroup.Level = level;  % indicator if the level to remove certain groups            
         elseif tline(end) == '{' && level > 1
+            if removeGroup.Switch == 1; continue; end
             level = level - 1;
             par(parIndex).Name = field{level};
             %a = loopHeader(fid, tline, level);
@@ -121,10 +129,16 @@ while numel(strfind(tline, 'Lattice')) == 0
         end
     elseif isempty(openGroup) & ~isempty(closeGroup)
         level = level - 1;
+        if removeGroup.Switch == 1 && removeGroup.Level == level
+            removeGroup.Switch = 0;
+        end
         if level == -1; break; end  % end of the Parameters section
         field(level+1) = cellstr('');
     else
+        if removeGroup.Switch == 1; continue; end    % skip elements 
+        
         spaces = strfind(strtrim(tline), ' ');
+        if isempty(spaces); continue; end
         parField = '';
         for lev = 1:level
             parField = [parField '_' field{lev}];

@@ -98,7 +98,7 @@ end
 mibRescaleWidgets(handles.mibMaskStatsProps);
 
 % move the window
-hObject = moveWindowOutside(hObject, 'left');
+hObject = moveWindowOutside(hObject, 'center');
 
 % Make the GUI modal
 set(handles.mibMaskStatsProps,'WindowStyle','modal')
@@ -192,9 +192,10 @@ end
 function updateWidgets(handles)
 % select defined checkboxes
 properties = handles.properties;
+
 if handles.obj3d == 1       % add 3d to the end of each property
     for i = 1:numel(properties)
-        if ~ismember(properties(i),{'Correlation','MinIntensity','MaxIntensity','MeanIntensity','SumIntensity','StdIntensity'})
+        if ~ismember(properties(i),{'Correlation', 'MinIntensity', 'MaxIntensity', 'MeanIntensity', 'SumIntensity', 'StdIntensity'})
             properties{i} = [properties{i} '3d'];
         end
     end

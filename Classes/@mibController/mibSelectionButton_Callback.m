@@ -21,7 +21,7 @@ function mibSelectionButton_Callback(obj, action)
 % do nothing is selection is disabled
 if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
 
-if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 1    % Selection to Model
+if obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo') == -1    % Selection to Model
     layerTo = 'mask';
 else    % Selection to Mask
     layerTo = 'model';
@@ -29,20 +29,20 @@ end
 
 modifier = obj.mibView.gui.CurrentModifier;
 if sum(ismember({'alt','shift'}, modifier)) == 2
-    sel_switch = '4D';
+    sel_switch = '4D, Dataset';
 elseif sum(ismember({'alt','shift'}, modifier)) == 1
-    sel_switch = '3D';
+    sel_switch = '3D, Stack';
 else
-    sel_switch = '2D';
+    sel_switch = '2D, Slice';
 end
 
 switch action
     case 'add'
-        obj.mibMoveLayers('selection', layerTo, sel_switch, 'add');
+        obj.mibModel.moveLayers('selection', layerTo, sel_switch, 'add');
     case 'subtract'
-        obj.mibMoveLayers('selection', layerTo, sel_switch, 'remove');
+        obj.mibModel.moveLayers('selection', layerTo, sel_switch, 'remove');
     case 'replace'
-        obj.mibMoveLayers('selection', layerTo, sel_switch, 'replace');
+        obj.mibModel.moveLayers('selection', layerTo, sel_switch, 'replace');
 end
 
 end

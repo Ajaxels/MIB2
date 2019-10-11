@@ -40,7 +40,7 @@ if ~isfield(options, 'blockModeSwitch'); options.blockModeSwitch = 0; end
 if ~isfield(options, 'resize'); options.resize = 'yes'; end
 if ~isfield(options, 'markerType'); options.markerType = NaN; end
 if ~isfield(options, 't'); options.t = [obj.I{obj.Id}.slices{5}(1) obj.I{obj.Id}.slices{5}(1)]; end
-if ~isfield(options, 'useLut'); options.useLut = obj.useLUT; end
+if ~isfield(options, 'useLut'); options.useLut = obj.I{obj.Id}.useLUT; end
 
 options.roiId = -1; % do use show any ROIs in this mode
 
@@ -81,14 +81,14 @@ if nargin < 3
     showModelSwitch = obj.mibModelShowCheck;  % whether or not show model above the image
     showMaskSwitch = obj.mibMaskShowCheck;  % whether or not show mask above the image
 else
-    if size(sImgIn,3) > 1     % define color type for provided image
+    if size(sImgIn, 3) > 1     % define color type for provided image
         colortype = 'truecolor';
     else
         colortype = 'grayscale';
     end
-    currViewPort.min =  0;    % generate viewPort information, needed for cases when sImgIn has different class from obj.img
-    currViewPort.max =  intmax(class(sImgIn));    % generate viewPort information
-    currViewPort.gamma =  1;    % generate viewPort information
+    currViewPort.min =  zeros([size(sImgIn, 3), 1]);    % generate viewPort information, needed for cases when sImgIn has different class from obj.img
+    currViewPort.max =  zeros([size(sImgIn, 3), 1]) + double(intmax(class(sImgIn)));    % generate viewPort information
+    currViewPort.gamma =  zeros([size(sImgIn, 3), 1]) + 1;    % generate viewPort information
 
     showModelSwitch = 0;    % do not show the model
     showMaskSwitch = 0;     % do not show the mask
@@ -189,7 +189,6 @@ else
 end
 
 colorScale = max_int; % coefficient for scaling the colors
-
 selectedColorsLUT = obj.I{obj.Id}.lutColors(slices{3},:);     % take LUT colors for the selected color channels
 
 switch colortype
@@ -382,6 +381,7 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
         B(sOver1 > 0) = uint8(sOver1(sOver1 > 0))*coef; %*T+255*(1-T));
     end
 end
+
 
 T1 = obj.preferences.mibSelectionTransparencySlider; % transparency for selection
 

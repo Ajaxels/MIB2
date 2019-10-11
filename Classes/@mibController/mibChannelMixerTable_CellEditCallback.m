@@ -16,6 +16,7 @@ function mibChannelMixerTable_CellEditCallback(obj, Indices, PreviousData, modif
 %
 % Updates
 % 
+if nargin < 4; modifier = []; end
 
 data = obj.mibView.handles.mibChannelMixerTable.Data;
 

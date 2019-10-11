@@ -57,10 +57,14 @@ end
 if ischar(y)
     getDataOptions.blockModeSwitch = blockModeSwitch;
     [h, w, ~, d, t] = obj.getDatasetDimensions('image', NaN, NaN, getDataOptions);
+    if blockModeSwitch == 1
+        getDataOptions.x = ceil(obj.axesX);
+        getDataOptions.y = ceil(obj.axesY);
+    end
     switch y
         case '2D'
             img = zeros([h, w], 'uint8');
-            getDataOptions.z = [obj.slices{4}(1) obj.slices{4}(1)];
+            getDataOptions.z = [obj.slices{obj.orientation}(1) obj.slices{obj.orientation}(1)];
             getDataOptions.t = [obj.slices{5}(1) obj.slices{5}(1)];
             obj.setData('selection', img, NaN, NaN, getDataOptions);
         case '3D'

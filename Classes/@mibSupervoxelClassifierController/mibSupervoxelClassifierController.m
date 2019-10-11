@@ -161,7 +161,7 @@ classdef mibSupervoxelClassifierController < handle
                 obj.View.handles.backgroundPopup.String = list;
                 obj.View.handles.backgroundPopup.Value = 1;
                 
-                val = obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2;
+                val = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo');    % -1 mask; 0 bg; 1,2,3-materials
                 obj.View.handles.objectPopup.String = list;
                 obj.View.handles.objectPopup.Value = max([val 1]);
                 obj.View.handles.backgroundPopup.BackgroundColor = 'w';

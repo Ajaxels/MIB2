@@ -30,7 +30,7 @@ prevAddTo =obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial;         % inde
 jTable = userData.jTable;   % jTable is initializaed in the beginning of mibGUI.m
 unlink = userData.unlink;   % unlink selection of material from Add to (does not apply for the Fix selection to material mode)
 % fix selection to material checkbox
-if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value == 1
+if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1
     unlink = 1;
     fontColor = [200, 200, 200];
 else
@@ -41,9 +41,9 @@ if Indices(2) == 2        % selection of Material
     selectedMaterial = Indices(1);
     obj.mibModel.I{obj.mibModel.Id}.selectedMaterial = selectedMaterial;
     
-    if ~ismember(selectedMaterial, obj.mibView.lastSegmSelection)
-        obj.mibView.lastSegmSelection(1) = obj.mibView.lastSegmSelection(2);
-        obj.mibView.lastSegmSelection(2) = selectedMaterial;
+    if ~ismember(selectedMaterial, obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection)
+        obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection(1) = obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection(2);
+        obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection(2) = selectedMaterial;
     end
     
     if unlink == 0
@@ -82,9 +82,9 @@ elseif Indices(2) == 3    % click on the Add to checkbox
     
     if unlink == 0
         obj.mibModel.I{obj.mibModel.Id}.selectedMaterial = selectedMaterial;
-        if ~ismember(selectedMaterial, obj.mibView.lastSegmSelection)
-            obj.mibView.lastSegmSelection(1) = obj.mibView.lastSegmSelection(2);
-            obj.mibView.lastSegmSelection(2) = selectedMaterial;
+        if ~ismember(selectedMaterial, obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection)
+            obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection(1) = obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection(2);
+            obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection(2) = selectedMaterial;
         end
     end
     obj.mibView.handles.mibSegmentationTable.UserData = userData;

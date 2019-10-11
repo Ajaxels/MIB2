@@ -32,7 +32,7 @@ function varargout = mibAlignmentGUI(varargin)
 
 % Edit the above text to modify the response to help mibalignmentgui
 
-% Last Modified by GUIDE v2.5 18-Sep-2018 14:33:08
+% Last Modified by GUIDE v2.5 24-Sep-2019 12:59:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -88,6 +88,18 @@ handles.currStackOptionsPanel.Parent = panelParent;
 handles.currStackOptionsPanel.Position = panelPosition;
 handles.currStackOptionsPanel.Visible = 'on';
 
+
+featuresList{1} = 'Blobs: Speeded-Up Robust Features (SURF) algorithm';
+featuresList{2} = 'Regions: Maximally Stable Extremal Regions (MSER) algorithm';
+featuresList{3} = 'Corners: Harris-Stephens algorithm';
+featuresList{4} = 'Corners: Binary Robust Invariant Scalable Keypoints (BRISK)';
+featuresList{5} = 'Corners: Features from Accelerated Segment Test (FAST)';
+featuresList{6} = 'Corners: Minimum Eigenvalue algorithm';
+if ~verLessThan('matlab', '9.6')
+    featuresList{7} = 'Oriented FAST and rotated BRIEF (ORB)';
+end
+handles.FeatureDetectorType.String = featuresList;
+
 % Choose default command line output for mibChildGUI
 handles.output = hObject;
 
@@ -133,9 +145,9 @@ function mibAlignmentGUI_CloseRequestFcn(hObject, eventdata, handles)
 handles.winController.closeWindow();
 end
 
-function pathEdit_Callback(hObject, eventdata, handles)
+function SecondDatasetPath_Callback(hObject, eventdata, handles)
 handles.winController.selectButton_Callback();
-path = handles.pathEdit.String;
+path = handles.SecondDatasetPath.String;
 if handles.dirRadio.Value
     if ~isdir(path)
         msgbox('Wrong directory name!','Error!','err');
@@ -164,25 +176,27 @@ tagId = hObject.Tag;
 curVal = hObject.Value;
 if curVal == 0; hObject.Value = 1; return; end
 
-if strcmp(tagId, 'twoStacksModeRadio')
+handles.Algorithm.Value = 1;
+if strcmp(tagId, 'TwoStacks')
+    handles.Algorithm.String = {'Drift correction','Template matching'};
+
     handles.secondDatasetPanel.Visible = 'on';
     handles.saveShiftsPanel.Visible = 'off';
     handles.currStackOptionsPanel.Visible = 'off';
     
-    handles.correlateWithPopup.Enable = 'off';
+    handles.CorrelateWith.Enable = 'off';
     handles.correlateWithText.Enable = 'off';
-    handles.maskCheck.Enable = 'off';
-    handles.subWindowCheck.Enable = 'off';
 else
+    handles.Algorithm.String = {'Drift correction','Template matching','Automatic feature-based','Single landmark point',...
+                                    'Landmarks, multi points', 'Three landmark points', 'Color channels, multi points'};
     handles.secondDatasetPanel.Visible = 'off';
     handles.saveShiftsPanel.Visible = 'on';
     handles.currStackOptionsPanel.Visible = 'on';
     
-    handles.correlateWithPopup.Enable = 'on';
+    handles.CorrelateWith.Enable = 'on';
     handles.correlateWithText.Enable = 'on';
-    handles.maskCheck.Enable = 'on';
-    handles.subWindowCheck.Enable = 'on';
 end
+handles.winController.updateBatchOptFromGUI(hObject.Parent);   % update BatchOpt parameters
 end
 
 
@@ -192,17 +206,18 @@ handles.winController.getSearchWindow_Callback();
 end
 
 
-% --- Executes on button press in saveShiftsCheck.
-function saveShiftsCheck_Callback(hObject, eventdata, handles)
-if handles.saveShiftsCheck.Value
+% --- Executes on button press in SaveShiftsToFile.
+function SaveShiftsToFile_Callback(hObject, eventdata, handles)
+if handles.SaveShiftsToFile.Value
     startingPath = handles.saveShiftsXYpath.String;
     [FileName, PathName] = uiputfile({'*.coefXY','*.coefXY (Matlab format)'; '*.*','All Files'}, 'Select file...', startingPath);
-    if FileName == 0; handles.saveShiftsCheck.Value = 0; return; end
+    if FileName == 0; handles.SaveShiftsToFile.Value = 0; return; end
     handles.saveShiftsXYpath.String = fullfile(PathName, FileName);
     handles.saveShiftsXYpath.Enable = 'on';
 else
     handles.saveShiftsXYpath.Enable = 'off';
 end
+handles.winController.updateBatchOptFromGUI(hObject);   % update BatchOpt parameters
 end
 
 % --- Executes on button press in loadShiftsCheck.
@@ -211,135 +226,107 @@ handles.winController.loadShiftsCheck_Callback();
 end
 
 
-% --- Executes on button press in twoStacksAutoSwitch.
-function twoStacksAutoSwitch_Callback(hObject, eventdata, handles)
-if handles.twoStacksAutoSwitch.Value
-    handles.manualShiftX.Enable = 'off';
-    handles.manualShiftY.Enable = 'off';
+% --- Executes on button press in TwoStacksAutomaticMode.
+function TwoStacksAutomaticMode_Callback(hObject, eventdata, handles)
+if handles.TwoStacksAutomaticMode.Value
+    handles.TwoStacksShiftX.Enable = 'off';
+    handles.TwoStacksShiftY.Enable = 'off';
 else
-    handles.manualShiftX.Enable = 'on';
-    handles.manualShiftY.Enable = 'on';
+    handles.TwoStacksShiftX.Enable = 'on';
+    handles.TwoStacksShiftY.Enable = 'on';
 end
+handles.winController.updateBatchOptFromGUI(hObject);   % update BatchOpt parameters
 end
 
 
-function stepEditbox_Callback(hObject, eventdata, handles)
-val = round(str2double(handles.stepEditbox.String));
+function CorrelateStep_Callback(hObject, eventdata, handles)
+val = round(str2double(handles.CorrelateStep.String));
 if val < 1
     msgbox('Step should be an integer positive number!', 'Error!','error');
-    handles.stepEditbox.String = '1';
+    handles.CorrelateStep.String = '1';
 else
-    handles.stepEditbox.String = num2str(val);
+    handles.CorrelateStep.String = num2str(val);
 end
-end
-
-function bgCustomEdit_Callback(hObject, eventdata, handles)
-handles.bgCustomRadio.Value = 1;
+handles.winController.updateBatchOptFromGUI(hObject);   % update BatchOpt parameters
 end
 
-% --- Executes on selection change in methodPopup.
-function methodPopup_Callback(hObject, eventdata, handles)
-methodsList = handles.methodPopup.String;
-methodSelected = methodsList{handles.methodPopup.Value};
+% --- Executes on selection change in Algorithm.
+function Algorithm_Callback(hObject, eventdata, handles)
+methodsList = handles.Algorithm.String;
+methodSelected = methodsList{handles.Algorithm.Value};
 textStr = '';
-handles.colChPopup.Enable = 'off';
-handles.gradientCheckBox.Enable = 'off';
-handles.transformationTypePopup.Enable = 'off';
-handles.transformationModePopup.Enable = 'off';
-handles.correlateWithPopup.Enable = 'off';
-handles.transformationDegreePopup.Enable = 'off';
-handles.featureDetectorTypePopup.Enable = 'off';
+handles.ColorChannel.Enable = 'off';
+handles.IntensityGradient.Enable = 'off';
+handles.TransformationType.Enable = 'off';
+handles.TransformationMode.Enable = 'off';
+handles.CorrelateWith.Enable = 'off';
+handles.TransformationDegree.Enable = 'off';
+handles.FeatureDetectorType.Enable = 'off';
 handles.previewFeaturesBtn.Enable = 'off';
 
 switch methodSelected
     case 'Drift correction'
         textStr = sprintf('Use the Drift correction mode for small shifts or comparably sized images');
-        handles.colChPopup.Enable = 'on';
-        handles.gradientCheckBox.Enable = 'on';
-        handles.correlateWithPopup.Enable = 'on';
+        handles.ColorChannel.Enable = 'on';
+        handles.IntensityGradient.Enable = 'on';
+        handles.CorrelateWith.Enable = 'on';
     case 'Template matching'
         textStr = sprintf('Use the Template matching mode for when aligning two stacks with one of the stacks smaller in size');
-        handles.colChPopup.Enable = 'on';
-        handles.gradientCheckBox.Enable = 'on';
-        handles.correlateWithPopup.Enable = 'on';
+        handles.ColorChannel.Enable = 'on';
+        handles.IntensityGradient.Enable = 'on';
+        handles.CorrelateWith.Enable = 'on';
     case 'Automatic feature-based'
-        if handles.transformationTypePopup.Value > 3; handles.transformationTypePopup.Value = 1; end
+        if handles.TransformationType.Value > 3; handles.TransformationType.Value = 1; end
         textStr = sprintf('Use automatic feature detection to align slices');
-        handles.transformationTypePopup.Enable = 'on';
-        handles.transformationModePopup.Enable = 'on';
-        handles.featureDetectorTypePopup.Enable = 'on';
-        handles.transformationTypePopup.String = {'similarity', 'affine', 'projective'};
+        handles.TransformationType.Enable = 'on';
+        handles.TransformationMode.Enable = 'on';
+        handles.FeatureDetectorType.Enable = 'on';
+        handles.TransformationType.String = {'similarity', 'affine', 'projective'};
         handles.previewFeaturesBtn.Enable = 'on';
-        handles.colChPopup.Enable = 'on';
+        handles.ColorChannel.Enable = 'on';
+        handles.winController.updateBatchOptFromGUI(handles.TransformationType);   % update BatchOpt parameters
     case 'Single landmark point'
         textStr = sprintf('Use the brush tool to mark two corresponding spots on consecutive slices. The dataset will be translated to align the marked spots');
     case 'Three landmark points'
         textStr = sprintf('Use the brush tool to mark corresponding spots on two consecutive slices. The dataset will be transformed to align the marked spots. The Landmark mode recommended instead!');
     case 'Landmarks, multi points'
         textStr = sprintf('Use annotations or selection with brush to mark corresponding spots on consecutive slices. The dataset will be transformed to align the marked areas');
-        handles.transformationTypePopup.Enable = 'on';
-        handles.transformationModePopup.Enable = 'on';
-        handles.transformationTypePopup.String = {'non reflective similarity', 'similarity', 'affine', 'projective'};
-        %handles.transformationDegreePopup.Enable = 'on';
+        handles.TransformationType.Enable = 'on';
+        handles.TransformationMode.Enable = 'on';
+        handles.TransformationType.String = {'non reflective similarity', 'similarity', 'affine', 'projective'};
+        %handles.TransformationDegree.Enable = 'on';
+        handles.winController.updateBatchOptFromGUI(handles.TransformationType);   % update BatchOpt parameters
+    case 'Color channels, multi points'
+        textStr = sprintf('Select the color channel to be moved and use annotations identify corresponding spots, text for id of a point and value for id of the color channel (1 and 2)');
+        handles.TransformationType.Enable = 'on';
+        handles.TransformationMode.Enable = 'on';
+        handles.TransformationType.String = {'non reflective similarity', 'similarity', 'affine', 'projective'};
+        %handles.TransformationDegree.Enable = 'on';
+        handles.winController.updateBatchOptFromGUI(handles.TransformationType);   % update BatchOpt parameters        
+        handles.ColorChannel.Enable = 'on';
+        handles.TransformationMode.Value = 2;
+        handles.winController.updateBatchOptFromGUI(handles.TransformationMode);   % update BatchOpt parameters        
 end
 handles.landmarkHelpText.String = textStr;
 handles.landmarkHelpText.TooltipString = textStr;
+handles.winController.updateBatchOptFromGUI(hObject);   % update BatchOpt parameters
 end
-
-
-% --- Executes on button press in subWindowCheck.
-function subWindowCheck_Callback(hObject, eventdata, handles)
-if handles.subWindowCheck.Value
-    handles.searchWinMinXText.Enable = 'on';
-    handles.searchWinMinYText.Enable = 'on';
-    handles.searchWinMaxXText.Enable = 'on';
-    handles.searchWinMaxYText.Enable = 'on';
-    handles.searchXminEdit.Enable = 'on';
-    handles.searchYminEdit.Enable = 'on';
-    handles.searchXmaxEdit.Enable = 'on';
-    handles.searchYmaxEdit.Enable = 'on';
-    handles.getSearchWindow.Enable = 'on';
-    
-    % disable mask mode
-    handles.maskCheck.Value = 0;
-else
-    handles.searchWinMinXText.Enable = 'off';
-    handles.searchWinMinYText.Enable = 'off';
-    handles.searchWinMaxXText.Enable = 'off';
-    handles.searchWinMaxYText.Enable = 'off';
-    handles.searchXminEdit.Enable = 'off';
-    handles.searchYminEdit.Enable = 'off';
-    handles.searchXmaxEdit.Enable = 'off';
-    handles.searchYmaxEdit.Enable = 'off';
-    handles.getSearchWindow.Enable = 'off';
-end
-end
-
 
 
 function subwindowEdit_Callback(hObject, eventdata, handles)
-handles.winController.subwindowEdit_Callback();
+handles.winController.subwindowEdit_Callback(hObject);
 end
 
-% --- Executes on button press in maskCheck.
-function maskCheck_Callback(hObject, eventdata, handles)
-val = handles.maskCheck.Value;
-if val == 1
-    handles.subWindowCheck.Value = 0;
-    subWindowCheck_Callback(handles.subWindowCheck, eventdata, handles);
-end
-handles.winController.maskCheck_Callback();
-end
-
-% --- Executes on selection change in correlateWithPopup.
-function correlateWithPopup_Callback(hObject, eventdata, handles)
-if ismember(handles.correlateWithPopup.Value, [3,4])    % relative/relative hybrid to mode
-    handles.stepEditbox.Enable = 'on';
+% --- Executes on selection change in CorrelateWith.
+function CorrelateWith_Callback(hObject, eventdata, handles)
+if ismember(handles.CorrelateWith.Value, [3,4])    % relative/relative hybrid to mode
+    handles.CorrelateStep.Enable = 'on';
     handles.stepText.Enable = 'on';
 else
-    handles.stepEditbox.Enable = 'off';
+    handles.CorrelateStep.Enable = 'off';
     handles.stepText.Enable = 'off';
 end
+handles.winController.updateBatchOptFromGUI(hObject);   % update BatchOpt parameters
 end
 
 % --- Executes on button press in helpBtn.
@@ -359,4 +346,51 @@ end
 % --- Executes on button press in previewFeaturesBtn.
 function previewFeaturesBtn_Callback(hObject, eventdata, handles)
 handles.winController.previewFeaturesBtn_Callback();
+end
+
+
+% --- Executes on selection change in Subarea.
+function Subarea_Callback(hObject, eventdata, handles)
+switch hObject.String{hObject.Value}
+    case 'Manually specified'
+        handles.searchWinMinXText.Enable = 'on';
+        handles.searchWinMinYText.Enable = 'on';
+        handles.searchWinMaxXText.Enable = 'on';
+        handles.searchWinMaxYText.Enable = 'on';
+        handles.minX.Enable = 'on';
+        handles.minY.Enable = 'on';
+        handles.maxX.Enable = 'on';
+        handles.maxY.Enable = 'on';
+        handles.getSearchWindow.Enable = 'on';
+    otherwise
+        handles.searchWinMinXText.Enable = 'off';
+        handles.searchWinMinYText.Enable = 'off';
+        handles.searchWinMaxXText.Enable = 'off';
+        handles.searchWinMaxYText.Enable = 'off';
+        handles.minX.Enable = 'off';
+        handles.minY.Enable = 'off';
+        handles.maxX.Enable = 'off';
+        handles.maxY.Enable = 'off';
+        handles.getSearchWindow.Enable = 'off';
+end
+handles.winController.updateBatchOptFromGUI(hObject);   % update BatchOpt parameters
+end
+
+function updateBatch(hObject, eventdata, handles)
+% update BatchOpt structure of mibAlignmentController
+handles.winController.updateBatchOptFromGUI(hObject);   % update BatchOpt parameters
+end
+
+
+% --- Executes on button press in White.
+function BackgroundColor(hObject, eventdata, handles)
+% callback for press of radio buttons for Background color
+switch hObject.Style
+    case 'edit'
+        handles.Custom.Value = 1;
+        handles.winController.updateBatchOptFromGUI(hObject);   % update BatchOpt parameters
+        handles.winController.updateBatchOptFromGUI(handles.BackgroundColor);   % update BatchOpt parameters
+    otherwise
+        handles.winController.updateBatchOptFromGUI(handles.BackgroundColor);   % update BatchOpt parameters
+end
 end

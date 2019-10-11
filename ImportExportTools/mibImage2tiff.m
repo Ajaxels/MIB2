@@ -15,6 +15,7 @@ function [result, options] = mibImage2tiff(filename, imageS, options, ImageDescr
 % - .Compression: ''none'', ''lzw'', ''packbits''
 % - .showWaitbar: show a progress bar, @b 1 - on, @b 0 - off
 % - .SliceName: [optional] A cell array with filenames without path
+% - .useOriginals: when SliceName is provided and useOriginals==1, those filenames are used
 % ImageDescription: - a cell string, or array of cells
 %
 % Return values:
@@ -67,6 +68,7 @@ if ~isfield(options, 'Resolution'); options.Resolution = [72 72]; end
 if ~isfield(options, 'overwrite'); options.overwrite = 0; end
 if ~isfield(options, 'Saving3d'); options.Saving3d = NaN; end
 if ~isfield(options, 'cmap'); options.cmap = NaN; end
+
 if isempty(options.Resolution); options.Resolution = [72 72]; end
 
 if isnan(options.Saving3d)
@@ -83,11 +85,12 @@ if isnan(options.Saving3d)
 end
 
 if options.overwrite == 0
-    if exist(filename,'file') == 2
-        reply = input('File exists! Overwrite? [y/N]:','s');
-        if ~strcmp(reply,'y'); disp('Cancel, nothing was saved!'); return; end;
+    if exist(filename, 'file') == 2
+        reply = questdlg(sprintf('!!! Warning !!!\n\n The file alreadt exists! Overwrite?'),'Overwrite', 'Overwrite', 'Cancel', 'Cancel');
+        if strcmp(reply, 'Cancel'); return; end
     end
 end
+
 % if numel(size(imageS)) == 3 && size(imageS,3) ~= 3
 %     imageS = reshape(imageS,size(imageS,1), size(imageS,2), 1, size(imageS,3));
 % end
@@ -112,7 +115,7 @@ if isnan(options.cmap)  % grayscale or rgb image
     end
 end
 
-files_no = size(imageS,4);
+files_no = size(imageS, 4);
 if options.showWaitbar
     wb = waitbar(0,sprintf('%s\nPlease wait...',filename),'Name','Saving images','WindowStyle','modal');
     set(findall(wb,'type','text'),'Interpreter','none');
@@ -135,17 +138,25 @@ if strcmp(options.Saving3d,'multi')
     options.SliceName{1} = filename;
 elseif strcmp(options.Saving3d,'sequence')
     sequentialFn = 1;
-    if isfield(options, 'SliceName')
-        choice = questdlg('Would you like to use original or sequential filenaming?','Save as TIF...','Original','Sequential','Cancel','Sequential');
-        switch choice
-            case 'Cancel'
-                disp('Cancelled!')
-                if options.showWaitbar; delete(wb); end
-                return;
-            case 'Original'
+    if isfield(options, 'SliceName') && numel(options.SliceName) > 1
+        if isfield(options, 'useOriginals')
+            if options.useOriginals == 1
                 sequentialFn = 0;
-            case 'Sequential'
+            else
                 sequentialFn = 1;
+            end
+        else
+            choice = questdlg('Would you like to use original or sequential filenaming?','Save as TIF...','Original','Sequential','Cancel','Sequential');
+            switch choice
+                case 'Cancel'
+                    disp('Cancelled!')
+                    if options.showWaitbar; delete(wb); end
+                    return;
+                case 'Original'
+                    sequentialFn = 0;
+                case 'Sequential'
+                    sequentialFn = 1;
+            end
         end
     end
     
@@ -189,14 +200,14 @@ elseif strcmp(options.Saving3d,'sequence')
         else            % indexed image
             imwrite(imageS(:,:,:,num),options.cmap,options.SliceName{num},'tif','Compression',options.Compression,'Description',cell2mat(ImageDescription(num)),'Resolution',options.Resolution);
         end
-        if options.showWaitbar; waitbar(num/files_no,wb); end;
+        if options.showWaitbar; waitbar(num/files_no,wb); end
     end
 else
     error('Error: wrong saving type, use ''multi'' or ''sequence''');
 end
-if options.showWaitbar; waitbar(1); end;
+if options.showWaitbar; waitbar(1); end
 disp(['image2tiff: ' options.SliceName{1} ' was/were created!']);
-if options.showWaitbar; delete(wb); end;
+if options.showWaitbar; delete(wb); end
 set(0, 'DefaulttextInterpreter', curInt); 
 result = 1;
 end

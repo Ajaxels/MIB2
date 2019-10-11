@@ -30,26 +30,52 @@ classdef Lines3D < matlab.mixin.Copyable
     % t = [2 3 4 5 6 7 8];      // output node indices
     %
     % NodeName = repmat({'Node'}, [size(points,1), 1]);    // optional names of nodes
+    % TreeName = repmat({'TreeName'}, [size(points,1), 1]);    // optional names for the trees (tree identity of each point is defined by this tag)
     % Radius = ones([size(points,1), 1]);    // add node radius to nodes
     % NumberExtra = ones([size(points,1), 1])+1;   // optional, add Extra parameter to nodes
     % StringExtra = repmat({'Comment'}, [size(points,1), 1]);    // optional, add Extra parameter to nodes
     %
     % Weight = ones([numel(s), 1]);    //optional, add weight to edges
     %
-    % NodeTable = table(points, NodeName, Radius, NumberExtra, StringExtra, 'VariableNames',{'PointsXYZ','NodeName','Radius','NumberExtra','StringExtra'});
+    % NodeTable = table(points, NodeName, Radius, TreeName, NumberExtra, StringExtra, 'VariableNames',{'PointsXYZ','NodeName','Radius',TreeName, 'NumberExtra','StringExtra'});
     % EdgeTable = table([s', t'], Weight, 'VariableNames', {'EndNodes', 'Weight'});
     %
     % G = graph(EdgeTable, NodeTable);  // generate the graph
     % G.Nodes.Properties.VariableUnits = {'pixel','string','um','um','string'}; // it is important to indicate "pixel" unit for the PointsXYZ field, when using pixels
     %
-    % Graph.Nodes.Properties.UserData.pixSize = struct();   // optional, add pixSize structure
+    % Graph.Nodes.Properties.UserData.pixSize = struct();   // required when points are pixels, add pixSize structure
     % Graph.Nodes.Properties.UserData.pixSize.x = .013;
     % Graph.Nodes.Properties.UserData.pixSize.y = .013;
     % Graph.Nodes.Properties.UserData.pixSize.z = .03;
     % Graph.Nodes.Properties.UserData.pixSize.units = 'um';
-    % Graph.Nodes.Properties.UserData.BoundingBox = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox(); // add bounding box information
+    % Graph.Nodes.Properties.UserData.BoundingBox = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox(); // required when points are pixels; add bounding box information
     % @endcode
-    
+    %
+    % @code
+    % // minimalistic example with two trees and points in pixels
+    % points = [303 81 72;...
+    %           294 90 67;...
+    %           294 172 56;...
+    %           290 207 20;...
+    %           252 268 1;...
+    %           294 172 40;...
+    %           387 198 42;...
+    %           400 252 25;
+    %           314 270 19];    // coordinates of nodes in pixels, [x, y, z]
+    %
+    % s = [1 2 3 5 6 7];      // input node indices
+    % t = [2 3 4 6 7 8];      // output node indices
+    % TreeName = repmat({'TreeName1'}, [4, 1]);    // nodes 1:4 belong to TreeName1, optional names for the trees (tree identity of each point is defined by this tag)
+    % TreeName(5:8) = repmat({'TreeName2'}, [4, 1]);    // nodes 5:8 belong to TreeName2, optional names for the trees (tree identity of each point is defined by this tag)
+    % NodeTable = table(points, TreeName, 'VariableNames',{'PointsXYZ','TreeName'}); // make nodes table
+    % EdgeTable = table([s', t'], 'VariableNames', {'EndNodes'}); // make edges table
+    % G = graph(EdgeTable, NodeTable);  // generate the graph
+    % G.Nodes.Properties.VariableUnits = {'pixel','string'}; // it is important to indicate "pixel" unit for the PointsXYZ field, when using pixels
+    % G.Nodes.Properties.UserData.BoundingBox = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox(); // a vector with the bounding box information [xmin, width, ymin, height, zmin, depth]
+    % G.Nodes.Properties.UserData.pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;  % add pixel size
+    % obj.mibModel.I{obj.mibModel.Id}.hLines3D.replaceGraph(G);  //  replace the current Lines3D with a new graph
+    %
+                
     properties
         G
         % a graph with lines
@@ -285,7 +311,10 @@ classdef Lines3D < matlab.mixin.Copyable
             
             % add variable units if they are missing
             if isempty(Graph.Nodes.Properties.VariableUnits)
-                for varNameId = 1:numel(Graph.Nodes.Properties.VariableNames)
+                Graph.Nodes.Properties.VariableUnits = repmat(cellstr(''), [numel(Graph.Nodes.Properties.VariableNames), 1]);
+            end
+            for varNameId = 1:numel(Graph.Nodes.Properties.VariableNames)
+                if isempty(Graph.Nodes.Properties.VariableUnits{varNameId})
                     switch Graph.Nodes.Properties.VariableNames{varNameId}
                         case {'PointsXYZ', 'Radius'}
                             Graph.Nodes.Properties.VariableUnits{varNameId} = Graph.Nodes.Properties.UserData.pixSize.units;
@@ -1232,6 +1261,14 @@ classdef Lines3D < matlab.mixin.Copyable
                 % allocate space
                 edgesVec = cell([noEdges, 1]); % {edgeId}(x, y)
                 
+%                 colMap = jet(255);
+%                 minPnt = 0;
+%                 maxPnt = 30;
+%                 weights = obj.G.Edges.Weight(edgeIds);
+%                 weights = floor((weights-minPnt)/(maxPnt-minPnt)*255);
+%                 weights(weights<1) = 1;
+%                 weights(weights>255) = 255;
+                
                 % calculate points for each edge
                 for edgeId=1:noEdges
                     minX = min([edgePnts(edgeId,1), edgePnts(edgeId,3)]);
@@ -1423,7 +1460,6 @@ classdef Lines3D < matlab.mixin.Copyable
             
             if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1; end
             
-            
             % obtain filename if it is not provided
             if isempty(filename)
                 Filters = {'*.lines3d;',  'Matlab format (*.lines3d)';...
@@ -1478,7 +1514,7 @@ classdef Lines3D < matlab.mixin.Copyable
                     save(filename, 'Graph', '-mat', '-v7.3');
                     obj.filename = filename;
                 case 'excel'
-                    warning off MATLAB:xlswrite:AddSheet
+                    warning('off', 'MATLAB:xlswrite:AddSheet');
                     
                     % Sheet 1
                     s = {sprintf('Lines3D filename: %s', obj.filename)};
@@ -1613,6 +1649,11 @@ classdef Lines3D < matlab.mixin.Copyable
                     else
                         outputFieldNode = {'Radius'};
                         outputFieldEdge = {'Weight'};
+                        if isfield(options, 'EdgeFieldName')
+                            if strcmp(options.EdgeFieldName, 'Length')
+                                outputFieldEdge = {'Length'};
+                            end
+                        end
                     end
                     amiraOptions.NodeFieldName = outputFieldNode;
                     amiraOptions.EdgeFieldName = outputFieldEdge;

@@ -32,7 +32,7 @@ function [Model, selection] = mibExportModelToImodModel(O, Options)
 % Updates
 % 11.04.2016, IB, added showWaitbar option
 
-if ~isfield(Options, 'showWaitbar'); Options.showWaitbar = 1; end;
+if ~isfield(Options, 'showWaitbar'); Options.showWaitbar = 1; end
 
 % create IMOD model
 modelFilename = Options.modelFilename;
@@ -55,7 +55,7 @@ Model = setZScale(Model, Options.pixSize.z/Options.pixSize.x);
 Objects = unique(O);
 Objects(Objects==0) = [];
 noObjects = numel(Objects);
-if Options.showWaitbar; 
+if Options.showWaitbar
     curInt = get(0, 'DefaulttextInterpreter'); 
     set(0, 'DefaulttextInterpreter', 'none'); 
     wb = waitbar(0,sprintf('%s\nPlease wait...',modelFilename),'Name','Saving contours to IMOD model...','WindowStyle','modal');

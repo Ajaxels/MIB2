@@ -1,5 +1,5 @@
-function replaceImageColor(obj, type, color_id, channel_id, slice_id, time_pnt)
-% function replaceImageColor(obj, type, color_id, channel_id, slice_id, time_pnt)
+function replaceImageColor(obj, type, color_id, channel_id, slice_id, time_pnt, options)
+% function replaceImageColor(obj, type, color_id, channel_id, slice_id, time_pnt, options)
 % Replace image intensities in the @em Masked or @em Selected areas with new intensity value
 %
 % Parameters:
@@ -8,6 +8,8 @@ function replaceImageColor(obj, type, color_id, channel_id, slice_id, time_pnt)
 % channel_id: indeces of the color channels to be replaced
 % slice_id: index of the slice number, or @b 0 for all
 % time_pnt: index of the time point, or @b 0 for all
+% options: a structure with optional parameters
+% @li .showWaitbar - logical, show or not the waitbar
 %
 % Return values:
 % 
@@ -26,58 +28,63 @@ function replaceImageColor(obj, type, color_id, channel_id, slice_id, time_pnt)
 % Updates
 % 
 
+if nargin < 7; options = struct(); end
+if ~isfield(options, 'showWaitbar'); options.showWaitbar = true; end
+
 if strcmp(obj.meta('ColorType'),'indexed')
     msgbox('Not compatible with indexed images!');
     return;
 end
 tic
-wb = waitbar(0,sprintf('Replacing color channels\nPlease wait...'), 'Name', 'Replace color', 'WindowStyle', 'modal');
+if options.showWaitbar; wb = waitbar(0,sprintf('Replacing color channels\nPlease wait...'), 'Name', 'Replace color', 'WindowStyle', 'modal'); end
 if time_pnt == 0
     t1 = 1;
     t2 = obj.time;
 else
-    t1 = time_pnt;
-    t2 = time_pnt;
+    t1 = time_pnt(1);
+    t2 = time_pnt(numel(time_pnt));
 end
 max_slice = obj.dim_yxczt(obj.orientation);
 if slice_id == 0
-    start_no = 1;
-    end_no = max_slice;
+    z1 = 1;
+    z2 = max_slice;
 else
-    start_no = slice_id;
-    end_no = slice_id;
+    z1 = slice_id(1);
+    z2 = slice_id(numel(slice_id));
 end
 if channel_id == 0
-    start_ch = 1;
-    end_ch = obj.colors;
+    colChannel = 1:obj.colors;
 else
-    start_ch = channel_id;
-    end_ch = channel_id;
+    colChannel = channel_id;
 end
 
-totalnumber = (end_no-start_no)*(t2-t1+1);
+totalnumber = (z2-z1)*(t2-t1+1);
 for t=t1:t2
     getDataOptions.t = [t t];
-    for sliceNumber = start_no:end_no
+    for sliceNumber = z1:z2
         getDataOptions.z = [sliceNumber, sliceNumber];
         mask_img = obj.getData(type, NaN, 0, getDataOptions);
         if sum(sum(mask_img)) < 1; continue; end
         
         curr_img = obj.getData('image', NaN, 0, getDataOptions);
-        for channel = start_ch:end_ch
+        colIndex = 1;
+        for channel = colChannel
             img2 = curr_img(:,:,channel);
-            img2(mask_img==1) = color_id(channel);
+            img2(mask_img==1) = color_id(colIndex);
             curr_img(:,:,channel) = img2;
+            colIndex = colIndex + 1;
         end
         obj.setData('image', curr_img, NaN, 0, getDataOptions);
-        if mod(sliceNumber, 10)==0; waitbar((sliceNumber-start_no)/totalnumber,wb); end
+        if options.showWaitbar;  if mod(sliceNumber, 10)==0; waitbar((sliceNumber-z1)/totalnumber,wb); end; end
     end
 end
 
-waitbar(1,wb);
-log_text = ['Color channels: ' num2str(start_ch) ':' num2str(end_ch) ' were replaced with new intensity(s): ' num2str(color_id(start_ch:end_ch)')];
+if options.showWaitbar; waitbar(1,wb); end
+if size(colChannel,1) > 1; colChannel = colChannel'; end
+if size(color_id,1) > 1; color_id = color_id'; end
+log_text = ['Color channels: ' num2str(colChannel) ' were replaced with new intensity(s): ' num2str(color_id)];
 obj.updateImgInfo(log_text);
 disp(log_text);
-delete(wb);
+if options.showWaitbar; delete(wb); end
 toc
 end

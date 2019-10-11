@@ -4,12 +4,11 @@ classdef mibStatisticsController < handle
     % MIB->Menu->Models->Model statistics
     
     % Copyright (C) 26.12.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+    % part of Microscopy Image Browser, http:\\mib.helsinki.fi
     % This program is free software; you can redistribute it and/or
     % modify it under the terms of the GNU General Public License
     % as published by the Free Software Foundation; either version 2
     % of the License, or (at your option) any later version.
-
     
     properties
         mibModel
@@ -18,6 +17,12 @@ classdef mibStatisticsController < handle
         % handle to the view
         anisotropicVoxelsAgree
         % check for warning about anisotropic voxels
+        availableProperties2D
+        % cell array with the list of available properties for 2D objects
+        availableProperties3D
+        % cell array with the list of available properties for 3D objects
+        availablePropertiesInt
+        % cell array with the list of available properties for intensity objects
         histLimits
         % limits for the histogram
         indices
@@ -30,26 +35,24 @@ classdef mibStatisticsController < handle
         % version of Matlab
         obj2DType
         % index of the selected mode for the object mode
-        obj3DType     
+        obj3DType
         % index of the selected mode for the object mode
         runId
         % a vector [datasetId, materialId] for which dataset statistics was calculated
-        sel_model    
-        % selected material, stored in obj.mibModel.I{obj.mibModel.Id}.selectedMaterial-2;
-        selectedProperties
-        % list of selected properties to calculate, used to be handles.properties in MIB1
-        sorting
-        % a variable to keep sorting status for columns
+        sortingDirection
+        % a variable to keep sorting status for columns, sorting==1 for ascend, sorting==0 for descent
+        sortingColIndex
+        % a number with the index of the column to use for sorting (i.e. 1, 2, 3, or 4)
         statProperties
         % list of properties to calculate
         STATS
         % a structure with quantification results
-        units
-        % a char with units to use: 'pixels' or 'um'
         childControllers
         % list of opened subcontrollers
         childControllersIds
         % a cell array with names of initialized child controllers
+        BatchOpt
+        % a structure compatible with batch operation, see details in the contsructor
     end
     
     events
@@ -61,25 +64,28 @@ classdef mibStatisticsController < handle
     methods (Static)
         function ViewListner_Callback2(obj, src, evnt)
             switch evnt.EventName
-                case 'updateId'
+                case {'updateId', 'showModel'}
                     obj.updateWidgets();
-                case 'newDataset' 
+                case 'newDataset'
                     % dataset was reloaded
                     if ~isempty(obj.runId)
                         if obj.runId(1) == obj.mibModel.Id
                             obj.STATS = struct;
                             data = cell([1,4]);
                             obj.View.handles.statTable.Data = data;     % clear table contents
-                            obj.runId = []; % clear runId 
+                            obj.runId = []; % clear runId
                             obj.updateWidgets();
                         end
                     end
                     
             end
-        end 
+        end
         
         function purgeControllers(obj, src, evnt)
-            % find index of the child controller
+            % function purgeControllers(obj, src, evnt)
+            % find index of the child controller and purge it
+            %
+            
             id = obj.findChildId(class(src));
             
             % delete the child controller
@@ -93,34 +99,156 @@ classdef mibStatisticsController < handle
     end
     
     methods
-        function obj = mibStatisticsController(mibModel, contIndex)
-            % obj = mibStatisticsController(mibModel, contIndex)
+        function obj = mibStatisticsController(mibModel, contIndex, varargin)
+            % obj = mibStatisticsController(mibModel, contIndex, varargin)
             % constructor for mibStatisticsController
-            % 
+            %
             % Parameters:
             % mibModel:     a handle to mibModel
             % contIndex: index of the dataset for statistics (1-mask, 2-Exterior, 3, 4 materials of the model)
             
-            if nargin < 2; contIndex = mibModel.I{mibModel.Id}.selectedMaterial-1; end
+            obj.availableProperties2D = {'Area','ConvexArea','CurveLength','Eccentricity','EquivDiameter',...
+                'EndpointsLength','EulerNumber','Extent','FilledArea','FirstAxisLength','HolesArea','MajorAxisLength',...   % '---- 2D objects ----'
+                'MinorAxisLength','Orientation','Perimeter','SecondAxisLength','Solidity'};
+            obj.availableProperties3D = {'Volume','EndpointsLength','EquatorialEccentricity','FilledArea','HolesArea','MajorAxisLength',...  % '---- 3D objects ----'
+                'MeridionalEccentricity','SecondAxisLength','ThirdAxisLength',...
+                'ConvexVolume', 'EquivDiameter','Extent','Solidity','SurfaceArea'};
+            obj.availablePropertiesInt = {'MinIntensity','MaxIntensity','MeanIntensity','StdIntensity','SumIntensity','Correlation'};  % '---- Intensity ----'
             
+            if nargin < 2; contIndex = []; end
             obj.mibModel = mibModel;    % assign model
+            if isempty(contIndex); contIndex = mibModel.I{mibModel.Id}.selectedMaterial+2; end
+            
+            %% Define default BatchOpt structure
+            obj.BatchOpt.MaterialIndex = num2str(contIndex);   % index of material to be quantified: -1, mask; 0-exterior; 1,2,etc indices of materials; NaN-complete model for models with more than 255 materials
+            obj.BatchOpt.DatasetType = {'3D, Stack'};   % perform opertion on dataset
+            obj.BatchOpt.DatasetType{2} = {'2D, Slice', '3D, Stack', '4D, Dataset'};
+            obj.BatchOpt.Shape = {'Shape2D'};         % shape of the objects to detect
+            obj.BatchOpt.Shape{2} = {'Shape2D', 'Shape3D'};
+            obj.BatchOpt.Mode = {'Object'};         % calculate properties of objects or image intensity under the areas of the objects
+            obj.BatchOpt.Mode{2} = {'Object', 'Intensity'};
+            obj.BatchOpt.Property = {'Area'};   % property to be calculated
+            obj.BatchOpt.Property{2} = [{'---- 2D Object ----'}, obj.availableProperties2D, ...
+                                        {'---- 3D Object ----'}, obj.availableProperties3D, ...
+                                        {'---- Intensity ----'}, obj.availablePropertiesInt];
+            
+            obj.BatchOpt.Multiple = false;   % switch to calculate multiple properties
+            obj.BatchOpt.MultipleProperty = 'Area; FirstAxisLength; Orientation; SecondAxisLength; MinIntensity; MaxIntensity; MeanIntensity; SumIntensity';   % list of multiple properties to calculate, when Multiple==true
+            obj.BatchOpt.Connectivity = {'4/6 connectivity'};         % shape of the objects to detect
+            obj.BatchOpt.Connectivity{2} = {'4/6 connectivity', '8/26 connectivity'};
+            obj.BatchOpt.Units = {'pixels'};         % shape of the objects to detect
+            obj.BatchOpt.Units{2} = {'pixels', 'um'};
+            PossibleColChannels = arrayfun(@(x) sprintf('ColCh %d', x), 1:obj.mibModel.I{obj.mibModel.Id}.colors, 'UniformOutput', false);
+            obj.BatchOpt.ColorChannel1 = {'ColCh 1'};         % [Intensity] specify the color channel
+            obj.BatchOpt.ColorChannel1{2} = PossibleColChannels;
+            obj.BatchOpt.ColorChannel2 = PossibleColChannels(end);         % [Intensity/Correlation] specify the second color channel
+            obj.BatchOpt.ColorChannel2{2} = PossibleColChannels;
+            obj.BatchOpt.ExportResultsTo = {'Excel format (*.xls)'};    % export results to one of these destinations
+            obj.BatchOpt.ExportResultsTo{2} = {'Do not export', 'Export to Matlab', ...
+                        'Excel format (*.xls)', 'Comma-separated values (*.csv)', 'Matlab format (*.mat)'};
+            imgFilename = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
+            [~, imgFilename] = fileparts(imgFilename);
+            obj.BatchOpt.ExportFilename = [filesep imgFilename '_analysis'];    % filename or variable name for the export
+            obj.BatchOpt.CropObjectsTo = {'Do not crop'};                       % additionally crop detected objects to files or export to matlab
+            obj.BatchOpt.CropObjectsTo{2} = {'Do not crop', 'Crop to Matlab', ...
+                'Amira Mesh binary (*.am)','MRC format for IMOD (*.mrc)','NRRD Data Format (*.nrrd)',...
+                'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)'};
+            obj.BatchOpt.CropObjectsMarginXY = '0';     % margin value for the cropping of the objects in XY
+            obj.BatchOpt.CropObjectsMarginZ = '0';     % margin value for the cropping of the objects in Z
+            obj.BatchOpt.CropObjectsIncludeModel = {'Do not include'};
+            obj.BatchOpt.CropObjectsIncludeModel{2} = {'Do not include', 'Crop to Matlab', 'Matlab format (*.model)', ...
+                    'Amira Mesh binary (*.am)', 'MRC format for IMOD (*.mrc)', 'NRRD Data Format (*.nrrd)', ...
+                    'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)}'};
+            obj.BatchOpt.CropObjectsIncludeModelMaterialIndex = 'NaN';  % index of the material for cropping the models, or NaN to crop all materials
+            obj.BatchOpt.CropObjectsIncludeMask = {'Do not include'};
+            obj.BatchOpt.CropObjectsIncludeMask{2} = {'Do not include', 'Crop to Matlab', 'Matlab format (*.mask)', ...
+                    'Amira Mesh binary (*.am)', 'MRC format for IMOD (*.mrc)', 'NRRD Data Format (*.nrrd)', ...
+                    'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)'};
+            obj.BatchOpt.CropObjectsOutputName = 'CropOut';     % name of the variable template or directory for the object crop
+            obj.BatchOpt.SingleMaskObjectPerDataset = false;    % check to remove all other objects that may apper within the clipping box of the main detected object
+            obj.BatchOpt.showWaitbar = true;   % show or not the waitbar
+            
+            % add section name and action name for the batch tool
+            if contIndex == -1
+                obj.BatchOpt.mibBatchSectionName = 'Menu -> Mask';
+            else
+                obj.BatchOpt.mibBatchSectionName = 'Menu -> Models';
+            end
+            obj.BatchOpt.mibBatchActionName = 'Get statistics';
+            
+            % tooltips that will accompany the BatchOpt
+            obj.BatchOpt.mibBatchTooltip.MaterialIndex = sprintf('Index of the material to be quantified. -1: for Mask; 0: for Exterior; 1,2,etc: for indices of materials; NaN-complete model for models with more than 255 materials');
+            obj.BatchOpt.mibBatchTooltip.DatasetType = sprintf('Specify whether to apply MorphOps to a shown slice (2D, Slice), the whole stack (3D, Stack) or complete dataset (4D, Dataset)');
+            obj.BatchOpt.mibBatchTooltip.Shape = sprintf('Shape of the objects to be identified');
+            obj.BatchOpt.mibBatchTooltip.Mode = sprintf('Calculate properties of objects or image intensity under the areas of the objects');
+            obj.BatchOpt.mibBatchTooltip.Property = sprintf('Select one of these properties for calculation; the Shape parameter should correspond selected property');
+            obj.BatchOpt.mibBatchTooltip.Multiple = sprintf('Check this to calculate multiple properties, use the MultipleProperty field');
+            obj.BatchOpt.mibBatchTooltip.MultipleProperty = sprintf('Type names of properties to calculate separated with ";", they will be used when Multiple is true');
+            obj.BatchOpt.mibBatchTooltip.Connectivity = sprintf('Connectivity value for object separation');
+            obj.BatchOpt.mibBatchTooltip.Units = sprintf('Units for the results, pixels or physical units');
+            obj.BatchOpt.mibBatchTooltip.ColorChannel1 = sprintf('[Intensity only] Specify color channel for analysis');
+            obj.BatchOpt.mibBatchTooltip.ColorChannel2 = sprintf('[Intensity/Correlation only] Specify the second color channel for correlation analysis');
+            obj.BatchOpt.mibBatchTooltip.ExportResultsTo = sprintf('Select destination for calculated results, please provide relative filename to the ExportFilename field');
+            obj.BatchOpt.mibBatchTooltip.ExportFilename = sprintf('Name of a new variable in Matlab main workspace or relative to the dataset filename');
+            obj.BatchOpt.mibBatchTooltip.CropObjectsTo = sprintf('Additionally crop out detected objects from the dataset and save them to disk or export to Matlab');
+            obj.BatchOpt.mibBatchTooltip.CropObjectsOutputName = sprintf('Specify directory name or variable for cropping detected objects');
+            obj.BatchOpt.mibBatchTooltip.CropObjectsMarginXY = sprintf('Specify the XY margin in pixels for the cropping the objects out');
+            obj.BatchOpt.mibBatchTooltip.CropObjectsMarginZ = sprintf('Specify the Z margin in pixels for the cropping the objects out');
+            obj.BatchOpt.mibBatchTooltip.CropObjectsIncludeModel = sprintf('If the model is present also crop out the model and save next to the images');
+            obj.BatchOpt.mibBatchTooltip.CropObjectsIncludeModelMaterialIndex = sprintf('Specify index of the material to crop or use NaN to crop all materials of the model');
+            obj.BatchOpt.mibBatchTooltip.CropObjectsIncludeMask = sprintf('If the mask is present also crop out the model and save next to the images');
+            obj.BatchOpt.mibBatchTooltip.SingleMaskObjectPerDataset = sprintf('Remove all other objects that may apper within the clipping box of the main detected object');
+            obj.BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');
+            
+            % add here a code for the batch mode, for example
+            % when the BatchOpt stucture is provided the controller will
+            % use it as the parameters, and performs the function in the
+            % headless mode without GUI
+            if nargin == 3
+                BatchOptInput = varargin{1};
+                if isstruct(BatchOptInput) == 0 
+                    if isnan(BatchOptInput)
+                        obj.returnBatchOpt();   % obtain Batch parameters
+                    else
+                        errordlg(sprintf('A structure as the 4th parameter is required!')); 
+                    end
+                    return;
+                end
+                
+                obj.BatchOpt.MultipleProperty = 'Area';     % set the default MultipleProperty to area only
+                
+                % combine fields from input and default structures
+                obj.BatchOpt = updateBatchOptCombineFields_Shared(obj.BatchOpt, BatchOptInput);
+                
+                % checks
+                if strcmp(obj.BatchOpt.Property{1},'EndpointsLength') || strcmp(obj.BatchOpt.Property{1},'CurveLength')     % fix connectivity
+                    obj.BatchOpt.Connectivity{1} = '8/26 connectivity';
+                end
+                
+                batchModeSwitch = 1;
+                obj.runStatAnalysis_Callback(batchModeSwitch);    % with the
+                return;
+            end
+            
+            %%
+            
             guiName = 'mibStatisticsGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
             % populate units combo box
-            obj.View.handles.unitsCombo.String = {'pixels', obj.mibModel.I{obj.mibModel.Id}.pixSize.units};
+            obj.View.handles.Units.String = {'pixels', obj.mibModel.I{obj.mibModel.Id}.pixSize.units};
             
             % set default parameters
             obj.intType = 1;                % index of the selected mode for the intensity mode
             obj.obj2DType = 1;              % index of the selected mode for the object mode
             obj.obj3DType = 1;              % index of the selected mode for the object mode
             obj.statProperties = {'Area'};  % list of properties to calculate
-            obj.sorting = 1;                % a variable to keep sorting status for columns
+            obj.sortingDirection = 0;                % a variable to keep sorting status for columns
+            obj.sortingColIndex = 2;        % default sort by value
             obj.indices = [];               % indices for selected rows
             obj.histLimits = [0 1];     % limits for the histogram
             obj.STATS = struct();
             obj.runId = [];
-            obj.units = 'pixels';
             obj.anisotropicVoxelsAgree = 0;     % warning dialog was shown or not
             
             obj.matlabVersion = ver('Matlab');
@@ -130,22 +258,25 @@ classdef mibStatisticsController < handle
             obj.childControllers = {};    % initialize child controllers
             obj.childControllersIds = {};
             
-            if contIndex > 1 
+            if contIndex > 1
                 contIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial;
-                obj.View.handles.targetPopup.Value = contIndex;
+                obj.View.handles.Material.Value = contIndex;
             else
-                obj.View.handles.targetPopup.Value = 1;
+                obj.View.handles.Material.Value = 1;
             end
             
-            obj.targetPopup_Callback();
+            obj.Material_Callback();
             
             % add listner to obj.mibModel and call controller function as a callback
-            obj.listener{1} = addlistener(obj.mibModel, 'updateId', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt)); 
-            obj.listener{2} = addlistener(obj.mibModel, 'newDataset', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt)); 
+            obj.listener{1} = addlistener(obj.mibModel, 'updateId', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));
+            obj.listener{2} = addlistener(obj.mibModel, 'newDataset', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));
+            obj.listener{3} = addlistener(obj.mibModel, 'showModel', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));
         end
         
         function closeWindow(obj)
+            % function purgeControllers(obj, src, evnt)
             % closing mibStatisticsController window
+            
             if isvalid(obj.View.gui)
                 delete(obj.View.gui);   % delete childController window
             end
@@ -159,57 +290,98 @@ classdef mibStatisticsController < handle
             notify(obj, 'closeEvent');      % notify mibController that this child window is closed
         end
         
+        function returnBatchOpt(obj, BatchOptOut)
+            % return structure with Batch Options and possible configurations
+            % via the notify 'syncBatch' event
+            % Parameters:
+            % BatchOptOut: a local structure with Batch Options generated
+            % during Continue callback. It may contain more fields than
+            % obj.BatchOpt structure
+            % 
+            if nargin < 2; BatchOptOut = obj.BatchOpt; end
+            
+            % trigger syncBatch event to send BatchOptOut to mibBatchController 
+            eventdata = ToggleEventData(BatchOptOut);
+            notify(obj.mibModel, 'syncBatch', eventdata);
+        end
+        
+        function updateBatchOptFromGUI(obj, hObject)
+            % function updateBatchOptFromGUI(obj, hObject)
+            %
+            % update obj.BatchOpt from widgets of GUI
+            % use an external function (Tools\updateBatchOptFromGUI_Shared.m) that is common for all tools
+            % compatible with the Batch mode
+            %
+            % Parameters:
+            % hObject: a handle to a widget of GUI
+            
+            obj.BatchOpt = updateBatchOptFromGUI_Shared(obj.BatchOpt, hObject);
+        end
+        
         function updateWidgets(obj)
+            % function updateWidgets(obj)
+            % update widgets of the GUI
+            
             %fprintf('childController:updateWidgets: %g\n', toc);
-            % populate targetPopup
-            targetPopupValue = obj.View.handles.targetPopup.Value;
+            % populate Material
+            MaterialValue = obj.View.handles.Material.Value;
             targetList = {'Mask';'Exterior'};
             if obj.mibModel.getImageProperty('modelExist')
                 materials = obj.mibModel.getImageProperty('modelMaterialNames');
                 if obj.mibModel.I{obj.mibModel.Id}.modelType <= 255
                     targetList = [targetList; materials];
                 else
-                    targetList = [targetList; 'Model'; materials];
+                    targetList = ['Model'; targetList; materials];
                 end
             end
-            obj.View.handles.targetPopup.String = targetList;
+            obj.View.handles.Material.String = targetList;
             
-            if targetPopupValue <= numel(targetList)
-                obj.View.handles.targetPopup.Value = targetPopupValue;
+            if MaterialValue <= numel(targetList)
+                obj.View.handles.Material.Value = MaterialValue;
             else
-                obj.View.handles.targetPopup.Value = 1;
+                obj.View.handles.Material.Value = 1;
             end
             if ~isempty(obj.runId)
                 if obj.runId(1) == obj.mibModel.Id
-                    obj.View.handles.targetPopup.Value = obj.runId(2);
+                    if obj.mibModel.I{obj.mibModel.Id}.modelType <= 255
+                        obj.View.handles.Material.Value = obj.runId(2) + 2;
+                    else
+                        if obj.runId(2) > 0
+                            obj.View.handles.Material.Value = find(ismember(targetList, num2str(obj.runId(2)))==1);
+                        else
+                            obj.View.handles.Material.Value = obj.runId(2) + 3;
+                        end
+                    end
                 end
             end
-            obj.targetPopup_Callback();
+            obj.Material_Callback();
             
             % setting color channels popups
             colorChannels = obj.mibModel.getImageProperty('colors');
             colorChannelsList = cell([colorChannels, 1]);
             for i=1:colorChannels
-                colorChannelsList{i} = sprintf('Ch %d', i);
+                colorChannelsList{i} = sprintf('ColCh %d', i);
             end
-            obj.View.handles.firstChannelCombo.String = colorChannelsList;
-            obj.View.handles.secondChannelCombo.String = colorChannelsList;
+            obj.View.handles.ColorChannel1.String = colorChannelsList;
+            obj.View.handles.ColorChannel2.String = colorChannelsList;
             if numel(colorChannelsList) > 1
-                obj.View.handles.secondChannelCombo.Value = 2;
+                obj.View.handles.ColorChannel2.Value = 2;
             else
-                obj.View.handles.secondChannelCombo.Value = 1;
+                obj.View.handles.ColorChannel2.Value = 1;
             end
             % when only one color channel is shown select it
             slices = obj.mibModel.getImageProperty('slices');
             if numel(slices{3}) == 1
                 colorChannelSelection = slices{3};
-                obj.View.handles.firstChannelCombo.Value = colorChannelSelection;
+                obj.View.handles.ColorChannel1.Value = colorChannelSelection;
             else
-                obj.View.handles.firstChannelCombo.Value = slices{3}(1);
+                obj.View.handles.ColorChannel1.Value = slices{3}(1);
             end
             
             % update the table
             obj.enableStatTable();
+            
+            obj.BatchOpt.DatasetType(1) = obj.View.handles.DatasetType.String(obj.View.handles.DatasetType.Value);
         end
         
         function histScale_Callback(obj)
@@ -229,7 +401,15 @@ classdef mibStatisticsController < handle
             %
             % Parameters:
             % parameter: a string that specify parameter for the callback
-            % @ 'mean'
+            % @li 'mean' - calculate an average of all selected numbers
+            % @li 'sum' - calculate a sum of all selected numbers
+            % @li 'min' - find the minimum value of all selected numbers
+            % @li 'max' - find the maximum value of all selected numbers
+            % @li 'crop' - crop selected objects to a file or Matlab
+            % @li 'hist' - show histogram distribution for the selected objects
+            % @li 'newLabel', 'addLabel', 'removeLabel' - generate or update the MIB annotations
+            % @li 'copyColumn' - copy selected column to the clipboard
+            
             global mibPath;
             
             data = obj.View.handles.statTable.Data;
@@ -262,8 +442,8 @@ classdef mibStatisticsController < handle
                     if isempty(nbins); return; end
                     nbins = str2double(nbins{1});
                     if isnan(nbins); errordlg(sprintf('Please enter a number to define number of bins to sort the data!'), 'Error', 'modal'); return; end
-                    parList = obj.View.handles.propertyCombo.String;
-                    parList = parList{obj.View.handles.propertyCombo.Value};
+                    parList = obj.View.handles.Property.String;
+                    parList = parList{obj.View.handles.Property.Value};
                     hf = figure(randi(1000));
                     hist(val,nbins);
                     hHist = findobj(gca, 'Type', 'patch');
@@ -277,6 +457,11 @@ classdef mibStatisticsController < handle
                     [~, figName] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
                     hf.Name = figName;
                     grid;
+                case 'copyColumn'
+                    columnIds = unique(obj.indices(:,2));
+                    d = data(:, columnIds);
+                    num2clip(d);    % copy to clipboard
+                    fprintf('Stats: %d rows were copied to the system clipboard\n', size(d,2));
                 case {'newLabel', 'addLabel', 'removeLabel'}
                     if strcmp(parameter, 'newLabel')    % clear existing annotations
                         if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber() > 0
@@ -288,13 +473,57 @@ classdef mibStatisticsController < handle
                         obj.mibModel.I{obj.mibModel.Id}.hLabels.clearContents();
                     end
                     
-                    property = obj.View.handles.propertyCombo.String(obj.View.handles.propertyCombo.Value);
-                    labelList = repmat(property, [numel(obj.indices(:,1)), 1]);
-                    labelValues = data(obj.indices(:,1), 2);
-                    positionList = arrayfun(@(index) data(index, 3),obj.indices(:,1));
-                    positionList(:,2) = arrayfun(@(objId) obj.STATS(objId).Centroid(1), data(obj.indices(:,1), 1));
-                    positionList(:,3) = arrayfun(@(objId) obj.STATS(objId).Centroid(2), data(obj.indices(:,1), 1));
-                    positionList(:,4) = arrayfun(@(index) data(index, 4),obj.indices(:,1));
+                    addObjId = false;
+                    addMaterialName = false;
+                    materialName = '';
+                    customText = '';
+                    if ~strcmp(parameter, 'removeLabel')
+                        prompts = {'Custom text:'; 'Add material name to the label'; 'Add object Id to the label'};
+                        defAns = {''; false; false;};
+                        dlgTitle = 'Add annotation settings';
+                        options.WindowStyle = 'normal';       
+                        options.PromptLines = [1, 1, 1];   
+                        options.Title = 'Annotation labels settings:'; 
+                        answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                        if isempty(answer); return; end 
+                        customText = answer{1};
+                        addMaterialName = answer{2};
+                        addObjId = answer{3};
+                    end
+                    
+                    property = obj.View.handles.Property.String{obj.View.handles.Property.Value};
+                    if ~isempty(customText); materialName = [customText '_' materialName]; end
+                    
+                    if addMaterialName
+                        materialName = [materialName obj.View.handles.Material.String{obj.View.handles.Material.Value} '_'];
+                    end
+                    colIds = unique(obj.indices(:,1));
+                    labelList = repmat({[materialName property]}, [numel(colIds), 1]);
+                    
+                    if addObjId     % add indices of objects
+                        noDecimails = numel(num2str(max(data(obj.indices(:,1)))));
+                        if noDecimails <= 2
+                            labelList = cellfun(@(x, y) sprintf('%s_%.2d', x, y), labelList, num2cell(data(colIds, 1)), 'UniformOutput', false);
+                        elseif noDecimails == 3
+                            labelList = cellfun(@(x, y) sprintf('%s_%.3d', x, y), labelList, num2cell(data(colIds, 1)), 'UniformOutput', false);                        
+                        elseif noDecimails == 4
+                            labelList = cellfun(@(x, y) sprintf('%s_%.4d', x, y), labelList, num2cell(data(colIds, 1)), 'UniformOutput', false);                        
+                        elseif noDecimails == 5
+                            labelList = cellfun(@(x, y) sprintf('%s_%.5d', x, y), labelList, num2cell(data(colIds, 1)), 'UniformOutput', false);
+                        elseif noDecimails == 6
+                            labelList = cellfun(@(x, y) sprintf('%s_%.6d', x, y), labelList, num2cell(data(colIds, 1)), 'UniformOutput', false);
+                        elseif noDecimails == 7
+                            labelList = cellfun(@(x, y) sprintf('%s_%.7d', x, y), labelList, num2cell(data(colIds, 1)), 'UniformOutput', false);          
+                        else
+                            labelList = cellfun(@(x, y) sprintf('%s_%.10d', x, y), labelList, num2cell(data(colIds, 1)), 'UniformOutput', false);          
+                        end
+                    end
+                    
+                    labelValues = data(colIds, 2);
+                    positionList = arrayfun(@(index) data(index, 3), colIds);
+                    positionList(:,2) = arrayfun(@(objId) obj.STATS(objId).Centroid(1), data(colIds, 1));
+                    positionList(:,3) = arrayfun(@(objId) obj.STATS(objId).Centroid(2), data(colIds, 1));
+                    positionList(:,4) = arrayfun(@(index) data(index, 4), colIds);
                     
                     if strcmp(parameter, 'removeLabel')
                         obj.mibModel.I{obj.mibModel.Id}.hLabels.removeLabels(positionList);   % remove labels by position
@@ -306,135 +535,130 @@ classdef mibStatisticsController < handle
                     notify(obj.mibModel, 'updatedAnnotations');
                     notify(obj.mibModel, 'plotImage');
                     
-%                     % update the annotation window
-%                     windowId = findall(0,'tag','ib_labelsGui');
-%                     if ~isempty(windowId)
-%                         hlabelsGui = guidata(windowId);
-%                         cb = get(hlabelsGui.refreshBtn,'callback');
-%                         feval(cb, hlabelsGui.refreshBtn, []);
-%                     end
+                    %                     % update the annotation window
+                    %                     windowId = findall(0,'tag','ib_labelsGui');
+                    %                     if ~isempty(windowId)
+                    %                         hlabelsGui = guidata(windowId);
+                    %                         cb = get(hlabelsGui.refreshBtn,'callback');
+                    %                         feval(cb, hlabelsGui.refreshBtn, []);
+                    %                     end
                 otherwise
                     obj.statTable_CellSelectionCallback([], parameter);
             end
         end
         
-        
-        function sortButtonContext_cb(obj, parameter)
-            % function sortButtonContext_cb(obj, parameter)
-            % a callback for context menu for obj.View.handles.sortBtn
-            %
-            % Parameters:
-            % parameter: a string with sorting choice
-            % @li 'object' - sort by object id
-            % @li 'value' - sort by object value
-            % @li 'slice' - sort by slice number
-            % @li 'time' - sort by time point
+        function updateSortingSettings(obj)
+            % function updateSortingSettings(obj)
+            % update settings for sorting the columns of the table
+            % obj.sortingDirection
+            % obj.sortingColIndex
             
-            if strcmp(parameter, 'object')
-                colIndex = 1;
-            elseif strcmp(parameter, 'value')
-                colIndex = 2;
-            elseif strcmp(parameter, 'slice')
-                colIndex = 3;
-            elseif strcmp(parameter, 'time')
-                colIndex = 4;
+            val = obj.View.handles.sortingPopup.Value;
+            list = obj.View.handles.sortingPopup.String;
+            switch list{val}
+                case 'Value, ascent'
+                    obj.sortingDirection = 1;
+                    obj.sortingColIndex = 2;
+                case 'Value, descent'
+                    obj.sortingDirection = 0;
+                    obj.sortingColIndex = 2;
+                case 'ObjectID, ascent'
+                    obj.sortingDirection = 1;
+                    obj.sortingColIndex = 1;
+                case 'ObjectID, descent'
+                    obj.sortingDirection = 0;
+                    obj.sortingColIndex = 1;
+                case 'SliceNo, ascent'
+                    obj.sortingDirection = 1;
+                    obj.sortingColIndex = 3;
+                case 'SliceNo, descent'
+                    obj.sortingDirection = 0;
+                    obj.sortingColIndex = 3;
+                case 'TimePnt, ascent'
+                    obj.sortingDirection = 1;
+                    obj.sortingColIndex = 4;
+                case 'TimePnt, descent'
+                    obj.sortingDirection = 0;
+                    obj.sortingColIndex = 4;
             end
-            obj.sortBtn_Callback(colIndex);
+            obj.sortBtn_Callback();
         end
         
-        function sortBtn_Callback(obj, colIndex)
-            % function sortBtn_Callback(obj, colIndex)
-            % sort the obj.View.handles.statTable
-            %
-            % Paremters:
-            % colIndex: a number with the index of the column to use for
-            % sorting (i.e. 1, 2, 3, or 4)
+        function Material_Callback(obj)
+            % function Material_Callback(obj)
+            % a callback for obj.View.handles.Material
             
-            data = obj.View.handles.statTable.Data;
-            if iscell(data); return; end   % nothing to sort
-            if obj.sorting == 1     % ascend sorting
-                [data(:,colIndex), index] = sort(data(:,colIndex), 'ascend');
-                obj.sorting = 0;
+            val = obj.View.handles.Material.Value;
+            targetList = obj.View.handles.Material.String;
+            obj.View.gui.Name = sprintf('"%s" stats...', targetList{val});
+            
+            if obj.mibModel.I{obj.mibModel.Id}.modelType <= 255
+                obj.BatchOpt.MaterialIndex = num2str(val-2);
             else
-                [data(:,colIndex), index] = sort(data(:,colIndex), 'descend');
-                obj.sorting = 1;
+                if val > 3
+                    obj.BatchOpt.MaterialIndex = targetList{val};
+                else
+                    obj.BatchOpt.MaterialIndex = num2str(val-3);
+                end
             end
-            
-            if colIndex == 2
-                data(:,1) = data(index, 1);
-                data(:,3) = data(index, 3);
-                data(:,4) = data(index, 4);
-            elseif colIndex == 1
-                data(:,2) = data(index, 2);
-                data(:,3) = data(index, 3);
-                data(:,4) = data(index, 4);
-            elseif colIndex == 3
-                data(:,1) = data(index, 1);
-                data(:,2) = data(index, 2);
-                data(:,4) = data(index, 4);
-            elseif colIndex == 4
-                data(:,1) = data(index, 1);
-                data(:,2) = data(index, 2);
-                data(:,3) = data(index, 3);
-            end
-            obj.View.handles.statTable.Data = data;
         end
         
-        function targetPopup_Callback(obj)
-        % function targetPopup_Callback(obj)
-        % a callback for obj.View.handles.targetPopup
-        
-        val = obj.View.handles.targetPopup.Value;
-        targetList = obj.View.handles.targetPopup.String;
-        obj.View.gui.Name = sprintf('"%s" stats...', targetList{val});
-        obj.sel_model = val-2;
-        end
-        
-        function propertyCombo_Callback(obj)
-            % function propertyCombo_Callback(obj)
-            % a callback for obj.View.handles.propertyCombo
+        function Property_Callback(obj)
+            % function Property_Callback(obj)
+            % a callback for obj.View.handles.Property
             
-            list = obj.View.handles.propertyCombo.String;
-            value = obj.View.handles.propertyCombo.Value;
+            list = obj.View.handles.Property.String;
+            value = obj.View.handles.Property.Value;
             if strcmp(list{value},'Correlation')
-                obj.View.handles.secondChannelCombo.Enable = 'on';
+                obj.View.handles.ColorChannel2.Enable = 'on';
             else
-                obj.View.handles.secondChannelCombo.Enable = 'off';
+                obj.View.handles.ColorChannel2.Enable = 'off';
                 if strcmp(list{value},'EndpointsLength') || strcmp(list{value},'CurveLength')
-                    if obj.View.handles.connectivityCombo.Value == 1
+                    if obj.View.handles.Connectivity.Value == 1
                         msgbox('The connectivity parameter was changed from 4 to 8!','Connectivity changed','warn','modal')
-                        obj.View.handles.connectivityCombo.Value = 2;
+                        obj.View.handles.Connectivity.Value = 2;
+                        obj.BatchOpt.Connectivity{1} = '8/26 connectivity';
                     end
                 end
                 
-                if obj.View.handles.objectBasedRadio.Value == 1
-                    if obj.View.handles.object2dRadio.Value == 1
-                        obj.obj2DType = obj.View.handles.propertyCombo.Value;
+                if strcmp(obj.BatchOpt.Mode{1}, 'Object') 
+                    if strcmp(obj.BatchOpt.Shape{1}, 'Shape2D') 
+                        obj.obj2DType = obj.View.handles.Property.Value;
                     else
-                        obj.obj3DType = obj.View.handles.propertyCombo.Value;
+                        obj.obj3DType = obj.View.handles.Property.Value;
                     end
                 else
-                    obj.intType = obj.View.handles.propertyCombo.Value;
+                    obj.intType = obj.View.handles.Property.Value;
                 end
             end
             selectedProperty = list{value};
             
-            if obj.View.handles.multipleCheck.Value
+            % rename selectedProperty for intensity measurements
+            if ismember(selectedProperty, {'SumIntensity', 'StdIntensity', 'MeanIntensity', 'MaxIntensity', 'MinIntensity'})
+                colCh = obj.View.handles.ColorChannel1.Value;
+                selectedProperty = sprintf('%s_Ch%d', selectedProperty, colCh);
+            end
+            
+            if obj.BatchOpt.Multiple == 1
                 % update table if possible
                 if isfield(obj.STATS, selectedProperty)
                     data = zeros(numel(obj.STATS),4);
                     if numel(data) ~= 0
                         [data(:,2), data(:,1)] = sort(cat(1,obj.STATS.(selectedProperty)), 'descend');
+                        w1 = obj.mibModel.getImageProperty('width');
+                        h1 = obj.mibModel.getImageProperty('height');
+                        d1 = obj.mibModel.getImageProperty('depth');
                         for row = 1:size(data,1)
                             pixelId = max([1 floor(numel(obj.STATS(data(row,1)).PixelIdxList)/2)]);  % id of the voxel to get a slice number
-                            [~, ~, data(row,3)] = ind2sub([obj.mibModel.getImageProperty('width') obj.mibModel.getImageProperty('height') obj.mibModel.getImageProperty('depth')], ...
+                            [~, ~, data(row,3)] = ind2sub([w1, h1, d1], ...
                                 obj.STATS(data(row,1)).PixelIdxList(pixelId));
                         end
                         data(:, 4) = [obj.STATS(data(:,1)).TimePnt];
                     end
+                    data = obj.sortBtn_Callback(data);
+                    
                     obj.View.handles.statTable.Data = data;
                     data = data(:,2);
-                    
                     [a,b] = hist(data, 256);
                     bar(obj.View.handles.histogram, b, a);
                     obj.histLimits = [min(b) max(b)];
@@ -446,9 +670,10 @@ classdef mibStatisticsController < handle
                 end
             end
             
-            if obj.View.handles.multipleCheck.Value == 0
-                obj.selectedProperties = cellstr(selectedProperty);
+            if obj.BatchOpt.Multiple == 0
+                obj.BatchOpt.Property{1} = list{value};
             end
+            
         end
         
         function radioButton_Callback(obj, hObject)
@@ -458,52 +683,65 @@ classdef mibStatisticsController < handle
             % Parameters:
             % hObject: a handle to the object
             
-            intensityBasedStats_Sw = obj.View.handles.intensityBasedRadio.Value;
-            object2d_Sw = obj.View.handles.object2dRadio.Value;
-            if intensityBasedStats_Sw == 1  % intensity based statistics
+            if obj.View.handles.Shape2D.Value == 1
+                obj.BatchOpt.Shape{1} = 'Shape2D';
+            else
+                obj.BatchOpt.Shape{1} = 'Shape3D';
+            end
+            if obj.View.handles.Intensity.Value == 1
+                obj.BatchOpt.Mode{1} = 'Intensity';
+            else
+                obj.BatchOpt.Mode{1} = 'Object';
+            end
+            
+            if strcmp(obj.BatchOpt.Mode{1}, 'Intensity')  % intensity based statistics
                 list ={'MinIntensity','MaxIntensity','MeanIntensity','StdIntensity','SumIntensity','Correlation'};
-                obj.View.handles.firstChannelCombo.Enable = 'on';
-                obj.View.handles.propertyCombo.Value = obj.intType;
+                obj.View.handles.ColorChannel1.Enable = 'on';
+                obj.View.handles.Property.Value = obj.intType;
             else                            % object based statistics
-                obj.View.handles.firstChannelCombo.Enable = 'off';
-                obj.View.handles.secondChannelCombo.Enable = 'off';
-                if object2d_Sw == 1
+                obj.View.handles.ColorChannel1.Enable = 'off';
+                obj.View.handles.ColorChannel2.Enable = 'off';
+                if strcmp(obj.BatchOpt.Shape{1}, 'Shape2D')
                     list = {'Area','ConvexArea','CurveLength','Eccentricity','EndpointsLength','EquivDiameter','EulerNumber',...
                         'Extent','FilledArea','FirstAxisLength','HolesArea','MajorAxisLength','MinorAxisLength','Orientation',...
                         'Perimeter','SecondAxisLength','Solidity'};
-                    obj.View.handles.propertyCombo.Value = obj.obj2DType;
+                    obj.View.handles.Property.Value = obj.obj2DType;
                 else
                     if obj.matlabVersion >= 9.3
-                        list ={'Volume','EndpointsLength','EquatorialEccentricity','FilledArea','HolesArea','MajorAxisLength',...
-                            'MeridionalEccentricity','SecondAxisLength','ThirdAxisLength',...
-                            'ConvexVolume', 'EquivDiameter','Extent','Solidity','SurfaceArea'};
+                        list ={'Volume', 'ConvexVolume', 'EndpointsLength','EquatorialEccentricity', 'EquivDiameter','Extent',...
+                               'FilledArea','HolesArea','MajorAxisLength', 'MeridionalEccentricity','SecondAxisLength','Solidity',...
+                               'SurfaceArea', 'ThirdAxisLength'};
                     else
                         list ={'Volume','EndpointsLength','EquatorialEccentricity','FilledArea','HolesArea','MajorAxisLength','MeridionalEccentricity','SecondAxisLength','ThirdAxisLength'};
                     end
-                    obj.View.handles.propertyCombo.Value = obj.obj3DType;
+                    obj.View.handles.Property.Value = obj.obj3DType;
                 end
             end
-            obj.View.handles.propertyCombo.String = list;
+            obj.View.handles.Property.String = list;
             hObject.Value = 1;
             
-            if strcmp(hObject.Tag, 'object2dRadio')
-                obj.selectedProperties = {'Area'};  % update handles.properties
-                obj.View.handles.multipleCheck.Value = 0;
+            if strcmp(hObject.Tag, 'Shape2D') 
+                obj.BatchOpt.Property{1} = 'Area';  % update properties
+                obj.BatchOpt.MultipleProperty = 'Area';  % update properties
+                obj.BatchOpt.Multiple = false;
+                obj.View.handles.Multiple.Value = 0;
                 obj.View.handles.multipleBtn.Enable = 'off';
-            elseif strcmp(hObject.Tag, 'object3dRadio')
-                obj.selectedProperties = {'Volume'};  % update handles.properties
-                obj.View.handles.multipleCheck.Value = 0;
+            elseif strcmp(hObject.Tag, 'Shape3D')
+                obj.BatchOpt.Property{1} = 'Volume'; % update properties
+                obj.BatchOpt.MultipleProperty = 'Volume';  % update properties
+                obj.BatchOpt.Multiple = false;
+                obj.View.handles.Multiple.Value = 0;
                 obj.View.handles.multipleBtn.Enable = 'off';
-                obj.unitsCombo_Callback();
+                obj.Units_Callback();
+            else
+                obj.BatchOpt.Property{1} = obj.View.handles.Property.String{obj.View.handles.Property.Value};
             end
-            
-            if obj.View.handles.multipleCheck.Value == 1
-                obj.propertyCombo_Callback();
-            end
+            obj.Property_Callback();
+            %if obj.View.handles.Multiple.Value == 1;obj.Property_Callback(); end 
         end
         
         function highlightSelection(obj, object_list, mode, sliceNumbers)
-            % function highlightSelection(obj, object_list, mode)
+            % function highlightSelection(obj, object_list, mode, sliceNumbers)
             % highlight selected objects
             %
             % Parameters:
@@ -511,7 +749,7 @@ classdef mibStatisticsController < handle
             % mode: a string
             % 'Add' - add selected objects to the selection layer
             % 'Remove' - remove selected objects from the selection layer
-            % 'Replace' - replace the selection layer with selected objects 
+            % 'Replace' - replace the selection layer with selected objects
             % 'obj2model' - generate a new model, where each selected object will be assigned to own index
             % sliceNumbers: indices of slices for each selected object
             
@@ -520,13 +758,11 @@ classdef mibStatisticsController < handle
                 mode = obj.View.handles.detailsPanel.SelectedObject.String;    % what to do with selected objects: Add, Remove, Replace
             end
             
-            datasetTypeList = obj.View.handles.datasetPopup.String;
-            frame = datasetTypeList{obj.View.handles.datasetPopup.Value};
-            mode2 = obj.View.handles.shapePanel.SelectedObject.String;      % 2D/3D objects
+            mode2 = obj.View.handles.Shape.SelectedObject.String;      % 2D/3D objects
             
             getDataOptions.blockModeSwitch = 0;
             [img_height, img_width, ~, img_depth] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', NaN, NaN, getDataOptions);
-            if strcmp(frame, '2D, Slice') && strcmp(mode2, '2D objects') || (strcmp(mode2, '2D objects') && numel(object_list)==1)
+            if strcmp(obj.BatchOpt.DatasetType{1}, '2D, Slice') && strcmp(mode2, '2D objects') || (strcmp(mode2, '2D objects') && numel(object_list)==1)
                 tic
                 currentSlice = obj.STATS(object_list(1)).Centroid(3);
                 currentTime = obj.STATS(object_list(1)).TimePnt;
@@ -595,6 +831,7 @@ classdef mibStatisticsController < handle
                         maskClass = 'uint16';
                     else
                         errordlg('Number of materials exceeds the maximal possible number!', 'Too many objects');
+                        notify(obj.mibModel, 'stopProtocol');
                         return;
                     end
                     obj.mibModel.I{obj.mibModel.Id}.createModel(modelType);
@@ -773,86 +1010,153 @@ classdef mibStatisticsController < handle
             obj.highlightSelection(object_list);
         end
         
-        function unitsCombo_Callback(obj)
+        function Units_Callback(obj)
+            % function Units_Callback(obj)
             % callback for change of the unitCombo combo
-            curValue = obj.View.handles.unitsCombo.String{obj.View.handles.unitsCombo.Value};
+            curValue = obj.View.handles.Units.String{obj.View.handles.Units.Value};
             
             pixSize = obj.mibModel.getImageProperty('pixSize');
-            if ((pixSize.x ~= pixSize.z || pixSize.y ~= pixSize.z) && ~strcmp(curValue, 'pixels') && obj.View.handles.object3dRadio.Value == 1) && obj.anisotropicVoxelsAgree == 0
+            if ((pixSize.x ~= pixSize.z || pixSize.y ~= pixSize.z) && ~strcmp(curValue, 'pixels') && obj.View.handles.Shape3D.Value == 1) && obj.anisotropicVoxelsAgree == 0
                 answer = questdlg(sprintf('!!! Warning !!!\n\nPlease note that calculation of certain 3D properties, such as\nMeridionalEccentricity, EquatorialEccentricity, MajorAxisLength, SecondAxisLength, ThirdAxisLength, EquivDiameter, SurfaceArea\nrequires isotropic voxels!'),...
                     'Attention!!!', 'Confirm', 'Cancel', 'Confirm');
                 if strcmp(answer, 'Cancel')
-                    obj.View.handles.unitsCombo.Value = 1;
-                    return; 
+                    obj.View.handles.Units.Value = 1;
+                    return;
                 end
                 obj.anisotropicVoxelsAgree = 1;
             end
-            obj.units = curValue;
+            obj.BatchOpt.Units{1} = curValue;
         end
         
         function multipleBtn_Callback(obj)
+            % function multipleBtn_Callback(obj)
             % a callback for obj.View.handles.multipleBtn, selecting multiple
             % properties for calculation
+            
             obj3d = 1;
-            if obj.View.handles.object2dRadio.Value == 1
+            if obj.View.handles.Shape2D.Value == 1
                 obj3d = 0;
             end
-            res = mibMaskStatsProps(obj.selectedProperties, obj3d);
+
+            if isempty(obj.BatchOpt.MultipleProperty)
+                propertyList = obj.BatchOpt.Property(1);
+            else
+                propertyList = arrayfun(@(x) strtrim(x), split(obj.BatchOpt.MultipleProperty, ';'));
+                propertyList(~ismember(propertyList, [obj.availableProperties2D, obj.availableProperties3D, obj.availablePropertiesInt])) = [];    % remove wrongly named properties
+            end
+            res = mibMaskStatsProps(propertyList, obj3d);
+            
             if ~isempty(res)
-                obj.selectedProperties = sort(res);
+                propertyList = sort(res);
                 customProps = {'CurveLength','EndpointsLength'};
-                if sum(ismember(obj.selectedProperties, customProps)) > 1
-                    if obj.View.handles.connectivityCombo.Value == 1
-                        msgbox('The connectivity parameter was changed from 4 to 8!','Connectivity changed','warn','modal')
-                        obj.View.handles.connectivityCombo.Value = 2;
+                if sum(ismember(propertyList, customProps)) > 1                    
+                    if obj.View.handles.Connectivity.Value == 1
+                        msgbox('The connectivity parameter was changed from 4 to 8!', 'Connectivity changed', 'warn', 'modal');
+                        obj.View.handles.Connectivity.Value = 2;
+                        obj.BatchOpt.Connectivity{1} = '8/26 connectivity';
                     end
                 end
                 
-                list = obj.View.handles.propertyCombo.String;
-                index = find(ismember(list, obj.selectedProperties(1))==1);
+                list = obj.View.handles.Property.String;
+                index = find(ismember(list, propertyList{1})==1);
                 if isempty(index)
-                    if obj.View.handles.objectBasedRadio.Value == 1    % switch from the object to intensity mode
-                        obj.View.handles.intensityBasedRadio.Value = 1;
+                    if obj.View.handles.Object.Value == 1    % switch from the object to intensity mode
+                        obj.View.handles.Intensity.Value = 1;
                     else                                        % switch from the intensity to the object mode
-                        obj.View.handles.objectBasedRadio.Value = 1;
+                        obj.View.handles.Object.Value = 1;
                     end
-                    obj.radioButton_Callback(obj.View.handles.objectBasedRadio);
-                    list = obj.View.handles.propertyCombo.String;
-                    index = find(ismember(list, obj.selectedProperties(1))==1);
+                    obj.radioButton_Callback(obj.View.handles.Object);
+                    list = obj.View.handles.Property.String;
+                    index = find(ismember(list, propertyList{1})==1);
+                    obj.View.handles.Property.Value = index(1);
                 else
-                    obj.View.handles.propertyCombo.Value = index;
+                    obj.View.handles.Property.Value = index(1);
                 end
+                obj.BatchOpt.Property(1) = propertyList(1);
+                obj.BatchOpt.MultipleProperty = sprintf('%s; ', propertyList{:});
+                obj.BatchOpt.MultipleProperty = obj.BatchOpt.MultipleProperty(1:end-2);     % remove tailoring "; "
             end
         end
         
-        function exportButton_Callback(obj)
-            % function exportButton_Callback(obj)
+        function Multiple_Callback(obj)
+            % function Multiple_Callback(obj)
+            % callback for press of Multiple checkbox
+            val = obj.View.handles.Multiple.Value;
+            if val == 1
+                obj.BatchOpt.Multiple = true;
+                obj.View.handles.multipleBtn.Enable = 'on';
+            else
+                obj.BatchOpt.Multiple = false;
+                obj.View.handles.multipleBtn.Enable = 'off';
+            end
+        end
+        
+        function exportButton_Callback(obj, BatchModeSwitch)
+            % function exportButton_Callback(obj, BatchModeSwitch)
             % a callback for obj.View.handles.exportButton
+            % Parameters:
+            % BatchModeSwitch: a logical switch indicating using the
+            % function from the batch mode
             
             global mibPath;
+            if nargin < 2; BatchModeSwitch = 0; end
             
-            % export Statistics to Matlab or Excel
-            if ~isdeployed
-                choice =  questdlg('Would you like to save results?', 'Export', 'Save as...', 'Export to Matlab', 'Cancel', 'Save as...');
-                if strcmp(choice,'Cancel')    % cancel
-                    return;
+            fn_out = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
+            if BatchModeSwitch == 0
+                % export Statistics to Matlab or Excel
+                choice = 'Save as...';
+                if ~isdeployed
+                    choice =  questdlg('Would you like to save results?', 'Export', 'Save as...', 'Export to Matlab', 'Cancel', 'Save as...');
+                    if strcmp(choice, 'Cancel'); return; end
+                end
+                
+                filterIndex = 0;
+                if strcmp(choice, 'Save as...')
+                    if isempty(fn_out)
+                        fn_out = obj.mibModel.myPath;
+                    else
+                        [fn_out, name, ~] = fileparts(fn_out);
+                        fn_out = fullfile(fn_out, [name '_analysis']);
+                    end
+                    [filename, Path, filterIndex] = uiputfile(...
+                        {'*.xls',  'Excel format (*.xls)'; ...
+                        '*.csv',  'Comma-separated values (*.csv)'; ...
+                        '*.mat',  'Matlab format (*.mat)'; ...
+                        '*.*',  'All Files (*.*)'}, ...
+                        'Save as...',fn_out);
+                    if isequal(filename, 0); return; end
+                    [~, obj.BatchOpt.ExportFilename, Extension] = fileparts(filename);
+                    obj.BatchOpt.ExportResultsTo(1) = obj.BatchOpt.ExportResultsTo{2}(filterIndex+2);
+                else
+                    obj.BatchOpt.ExportResultsTo{1} = choice;
+                    answer = mibInputDlg({mibPath}, ...
+                        sprintf('Please name of the variable for the export:'),...
+                            'Export to Matlab', 'MIB_stats');
+                    if isempty(answer); return; end
+                    obj.BatchOpt.ExportFilename = answer{1};
                 end
             else
-                choice = 'Save as...';
+                filterIndex = find(ismember(obj.BatchOpt.ExportResultsTo{2}, obj.BatchOpt.ExportResultsTo{1})) - 2;
+                if isempty(fn_out)
+                    Path = obj.mibModel.myPath;
+                else
+                    Path = fileparts(fn_out);
+                end
+                if filterIndex > 0
+                    Extension = obj.BatchOpt.ExportResultsTo{1}(end-4:end-1);
+                end
             end
             
-            datasetTypeList = obj.View.handles.datasetPopup.String;
-            OPTIONS.frame = datasetTypeList{obj.View.handles.datasetPopup.Value};
-            OPTIONS.mode = obj.View.handles.shapePanel.SelectedObject.String;   % 2d/3d objects
-            connectivityValue = obj.View.handles.connectivityCombo.Value;   % if 1: connectivity=4(2d) and 6(3d), if 2: 8(2d)/26(3d)
-            connectivityList = obj.View.handles.connectivityCombo.String;   % if 1: connectivity=4(2d) and 6(3d), if 2: 8(2d)/26(3d)
-            OPTIONS.connectivity = connectivityList{connectivityValue};   % if 1: connectivity=4(2d) and 6(3d), if 2: 8(2d)/26(3d)
-            OPTIONS.colorChannel = obj.View.handles.firstChannelCombo.Value;
-            OPTIONS.units = obj.units;
+            OPTIONS.frame = obj.BatchOpt.DatasetType{1};
+            OPTIONS.mode = obj.BatchOpt.Shape{1};   % 2d/3d objects
+            OPTIONS.connectivity = obj.BatchOpt.Connectivity{1};   
+            OPTIONS.colorChannel1 = obj.BatchOpt.ColorChannel1{1};
+            OPTIONS.colorChannel2 = obj.BatchOpt.ColorChannel2{1};
+            OPTIONS.units = obj.BatchOpt.Units{1};
             
-            if obj.sel_model == -1
+            if strcmp(obj.BatchOpt.MaterialIndex, '-1') %  Mask 
                 OPTIONS.type = 'Mask';
-            elseif obj.sel_model == 0
+            elseif strcmp(obj.BatchOpt.MaterialIndex, '0')  % Exterior 
                 OPTIONS.type = 'Exterior';
             else
                 OPTIONS.type = 'Model';
@@ -865,10 +1169,10 @@ classdef mibStatisticsController < handle
                 OPTIONS.material_id = 'Exterior';
             else
                 OPTIONS.model_fn = obj.mibModel.getImageProperty('modelFilename');
-                if ~isnan(obj.sel_model)
-                    OPTIONS.material_id = sprintf('%d (%s)', obj.sel_model, obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{obj.sel_model});
+                if ~strcmp(obj.BatchOpt.MaterialIndex, '-2')  %
+                    OPTIONS.material_id = sprintf('%s (%s)', obj.BatchOpt.MaterialIndex, obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{str2double(obj.BatchOpt.MaterialIndex)});
                 else
-                    OPTIONS.material_id = 'Model';
+                    OPTIONS.material_id = 'Full model';
                 end
             end
             
@@ -882,42 +1186,26 @@ classdef mibStatisticsController < handle
             curInt = get(0, 'DefaulttextInterpreter');
             set(0, 'DefaulttextInterpreter', 'none');
             
-            if strcmp(choice, 'Export to Matlab')
-                answer = mibInputDlg({mibPath}, ...
-                    sprintf('Please name of the variable for the export:'),...
-                    'Export to Matlab', 'MIB_stats');
-                if isempty(answer); return; end
-                
-                fprintf('"%s" structure with results was created in the Matlab workspace\n', answer{1});
+            if strcmp(obj.BatchOpt.ExportResultsTo{1}, 'Export to Matlab')
+                fprintf('"%s" structure with results was created in the Matlab workspace\n', obj.BatchOpt.ExportFilename);
                 STATSOUT = obj.STATS;
                 STATSOUT(1).OPTIONS = OPTIONS;
-                assignin('base', answer{1}, STATSOUT);
-            elseif strcmp(choice, 'Save as...')
-                fn_out = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
-                if isempty(fn_out)
-                    fn_out = obj.mibModel.myPath;
-                else
-                    [fn_out, name, ~] = fileparts(fn_out);
-                    fn_out = fullfile(fn_out, [name '_analysis']);
-                end
-                [filename, path, filterIndex] = uiputfile(...
-                    {'*.xls;',  'Excel format (*.xls)'; ...
-                    '*.mat;',  'Matlab format (*.mat)'; ...
-                    '*.*',  'All Files (*.*)'}, ...
-                    'Save as...',fn_out);
-                if isequal(filename,0); return; end
-                fn = [path filename];
-                wb = waitbar(0,sprintf('%s\nPlease wait...',fn), 'Name', 'Saving the results', 'WindowStyle', 'modal');
-                if exist(fn,'file') == 2
-                    delete(fn);  % delete exising file
-                end
-                waitbar(0.2,wb);
-                if filterIndex == 2     % save as mat file
+                assignin('base', obj.BatchOpt.ExportFilename, STATSOUT);
+            elseif ismember(obj.BatchOpt.ExportResultsTo{1}, obj.BatchOpt.ExportResultsTo{2}(3:5))
+                if obj.BatchOpt.ExportFilename(1) ~= filesep; obj.BatchOpt.ExportFilename = [filesep obj.BatchOpt.ExportFilename]; end  % add slash before the filename
+                fn = [Path, obj.BatchOpt.ExportFilename Extension];
+                if obj.BatchOpt.showWaitbar; wb = waitbar(0,sprintf('%s\nPlease wait...',fn), 'Name', 'Saving the results', 'WindowStyle', 'modal'); end
+                Path2 = fileparts(fn);
+                if exist(Path2, 'dir') == 0; mkdir(Path2); end  % create a new directory
+                if exist(fn, 'file') == 2;  delete(fn);  end    % delete exising file
+                
+                if obj.BatchOpt.showWaitbar; waitbar(0.2,wb); end
+                if filterIndex == 3     % save as mat file
                     STATS = obj.STATS; %#ok<NASGU>
                     save(fn, 'OPTIONS','STATS');
-                elseif filterIndex == 1     % save as Excel file
+                elseif filterIndex == 1  ||  filterIndex == 2 % save as Excel file or CSV file
                     STATS = obj.STATS;
-                    warning off MATLAB:xlswrite:AddSheet
+                    warning('off', 'MATLAB:xlswrite:AddSheet');
                     % Sheet 1
                     s = {'Quantification Results'};
                     s(2,1) = {['Image filename: ' obj.mibModel.I{obj.mibModel.Id}.meta('Filename')]};
@@ -936,15 +1224,15 @@ classdef mibStatisticsController < handle
                         s(4,field*2-1+1) = fieldNames(field);
                         s(4,field*2+1) = {pixSize.(fieldNames{field})};
                     end
-                    s(5,1) = {sprintf('CALCULATED IN %s', upper(obj.units))};
+                    s(5,1) = {sprintf('CALCULATED IN %s', upper(obj.BatchOpt.Units{1}))};
                     if ~strcmp(OPTIONS.units, 'pixels') && strcmp(OPTIONS.mode, '3D objects') && pixSize.x ~= pixSize.z
-                        s(5,6) = {sprintf('ATTENTION CALCULATION OF SOME PARAMETERS (such as Eccentricity, Lengths, Diameter, Surface Area) IN %s REQUIRES ISOTROPIC PIXELS!!!', upper(obj.units))};
+                        s(5,6) = {sprintf('ATTENTION CALCULATION OF SOME PARAMETERS (such as Eccentricity, Lengths, Diameter, Surface Area) IN %s REQUIRES ISOTROPIC PIXELS!!!', upper(obj.BatchOpt.Units{1}))};
                     end
                     
                     start=9;
                     s(7,1) = {'Results:'};
                     s(8,1) = {'ObjID'};
-                    s(8,3) = {'Centroid, px'};
+                    s(8,3) = {'Centroid px'};
                     s(9,2) = {'X'};
                     s(9,3) = {'Y'};
                     s(9,4) = {'Z'};
@@ -960,7 +1248,14 @@ classdef mibStatisticsController < handle
                     STATS = rmfield(STATS, 'BoundingBox');
                     
                     fieldNames = fieldnames(STATS);
-                    s(8,6:5+numel(fieldNames)) = fieldNames;
+                    fieldNamesForTitles = fieldNames;
+                    correlationId = find(ismember(fieldNamesForTitles, 'Correlation'));
+                    if ~isempty(correlationId)
+                        fieldNamesForTitles(correlationId) = {[fieldNamesForTitles{correlationId} ' ' OPTIONS.colorChannel1 '/' OPTIONS.colorChannel2]};
+                    else
+                        fieldNamesForTitles = fieldNames;
+                    end
+                    s(8,6:5+numel(fieldNames)) = fieldNamesForTitles;
                     for id=1:numel(fieldNames)
                         s(start+1:start+noObj,5+id) = num2cell(cat(1, STATS.(fieldNames{id})));
                     end
@@ -979,87 +1274,124 @@ classdef mibStatisticsController < handle
                     %             s(6+field+ind, 1) = {STATS.data(ind,1)};
                     %             s(6+field+ind, 2) = {STATS.data(ind,2)};
                     %         end
-                    waitbar(0.7,wb);
-                    xlswrite2(fn, s, 'Results', 'A1');
+                    if obj.BatchOpt.showWaitbar; waitbar(0.7,wb); end
+                    if filterIndex == 1
+                        xlswrite2(fn, s, 'Sheet1', 'A1');
+                    else
+                        if verLessThan('Matlab','9.6')  % before R2019a
+                            fid = fopen(fn, 'w');
+                            for i=1:start
+                                for j=1:5+numel(fieldNames)
+                                    fprintf(fid, '%s,', s{i,j});
+                                end
+                                fprintf(fid, '\n');
+                            end
+                            fclose(fid);
+                            dlmwrite(fn, cell2mat(s(start+1:end,:)),'delimiter', ',', '-append');
+                        else
+                            writecell(s, fn);
+                        end
+                    end
                 end
-                waitbar(1,wb);
-                delete(wb);
+                if obj.BatchOpt.showWaitbar; waitbar(1,wb); delete(wb); end
                 disp(['MIB: statistics saved to ' fn]);
             end
             set(0, 'DefaulttextInterpreter', curInt);
-            
         end
         
-        function runStatAnalysis_Callback(obj)
+        function runStatAnalysis_Callback(obj, BatchModeSwitch)
             % function runStatAnalysis_Callback(obj)
             % start quantification analysis
+            %
+            % Parameters:
+            % BatchModeSwitch: logical switch, whether or not the batch mode is used
+            
             tic
+            if nargin < 2; BatchModeSwitch = 0; end     
+            selectedProperty = obj.BatchOpt.Property{1};
             
-            contents = obj.View.handles.propertyCombo.String;
-            selectedProperty = contents{obj.View.handles.propertyCombo.Value};
-            selectedProperty = strtrim(selectedProperty);
-            
-            if obj.View.handles.multipleCheck.Value == 1
-                property = obj.selectedProperties;
+            if obj.BatchOpt.Multiple == 1
+                property = arrayfun(@(x) strtrim(x), split(obj.BatchOpt.MultipleProperty, ';'));
+                property(~ismember(property, [obj.availableProperties2D, obj.availableProperties3D, obj.availablePropertiesInt])) = [];    % remove wrongly named properties
+                
                 if isempty(property)
                     errordlg(sprintf('!!! Error !!!\n\nYou have selected calculation of multiple properties; but none of them is selected!\nPlease press the Define properties button to make selection'), 'Missing properties');
+                    notify(obj.mibModel, 'stopProtocol');
                     return;
                 end
             else
                 property = cellstr(selectedProperty);
-            end
-            datasetTypeList = obj.View.handles.datasetPopup.String;
-            frame = datasetTypeList{obj.View.handles.datasetPopup.Value};
-            
-            mode = obj.View.handles.shapePanel.SelectedObject.String;   % 2d/3d objects
-            mode2 = obj.View.handles.modePanel.SelectedObject.String;   % object/intensity stats
-            connectivity = obj.View.handles.connectivityCombo.Value;    % if 1: connectivity=4(2d) and 6(3d), if 2: 8(2d)/26(3d)
-            colorChannel = obj.View.handles.firstChannelCombo.Value;
-            colorChannel2 = obj.View.handles.secondChannelCombo.Value;  % for correlation
-            
-            selectedMaterial = obj.View.handles.targetPopup.Value-2;  % selected material: 
-                % for models <= 255: -1=Mask; 0=Ext; 1-1st material  ...
-                % for models > 255: -1=Mask; 0=Ext; 1-Model, 2-first selected material, 3-second selected material
-
-            if selectedMaterial >= 0    % model
-                if obj.mibModel.getImageProperty('modelExist') == 0
-                    errordlg(sprintf('The model is not detected!\n\nPlease create a new model using:\nMenu->Models->New model'),'Missing model');
-                    return;
-                end
-
-                %list = obj.mibModel.getImageProperty('modelMaterialNames');
-                list = obj.View.handles.targetPopup.String;
-                
-                if obj.mibModel.I{obj.mibModel.Id}.modelType < 256
-                    obj.sel_model = selectedMaterial;    % selected material
-                else
-                    if selectedMaterial == 1
-                        obj.sel_model = NaN;    % selected material
-                    else
-                        obj.sel_model = str2double(list{obj.View.handles.targetPopup.Value});
+                if strcmp(obj.BatchOpt.Mode{1}, 'Object') && strcmp(obj.BatchOpt.Shape{1}, 'Shape2D') 
+                    if ismember(selectedProperty, obj.availableProperties2D) == 0
+                        errordlg(sprintf('!!! Error !!!\nSelected property "%s" is not available for the 2D objects', selectedProperty), 'Wrong property name');
+                        notify(obj.mibModel, 'stopProtocol');
+                        return;
+                    end
+                elseif strcmp(obj.BatchOpt.Mode{1}, 'Object') && strcmp(obj.BatchOpt.Shape{1}, 'Shape3D') 
+                    if ismember(selectedProperty, obj.availableProperties3D) == 0
+                        errordlg(sprintf('!!! Error !!!\nSelected property "%s" is not available for the 3D objects', selectedProperty), 'Wrong property name');
+                        notify(obj.mibModel, 'stopProtocol');
+                        return;
                     end
                 end
-
-                if selectedMaterial == 0
-                    materialName = 'Exterior';
-                else
-                    materialName = list{selectedMaterial+2};
+            end
+            
+            if obj.BatchOpt.Multiple == 1
+                colorChannel = 1:obj.mibModel.I{obj.mibModel.Id}.colors;
+            else
+                colorChannel = str2double(obj.BatchOpt.ColorChannel1{1}(6:end));
+            end
+            colorChannel1 = str2double(obj.BatchOpt.ColorChannel1{1}(6:end)); % for correlation
+            colorChannel2 = str2double(obj.BatchOpt.ColorChannel2{1}(6:end)); % for correlation
+            
+            selectedMaterial = str2double(obj.BatchOpt.MaterialIndex);
+            % for models <= 255:          -1=Mask; 0=Ext; 1-1st material  ...
+            % for models > 255: -2=Model; -1=Mask; 0=Ext; 1-1st material, 2-second selected material...
+            
+            if selectedMaterial ~= -1    % not mask, i.e. model
+                if obj.mibModel.getImageProperty('modelExist') == 0
+                    errordlg(sprintf('The model is not detected!\n\nPlease create a new model using:\nMenu->Models->New model'),'Missing model');
+                    notify(obj.mibModel, 'stopProtocol');
+                    return;
                 end
                 
-                if numel(property) == 1
-                    wb = waitbar(0,sprintf('Calculating "%s" of %s for %s\nMaterial: "%s"\nPlease wait...',property{1}, mode, frame, materialName),'Name', 'Shape statistics...','WindowStyle','modal');
+                list = obj.mibModel.getImageProperty('modelMaterialNames');
+                
+                if selectedMaterial == 0
+                    materialName = 'Exterior';
+                elseif selectedMaterial == -2
+                    materialName = 'Model';
+                    selectedMaterial = NaN;     % rename selectedMaterial to NaN to obtain all materials using getData methods
                 else
-                    wb = waitbar(0,sprintf('Calculating multiple parameters of %s for %s\nMaterial: "%s"\nPlease wait...', mode, frame, materialName),'Name','Shape statistics...','WindowStyle','modal');
+                    if obj.mibModel.I{obj.mibModel.Id}.modelType < 256
+                        if selectedMaterial>numel(list)
+                            errordlg(sprintf('!!! Error !!!\n\nThe wrong material index;\nfor the current model it should be below %d', numel(list)+1), 'Wrong material index');
+                            return
+                        end
+                        materialName = list{selectedMaterial};
+                    else
+                        materialName = obj.BatchOpt.MaterialIndex;
+                    end
+                end
+                if obj.BatchOpt.showWaitbar
+                    if numel(property) == 1
+                        wb = waitbar(0,sprintf('Calculating "%s" of %s for %s\nMaterial: "%s"\nPlease wait...',property{1}, obj.BatchOpt.Shape{1}, obj.BatchOpt.DatasetType{1}, materialName),'Name', 'Shape statistics...','WindowStyle','modal');
+                    else
+                        wb = waitbar(0,sprintf('Calculating multiple parameters of %s for %s\nMaterial: "%s"\nPlease wait...', obj.BatchOpt.Shape{1}, obj.BatchOpt.DatasetType{1}, materialName),'Name','Shape statistics...','WindowStyle','modal');
+                    end
                 end
             else    % mask
                 if obj.mibModel.getImageProperty('maskExist') == 0
                     errordlg(sprintf('The Mask is not detected!\n\nPlease create a new Mask using:\n1.Draw the mask with Brush\n2. Select Segmentation panel->Add to->Mask\n3. Press the "A" shortcut to add the drawn area to the Mask layer'),'Missing model');
+                    notify(obj.mibModel, 'stopProtocol');
                     return;
                 end
-                if numel(property) == 1
-                    wb = waitbar(0,sprintf('Calculating "%s" of %s for %s\n Material: Mask\nPlease wait...',property{1}, mode, frame),'Name','Shape statistics...','WindowStyle','modal');
-                else
-                    wb = waitbar(0,sprintf('Calculating multiple parameters of %s for %s\n Material: Mask\nPlease wait...',mode, frame),'Name','Shape statistics...','WindowStyle','modal');
+                if obj.BatchOpt.showWaitbar
+                    if numel(property) == 1
+                        wb = waitbar(0,sprintf('Calculating "%s" of %s for %s\n Material: Mask\nPlease wait...',property{1}, obj.BatchOpt.Shape{1}, obj.BatchOpt.DatasetType{1}),'Name','Shape statistics...','WindowStyle','modal');
+                    else
+                        wb = waitbar(0,sprintf('Calculating multiple parameters of %s for %s\n Material: Mask\nPlease wait...',obj.BatchOpt.Shape{1}, obj.BatchOpt.DatasetType{1}),'Name','Shape statistics...','WindowStyle','modal');
+                    end
                 end
             end
             
@@ -1068,7 +1400,7 @@ classdef mibStatisticsController < handle
             
             t1 = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1);
             t2 = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1);
-            if strcmp(frame, '4D, Dataset')
+            if strcmp(obj.BatchOpt.DatasetType{1}, '4D, Dataset')
                 t1 = 1;
                 t2 = img_time;
             end
@@ -1078,17 +1410,21 @@ classdef mibStatisticsController < handle
             property{end+1} = 'TimePnt';
             property{end+1} = 'BoundingBox';
             
-            obj.STATS = cell2struct(cell(size(property)), property, 2);
-            obj.STATS = orderfields(obj.STATS);
-            obj.STATS(1) = [];
+            %obj.STATS = cell2struct(cell(size(property)), property, 2);
+            %obj.STATS = orderfields(obj.STATS);
+            %obj.STATS(1) = [];
+            
+            obj.STATS = [];
+            intProps = {'SumIntensity', 'StdIntensity', 'MeanIntensity', 'MaxIntensity', 'MinIntensity'};
             
             pixSize = obj.mibModel.getImageProperty('pixSize');
             
             for t=t1:t2
-                if strcmp(mode, '3D objects')
-                    if strcmp(frame, '2D, Slice')    % take only objects that are shown in the current slice
-                        delete(wb);
+                if strcmp(obj.BatchOpt.Shape{1}, 'Shape3D')
+                    if strcmp(obj.BatchOpt.DatasetType{1}, '2D, Slice')    % take only objects that are shown in the current slice
+                        if obj.BatchOpt.showWaitbar; delete(wb); end
                         msgbox(sprintf('CANCELED!\nThe Shown slice with 3D Mode is not implemented!'),'Error!','error','modal');
+                        notify(obj.mibModel, 'stopProtocol');
                         return;
                         %         selection2 = zeros(size(img),'uint8');
                         %         objCounter = 1;
@@ -1109,31 +1445,30 @@ classdef mibStatisticsController < handle
                         %         CC = CC2;
                     end
                     
-                    if connectivity == 1
+                    if strcmp(obj.BatchOpt.Connectivity{1}, '4/6 connectivity')
                         conn = 6;
                     else
                         conn = 26;
                     end
                     
                     if obj.mibModel.I{obj.mibModel.Id}.orientation ~= 4 && obj.mibModel.I{obj.mibModel.Id}.blockModeSwitch == 1
-                        delete(wb);
+                        if obj.BatchOpt.showWaitbar; delete(wb); end
                         warndlg(sprintf('!!! Warning !!!\n\nThe block mode is only compatible with the XY orientation of the dataset\nPlease switch the orientation to XY or disable the block mode'),'Wrong orientation');
+                        notify(obj.mibModel, 'stopProtocol');
                         return;
                     end
                     getDataOptions.blockModeSwitch = obj.mibModel.I{obj.mibModel.Id}.blockModeSwitch;
                     if selectedMaterial == -1
                         img = cell2mat(obj.mibModel.getData3D('mask', t, 4, 0, getDataOptions));
                     else
-                        img = cell2mat(obj.mibModel.getData3D('model', t, 4, obj.sel_model, getDataOptions));
+                        img = cell2mat(obj.mibModel.getData3D('model', t, 4, selectedMaterial, getDataOptions));
                     end
-                    
-                    intProps = {'SumIntensity', 'StdIntensity', 'MeanIntensity', 'MaxIntensity', 'MinIntensity'};
                     
                     if sum(ismember(property, 'HolesArea')) > 0
                         img = imfill(img, conn, 'holes') - img;
                     end
                     
-                    if obj.mibModel.I{obj.mibModel.Id}.modelType < 256 || ~isnan(obj.sel_model)
+                    if obj.mibModel.I{obj.mibModel.Id}.modelType < 256 || ~isnan(selectedMaterial)
                         CC = bwconncomp(img, conn);
                         if CC.NumObjects == 0
                             continue;
@@ -1143,11 +1478,11 @@ classdef mibStatisticsController < handle
                         imgSize = size(img);
                         clear img;
                     end
-                    waitbar(0.05,wb);
+                    if obj.BatchOpt.showWaitbar; waitbar(0.05,wb); end
                     
                     % calculate common properties
                     STATS = regionprops(CC, {'PixelIdxList', 'Centroid', 'BoundingBox'}); %#ok<*PROP>
-                    if isnan(obj.sel_model)
+                    if isnan(selectedMaterial)   
                         % remove empty entries for models with more than
                         % 255 materials
                         emptyIndeces = find(arrayfun(@(STATS) isempty(STATS.PixelIdxList), STATS));
@@ -1174,14 +1509,15 @@ classdef mibStatisticsController < handle
                             end
                         end
                     end
-                    waitbar(0.1,wb);
+                    if obj.BatchOpt.showWaitbar; waitbar(0.1,wb); end
                     % calculate matlab standard shape properties
                     prop1 = property(ismember(property, 'HolesArea'));
                     if ~isempty(prop1)
                         STATS2 = regionprops(CC, 'Area');
                         [STATS.HolesArea] = STATS2.Area;
                     end
-                    waitbar(0.2,wb);
+                    if obj.BatchOpt.showWaitbar; waitbar(0.2,wb); end
+                    
                     % calculate Eccentricity for 3D objects
                     prop1 = property(ismember(property, {'MeridionalEccentricity', 'EquatorialEccentricity'}));
                     if ~isempty(prop1)
@@ -1193,14 +1529,14 @@ classdef mibStatisticsController < handle
                             [STATS.EquatorialEccentricity] = deal(STATS2.EquatorialEccentricity);
                         end
                     end
-                    waitbar(0.3,wb);
+                    if obj.BatchOpt.showWaitbar; waitbar(0.3,wb); end
                     % calculate MajorAxisLength
                     prop1 = property(ismember(property, 'MajorAxisLength'));
                     if ~isempty(prop1)
                         STATS2 = regionprops3mib(CC, 'MajorAxisLength');
                         [STATS.MajorAxisLength] = deal(STATS2.MajorAxisLength);
                     end
-                    waitbar(0.4,wb);
+                    if obj.BatchOpt.showWaitbar; waitbar(0.4,wb); end
                     % calculate 'SecondAxisLength', 'ThirdAxisLength'
                     prop1 = property(ismember(property, {'SecondAxisLength', 'ThirdAxisLength'}));
                     if ~isempty(prop1)
@@ -1212,12 +1548,12 @@ classdef mibStatisticsController < handle
                             [STATS.ThirdAxisLength] = deal(STATS2.ThirdAxisLength);
                         end
                     end
-                    waitbar(0.5,wb);
+                    if obj.BatchOpt.showWaitbar; waitbar(0.5,wb); end
                     % calculate EndpointsLength for lines
                     prop1 = property(ismember(property, 'EndpointsLength'));
                     if ~isempty(prop1)
                         STATS3 = regionprops(CC, 'PixelList');
-                        if strcmp(obj.units, 'pixels')
+                        if strcmp(obj.BatchOpt.Units{1}, 'pixels')
                             xPix = 1;
                             yPix = 1;
                             zPix = 1;
@@ -1239,41 +1575,52 @@ classdef mibStatisticsController < handle
                             maxVal = max(DD(:));
                             [row, col] = find(DD == maxVal,1);
                             STATS3(objId).EndpointsLength = sqrt(...
-                                    ((minPoints(row,1) - maxPoints(col,1))*xPix)^2 + ...
-                                    ((minPoints(row,2) - maxPoints(col,2))*yPix)^2 + ...
-                                    ((minZ - maxZ)*zPix)^2 );    
+                                ((minPoints(row,1) - maxPoints(col,1))*xPix)^2 + ...
+                                ((minPoints(row,2) - maxPoints(col,2))*yPix)^2 + ...
+                                ((minZ - maxZ)*zPix)^2 );
                         end
                         [STATS.EndpointsLength] = deal(STATS3.EndpointsLength);
                     end
-                    waitbar(0.6,wb);
+                    if obj.BatchOpt.showWaitbar; waitbar(0.6,wb); end
+                    
                     % calculate Intensities
                     prop1 = property(ismember(property, intProps));
                     if ~isempty(prop1)
-                        img = squeeze(cell2mat(obj.mibModel.getData3D('image', t, 4, colorChannel, getDataOptions)));
-                        STATS2 = regionprops(CC, img, 'PixelValues');
-                        if sum(ismember(property, 'MinIntensity')) > 0
-                            calcVal = cellfun(@min, struct2cell(STATS2),'UniformOutput', false);
-                            [STATS.MinIntensity] = calcVal{:};
-                        end
-                        if sum(ismember(property, 'MaxIntensity')) > 0
-                            calcVal = cellfun(@max, struct2cell(STATS2),'UniformOutput', false);
-                            [STATS.MaxIntensity] = calcVal{:};
-                        end
-                        if sum(ismember(property, 'MeanIntensity')) > 0
-                            calcVal = cellfun(@mean, struct2cell(STATS2),'UniformOutput', false);
-                            [STATS.MeanIntensity] = calcVal{:};
-                        end
-                        if sum(ismember(property, 'SumIntensity')) > 0
-                            calcVal = cellfun(@sum, struct2cell(STATS2),'UniformOutput', false);
-                            [STATS.SumIntensity] = calcVal{:};
-                        end
-                        if sum(ismember(property, 'StdIntensity')) > 0
-                            calcVal = cellfun(@std2, struct2cell(STATS2),'UniformOutput', false);
-                            [STATS.StdIntensity] = calcVal{:};
+                        for i = 1:numel(colorChannel)
+                            img = squeeze(cell2mat(obj.mibModel.getData3D('image', t, 4, colorChannel(i), getDataOptions)));
+                            STATS2 = regionprops(CC, img, 'PixelValues');
+                            % convert to double
+                            vals = arrayfun(@(x) double(x.PixelValues), STATS2, 'UniformOutput', false);
+                            STATS2 = cell2struct(vals', {'PixelValues'});
+                            if sum(ismember(property, 'MinIntensity')) > 0
+                                calcVal = cellfun(@min, struct2cell(STATS2),'UniformOutput', false);
+                                fieldName = sprintf('MinIntensity_Ch%d', colorChannel(i));
+                                [STATS.(fieldName)] = calcVal{:};
+                            end
+                            if sum(ismember(property, 'MaxIntensity')) > 0
+                                calcVal = cellfun(@max, struct2cell(STATS2),'UniformOutput', false);
+                                fieldName = sprintf('MaxIntensity_Ch%d', colorChannel(i));
+                                [STATS.(fieldName)] = calcVal{:};
+                            end
+                            if sum(ismember(property, 'MeanIntensity')) > 0
+                                calcVal = cellfun(@mean, struct2cell(STATS2),'UniformOutput', false);
+                                fieldName = sprintf('MeanIntensity_Ch%d', colorChannel(i));
+                                [STATS.(fieldName)] = calcVal{:};
+                            end
+                            if sum(ismember(property, 'SumIntensity')) > 0
+                                calcVal = cellfun(@sum, struct2cell(STATS2),'UniformOutput', false);
+                                fieldName = sprintf('SumIntensity_Ch%d', colorChannel(i));
+                                [STATS.(fieldName)] = calcVal{:};
+                            end
+                            if sum(ismember(property, 'StdIntensity')) > 0
+                                calcVal = cellfun(@std2, struct2cell(STATS2),'UniformOutput', false);
+                                fieldName = sprintf('StdIntensity_Ch%d', colorChannel(i));
+                                [STATS.(fieldName)] = calcVal{:};
+                            end
                         end
                     end
                     
-                    waitbar(0.7, wb);
+                    if obj.BatchOpt.showWaitbar; waitbar(0.7, wb); end
                     prop1 = property(ismember(property, {'ConvexVolume', 'EquivDiameter','Extent',...
                         'Solidity','SurfaceArea'}));
                     if ~isempty(prop1)
@@ -1284,12 +1631,12 @@ classdef mibStatisticsController < handle
                         end
                     end
                     
-                    waitbar(0.8,wb);
+                    if obj.BatchOpt.showWaitbar; waitbar(0.8,wb); end
                     % calculate correlation between channels
                     prop1 = property(ismember(property, 'Correlation'));
                     if ~isempty(prop1)
                         img = cell2mat(obj.mibModel.getData3D('image', t, 4, 0, getDataOptions));
-                        img1 = squeeze(img(:,:,colorChannel,:));
+                        img1 = squeeze(img(:,:,colorChannel1,:));
                         img2 = squeeze(img(:,:,colorChannel2,:));
                         clear img;
                         for object=1:numel(STATS)
@@ -1299,9 +1646,8 @@ classdef mibStatisticsController < handle
                     [STATS.TimePnt] = deal(t);  % add time points
                     
                     % recalculate to units if needed
-                    if ~strcmp(obj.units, 'pixels')
+                    if ~strcmp(obj.BatchOpt.Units{1}, 'pixels')
                         fieldNames = fieldnames(STATS);
-                        
                         for i=1:numel(fieldNames)
                             switch fieldNames{i}
                                 case {'Volume', 'FilledArea', 'ConvexVolume', 'HolesArea'}
@@ -1332,12 +1678,16 @@ classdef mibStatisticsController < handle
                             STATS(ooId).BoundingBox(1)= STATS(ooId).BoundingBox(1) + xMin - 1;
                             STATS(ooId).BoundingBox(2)= STATS(ooId).BoundingBox(2) + yMin - 1;
                         end
-                    end                    
-                    
-                    obj.STATS = [obj.STATS orderfields(STATS')];
-                    waitbar(0.95,wb);
-                else    % 2D objects
-                    if connectivity == 1
+                    end
+                    if isempty(obj.STATS)
+                        obj.STATS = STATS;
+                        obj.STATS = orderfields(STATS');
+                    else
+                        obj.STATS = [obj.STATS orderfields(STATS')];
+                    end
+                    if obj.BatchOpt.showWaitbar; waitbar(0.95,wb); end
+                else    % ---------------- 2D objects -------------------
+                    if strcmp(obj.BatchOpt.Connectivity{1}, '4/6 connectivity')
                         conn = 4;
                     else
                         conn = 8;
@@ -1346,30 +1696,29 @@ classdef mibStatisticsController < handle
                     % calculate statistics in XY plane
                     orientation = obj.mibModel.getImageProperty('orientation');
                     
-                    if strcmp(frame, '2D, Slice')
+                    if strcmp(obj.BatchOpt.DatasetType{1}, '2D, Slice')
                         start_id = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
                         end_id = start_id;
                     else
                         start_id = 1;
                         end_id = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(orientation);
                     end
-
+                    
                     customProps = {'EndpointsLength','CurveLength','HolesArea'};
                     shapeProps = {'Solidity', 'Perimeter', 'Orientation', 'MinorAxisLength', 'MajorAxisLength', 'FilledArea', 'Extent', 'EulerNumber',...
-                            'EquivDiameter', 'Eccentricity', 'ConvexArea', 'Area'};
+                        'EquivDiameter', 'Eccentricity', 'ConvexArea', 'Area'};
                     shapeProps3D = {'FirstAxisLength','SecondAxisLength'};     % these properties are calculated by regionprops3mib
-                    intProps = {'SumIntensity','StdIntensity','MeanIntensity','MaxIntensity','MinIntensity'};
                     intCustomProps = 'Correlation';
                     commonProps = {'PixelIdxList', 'Centroid', 'BoundingBox'};
                     
                     getDataOptions.t = [t t];
                     getDataOptions.blockModeSwitch = 0;
                     for lay_id=start_id:end_id
-                        waitbar((lay_id-start_id)/(end_id-start_id),wb);
+                        if obj.BatchOpt.showWaitbar; waitbar((lay_id-start_id)/(end_id-start_id),wb); end
                         if selectedMaterial == -1   % mask
                             slice = cell2mat(obj.mibModel.getData2D('mask', lay_id, orientation, NaN, getDataOptions));
                         else
-                            slice = cell2mat(obj.mibModel.getData2D('model', lay_id, orientation, obj.sel_model, getDataOptions));
+                            slice = cell2mat(obj.mibModel.getData2D('model', lay_id, orientation, selectedMaterial, getDataOptions));
                         end
                         
                         % get objects
@@ -1377,7 +1726,7 @@ classdef mibStatisticsController < handle
                             slice = imfill(slice, conn, 'holes') - slice;
                         end
                         
-                        if ~isnan(obj.sel_model)
+                        if ~isnan(selectedMaterial)
                             CC = bwconncomp(slice,conn);
                             if CC.NumObjects == 0
                                 continue;
@@ -1388,7 +1737,8 @@ classdef mibStatisticsController < handle
                         
                         % calculate common properties
                         STATS = regionprops(CC, commonProps);
-                        if isnan(obj.sel_model)
+                        
+                        if isnan(selectedMaterial)
                             % remove empty entries for models with more than
                             % 255 materials
                             emptyIndeces = find(arrayfun(@(STATS) isempty(STATS.PixelIdxList), STATS));
@@ -1405,24 +1755,24 @@ classdef mibStatisticsController < handle
                         if ~isempty(prop1)
                             STATS2 = regionprops(CC, prop1);
                             fieldNames = fieldnames(STATS2);
-                            %if strcmp(obj.units, 'pixels')
-                                for i=1:numel(fieldNames)
-                                    [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
-                                end
-%                             else
-%                                 for i=1:numel(fieldNames)
-%                                     switch fieldNames{i}
-%                                         case {'Area', 'ConvexArea', 'FilledArea'}
-%                                             STATSTEMP = cell2struct(num2cell([STATS2.(fieldNames{i})]* pixSize.x * pixSize.y), (fieldNames{i}),1);
-%                                             [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
-%                                         case {'MajorAxisLength','MinorAxisLength','EquivDiameter','Perimeter'}
-%                                             STATSTEMP = cell2struct(num2cell([STATS2.(fieldNames{i})] * (pixSize.x + pixSize.y)/2), (fieldNames{i}),1);
-%                                             [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
-%                                         otherwise
-%                                             [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
-%                                     end
-%                                 end
-%                             end
+                            
+                            for i=1:numel(fieldNames)
+                                [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
+                            end
+                            %                             else
+                            %                                 for i=1:numel(fieldNames)
+                            %                                     switch fieldNames{i}
+                            %                                         case {'Area', 'ConvexArea', 'FilledArea'}
+                            %                                             STATSTEMP = cell2struct(num2cell([STATS2.(fieldNames{i})]* pixSize.x * pixSize.y), (fieldNames{i}),1);
+                            %                                             [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
+                            %                                         case {'MajorAxisLength','MinorAxisLength','EquivDiameter','Perimeter'}
+                            %                                             STATSTEMP = cell2struct(num2cell([STATS2.(fieldNames{i})] * (pixSize.x + pixSize.y)/2), (fieldNames{i}),1);
+                            %                                             [STATS.(fieldNames{i})] = STATSTEMP.(fieldNames{i});
+                            %                                         otherwise
+                            %                                             [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
+                            %                                     end
+                            %                                 end
+                            %                             end
                         end
                         
                         % calculate regionprop3mib shape properties
@@ -1452,7 +1802,7 @@ classdef mibStatisticsController < handle
                         % calculate curve length in pixels
                         prop1 = property(ismember(property,'CurveLength'));
                         if ~isempty(prop1)
-                            STATS2 = mibCalcCurveLength(slice, [], CC);
+                            STATS2 = mibCalcCurveLength(CC);
                             if isstruct(STATS2)
                                 [STATS.CurveLength] = deal(STATS2.CurveLengthInPixels);
                             end
@@ -1468,33 +1818,44 @@ classdef mibStatisticsController < handle
                         % calculate intensity properties
                         prop1 = property(ismember(property, intProps));
                         if ~isempty(prop1)
-                            STATS2 = regionprops(CC, cell2mat(obj.mibModel.getData2D('image', lay_id, orientation, colorChannel, getDataOptions)), 'PixelValues');
-                            if sum(ismember(property, 'MinIntensity')) > 0
-                                calcVal = cellfun(@min, struct2cell(STATS2),'UniformOutput', false);
-                                [STATS.MinIntensity] = calcVal{:};
-                            end
-                            if sum(ismember(property, 'MaxIntensity')) > 0
-                                calcVal = cellfun(@max, struct2cell(STATS2),'UniformOutput', false);
-                                [STATS.MaxIntensity] = calcVal{:};
-                            end
-                            if sum(ismember(property, 'MeanIntensity')) > 0
-                                calcVal = cellfun(@mean, struct2cell(STATS2),'UniformOutput', false);
-                                [STATS.MeanIntensity] = calcVal{:};
-                            end
-                            if sum(ismember(property, 'SumIntensity')) > 0
-                                calcVal = cellfun(@sum, struct2cell(STATS2),'UniformOutput', false);
-                                [STATS.SumIntensity] = calcVal{:};
-                            end
-                            if sum(ismember(property, 'StdIntensity')) > 0
-                                calcVal = cellfun(@std2, struct2cell(STATS2),'UniformOutput', false);
-                                [STATS.StdIntensity] = calcVal{:};
+                            for i = 1:numel(colorChannel)
+                                STATS2 = regionprops(CC, cell2mat(obj.mibModel.getData2D('image', lay_id, orientation, colorChannel(i), getDataOptions)), 'PixelValues');
+                                % convert to double
+                                vals = arrayfun(@(x) double(x.PixelValues), STATS2, 'UniformOutput', false);
+                                STATS2 = cell2struct(vals', {'PixelValues'});
+                                if sum(ismember(property, 'MinIntensity')) > 0
+                                    calcVal = cellfun(@min, struct2cell(STATS2),'UniformOutput', false);
+                                    fieldName = sprintf('MinIntensity_Ch%d', colorChannel(i));
+                                    [STATS.(fieldName)] = calcVal{:};
+                                    %[STATS.MaxIntensity3] = deal([calcVal{:}; calcVal{:}])
+                                end
+                                if sum(ismember(property, 'MaxIntensity')) > 0
+                                    calcVal = cellfun(@max, struct2cell(STATS2),'UniformOutput', false);
+                                    fieldName = sprintf('MaxIntensity_Ch%d', colorChannel(i));
+                                    [STATS.(fieldName)] = calcVal{:};
+                                end
+                                if sum(ismember(property, 'MeanIntensity')) > 0
+                                    calcVal = cellfun(@mean, struct2cell(STATS2),'UniformOutput', false);
+                                    fieldName = sprintf('MeanIntensity_Ch%d', colorChannel(i));
+                                    [STATS.(fieldName)] = calcVal{:};
+                                end
+                                if sum(ismember(property, 'SumIntensity')) > 0
+                                    calcVal = cellfun(@sum, struct2cell(STATS2),'UniformOutput', false);
+                                    fieldName = sprintf('SumIntensity_Ch%d', colorChannel(i));
+                                    [STATS.(fieldName)] = calcVal{:};
+                                end
+                                if sum(ismember(property, 'StdIntensity')) > 0
+                                    calcVal = cellfun(@std2, struct2cell(STATS2),'UniformOutput', false);
+                                    fieldName = sprintf('StdIntensity_Ch%d', colorChannel(i));
+                                    [STATS.(fieldName)] = calcVal{:};
+                                end
                             end
                         end
                         % calculate correlation between channels
                         prop1 = property(ismember(property, 'Correlation'));
                         if ~isempty(prop1)
                             img = cell2mat(obj.mibModel.getData2D('image', lay_id, orientation, 0, getDataOptions));
-                            img1 = img(:, :, colorChannel);
+                            img1 = img(:, :, colorChannel1);
                             img2 = img(:, :, colorChannel2);
                             for object=1:numel(STATS)
                                 STATS(object).Correlation = corr2(img1(STATS(object).PixelIdxList),img2(STATS(object).PixelIdxList));
@@ -1507,9 +1868,8 @@ classdef mibStatisticsController < handle
                         %                         end
                         
                         % recalculate to units if needed
-                        if ~strcmp(obj.units, 'pixels')
+                        if ~strcmp(obj.BatchOpt.Units{1}, 'pixels')
                             fieldNames = fieldnames(STATS);
-                        
                             for i=1:numel(fieldNames)
                                 switch fieldNames{i}
                                     case {'Area', 'ConvexArea', 'FilledArea', 'HolesArea'}
@@ -1536,22 +1896,33 @@ classdef mibStatisticsController < handle
                             STATS = arrayfun(@(s) setfield(s, 'BoundingBox', [s.BoundingBox(1) s.BoundingBox(2) lay_id s.BoundingBox(3) s.BoundingBox(4) 1]), STATS);
                         end
                         [STATS.TimePnt] = deal(t);  % add time points
-                        obj.STATS = [obj.STATS orderfields(STATS')];
+                        if isempty(obj.STATS)
+                            obj.STATS = STATS;
+                            obj.STATS = orderfields(STATS');
+                        else
+                            obj.STATS = [obj.STATS orderfields(STATS')];
+                        end
                     end
                 end
             end
             
             % store information about which dataset was quantified
-            obj.runId = [obj.mibModel.Id, selectedMaterial + 2];
-            obj.enableStatTable();
+            if isnan(selectedMaterial); selectedMaterial = -2; end  % restore index of the selectedMaterial for full model
+            obj.runId = [obj.mibModel.Id, selectedMaterial];
+            if BatchModeSwitch==0; obj.enableStatTable(); end
             
-            waitbar(.9,wb, sprintf('Reformatting the indices\nPlease wait...'));
+            if obj.BatchOpt.showWaitbar; waitbar(.9, wb, sprintf('Reformatting the indices\nPlease wait...')); end
             data = zeros(numel(obj.STATS),4);
             if numel(data) ~= 0
+                % rename selected property MaxIntensity -> MaxIntensity_Ch3
+                if ismember(selectedProperty, intProps)
+                    selectedProperty = sprintf('%s_Ch%d', selectedProperty, colorChannel1);
+                end
+                
                 if isfield(obj.STATS, selectedProperty)
-                    [data(:,2), data(:,1)] = sort(cat(1, obj.STATS.(selectedProperty)),'descend');
+                    [data(:,2), data(:,1)] = sort(cat(1, obj.STATS.(selectedProperty)), 'descend');
                 else
-                    [data(:,2), data(:,1)] = sort(cat(1, obj.STATS.(property{1})),'descend');
+                    [data(:,2), data(:,1)] = sort(cat(1, obj.STATS.(property{1})), 'descend');
                 end
                 dataWidth = obj.mibModel.getImageProperty('width');
                 dataHeight = obj.mibModel.getImageProperty('height');
@@ -1564,17 +1935,73 @@ classdef mibStatisticsController < handle
                 data(:,4) = [obj.STATS(data(:,1)).TimePnt]';
             end
             
-            waitbar(1,wb);
-            obj.View.handles.statTable.Data = data;
-            data = data(:,2);
+            if obj.BatchOpt.showWaitbar; waitbar(1,wb); end
+            data = obj.sortBtn_Callback(data);
+            if BatchModeSwitch==0; obj.View.handles.statTable.Data = data; end
             
+            data = data(:,2);
             [a,b] = hist(data, 256);
-            bar(obj.View.handles.histogram, b, a);
             obj.histLimits = [min(b) max(b)];
-            obj.histScale_Callback();
-            grid(obj.View.handles.histogram);
-            delete(wb);
+            if BatchModeSwitch==0
+                bar(obj.View.handles.histogram, b, a);
+                obj.histScale_Callback();
+                grid(obj.View.handles.histogram); 
+            end
+            
+            if obj.BatchOpt.showWaitbar; delete(wb); end
+            
+            if BatchModeSwitch == 1
+                if ~strcmp(obj.BatchOpt.ExportResultsTo{1}, 'Do not export')
+                    % export results when the batch mode used
+                    obj.exportButton_Callback(BatchModeSwitch);
+                end
+                if ~strcmp(obj.BatchOpt.CropObjectsTo{1}, 'Do not crop')
+                    obj.startController('mibCropObjectsController', obj, BatchModeSwitch);
+                end
+            end
+            
+            % for batch need to generate an event and send the BatchOptLoc
+            % structure with it to the macro recorder / mibBatchController
+            obj.returnBatchOpt(obj.BatchOpt);
             toc
+        end
+        
+        function data = sortBtn_Callback(obj, data)
+            % function sortBtn_Callback(obj, data)
+            % sort the table
+            %
+            % Parameters:
+            % data: a matrix with contents of the table
+            
+            if nargin < 2; data = obj.View.handles.statTable.Data; end
+            
+            if iscell(data); return; end   % nothing to sort
+            if obj.sortingDirection == 1     % ascend sorting
+                [data(:,obj.sortingColIndex), index] = sort(data(:, obj.sortingColIndex), 'ascend');
+            else
+                [data(:, obj.sortingColIndex), index] = sort(data(:, obj.sortingColIndex), 'descend');
+            end
+            
+            if obj.sortingColIndex == 2
+                data(:,1) = data(index, 1);
+                data(:,3) = data(index, 3);
+                data(:,4) = data(index, 4);
+            elseif obj.sortingColIndex == 1
+                data(:,2) = data(index, 2);
+                data(:,3) = data(index, 3);
+                data(:,4) = data(index, 4);
+            elseif obj.sortingColIndex == 3
+                data(:,1) = data(index, 1);
+                data(:,2) = data(index, 2);
+                data(:,4) = data(index, 4);
+            elseif obj.sortingColIndex == 4
+                data(:,1) = data(index, 1);
+                data(:,2) = data(index, 2);
+                data(:,3) = data(index, 3);
+            end
+            if nargin < 2
+                obj.View.handles.statTable.Data = data;
+            end
         end
         
         function enableStatTable(obj)

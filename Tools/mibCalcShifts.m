@@ -5,16 +5,10 @@ function [shiftX, shiftY] = mibCalcShifts(I, options)
 % Parameters:
 % I: a stack to align in format: [1:height, 1:width, 1:depth]
 % options: an optional structure with parameters
-%  - .method -> method: 
-%                   'cc' - the normalized cross correlation
-%                   'sq' - the normalized sum of squared difference
-%                   'xcMatlab' - matlab fft correlation
+% - .method -> method: 'Drift correction', 'Template matching'
 % - .refFrame, a number with the reference slice: when @b 0 - use the previous
 % - .mask, an optional mask image to select subareas to use for alignment,
 % - .waitbar, [optional] a handle to an existing waitbar
-% should  as I
-% slice, when 1 - use the first slice
-% 
 %
 % Return values:
 % shiftX: a vector with absolute shifts in the X-plane, the shifts are calculated relative to the first slice

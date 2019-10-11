@@ -17,7 +17,7 @@ function varargout = mibImageMorphOpsGUI(varargin)
 
 % Edit the above text to modify the response to help mibImageMorphOpsGUI
 
-% Last Modified by GUIDE v2.5 06-Feb-2017 17:38:19
+% Last Modified by GUIDE v2.5 29-May-2019 13:29:31
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -51,10 +51,10 @@ function mibImageMorphOpsGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.winController = varargin{1};
 
 % define radio buttons callbacks
-%set(handles.connectivityPanel, 'SelectionChangeFcn', @connectivityPanel_Callback);
-%set(handles.actionPanel, 'SelectionChangeFcn', @actionPanel_Callback);
-handles.connectivityPanel.SelectionChangeFcn = @connectivityPanel_Callback;
-handles.actionPanel.SelectionChangeFcn = @actionPanel_Callback;
+%set(handles.Connectivity, 'SelectionChangeFcn', @connectivityPanel_Callback);
+%set(handles.ActionToResult, 'SelectionChangeFcn', @actionPanel_Callback);
+handles.Connectivity.SelectionChangeFcn = @connectivityPanel_Callback;
+handles.ActionToResult.SelectionChangeFcn = @actionPanel_Callback;
 
 % Choose default command line output for mibChildGUI
 handles.output = hObject;
@@ -94,9 +94,10 @@ handles.winController.closeWindow();
 end
 
 
-% --- Executes on selection change in morphOpsPopup.
-function morphOpsPopup_Callback(hObject, eventdata, handles)
-handles.winController.morphOpsPopup_Callback();
+% --- Executes on selection change in MorphOperation.
+function MorphOperation_Callback(hObject, eventdata, handles)
+handles.winController.updateBatchOptFromGUI(hObject);
+handles.winController.MorphOperation_Callback();
 end
 
 function modePanel_Callback(hObject, eventdata, handles)
@@ -105,61 +106,39 @@ end
 
 function connectivityPanel_Callback(hObject, eventdata)
 handles = guidata(hObject);
-handles.winController.connectivityPanel_Callback(eventdata);
+handles.winController.updateBatchOptFromGUI(hObject);
+% use auto preview
+if handles.autoPreviewCheck.Value == 1
+    handles.winController.previewBtn_Callback();
+end
 end
 
 function actionPanel_Callback(hObject, eventdata)
 handles = guidata(hObject);
-handles.winController.actionPanel_Callback(eventdata);
-end
-
-function smoothWidth_Callback(hObject, eventdata, handles)
-val = str2double(handles.smoothWidth.String);
-handles.smoothSigma.String = num2str(val/5);
+handles.winController.updateBatchOptFromGUI(hObject);
 % use auto preview
 if handles.autoPreviewCheck.Value == 1
     handles.winController.previewBtn_Callback();
 end
 end
 
-% --- Executes on selection change in colorChannelPopoup.
-function colorChannelPopoup_Callback(hObject, eventdata, handles)
+function SmoothHSize_Callback(hObject, eventdata, handles)
+val = str2double(handles.SmoothHSize.String);
+handles.SmoothSigma.String = num2str(val/5);
+handles.winController.updateBatchOptFromGUI(hObject);
+handles.winController.updateBatchOptFromGUI(handles.SmoothSigma);
 % use auto preview
 if handles.autoPreviewCheck.Value == 1
     handles.winController.previewBtn_Callback();
 end
 end
 
-function strelShapePopup_Callback(hObject, eventdata, handles)
+% --- Executes on selection change in ColorChannel.
+function widgets_Callback(hObject, eventdata, handles)
 % use auto preview
-if handles.autoPreviewCheck.Value == 1
-    handles.winController.previewBtn_Callback();
+if ~strcmp(hObject.Tag, 'autoPreviewCheck')
+    handles.winController.updateBatchOptFromGUI(hObject);
 end
-end
-
-function strelSizeEdit_Callback(hObject, eventdata, handles)
-% use auto preview
-if handles.autoPreviewCheck.Value == 1
-    handles.winController.previewBtn_Callback();
-end
-end
-
-function multiplyEdit_Callback(hObject, eventdata, handles)
-% use auto preview
-if handles.autoPreviewCheck.Value == 1
-    handles.winController.previewBtn_Callback();
-end
-end
-
-function smoothSigma_Callback(hObject, eventdata, handles)
-% use auto preview
-if handles.autoPreviewCheck.Value == 1
-    handles.winController.previewBtn_Callback();
-end
-end
-
-function autoPreviewCheck_Callback(hObject, eventdata, handles)
-% use auto preview
 if handles.autoPreviewCheck.Value == 1
     handles.winController.previewBtn_Callback();
 end

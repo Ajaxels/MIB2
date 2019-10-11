@@ -1,11 +1,12 @@
 %% The View Settings Panel
 % The View Settings panel gives basic tools for visualization of the
 % dataset.
+%
+% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
+%%
 % 
 % <<images\PanelsViewSettings.png>>
 % 
-%
-% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
 %% 1. The Colors table and the LUT checkbox
 % This table contains a list of color channels of the dataset.
 % The color channels may be switched on and off (a combination of |Ctrl+left mouse click| above checkboxes turns on selection of a single color channel). 

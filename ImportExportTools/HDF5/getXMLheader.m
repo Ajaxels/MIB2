@@ -125,10 +125,10 @@ if isfield(ViewSetup{1}, 'voxelSize')
 end
 img_info('pixSize') = pixSize;
 
-xyzVal = str2num(ViewSetup{1}.size.Text);   % unbinned
+xyzVal = str2num(ViewSetup{1}.size.Text);   %#ok<ST2NM> % unbinned
 if strcmp(img_info('Format'),'bdv.hdf5')
-    img_info('Height') = xyzVal(2);
-    img_info('Width') = xyzVal(1);
+    img_info('Height') = xyzVal(1);
+    img_info('Width') = xyzVal(2);
 else
     img_info('Height') = xyzVal(1);
     img_info('Width') = xyzVal(2);

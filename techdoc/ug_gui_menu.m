@@ -1,10 +1,11 @@
 %% Microscopy Image Browser Menus
 % List of entries in the menu of Microscopy Image Browser
 %
+% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
+%%
 % 
 % <<images\menuFile.png>>
 % 
-% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 %% List of menu entries
 % 
 % * <ug_gui_menu_file.html File>

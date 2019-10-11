@@ -39,7 +39,7 @@ else
         end
     end
     
-    char=eventdata.Key;
+    char = eventdata.Key;
     modifier = eventdata.Modifier;
 end
 % if ~isempty(eventdata.Modifier)
@@ -133,54 +133,55 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
         case 'Interpolate selection'            % default 'i'
             obj.menuSelectionInterpolate();
         case 'Invert image'                     % default 'Ctrl + i'
-            obj.mibInvertImage();
+            %obj.mibModel.invertImage('4D', 0);
+            obj.menuImageInvert_Callback('4D');
         case 'Add to selection to material'     % default 'a'/'Shift+a'
             % do nothing is selection is disabled
             if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
             
-            if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 1    % Selection to Model
+            if obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo') == -1    % Selection to Mask or Model
                 selectionTo = 'mask';
             else    % Selection to Mask
                 selectionTo = 'model';
             end
             if sum(ismember({'alt','shift'}, modifier)) == 2
-                obj.mibMoveLayers('selection',selectionTo,'4D','add');
+                obj.mibModel.moveLayers('selection', selectionTo, '4D, Dataset', 'add');
             elseif sum(ismember({'alt','shift'}, modifier)) == 1
-                obj.mibMoveLayers('selection', selectionTo, '3D', 'add');
+                obj.mibModel.moveLayers('selection', selectionTo, '3D, Stack', 'add');
             else
-                obj.mibMoveLayers('selection', selectionTo, '2D', 'add');
+                obj.mibModel.moveLayers('selection', selectionTo, '2D, Slice', 'add');
             end
         case 'Subtract from material'   % default 's'/'Shift+s'
             % do nothing is selection is disabled
             if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
 
-            if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 1   % Selection to Model
+            if obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo') == -1   % Selection to Mask or Model
                 selectionTo = 'mask';
             else    % Selection to Mask
                 selectionTo = 'model';
             end
             if sum(ismember({'alt','shift'}, modifier)) == 2
-                obj.mibMoveLayers('selection',selectionTo,'4D','remove');
+                obj.mibModel.moveLayers('selection',selectionTo,'4D, Dataset','remove');
             elseif sum(ismember({'alt','shift'}, modifier)) == 1
-                obj.mibMoveLayers('selection',selectionTo,'3D','remove');
+                obj.mibModel.moveLayers('selection',selectionTo,'3D, Stack','remove');
             else
-                obj.mibMoveLayers('selection',selectionTo,'2D','remove');
+                obj.mibModel.moveLayers('selection',selectionTo,'2D, Slice','remove');
             end
         case 'Replace material with current selection'  % default 'r'/'Shift+r'
             % do nothing is selection is disabled
             if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
         
-            if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 1    % Selection to Model
+            if obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo') == -1    % Selection to Mask or Model
                 selectionTo = 'mask';
             else    % Selection to Mask
                 selectionTo = 'model';
             end
             if sum(ismember({'alt','shift'}, modifier)) == 2
-                obj.mibMoveLayers('selection',selectionTo,'4D','replace');
+                obj.mibModel.moveLayers('selection',selectionTo,'4D, Dataset','replace');
             elseif sum(ismember({'alt','shift'}, modifier)) == 1
-                obj.mibMoveLayers('selection',selectionTo,'3D','replace');
+                obj.mibModel.moveLayers('selection',selectionTo,'3D, Stack','replace');
             else
-                obj.mibMoveLayers('selection',selectionTo,'2D','replace');
+                obj.mibModel.moveLayers('selection',selectionTo,'2D, Slice','replace');
             end
         case 'Clear selection'  % default 'c'/'Shift+c'
              obj.mibSelectionClearBtn_Callback();
@@ -279,7 +280,7 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             obj.mibView.handles.mibMaskShowCheck.Value = abs(val-1);
             obj.mibMaskShowCheck_Callback();
         case 'Fix selection to material'
-            selCheck = obj.mibView.handles.mibSegmSelectedOnlyCheck.Value;
+            selCheck = obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial;
             obj.mibView.handles.mibSegmSelectedOnlyCheck.Value = abs(selCheck-1);
             obj.mibSegmSelectedOnlyCheck_Callback();
         case 'Save image as...' % default 'Ctrl + s'
@@ -293,8 +294,10 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
         case 'Toggle between the selected material and exterior' % default 'e'
             userData = obj.mibView.handles.mibSegmentationTable.UserData;
             jTable = userData.jTable;   % jTable is initializaed in the beginning of mibGUI.m
-            jTable.changeSelection(obj.mibView.lastSegmSelection(1)-1, 1, false, false);    % automatically calls mibSegmentationTable_CellSelectionCallback
-            obj.mibView.lastSegmSelection = fliplr(obj.mibView.lastSegmSelection);
+            jTable.changeSelection(obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection(1)-1, 1, false, false);    % automatically calls mibSegmentationTable_CellSelectionCallback
+            obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection = fliplr(obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection);
+        case 'Toggle current and previous buffer'
+            obj.mibBufferToggle_Callback(obj.mibModel.mibPrevId);   % default ctrl+e, toggle buffer buttons
         case 'Loop through the list of favourite segmentation tools'    % default 'd'
             if numel(obj.mibModel.preferences.lastSegmTool) == 0
                 errordlg(sprintf('The selection tools for the fast access with the "D" shortcut are not difined!\n\nPlease use the "D" button in the Segmentation panel to select them!'),'No tools defined!');
@@ -369,17 +372,17 @@ else    % all other possible shortcuts
                 if obj.mibModel.I{obj.mibModel.Id}.modelType ~= 128
                     if strcmp(modifier, 'alt')
                         if obj.mibModel.I{obj.mibModel.Id}.selectedMaterial == 1 % select mask
-                            obj.mibMoveLayers('mask','selection','3D','replace');
+                            obj.mibModel.moveLayers('mask','selection','3D, Stack','replace');
                         elseif obj.mibModel.I{obj.mibModel.Id}.modelExist     % select only model
-                            obj.mibMoveLayers('model','selection','3D','replace');
+                            obj.mibModel.moveLayers('model','selection','3D, Stack','replace');
                         else    % make a combination of both mask and model
                             
                         end
                     else
                         if obj.mibModel.I{obj.mibModel.Id}.selectedMaterial == 1 % select mask                            
-                            obj.mibMoveLayers('mask','selection','2D','replace');
+                            obj.mibModel.moveLayers('mask','selection','2D, Slice','replace');
                         elseif obj.mibModel.I{obj.mibModel.Id}.modelExist    % select only model
-                            obj.mibMoveLayers('model','selection','2D','replace');
+                            obj.mibModel.moveLayers('model','selection','2D, Slice','replace');
                         else    % make a combination of both mask and model
                             
                         end

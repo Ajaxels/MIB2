@@ -2,10 +2,11 @@
 % The segmentation panel is the main panel used for segmentation. It allows creating models, 
 % modifying materials and selecting different segmentation tools. 
 %
-% <<images\PanelsSegmentation.png>>
-%
-%
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
+%
+%%
+%
+% <<images\PanelsSegmentation.png>>
 %
 %% What are the Models
 % |Model| is a matrix with dimensions equal to those of the opened |Image| dataset: _i.e._  [ |1:imageHeight,
@@ -82,19 +83,22 @@ Model
 % <li><b>Get statistics</b> calculate properties for objects that belong to the selected material. Please refer to the <a href="ug_gui_menu_mask_statistics.html">Menu->Models->Model statistics...</a> section for details</li>
 % <li><b>Material to Selection</b> a copies objects of the selected material to the Selection layer with the following options:</li>
 % <ul>
-% <li><em>NEW (CURRENT)</em> generates a new Selection layer from the selected material for the currently shown slice</li>
-% <li><em>NEW (CURRENT)</em> adds the selected material to the Selection layer for the currently shown slice</li>
-% <li><em>NEW (CURRENT)</em> removes the selected material from the Selection layer for the currently shown slice</li>
-% <li><em>NEW (ALL SLICES)</em> generates a new Selection layer from the selected material for the whole dataset</li>
-% <li><em>NEW (ALL SLICES)</em> adds the selected material to the Selection layer for the whole dataset</li>
-% <li><em>NEW (ALL SLICES)</em> removes the selected material from the Selection layer for the whole dataset</li>
+% <li><em>NEW (2D, Slice)</em> generates a new Selection layer from the selected material for the currently shown slice</li>
+% <li><em>ADD (2D, Slice)</em> adds the selected material to the Selection layer for the currently shown slice</li>
+% <li><em>REMOVE (2D, Slice)</em> removes the selected material from the Selection layer for the currently shown slice</li>
+% <li><em>NEW (3D, Stack)</em> generates a new Selection layer from the selected material for the current stack</li>
+% <li><em>ADD (3D, Stack)</em> adds the selected material to the Selection layer for the current stack</li>
+% <li><em>REMOVE (3D, Stack)</em> removes the selected material from the Selection layer for the current stack</li>
+% <li><em>NEW (4D, Dataset)</em> generates a new Selection layer from the selected material for the whole dataset</li>
+% <li><em>ADD (4D, Dataset)</em> adds the selected material to the Selection layer for the whole dataset</li>
+% <li><em>REMOVE (4D, Dataset)</em> removes the selected material from the Selection layer for the whole dataset</li>
 % </ul>
-% <li><b>Material to Mask</b> a copies objects of the selected material to the Mask layer with the options similar to the previous entry</li>
+% <li><b>Material to Mask</b> a copies objects of the selected material to the Mask layer with the options similar to <b>Material to Selection</b> section</li>
 % <li><b>Show as volume (MIB)..</b> visualize the selected material using
 % MIB rendering, available for Matlab R2018b and newer</li>
 % <li><b>Show isosurface (Matlab)...</b> visualize the model or only the selected material (when <em>Show selected material only</em> is selected), as an isosurface. This functionality is powered by 
 % Matlab and <a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">view3d</a> function written by  Torsten Vogel. Use the <b>"r"</b> shortcut to rotate and <b>"z"</b> to zoom. 
-% See more in the <a hewd="ug_gui_menu_models.html">Render model...</a>section</li>
+% See more in the <a href="ug_gui_menu_models.html">Render model...</a>section</li>
 % <li><b>Show as volume (Fiji)...</b> visualization of the model or selected material (when <em>Show selected material only</em> is selected) using volume rendering with Fiji 3D viewer,
 % please refer to the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements Fiji</a> for details</li>
 % <li><b>Unlink material from Add to</b> when unlinked, the Add to column is not changing its status during selection of Materials</li>

@@ -9,6 +9,9 @@ function insertSlice(obj, img, insertPosition, meta, options)
 % meta: @b [optional] containers Map with parameters of the dataset to insert, can be empty
 % options: an optional structure with additional paramters
 % .dim - a string that defines dimension 'depth' (default), 'time'
+% .BackgroundColorIntensity  - a number with background color
+% .silentMode - logical, a silent mode, when no questions be asked
+% .showWaitbar - logical, @b 1 [@em default] - show the waitbar, @b 0 - do not show
 %
 % Return values:
 % 
@@ -32,6 +35,7 @@ function insertSlice(obj, img, insertPosition, meta, options)
 % Updates
 % 30.10.2017, IB updated for 5D datasets: fixed insert in Z and added insert in T
 % 25.08.2018, updated for virtual stacks for the z-dimension
+% 09.05.2019, added extra options
 
 global mibPath; % path to mib installation folder
 
@@ -42,6 +46,9 @@ if insertPosition == 0; insertPosition = NaN; end
 
 if isempty(meta); meta = containers.Map; end
 if ~isfield(options, 'dim'); options.dim = 'depth'; end
+if ~isfield(options, 'showWaitbar'); options.showWaitbar = true; end
+if ~isfield(options, 'BackgroundColorIntensity'); options.BackgroundColorIntensity = 0; end
+if ~isfield(options, 'silentMode'); options.silentMode = false; end
 
 if ~isKey(meta, 'Height'); meta('Height') = size(img, 1); end
 if ~isKey(meta, 'Width'); meta('Width') = size(img, 2); end
@@ -49,12 +56,14 @@ if ~isKey(meta, 'Colors'); meta('Colors') = size(img, 3); end
 if ~isKey(meta, 'Depth'); meta('Depth') = size(img, 4); end
 if ~isKey(meta, 'Time'); meta('Time') = size(img, 5); end
 
-bgColor = 0;
+BackgroundColorIntensity = options.BackgroundColorIntensity;
 if obj.meta('Height') ~= meta('Height') || obj.meta('Width') ~= meta('Width') || obj.meta('Colors') ~= meta('Colors')
     if obj.Virtual.virtual == 0
-        answer = mibInputDlg({mibPath}, sprintf('Warning!\nSome of the image dimensions mismatch.\nContinue anyway?\n\nBackground color (a single number between: [0-%d])', intmax(class(img))),'Wrong dimensions', num2str(intmax(class(img))));
-        if isempty(answer); return; end
-        bgColor = str2double(answer{1});
+        if options.silentMode == 0
+            answer = mibInputDlg({mibPath}, sprintf('Warning!\nSome of the image dimensions mismatch.\nContinue anyway?\n\nBackground color (a single number between: [0-%d])', intmax(class(img))),'Wrong dimensions', num2str(intmax(class(img))));
+            if isempty(answer); return; end
+            BackgroundColorIntensity = str2double(answer{1});
+        end
     else
         errordlg(sprintf('!!! Error !!!\n\nImage dimensions mismatch'));
         return;
@@ -69,7 +78,7 @@ else
         insertPosition = obj.time + 1;
     end
 end
-wb = waitbar(0,sprintf('Insert dataset to position: %d\nPlease wait...', insertPosition),'Name','Insert dataset...','WindowStyle','modal');
+if options.showWaitbar; wb = waitbar(0,sprintf('Insert dataset to position: %d\nPlease wait...', insertPosition),'Name','Insert dataset...','WindowStyle','modal'); end
 
 % store dimensions of the existing datasets
 D1_y = obj.meta('Height');
@@ -93,12 +102,12 @@ tMax = max([D1_t D2_t]);
 
 if strcmp(options.dim, 'depth')
     if obj.Virtual.virtual == 0
-        if bgColor ~= 0
-            imgOut = zeros([yMax, xMax, cMax, D1_z+D2_z, tMax], obj.meta('imgClass')) + bgColor;
+        if BackgroundColorIntensity ~= 0
+            imgOut = zeros([yMax, xMax, cMax, D1_z+D2_z, tMax], obj.meta('imgClass')) + BackgroundColorIntensity;
         else
             imgOut = zeros([yMax, xMax, cMax, D1_z+D2_z, tMax], obj.meta('imgClass'));
         end
-        waitbar(.05, wb);
+        if options.showWaitbar; waitbar(.05, wb); end
         if insertPosition == 1  % insert dataset in the beginning of the opened dataset
             Z1_part1 = [D2_z+1 D2_z+D1_z];
             Z1_part2 = [];
@@ -120,7 +129,7 @@ if strcmp(options.dim, 'depth')
             imgOut(1:D1_y, 1:D1_x, 1:D1_c, Z1_part2(1):Z1_part2(2), 1:D1_t) = obj.img{1}(:, :, :, Z1_part1(2)+1:end, :);
         end
         obj.img{1} = imgOut;
-        waitbar(.4, wb);
+        if options.showWaitbar; waitbar(.4, wb); end
 
         % adding to the model
         if obj.modelType == 63 && ~isnan(obj.model{1}(1))     % resize uint6 type of the model
@@ -130,7 +139,7 @@ if strcmp(options.dim, 'depth')
                 imgOut(1:D1_y, 1:D1_x, Z1_part2(1):Z1_part2(2), 1:D1_t) = obj.model{1}(:, :, Z1_part1(2)+1:end, :);
             end
             obj.model{1} = imgOut;
-            waitbar(.9, wb);
+            if options.showWaitbar; waitbar(.9, wb); end
         else        % resize other types of models
             if obj.modelExist == 1       % resize model layer
                 imgOut = zeros([yMax, xMax, D1_z+D2_z, tMax], 'uint8');
@@ -140,7 +149,7 @@ if strcmp(options.dim, 'depth')
                 end
                 obj.model{1} = imgOut;
             end
-            waitbar(.6, wb);
+            if options.showWaitbar; waitbar(.6, wb); end
             if obj.maskExist == 1      % resize mask layer
                 imgOut = zeros([yMax, xMax, D1_z+D2_z, tMax], 'uint8');
                 imgOut(1:D1_y, 1:D1_x, Z1_part1(1):Z1_part1(2), 1:D1_t) = obj.maskImg{1}(:, :, 1:Z1_part1(2)-Z1_part1(1)+1, :);
@@ -149,7 +158,7 @@ if strcmp(options.dim, 'depth')
                 end
                 obj.maskImg{1} = imgOut;
             end
-            waitbar(.8, wb);
+            if options.showWaitbar; waitbar(.8, wb); end
             if ~isnan(obj.selection{1}(1))    % resize selection
                 imgOut = zeros([yMax, xMax, D1_z+D2_z, tMax], 'uint8');
                 imgOut(1:D1_y, 1:D1_x, Z1_part1(1):Z1_part1(2), 1:D1_t) = obj.selection{1}(:, :, 1:Z1_part1(2)-Z1_part1(1)+1, :);
@@ -158,7 +167,7 @@ if strcmp(options.dim, 'depth')
                 end
                 obj.selection{1} = imgOut;
             end
-            waitbar(.9, wb);
+            if options.showWaitbar; waitbar(.9, wb); end
         end
     else
         if insertPosition == 1  % insert dataset in the beginning of the opened dataset
@@ -199,15 +208,15 @@ if strcmp(options.dim, 'depth')
 else        % insert a new time point
 %     if D2_c > D1_c || D2_x > D1_x || D2_y > D1_y || D2_z > D1_z
 %         % resize the opened image
-%         obj.img{1} = padarray(obj.img{1}, [D2_y-D1_y, D2_x-D1_x, D2_c-D1_c, D2_z-D1_z], bgColor, 'post');
+%         obj.img{1} = padarray(obj.img{1}, [D2_y-D1_y, D2_x-D1_x, D2_c-D1_c, D2_z-D1_z], BackgroundColorIntensity, 'post');
 %     end
     
-    if bgColor ~= 0
-        imgOut = zeros([yMax, xMax, cMax, zMax, D1_t+D2_t], obj.meta('imgClass')) + bgColor;
+    if BackgroundColorIntensity ~= 0
+        imgOut = zeros([yMax, xMax, cMax, zMax, D1_t+D2_t], obj.meta('imgClass')) + BackgroundColorIntensity;
     else
         imgOut = zeros([yMax, xMax, cMax, zMax, D1_t+D2_t], obj.meta('imgClass'));
     end
-    waitbar(.05, wb);
+    if options.showWaitbar; waitbar(.05, wb); end
     
     if insertPosition == 1  % insert dataset in the beginning of the opened dataset
         T1_part1 = [D2_t+1 D2_t+D1_t];
@@ -230,7 +239,7 @@ else        % insert a new time point
         imgOut(1:D1_y, 1:D1_x, 1:D1_c, 1:D1_z, T1_part2(1):T1_part2(2)) = obj.img{1}(:, :, :, :, T1_part1(2)+1:end);
     end
     obj.img{1} = imgOut;
-    waitbar(.4, wb);
+    if options.showWaitbar; waitbar(.4, wb); end
     
     % adding to the model
     if obj.modelType == 63 && ~isnan(obj.model{1}(1))     % resize uint6 type of the model
@@ -240,7 +249,7 @@ else        % insert a new time point
             imgOut(1:D1_y, 1:D1_x, 1:D1_z, T1_part2(1):T1_part2(2)) = obj.model{1}(:, :, :, T1_part1(2)+1:end);
         end
         obj.model{1} = imgOut;
-        waitbar(.9, wb);
+        if options.showWaitbar; waitbar(.9, wb); end
     else        % resize other types of models
         if obj.modelExist == 1       % resize model layer
             imgOut = zeros([yMax, xMax, zMax, D1_t+D2_t], 'uint8');
@@ -250,7 +259,7 @@ else        % insert a new time point
             end
             obj.model{1} = imgOut;
         end
-        waitbar(.6, wb);
+        if options.showWaitbar; waitbar(.6, wb); end
         if obj.maskExist == 1      % resize mask layer
             imgOut = zeros([yMax, xMax, zMax, D1_t+D2_t], 'uint8');
             imgOut(1:D1_y, 1:D1_x, 1:D1_z, T1_part1(1):T1_part1(2)) = obj.maskImg{1}(:, :, :, 1:T1_part1(2)-T1_part1(1)+1);
@@ -259,7 +268,7 @@ else        % insert a new time point
             end
             obj.maskImg{1} = imgOut;
         end
-        waitbar(.8, wb);
+        if options.showWaitbar; waitbar(.8, wb); end
         if ~isnan(obj.selection{1}(1))    % resize selection
             imgOut = zeros([yMax, xMax, zMax, D1_t+D2_t], 'uint8');
             imgOut(1:D1_y, 1:D1_x, 1:D1_z, T1_part1(1):T1_part1(2)) = obj.selection{1}(:, :, :, 1:T1_part1(2)-T1_part1(1)+1);
@@ -268,7 +277,7 @@ else        % insert a new time point
             end
             obj.selection{1} = imgOut;
         end
-        waitbar(.9, wb);
+        if options.showWaitbar; waitbar(.9, wb); end
     end
     % shift labels
     [labelsList, labelValues, labelPositions, indices] = obj.hLabels.getLabels();   % [labelIndex, z x y t]
@@ -331,6 +340,6 @@ if isKey(obj.meta, 'SliceName')
     obj.meta('SliceName') = sliceNames;
 end
 obj.updateImgInfo(sprintf('Insert dataset [%dx%dx%dx%dx%d] at position %s=%d', D2_y, D2_x, D2_c, D2_z, D2_t, options.dim, insertPosition));  % update log
-waitbar(1, wb);
-delete(wb);
+if options.showWaitbar; waitbar(1, wb); delete(wb); end
+
 end

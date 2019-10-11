@@ -7,9 +7,11 @@
 % 
 % * Check that |MIB| directory is in Matlab path: |File->Set path...|.
 % If it is missing, add it with |->Add with Subfolders-> Save|.
-% * Delete old configuration file. For Windows: _c:\tmp\mib.mat_, or
-% _C:\Users\User-name\AppData\Local\Temp\mib.mat_; for Linux/MacOS in the
-% script or _tmp_ directory.
+% * Delete old configuration file:
+% * *for Windows* - _C:\Users\Username\Matlab\mib.mat_ or in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
+% The TEMP directory can be found and accessed with |Windows->Start button->%TEMP%| command
+% * *for Linux* - _/home/username/Matlab_ or local TEMP directory
+% * *for MacOS* - _/Users/username/Matlab_ or local TEMP directory
 % 
 %% Out of memory
 % 

@@ -47,28 +47,30 @@
             </tocitem>
             <tocitem target="ug_gui_menu.html">GUI Overview, Menus
                 <tocitem target="ug_gui_menu_file.html">File
-				  <tocitem target="ug_gui_menu_file_chop.html ">File/Chop images...</tocitem>
+                  <tocitem target="ug_gui_menu_file_batch.html">File/Batch processing...</tocitem>
+				  <tocitem target="ug_gui_menu_file_chop.html">File/Chop images...</tocitem>
                   <tocitem target="ug_gui_menu_file_rename_and_shuffle.html">File/Rename and shuffle</tocitem>
-                  <tocitem target="ug_gui_menu_file_makevideo.html ">File/Save as movie...</tocitem>
-                  <tocitem target="ug_gui_menu_file_makesnapshot.html ">File/Make snapshot</tocitem>
-                  <tocitem target="ug_gui_menu_file_preferences.html ">File/Preferences</tocitem>
+                  <tocitem target="ug_gui_menu_file_makevideo.html">File/Save as movie...</tocitem>
+                  <tocitem target="ug_gui_menu_file_makesnapshot.html">File/Make snapshot</tocitem>
+                  <tocitem target="ug_gui_menu_file_preferences.html">File/Preferences</tocitem>
                 </tocitem>
                 <tocitem target="ug_gui_menu_dataset.html">Dataset
                   <tocitem target="ug_gui_menu_dataset_alignment.html">Alignment...</tocitem>
                 </tocitem>
                 <tocitem target="ug_gui_menu_image.html">Image</tocitem>
                 <tocitem target="ug_gui_menu_models.html">Models
-                  <tocitem target="ug_gui_menu_mask_statistics.html ">Model statistics</tocitem>
+                  <tocitem target="ug_gui_menu_mask_statistics.html">Model statistics</tocitem>
                 </tocitem>
                 <tocitem target="ug_gui_menu_mask.html">Mask
-                  <tocitem target="ug_gui_menu_mask_statistics.html ">Mask statistics</tocitem>
+                  <tocitem target="ug_gui_menu_mask_statistics.html">Mask statistics</tocitem>
                 </tocitem>  
                 <tocitem target="ug_gui_menu_selection.html">Selection</tocitem>
                 <tocitem target="ug_gui_menu_tools.html">Tools
                     <tocitem target="ug_gui_menu_tools_measure.html">Measure tool</tocitem>
 					<tocitem target="ug_gui_menu_tools_random_forest.html">Classifier->Membrane detection</tocitem>
 					<tocitem target="ug_gui_menu_tools_random_forest_superpixels.html">Classifier->Superpixels classification</tocitem>
-					<tocitem target="ug_gui_menu_tools_graphcut.html">Semi-automatic segmentation->Graphcut</tocitem>
+					<tocitem target="ug_gui_menu_tools_global_thresholding.html">Semi-automatic segmentation->Global thresholding</tocitem>
+                    <tocitem target="ug_gui_menu_tools_graphcut.html">Semi-automatic segmentation->Graphcut</tocitem>
                     <tocitem target="ug_gui_menu_tools_watershed.html">Semi-automatic segmentation->Watershed</tocitem>
                     <tocitem target="ug_gui_menu_tools_objseparation.html">Object separation</tocitem>
 				</tocitem>

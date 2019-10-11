@@ -55,8 +55,8 @@ classdef mibDatasetInfoController < handle
             % setup uiTree
             % based on description by Yair Altman:
             % http://undocumentedmatlab.com/blog/customizing-uitree
-            warning('off','MATLAB:uitreenode:DeprecatedFunction');
-            warning('off','MATLAB:uitree:DeprecatedFunction');
+            warning('off', 'MATLAB:uitreenode:DeprecatedFunction');
+            warning('off', 'MATLAB:uitree:DeprecatedFunction');
             
             obj.selectedNodeName = [];
             obj.selectedNodePos = struct;

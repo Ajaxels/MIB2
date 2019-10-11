@@ -17,6 +17,8 @@ function mibChangeLayerSlider_Callback(obj)
 % Updates
 % 
 
+%t1 = tic;
+
 value = obj.mibView.handles.mibChangeLayerSlider.Value;
 value_str = sprintf('%.0f',value);
 obj.mibView.handles.mibChangeLayerEdit.String = value_str;
@@ -41,7 +43,7 @@ elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 4 %'yx'
             obj.mibView.handles.mibViewPanel.Title = [strVal1 strVal2];    
         end
     end
-    obj.mibModel.I{obj.mibModel.Id}.slices{4} = [value, value];
+     obj.mibModel.I{obj.mibModel.Id}.slices{4} = [value, value];
 end
 
 % % add a label to the image view panel
@@ -57,4 +59,5 @@ end
 obj.plotImage(0);
 notify(obj.mibModel, 'changeSlice');   % notify the controller about changed slice
 %unFocus(hObject);   % remove focus from hObject
+%toc(t1)
 end

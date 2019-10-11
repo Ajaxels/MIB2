@@ -17,6 +17,10 @@ function [img, img_info, pixSize] = mibLoadImages(filenames, options)
 %           .FontUnits
 %           .FontSize 
 %     - .virtual - a switch to open dataset in the virtual mode
+%     - .id - id of the current dataset, needed to generate filename for Memoizer class of BioFormats
+%     - .BioFormatsMemoizerMemoDir -> obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
+%     - .BackgroundColorIntensity -> numeric, background intensity for cases, when width/height of combined images mismatch, when it is missing a dialog box is shown
+%     - .BioFormatsIndices -> numeric, indices of images in file container to be opened with BioFormats 
 %
 % Return values:
 % img: - a dataset, [1:height, 1:width, 1:colors, 1:no_stacks]
@@ -41,7 +45,6 @@ function [img, img_info, pixSize] = mibLoadImages(filenames, options)
 global mibPath;
 global Font;
 
-tic
 if nargin < 2; options = struct(); end
 
 if ~isfield(options, 'mibBioformatsCheck');    options.mibBioformatsCheck = 0; end
@@ -51,6 +54,8 @@ if ~isfield(options, 'mibPath');    options.mibPath = mibPath;  end
 if ~isfield(options, 'imgStretch');    options.imgStretch = 1;  end
 if ~isfield(options, 'Font');    options.Font = Font;  end
 if ~isfield(options, 'virtual');    options.virtual = 0;  end
+if ~isfield(options, 'id');    options.id = 1;  end
+if ~isfield(options, 'BioFormatsMemoizerMemoDir');    options.BioFormatsMemoizerMemoDir = 'c:\temp';  end
 
 autoCropSw = 0;     % auto crop images that have dimension mismatch
 
@@ -73,6 +78,7 @@ if isempty(keys(img_info))
     img = [];
     return;
 end
+tic;
 
 % dealing with virtual stacks
 if options.virtual == 1
@@ -126,7 +132,8 @@ if options.virtual == 1
     for i=1:numel(files)
         switch files(i).object_type
             case 'bioformats'
-                img{i} = files(i).hDataset;   % get readers
+                %img{i} = files(i).hDataset;   % get readers
+                img{i} = files(i).origFilename;
             case {'matlab.hdf5', 'hdf5_image'}
                 img{i} = files(i).filename;   % get readers
             %case 'amiramesh'
@@ -145,6 +152,7 @@ if options.virtual == 1
     end
     img_info('Virtual_objectType') = Virtual_objectType;
     img_info('Virtual_seriesName') = Virtual_seriesName;
+    toc;
     return;
 end
 
@@ -155,21 +163,24 @@ if options.imgStretch == 1
         %strcmp(files(1).imgClass, 'single') || strcmp(files(1).imgClass, 'double')    
         choice = questdlg(sprintf('The original image is in the %s format\n\nIt will be converted into uint16 format!', files(1).imgClass), ...
             'Image Format Warning!', ...
-            'Sure','Cancel','Sure');
-        if strcmp(choice, 'Cancel')
-            img = [];
-            return;
-        end
+            'Sure', 'Keep 32bit', 'Cancel', 'Sure');
+        if strcmp(choice, 'Cancel'); img = []; return; end
+        if strcmp(choice, 'Keep 32bit');options.imgStretch = 0; end
     end
 end
 
 if numel(unique(cell2mat({files.color}))) > 1 || numel(unique(cell2mat({files.height}))) > 1 || numel(unique(cell2mat({files.width}))) > 1 && autoCropSw==0
-    answer = mibInputDlg({options.mibPath}, sprintf('!!! Warning !!!\nThe XY dimensions or number of color channels mismatch!\nContinue anyway?\n\nEnter the background color intensity (0-%d):', intmax(files(1).imgClass)),'Dimensions mismatch', num2str(intmax(files(1).imgClass)));
-    if isempty(answer)
-        img=[];
-        return;
+    if ~isfield(options, 'BackgroundColorIntensity')
+        answer = mibInputDlg({options.mibPath}, sprintf('!!! Warning !!!\nThe XY dimensions or number of color channels mismatch!\nContinue anyway?\n\nEnter the background color intensity (0-%d):', intmax(files(1).imgClass)),'Dimensions mismatch', num2str(intmax(files(1).imgClass)));
+        if isempty(answer)
+            img=[];
+            return;
+        end
+        files(1).backgroundColor = str2double(answer{1});   % add information about background color
+    else
+        files(1).backgroundColor = options.BackgroundColorIntensity;   % add information about background color
     end
-    files(1).backgroundColor = str2double(answer{1});   % add information about background color
+    
 end
 
 % loading the datasets

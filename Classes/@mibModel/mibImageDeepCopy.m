@@ -25,11 +25,14 @@ obj.I{toId}.closeVirtualDataset();    % close virtual datasets at destination
 
 obj.I{toId} = copy(obj.I{fromId});
 if obj.I{fromId}.Virtual.virtual == 1 && strcmp(obj.I{fromId}.Virtual.objectType{1}, 'bioformats')  % copy handles of the virtual image files
-    obj.I{toId}.img = cell([numel(obj.I{fromId}.img), 1]); % clear .img at destination
-    for i=1:numel(obj.I{fromId}.img)
-        obj.I{toId}.img{i} = bfGetReader(obj.I{fromId}.Virtual.filenames{i});
-        obj.I{toId}.img{i}.setSeries(obj.I{fromId}.Virtual.seriesName{i}-1)
-    end
+    obj.I{toId}.img = obj.I{fromId}.img;
+%     obj.I{toId}.img = cell([numel(obj.I{fromId}.img), 1]); % clear .img at destination
+%     for i=1:numel(obj.I{fromId}.img)
+%         obj.I{toId}.img{i} = loci.formats.Memoizer(bfGetReader(), 0);
+%         obj.I{toId}.img{i}.setId(obj.I{fromId}.Virtual.filenames{i});
+%         obj.I{toId}.img{i}.setSeries(obj.I{fromId}.Virtual.seriesName{i}-1);
+%         obj.I{toId}.img{i}.close();
+%     end
 end
 waitbar(0.5, wb);
 obj.I{toId}.meta = containers.Map(keys(obj.I{fromId}.meta), values(obj.I{fromId}.meta));  % make a copy of img_info containers.Map

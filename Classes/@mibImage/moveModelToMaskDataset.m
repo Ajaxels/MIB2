@@ -13,9 +13,6 @@ function moveModelToMaskDataset(obj, action_type, options)
 % options: a structure with additional paramters
 % @li @b .contSelIndex    - index of the @em Select @em from material
 % @li @b .contAddIndex    - index of the @em Add @em to material
-% @li @b .selected_sw     - [0 / 1] switch to limit actions to the selected @em Select @em from material only
-% @li @b .maskedAreaSw    - [0 / 1] switch to limit actions to the masked areas
-% @li @b .level -> [@em optional], index of image level from the image pyramid, default = 1
 %
 % Return values:
 
@@ -24,9 +21,7 @@ function moveModelToMaskDataset(obj, action_type, options)
 % @code 
 % userData = obj.mibView.handles.mibSegmentationTable.UserData;     // call from mibController, get user data structure 
 % options.contSelIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex(); // index of the selected material
-% options.contAddIndex = obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial - 2; // index of the target material
-% options.selected_sw = obj.mibView.handles.mibSegmSelectedOnlyCheck.Value;   // when 1- limit selection to the selected material
-% options.maskedAreaSw = obj.mibView.handles.mibMaskedAreaCheck.Value;
+% options.contAddIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'); // index of the target material
 % @endcode
 % @code obj.mibModel.I{obj.mibModel.Id}.moveModelToMaskDataset('add', options);     // call from mibController, add material to mask @endcode
 % @attention @b NOT @b sensitive to the blockModeSwitch
@@ -43,14 +38,14 @@ function moveModelToMaskDataset(obj, action_type, options)
 % 
 
 % remove fields that are not compatible with this function
-if isfield(options, 'x'); options = rmfield(options, 'x'); end;
-if isfield(options, 'y'); options = rmfield(options, 'y'); end;
-if isfield(options, 'z'); options = rmfield(options, 'z'); end;
-if isfield(options, 't'); options = rmfield(options, 't'); end;
-if ~isfield(options, 'contSelIndex'); options.contSelIndex = obj.selectedMaterial; end;
-if ~isfield(options, 'contAddIndex'); options.contAddIndex = obj.selectedAddToMaterial; end;
+if isfield(options, 'x'); options = rmfield(options, 'x'); end
+if isfield(options, 'y'); options = rmfield(options, 'y'); end
+if isfield(options, 'z'); options = rmfield(options, 'z'); end
+if isfield(options, 't'); options = rmfield(options, 't'); end
+if ~isfield(options, 'contSelIndex'); options.contSelIndex = obj.getSelectedMaterialIndex(); end
+if ~isfield(options, 'contAddIndex'); options.contAddIndex = obj.getSelectedMaterialIndex('AddTo'); end
 
-if ~isfield(options, 'level'); options.level = 1; end;
+if ~isfield(options, 'level'); options.level = 1; end
 
 switch action_type
     case 'add'  % add material to selection

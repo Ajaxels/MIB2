@@ -48,7 +48,7 @@ if col_channel == 0
     end
 end
 
-if obj.mibModel.getImageProperty('depth') < 3; switch3d = 0; end;
+if obj.mibModel.getImageProperty('depth') < 3; switch3d = 0; end
 dMaxDif = str2double(obj.mibView.handles.mibSelectionToolEdit.String);  % intensity variation
 magicWandRadius = str2double(obj.mibView.handles.mibMagicWandRadius.String);
 
@@ -71,13 +71,13 @@ if ~switch3d    % do region growing in 2d
     selarea = uint8(regiongrowing(currImage, dMaxDif, [y, x]));
     
     % limit to the selected material of the model
-    if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value == 1
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1
         currModel = cell2mat(obj.mibModel.getData2D('model', NaN, NaN, selcontour, options));
         selarea = bitand(selarea, currModel);
     end
     
     % limit selection to the masked area
-    if obj.mibView.handles.mibMaskedAreaCheck.Value && obj.mibModel.getImageProperty('maskExist') == 1
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMask && obj.mibModel.getImageProperty('maskExist') == 1
         currModel = cell2mat(obj.mibModel.getData2D('mask', NaN, NaN, NaN, options));
         selarea = bitand(selarea, currModel);
     end
@@ -134,14 +134,14 @@ else    % do magic wand in 3d
     selarea = uint8(regiongrowing(datasetImage, dMaxDif, [h, w, z]));
     waitbar(0.65, wb);
     % limit to the selected material of the model
-    if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value == 1
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1
         datasetImage = cell2mat(obj.mibModel.getData3D('model', NaN, orient, selcontour, options));
         selarea(datasetImage~=1) = 0;
         waitbar(0.4, wb);
     end
     waitbar(0.75, wb);
     % limit selection to the masked area
-    if obj.mibView.handles.mibMaskedAreaCheck.Value == 1 && obj.mibModel.getImageProperty('maskExist') == 1
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMask == 1 && obj.mibModel.getImageProperty('maskExist') == 1
         datasetImage = cell2mat(obj.mibModel.getData3D('mask', NaN, orient, NaN, options));
         selarea(datasetImage~=1) = 0;
     end
@@ -155,7 +155,7 @@ else    % do magic wand in 3d
     waitbar(0.95, wb);
         
     if isempty(modifier)
-        obj.clearSelection('3D');
+        obj.mibModel.I{obj.mibModel.Id}.clearSelection('3D');
         obj.mibModel.setData3D('selection', selarea, NaN, orient, NaN, options);
     elseif strcmp(modifier, 'shift')    % combines selections
         currSelection = cell2mat(obj.mibModel.getData3D('selection', NaN, orient, NaN, options));

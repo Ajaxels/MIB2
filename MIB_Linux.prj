@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="799137055" file="/home/ad/home/i/ibelev/Ilya/Matlab/MIB2/MIB_Linux.prj" location="/home/ad/home/i/ibelev/Ilya/Matlab/MIB2" name="MIB_Linux" preferred-package-location="/home/ad/home/i/ibelev/Ilya/Matlab/MIB2/MIB_Linux/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="40459859" file="/home/ibelev/Programs/Matlab_scripts/MIB2_deploy/MIB_Linux.prj" location="/home/ibelev/Programs/Matlab_scripts/MIB2_deploy" name="MIB_Linux" preferred-package-location="/home/ibelev/Programs/Matlab_scripts/MIB2_deploy/MIB_Linux/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}/MIB_Mac_resources/icon.icns</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
     </param.icons>
-    <param.version>2.212</param.version>
+    <param.version>2.511</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -54,7 +54,20 @@ To configure path to Fiji and Omero server please add paths to those program in 
 
 Further instructions:
 http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
-    <param.target.install.notes />
+    <param.target.install.notes>In the following directions, replace MR/v96 by the directory on the target machine where MATLAB is installed, or MR by the directory where the MATLAB Runtime is installed.
+
+(1) Set the environment variable XAPPLRESDIR to this value:
+
+MR/v96/X11/app-defaults
+
+
+(2) If the environment variable LD_LIBRARY_PATH is undefined, set it to the following:
+
+MR/v96/runtime/glnxa64:MR/v96/bin/glnxa64:MR/v96/sys/os/glnxa64:MR/v96/sys/opengl/lib/glnxa64
+
+If it is defined, set it to the following:
+
+${LD_LIBRARY_PATH}:MR/v96/runtime/glnxa64:MR/v96/bin/glnxa64:MR/v96/sys/os/glnxa64:MR/v96/sys/opengl/lib/glnxa64</param.target.install.notes>
     <param.intermediate>${PROJECT_ROOT}/MIB_Linux/for_testing</param.intermediate>
     <param.files.only>${PROJECT_ROOT}/MIB_Linux/for_redistribution_files_only</param.files.only>
     <param.output>${PROJECT_ROOT}/MIB_Linux/for_redistribution</param.output>
@@ -75,11 +88,15 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
     <param.native.matlab>false</param.native.matlab>
     <param.checkbox>false</param.checkbox>
     <param.example />
-    <param.help.text />
+    <param.help.text>Syntax 
+	  -? 
+	 
+ Input Arguments 
+	 -?  print help on how to use the application 
+	 input arguments</param.help.text>
     <unset>
       <param.guid />
       <param.installpath.combo />
-      <param.target.install.notes />
       <param.intermediate />
       <param.files.only />
       <param.output />
@@ -98,46 +115,45 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
       <param.native.matlab />
       <param.checkbox />
       <param.example />
-      <param.help.text />
     </unset>
     <fileset.main>
       <file>${PROJECT_ROOT}/mib_deploy.m</file>
     </fileset.main>
     <fileset.resources>
       <file>${PROJECT_ROOT}/Classes</file>
+      <file>${PROJECT_ROOT}/Development</file>
       <file>${PROJECT_ROOT}/GuiTools</file>
       <file>${PROJECT_ROOT}/ImportExportTools</file>
+      <file>${PROJECT_ROOT}/MIB.prj</file>
+      <file>${PROJECT_ROOT}/MIB_Linux.prj</file>
+      <file>${PROJECT_ROOT}/MIB_Mac.prj</file>
       <file>${PROJECT_ROOT}/Plugins</file>
       <file>${PROJECT_ROOT}/Resources</file>
       <file>${PROJECT_ROOT}/Tools</file>
+      <file>${PROJECT_ROOT}/mib.m</file>
+      <file>${PROJECT_ROOT}/mib_deploy.m</file>
+      <file>${PROJECT_ROOT}/techdoc</file>
     </fileset.resources>
     <fileset.package>
       <file>${PROJECT_ROOT}/Plugins</file>
       <file>${PROJECT_ROOT}/Resources</file>
       <file>${PROJECT_ROOT}/techdoc</file>
     </fileset.package>
-    <fileset.depfun>
-      <file>${PROJECT_ROOT}/mib.m</file>
-    </fileset.depfun>
+    <fileset.depfun />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="MIB" optional="false">/home/ad/home/i/ibelev/Ilya/Matlab/MIB2/MIB_Linux/for_testing/MIB</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="splash.png" optional="false">/home/ad/home/i/ibelev/Ilya/Matlab/MIB2/MIB_Linux/for_testing/splash.png</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="run_MIB.sh" optional="false">/home/ad/home/i/ibelev/Ilya/Matlab/MIB2/MIB_Linux/for_testing/run_MIB.sh</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="readme.txt" optional="true">/home/ad/home/i/ibelev/Ilya/Matlab/MIB2/MIB_Linux/for_testing/readme.txt</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="MIB" optional="false">/home/ibelev/Programs/Matlab_scripts/MIB2_deploy/MIB_Linux/for_testing/MIB</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="splash.png" optional="false">/home/ibelev/Programs/Matlab_scripts/MIB2_deploy/MIB_Linux/for_testing/splash.png</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="run_MIB.sh" optional="false">/home/ibelev/Programs/Matlab_scripts/MIB2_deploy/MIB_Linux/for_testing/run_MIB.sh</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="readme.txt" optional="true">/home/ibelev/Programs/Matlab_scripts/MIB2_deploy/MIB_Linux/for_testing/readme.txt</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/cs/group/svc/opt/MATLAB/R2017b</root>
+      <root>/home/ibelev/Programs/R2019a</root>
       <toolboxes>
-        <toolbox name="fixedpoint" />
         <toolbox name="matlabcoder" />
         <toolbox name="embeddedcoder" />
+        <toolbox name="neuralnetwork" />
       </toolboxes>
-      <toolbox>
-        <fixedpoint>
-          <enabled>true</enabled>
-        </fixedpoint>
-      </toolbox>
       <toolbox>
         <matlabcoder>
           <enabled>true</enabled>
@@ -147,6 +163,11 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
         <embeddedcoder>
           <enabled>true</enabled>
         </embeddedcoder>
+      </toolbox>
+      <toolbox>
+        <neuralnetwork>
+          <enabled>true</enabled>
+        </neuralnetwork>
       </toolbox>
     </matlab>
     <platform>
@@ -158,7 +179,7 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
       <vista>false</vista>
       <linux>true</linux>
       <solaris>false</solaris>
-      <osver>4.13.0-26-generic</osver>
+      <osver>3.10.0-957.12.2.el7.x86_64</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>glnxa64</arch>

@@ -1,10 +1,12 @@
 %% Image Filters Panel
 % Filter image using different image filters.
 %
-% <<images\PanelsImageFilters.png>>
-% 
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
 %
+%%
+%
+% <<images\PanelsImageFilters.png>>
+% 
 %% Brief video demonstration
 %
 % <html>

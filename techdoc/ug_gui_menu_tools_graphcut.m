@@ -16,11 +16,13 @@
 % them but pays off during the following segmentation.
 % 
 %
-% <<images\menuToolsGraphcut_Overview.jpg>>
 % 
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools Menu*>
 % 
+%%
+%
+% <<images\menuToolsGraphcut_Overview.jpg>>
 %
 %% General example
 %
@@ -149,10 +151,12 @@
 % growth from the seeds. Sometimes, however, the large coefficients results
 % in segmentation of areas that are distant from the seeds, which is
 % considered as an artefact of the method.
-% * *Superpixels/Graph* press this button to initiate generation of superpixels and their final organization into a graph</li>
-% * *Import* press to import superpixels and the generated graph from a disk or Matlab</li>
-% * *Export* press to export superpixels and the generated graph to a disk or Matlab</li>
-% * *Preview superpixels* the generated superpixels may be previewed by pressing this button</li>
+% * *Superpixels/Graph* press this button to initiate generation of superpixels and their final organization into a graph
+% * *Import* press to import superpixels and the generated graph from a disk or Matlab
+% * *Export* press to export superpixels and the generated graph to a file,
+% Matlab, a new model or as Lines3D graph object (not recommended for many superpixels, see also here
+% <https://youtu.be/xrsTVqD7kOQ https://youtu.be/xrsTVqD7kOQ>)
+% * *Preview superpixels* the generated superpixels may be previewed by pressing this button
 %
 %
 %% Image segmentation settings

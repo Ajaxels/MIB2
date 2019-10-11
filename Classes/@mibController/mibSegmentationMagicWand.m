@@ -70,13 +70,13 @@ if ~switch3d    % do magic wand in 2d
     selarea = zeros([size(currImage,1), size(currImage,2)], 'uint8') + 1;
     
     % limit to the selected material of the model
-    if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value == 1
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1
         currModel = cell2mat(obj.mibModel.getData2D('model', NaN, NaN, selcontour, options));
         selarea = bitand(selarea, currModel);
     end
     
     % limit selection to the masked area
-    if obj.mibView.handles.mibMaskedAreaCheck.Value && obj.mibModel.getImageProperty('maskExist') == 1
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMask && obj.mibModel.getImageProperty('maskExist') == 1
         currModel = cell2mat(obj.mibModel.getData2D('mask', NaN, NaN, NaN, options));
         selarea = bitand(selarea, currModel);
     end
@@ -145,13 +145,13 @@ else    % do magic wand in 3d
     waitbar(0.3, wb);
     selarea(datasetImage>=lower & datasetImage<=upper) = 1;
     % limit to the selected material of the model
-    if obj.mibView.handles.mibSegmSelectedOnlyCheck.Value == 1
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1
         datasetImage = cell2mat(obj.mibModel.getData3D('model', NaN, orient, selcontour, options));
         selarea(datasetImage~=1) = 0;
         waitbar(0.4, wb);
     end
     % limit selection to the masked area
-    if obj.mibView.handles.mibMaskedAreaCheck.Value == 1 && obj.mibModel.getImageProperty('maskExist') == 1
+    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMask == 1 && obj.mibModel.getImageProperty('maskExist') == 1
         datasetImage = cell2mat(obj.mibModel.getData3D('mask', NaN, orient, NaN, options));
         selarea(datasetImage~=1) = 0;
     end

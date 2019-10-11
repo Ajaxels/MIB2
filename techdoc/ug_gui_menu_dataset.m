@@ -3,11 +3,12 @@
 % dataset, start the Alignment tool, or do some other dataset related actions.
 %
 %
+% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
+%
+%%
 % 
 % <<images\menuDataset.png>>
 % 
-% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
-%
 %% Alignment tool...
 % Can be used to align the slices of the opened dataset or to align two
 % separate datasets. See details <ug_gui_menu_dataset_alignment.html *here*>.

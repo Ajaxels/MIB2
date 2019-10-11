@@ -40,6 +40,8 @@ classdef mibModel < handle
         % define whether or not dispay the mask layer (used in obj.getRGBimage) a status of mibCpontroller.mibView.handles.mibMaskShowCheck.Value
         mibModelShowCheck
         % define whether or not dispay the model layer (used in obj.getRGBimage) a status of mibCpontroller.mibView.handles.mibModelShowCheck.Value 
+        mibPrevId
+        % id of the previously selected mibModel container
         mibShowAnnotationsCheck
         % show or not the annotations
         mibShowLines3DCheck
@@ -49,6 +51,7 @@ classdef mibModel < handle
         sessionSettings
         % a structure with settings for some tools used during the current session of MIB
         % .automaticAlignmentOptions -> a structure used in mibAlignmentController
+        % .guiImages - CData for images to be shown on some buttons
         storedSelection
         % a buffer to store selection with press of Ctrl+C button, and restore with Ctrl+V
         % @note dimensions are @code {1}[1:height, 1:width] or [] @endcode
@@ -56,8 +59,6 @@ classdef mibModel < handle
         % a structure with program preferences
         showAllMaterials
         % a switch to show all materials of the model, or only a single one; defined in mibView.handles.mibSegmentationTable
-        useLUT
-        % use or not LUT for visualization of image, a number @b 0 - do not use; @b 1 - use a status of mibCpontroller.mibView.handles.mibLutCheckbox.Value
     end
     
     properties (SetObservable)
@@ -87,6 +88,10 @@ classdef mibModel < handle
         % eventdata = ToggleEventData(1);   // show the model
         % notify(obj.mibModel, 'showModel', eventdata);
         % @endcode
+        stopProtocol
+        % stop batch protocol from execution
+        syncBatch
+        % synchromize structure for batch actions
         undoneBackup
         % when the undo is triggered
         updateId   
@@ -110,15 +115,37 @@ classdef mibModel < handle
     methods
         % declaration of functions in the external files, keep empty line in between for the doc generator
         
-        addFrame(obj)   % add a frame around the dataset
+        BatchOptOut = addFrame(obj, BatchOpt)   % add a frame around the dataset
+        
+        clearMask(obj, BatchOptIn)          % clear the Mask layer
+        
+        clearSelection(obj, sel_switch, BatchOptIn)  % clear the Selection layer
+        
+        colorChannelActions(obj, mode, channel1, channel2, BatchOptIn)  % handling various color channel operations
+        
+        contentAwareFill(obj, BatchOptIn)   % content aware fill
         
         contrastCLAHE(obj, mode, colCh)        % Do CLAHE Contrast-limited adaptive histogram equalization for the dataset
         
-        contrastNormalizationMemoryOptimized(obj, type_switch, colorChannel)        % Normalize contrast between the layers of the dataset
+        contrastNormalization(obj, mode, BatchOptIn) % Normalize contrast between the layers of the dataset
         
         [xOut, yOut] = convertDataToMouseCoordinates(obj, x, y, mode, magFactor)        % Convert coordinates of a pixel in the dataset to the coordinates of the mibView.handles.mibImageView axes
         
         [xOut, yOut, zOut, tOut] = convertMouseToDataCoordinates(obj, x, y, mode, permuteSw)        % Convert coordinates under the mouse cursor to the coordinates of the dataset
+        
+        convertModel(obj, ModelType, BatchOptIn)    % convert model to the specified ModelType 
+        
+        copySwapSlice(obj, SourceSlice, TargetSlice, mode, BatchOptIn)      % Copy/swap slice(s) within the dataset
+        
+        createModel(obj, ModelType, ModelMaterialNames, BatchOptIn)         % Create a new model
+        
+        deleteSlice(obj, orientation, sliceNumber, BatchOptIn)    % delete a slice from the dataset
+        
+        dilateImage(obj, BatchOptIn)   % dilate image
+        
+        erodeImage(obj, BatchOptIn)    % erode image
+        
+        fillSelectionOrMask(obj, sel_switch, type, BatchOptIn)  % fill holes for selection or mask layers
         
         [axesX, axesY] = getAxesLimits(obj, id)        % get axes limits for the currently shown or id dataset
         
@@ -140,15 +167,31 @@ classdef mibModel < handle
         
         imgRGB = getRGBvolume(obj, img, options)        % Generate RGB volume rendering image of the stack
         
-        flipDataset(obj, mode)        % Flip dataset horizontally, vertically or in the Z direction
+        flipDataset(obj, mode, showWaitbar)        % Flip dataset horizontally, vertically or in the Z direction
         
-        invertImage(obj, mode, colChannel)        % Invert image
+        insertEmptySlice(obj, BatchOptIn)   % Insert an empty slice into the existing volume
+        
+        interpolateImage(obj, imgType, intType, BatchOptIn)     % interpolate selection, mask or model layer
+        
+        result = invertImage(obj, mode, colChannel, Options)        % Invert image
+        
+        loadMask(obj, mask, BatchOptIn)      % load mask from a file or import when mask variable is provided
+        
+        loadModel(obj, model, BatchOptIn)           % load model from a file or import when model variable is provided
         
         mibDoBackup(obj, type, switch3d, storeOptions)        % store the dataset for Undo
         
         mibImageDeepCopy(obj, toId, fromId)        % copy mibImage class from one container to another; used in mibBufferToggleContext_Callback, duplicate
         
-        rotateDataset(obj, mode)        % Rotate dataset in 90 or -90 degrees
+        moveLayers(obj, SourceLayer, DestinationLayer, DatasetType, ActionType, BatchOptIn)  % to move datasets between the layers (image, model, mask, selection)
+        
+        rotateDataset(obj, mode, showWaitbar)        % Rotate dataset in 90 or -90 degrees
+        
+        fnOut = saveImageAsDialog(obj, filename, BatchOptIn)        % save image to a file
+        
+        fnOut = saveMask(obj, filename, BatchOptIn)        % save mask to a file
+        
+        fnOut = saveModel(obj, filename, BatchOptIn)        % save model to a file
         
         setAxesLimits(obj, axesX, axesY, id)        % set axes limits for the currently shown or id dataset
         
@@ -164,14 +207,12 @@ classdef mibModel < handle
         
         setPixSize(obj, pixSize, id)        % set pixSize structure for the currently shown or id dataset
         
-        smoothImage(obj, type)        % smooth 'Mask', 'Selection' or 'Model' layer
+        smoothImage(obj, type, BatchOptIn)        % smooth 'Mask', 'Selection' or 'Model' layer
         
-        transposeDataset(obj, mode)        % Transpose dataset physically between dimensions
+        transposeDataset(obj, mode, showWaitbar)        % Transpose dataset physically between dimensions
         
         transposeZ2T(obj)        % transpose Z to T dimension
         
-        result = updateParameters(obj, pixSize)        % Update mibImage.pixelSize, mibImage.meta(''XResolution'') and mibImage.meta(''XResolution'') and mibView.volren
-
         
         function obj = mibModel()
             obj.reset();
@@ -182,12 +223,12 @@ classdef mibModel < handle
             obj.myPath = '\';   % define working directory
             obj.Id = 1;         % index of the current dataset
             obj.newDatasetSwitch = 0;
-            obj.useLUT = 0;
             obj.showAllMaterials = 1;   % display all materials of the model
             obj.disableSegmentation = 0;    % disable segmentation switch
             obj.storedSelection = [];   % initialize stored selection
             obj.connImaris = [];    % empty connection to Imaris
             obj.sessionSettings = struct();     % current session settings
+            obj.mibPrevId = 1;     % index of the previous dataset
             
             for i=1:obj.maxId   % initialize mibImage 
                 obj.I{i}= mibImage();

@@ -32,6 +32,7 @@ end
 
 % get the stored dataset
 [type, data, meta, storeOptions] = obj.mibModel.U.undo(newIndex);
+if ~isfield(storeOptions, 'id'); storeOptions.id = obj.mibModel.Id; end
 obj.mibModel.U.prevUndoIndex = newDataIndex;
 
 % get stored info about the new place
@@ -54,7 +55,7 @@ if obj.mibModel.preferences.max3dUndoHistory <= 1 && storeOptions.switch3d  % tw
         end
     end
     if strcmp(type, 'image')
-        storeOptions.viewPort = obj.mibModel.I{obj.mibModel.Id}.viewPort;
+        storeOptions.viewPort = obj.mibModel.I{storeOptions.id}.viewPort;
         obj.mibModel.U.replaceItem(newDataIndex, type, dataStore, obj.getMeta(), storeOptions);
     else
         obj.mibModel.U.replaceItem(newDataIndex, type, dataStore, NaN, storeOptions);
@@ -69,13 +70,13 @@ else
                 getDataOptions.y = storeOptions.y(roiId, :);
                 dataStore(roiId) = obj.mibModel.getData3D(type, getDataOptions.t(1), getDataOptions.orient, 0, getDataOptions);
             end
-            storeOptions.viewPort = obj.mibModel.I{obj.mibModel.Id}.viewPort;
+            storeOptions.viewPort = obj.mibModel.I{storeOptions.id}.viewPort;
             obj.mibModel.U.replaceItem(newDataIndex, type, dataStore, obj.getMeta(), storeOptions);
         elseif strcmp(type, 'labels')
-            [labels.labelText, labels.labelValue, labels.labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
+            [labels.labelText, labels.labelValue, labels.labelPosition] = obj.mibModel.I{storeOptions.id}.hLabels.getLabels();
             obj.mibModel.U.replaceItem(newDataIndex, type, {labels}, NaN, storeOptions);
         elseif strcmp(type, 'measurements')
-            obj.mibModel.U.replaceItem(newDataIndex, type, {obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data}, NaN, storeOptions);
+            obj.mibModel.U.replaceItem(newDataIndex, type, {obj.mibModel.I{storeOptions.id}.hMeasure.Data}, NaN, storeOptions);
         else
             dataStore = cell([size(storeOptions.x,1), 1]);
             for roiId = 1:size(storeOptions.x, 1)
@@ -93,15 +94,15 @@ else
                 getDataOptions.y = storeOptions.y(roiId, :);
                 dataStore(roiId) = obj.mibModel.getData2D(type, storeOptions.z(1), storeOptions.orient, 0, getDataOptions);
             end
-            storeOptions.viewPort = obj.mibModel.I{obj.mibModel.Id}.viewPort;
+            storeOptions.viewPort = obj.mibModel.I{storeOptions.id}.viewPort;
             obj.mibModel.U.replaceItem(newDataIndex, type, dataStore, obj.getMeta(), storeOptions);
         elseif strcmp(type, 'labels')
-            [labels.labelText, labels.labelValue, labels.labelPosition] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
+            [labels.labelText, labels.labelValue, labels.labelPosition] = obj.mibModel.I{storeOptions.id}.hLabels.getLabels();
             obj.mibModel.U.replaceItem(newDataIndex, type, {labels}, NaN, storeOptions);
         elseif strcmp(type, 'lines3d')          
-            obj.mibModel.U.replaceItem(newDataIndex, type, {obj.mibModel.I{obj.mibModel.Id}.hLines3D}, NaN, storeOptions);
+            obj.mibModel.U.replaceItem(newDataIndex, type, {obj.mibModel.I{storeOptions.id}.hLines3D}, NaN, storeOptions);
         elseif strcmp(type, 'measurements')
-            obj.mibModel.U.replaceItem(newDataIndex, type, {obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data}, NaN, storeOptions);
+            obj.mibModel.U.replaceItem(newDataIndex, type, {obj.mibModel.I{storeOptions.id}.hMeasure.Data}, NaN, storeOptions);
         else
             dataStore = cell([size(storeOptions.x, 1), 1]);
             for roiId = 1:size(storeOptions.x, 1)
@@ -125,37 +126,37 @@ if storeOptions.switch3d     % 3D case
             case 'image'
                 obj.mibModel.setData3D('image', data{cellId}, storeOptions.t(1), storeOptions.orient, 0, setDataOptions);
                 obj.setMeta(meta);
-                obj.mibModel.I{obj.mibModel.Id}.width = meta('Width');
-                obj.mibModel.I{obj.mibModel.Id}.height = meta('Height');
-                if obj.mibModel.I{obj.mibModel.Id}.colors ~= size(data{1}, 3)    % take care about change of the number of color channels
-                    obj.mibModel.I{obj.mibModel.Id}.colors = size(data{1}, 3);
-                    obj.mibModel.I{obj.mibModel.Id}.slices{3} = 1:min([size(data{1},3) 3]);
+                obj.mibModel.I{storeOptions.id}.width = meta('Width');
+                obj.mibModel.I{storeOptions.id}.height = meta('Height');
+                if obj.mibModel.I{storeOptions.id}.colors ~= size(data{1}, 3)    % take care about change of the number of color channels
+                    obj.mibModel.I{storeOptions.id}.colors = size(data{1}, 3);
+                    obj.mibModel.I{storeOptions.id}.slices{3} = 1:min([size(data{1},3) 3]);
                 end
                 if isempty(setDataOptions.viewPort)
-                    obj.mibModel.I{obj.mibModel.Id}.updateDisplayParameters();
+                    obj.mibModel.I{storeOptions.id}.updateDisplayParameters();
                 else
-                    obj.mibModel.I{obj.mibModel.Id}.viewPort = getDataOptions.viewPort;
+                    obj.mibModel.I{storeOptions.id}.viewPort = getDataOptions.viewPort;
                 end
-                obj.mibModel.I{obj.mibModel.Id}.depth = meta('Depth');
-                obj.mibModel.I{obj.mibModel.Id}.time = meta('Time');
+                obj.mibModel.I{storeOptions.id}.depth = meta('Depth');
+                obj.mibModel.I{storeOptions.id}.time = meta('Time');
                 obj.updateGuiWidgets();
             case 'selection'
                 obj.mibModel.setData3D(type, data{cellId}, storeOptions.t(1), storeOptions.orient, NaN, setDataOptions);
             case 'mask'
                 obj.mibModel.setData3D(type, data{cellId}, storeOptions.t(1), storeOptions.orient, NaN, setDataOptions);
-                obj.mibModel.I{obj.mibModel.Id}.maskExist = 1;
+                obj.mibModel.I{storeOptions.id}.maskExist = 1;
             case 'model'
                 obj.mibModel.setData3D(type, data{cellId}, storeOptions.t(1), storeOptions.orient, NaN, setDataOptions);
-                obj.mibModel.I{obj.mibModel.Id}.modelExist = 1;
+                obj.mibModel.I{storeOptions.id}.modelExist = 1;
             case 'everything'
                 obj.mibModel.setData3D(type, data{cellId}, storeOptions.t(1), storeOptions.orient, NaN, setDataOptions);
             case 'labels'
                 data = data{cellId};
-                obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(data.labelText, data.labelPosition, data.labelValue);
+                obj.mibModel.I{storeOptions.id}.hLabels.replaceLabels(data.labelText, data.labelPosition, data.labelValue);
                 notify(obj.mibModel, 'updatedAnnotations');
             case 'measurements'
                 data = data{cellId};
-                obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data = data;
+                obj.mibModel.I{storeOptions.id}.hMeasure.Data = data;
         end
     end
 else        % 2D case
@@ -167,43 +168,52 @@ else        % 2D case
                 obj.mibModel.setData2D('image', data{cellId}, storeOptions.z(1), storeOptions.orient, 0, setDataOptions);
                 obj.setMeta(meta);
                 if isempty(setDataOptions.viewPort)
-                    obj.mibModel.I{obj.mibModel.Id}.updateDisplayParameters();
+                    obj.mibModel.I{storeOptions.id}.updateDisplayParameters();
                 else
-                    obj.mibModel.I{obj.mibModel.Id}.viewPort = getDataOptions.viewPort;
+                    obj.mibModel.I{storeOptions.id}.viewPort = getDataOptions.viewPort;
                 end
             case 'selection'
                 obj.mibModel.setData2D(type, data{cellId}, storeOptions.z(1), storeOptions.orient, NaN, setDataOptions);
             case 'mask'
                 obj.mibModel.setData2D(type, data{cellId}, storeOptions.z(1), storeOptions.orient, NaN, setDataOptions);
-                obj.mibModel.I{obj.mibModel.Id}.maskExist = 1;
+                obj.mibModel.I{storeOptions.id}.maskExist = 1;
             case 'model'
                 obj.mibModel.setData2D(type, data{cellId}, storeOptions.z(1), storeOptions.orient, NaN, setDataOptions);
-                obj.mibModel.I{obj.mibModel.Id}.modelExist = 1;
+                obj.mibModel.I{storeOptions.id}.modelExist = 1;
             case 'everything'
                 obj.mibModel.setData2D(type, data{cellId}, storeOptions.z(1), storeOptions.orient, NaN, setDataOptions);
             case 'labels'
                 data = data{cellId};
-                obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(data.labelText, data.labelPosition, data.labelValue);
+                obj.mibModel.I{storeOptions.id}.hLabels.replaceLabels(data.labelText, data.labelPosition, data.labelValue);
                 notify(obj.mibModel, 'updatedAnnotations');
             case 'lines3d'
-                obj.mibModel.I{obj.mibModel.Id}.hLines3D = copy(data{cellId});
+                obj.mibModel.I{storeOptions.id}.hLines3D = copy(data{cellId});
                 eventdata = ToggleEventData('lines3d');
             case 'measurements'
                 data = data{cellId};
-                obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data = data;
+                obj.mibModel.I{storeOptions.id}.hMeasure.Data = data;
         end
     end
 end
+
+if isfield(storeOptions, 'maskExist')
+    obj.mibModel.I{storeOptions.id}.maskExist = storeOptions.maskExist;
+end
+if isfield(storeOptions, 'modelExist')
+    obj.mibModel.I{storeOptions.id}.modelExist = storeOptions.modelExist;
+end
+
+
 % clear selection layer
 if ~strcmp(type, 'selection') && strcmp(type2, 'selection') && newIndex > newDataIndex
     if ~isnan(storeOptions.orient)
-        slices = obj.mibModel.I{obj.mibModel.Id}.slices;
-        obj.mibModel.I{obj.mibModel.Id}.clearSelection([slices{1}(1), slices{1}(2)],...
+        slices = obj.mibModel.I{storeOptions.id}.slices;
+        obj.mibModel.I{storeOptions.id}.clearSelection([slices{1}(1), slices{1}(2)],...
                                                        [slices{2}(1), slices{2}(2)],...
                                                        [slices{4}(1), slices{4}(2)],...
                                                        [slices{5}(1), slices{5}(2)]);
     else
-        obj.mibModel.I{obj.mibModel.Id}.clearSelection();
+        obj.mibModel.I{storeOptions.id}.clearSelection();
     end
 end
 

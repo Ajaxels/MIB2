@@ -5,7 +5,54 @@
 %
 %
 %
-%% 2.501 / 24.12.2018
+%% 2.60 / 10.10.2019
+%
+% * The deployed version of MIB comes with R2019b instead of R2017a
+% * Added the Batch mode for repetitive processing of images (Menu->File->Batch processing)
+% * Added visualization of models using Matlab Volume Viewer app (Menu->Models->Render model->Matlab volume viewer, R2019 or newer, Matlab version only)
+% * Added Drag & Drop materials to the segmentation tools (Segmentation panel->Drag and Drop materials, https://youtu.be/NGudNrxBbi0)
+% * Added alignment of color channels using landmark multi points (Menu->Dataset->Alignment->Algorithm:Color channels, multi points
+% * Added content-aware fill using coherence transport (Menu->Image->Tools for images->Content-aware fill), for R2019a/R2019b or newer
+% * Added debris removal tool to automatically or menually remove debris from volumetric datasets (Menu->Image->Tools for images->Debris removal)
+% * Added use of Oriented FAST and rotated BRIEF (ORB) points for automatic alignment (R2019 or newer)
+% * Added optional correction for instant jumps during running average correction of the drift alignment algorithm
+% * Added possibility to add material name and object id during export of quantitation results from the Statistics Dialog to the annotation layer
+% * Added export of results from the Statistics Dialog to comma-separated values
+% * Added copy to the system clipboard the columns from the the Statistics Dialog (right mouse click over the table and select Copy column(s) to clipboard)
+% * Added batch modification of values and coordinates for the annotations
+% * Added 4D options to "Material to Selection" and "Material to Mask" options for the context menu of the Segmentation table 
+% * Added calculation of quantile for automatic contrast stretching (View settings->Display->Right click over the min/max buttons)
+% * Added "Ctrl+e" key shortcut to toggle between current and previous image container
+% * Added export of graphs from the graphcut workflow to 3D Lines for visualization
+% * Rewritten Image arithmetics to include mask, model, and selection layers (|Menu->Image->Tools for images->Image arithmetic...|)
+% * Updated use of xlswrite, for R2019a or newer writecell function will be used
+% * Updated data conversion from 32-bit to 8- and 16-bit; from 8-bit to 16-bit
+% * Updated Bio-Formats to 6.2.1 (Requires Matlab R2017b or newer)
+%
+%
+%% 2.51 / 13.03.2019
+% * Added methods for automatic global black-and-white thresholding (|Menu->Tools->Semi-automatic segmentation->Global thresholding|)
+% * Added selection of materials for rendering of Matlab Isosurface models (|Menu->Models->Render model->Matlab isosurface|)
+% * Added calculation of images with extended depth-of-field focus stacking
+% (|Menu->Image->Tools for images->Intensity projection->Focus stacking|)
+% * Added saving of HDF5 format in the virtual mode without loading of complete stack
+% * Added saving of AmiraMesh files as a sequence 2D sections (|Menu->File->Save image as->Amira Mesh binary file sequence|)
+% * Added an option to display an orthoslice during visualization of 3D lines
+% * Added tip of the day window (|Menu->Help->Tip of the day|)
+% * Added H-maxima and H-minima transforms to Mask generators (|Mask generators panel->Morphological filters|)
+% * Added |Single Mask object per dataset| option when cropping objects from the Get Statistics dialog
+% * Added export of the supervoxels from Graphcut to a model
+% * Improved performance when several materials are removed from the model
+% * Improved the Image arithmetics dialog (|Menu->Image->Tools for images->Image arithmetic...|)
+% * Updated BioFormats reader to use Memoizer class, this should hopefully
+% fix Java memory leaks; temporary directory can be specified in
+% |Menu->File->Preferences->External dirs|
+% * Updated sorting of the Get Statistics dialog
+% * Fixed initialization of 3D hardware rendering of models
+% * Fixed pixel size when combining 2D images with different dimensions
+% * Fixed adding icons to buttons when MIB is installed in network path that starts from  "//"
+%
+%% 2.501 / 21.12.2018
 % * Added swap slices option (Menu->Dataset->Slice->Swap slices)
 % * Fixed rendering of combined image in the split color channel mode with Lut enabled in Snapshot and Make movie tools
 % * Fixed Copy Slice for the Insert mode

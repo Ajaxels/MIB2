@@ -28,6 +28,8 @@ classdef mibImageUndo < handle
         % @li @b .type - type of the data: ''image'', ''model'', ''selection'', ''mask'', 'labels',''measurement'',''everything'' (for imageData.model_type==''uint6'' only)
         % @li @b .data - a field to store a cell with 3D dataset or 2D slice
         % @li @b .meta - meta containers.Map , for the ''image'' type
+        % @li @b .options - a substructure with all additional paramters,
+        % as for example the following list
         % @li @b .orient - orientation of the slice, @b 1 - xz, @b 2 - yz, @b 4 - yx
         % @li @b .switch3d - a switch indicating 3D dataset
         % @li @b .x - coordinates of the stored of the part of the dataset,as [roiId; xmin, xmax]
@@ -35,6 +37,7 @@ classdef mibImageUndo < handle
         % @li @b .z - coordinates of the stored of the part of the dataset
         % @li @b .t - coordinates of the stored of the part of the dataset
         % @li @b .viewPort - viewPort structure (only for the 'image')
+        % @li @b .id - index of MIB container
         max_steps
         % a variable to limit maximal number of history steps
         max3d_steps
@@ -62,8 +65,8 @@ classdef mibImageUndo < handle
             % Parameters:
             % max_steps: maximal length of the history log
             % max3d_steps: maximal length of the 3D history log
-            if nargin < 2; max3d_steps = 1; end;
-            if nargin < 1; max_steps = 8; end;
+            if nargin < 2; max3d_steps = 1; end
+            if nargin < 1; max_steps = 8; end
             obj.setNumberOfHistorySteps(max_steps, max3d_steps);
             obj.clearContents();
         end
@@ -78,7 +81,7 @@ classdef mibImageUndo < handle
             % @code clearContents(obj); // Call within the class @endcode
             
             obj.type = '';
-            obj.undoList = struct('type', NaN, 'data', NaN, 'meta', NaN, 'orient', NaN, 'x', NaN, 'y', NaN, 'z', NaN, 't', NaN, 'viewPort', [], 'switch3d', NaN);
+            obj.undoList = struct('type', NaN, 'data', NaN, 'meta', NaN, 'orient', NaN, 'x', NaN, 'y', NaN, 'z', NaN, 't', NaN, 'viewPort', [], 'switch3d', NaN, 'options', struct);
             obj.undoList.data = {NaN};
             obj.undoIndex = 1;
             obj.prevUndoIndex = 0;
@@ -111,6 +114,7 @@ classdef mibImageUndo < handle
             % @li .t -> [@em optional], [roiId][tmin, tmax] of the part of the dataset to store
             % @li .viewPort -> [@em optional] viewPort structure (only for the 'image')
             % @li .switch3d -> a switch indicating 3D dataset
+            % @li .id -> index of MIB container to store
             
             %| 
 			% @b Examples:
@@ -123,9 +127,8 @@ classdef mibImageUndo < handle
             if nargin < 4; meta = NaN; end
             if nargin < 3; error('Store Undo: please provide type and data to store!'); end
             
-            if ~isfield(options, 'viewPort')
-                options.viewPort = [];
-            end
+            if ~isfield(options, 'viewPort'); options.viewPort = []; end
+            if ~isfield(options, 'id'); options.id = []; end
             
             % check for empty datasets, that are coming for example from
             % ROIs outside the image
@@ -182,11 +185,11 @@ classdef mibImageUndo < handle
                     newMinIndex = obj.index3d(1)+1;   % the element of obj.undoList with this index is going to be number 1
                 elseif (numel(obj.index3d)) == obj.max3d_steps && obj.max3d_steps == 1
                     newMinIndex = obj.index3d(1) + 1;   % tweak for a single stored 3D dataset
-                elseif(numel(obj.undoList)) == obj.max_steps + 1
+                elseif numel(obj.undoList) == obj.max_steps + 1
                     newMinIndex = 2;
                 end
             else
-                if(numel(obj.undoList)) == obj.max_steps + 1
+                if numel(obj.undoList) == obj.max_steps + 1
                     newMinIndex = 2;
                 end
             end
@@ -212,40 +215,20 @@ classdef mibImageUndo < handle
             
             obj.undoList(obj.undoIndex-1).type = type;
             obj.undoList(obj.undoIndex-1).data = data;
+            obj.undoList(obj.undoIndex-1).options = options;
             
             % containers.Map is a class and should be reinitialized,
             % the plain copy (obj.undoList(obj.undoIndex-1).meta = meta) results in just a new copy of its handle
             if isa(meta, 'double')
                 obj.undoList(obj.undoIndex-1).meta = NaN;
             else
-                obj.undoList(obj.undoIndex-1).meta = containers.Map(meta.keys,meta.values);
+                obj.undoList(obj.undoIndex-1).meta = containers.Map(meta.keys, meta.values);
             end
-            
-            obj.undoList(obj.undoIndex-1).orient = options.orient;
-            obj.undoList(obj.undoIndex-1).switch3d = options.switch3d;
-            %obj.undoList(obj.undoIndex-1).sliceNo = sliceNo;
-            %obj.undoList(obj.undoIndex-1).timePnt = timePnt;
-            obj.undoList(obj.undoIndex-1).x = options.x;
-            obj.undoList(obj.undoIndex-1).y = options.y;
-            obj.undoList(obj.undoIndex-1).z = options.z;
-            obj.undoList(obj.undoIndex-1).t = options.t;
-            obj.undoList(obj.undoIndex-1).viewPort = options.viewPort;
-            %obj.undoList(obj.undoIndex-1).timePnt = timePnt;
-            
             
             obj.undoList(obj.undoIndex).type = NaN;
             obj.undoList(obj.undoIndex).data = {NaN};
             obj.undoList(obj.undoIndex).meta = NaN;
-            obj.undoList(obj.undoIndex).orient = NaN;
-            obj.undoList(obj.undoIndex).switch3d = NaN;
-            obj.undoList(obj.undoIndex).x = NaN;
-            obj.undoList(obj.undoIndex).y = NaN;
-            obj.undoList(obj.undoIndex).z = NaN;
-            obj.undoList(obj.undoIndex).t = NaN;
-            obj.undoList(obj.undoIndex).viewPort = [];
-            
-            %obj.undoList(obj.undoIndex).sliceNo = NaN;
-            %obj.undoList(obj.undoIndex).timePnt = NaN;
+            obj.undoList(obj.undoIndex).options = struct();
             
             if options.switch3d
                 obj.index3d(end+1) = obj.undoIndex-1;
@@ -271,6 +254,7 @@ classdef mibImageUndo < handle
             % @li .z -> [tmin, tmax] coordinates of the stored of the part of the dataset
             % @li .viewPort -> viewPort structure (only for the 'image')
             % @li .switch3d -> a switch indicating 3d dataset
+            % @li .id -> index of MIB container
             
             %| 
 			% @b Examples:
@@ -295,14 +279,7 @@ classdef mibImageUndo < handle
                 % the plain copy (obj.undoList(obj.undoIndex-1).meta = meta) results in just a new copy of its handle
                 meta = containers.Map(obj.undoList(index).meta.keys, obj.undoList(index).meta.values);
             end
-            options.orient = obj.undoList(index).orient;
-            options.x = obj.undoList(index).x;
-            options.y = obj.undoList(index).y;
-            options.z = obj.undoList(index).z;
-            options.t = obj.undoList(index).t;
-            options.viewPort = obj.undoList(index).viewPort;
-            options.switch3d = obj.undoList(index).switch3d;
-
+            options = obj.undoList(index).options;
             obj.undoIndex = index;
         end
         
@@ -341,6 +318,7 @@ classdef mibImageUndo < handle
             % @li .z -> [@em optional], [tmin, tmax] of the part of the dataset to store
             % @li .viewPort -> [@em optional], viewPort structure (only for the 'image')
             % @li .switch3d -> switch that indicates 3D dataset
+            % @li .id -> index of MIB container
             
             %| 
 			% @b Examples:
@@ -377,13 +355,7 @@ classdef mibImageUndo < handle
             obj.undoList(index).type = type;
             obj.undoList(index).data = data;
             obj.undoList(index).meta = meta;
-            obj.undoList(index).orient = options.orient;
-            obj.undoList(index).switch3d = options.switch3d;
-            obj.undoList(index).x = options.x;
-            obj.undoList(index).y = options.y;
-            obj.undoList(index).z = options.z;
-            obj.undoList(index).t = options.t;
-            obj.undoList(index).viewPort = options.viewPort;
+            obj.undoList(index).options = options;
 
             if obj.max3d_steps == 1     % tweak for a single stored 3D dataset
                 obj.index3d = index;

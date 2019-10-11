@@ -22,13 +22,15 @@ function updateCursor(obj, mode)
 if nargin < 2; mode = 'dashed'; end
 
 xy=obj.handles.mibImageAxes.CurrentPoint;
+
 x = round(xy(1,1));
 y = round(xy(1,2));
 
 % when 1, show the brush cursor
 if obj.showBrushCursor 
-    toolsList = obj.handles.mibSegmentationToolPopup.String;
-    selectedTool = toolsList{obj.handles.mibSegmentationToolPopup.Value};
+     toolsList = obj.handles.mibSegmentationToolPopup.String;
+     selectedTool = toolsList{obj.handles.mibSegmentationToolPopup.Value};
+     
     if strcmp(selectedTool, 'Object Picker')
         radius = str2double(obj.handles.mibMaskBrushSizeEdit.String)-1;
     else
@@ -43,11 +45,6 @@ if obj.showBrushCursor
     end
     
     se_size(2) = se_size(1);
-%     if handles.Img{handles.Id}.I.orientation == 4
-%         se_size(2) = se_size(1);
-%     else
-%         se_size(2) = se_size(1)/(handles.Img{handles.Id}.I.pixSize.x/handles.Img{handles.Id}.I.pixSize.z);
-%     end
     
     if strcmp(mode, 'dashed')
         lineStyle = ':';
@@ -69,6 +66,7 @@ if obj.showBrushCursor
     theta = linspace(0,2*pi,16);
     xv = cos(theta)*se_size(1) + x;
     yv = sin(theta)*se_size(2) + y;
+    
     hold(obj.handles.mibImageAxes, 'on');
     if ishandle(obj.cursor) 
         %oldversion handles.cursor = plot(handles.imageAxes, xv,yv,'color',[0, 0.5, 0],'linewidth',1,'linestyle',':');
@@ -96,6 +94,4 @@ else
 %         hold(handles.imageAxes, 'off');
 %     end
 end
-
-%guidata(obj.handles.mibGUI, obj.handles);
 end

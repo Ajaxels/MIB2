@@ -35,7 +35,8 @@ if obj.Virtual.virtual == 1
 end
 
 if nargin < 2; options = []; end
-wb = waitbar(0, sprintf('Clearing the mask\nPlease wait...'), 'Name', 'Clear the Mask');
+wb = waitbar(0, sprintf('Clearing the mask layer\nPlease wait...'), 'Name', 'Clear mask');
+
 if isempty(options) % clear the whole mask
     if obj.modelType == 63  % 63 materials model type
         obj.model{1} = bitset(obj.model{1}, 7, 0);

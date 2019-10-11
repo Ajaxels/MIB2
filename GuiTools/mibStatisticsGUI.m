@@ -14,7 +14,7 @@ function varargout = mibStatisticsGUI(varargin)
 % Updates
 % 
 
-% Last Modified by GUIDE v2.5 25-Mar-2018 15:44:29
+% Last Modified by GUIDE v2.5 06-Aug-2019 11:39:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -50,17 +50,11 @@ handles.winController = varargin{1};
 
 repositionSwitch = 1; % reposition the figure, when creating a new figure
 
-handles.sorting_cm = uicontextmenu('Parent',handles.mibStatisticsGUI);
-uimenu(handles.sorting_cm, 'Label', 'Sort by Objects Id', 'Callback', {@sortButtonContext_cb, 'object'});
-uimenu(handles.sorting_cm, 'Label', 'Sort by Value', 'Callback', {@sortButtonContext_cb, 'value'});
-uimenu(handles.sorting_cm, 'Label', 'Sort by Slice number', 'Callback', {@sortButtonContext_cb, 'slice'});
-uimenu(handles.sorting_cm, 'Label', 'Sort by Time number', 'Callback', {@sortButtonContext_cb, 'time'});
-set(handles.sortBtn,'uicontextmenu',handles.sorting_cm);
- 
 handles.statTable_cm = uicontextmenu('Parent',handles.mibStatisticsGUI);
 uimenu(handles.statTable_cm, 'Label', 'New selection', 'Callback', {@tableContextMenu_cb, 'Replace'});
 uimenu(handles.statTable_cm, 'Label', 'Add to selection', 'Callback', {@tableContextMenu_cb, 'Add'});
 uimenu(handles.statTable_cm, 'Label', 'Remove from selection', 'Callback', {@tableContextMenu_cb, 'Remove'});
+uimenu(handles.statTable_cm, 'Label', 'Copy column(s) to clipboard', 'Callback', {@tableContextMenu_cb, 'copyColumn'}, 'Separator','on');
 uimenu(handles.statTable_cm, 'Label', 'New annotations', 'Callback', {@tableContextMenu_cb, 'newLabel'}, 'Separator','on');
 uimenu(handles.statTable_cm, 'Label', 'Add to annotations', 'Callback', {@tableContextMenu_cb, 'addLabel'});
 uimenu(handles.statTable_cm, 'Label', 'Remove from annotations', 'Callback', {@tableContextMenu_cb, 'removeLabel'});
@@ -144,16 +138,6 @@ function runStatAnalysis_Callback(hObject, eventdata, handles)
 handles.winController.runStatAnalysis_Callback();
 end
 
-function sortButtonContext_cb(hObject, eventdata, parameter)
-handles = guidata(hObject);
-handles.winController.sortButtonContext_cb(parameter);
-end
-
-% --- Executes on button press in sortBtn.
-function sortBtn_Callback(hObject, eventdata, handles, colIndex)
-handles.winController.sortBtn_Callback(colIndex);
-end
-
 function tableContextMenu_cb(hObject, eventdata, parameter)
 handles = guidata(hObject);
 handles.winController.tableContextMenu_cb(parameter);
@@ -200,7 +184,7 @@ function statTable_ButtonDownFcn(hObject, eventdata, handles)
 %statTable_CellSelectionCallback(hObject, eventdata, handles, 'proceed')
 end
 
-% --- Executes on button press in objectBasedRadio.
+% --- Executes on button press in Object.
 function radioButton_Callback(hObject, eventdata, handles)
 handles.winController.radioButton_Callback(hObject);
 end
@@ -219,21 +203,13 @@ web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_mask_statistics.html'), '-helpbr
 end
 
 
-% --- Executes on selection change in propertyCombo.
-function propertyCombo_Callback(hObject, eventdata, handles)
-handles.winController.propertyCombo_Callback();
+% --- Executes on selection change in Property.
+function Property_Callback(hObject, eventdata, handles)
+handles.winController.Property_Callback();
 end
 
-function multipleCheck_Callback(hObject, eventdata, handles)
-if get(hObject,'Value')
-    set(handles.multipleBtn, 'enable','on');
-else
-    set(handles.multipleBtn, 'enable','off');
-    contents = get(handles.propertyCombo,'String');
-    property = contents{get(handles.propertyCombo,'Value')};
-    handles.properties = cellstr(strtrim(property));
-    guidata(hObject, handles);
-end
+function Multiple_Callback(hObject, eventdata, handles)
+handles.winController.Multiple_Callback();
 end
 
 % --- Executes on button press in multipleBtn.
@@ -242,14 +218,14 @@ handles.winController.multipleBtn_Callback();
 end
 
 
-% --- Executes on selection change in targetPopup.
-function targetPopup_Callback(hObject, eventdata, handles)
-handles.winController.targetPopup_Callback();
+% --- Executes on selection change in Material.
+function Material_Callback(hObject, eventdata, handles)
+handles.winController.Material_Callback();
 end
 
 
-% --- Executes on selection change in datasetPopup.
-function datasetPopup_Callback(hObject, eventdata, handles)
+% --- Executes on selection change in DatasetType.
+function DatasetType_Callback(hObject, eventdata, handles)
 handles.winController.updateWidgets();
 end
 
@@ -273,7 +249,24 @@ handles.statisticsResultsPanel.Position(3) = winPos(3)-handles.statisticsResults
 
 end
 
-% --- Executes on selection change in unitsCombo.
-function unitsCombo_Callback(hObject, eventdata, handles)
-handles.winController.unitsCombo_Callback();
+% --- Executes on selection change in Units.
+function Units_Callback(hObject, eventdata, handles)
+handles.winController.Units_Callback();
+end
+
+
+% --- Executes on selection change in ColorChannel1.
+function ColorChannel1_Callback(hObject, eventdata, handles)
+handles.winController.Property_Callback();
+handles.winController.updateBatchOptFromGUI(hObject);
+end
+
+% --- Executes on selection change in sortingPopup.
+function sortingPopup_Callback(hObject, eventdata, handles)
+handles.winController.updateSortingSettings();
+end
+
+% --- Executes on selection change in ColorChannel.
+function widgets_Callback(hObject, eventdata, handles)
+handles.winController.updateBatchOptFromGUI(hObject);
 end
