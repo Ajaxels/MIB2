@@ -53,7 +53,6 @@ Formats = {'*.am',  'Amira Mesh binary (*.am)';...
 
 if ~isfield(options, 'showWaitbar'); options.showWaitbar = true; end
 if ~isfield(options, 'silent'); options.silent = false; end
-%if ~isfield(options, 'FilenameGenerator'); options.FilenameGenerator = 'Use original filename'; end
 
 if size(obj.img{1}, 1) < 1; msgbox('No image detected!', 'Error!', 'error', 'modal'); return; end
 
@@ -357,6 +356,7 @@ for t=t1:t2
             end
             mibImage2jpg(fullfile(pathStr, fnOut), img, savingOptions);
         case 'MRC format for IMOD (*.mrc)'    % MRC format
+            if ~isfield(options, 'FilenameGenerator'); options.FilenameGenerator = 'Use sequential filename'; end
             if size(img,3) > 1
                 errordlg(sprintf('!!! Error !!!\n\nIt is not possile to save %s images in the MRC format', class(img)), 'Wrong image class');
                 return;
@@ -392,6 +392,7 @@ for t=t1:t2
             end
             mibImage2png(fullfile(pathStr, fnOut), img, savingOptions);
         case 'NRRD Data Format (*.nrrd)'   % PNG format
+            if ~isfield(options, 'FilenameGenerator'); options.FilenameGenerator = 'Use sequential filename'; end
             savingOptions = struct('overwrite', 1);
             savingOptions.showWaitbar = ~showLocalWaitbar;
             bb = obj.getBoundingBox();
