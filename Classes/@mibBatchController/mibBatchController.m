@@ -1040,6 +1040,7 @@ classdef mibBatchController < handle
                                     status = obj.doFileLoop(fileLoopStart, fileLoopFinish, FileloopSettings);
                                     if status == 0
                                         notify(obj.mibModel, 'stopProtocol');
+                                        obj.View.handles.autoAddToProtocol.Value = autoAddSwitch;
                                         return;
                                     end
                                     stepId2 = fileLoopFinish + 1;
@@ -1051,6 +1052,7 @@ classdef mibBatchController < handle
                                     status = obj.doBatchStep(stepId2, SteploopSettings);    % make a single step
                                     if status == 0
                                         notify(obj.mibModel, 'stopProtocol');
+                                        obj.View.handles.autoAddToProtocol.Value = autoAddSwitch;
                                         return;
                                     end
                                     stepId2 = stepId2 + 1;
@@ -1061,6 +1063,7 @@ classdef mibBatchController < handle
                 elseif strcmp(obj.Protocol(stepId).mibBatchActionName, 'FILE LOOP START')
                     if strcmp(obj.Protocol(stepId).Batch.DirectoryName{1}, 'Inherit from Directory loop')
                         errordlg(sprintf('!!! Error !!!\n\nInherit from Directory loop works only when the File loop is placed after the Directory loop!'), 'Wrong sequence of actions');
+                        obj.View.handles.autoAddToProtocol.Value = autoAddSwitch;
                         return;
                     end
                     FileloopSettings.DirectoryName = obj.Protocol(stepId).Batch.DirectoryName{1};
@@ -1073,12 +1076,17 @@ classdef mibBatchController < handle
                     status = obj.doFileLoop(fileLoopStart, fileLoopFinish, FileloopSettings);
                     if status == 0
                         notify(obj.mibModel, 'stopProtocol');
+                        obj.View.handles.autoAddToProtocol.Value = autoAddSwitch;
                         return; 
                     end
                     stepId = fileLoopFinish + 1;
                 else
                     status = obj.doBatchStep(stepId);    % make a single step
-                    if status == 0; notify(obj.mibModel, 'stopProtocol'); return; end
+                    if status == 0
+                        notify(obj.mibModel, 'stopProtocol'); 
+                        obj.View.handles.autoAddToProtocol.Value = autoAddSwitch;
+                        return; 
+                    end
                     stepId = stepId + 1;
                 end
             end
@@ -1150,8 +1158,8 @@ classdef mibBatchController < handle
                     % stop the protocol
                     obj.View.handles.protocolList.Value = stepId;
                     obj.protocolListIndex = stepId;
-                    obj.View.handles.autoAddToProtocol.Value = autoAddSwitch;
-                    status = true;
+                    msgbox(sprintf('Protocol: stop execution event!\n\n%s', obj.Protocol(stepId).Batch.Description), 'STOP EXECUTION', 'help');
+                    status = false;
                     return;
                 case {'DIRECTORY LOOP STOP', 'FILE LOOP STOP'}
                     obj.View.handles.protocolList.Value = stepId;
