@@ -41,8 +41,8 @@ function [img, status] = mibDoAndiffFiltering(img, options)
 
 status = 0; %#ok<NASGU>
 
-if ~isfield(options, 'Color');     options.Color = 0; end;
-if ~isfield(options,'showWaitbar'); options.showWaitbar=1; end;
+if ~isfield(options, 'Color');     options.Color = 0; end
+if ~isfield(options,'showWaitbar'); options.showWaitbar=1; end
 
 if options.Color == 0
     colorStart = 1;
@@ -120,7 +120,7 @@ for roi=1:numel(img)
         img{roi}(:,:,color,:) = img2;
         if options.showWaitbar
             waitbar(color/colors, wb);
-        end;
+        end
     end
 end
 status = 1;

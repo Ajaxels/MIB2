@@ -213,7 +213,7 @@
 %       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
 %   </ul>
 % <li>The <b>Load</b> button, press to import annotations from the main Matlab workspace or load them from a file</li>
-% <li>The <b>Save</b> button, press to export annotations to the main Matlab workspace or to save them as a file in Matlab, Excel formats or as landmarks for Amira (
+% <li>The <b>Save</b> button, press to export annotations to the main Matlab workspace or to save them as a file in Matlab, Comma-separated CSV format, Excel formats or as landmarks for Amira (
 %           <a href="https://youtu.be/wHr6nHpmVMo"><img style="vertical-align:middle;" src="images\youtube.png"></a> <em><b>Note!</em> only the coordinates are exported!</b>), or PSI format for Amira</li>
 % <li>The <b>Precision</b> editbox, modify precision of the value field in the table and for the visualization in the Image View panel
 % <li>The <b>Auto jump</b> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>

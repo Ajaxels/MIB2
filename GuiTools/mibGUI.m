@@ -1229,9 +1229,9 @@ end
 function mibActions3dCheck_Callback(hObject, eventdata, handles)
 % --- Executes on button press in mibActions3dCheck.
 if handles.mibActions3dCheck.Value == 1
-    BatchOpt.Checkbox3D = 'Checked';
+    BatchOpt.Checkbox3D = {'Checked'};
 else
-    BatchOpt.Checkbox3D = 'Unchecked';
+    BatchOpt.Checkbox3D = {'Unchecked'};
 end
 handles.mibController.mibSelectionPanelCheckboxes(BatchOpt);
 end

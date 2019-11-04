@@ -845,7 +845,9 @@ for fn_index = 1:no_files
             end
             
             [path, name, ext] = fileparts(files(layer_id).filename);
-            files(layer_id).filename = fullfile(path, [name '__' files(layer_id).seriesRealName ext]);
+            if numel(filesTemp.seriesIndex) > 1     % when more than one image is taken from the image container generate a unique filename
+                files(layer_id).filename = fullfile(path, [name '__' files(layer_id).seriesRealName ext]);
+            end
             layer_id = layer_id + 1;
         end
         filesTemp.hDataset.close();

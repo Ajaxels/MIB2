@@ -602,6 +602,7 @@ classdef Labels < matlab.mixin.Copyable
             % obtain filename if it is not provided
             if isempty(filename)
                 Filters = {'*.ann;',  'Matlab format (*.ann)';...
+                           '*.csv',   'Comma-separated value (*.csv)';...
                            '*.landmarksAscii',   'Amira landmarks ASCII (*.landmarksAscii)';...
                            '*.landmarksBin',   'Amira landmarks BINARY(*.landmarksBin)';...
                            '*.psi',   'PSI format ASCII(*.psi)';...
@@ -615,6 +616,8 @@ classdef Labels < matlab.mixin.Copyable
                 switch Filters{FilterIndex, 2}
                     case 'Matlab format (*.ann)'
                         options.format = 'ann';
+                    case 'Comma-separated value (*.csv)'
+                        options.format = 'csv';
                     case 'Amira landmarks ASCII (*.landmarksAscii)'
                         options.format = 'landmarksAscii';
                     case 'Amira landmarks BINARY(*.landmarksBin)'
@@ -651,6 +654,27 @@ classdef Labels < matlab.mixin.Copyable
             switch options.format
                 case 'ann'
                     save(filename, 'labelText', 'labelValue', 'labelPosition', '-mat', '-v7.3');
+                case 'csv'
+                    LabelText = labelText;
+                    LabelValue = labelValue;
+                    LabelPositionXpx = labelPosition(:,2);
+                    LabelPositionYpx = labelPosition(:,3);
+                    LabelPositionZpx = labelPosition(:,1);
+                    LabelPositionTpx = labelPosition(:,4);
+                    % convert to coordinates to physical units
+                    if isfield(options, 'boundingBox')
+                        bb = options.boundingBox;
+                        LabelPositionXunits = labelPosition(:,2)*options.pixSize.x + bb(1) - options.pixSize.x/2;
+                        LabelPositionYunits = labelPosition(:,3)*options.pixSize.y + bb(3) - options.pixSize.y/2;
+                        LabelPositionZunits = labelPosition(:,1)*options.pixSize.z + bb(5) - options.pixSize.z;
+                        LabelPositionTunits = labelPosition(:,4);
+                        T = table(LabelText, LabelValue, LabelPositionXpx, LabelPositionYpx, LabelPositionZpx, LabelPositionTpx,...
+                            LabelPositionXunits, LabelPositionYunits, LabelPositionZunits, LabelPositionTunits);
+                    else
+                        T = table(LabelText, LabelValue, LabelPositionXpx, LabelPositionYpx, LabelPositionZpx, LabelPositionTpx);
+                    end
+                    % save results as CSV
+                    writetable(T, filename);
                 case 'xls'
                     warning('off', 'MATLAB:xlswrite:AddSheet');
                     % Sheet 1
@@ -658,21 +682,34 @@ classdef Labels < matlab.mixin.Copyable
                     s(3,1) = {'Annotation'};
                     s(4,1) = {'Text'};
                     s(4,2) = {'Value'};
-                    s(3,4) = {'Coordinates'};
+                    s(3,4) = {'Coordinates, pixels'};
                     s(4,3) = {'Z'};
                     s(4,4) = {'X'};
                     s(4,5) = {'Y'};
                     s(4,6) = {'T'};
-                    roiId = 4;
-                    for i=1:numel(labelText)
-                        s(roiId+i, 1) = labelText(i);
-                        s{roiId+i, 2} = labelValue(i);
-                        s{roiId+i, 3} = labelPosition(i,1);
-                        s{roiId+i, 4} = labelPosition(i,2);
-                        s{roiId+i, 5} = labelPosition(i,3);
-                        s{roiId+i, 6} = labelPosition(i,4);
+                    
+                    noAnn = numel(labelText);
+                    rowId = 5;
+                    s(rowId:rowId+noAnn-1, 1) = labelText;
+                    s(rowId:rowId+noAnn-1, 2) = num2cell(labelValue);
+                    s(rowId:rowId+noAnn-1, 3:6) = num2cell(labelPosition);
+                    
+                    % convert to coordinates to physical units
+                    if isfield(options, 'boundingBox')
+                        s(3,8) = {sprintf('Coordinates, %s', options.pixSize.units)};
+                        s(4,8) = {'Z'};
+                        s(4,9) = {'X'};
+                        s(4,10) = {'Y'};
+                        s(4,11) = {'T'};
+                        bb = options.boundingBox; 
+                        labelPositionsOut(:, 1) = labelPosition(:, 1)*options.pixSize.z + bb(5) - options.pixSize.z;
+                        labelPositionsOut(:, 2) = labelPosition(:, 2)*options.pixSize.x + bb(1) - options.pixSize.x/2;
+                        labelPositionsOut(:, 3) = labelPosition(:, 3)*options.pixSize.y + bb(3) - options.pixSize.y/2;
+                        s(rowId:rowId+noAnn-1, 8:10) = num2cell(labelPositionsOut);
+                        s(rowId:rowId+noAnn-1, 11) = num2cell(labelPosition(:, 4));
                     end
                     if options.showWaitbar; waitbar(0.3, wb); end
+                    
                     xlswrite2(filename, s, 'Sheet1', 'A1');
                     if options.showWaitbar; waitbar(1, wb); end
                 case 'psi'

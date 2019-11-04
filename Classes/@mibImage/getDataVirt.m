@@ -170,8 +170,8 @@ if strcmp(type,'image')
                     % obj.img{readerId(z)}.setId(obj.Virtual.filenames{readerId});
                     % obj.img{readerId(z)}.setSeries(obj.Virtual.seriesName{readerId}-1);
                     r = loci.formats.Memoizer(bfGetReader(), 0, java.io.File(obj.BioFormatsMemoizerMemoDir));
-                    r.setId(obj.img{readerId});
-                    r.setSeries(obj.Virtual.seriesName{readerId}-1);
+                    r.setId(obj.img{readerId(z)});
+                    r.setSeries(obj.Virtual.seriesName{readerId(z)}-1);
                     
                     planeId = Zlim(1) + z - 1 - sum(obj.Virtual.slicesPerFile(1:readerId(z)-1));
 %                     % update setSeries, for some reasons it does not fixed
@@ -182,7 +182,14 @@ if strcmp(type,'image')
                     
                     for colCh = 1:numel(col_channel)
                         iPlane = r.getIndex(planeId - 1, col_channel(colCh) - 1, timepoint) + 1;
-                        dataset(:,:,colCh,z,t) = bfGetPlane(r, iPlane, Xlim(1), Ylim(1), Xlim(2)-Xlim(1)+1, Ylim(2)-Ylim(1)+1);
+                        cPlane = bfGetPlane(r, iPlane, Xlim(1), Ylim(1), Xlim(2)-Xlim(1)+1, Ylim(2)-Ylim(1)+1);
+                        if isa(cPlane(1), 'int8')
+                            cPlane = int16(cPlane);
+                            cPlane(cPlane<0) = cPlane(cPlane<0) + 256;
+                            dataset(:,:,colCh,z,t) = cPlane;
+                        else
+                            dataset(:,:,colCh,z,t) = cPlane;
+                        end
                     end
                 end
                 if showWaitbar; waitbar(t/maxT, wb); end

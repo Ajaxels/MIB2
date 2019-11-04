@@ -78,6 +78,7 @@ classdef mibDebrisRemovalController < handle
             % indicates field of the BatchOpt structure that defines value
             % for this widget
             obj.BatchOpt.DetectionMode{1} = 'AutomaticDetection';
+            obj.BatchOpt.DetectionMode{2} = {'AutomaticDetection', 'MaskedAreas', 'SelectedAreas'};
             obj.BatchOpt.Intensitythreshold{1} = 100;
             obj.BatchOpt.Intensitythreshold{2} = [0 Inf];   % limits
             obj.BatchOpt.Intensitythreshold{3} = 'on';      % round the value
@@ -356,6 +357,7 @@ classdef mibDebrisRemovalController < handle
             if obj.BatchOpt.showWaitbar; delete(wb); end
             
             % redraw the image if needed
+            notify(obj.mibModel, 'showMask');
             notify(obj.mibModel, 'plotImage');
             
             if currentMode == 0

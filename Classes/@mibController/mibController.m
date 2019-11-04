@@ -10,7 +10,7 @@ classdef mibController < handle
     %
     
     properties
-        mibVersion = 'ver. 2.60 / 10.10.2019';  % ATTENTION! it is important to have the version number between "ver." and "/"
+        mibVersion = 'ver. 2.601 / 04.11.2019';  % ATTENTION! it is important to have the version number between "ver." and "/"
         % version of MIB
         mibModel
         % handles to the model

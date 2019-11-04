@@ -260,6 +260,7 @@ classdef mibAnnotationsController < handle
             end
             
             Filters = {'*.ann;',  'Matlab format (*.ann)';...
+                       '*.csv',   'Comma-separated value (*.csv)';...
                        '*.landmarksAscii',   'Amira landmarks ASCII (*.landmarksAscii)';...
                        '*.landmarksBin',   'Amira landmarks BINARY(*.landmarksBin)';...
                        '*.psi',   'PSI format ASCII(*.psi)';...
@@ -269,38 +270,42 @@ classdef mibAnnotationsController < handle
             if isequal(filename,0); return; end % check for cancel
             fn_out = fullfile(path, filename);
             
-            if strcmp('Matlab format (*.ann)', Filters{FilterIndex,2})    % matlab format
-                options.format = 'ann';
-            elseif strcmp('Excel format (*.xls)', Filters{FilterIndex,2})    % excel format
-                options.format = 'xls';
-            elseif strcmp('PSI format ASCII(*.psi)', Filters{FilterIndex,2})    % PSI format, compatible with Amira
-                recalcCoordinates = questdlg(sprintf('Recalculate annotations with respect to the current bounding box or save as they are?'),...
-                    'Recalculate coordinates', 'Recalculate', 'Save as they are', 'Recalculate');
-                options.format = 'psi';
-                if strcmp(recalcCoordinates, 'Recalculate')
-                    options.convertToUnits = true;
-                    options.boundingBox = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
-                    options.pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
-                end
-            else    % landmarks for Amira
-                button = questdlg(sprintf('!!! Warning !!!\n\nWhen exporting points as landmarks for Amira only positions of the annotations are saved!\n\nIf you want to keep labels and values, please use the Amira compatible PSI format!'),...
-                    'Export to Amira', 'Continue', 'Cancel', 'Cancel');
-                if strcmp(button, 'Cancel'); return; end
+            switch Filters{FilterIndex,2}
+                case 'Matlab format (*.ann)'   % matlab format
+                    options.format = 'ann';
+                case 'Comma-separated value (*.csv)'    % csv format
+                    options.format = 'csv';
+                case 'Excel format (*.xls)'    % excel format
+                    options.format = 'xls';
+                case 'PSI format ASCII(*.psi)'    % PSI format, compatible with Amira
+                    recalcCoordinates = questdlg(sprintf('Recalculate annotations with respect to the current bounding box or save as they are?'),...
+                        'Recalculate coordinates', 'Recalculate', 'Save as they are', 'Recalculate');
+                    options.format = 'psi';
+                    if strcmp(recalcCoordinates, 'Recalculate')
+                        options.convertToUnits = true;
+                        options.boundingBox = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
+                        options.pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
+                    end
+                otherwise    % landmarks for Amira
+                    button = questdlg(sprintf('!!! Warning !!!\n\nWhen exporting points as landmarks for Amira only positions of the annotations are saved!\n\nIf you want to keep labels and values, please use the Amira compatible PSI format!'),...
+                        'Export to Amira', 'Continue', 'Cancel', 'Cancel');
+                    if strcmp(button, 'Cancel'); return; end
                 
-                recalcCoordinates = questdlg(sprintf('Recalculate annotations with respect to the current bounding box or save as they are?'),...
-                    'Recalculate coordinates', 'Recalculate', 'Save as they are', 'Recalculate');
+                    recalcCoordinates = questdlg(sprintf('Recalculate annotations with respect to the current bounding box or save as they are?'),...
+                        'Recalculate coordinates', 'Recalculate', 'Save as they are', 'Recalculate');
                 
-                if strcmp(Filters{FilterIndex+numel(Filters)/2}, 'Amira landmarks ASCII (*.landmarksAscii)')
-                    options.format = 'landmarksAscii';
-                else
-                    options.format = 'landmarksBin';
-                end
-                if strcmp(recalcCoordinates, 'Recalculate')
-                    options.convertToUnits = true;
-                    options.boundingBox = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
-                    options.pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
-                end
+                    if strcmp(Filters{FilterIndex+numel(Filters)/2}, 'Amira landmarks ASCII (*.landmarksAscii)')
+                        options.format = 'landmarksAscii';
+                    else
+                        options.format = 'landmarksBin';
+                    end
+                    if strcmp(recalcCoordinates, 'Recalculate')
+                        options.convertToUnits = true;
+                    end
             end
+            options.boundingBox = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
+            options.pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
+            
             options.labelText = labelText;
             options.labelPosition = labelPosition;
             options.labelValue = labelValue;

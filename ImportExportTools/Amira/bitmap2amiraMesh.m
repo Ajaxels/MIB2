@@ -37,8 +37,9 @@ if nargin < 2
     error('Please provide filename, and bitmap matrix!');
 end
 if nargin < 3   % generate img_info
-    img_info = containers.Map('KeyType','char','ValueType','any');
+    img_info = [];
 end
+if isempty(img_info);  img_info = containers.Map('KeyType', 'char', 'ValueType', 'any'); end
 
 if nargin < 4   
     options = struct();
@@ -47,12 +48,10 @@ end
 if ~isfield(options, 'overwrite'); options.overwrite = 0; end
 if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1; end
 if ~isfield(options, 'Saving3d'); options.Saving3d = 'multi'; end
-
 % overwrite lutColors in the img_info
 if isfield(options, 'colors')
     img_info('lutColors') = options.colors;
 end
-
 if options.overwrite == 0
     if exist(filename,'file') == 2
         choice = questdlg('File exists! Overwrite?', 'Warning!', 'Continue','Cancel','No thank you');

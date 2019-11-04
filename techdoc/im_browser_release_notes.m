@@ -5,7 +5,7 @@
 %
 %
 %
-%% 2.60 / 10.10.2019
+%% 2.601 / 10.10.2019
 %
 % * The deployed version of MIB comes with R2019b instead of R2017a
 % * Added the Batch mode for repetitive processing of images (Menu->File->Batch processing)
@@ -28,6 +28,8 @@
 % * Updated use of xlswrite, for R2019a or newer writecell function will be used
 % * Updated data conversion from 32-bit to 8- and 16-bit; from 8-bit to 16-bit
 % * Updated Bio-Formats to 6.2.1 (Requires Matlab R2017b or newer)
+% * [2.601] Bug fixed
+% * [2.601] Added export of annotations to CSV format
 %
 %
 %% 2.51 / 13.03.2019

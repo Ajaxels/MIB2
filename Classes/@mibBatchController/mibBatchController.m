@@ -343,6 +343,9 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.FileLoopAction_Callback(Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'FILE LOOP STOP';
             obj.Sections(secIndex).Actions(actionId).Command = []; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'DevTest';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''mibImageFiltersController'', [], Batch);'; actionId = actionId + 1;
+            
             
             % init default selections
             obj.selectedSection = 1;
@@ -531,15 +534,20 @@ classdef mibBatchController < handle
             else
                 switch class(obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}))
                     case 'cell'
-                        obj.View.handles.selectedActionTableCellPopup.Visible = 'on';
                         if numel(obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex})) == 1
                             warndlg(sprintf('!!! Warning !!!\n\nThe possible configurations for this widgets were not provided!'));
                             obj.View.handles.selectedActionTableCellPopup.String = obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}){1};
                             obj.View.handles.selectedActionTableCellPopup.Value = 1;
                         else
-                            obj.View.handles.selectedActionTableCellPopup.String = obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}){2};
-                            obj.View.handles.selectedActionTableCellPopup.Value = ...
-                                find(ismember(obj.View.handles.selectedActionTableCellPopup.String, obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex})(1)));
+                            if ~isnumeric(obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}){1})  % dropdown
+                                obj.View.handles.selectedActionTableCellPopup.Visible = 'on';
+                                obj.View.handles.selectedActionTableCellPopup.String = obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}){2};
+                                obj.View.handles.selectedActionTableCellPopup.Value = ...
+                                    find(ismember(obj.View.handles.selectedActionTableCellPopup.String, obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex})(1)));
+                            else    % numeric edit box
+                                obj.View.handles.selectedActionTableCellEdit.Visible = 'on';
+                                obj.View.handles.selectedActionTableCellEdit.String = num2str(obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}){1});
+                            end
                         end
                     case 'logical'
                         obj.View.handles.selectedActionTableCellCheck.Visible = 'on';
@@ -591,8 +599,13 @@ classdef mibBatchController < handle
                     obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}) = logical(hObject.Value);
                     obj.View.handles.selectedActionTable.Data{obj.selectedActionTableIndex,2} = logical(hObject.Value);
                 case 'selectedActionTableCellEdit'      % for text edits
-                    obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}) = hObject.String;
-                    obj.View.handles.selectedActionTable.Data{obj.selectedActionTableIndex,2} = hObject.String;
+                    if iscell(obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}))      % numeric edit box 
+                        obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}){1} = str2num(hObject.String); %#ok<ST2NM>
+                        obj.View.handles.selectedActionTable.Data{obj.selectedActionTableIndex,2} = obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}){1};
+                    else    % normal text edit box
+                        obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}) = hObject.String;
+                        obj.View.handles.selectedActionTable.Data{obj.selectedActionTableIndex,2} = hObject.String;
+                    end
                 case 'selectedActionTableCellNumericEdit'   % for numeric edits
                     newValue =  str2num(hObject.String);      %#ok<ST2NM>
                     if ismember(fieldNames{obj.selectedActionTableIndex}, {'x', 'y', 'z', 't'}) && numel(newValue) == 1 && newValue ~= 0

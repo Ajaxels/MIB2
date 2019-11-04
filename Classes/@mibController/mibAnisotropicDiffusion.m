@@ -48,7 +48,7 @@ if strcmp(filter_type, 'anisodiff') %|| strcmp(filter_type,'diplib')   % do dipl
     colorChannel = obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel;
     if colorChannel == 0 && obj.mibModel.getImageProperty('colors') > 1
         button = questdlg(sprintf('Attention!\nEach color channel will be filtered individually!\n\nIf you want to filter only one color channel please select it in the\nSelection Panel->Color channel'),'Warning','Proceed','Cancel','Proceed');
-        if strcmp(button,'Cancel'); return; end;
+        if strcmp(button,'Cancel'); return; end
     end
     tic
     val = obj.mibView.handles.mibImageFilterPopup.Value;
@@ -107,16 +107,16 @@ if strcmp(filter_type, 'anisodiff') %|| strcmp(filter_type,'diplib')   % do dipl
         switch doAfter
             case 'Apply filter'
                 [img, status] = mibDoAndiffFiltering(img, options);
-                if status == 0; return; end;
+                if status == 0; return; end
             case 'Apply and add to the image'
                 [imgOut, status] = mibDoAndiffFiltering(img, options);
-                if status == 0; return; end;
+                if status == 0; return; end
                 for roi = 1:numel(img)
                     img{roi} = img{roi} + imgOut{roi};
                 end
             case 'Apply and subtract from the image'
                 [imgOut, status] = mibDoAndiffFiltering(img, options);
-                if status == 0; return; end;
+                if status == 0; return; end
                 for roi = 1:numel(img)
                     img{roi} = img{roi} - imgOut{roi};
                 end

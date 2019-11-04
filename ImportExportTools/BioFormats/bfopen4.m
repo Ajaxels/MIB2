@@ -141,6 +141,13 @@ for i = startSlice:endSlice
         arr = bfGetPlane(r, i, options.x1, options.y1, options.dx, options.dy);
     end
     
+    % convert MRC int8 to uint8
+    if bpp == 1 && isa(arr(1), 'int8')
+        arr = int16(arr);
+        arr(arr<0) = arr(arr<0) + 256;
+        arr = uint8(arr);
+    end
+    
     % save image plane and label into the list
     result.img(:, :, colorID, sliceID, timeID) = arr;
     colorID = colorID + 1;

@@ -41,10 +41,9 @@ classdef mibChildView < handle
                         obj.gui.(propList{propId}).Tag = propList{propId};
                     end
                 end
-                childrenList = obj.gui.Figure.Children;
-                for i=1:numel(childrenList)     % generate handles structure similar to guide
-                    obj.handles.(childrenList(i).Tag) = childrenList(i);
-                end
+                guiHandle = obj.gui.Figure;
+                obj.getChildren(guiHandle);
+                
                 obj.Figure = obj.gui;
                 obj.gui = obj.gui.Figure;
             else   % guide app
@@ -59,6 +58,24 @@ classdef mibChildView < handle
             % add listner to obj.mibModel and call controller function as a callback
             %obj.Controller.listener{1} = addlistener(obj.mibModel, 'Id', 'PostSet', @(src,evnt) obj.Controller.ViewListner_Callback(obj.Controller, src, evnt));     % for static
             %obj.Controller.listener{2} = addlistener(obj.mibModel, 'newDatasetSwitch', 'PostSet', @(src,evnt) obj.Controller.ViewListner_Callback(obj.Controller, src, evnt));     % for static
+        end
+        
+        function getChildren(obj, guiHandle)
+            % get handles to children of GUI elements and assign them to
+            % obj.handles structure
+            %
+            % Parameters:
+            % guiHandle: handle of the element to get children
+            childrenList = guiHandle.Children;
+            for i=1:numel(childrenList)     % generate handles structure similar to guide
+                obj.handles.(childrenList(i).Tag) = childrenList(i);
+                switch childrenList(i).Type
+                    case {'uigridlayout', 'uipanel'}
+                        obj.getChildren(obj.handles.(childrenList(i).Tag));
+                    otherwise
+                        
+                end
+            end
         end
     end
 end
