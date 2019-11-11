@@ -567,14 +567,14 @@ classdef mibBatchController < handle
             end
             if showTooltip
                 tooltipStr = obj.CurrentBatch.mibBatchTooltip.(fieldNames{obj.selectedActionTableIndex});
-                obj.View.handles.selectedActionTableCellEdit.Tooltip = tooltipStr;
-                obj.View.handles.selectedActionTableCellCheck.Tooltip = tooltipStr;
-                obj.View.handles.selectedActionTableCellPopup.Tooltip = tooltipStr;
-                obj.View.handles.selectedActionTableCellNumericEdit.Tooltip = tooltipStr;
-                obj.View.handles.selectedActionTableCellText.Tooltip = tooltipStr;
+                obj.View.handles.selectedActionTableCellEdit.TooltipString = tooltipStr;
+                obj.View.handles.selectedActionTableCellCheck.TooltipString = tooltipStr;
+                obj.View.handles.selectedActionTableCellPopup.TooltipString = tooltipStr;
+                obj.View.handles.selectedActionTableCellNumericEdit.TooltipString = tooltipStr;
+                obj.View.handles.selectedActionTableCellText.TooltipString = tooltipStr;
                 obj.View.handles.TooltipText.String = tooltipStr;
             else
-                obj.View.handles.selectedActionTableCellText.Tooltip = fieldNames{obj.selectedActionTableIndex};
+                obj.View.handles.selectedActionTableCellText.TooltipString = fieldNames{obj.selectedActionTableIndex};
                 obj.View.handles.TooltipText.String = 'Provide the value';
             end
         end
