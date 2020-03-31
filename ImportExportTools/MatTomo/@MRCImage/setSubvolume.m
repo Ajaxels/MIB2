@@ -1,6 +1,6 @@
 % setSubvolume      Set a subvolume of an MRCImage
 %
-%   mRCImage = setSubolume(mRCImage, vol, center)
+%   mRCImage = setSubolume(mRCImage, vol, center, suppressStatistics)
 %
 %   mRCImage    The opened MRCImage object.
 %
@@ -9,7 +9,12 @@
 %   vol         The volume to be inserted.
 %
 %   center      OPTIONAL: The indices at which to center the inserted 
-%               subvolume
+%               subvolume. Default positions subvolume at origin of the
+%               original volume.
+%
+%   suppressStatistics OPTIONAL: if true, suppress computation of image
+%                      statistics for speed. Default = false. NOTE: valid 
+%                      statistics *MUST* be computed before using the volume.
 %               
 %   setVolume sets a subvolume of the MRCImage object. The subvolume must
 %   lie entirely within the existing volume and be of the same type.
@@ -17,28 +22,36 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/06/26 17:04:12 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 8ebca3b313c1 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function mRCImage = setSubvolume(mRCImage, vol, center)
+function mRCImage = setSubvolume(mRCImage, vol, center, suppressStatistics)
 
 % Replace a subvolume (up to the entire volume) of an existing volume.
 % Expansion or change of mode is not allowed.
 szVol = size(vol);
 szMRC = getDimensions(mRCImage);
+% Handle setting a 2D slice in a 3D volume
+if length(szVol) < length(szMRC)
+  n = length(szMRC) - length(szVol);
+  szVol = [szVol ones(1, n)];
+end
 
-if nargin < 3
+if nargin < 4
+  suppressStatistics = false;
+end
+
+if nargin < 3 
   idxMin = [1 1 1];
   idxMax = szVol;
 else
@@ -70,5 +83,7 @@ else
 end
 
 % Update the header to reflect the new min, max, mean and rms voxel values
-mRCImage = setStatisticsFromVolume(mRCImage);
+if ~suppressStatistics
+  mRCImage = setStatisticsFromVolume(mRCImage);
+end
 

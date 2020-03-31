@@ -52,6 +52,7 @@ handles.mibSnapshotGUI.Position = [winPos(1) winPos(1) 335 winPos(4)];
 
 handles.jpgPanel.Parent = handles.tifPanel.Parent;
 handles.bmpPanel.Parent = handles.tifPanel.Parent;
+handles.pngPanel.Parent = handles.tifPanel.Parent;
 
 % update font and size
 global Font;
@@ -76,6 +77,7 @@ settingsPanelParent = handles.tifPanel.Parent;
 handles.jpgPanel.Parent = settingsPanelParent;
 handles.bmpPanel.Parent = settingsPanelParent;
 handles.jpgPanel.Position = settingsPanelPosition;
+handles.pngPanel.Position = settingsPanelPosition;
 handles.bmpPanel.Position = settingsPanelPosition;
 
 % Update handles structure
@@ -112,6 +114,7 @@ handles.winController.closeWindow();
 end
 
 function crop_Callback(hObject, eventdata, handles)
+handles.winController.updateBatchOptFromGUI(hObject.Parent);   % update BatchOpt parameters
 handles.winController.crop_Callback();
 end
 
@@ -133,26 +136,27 @@ if mod(val, 8) ~= 0
 end
 end
 
-% --- Executes on selection change in fileFormatPopup.
-function fileFormatPopup_Callback(hObject, eventdata, handles)
-handles.winController.fileFormatPopup_Callback();
+% --- Executes on selection change in FileFormat.
+function FileFormat_Callback(hObject, eventdata, handles)
+handles.winController.FileFormat_Callback();
 end
 
 
-function widthEdit_Callback(hObject, eventdata, handles)
-handles.winController.widthEdit_Callback();
+function Width_Callback(hObject, eventdata, handles)
+handles.winController.Width_Callback();
 end
 
-function heightEdit_Callback(hObject, eventdata, handles)
-handles.winController.heightEdit_Callback();
+function Height_Callback(hObject, eventdata, handles)
+handles.winController.Height_Callback();
 end
 
 function radioBtns_Callback(hObject, eventdata, handles)
-if handles.toFileRadio.Value
+if handles.File.Value
     handles.filePanel.Visible = 'on';
-elseif handles.clipboardRadio.Value
+elseif handles.Clipboard.Value
     handles.filePanel.Visible = 'off';
 end
+handles.winController.updateBatchOptFromGUI(hObject.Parent);   % update BatchOpt parameters
 end
 
 % --- Executes on button press in helpButton.
@@ -192,14 +196,14 @@ handles.winController.snapshotBtn_Callback();
 end
 
 
-% --- Executes on button press in scalebarCheck.
-function scalebarCheck_Callback(hObject, eventdata, handles)
-handles.winController.scalebarCheck_Callback();
+% --- Executes on button press in Scalebar.
+function Scalebar_Callback(hObject, eventdata, handles)
+handles.winController.Scalebar_Callback();
 end
 
-% --- Executes on button press in measurementsCheck.
-function measurementsCheck_Callback(hObject, eventdata, handles)
-if handles.measurementsCheck.Value
+% --- Executes on button press in Measurements.
+function Measurements_Callback(hObject, eventdata, handles)
+if handles.Measurements.Value
     warndlg(sprintf('!!! Warning !!!\nAddition of measurements to the snapshot may add artifacts at the borders of the image (at least in R2014b)!\n\nAfter rendering please make sure that the snapshot is good enough for your purposes!'),'Adding measurements')
     handles.measurementsOptions.Enable = 'on';
 else
@@ -228,24 +232,28 @@ if hObject.String(1) == 'm'
     xFactor = 1/xFactor;
 end
 
-width = str2double(handles.widthEdit.String);
-height = str2double(handles.heightEdit.String);
+width = str2double(handles.Width.String);
+height = str2double(handles.Height.String);
 width = ceil(width/xFactor);
 height = ceil(height/xFactor);
-handles.widthEdit.String = num2str(width);
-handles.heightEdit.String = num2str(height);
+handles.Width.String = num2str(width);
+handles.Height.String = num2str(height);
+end
+
+function updateBatch(hObject, eventdata, handles)
+% update BatchOpt structure of mibAlignmentController
+handles.winController.updateBatchOptFromGUI(hObject);   % update BatchOpt parameters
+end
+
+function SplitChannels_Callback(hObject, eventdata, handles)
+% --- Executes on button press in SplitChannels.
+handles.winController.SplitChannels_Callback();
 end
 
 
-function splitChannelsCheck_Callback(hObject, eventdata, handles)
-% --- Executes on button press in splitChannelsCheck.
-handles.winController.splitChannelsCheck_Callback();
-end
-
-
-% --- Executes on selection change in roiPopup.
-function roiPopup_Callback(hObject, eventdata, handles)
-handles.winController.roiPopup_Callback();
+% --- Executes on selection change in ROIIndex.
+function ROIIndex_Callback(hObject, eventdata, handles)
+handles.winController.ROIIndex_Callback();
 end
 
 % --- Executes on button press in binCheck.

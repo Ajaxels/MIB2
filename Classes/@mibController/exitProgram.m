@@ -23,6 +23,11 @@ for i=numel(obj.childControllers):-1:1
     end
 end
 
+if ~isempty(obj.DragNDrop)
+    delete(obj.DragNDrop);  % delete class and make property empty
+    obj.DragNDrop = [];
+end
+
 % unload OMERO
 if ~isdeployed
     if exist('unloadOmero.m','file') == 2

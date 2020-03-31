@@ -55,6 +55,11 @@ classdef mibAlignmentController < handle
         % .detectMinEigenFeatures.FilterSize = 5; % an odd integer value in the range [3, inf), The Gaussian filter smooths the gradient of the input image.
         % .detectORBFeatures.ScaleFactor = 1.2; % Scale factor for image decomposition, an integer greater than 1.
         % .detectORBFeatures.NumLevels = 8; % Number of decomposition levels, an integer greater than or equal to 1. Increase this value to extract keypoints from the image at more levels of decomposition.
+        % .amst.MaximumIterations = 100;     % parameters for imregconfig optimizer,  Maximum number of iterations
+        % .amst.GradientMagnitudeTolerance = 0.0001;     % parameters for imregconfig optimizer,  Gradient magnitude tolerance
+        % .amst.MinimumStepLength = .0001;   % parameters for imregconfig optimizer, Tolerance for convergence,  with a small value, the optimization takes longer to compute, but it is likely to converge on a more accurate metric value.
+        % .amst.MaximumStepLength = 0.0625;  % parameters for imregconfig optimizer, Initial step length, whan a large value, the computation time decreases. However, the optimizer might fail to converge
+        % .amst.RelaxationFactor = 0.5;      % parameters for imregconfig optimizer, Step length reduction factor, defines the rate at which the optimizer reduces step size during convergence
         BatchOpt
         % a structure compatible with batch operation, see details in the contsructor
     end
@@ -158,14 +163,20 @@ classdef mibAlignmentController < handle
                 obj.automaticOptions.detectMinEigenFeatures.FilterSize = 5; % an odd integer value in the range [3, inf), The Gaussian filter smooths the gradient of the input image.
                 obj.automaticOptions.detectORBFeatures.ScaleFactor = 1.2; % Scale factor for image decomposition, an integer greater than 1.
                 obj.automaticOptions.detectORBFeatures.NumLevels = 8; % Number of decomposition levels, an integer greater than or equal to 1. Increase this value to extract keypoints from the image at more levels of decomposition.
+                obj.automaticOptions.amst.PyramidLevels = 1;    % Number of multi-level image pyramid levels used during the registration process
+                obj.automaticOptions.amst.MaximumIterations = 100;     % parameters for imregconfig optimizer,  Maximum number of iterations
+                obj.automaticOptions.amst.GradientMagnitudeTolerance = 0.0001;     % parameters for imregconfig optimizer,  Gradient magnitude tolerance
+                obj.automaticOptions.amst.MinimumStepLength = .0001;   % parameters for imregconfig optimizer, Tolerance for convergence,  with a small value, the optimization takes longer to compute, but it is likely to converge on a more accurate metric value.
+                obj.automaticOptions.amst.MaximumStepLength = 0.0625;  % parameters for imregconfig optimizer, Initial step length, whan a large value, the computation time decreases. However, the optimizer might fail to converge
+                obj.automaticOptions.amst.RelaxationFactor = 0.5;      % parameters for imregconfig optimizer, Step length reduction factor, defines the rate at which the optimizer reduces step size during convergence
             end
             
             obj.BatchOpt.Mode = {'CurrentDataset'};     % align the current dataset
             obj.BatchOpt.Mode{2} = {'CurrentDataset', 'TwoStacks'};  % only the single option is available for the batch mode so far
             obj.BatchOpt.SecondDatasetPath = fullfile(obj.mibModel.myPath, '*.tif');
             obj.BatchOpt.Algorithm = {'Drift correction'};   % algorithm for the alignment
-            obj.BatchOpt.Algorithm{2} = {'Drift correction','Template matching','Automatic feature-based','Single landmark point',...
-                                    'Landmarks, multi points', 'Three landmark points', 'Color channels, multi points'};
+            obj.BatchOpt.Algorithm{2} = {'Drift correction', 'Template matching', 'Automatic feature-based','AMST: median-smoothed template',...
+                                         'Single landmark point', 'Landmarks, multi points', 'Three landmark points', 'Color channels, multi points'};
             obj.BatchOpt.CorrelateWith = {'Previous slice'};   % selection of slice for the correlation
             obj.BatchOpt.CorrelateWith{2} = {'Previous slice','First slice','Relative to'};                     
             obj.BatchOpt.CorrelateStep = '1';   % step for the "Relative to"
@@ -182,6 +193,8 @@ classdef mibAlignmentController < handle
             obj.BatchOpt.FeatureDetectorType{2}  = {'Blobs: Speeded-Up Robust Features (SURF) algorithm', 'Regions: Maximally Stable Extremal Regions (MSER) algorithm', ...
                 'Corners: Harris-Stephens algorithm', 'Corners: Binary Robust Invariant Scalable Keypoints (BRISK)', ...
                 'Corners: Features from Accelerated Segment Test (FAST)', 'Corners: Minimum Eigenvalue algorithm', 'Oriented FAST and rotated BRIEF (ORB)'};
+            obj.BatchOpt.MedianSize = '15';
+            obj.BatchOpt.UseParallelComputing = true;
             obj.BatchOpt.BackgroundColor = {'White'};   % background color
             obj.BatchOpt.BackgroundColor{2} = {'White', 'Black', 'Mean', 'Custom'};                     
             obj.BatchOpt.CustomColorValue = '255';  % value for the custom color intensity
@@ -193,7 +206,7 @@ classdef mibAlignmentController < handle
             obj.BatchOpt.maxY = num2str(floor(height/2)+floor(height/4));
             obj.BatchOpt.SubtractRunningAverage = false;    % for subtraction of the running average
             obj.BatchOpt.SubtractRunningAverageStep = '25';     % step for running average subtraction
-            obj.BatchOpt.SubtractRunningAverageExcludePeaks = '0';  % exclude peaks higher than this value from running average calculation
+            obj.BatchOpt.SubtractRunningAverageExcludePeaks = '10';  % exclude peaks higher than this value from running average calculation
             obj.BatchOpt.SubtractRunningAverageFixStretch = true;     % apply running average to fix stretching (automatic mode)
             obj.BatchOpt.SubtractRunningAverageFixShear = true;     % apply running average to fix shear (automatic mode)
             obj.BatchOpt.SaveShiftsToFile = false;
@@ -217,6 +230,8 @@ classdef mibAlignmentController < handle
             obj.BatchOpt.mibBatchTooltip.TransformationMode = sprintf('[Automatic feature based/Landmarks]: "extended" ensures that all pixels will stay in the resulting image; "cropped" - crops results based on the first slice');
             obj.BatchOpt.mibBatchTooltip.TransformationDegree  = sprintf('[Automatic feature based/Polynomal]:\ndegree of the polynomial transformation');
             obj.BatchOpt.mibBatchTooltip.FeatureDetectorType = sprintf('[Automatic feature based]:\nmethod to detect local features for automatic alignment');
+            obj.BatchOpt.mibBatchTooltip.MedianSize = '[AMST only], Z size of the median filter for AMST alignment';
+            obj.BatchOpt.mibBatchTooltip.UseParallelComputing = '[AMST only] use parallel computing for computations';
             obj.BatchOpt.mibBatchTooltip.BackgroundColor = sprintf('Background color for the alignment');
             obj.BatchOpt.mibBatchTooltip.CustomColorValue = sprintf('[BackgroundColor->Custom]:\ncustom color intensity for the background');
             obj.BatchOpt.mibBatchTooltip.Subarea = sprintf('Calculate shifts from the whole image, image subset or the masked area');
@@ -612,8 +627,10 @@ classdef mibAlignmentController < handle
                     end
                 end
             else
-                [obj.meta, obj.files, obj.pixSize, dimsXYZ] = obj.getMetaInfo(obj.BatchOpt.SecondDatasetPath);
-                if isempty(obj.meta); return; end
+                if strcmp(obj.BatchOpt.Mode{1}, 'TwoStacks')
+                    [obj.meta, obj.files, obj.pixSize, dimsXYZ] = obj.getMetaInfo(obj.BatchOpt.SecondDatasetPath);
+                    if isempty(obj.meta); return; end
+                end
             end
             
             parameters.useBatchMode = useBatchMode;
@@ -640,6 +657,7 @@ classdef mibAlignmentController < handle
             parameters.TransformationType(parameters.TransformationType == ' ') = '';   % remove spaces
             parameters.TransformationMode = obj.BatchOpt.TransformationMode{1};
             parameters.transformationDegree = find(ismember(obj.BatchOpt.TransformationDegree{2}, obj.BatchOpt.TransformationDegree{1}))+1;
+            parameters.UseParallelComputing = obj.BatchOpt.UseParallelComputing;
             
             [Height, Width, Color, Depth, Time] = obj.mibModel.getImageMethod('getDatasetDimensions');
             optionsGetData.blockModeSwitch = 0;
@@ -814,6 +832,10 @@ classdef mibAlignmentController < handle
                     
                     parameters.detectPointsType = obj.BatchOpt.FeatureDetectorType{1};
                     obj.AutomaticFeatureBasedAlignment(parameters);
+                    return;
+                elseif strcmp(parameters.method, 'AMST: median-smoothed template')
+                    parameters.detectPointsType = obj.BatchOpt.FeatureDetectorType{1};
+                    obj.AlignMedianSmoothTemplate(parameters);  % external file
                     return;
                 else        % standard alignement
                     %parameters.step = str2double(obj.View.handles.CorrelateStep,'string'));
@@ -1839,123 +1861,156 @@ classdef mibAlignmentController < handle
             
             global mibPath;
             status = 0;
+            % get width of the current image
+            getDataOpt.blockModeSwitch = 0;
+            [~, imgWidth] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', NaN, NaN, getDataOpt);
             
-            dlgTitle = 'Feature detection options';
-            featureDetectorType = obj.View.handles.FeatureDetectorType.String{obj.View.handles.FeatureDetectorType.Value};
-            options.Title = featureDetectorType;
-            prompts = {...
-                        sprintf('Width of the image used to detect features\ndecrease to make it faster, but compromising the precision'),...
-                        sprintf('Rotation invariance')};
-            defAns = {num2str(obj.automaticOptions.imgWidthForAnalysis), obj.automaticOptions.rotationInvariance};
-            
-            switch featureDetectorType
-                case 'Blobs: Speeded-Up Robust Features (SURF) algorithm'
-                    prompts{3} = sprintf('Strongest feature threshold\nto return more blobs, decrease the value of this threshold\n(a non-negative scalar)');
-                    prompts{4} = sprintf('Number of octaves to implement\nincrease this value to detect larger blobs. Recommended values are between 1 and 4.\n(an integer scalar greater than or equal to 1)');
-                    prompts{5} = sprintf('Number of scale levels per octave to compute\nincrease this number to detect more blobs at finer increments. Recommended values are between 3 and 6.\n(an integer scalar, greater than or equal to 3)');
-                    defAns{3} = num2str(obj.automaticOptions.detectSURFFeatures.MetricThreshold);
-                    defAns{4} = num2str(obj.automaticOptions.detectSURFFeatures.NumOctaves);
-                    defAns{5} = num2str(obj.automaticOptions.detectSURFFeatures.NumScaleLevels);
-                    options.PromptLines = [2, 1, 3, 4, 4];   % [optional] number of lines for widget titles
-                    
-                    options.WindowWidth = 1.6;    % make window x1.2 times wider
-                    [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
-                    if isempty(answer); return; end
-                    
-                    obj.automaticOptions.detectSURFFeatures.MetricThreshold = str2double(answer{3});
-                    obj.automaticOptions.detectSURFFeatures.NumOctaves = str2double(answer{4});
-                    obj.automaticOptions.detectSURFFeatures.NumScaleLevels = str2double(answer{5});
-                case 'Regions: Maximally Stable Extremal Regions (MSER) algorithm'
-                    prompts{3} = sprintf('Step size between intensity threshold levels\nused in selecting extremal regions while testing for their stability. Decrease this value to return more regions\n(percent numeric value; typical: 0.8 to 4)');
-                    prompts{4} = sprintf('Size of the region in pixels\nallows the selection of regions containing pixels to be between minArea and maxArea, inclusive\n(a two-element vector: minArea, maxArea)');
-                    prompts{5} = sprintf('Maximum area variation between extremal regions at varying intensity thresholds\nincreasing this value returns a greater number of regions, but they may be less stable\n(a positive scalar value; typical: 0.1 to 1.0)');
-                    defAns{3} = num2str(obj.automaticOptions.detectMSERFeatures.ThresholdDelta);
-                    defAns{4} = num2str(obj.automaticOptions.detectMSERFeatures.RegionAreaRange);
-                    defAns{5} = num2str(obj.automaticOptions.detectMSERFeatures.MaxAreaVariation);
-                    options.PromptLines = [2, 1, 4, 4, 3];   % [optional] number of lines for widget titles
-                    
-                    options.WindowWidth = 1.7;    % make window x1.2 times wider
-                    [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
-                    if isempty(answer); return; end
-                    
-                    obj.automaticOptions.detectMSERFeatures.ThresholdDelta = str2double(answer{3}); % percent numeric value; step size between intensity threshold levels, decrease this value to return more regions. Typical values range from 0.8 to 4.
-                    obj.automaticOptions.detectMSERFeatures.RegionAreaRange = str2num(answer{4}); %#ok<ST2NM> % two-element vector, size of the region in pixels, allows the selection of regions containing pixels between the provided range
-                    obj.automaticOptions.detectMSERFeatures.MaxAreaVariation = str2double(answer{5}); % positive scalar, maximum area variation between extremal regions at varying intensity thresholds; Increasing this value returns a greater number of regions, but they may be less stable. Stable regions are very similar in size over varying intensity thresholds. Typical values range from 0.1 to 1.0.
-                    
-                case 'Corners: Harris-Stephens algorithm'
-                    prompts{3} = sprintf('Minimum accepted quality of corners.\nThe minimum accepted quality of corners represents\na fraction of the maximum corner metric value in the image.\nLarger values can be used to remove erroneous corners\n(a scalar value in the range [0,1])');
-                    prompts{4} = sprintf('Gaussian filter dimension.\nThe Gaussian filter smooths the gradient of the input image\n(an odd integer value in the range [3, min(size(I))])');
-                    defAns{3} = num2str(obj.automaticOptions.detectHarrisFeatures.MinQuality);
-                    defAns{4} = num2str(obj.automaticOptions.detectHarrisFeatures.FilterSize);
-                    
-                    options.PromptLines = [2, 3, 5, 3];   % [optional] number of lines for widget titles
-                    
-                    options.WindowWidth = 1.6;    % make window x1.2 times wider
-                    [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
-                    if isempty(answer); return; end
-                    
-                    obj.automaticOptions.detectHarrisFeatures.MinQuality = str2double(answer{3}); 
-                    obj.automaticOptions.detectHarrisFeatures.FilterSize = str2double(answer{4}); 
-                case 'Corners: Binary Robust Invariant Scalable Keypoints (BRISK)'
-                    prompts{3} = sprintf('Minimum intensity difference between a corner and its surrounding region.\nThe minimum contrast value represents a fraction of the maximum value\nof the image class. Increase this value to reduce the number of detected corners\n(a scalar in the range [0 1])');
-                    prompts{4} = sprintf('Minimum accepted quality of corners\nrepresents a fraction of the maximum corner metric value in the image.\nIncrease this value to remove erroneous corners\n(a scalar value in the range [0,1])');
-                    prompts{5} = sprintf('Number of octaves to implement.\nIncrease this value to detect larger blobs.\nWhen you set NumOctaves to 0, the function disables multiscale detection\n(an integer scalar, greater than or equal to 0, typical: from 1 to 4)');
-                    defAns{3} = num2str(obj.automaticOptions.detectBRISKFeatures.MinContrast);
-                    defAns{4} = num2str(obj.automaticOptions.detectBRISKFeatures.MinQuality);
-                    defAns{5} = num2str(obj.automaticOptions.detectBRISKFeatures.NumOctaves);
-                    options.PromptLines = [2, 3, 4, 4, 4];   % [optional] number of lines for widget titles
-                    
-                    options.WindowWidth = 1.6;    % make window x1.2 times wider
-                    [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
-                    if isempty(answer); return; end
-                    
-                    obj.automaticOptions.detectBRISKFeatures.MinContrast = str2double(answer{3}); 
-                    obj.automaticOptions.detectBRISKFeatures.MinQuality = str2double(answer{4}); 
-                    obj.automaticOptions.detectBRISKFeatures.NumOctaves = str2double(answer{5}); 
-                case 'Corners: Features from Accelerated Segment Test (FAST)'
-                    prompts{3} = sprintf('Minimum accepted quality of corners\nrepresents a fraction of the maximum corner metric value in the image.\nLarger values can be used to remove erroneous corners.\n(a scalar value in the range [0,1])');
-                    prompts{4} = sprintf('Minimum intensity difference between corner and surrounding region\nrepresents a fraction of the maximum value of the image class.\nIncreasing the value reduces the number of detected corners.\n(a scalar value in the range [0,1])');
-                    defAns{3} = num2str(obj.automaticOptions.detectFASTFeatures.MinQuality);
-                    defAns{4} = num2str(obj.automaticOptions.detectFASTFeatures.MinContrast);
-                    options.PromptLines = [2, 3, 4, 4];   % [optional] number of lines for widget titles
-                    
-                    options.WindowWidth = 1.6;    % make window x1.2 times wider
-                    [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
-                    if isempty(answer); return; end
-                    
-                    obj.automaticOptions.detectFASTFeatures.MinQuality = str2double(answer{3}); 
-                    obj.automaticOptions.detectFASTFeatures.MinContrast = str2double(answer{4}); 
-                case 'Corners: Minimum Eigenvalue algorithm'
-                    prompts{3} = sprintf('Minimum accepted quality of corners\nrepresents a fraction of the maximum corner metric value in the image.\nLarger values can be used to remove erroneous corners.\n(a scalar value in the range [0,1])');
-                    prompts{4} = sprintf('Gaussian filter dimension.\nThe Gaussian filter smooths the gradient of the input image.\n(an odd integer value in the range [3, inf])');
-                    defAns{3} = num2str(obj.automaticOptions.detectMinEigenFeatures.MinQuality);
-                    defAns{4} = num2str(obj.automaticOptions.detectMinEigenFeatures.FilterSize);
-                    options.PromptLines = [2, 3, 4, 3];   % [optional] number of lines for widget titles
-                    
-                    options.WindowWidth = 1.6;    % make window x1.2 times wider
-                    [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
-                    if isempty(answer); return; end
-                    
-                    obj.automaticOptions.detectMinEigenFeatures.MinQuality = str2double(answer{3}); 
-                    obj.automaticOptions.detectMinEigenFeatures.FilterSize = str2double(answer{4}); 
-                case 'Oriented FAST and rotated BRIEF (ORB)'
-                    prompts{2} = sprintf('Scale factor for image decomposition\n(an integer greater than 1)');
-                    prompts{3} = sprintf('Number of decomposition levels. Increase this value to extract keypoints from the image at more levels of decomposition (an integer greater than or equal to 1)');
-                    defAns{2} = num2str(obj.automaticOptions.detectORBFeatures.ScaleFactor);
-                    defAns{3} = num2str(obj.automaticOptions.detectORBFeatures.NumLevels);
-                    options.PromptLines = [2, 2, 2];   % [optional] number of lines for widget titles
-                    
-                    options.WindowWidth = 1.6;    % make window x1.2 times wider
-                    [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
-                    if isempty(answer); return; end
-                    
-                    obj.automaticOptions.detectORBFeatures.ScaleFactor = str2double(answer{2}); 
-                    obj.automaticOptions.detectORBFeatures.NumLevels = str2double(answer{3}); 
+            if strcmp(obj.BatchOpt.Algorithm{1}, 'AMST: median-smoothed template')
+                dlgTitle = 'AMST settings';
+                prompts = {...
+                    sprintf('Width of the image used to detect features\ndecrease to make it faster, but compromising the precision\nImage width = %d pixels, type 0 - to use full resolution', imgWidth),...
+                    'Number of multi-level image pyramid levels used during the registration process', ...
+                    'Maximum number of iterations',...
+                    'Gradient magnitude tolerance',...
+                    'Tolerance for convergence,  with a small value, the optimization takes longer to compute, but it is likely to converge on a more accurate metric value',...
+                    'Initial step length, whan a large value, the computation time decreases. However, the optimizer might fail to converge',...
+                    'Step length reduction factor, defines the rate at which the optimizer reduces step size during convergence'
+                    };
+                
+                defAns = {num2str(obj.automaticOptions.imgWidthForAnalysis), num2str(obj.automaticOptions.amst.PyramidLevels), ...
+                    num2str(obj.automaticOptions.amst.MaximumIterations),...
+                    num2str(obj.automaticOptions.amst.GradientMagnitudeTolerance), num2str(obj.automaticOptions.amst.MinimumStepLength), ...
+                    num2str(obj.automaticOptions.amst.MaximumStepLength), num2str(obj.automaticOptions.amst.RelaxationFactor)};
+                options.PromptLines = [3, 1, 1, 1, 2, 2, 2];   % [optional] number of lines for widget titles
+                options.WindowWidth = 1.6;    % make window x1.2 times wider
+                options.HelpUrl = 'https://se.mathworks.com/help/images/ref/registration.optimizer.regularstepgradientdescent.html';
+                [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                if isempty(answer); return; end
+                
+                obj.automaticOptions.amst.PyramidLevels = str2double(answer{2});
+                obj.automaticOptions.amst.MaximumIterations = str2double(answer{3});
+                obj.automaticOptions.amst.GradientMagnitudeTolerance = str2double(answer{4});
+                obj.automaticOptions.amst.MinimumStepLength = str2double(answer{5});
+                obj.automaticOptions.amst.MaximumStepLength = str2double(answer{6});
+                obj.automaticOptions.amst.RelaxationFactor = str2double(answer{7});
+            else
+                dlgTitle = 'Feature detection options';
+                featureDetectorType = obj.View.handles.FeatureDetectorType.String{obj.View.handles.FeatureDetectorType.Value};
+                options.Title = featureDetectorType;
+                prompts = {...
+                    sprintf('Width of the image used to detect features\ndecrease to make it faster, but compromising the precision\nImage width = %d pixels, type 0 - to use full resolution', imgWidth),...
+                    sprintf('Rotation invariance')};
+                defAns = {num2str(obj.automaticOptions.imgWidthForAnalysis), obj.automaticOptions.rotationInvariance};
+                
+                switch featureDetectorType
+                    case 'Blobs: Speeded-Up Robust Features (SURF) algorithm'
+                        prompts{3} = sprintf('Strongest feature threshold\nto return more blobs, decrease the value of this threshold\n(a non-negative scalar)');
+                        prompts{4} = sprintf('Number of octaves to implement\nincrease this value to detect larger blobs. Recommended values are between 1 and 4.\n(an integer scalar greater than or equal to 1)');
+                        prompts{5} = sprintf('Number of scale levels per octave to compute\nincrease this number to detect more blobs at finer increments. Recommended values are between 3 and 6.\n(an integer scalar, greater than or equal to 3)');
+                        defAns{3} = num2str(obj.automaticOptions.detectSURFFeatures.MetricThreshold);
+                        defAns{4} = num2str(obj.automaticOptions.detectSURFFeatures.NumOctaves);
+                        defAns{5} = num2str(obj.automaticOptions.detectSURFFeatures.NumScaleLevels);
+                        options.PromptLines = [3, 1, 3, 4, 4];   % [optional] number of lines for widget titles
+                        
+                        options.WindowWidth = 1.6;    % make window x1.2 times wider
+                        [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                        if isempty(answer); return; end
+                        
+                        obj.automaticOptions.detectSURFFeatures.MetricThreshold = str2double(answer{3});
+                        obj.automaticOptions.detectSURFFeatures.NumOctaves = str2double(answer{4});
+                        obj.automaticOptions.detectSURFFeatures.NumScaleLevels = str2double(answer{5});
+                    case 'Regions: Maximally Stable Extremal Regions (MSER) algorithm'
+                        prompts{3} = sprintf('Step size between intensity threshold levels\nused in selecting extremal regions while testing for their stability. Decrease this value to return more regions\n(percent numeric value; typical: 0.8 to 4)');
+                        prompts{4} = sprintf('Size of the region in pixels\nallows the selection of regions containing pixels to be between minArea and maxArea, inclusive\n(a two-element vector: minArea, maxArea)');
+                        prompts{5} = sprintf('Maximum area variation between extremal regions at varying intensity thresholds\nincreasing this value returns a greater number of regions, but they may be less stable\n(a positive scalar value; typical: 0.1 to 1.0)');
+                        defAns{3} = num2str(obj.automaticOptions.detectMSERFeatures.ThresholdDelta);
+                        defAns{4} = num2str(obj.automaticOptions.detectMSERFeatures.RegionAreaRange);
+                        defAns{5} = num2str(obj.automaticOptions.detectMSERFeatures.MaxAreaVariation);
+                        options.PromptLines = [2, 1, 4, 4, 3];   % [optional] number of lines for widget titles
+                        
+                        options.WindowWidth = 1.7;    % make window x1.2 times wider
+                        [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                        if isempty(answer); return; end
+                        
+                        obj.automaticOptions.detectMSERFeatures.ThresholdDelta = str2double(answer{3}); % percent numeric value; step size between intensity threshold levels, decrease this value to return more regions. Typical values range from 0.8 to 4.
+                        obj.automaticOptions.detectMSERFeatures.RegionAreaRange = str2num(answer{4}); %#ok<ST2NM> % two-element vector, size of the region in pixels, allows the selection of regions containing pixels between the provided range
+                        obj.automaticOptions.detectMSERFeatures.MaxAreaVariation = str2double(answer{5}); % positive scalar, maximum area variation between extremal regions at varying intensity thresholds; Increasing this value returns a greater number of regions, but they may be less stable. Stable regions are very similar in size over varying intensity thresholds. Typical values range from 0.1 to 1.0.
+                        
+                    case 'Corners: Harris-Stephens algorithm'
+                        prompts{3} = sprintf('Minimum accepted quality of corners.\nThe minimum accepted quality of corners represents\na fraction of the maximum corner metric value in the image.\nLarger values can be used to remove erroneous corners\n(a scalar value in the range [0,1])');
+                        prompts{4} = sprintf('Gaussian filter dimension.\nThe Gaussian filter smooths the gradient of the input image\n(an odd integer value in the range [3, min(size(I))])');
+                        defAns{3} = num2str(obj.automaticOptions.detectHarrisFeatures.MinQuality);
+                        defAns{4} = num2str(obj.automaticOptions.detectHarrisFeatures.FilterSize);
+                        
+                        options.PromptLines = [2, 3, 5, 3];   % [optional] number of lines for widget titles
+                        
+                        options.WindowWidth = 1.6;    % make window x1.2 times wider
+                        [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                        if isempty(answer); return; end
+                        
+                        obj.automaticOptions.detectHarrisFeatures.MinQuality = str2double(answer{3});
+                        obj.automaticOptions.detectHarrisFeatures.FilterSize = str2double(answer{4});
+                    case 'Corners: Binary Robust Invariant Scalable Keypoints (BRISK)'
+                        prompts{3} = sprintf('Minimum intensity difference between a corner and its surrounding region.\nThe minimum contrast value represents a fraction of the maximum value\nof the image class. Increase this value to reduce the number of detected corners\n(a scalar in the range [0 1])');
+                        prompts{4} = sprintf('Minimum accepted quality of corners\nrepresents a fraction of the maximum corner metric value in the image.\nIncrease this value to remove erroneous corners\n(a scalar value in the range [0,1])');
+                        prompts{5} = sprintf('Number of octaves to implement.\nIncrease this value to detect larger blobs.\nWhen you set NumOctaves to 0, the function disables multiscale detection\n(an integer scalar, greater than or equal to 0, typical: from 1 to 4)');
+                        defAns{3} = num2str(obj.automaticOptions.detectBRISKFeatures.MinContrast);
+                        defAns{4} = num2str(obj.automaticOptions.detectBRISKFeatures.MinQuality);
+                        defAns{5} = num2str(obj.automaticOptions.detectBRISKFeatures.NumOctaves);
+                        options.PromptLines = [2, 3, 4, 4, 4];   % [optional] number of lines for widget titles
+                        
+                        options.WindowWidth = 1.6;    % make window x1.2 times wider
+                        [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                        if isempty(answer); return; end
+                        
+                        obj.automaticOptions.detectBRISKFeatures.MinContrast = str2double(answer{3});
+                        obj.automaticOptions.detectBRISKFeatures.MinQuality = str2double(answer{4});
+                        obj.automaticOptions.detectBRISKFeatures.NumOctaves = str2double(answer{5});
+                    case 'Corners: Features from Accelerated Segment Test (FAST)'
+                        prompts{3} = sprintf('Minimum accepted quality of corners\nrepresents a fraction of the maximum corner metric value in the image.\nLarger values can be used to remove erroneous corners.\n(a scalar value in the range [0,1])');
+                        prompts{4} = sprintf('Minimum intensity difference between corner and surrounding region\nrepresents a fraction of the maximum value of the image class.\nIncreasing the value reduces the number of detected corners.\n(a scalar value in the range [0,1])');
+                        defAns{3} = num2str(obj.automaticOptions.detectFASTFeatures.MinQuality);
+                        defAns{4} = num2str(obj.automaticOptions.detectFASTFeatures.MinContrast);
+                        options.PromptLines = [2, 3, 4, 4];   % [optional] number of lines for widget titles
+                        
+                        options.WindowWidth = 1.6;    % make window x1.2 times wider
+                        [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                        if isempty(answer); return; end
+                        
+                        obj.automaticOptions.detectFASTFeatures.MinQuality = str2double(answer{3});
+                        obj.automaticOptions.detectFASTFeatures.MinContrast = str2double(answer{4});
+                    case 'Corners: Minimum Eigenvalue algorithm'
+                        prompts{3} = sprintf('Minimum accepted quality of corners\nrepresents a fraction of the maximum corner metric value in the image.\nLarger values can be used to remove erroneous corners.\n(a scalar value in the range [0,1])');
+                        prompts{4} = sprintf('Gaussian filter dimension.\nThe Gaussian filter smooths the gradient of the input image.\n(an odd integer value in the range [3, inf])');
+                        defAns{3} = num2str(obj.automaticOptions.detectMinEigenFeatures.MinQuality);
+                        defAns{4} = num2str(obj.automaticOptions.detectMinEigenFeatures.FilterSize);
+                        options.PromptLines = [2, 3, 4, 3];   % [optional] number of lines for widget titles
+                        
+                        options.WindowWidth = 1.6;    % make window x1.2 times wider
+                        [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                        if isempty(answer); return; end
+                        
+                        obj.automaticOptions.detectMinEigenFeatures.MinQuality = str2double(answer{3});
+                        obj.automaticOptions.detectMinEigenFeatures.FilterSize = str2double(answer{4});
+                    case 'Oriented FAST and rotated BRIEF (ORB)'
+                        prompts{2} = sprintf('Scale factor for image decomposition\n(an integer greater than 1)');
+                        prompts{3} = sprintf('Number of decomposition levels. Increase this value to extract keypoints from the image at more levels of decomposition (an integer greater than or equal to 1)');
+                        defAns{2} = num2str(obj.automaticOptions.detectORBFeatures.ScaleFactor);
+                        defAns{3} = num2str(obj.automaticOptions.detectORBFeatures.NumLevels);
+                        options.PromptLines = [2, 2, 2];   % [optional] number of lines for widget titles
+                        
+                        options.WindowWidth = 1.6;    % make window x1.2 times wider
+                        [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                        if isempty(answer); return; end
+                        
+                        obj.automaticOptions.detectORBFeatures.ScaleFactor = str2double(answer{2});
+                        obj.automaticOptions.detectORBFeatures.NumLevels = str2double(answer{3});
+                end
+                if ~strcmp(featureDetectorType, 'Oriented FAST and rotated BRIEF (ORB)')
+                    obj.automaticOptions.rotationInvariance = logical(answer{2});  % Rotation invariance flag, specified a logical scalar; When you set this property to true, the orientation of the feature vectors are not estimated and the feature orientation is set to pi/2.
+                end
             end
             obj.automaticOptions.imgWidthForAnalysis = str2double(answer{1}); % Width of the image used to detect features
-            if ~strcmp(featureDetectorType, 'Oriented FAST and rotated BRIEF (ORB)')
-                obj.automaticOptions.rotationInvariance = logical(answer{2});  % Rotation invariance flag, specified a logical scalar; When you set this property to true, the orientation of the feature vectors are not estimated and the feature orientation is set to pi/2. 
-            end
             status = 1;
         end
         
@@ -1966,20 +2021,29 @@ classdef mibAlignmentController < handle
             % update automatic detection options
             status = obj.updateAutomaticOptions();
             if status == 0; return; end
+            if strcmp(obj.BatchOpt.Algorithm{1}, 'AMST: median-smoothed template'); return; end
+            
             tic
             wb = waitbar(0, 'Please wait...');
             optionsGetData.blockModeSwitch = 0;
             [~, Width, ~, Depth] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, NaN, optionsGetData);
             colorCh = obj.View.handles.ColorChannel.Value;
             
-            ratio = obj.automaticOptions.imgWidthForAnalysis/Width;
+            if obj.automaticOptions.imgWidthForAnalysis == 0
+                ratio = 1;
+            else
+                ratio = obj.automaticOptions.imgWidthForAnalysis/Width;    
+            end
+            
             sliceNo = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
             if sliceNo == Depth; sliceNo = sliceNo - 1; end
             waitbar(0.05, wb);
-            currImg = cell2mat(obj.mibModel.getData2D('image', sliceNo, 4, colorCh, optionsGetData));
-            original = imresize(currImg, ratio, 'bicubic');
-            distortedImg = cell2mat(obj.mibModel.getData2D('image', sliceNo+1, 4, colorCh, optionsGetData));
-            distorted = imresize(distortedImg, ratio, 'bicubic');
+            original = cell2mat(obj.mibModel.getData2D('image', sliceNo, 4, colorCh, optionsGetData));
+            distorted = cell2mat(obj.mibModel.getData2D('image', sliceNo+1, 4, colorCh, optionsGetData));
+            if ratio ~= 1   % resize image if needed
+                original = imresize(original, ratio, 'bicubic');
+                distorted = imresize(distorted, ratio, 'bicubic');
+            end
             waitbar(0.2, wb);
             % Detect features
             featureDetectorType = obj.View.handles.FeatureDetectorType.String{obj.View.handles.FeatureDetectorType.Value};
@@ -2076,7 +2140,6 @@ classdef mibAlignmentController < handle
             end
             
             tic
-            
             % define background color
             if isnumeric(parameters.backgroundColor)
                 backgroundColor = parameters.backgroundColor;
@@ -2089,13 +2152,18 @@ classdef mibAlignmentController < handle
                     backgroundColor = mean(mean(cell2mat(obj.mibModel.getData2D('image', 1, NaN, parameters.colorCh, optionsGetData))));
                 end
             end
-            parameters.imgWidthForAnalysis = obj.automaticOptions.imgWidthForAnalysis;  % resize image to this size to speed-up the process
             
+            if obj.automaticOptions.imgWidthForAnalysis == 0
+                parameters.imgWidthForAnalysis = Width;
+            else
+                parameters.imgWidthForAnalysis = obj.automaticOptions.imgWidthForAnalysis;  % resize image to this size to speed-up the process
+            end
+                
             if loadShifts == 0
                 ratio = parameters.imgWidthForAnalysis/Width;
                 optionsGetData.blockModeSwitch = 0;
-                currImg = cell2mat(obj.mibModel.getData2D('image', 1, 4, parameters.colorCh, optionsGetData));
-                original = imresize(currImg, ratio, 'bicubic');
+                original = cell2mat(obj.mibModel.getData2D('image', 1, 4, parameters.colorCh, optionsGetData));
+                if ratio ~= 1; original = imresize(original, ratio, 'bicubic'); end  % resize if neeeded
             
                 % Detect features
                 switch parameters.detectPointsType
@@ -2132,8 +2200,8 @@ classdef mibAlignmentController < handle
                 validPtsOriginal.Location = validPtsOriginal.Location / ratio;
 
                 for layer = 2:Depth
-                    distortedImg = cell2mat(obj.mibModel.getData2D('image', layer, 4, parameters.colorCh, optionsGetData));
-                    distorted = imresize(distortedImg, ratio, 'bicubic');
+                    distorted = cell2mat(obj.mibModel.getData2D('image', layer, 4, parameters.colorCh, optionsGetData));
+                    if ratio ~= 1; distorted = imresize(distorted, ratio, 'bicubic'); end % resize if needed
 
                     % Detect features
                     switch parameters.detectPointsType

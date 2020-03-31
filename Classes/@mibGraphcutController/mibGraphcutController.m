@@ -70,7 +70,7 @@ classdef mibGraphcutController  < handle
             end
         end
         
-        Graphcut = mibGraphcut_CalcSupervoxels(Graphcut, img, parLoopOptions)
+        Graphcut = mibGraphcut_CalcSupervoxels(Graphcut, img, parLoopOptions, usePrecomputedSlic)
         % declaration of method for calculation of supervoxels
         
     end
@@ -1016,12 +1016,25 @@ classdef mibGraphcutController  < handle
             end
         end
         
-        function superpixelsBtn_Callback(obj)
+        function superpixelsBtn_Callback(obj, usePrecomputedSlic)
             % function superpixelsBtn_Callback(obj)
             % callback for press of superpixelsBtn - calculate superpixels
+            %
+            % Parameters:
+            % usePrecomputedSlic: [logical, optional] - switch to use precalculated
+            % supervolxels, that are preloaded to obj.graphcut.slic; used
+            % from the Import button, default value == 0
             
-            status = obj.clearPreprocessBtn_Callback();
-            if status == 0; return; end
+            if nargin < 2; usePrecomputedSlic = 0; end
+           
+            %if usePrecomputedSlic == 1
+            %   error('not yet implemented!');
+            %end
+            
+            if usePrecomputedSlic == 0
+                status = obj.clearPreprocessBtn_Callback();
+                if status == 0; return; end
+            end
             
             % check for autosave
             if obj.View.handles.supervoxelsAutosaveCheck.Value
@@ -1242,7 +1255,8 @@ classdef mibGraphcutController  < handle
                             % segmentation, i.e. in this function
                             % in 'post' the superpixels are dilated after the graphcut
                             % segmentation
-                            obj.graphcut(1).dilateMode = 'post';
+                            
+                            %obj.graphcut(1).dilateMode = 'post';
                             obj.graphcut(1).dilateMode = 'pre';
                             if strcmp(obj.graphcut(1).dilateMode, 'pre')
                                 obj.graphcut(1).slic(:,:,i) = imdilate(obj.graphcut(1).slic(:,:,i), ones(3));
@@ -1284,8 +1298,10 @@ classdef mibGraphcutController  < handle
                     for graphId = 1:numel(obj.graphcut(1).grid.bb)
                         getDataOptions = obj.graphcut(1).grid.bb(graphId);
                         img(graphId) = obj.mibModel.getData3D('image', NaN, 4, col_channel, getDataOptions);   % get dataset
-                        Graphcut(graphId).slic = 0;
-                        Graphcut(graphId).noPix = 0;
+                        if usePrecomputedSlic == 0
+                            Graphcut(graphId).slic = 0;
+                            Graphcut(graphId).noPix = 0;
+                        end
                         Graphcut(graphId).Edges = cell(1);
                         Graphcut(graphId).EdgesValues = cell(1);
                     end
@@ -1298,7 +1314,9 @@ classdef mibGraphcutController  < handle
                     end
                     
                     if parallelSwitch == 1
-                        waitbar(.5, wb, sprintf('Please note that the waitbar will not be updated\nwhile using the parallel computing...'), 'Name', 'Calculating graphcut...');
+                        % create waitbar for parallel loops
+                        pw = PoolWaitbar(numel(obj.graphcut(1).grid.bb), sprintf('Calculating graphs\nPlease wait...'), wb, 'Calculating...');
+                        
                         parfor graphId = 1:numel(obj.graphcut(1).grid.bb)
                             G = Graphcut(graphId);
                             G = mibGraphcutController.mibGraphcut_CalcSupervoxels(G, img{graphId}, parLoopOptions);
@@ -1306,7 +1324,9 @@ classdef mibGraphcutController  < handle
                             for fieldId = 1:numel(fNames)
                                 Graphcut(graphId).(fNames{fieldId}) = G.(fNames{fieldId});
                             end
+                            increment(pw);  % increment PoolWaitbar
                         end
+                        keepWaitbar = 1; pw.deletePoolWaitbar(keepWaitbar);     % delete PoolWaitbar
                         obj.graphcut = Graphcut;
                         clear Graphcut;
                     else
@@ -1316,7 +1336,7 @@ classdef mibGraphcutController  < handle
                         for graphId = 1:numel(obj.graphcut(1).grid.bb)
                             waitbar(graphId/numel(obj.graphcut(1).grid.bb), wb, sprintf('Calculating graphcut\nThis will take a while...'));
                             G = Graphcut(graphId);
-                            G = mibGraphcutController.mibGraphcut_CalcSupervoxels(G, img{graphId}, parLoopOptions);
+                            G = mibGraphcutController.mibGraphcut_CalcSupervoxels(G, img{graphId}, parLoopOptions, usePrecomputedSlic);
                             fNames = fieldnames(G);
                             for fieldId = 1:numel(fNames)
                                 Graphcut(graphId).(fNames{fieldId}) = G.(fNames{fieldId});
@@ -1620,41 +1640,16 @@ classdef mibGraphcutController  < handle
             global mibPath;
             
             if noImportSwitch == 0
-                button =  questdlg(sprintf('Would you like to import Graphcut data from a file or from the main Matlab workspace?'),...
-                    'Import/Load measurements', 'Load from a file', 'Import from Matlab', 'Cancel', 'Load from a file');
-                switch button
-                    case 'Cancel'
-                        return;
-                    case 'Import from Matlab'
-                        availableVars = evalin('base', 'whos');
-                        idx = ismember({availableVars.class}, {'struct'});
-                        if sum(idx) == 0
-                            errordlg(sprintf('!!! Error !!!\nNothing to import...'), 'Nothing to import');
-                            return;
-                        end
-                        Vars = {availableVars(idx).name}';
-                        
-                        % find index of the I variable if it is present
-                        idx2 = find(ismember(Vars, 'Graphcut')==1);
-                        if ~isempty(idx2)
-                            Vars{end+1} = idx2;
-                        end
-                        prompts = {'A variable that contains compatible structure:'};
-                        defAns = {Vars};
-                        title = 'Input variable for import';
-                        answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
-                        if isempty(answer); return; end
-
-                        tic;
-                        obj.clearPreprocessBtn_Callback();
-
-                        try
-                            Graphcut = evalin('base',answer{1});
-                        catch exception
-                            errordlg(sprintf('The variable was not found in the Matlab base workspace:\n\n%s', exception.message), 'Missing variable!', 'modal');
-                            return;
-                        end
-                        toc;
+                prompts = {'Settings:'};
+                defAns = {{'Load from a file', 'Import from Matlab', 'Load precomputed 2D/3D clusters from a file', 1}};
+                
+                dlgTitle = 'Import graphcut'; 
+                options.Title = 'Import graphcut structure or precomputed clusters:';
+                options.WindowWidth = 1.2;    
+                [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                if isempty(answer); return; end
+                
+                switch answer{1}
                     case 'Load from a file'
                         [filename, path] = uigetfile(...
                             {'*.graph;',  'Matlab format (*.graph)'}, ...
@@ -1685,7 +1680,118 @@ classdef mibGraphcutController  < handle
                         waitbar(.99, wb, sprintf('Finishing...\nPlease wait...'));
                         delete(wb);
                         toc;
+                    case 'Import from Matlab'
+                        availableVars = evalin('base', 'whos');
+                        idx = ismember({availableVars.class}, {'struct'});
+                        if sum(idx) == 0
+                            errordlg(sprintf('!!! Error !!!\nNothing to import...'), 'Nothing to import');
+                            return;
+                        end
+                        Vars = {availableVars(idx).name}';
+                        
+                        % find index of the I variable if it is present
+                        idx2 = find(ismember(Vars, 'Graphcut')==1);
+                        if ~isempty(idx2)
+                            Vars{end+1} = idx2;
+                        end
+                        prompts = {'A variable that contains compatible structure:'};
+                        defAns = {Vars};
+                        title = 'Input variable for import';
+                        answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
+                        if isempty(answer); return; end
+
+                        tic;
+                        obj.clearPreprocessBtn_Callback();
+
+                        try
+                            Graphcut = evalin('base',answer{1});
+                        catch exception
+                            errordlg(sprintf('The variable was not found in the Matlab base workspace:\n\n%s', exception.message), 'Missing variable!', 'modal');
+                            return;
+                        end
+                        toc;
+                    case 'Load precomputed 2D/3D clusters from a file'     % 'Load precomputed 2D clusters from a file'
+                        %obj.clearPreprocessBtn_Callback();
+                        obj.resetDimsBtn_Callback();
+                        loadOptions.startDir = obj.mibModel.myPath;
+                        
+                        prompts = {'Type of clusters:'; 'Clustering mode:'; 'Type of signal (watershed only):'; 'Gaps (watershed only):'; 'Continious labels:'};
+                        defAns = {{'Watershed', 'SLIC', 1}; {'2D clusters', '3D clusters', 2}; {'black-on-white, dark lines', 'white-on-black, bright lines', 1}; {'with gaps', 'without gaps', 1}; {'yes', 'no', 1}};
+                        dlgTitle = 'Import superpixels';
+                        options.Title = 'Import parameters';
+                        [answer2, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                        if isempty(answer2); return; end
+                        
+                        % load the dataset
+                        img = mibLoadImages([], loadOptions);
+                        if isempty(img); return; end
+                        img = squeeze(img);
+                        
+                        if strcmp(answer2{5}, 'no')
+                            wb = waitbar(0, sprintf('Squeezing the labels\nPlease wait...'));
+                            [a, ~, c] = unique(img);    % process further c
+                            if a(1) == 0; c = c - 1; end    % remove zeros
+                            waitbar(.5, wb);
+                            img = reshape(c, size(img));
+                            waitbar(1, wb);
+                            clear c;
+                            delete(wb);
+                        end
+                        
+                        if strcmp(answer2{2}, '3D clusters') 
+                            obj.mode2dRadio_Callback(obj.View.handles.mode3dRadio);
+                            if strcmp(answer2{4}, 'without gaps')   % add gaps
+                                wb = waitbar(0, sprintf('Adding gaps\nPlease wait...'));
+                                Gmag = imgradient3(img, 'intermediate');
+                                waitbar(.3, wb);
+                                Gmag = imbinarize(Gmag);
+                                
+                                fprintf('Debug: exporting gaps to matlab main workspace as "Gaps"\n');
+                                assignin('base','Gaps', uint8(Gmag));
+                                
+                                waitbar(.6, wb);
+                                img(Gmag==1) = 0;
+                                waitbar(1, wb);
+                                delete(wb);
+                            end
+                            obj.graphcut.mode = 'mode3dRadio';
+                        else
+                            obj.mode2dRadio_Callback(obj.View.handles.mode2dRadio);
+                            if strcmp(answer2{4}, 'without gaps')   % add gaps
+                                wb = waitbar(0, sprintf('Adding gaps\nPlease wait...'));
+                                depth = size(img, 3);
+                                for z=1:depth
+                                    gap = imbinarize(imgradient(img(:,:,z), 'intermediate'));
+                                    img2 = img(:,:,z);
+                                    img2(gap==1) = 0;
+                                    img(:,:,z) = img2;
+                                    waitbar(z/depth, wb);
+                                end
+                                delete(wb);
+                            end
+                            obj.graphcut.mode = 'mode2dRadio';
+                        end
+                        obj.graphcut.superPixType = answer2{1};
+                        if strcmp(answer2{3}, 'black-on-white, dark lines')
+                            obj.View.handles.signalPopup.Value = 1;
+                        else
+                            obj.View.handles.signalPopup.Value = 2;
+                        end
+                        
+                        if strcmp(answer2{1}, 'Watershed')
+                            obj.View.handles.superpixTypePopup.Value = 2;
+                        else
+                            obj.View.handles.superpixTypePopup.Value = 1;
+                        end
+                        obj.graphcut.noPix = [];
+                        obj.graphcut.slic = img;
+                        obj.superpixTypePopup_Callback('keep');
+                                                
+                        usePrecomputedSlic = 1;    % switch to use preloaded superclusters and do not calculate them
+                        obj.superpixelsBtn_Callback(usePrecomputedSlic);
+                        return;
                 end
+
                 obj.View.handles.xSubareaEdit.String = sprintf('%d:%d', Graphcut(1).bb(1), Graphcut(1).bb(2));
                 obj.View.handles.ySubareaEdit.String = sprintf('%d:%d', Graphcut(1).bb(3), Graphcut(1).bb(4));
                 obj.View.handles.zSubareaEdit.String = sprintf('%d:%d', Graphcut(1).bb(5), Graphcut(1).bb(6));
@@ -1894,7 +2000,10 @@ classdef mibGraphcutController  < handle
         function superpixTypePopup_Callback(obj, parameter)
             % function superpixTypePopup_Callback(obj, parameter)
             % callback for change of superpixTypePopup
-            
+            %
+            % Parameters:
+            % parameter:  [@em optional string], ''clear'' or ''keep'',
+            % when keep, the superpixels are not recalculated
             if nargin < 2; parameter = 'clear'; end     % clear preprocessed data
             
             popupVal = obj.View.handles.superpixTypePopup.Value;

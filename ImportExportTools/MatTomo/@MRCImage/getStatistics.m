@@ -16,17 +16,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/01/12 17:22:51 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 04b6cb6df697 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -40,15 +39,15 @@ end
 
 switch lower(domain)
  case 'x'
-    data = reshape(permute(this.volume, [2 3 1]), ...
-                   this.header.nY * this.header.nZ, ...
+    data = reshape(permute(this.volume, [2 3 1]),                      ...
+                   this.header.nY * this.header.nZ,                    ...
                    this.header.nX);
  case 'y'
-    data = reshape(permute(this.volume, [1 3 2]), ...
+    data = reshape(permute(this.volume, [1 3 2]),                      ...
                    this.header.nX * this.header.nZ, ...
                    this.header.nY);
  case 'z'
-   data = reshape(this.volume, this.header.nX * this.header.nY, ...
+   data = reshape(this.volume, this.header.nX * this.header.nY,        ...
                   this.header.nZ);
  case 'global'
   data = this.volume(:);
@@ -66,10 +65,10 @@ switch lower(statistic)
    stat = max(data);
  
  case 'mean',
-   stat = mean(data);
+   stat = mean(double(data));
  
  case 'std',
-   stat = std(data);
+   stat = std(double(data));
  
  case 'median',
     stat = median(data);

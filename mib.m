@@ -65,16 +65,15 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'ImportExportTools','IMOD'));
     addpath(fullfile(func_dir, 'ImportExportTools','Omero'));
     addpath(fullfile(func_dir, 'ImportExportTools','nrrd'));
-    addpath(fullfile(func_dir, 'ImportExportTools', 'xlwrite'));
     addpath(fullfile(func_dir, 'Resources'));
     addpath(fullfile(func_dir, 'techdoc'));
     addpath(fullfile(func_dir, 'Tools'));
+    addpath(fullfile(func_dir, 'Tools','CellMigration'));
     addpath(fullfile(func_dir, 'Tools','FastMarching'));
     addpath(fullfile(func_dir, 'Tools','FastMarching','functions'));
     addpath(fullfile(func_dir, 'Tools','FastMarching','shortestpath'));
     addpath(fullfile(func_dir, 'Tools','Frangi'));
     addpath(fullfile(func_dir, 'Tools','HistThresh'));
-    addpath(fullfile(func_dir, 'Tools','imclipboard'));
     addpath(fullfile(func_dir, 'Tools','matGeom'));
     addpath(fullfile(func_dir, 'Tools','matGeom','geom2d'));
     addpath(fullfile(func_dir, 'Tools','matGeom','geom3d'));
@@ -86,7 +85,9 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'Tools', 'Supervoxels'));
 end
 
+mibVersion = 'ver. 2.65 / 23.03.2020';  % ATTENTION! it is important to have the version number between "ver." and "/"
+
 model = mibModel();     % initialize the model
-controller = mibController(model);  % initialize controller
+controller = mibController(model, mibVersion);  % initialize controller
 
 toc

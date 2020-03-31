@@ -139,7 +139,7 @@ switch parameter
         end
         destinationButton = str2double(BatchOpt.Destination{1}(10:end));
 
-        obj.mibModel.mibImageDeepCopy(destinationButton, buttonID);
+        obj.mibModel.mibImageDeepCopy(buttonID, destinationButton);
         if BatchOpt.showWaitbar; waitbar(0.9, wb); end
         bufferId = sprintf('mibBufferToggle%d', destinationButton);
         if ismac()

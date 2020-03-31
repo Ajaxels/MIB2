@@ -55,8 +55,8 @@ else
 end
 BatchOpt.ImportFrom{2} = {'Matlab', 'MIB container'};
 BatchOpt.MaskVariable = 'M';   % variable name to be imported from matlab workspace, for ImportFrom = 'Matlab'
-BatchOpt.ContainerId = {'Container 1'};     % index of the container to import mask from
-BatchOpt.ContainerId{2} = arrayfun(@(x) sprintf('Container %d', x), 1:obj.mibModel.maxId, 'UniformOutput', false);
+BatchOpt.ContainerId = {'1'};     % index of the container to import mask from
+BatchOpt.ContainerId{2} = arrayfun(@(x) sprintf('%d', x), 1:obj.mibModel.maxId, 'UniformOutput', false);
 BatchOpt.ContainerId(1) = BatchOpt.ContainerId{2}(obj.mibModel.Id);     % index of the container to import mask from
 BatchOpt.showWaitbar = true;   % show or not the waitbar
 BatchOpt.id = obj.mibModel.Id;   % optional, id
@@ -112,7 +112,7 @@ if nargin < 3
                 return;
             end
             
-            sourceBuffer = arrayfun(@(x) {['Container ' num2str(x)]}, sourceBuffer);   % convert to string cell array
+            sourceBuffer = arrayfun(@(x) {[num2str(x)]}, sourceBuffer);   % convert to string cell array
             prompts = {'Please select the buffer number:'};
             defAns = {sourceBuffer};
             title = 'Import Mask from another dataset';
@@ -191,7 +191,7 @@ switch BatchOpt.ImportFrom{1}
             if BatchOpt.showWaitbar; waitbar(1, wb); delete(wb); end
         end
     case 'MIB container'
-        sourceContainerId = str2double(BatchOpt.ContainerId{1}(10:end));    % get index of the MIB buffer
+        sourceContainerId = str2double(BatchOpt.ContainerId{1});    % get index of the MIB buffer
         
         % check dimensions
         [height, width, ~, depth, time] = obj.mibModel.I{BatchOpt.id}.getDatasetDimensions('image');

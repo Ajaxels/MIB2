@@ -49,9 +49,11 @@ function menuDatasetTrasform_Callback(obj, mode, BatchOpt)
 % 13.03.2018 IB, added Add Frame mode
 % 12.03.2019, IB updated for the batch mode
 
+global mibPath;
+
 PossibleOptions = {'Flip horizontally', 'Flip vertically', 'Flip Z', 'Flip T', ...
     'Rotate 90 degrees', 'Rotate -90 degrees', ...
-    'Transpose XY -> ZX', 'Transpose XY -> ZY', 'Transpose ZX -> ZY', 'Transpose Z<->T'};
+    'Transpose XY -> ZX', 'Transpose XY -> ZY', 'Transpose ZX -> ZY', 'Transpose Z<->T', 'Transpose Z<->C'};
 PossibleOptionsPosition = {'Center', 'Left-upper corner', 'Right-upper corner', 'Left-bottom corner','Right-bottom corner'};
 
 if nargin == 3
@@ -62,6 +64,7 @@ if nargin == 3
             if isempty(mode)
                 BatchOpt.Transform = {'Flip horizontally'};
                 BatchOpt.Transform{2} = PossibleOptions;
+                BatchOpt.NumberOfColorChannels = '';
                 BatchOpt.mibBatchActionName = 'Transform...';
             else
                 options.blockModeSwitch = 0;
@@ -73,23 +76,35 @@ if nargin == 3
                         BatchOpt.Transform{2} = {mode};
                         BatchOpt.Position = {'Center'};
                         BatchOpt.Position{2} = PossibleOptionsPosition;
+                        BatchOpt.mibBatchTooltip.Position = 'Position of the dataset relative to the frame';
                         BatchOpt.NewImageWidth = num2str(width);
+                        BatchOpt.mibBatchTooltip.NewImageWidth = 'New width of the image with the frame';
                         BatchOpt.NewImageHeight = num2str(height);
+                        BatchOpt.mibBatchTooltip.NewImageHeight = 'New height of the image with the frame';
                         BatchOpt.FrameColorIntensity = '0';
+                        BatchOpt.mibBatchTooltip.FrameColorIntensity = 'Color intensity of the frame';
                     case 'Add frame (dX/dY)'
                         BatchOpt.mibBatchActionName = 'Transform... --> Add frame (dX/dY)';
                         BatchOpt.Transform = {mode};
                         BatchOpt.Transform{2} = {mode};
                         BatchOpt.FrameWidth = '10';
+                        BatchOpt.mibBatchTooltip.FrameWidth = 'Width of the frame';
                         BatchOpt.FrameHeight = '10';
+                        BatchOpt.mibBatchTooltip.FrameHeight = 'Height of the frame';
                         BatchOpt.IntensityPadValue = num2str(intmax(obj.mibModel.I{obj.mibModel.Id}.meta('imgClass')));
+                        BatchOpt.mibBatchTooltip.IntensityPadValue = 'Image intensity of the frame';
                         BatchOpt.Method = {'use the pad value'};
                         BatchOpt.Method{2} = {'use the pad value', 'replicate', 'circular', 'symmetric'};
+                        BatchOpt.mibBatchTooltip.Method = 'Filling parameters for the frame';
                         BatchOpt.Direction = {'both'};
                         BatchOpt.Direction{2} = {'both', 'pre', 'post'};
+                        BatchOpt.mibBatchTooltip.Direction = 'Direction to add the frame; pre: left-up; post: bottom-right';
                 end
             end
             BatchOpt.showWaitbar = true;   % show or not the waitbar
+            BatchOpt.mibBatchTooltip.Transform = 'Transformation mode';
+            BatchOpt.mibBatchTooltip.NumberOfColorChannels = '[Transform Z->C only] number of color channels after the transformation; leave empty to generate as many color channels as Z-sections';
+            BatchOpt.mibBatchTooltip.showWaitbar = 'Show or not the waitbar during the function';
             
             % trigger syncBatch event to send BatchOptOut to mibBatchController
             eventdata = ToggleEventData(BatchOpt);
@@ -106,6 +121,13 @@ if nargin < 3
     BatchOpt.mibBatchSectionName = 'Menu -> Dataset';
     BatchOpt.showWaitbar = true;   % show or not the waitbar
     BatchOpt.Transform = {mode};
+    if strcmp(mode, 'Transpose Z<->C')
+        answer = mibInputDlg({mibPath}, 'Please enter number of resulting color channels; keep empty to transform all Z to C', 'Z<->C transformation', '');
+        if size(answer) == 0; return; end
+        BatchOpt.NumberOfColorChannels = answer{1};
+    else
+        BatchOpt.NumberOfColorChannels = '';   % number of color channels during Z->C conversion
+    end
 end
 
 % check for the virtual stacking mode and close the controller
@@ -116,7 +138,12 @@ if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
     notify(obj.mibModel, 'stopProtocol');
     return;
 end
-obj.mibModel.U.clearContents(); % clear undo history
+
+%obj.mibModel.U.clearContents(); % clear undo history
+% do backup when not in the batch mode
+if ~isfield(BatchOpt, 'mibBatchTooltip')
+    obj.mibModel.mibDoBackup('mibImage');
+end
 
 switch BatchOpt.Transform{1}
     case {'Flip horizontally', 'Flip vertically', 'Flip Z', 'Flip T'}
@@ -127,8 +154,8 @@ switch BatchOpt.Transform{1}
         obj.mibModel.rotateDataset(BatchOpt.Transform{1}, BatchOpt.showWaitbar);
         BatchOpt.mibBatchActionName = 'Transform...';
         BatchOpt.Transform{2} = PossibleOptions;
-    case {'Transpose XY -> ZX', 'Transpose XY -> ZY','Transpose ZX -> ZY','Transpose Z<->T'}
-        obj.mibModel.transposeDataset(BatchOpt.Transform{1}, BatchOpt.showWaitbar);
+    case {'Transpose XY -> ZX', 'Transpose XY -> ZY','Transpose ZX -> ZY','Transpose Z<->T','Transpose Z<->C'}
+        obj.mibModel.transposeDataset(BatchOpt.Transform{1}, BatchOpt.showWaitbar, str2double(BatchOpt.NumberOfColorChannels));
         BatchOpt.mibBatchActionName = 'Transform...';
         BatchOpt.Transform{2} = PossibleOptions;
     case 'Add frame (width/height)'
@@ -136,7 +163,7 @@ switch BatchOpt.Transform{1}
         BatchOpt.mibBatchActionName = 'Transform... --> Add frame (width/height)';
         BatchOpt.Transform{2} = {'Add frame (width/height)'};
         BatchOpt.Position{2} = PossibleOptionsPosition;
-        notify(obj.mibModel, 'newDataset');  % notify newDataset with the index of the dataset
+        notify(obj.mibModel, 'newDatasetLite');  % notify newDataset with the index of the dataset
         obj.plotImage();
     case 'Add frame (dX/dY)'
         if ~isfield(BatchOpt, 'FrameWidth')

@@ -25,6 +25,10 @@
 % * *32 bit*, convert dataset to the 32 bit format, the image intensities are
 % scaled to preserve contrast of the original dataset
 % 
+%% Adjust Display/Image
+% Starts a dialog to adjust display settings or resample image intensities.
+% See more in the <ug_panel_adjustments.html Adjust display window section>
+%
 %% Color Channels
 % Perform some actions with color channels of the image
 % 
@@ -89,6 +93,16 @@
 % * *Current stack (3D)*, invert the current stack of the dataset
 % * *Complete volume (4D)*, invert complete dataset
 %
+%% Image filter
+% Open a dialog with various image filters arranged into 4 categories: 
+%
+% * Basic image filtering in the spacial domain
+% * Edge-preserving filtering
+% * Contrast adjustment
+% * Image binarization
+%
+% For further details, please refer to the <ug_gui_menu_image_filters.html Image Filters help page>.
+%
 %% Tools for images --> Content-aware fill
 %
 % <html>
@@ -116,7 +130,7 @@
 % direction</li>
 % </ul>
 % <b>References</b><br>
-% [1] F. Bornemann and T. März. "Fast Image Inpainting Based on Coherence Transport." Journal of Mathematical Imaging and Vision. Vol. 28, 2007, pp.259–278.
+% [1] F. Bornemann and T. M?rz. "Fast Image Inpainting Based on Coherence Transport." Journal of Mathematical Imaging and Vision. Vol. 28, 2007, pp.259?278.
 % </td>
 % </tr>
 % <tr>
@@ -137,7 +151,7 @@
 % regions</li>
 % </ul>
 % <b>References</b><br>
-% [1]  A. Criminisi, P. Perez and K. Toyama. "Region Filling and Object Removal by Exemplar-Based Image Inpainting." IEEE Trans. on Image Processing. Vol. 13, No. 9, 2004, pp. 1200–1212.
+% [1]  A. Criminisi, P. Perez and K. Toyama. "Region Filling and Object Removal by Exemplar-Based Image Inpainting." IEEE Trans. on Image Processing. Vol. 13, No. 9, 2004, pp. 1200?1212.
 % </td>
 % </tr>
 % </table>
@@ -219,6 +233,7 @@
 % <li><b>I1 = I1 - min(I1(:))</b>, decrease intensity of pixels in the image 1 by the min value of the dataset</li>
 % <li><b>I(:,:,2,:) = I(:,:,2,:)*1.4</b>, increase image intensity of the second color channel in 1.4 times</li>
 % <li><b>I(I==0) = I(I==0)+100</b>, increase image intensity of the black areas by 100 intensity counts</li>
+% <li><b>disp(sum(abs(single(I1(:))-single(I2(:)))))</b>, find the difference between two images loaded to container 1 and 2 and print it to console; or use <em>msgbox(num2str())</em> instead of <em>disp</em> to show result as a message box</li>
 % <li><b>M2 = M1</b>, copy mask layer from image 1 to image 2</li>
 % <li><b>for z=1:size(I, 4)<br>
 %           slice = I(:,:,2,z);<br>

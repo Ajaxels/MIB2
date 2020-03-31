@@ -61,19 +61,21 @@ end
 % adding context menu for findMinBtn
 handles.findMinBtn_cm = uicontextmenu('Parent',handles.mibImageAdjustmentGUI);
 uimenu(handles.findMinBtn_cm, 'Label', 'Exclude 0%', 'Callback', {@findMinBtn_cm_Callback, 0});
+uimenu(handles.findMinBtn_cm, 'Label', 'Exclude 0.1%', 'Callback', {@findMinBtn_cm_Callback, 0.1});
+uimenu(handles.findMinBtn_cm, 'Label', 'Exclude 0.25%', 'Callback', {@findMinBtn_cm_Callback, 0.25});
 uimenu(handles.findMinBtn_cm, 'Label', 'Exclude 0.5%', 'Callback', {@findMinBtn_cm_Callback, 0.5});
 uimenu(handles.findMinBtn_cm, 'Label', 'Exclude 1%', 'Callback', {@findMinBtn_cm_Callback, 1});
 uimenu(handles.findMinBtn_cm, 'Label', 'Exclude 2.5%', 'Callback', {@findMinBtn_cm_Callback, 2.5});
-uimenu(handles.findMinBtn_cm, 'Label', 'Exclude 5%', 'Callback', {@findMinBtn_cm_Callback, 5});
 uimenu(handles.findMinBtn_cm, 'Label', 'Custom value', 'Callback', {@findMinBtn_cm_Callback, NaN});
 handles.findMinBtn.UIContextMenu = handles.findMinBtn_cm;
 
 handles.findMaxBtn_cm = uicontextmenu('Parent',handles.mibImageAdjustmentGUI);
 uimenu(handles.findMaxBtn_cm, 'Label', 'Exclude 0%', 'Callback', {@findMaxBtn_cm_Callback, 0});
+uimenu(handles.findMaxBtn_cm, 'Label', 'Exclude 0.1%', 'Callback', {@findMaxBtn_cm_Callback, 0.1});
+uimenu(handles.findMaxBtn_cm, 'Label', 'Exclude 0.25%', 'Callback', {@findMaxBtn_cm_Callback, 0.25});
 uimenu(handles.findMaxBtn_cm, 'Label', 'Exclude 0.5%', 'Callback', {@findMaxBtn_cm_Callback, 0.5});
 uimenu(handles.findMaxBtn_cm, 'Label', 'Exclude 1%', 'Callback', {@findMaxBtn_cm_Callback, 1});
 uimenu(handles.findMaxBtn_cm, 'Label', 'Exclude 2.5%', 'Callback', {@findMaxBtn_cm_Callback, 2.5});
-uimenu(handles.findMaxBtn_cm, 'Label', 'Exclude 5%', 'Callback', {@findMaxBtn_cm_Callback, 5});
 uimenu(handles.findMaxBtn_cm, 'Label', 'Custom value', 'Callback', {@findMaxBtn_cm_Callback, NaN});
 handles.findMaxBtn.UIContextMenu = handles.findMaxBtn_cm;
 

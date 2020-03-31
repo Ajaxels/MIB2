@@ -30,7 +30,7 @@ fields = fieldnames(parameters);
 formatOut = ext(2:end);
 
 if numel(fields) > 0
-    str2 = ['imwrite(img,filename,''', formatOut, ''''];
+    str2 = ['imwrite(img, filename, ''', formatOut, ''''];
     for fieldId = 1:numel(fields)
         if isa(parameters.(fields{fieldId}), 'char')
             str2 = sprintf('%s, ''%s'', ''%s''', str2, fields{fieldId}, parameters.(fields{fieldId}));

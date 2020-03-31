@@ -395,11 +395,18 @@ classdef mibObjSepController  < handle
                         clear intImg;
                     else
                         waitbar(.1, wb, sprintf('Computing the distance transform\nPlease wait...'));
+                        
                         if aspect(1)/aspect(3) > 0.65 && aspect(1)/aspect(3) <= 1.5
                             W = bwdist(~img);
                         else
                             W = bwdistsc(~img, aspect);
                         end
+                        
+                        % tests
+                        %W2 = bwdist(seedImg);
+                        %W2(img~=1) = 0;
+                        %W = W-W2;
+                        
                         waitbar(.3, wb, sprintf('Complementing the image\nPlease wait'));
                         W = -W;
                         

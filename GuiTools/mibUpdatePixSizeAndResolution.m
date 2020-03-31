@@ -69,6 +69,10 @@ else
     if ~isKey(img_info,'XResolution')
         resolution = mibCalculateResolution(pixSize);
     else
+        if ischar(img_info('XResolution'))  % this may come from ome.tiff when loading with bio-formats, but in practice it is not resolution, but pixel size
+            img_info('XResolution') = str2double(img_info('XResolution')); 
+            img_info('YResolution') = str2double(img_info('YResolution')); 
+        end
         if isempty(img_info('XResolution')) || img_info('XResolution') == 0 || img_info('YResolution') == 0
             resolution = mibCalculateResolution(pixSize);
         else

@@ -33,7 +33,7 @@ else
 end
 
 command = obj.mibView.handles.mibFijiMacroEdit.String;
-if isempty(command); return; end;
+if isempty(command); return; end
 
 if exist(command, 'file') == 2  % load list of commands from a file
     fid = fopen(command);
@@ -51,6 +51,8 @@ end
 
 function runFijiCommand(command)
 command = strrep(command, '"','''');   % replace " with '
+command = strrep(command, '/','\\');   % replace \ with \\
+
 if ~isempty(strfind(command, 'run')) % run command already present
     command = ['MIJ.' command];
     try
@@ -59,8 +61,8 @@ if ~isempty(strfind(command, 'run')) % run command already present
         err
     end
 else
-    if command(1) ~= ''''; command = ['''' command]; end;
-    if command(end) ~= ''''; command = [command '''']; end;
+    if command(1) ~= ''''; command = ['''' command]; end
+    if command(end) ~= ''''; command = [command '''']; end
     try
         eval(sprintf('MIJ.run(%s);', command));
     catch err

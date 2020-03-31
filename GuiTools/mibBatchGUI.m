@@ -78,9 +78,9 @@ set(handles.protocolList, 'uicontextmenu', handles.protocolList_cm);
 handles.selectedActionTable_cm = uicontextmenu('Parent', handles.mibBatchGUI);
 uimenu(handles.selectedActionTable_cm, 'Label', 'Add parameter', 'Callback', {@selectedActionTable_ContextCallback, 'add'});
 uimenu(handles.selectedActionTable_cm, 'Label', 'Delete parameter', 'Callback', {@selectedActionTable_ContextCallback, 'delete'});
-uimenu(handles.selectedActionTable_cm, 'Label', 'Add directory', 'Separator', 'on', 'Callback', {@selectedActionTable_ContextCallback, 'Add directory'});
+uimenu(handles.selectedActionTable_cm, 'Label', 'Add directories', 'Separator', 'on', 'Callback', {@selectedActionTable_ContextCallback, 'Add directories'});
 uimenu(handles.selectedActionTable_cm, 'Label', 'Modify directory', 'Callback', {@selectedActionTable_ContextCallback, 'Modify directory'});
-uimenu(handles.selectedActionTable_cm, 'Label', 'Remove directory', 'Callback', {@selectedActionTable_ContextCallback, 'Remove directory'});
+uimenu(handles.selectedActionTable_cm, 'Label', 'Remove directories', 'Callback', {@selectedActionTable_ContextCallback, 'Remove directories'});
 uimenu(handles.selectedActionTable_cm, 'Label', 'Set second column width', 'Separator', 'on', 'Callback', {@selectedActionTable_ContextCallback, 'Set second column width'});
 set(handles.selectedActionTable, 'uicontextmenu', handles.selectedActionTable_cm);
 

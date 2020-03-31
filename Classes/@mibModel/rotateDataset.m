@@ -101,7 +101,7 @@ obj.I{obj.Id}.updateBoundingBox(bb);  % update bounding box
 log_text = ['Rotate: mode=' mode];
 obj.I{obj.Id}.updateImgInfo(log_text);
 if showWaitbar; delete(wb); end
-notify(obj, 'newDataset');  % notify newDataset with the index of the dataset
+notify(obj, 'newDatasetLite');  % notify newDataset with the index of the dataset
 eventdata = ToggleEventData(1);
 notify(obj, 'plotImage', eventdata);
 end

@@ -24,11 +24,25 @@ switch3d = obj.mibView.handles.mibActions3dCheck.Value;     % use filters in 3d
 xy = obj.mibView.handles.mibImageAxes.CurrentPoint;
 seltype = obj.mibView.gui.SelectionType;
 modifier = obj.mibView.gui.CurrentModifier;
+
+% this code is here to fix a drawing screen panning problem that appeared between
+% R2018b and R2019b, the right click in the pen settings was replaced with
+% the "shift" key modifier
+if ~isempty(modifier)
+    fprintf('seltype: %s mod: %s\n', seltype, modifier{1})
+    if strcmp(modifier{1}, 'shift')
+        seltype = 'alt';
+        modifier = {};
+    end
+end
+
 % swap left and right mouse buttons check
 if strcmp(obj.mibView.handles.toolbarSwapMouse.State, 'on')
-    if strcmp(seltype,'normal')
+    if strcmp(seltype, 'normal')
         seltype = 'extend';
-    elseif strcmp(seltype,'alt') && isempty(modifier)
+    elseif strcmp(seltype, 'alt') && isempty(modifier)
+        seltype = 'normal';
+    elseif strcmp(seltype, 'extend') && isempty(modifier)
         seltype = 'normal';
     end
 end
@@ -52,7 +66,7 @@ if x2>separatingPanelPos(1) && x2<separatingPanelPos(1)+separatingPanelPos(3) &&
 end
 
 
-if strcmp(seltype,'normal') %& strcmp(modifier,'alt')
+if strcmp(seltype, 'normal') %& strcmp(modifier,'alt')
     %%     % Start the pan mode
     obj.mibView.gui.WindowKeyPressFcn = [];  % turn off callback for the keys during the panning
     if obj.mibView.centerSpotHandle.enable

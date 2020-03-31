@@ -26,6 +26,8 @@ switch hObject.Type
                 end
             end
         end
+    case 'uitabgroup'
+        BatchOpt.(hObject.Tag)(1) = {hObject.SelectedTab.Tag};
     case {'uieditfield', 'uicheckbox'}  % app designer GUI
         BatchOpt.(hObject.Tag) = hObject.Value;
     case 'uinumericeditfield'   % app designer GUI

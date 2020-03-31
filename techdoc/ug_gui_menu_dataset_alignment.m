@@ -64,8 +64,51 @@
 %       positions of the detected points.<br>
 %       Please refer to the documentation of the <a href="https://se.mathworks.com/help/vision/ref/matchfeatures.html">matchFeatures</a> function of
 %       Matlab for more details.
+%       <br><br>
+%       Here some short description of features, adapted from this <a
+%       href="https://stackoverflow.com/questions/49963061/what-is-the-best-feature-detection">topic</a><br>
+%       <ul>
+%       <li><b>SURF</b> is often considered to be the best feature
+%       detectors out there, for good reasons, it is very robust and very
+%       fast in most situations; may not work with with highly detailed
+%       targets (electrical boards for instance)</li>
+%       <li><b>FAST</b> is, as its name suggests, very fast, and very "greedy", it extracts a lot of keypoints compared to other detectors,
+%        but it is not rotation invariant (meaning that it won't work if
+%        the target is rotated respect the reference image)</li>
+%       <li><b>BRIEF</b> has good performance and does extract a lower
+%       number of keypoints than FAST, just like FAST it is not rotation
+%       invariant</li>
+%       <li><b>ORB</b> is basically an evolution of the previous 2 detectors (ORB stands for Oriented fast and Rotated Brief) that is rotation invariant 
+%       and also implements its own descriptor, this is probably the best choice for general purposes; its robustness is comparable to SURF while 
+%       the performances slightly overcomes it (using default parameters), altrough the robustnes is actually a little inferior in most of the situations, 
+%       there are specific scenarios in which it overcomes SURF (once again
+%       electrical boards for instance)</li>
+%       <li><b>BRISK</b> has a behavior very similar to ORB with a little more CPU load, since ORB in most cases works better in both terms of robustness
+%       and performances people usually end up using ORB instead</li>
 %       </td>
 %     </tr>     
+%     <tr>
+%       <td><b>AMST: Alignment to Median Smoothed Template</b></td>
+%       <td>This alignement can be used to compensate for slight local
+%       deformations of 3D electron microscopy datasets.<br>
+%       The dataset has to be prealigned using the Drift correction mode, after that it is registered against its own median smoothed in Z copy.
+%       <br><br>The algorithm is based on paper by <a href="https://www.nature.com/articles/s41598-020-58736-7">Hennies J, Lleti JMS, 
+%       Schieber NL, Templin RM, Steyer AM, Schwab Y. AMST: Alignment to
+%       Median Smoothed Template for Focused Ion Beam Scanning Electron
+%       Microscopy Image Stacks, <em>Sci Rep. 2020 Feb 6;10(1):2004. doi:
+%       10.1038/s41598-020-58736-7</em></a><br><br>
+%       <ul>
+%       <li>Use the <em>Median size</em> editbox to specify number of Z-section
+%       to be used for median smoothing</li>
+%       <li>Press the <em>Settings</em> button to set the parameters, refer to
+%       Matlab documentation for <a
+%       href="https://se.mathworks.com/help/images/ref/imregtform.html">imregtform
+%       function</a> for details</li>
+%       </ul><br>
+%       A demonstration is available in the following video:<br>
+%       <a href="https://youtu.be/MNt_Yzt4pw0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MNt_Yzt4pw0</a>
+%       </td>
+%     </tr>
 %     <tr>
 %       <td><b>Single landmark point</b></td>
 %       <td>The Single landmark point mode is a manual mode, where user marks
@@ -202,7 +245,7 @@
 % The alignment algorithm is based on 
 % 
 % * JC Russ, The image processing handbook, CRC Press, Boca Raton, FL, 1994
-% * JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free Matlab Script For Spatial Drift Correction, Microscopy Today — Volume 22, Number 5, 2014
+% * JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free Matlab Script For Spatial Drift Correction, Microscopy Today ? Volume 22, Number 5, 2014
 % <https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m>
 % * <http://onlinedigeditions.com/publication/?i=223321&p=40 http://onlinedigeditions.com/publication/?i=223321&p=40>
 %

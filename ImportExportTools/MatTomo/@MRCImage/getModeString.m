@@ -8,38 +8,32 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/01/12 17:22:51 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 04b6cb6df697 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% 22.09.2014, Ilya Belevich ilya.belevich @ helsinki.fi Added uint16 class,
-
 
 function modeString = getModeString(mRCImage)
 
 switch  mRCImage.header.mode
- case 0
-  modeString = 'uint8';
- case 1
-  modeString = 'int16';
- case 2
-  modeString = 'float32';
- case 3
-  modeString = 'int16*2';   % used for complex short ints
- case 4
-  modeString = 'float32*2'; % used for complex floating point
- case 6
-  modeString = 'uint16'; % used for uint16
- otherwise
-  modeString = 'unknown';
+  case 0
+    modeString = 'uint8';
+  case 1
+    modeString = 'int16';
+  case 2
+    modeString = 'float32';
+  case 3
+    modeString = 'int16*2';   % used for complex short ints
+  case 4
+    modeString = 'float32*2'; % used for complex floating point
+  otherwise
+    PEETError('Unsupported MRCImage mode %d!', mRCImage.header.mode);
 end

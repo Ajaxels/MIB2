@@ -15,6 +15,8 @@ elseif nargin < 4
     range = '';
 end
 
+warning('off', 'MATLAB:xlswrite:AddSheet');
+
 if verLessThan('matlab', '9.6')
     if ispc()
         [success, message]=xlswrite3(file, data, sheet, range);

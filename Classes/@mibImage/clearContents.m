@@ -137,6 +137,11 @@ obj.current_yxz = [1 1 1];
 % update obj.meta and class variables
 obj.updateServiceMetadata(meta);
 
+% adjust viewPort for uint32 using the first slice
+if isa(img, 'uint32')
+    obj.viewPort.min = zeros([obj.colors, 1]) + double(min(min(min(obj.img{1}(:,:,:,1,1)))));
+    obj.viewPort.max = zeros([obj.colors, 1]) + double(max(max(max(obj.img{1}(:,:,:,1,1)))));
+end
 % 
 % if nargin == 2
 %     handles = obj.replaceDataset(obj.img{1}, handles);

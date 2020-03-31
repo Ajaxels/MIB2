@@ -26,6 +26,8 @@ function varargout = mibInputMultiDlg(varargin)
 % .LastItemColumns - [optional] force the last entry to be on a single column, 1 or 0
 % .Focus - define index of the widget to get focused
 % .okBtnText -  text for the OK button
+% .HelpUrl - URL to the help page, when provided a Help button is
+% displayed, press of the button opens the url in a browser
 %
 % Return values:
 % answer: a cell array with the entered values, or @em empty, when cancelled
@@ -46,6 +48,7 @@ function varargout = mibInputMultiDlg(varargin)
 % options.WindowWidth = 1.2;    // [optional] make window x1.2 times wider
 % options.Columns = 2;    // [optional] define number of columns
 % options.Focus = 1;      // [optional] define index of the widget to get focus
+% options.HelpUrl = 'http:\\mib.helsinki.fi'; // [optional], an url for the Help button
 % options.LastItemColumns = 1; // [optional] force the last entry to be on a single column
 % [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
 % if isempty(answer); return; end 
@@ -140,6 +143,13 @@ if ~isfield(options, 'Columns'); options.Columns = 1; end
 if ~isfield(options, 'Focus'); options.Focus = 1; end
 if ~isfield(options, 'LastItemColumns'); options.LastItemColumns = 0; end
 if isfield(options, 'okBtnText'); handles.okBtn.String = options.okBtnText; end
+if ~isfield(options, 'HelpUrl')
+    handles.HelpUrl = []; 
+else
+    handles.HelpUrl = options.HelpUrl;
+end
+if ~isempty(handles.HelpUrl); handles.Help.Visible = 'on'; end
+
 
 if ~isfield(options, 'PromptLines')
     PromptLines = ones([numel(prompts) 1]);
@@ -262,6 +272,7 @@ if isfield(options, 'Title')
     y1 = max(posVec(:,2))+de/2+dt*PromptLines(1);
     posVec = [x1, y1, widthFull, dt*options.TitleLines];
     y1 = y1 + dt*options.TitleLines;
+    
     handles.hTitle = uicontrol('Parent', handles.mibInputMultiDlg, 'Style', 'text', ...
         'Units', 'points', 'HorizontalAlignment', 'left', ...
         'String', options.Title, ...
@@ -486,7 +497,14 @@ if isfield(handles, 'dialogHeight')     % to skip this part during initializatio
 %     handles.mibInputMultiDlg.Position = pos;
     %handles.hWidget(:).Units = 'normalized';
     %handles.hText.Units = 'normalized';
+end
 
 end
 
+% --- Executes on button press in Help.
+function Help_Callback(hObject, eventdata, handles)
+% hObject    handle to Help (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+web(handles.HelpUrl, '-browser');
 end

@@ -1,5 +1,5 @@
-function transposeDataset(obj, mode, showWaitbar)
-% function transposeDataset(obj, mode, showWaitbar)
+function transposeDataset(obj, mode, showWaitbar, noColorChannels)
+% function transposeDataset(obj, mode, showWaitbar, noColorChannels)
 % Transpose dataset physically between dimensions
 %
 % Parameters:
@@ -8,8 +8,10 @@ function transposeDataset(obj, mode, showWaitbar)
 %     - ''Transpose XY -> ZY'' -> transpose so that XY dimension becomes ZY
 %     - ''Transpose ZX -> ZY'' -> transpose so that ZX dimension becomes ZY
 %     - ''Transpose Z<->T'' -> transpose so that Z-dimension becomes T-dimension
+%     - ''Transpose Z->C'' -> transpose Z to C, if noColorChannels 
 % showWaitbar: logical, show or not the waitbar
-%
+% noColorChannels: numeric, a number of color channels for the 'Transpose
+% Z->C' mode; provide NaN to generate as many color channels as Z-sections
 % Return values:
 % 
 
@@ -23,12 +25,13 @@ function transposeDataset(obj, mode, showWaitbar)
 % Updates
 % 
 
+if nargin < 4; noColorChannels = NaN; end
 if nargin < 3; showWaitbar = true; end
 
 options.blockModeSwitch = 0;    % overwrite blockmode switch
 tic
 [yMax, xMax, cMax, zMax, tMax] = obj.I{obj.Id}.getDatasetDimensions('image', 4, NaN, options);
-cMax = numel(cMax);
+cMax = obj.I{obj.Id}.colors;
 switch mode
     case 'Transpose XY -> ZX'
         imgOut = zeros([zMax, xMax, cMax, yMax, tMax], obj.I{obj.Id}.meta('imgClass')); %#ok<ZEROLIKE>
@@ -43,11 +46,78 @@ switch mode
         obj.transposeZ2T();
         log_text = 'Transpose: mode=Z->T';
         obj.I{obj.Id}.updateImgInfo(log_text);
-        notify(obj, 'newDataset');  % notify newDataset with the index of the dataset
+        notify(obj, 'newDatasetLite');  % notify newDataset with the index of the dataset
         eventdata = ToggleEventData(1);
         notify(obj, 'plotImage', eventdata);
         return;
+    case 'Transpose Z<->C'
+        if isnan(noColorChannels)
+            cMaxNew = zMax;
+            zMaxNew = cMax;
+            log_text = 'Transpose: mode=Z->C';
+        else
+            if cMax > 1
+                errordlg(sprintf('!!! Error !!!\n\nTransformation of Z to C is working only with the single color channel before the transformation!'), 'Wrong too many color channels');
+                return;
+            end
+            cMaxNew = noColorChannels;
+            zMaxNew = zMax/noColorChannels;
+            log_text = sprintf('Transpose: mode=Z->C; ColChNo=%d', cMax);
+        end
+        if mod(zMaxNew, 1) ~= 0
+            errordlg('Division of Z by C should give a round number!', 'Wrong number of resulting color channels!');
+            return;
+        end
+        if showWaitbar; wb = waitbar(0,sprintf('Transposing the image Z->C\nPlease wait...'),...
+             'Name', 'Transpose dataset', 'WindowStyle', 'modal'); end
+        
+        imgOut = zeros([yMax, xMax, cMaxNew, zMaxNew, tMax], obj.I{obj.Id}.meta('imgClass'));
+        % transpose the image layer
+        for t=1:tMax
+            img = cell2mat(obj.getData3D('image', t, 4, 0, options));   % get z-stack (image)
+            if isnan(noColorChannels)
+                imgOut(:,:,:,:,t) = permute(img,[1, 2, 4, 3]);
+            else
+                for z=1:zMax
+                    % mod(z-1,3)+1
+                    imgOut(:,:,mod(z-1, noColorChannels)+1,ceil(z/noColorChannels),t) = img(:, :, :, z);
+                end
+            end
+            
+            if showWaitbar; waitbar(t/tMax, wb); end
+        end
+        
+        viewPort = obj.I{obj.Id}.viewPort;
+        meta = containers.Map(keys(obj.I{obj.Id}.meta), values(obj.I{obj.Id}.meta));
+        meta('Colors') = size(imgOut,3);
+        meta('Depth') = size(imgOut,4);
+        if size(imgOut, 3) > 1     % define color type for provided image
+            meta('ColorType') = 'truecolor';
+        else
+            meta('ColorType') = 'grayscale';
+        end
+        
+        obj.I{obj.Id} = mibImage(imgOut, meta);
+        if cMaxNew<cMax     % restore viewport
+            obj.I{obj.Id}.viewPort.min = viewPort.min(1:cMaxNew); 
+            obj.I{obj.Id}.viewPort.max = viewPort.max(1:cMaxNew);
+            obj.I{obj.Id}.viewPort.gamma = viewPort.gamma(1:cMaxNew);
+        else
+            obj.I{obj.Id}.viewPort.min = repmat(viewPort.min, [cMaxNew, 1]);  
+            obj.I{obj.Id}.viewPort.max = repmat(viewPort.max, [cMaxNew, 1]);  
+            obj.I{obj.Id}.viewPort.gamma = repmat(viewPort.gamma, [cMaxNew, 1]);  
+        end
+        
+        eventdata = ToggleEventData(obj.Id);
+        notify(obj, 'newDatasetLite', eventdata);
+        
+        obj.I{obj.Id}.updateImgInfo(log_text);
+        clear imgOut;
+        if showWaitbar; delete(wb); end
+        notify(obj, 'plotImage');
+        return;
 end
+
 if showWaitbar; wb = waitbar(0,sprintf('Transposing the image\nPlease wait...'),...
     'Name', sprintf('Transpose dataset [%s]', mode), 'WindowStyle', 'modal'); end
 
@@ -143,7 +213,7 @@ obj.I{obj.Id}.updateImgInfo(log_text);
 if showWaitbar; delete(wb); end
 toc;
 
-notify(obj, 'newDataset');  % notify newDataset with the index of the dataset
+notify(obj, 'newDatasetLite');  % notify newDataset with the index of the dataset
 eventdata = ToggleEventData(1);
 notify(obj, 'plotImage', eventdata);
 end

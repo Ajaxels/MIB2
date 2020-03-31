@@ -120,6 +120,8 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibFilesListbox_cm_Callback([], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Save dataset';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.saveImageAsDialog([], Batch);'; actionId = actionId + 1;
+            %obj.Sections(secIndex).Actions(actionId).Name = 'Make snapshot';
+            %obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''mibSnapshotController'', Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'DIRECTORY LOOP START';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.DirectoryLoopAction_Callback(Batch)'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'DIRECTORY LOOP STOP';
@@ -162,6 +164,8 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Name = 'Menu -> Image';
             obj.Sections(secIndex).Actions(actionId).Name = 'Mode';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.menuImageMode_Callback([], Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Adjust Display/Image';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''mibImageAdjController'', [], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Color channel actions';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.colorChannelActions([], [], [], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Contrast -> Contrast-limited adaptive histogram equalization';
@@ -331,6 +335,26 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibModel.moveLayers(''selection'', ''mask'', [], [], Batch);'; actionId = actionId + 1;
             
             secIndex = secIndex + 1;
+            obj.Sections(secIndex).Name = 'Panel -> Image filters';
+            FiltersList = {'Average', 'Disk', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std',...
+                'AnisotropicDiffusion', 'Bilateral', 'DNNdenoise', 'Median', 'NonLocalMeans', 'Wiener',...
+                'AddNoise', 'FastLocalLaplacian', 'FlatfieldCorrection', 'LocalBrighten', 'LocalContrast', 'ReduceHaze', 'UnsharpMask',...
+                'Edge', 'SlicClustering', 'WatershedClustering'};
+            % add BMxD filter if available
+            if ~isempty(obj.mibModel.preferences.dirs.bm3dInstallationPath)
+                if exist(fullfile(obj.mibModel.preferences.dirs.bm3dInstallationPath, 'BM3D.m'), 'file') == 2
+                    FiltersList{end+1} = 'BMxD';
+                end
+            end
+            
+            
+            FiltersList = sort(FiltersList);
+            for actionId = 1:numel(FiltersList)
+                obj.Sections(secIndex).Actions(actionId).Name = FiltersList{actionId};
+                obj.Sections(secIndex).Actions(actionId).Command = sprintf('obj.mibController.startController(''mibImageFiltersController'', ''%s'', Batch);', FiltersList{actionId}); 
+            end
+       
+            secIndex = secIndex + 1;
             actionId = 1;
             obj.Sections(secIndex).Name = 'Service steps';
             obj.Sections(secIndex).Actions(actionId).Name = 'STOP EXECUTION';
@@ -343,8 +367,6 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.FileLoopAction_Callback(Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'FILE LOOP STOP';
             obj.Sections(secIndex).Actions(actionId).Command = []; actionId = actionId + 1;
-            obj.Sections(secIndex).Actions(actionId).Name = 'DevTest';
-            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''mibImageFiltersController'', [], Batch);'; actionId = actionId + 1;
             
             
             % init default selections
@@ -383,7 +405,6 @@ classdef mibBatchController < handle
             obj.jSelectedActionTable.setAutoResizeMode(obj.jSelectedActionTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
             obj.View.handles.selectedActionTable.ColumnWidth = {100, 100};
             %obj.jSelectedActionTable.setAutoResizeMode(obj.jSelectedActionTable.AUTO_RESIZE_ALL_COLUMNS);
-            
             
             % add images to buttons
             obj.View.handles.runStepBtn.CData = obj.mibModel.sessionSettings.guiImages.step;
@@ -600,7 +621,23 @@ classdef mibBatchController < handle
                     obj.View.handles.selectedActionTable.Data{obj.selectedActionTableIndex,2} = logical(hObject.Value);
                 case 'selectedActionTableCellEdit'      % for text edits
                     if iscell(obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}))      % numeric edit box 
-                        obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}){1} = str2num(hObject.String); %#ok<ST2NM>
+                        values = str2double(hObject.String); 
+                        if numel(obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex})) > 1     % rounding of numbers
+                            Limits = obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}){2};
+                            if values < Limits(1) || values > Limits(2)
+                                errordlg(sprintf('!!! Error!!!\n\nThe value should be between %f - %f!', Limits(1), Limits(2)));
+                                hObject.String = num2str(obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}){1});
+                                return;
+                            end
+                        end
+                        if numel(obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex})) > 2     % rounding of numbers
+                            RoundFractionalValues = obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}){3};
+                        else
+                            RoundFractionalValues = 'on';
+                        end
+                        if strcmp(RoundFractionalValues, 'on'); values = round(values); end
+                        
+                        obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}){1} = values; %#ok<ST2NM>
                         obj.View.handles.selectedActionTable.Data{obj.selectedActionTableIndex,2} = obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}){1};
                     else    % normal text edit box
                         obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}) = hObject.String;
@@ -653,17 +690,17 @@ classdef mibBatchController < handle
                     obj.CurrentBatch = rmfield(obj.CurrentBatch, fieldNames{obj.selectedActionTableIndex});
                     obj.selectedActionTableIndex = obj.selectedActionTableIndex - 1;
                     obj.updateSelectedActionTable(obj.CurrentBatch);
-                case 'Add directory'   % add file or directory to the list
+                case 'Add directories'   % add file or directory to the list
                     switch obj.CurrentBatch.mibBatchActionName
                         case 'DIRECTORY LOOP START'
-                            selpath = uigetdir(fileparts(obj.CurrentBatch.DirectoriesList{1}), 'Select directory');
-                            if selpath == 0; return; end
-                            if ismember({lower(selpath)}, lower(obj.CurrentBatch.DirectoriesList{2}))    % check whether it is already exist
-                                warndlg(sprintf('!!! Warning !!!\n\nDirectory\n%s\nis already in the list', selpath), 'Already present');
-                                return;
-                            end
-                            obj.CurrentBatch.DirectoriesList{2} = [obj.CurrentBatch.DirectoriesList{2}; {selpath}];     % add to the list
-                            obj.CurrentBatch.DirectoriesList{1} = selpath;      % set as selected option
+                            selpath = uigetfile_n_dir(fileparts(obj.CurrentBatch.DirectoriesList{1}), 'Select directories');
+                            if isempty(selpath); return; end
+                            
+                            % look for duplicates
+                            duplicateIds = ismember(lower(selpath), lower(obj.CurrentBatch.DirectoriesList{2}));
+                            selpath(duplicateIds) = []; % remove duplicates
+                            obj.CurrentBatch.DirectoriesList{2} = [obj.CurrentBatch.DirectoriesList{2}; selpath'];     % add to the list
+                            obj.CurrentBatch.DirectoriesList(1) = obj.CurrentBatch.DirectoriesList{2}(1);      % set as selected option
                             obj.updateSelectedActionTable(obj.CurrentBatch);
                             obj.displaySelectedActionTableItems();
                             obj.selectedActionTableIndex = 1;   % for some strange reason, selectedActionTableIndex gets reset to 0... 
@@ -687,9 +724,17 @@ classdef mibBatchController < handle
                             obj.updateSelectedActionTable(obj.CurrentBatch);
                             obj.displaySelectedActionTableItems();
                         case {'FILE LOOP START', 'Load and combine images'}
-                            selpath = uigetdir(obj.CurrentBatch.DirectoryName{2}{1}, 'Update directory');
+                            if strcmp(obj.CurrentBatch.DirectoryName{1}, 'Current MIB path')
+                                warndlg(sprintf('This directory parameter:\n"%s"\ncan not be modified!', obj.CurrentBatch.DirectoryName{1}));
+                                return;
+                            end
+                            if strcmp(obj.CurrentBatch.DirectoryName{1}, 'Current MIB path') || strcmp(obj.CurrentBatch.DirectoryName{1}, 'Inherit from Directory loop')
+                                warndlg(sprintf('The option %s can not be modified!\nPlease select a directory first and after that modify it...', obj.CurrentBatch.DirectoryName{1}));
+                                return;
+                            end
+                            selpath = uigetdir(obj.CurrentBatch.DirectoryName{1}, 'Update directory');
                             if selpath == 0; return; end
-                            obj.CurrentBatch.DirectoryName{2}(1) = {selpath};
+                            obj.CurrentBatch.DirectoryName{2}(3) = {selpath};
                             obj.CurrentBatch.DirectoryName{1} = selpath;      % set as selected option
                             obj.updateSelectedActionTable(obj.CurrentBatch);
                             obj.displaySelectedActionTableItems();
@@ -701,18 +746,23 @@ classdef mibBatchController < handle
                             end
                             return;
                     end
-                case 'Remove directory'    % remove selected file or directory from the list
+                case 'Remove directories'    % remove selected file or directory from the list
                     switch obj.CurrentBatch.mibBatchActionName
                         case 'DIRECTORY LOOP START'
                             if numel(obj.CurrentBatch.DirectoriesList{2}) == 1
                                 warndlg(sprintf('!!! Warning !!!\n\nThe last directory can not be removed!'));
                                 return;
                             end
-                            currEntry = obj.CurrentBatch.DirectoriesList{1};
-                            answer = questdlg(sprintf('You are going to remove the following directory from the loop:\n%s', currEntry), 'Remove directory',...
-                                'Continue', 'Cancel', 'Cancel');
-                            if strcmp(answer, 'Cancel'); return; end
-                            obj.CurrentBatch.DirectoriesList{2} = obj.CurrentBatch.DirectoriesList{2}(~ismember(obj.CurrentBatch.DirectoriesList{2}, currEntry));
+                            
+                            prompts = obj.CurrentBatch.DirectoriesList{2};
+                            defAns = repmat({false}, [numel(obj.CurrentBatch.DirectoriesList{2}) 1]);
+                            dlgTitle = 'Remove directories';
+                            options.Title = 'Check directories to be removed from the list';
+                            options.WindowWidth = 1.5;
+                            answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                            if isempty(answer); return; end 
+                            
+                            obj.CurrentBatch.DirectoriesList{2}(cell2mat(answer)==1) = [];
                             obj.CurrentBatch.DirectoriesList(1) = obj.CurrentBatch.DirectoriesList{2}(1);
                             obj.updateSelectedActionTable(obj.CurrentBatch);
                             obj.displaySelectedActionTableItems();
@@ -1040,6 +1090,8 @@ classdef mibBatchController < handle
                                 case 'FILE LOOP START'
                                     if strcmp(obj.Protocol(stepId2).Batch.DirectoryName{1}, 'Inherit from Directory loop')  % check whether the dir name provided from Dir-loop
                                         DirectoryName = obj.Protocol(stepId).Batch.DirectoriesList{2}{dirId};   % take directory name from dir-loop
+                                    elseif strcmp(obj.Protocol(stepId2).Batch.DirectoryName{1}, 'Current MIB path')
+                                        DirectoryName = obj.mibModel.myPath;
                                     else
                                         DirectoryName = obj.Protocol(stepId2).Batch.DirectoryName{1};           % take directory name from File loop
                                     end
@@ -1050,6 +1102,7 @@ classdef mibBatchController < handle
                                     
                                     FileloopSettings.DirectoryName = DirectoryName;
                                     FileloopSettings.FilenameFilter = obj.Protocol(stepId2).Batch.FilenameFilter;
+                                    FileloopSettings.FileLoopWaitbar = obj.Protocol(stepId2).Batch.FileLoopWaitbar;
                                     status = obj.doFileLoop(fileLoopStart, fileLoopFinish, FileloopSettings);
                                     if status == 0
                                         notify(obj.mibModel, 'stopProtocol');
@@ -1081,7 +1134,8 @@ classdef mibBatchController < handle
                     end
                     FileloopSettings.DirectoryName = obj.Protocol(stepId).Batch.DirectoryName{1};
                     FileloopSettings.FilenameFilter = obj.Protocol(stepId).Batch.FilenameFilter;
-
+                    FileloopSettings.FileLoopWaitbar = obj.Protocol(stepId).Batch.FileLoopWaitbar;
+                    
                     fileLoopStart = stepId+1;
                     fileLoopFinish = find(ismember({obj.Protocol(:).mibBatchActionName}, 'FILE LOOP STOP'));
                     if isempty(fileLoopFinish); fileLoopFinish = finishStep; end
@@ -1125,10 +1179,14 @@ classdef mibBatchController < handle
             % options: a structure with parameters
             % @li .DirectoryName - name of the file loop directory
             % @li .FilenameFilter - filter for filenames
+            % @li .FileLoopWaitbar - when true show waitbar for the file loop only, all waitbars for subfunctions will be disabled
             %
             % Return values:
             % status: [logical], success or fail of the function
             status = false; %#ok<NASGU>
+            
+            if strcmp(options.DirectoryName, 'Current MIB path'); options.DirectoryName = obj.mibModel.myPath; end
+            
             filename = dir(fullfile(options.DirectoryName, options.FilenameFilter));   % get list of files
             filename2 = arrayfun(@(filename) fullfile(options.DirectoryName, filename.name), filename, 'UniformOutput', false);  % generate full paths
             notDirsIndices = arrayfun(@(filename2) ~isdir(cell2mat(filename2)), filename2);     % get indices of not directories
@@ -1136,13 +1194,22 @@ classdef mibBatchController < handle
 
             stepOptions.DirectoryName = options.DirectoryName;
             
+            if options.FileLoopWaitbar; wb = waitbar(0, '', 'Name', 'Processing files'); set(findall(wb, 'type', 'text'), 'Interpreter', 'none'); end
+            
+            
             for fnId = 1:numel(filename)
+                if options.FileLoopWaitbar 
+                    waitbar(fnId/numel(filename), wb, sprintf('Processing: %s\nPlease wait...', filename{fnId})); 
+                end
                 stepOptions.FilenameFilter = filename{fnId};
+                stepOptions.Filenames = {{fullfile(stepOptions.DirectoryName, filename{fnId})}};
+                stepOptions.FileLoopWaitbar = options.FileLoopWaitbar;
                 for stepId = startStep:finishStep
                     status = obj.doBatchStep(stepId, stepOptions);
                     if status == 0; return; end
                 end    
             end
+            if options.FileLoopWaitbar; delete(wb); end
             status = true;
         end
         
@@ -1154,6 +1221,8 @@ classdef mibBatchController < handle
             % stepOptions: an optional structure with parameters
             % @li .DirectoryName -> directory name provided by the File or Directory loop
             % @li .FilenameFilter -> FilenameFilter == filename provided by the File loop
+            % @li .Filenames -> full path to the filename
+            % @li .FileLoopWaitbar -> when true show waitbar for the file loop only, all waitbars for subfunctions will be disabled
             %
             % Return values:
             % status: [logical], success or fail of the function
@@ -1188,6 +1257,7 @@ classdef mibBatchController < handle
                         end
                         Batch.DirectoryName{1} = stepOptions.DirectoryName;
                         if isfield(stepOptions, 'FilenameFilter'); Batch.FilenameFilter = stepOptions.FilenameFilter; end
+                        if isfield(stepOptions, 'Filenames'); Batch.Filenames = stepOptions.Filenames; end
                     end
                 otherwise
                     Batch = obj.Protocol(stepId).Batch; %#ok<NASGU>
@@ -1199,6 +1269,13 @@ classdef mibBatchController < handle
                     %        Batch.(fieldNames{fName}) = Batch.(fieldNames{fName})(1);
                     %    end
                     %end
+            end
+            
+            % update waitbar for file loops
+            if isfield(stepOptions, 'FileLoopWaitbar') && isfield(Batch, 'showWaitbar')
+                if stepOptions.FileLoopWaitbar == 1
+                    Batch.showWaitbar = false; 
+                end
             end
             
             obj.View.handles.protocolList.Value = stepId;
@@ -1235,15 +1312,17 @@ classdef mibBatchController < handle
         
         function FileLoopAction_Callback(obj, BatchOptInput)
             % callback for selection of File Loop action
-            BatchOpt.DirectoryName = {obj.mibModel.myPath};   % specify the target directory
-            BatchOpt.DirectoryName{2} = {obj.mibModel.myPath, 'Inherit from Directory loop'};   
+            BatchOpt.DirectoryName = {'Current MIB path'};   % specify the target directory
+            BatchOpt.DirectoryName{2} = {'Current MIB path', 'Inherit from Directory loop', obj.mibModel.myPath};   
             BatchOpt.FilenameFilter = '*.*';   % use the filename filter to select files
+            BatchOpt.FileLoopWaitbar = true;   % when true only the waitbar for the fileloop is displayed, waitbars in all substeps are disabled
             % add section name and action name for the batch tool
             BatchOpt.mibBatchSectionName = 'Service steps';
             BatchOpt.mibBatchActionName = 'FILE LOOP START';
             % tooltips that will accompany the BatchOpt
-            BatchOpt.mibBatchTooltip.DirectoryName = sprintf('Directory name, where the files are located, use the right mouse click over the Parameters table to modify the directory');
-            BatchOpt.mibBatchTooltip.FilenameFilter = sprintf('Filter for filenames: *.* - process all files in the directory; *.tif - process only the TIF files');
+            BatchOpt.mibBatchTooltip.DirectoryName = 'Directory name, where the files are located, use the right mouse click over the Parameters table to modify the directory';
+            BatchOpt.mibBatchTooltip.FilenameFilter = 'Filter for filenames: *.* - process all files in the directory; *.tif - process only the TIF files';
+            BatchOpt.mibBatchTooltip.FileLoopWaitbar = 'when checked only the waitbar for the fileloop is displayed, waitbars in all substeps are turned off';
             
             if nargin == 2
                 if isstruct(BatchOptInput) == 0 

@@ -22,12 +22,12 @@
 %%
 % 
 % * *Konstantin Kogan*, University of Helsinki for assistance with Mac OS
-% * *Radhakrishna Achanta*, Ecole Polytechnique F?d?rale de Lausanne (EPFL)
+% * *Radhakrishna Achanta*, Ecole Polytechnique Federale de Lausanne (EPFL)
 % for the mex code for SLIC supervoxels and superpixels
 % * *David Legland*, INRA, France for modification of the
 % <http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-
 % Region Adjacency Graph (imRAG)> function for detection of indices between
-% watershed regions
+% watershed regions and help with few other functions
 % * *John Heumann*, The Boulder Laboratory For 3-D Electron Microscopy of
 % Cells for help with Mattomo
 % * *Tom Boissonnet* (EMBL) and *Elena Bertseva* (University of Copenhagen) for extensive testing
@@ -50,6 +50,11 @@
 % et al., Tampere University of Technology, Finland 2007-2014 can be used with MIB, when separately installed on the system
 % * <http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio
 % *BWDISTSC*> for 3D Euclidean distance transform for variable data aspect ratio written by Yuriy Mishchenko, Toros University, 2007-2013
+% * <https://se.mathworks.com/matlabcentral/fileexchange/53511-drag-drop-functionality-for-java-gui-components *Drag & Drop functionality for JAVA GUI components*> written by Maarten
+% van der Seijs, Delft University of Technology, the Netherlands, 2015
+% * <https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays
+% *Cell migration in scratch wound assaysELL MIGRATION IN SCRATCH WOUND ASSAYS*> by Constantino Carlos
+% Reyes-Aldasoro, City, University of London was used for the wound healing assay tool
 % * <http://www.peterkovesi.com/projects/segmentation/ *DRAWREGIONBOUNDARIES*>
 % a function to draw boundaries of labeled regions in an image, written by Peter Kovesi
 % Centre for Exploration Targeting, School of Earth and Environment, The
@@ -81,6 +86,7 @@
 % by  Jiro Doke, MathWorks, 2010 is used in the snapshot tool and import from system clipboard
 % * <http://www.mathworks.com/matlabcentral/fileexchange/25397-imgaussian *IMGAUSSIAN*> 
 % by Dirk-Jan Kroon, University of Twente, implementation 2009 is used in the 3D Gaussian filter
+% * <https://github.com/mattools/matGeom/ *MATGEOM*>, a Matlab geometry toolbox for 2D/3D geometric computing is written David Legland, INRA, France, 2013 is used in some functions
 % * <http://bio3d.colorado.edu/PEET/index.html *MATTOMO*> is a part of PEET 
 % (Particle Estimation for Electron Tomography) package, developed at Boulder Laboratory for 3-D Electron Microscopy of Cells
 % was used for export of models to IMOD format
@@ -102,6 +108,8 @@
 % * <https://se.mathworks.com/matlabcentral/fileexchange/24330-patch-normals *PATCHNORMALS*> 
 % by Dirk-Jan Kroon, University of Twente, implementation 2009 is used for
 % calculation of normals during export of surfaces to Imaris
+% * <https://se.mathworks.com/matlabcentral/answers/465911-parfor-waitbar-how-to-do-this-more-cleanly
+% *POOLWAITBAR*> class is based on the code submitted by Edric Ellis
 % * *Random Forest Classifier* is based on <http://www.kaynig.de/demos.html Verena Kaynig> implementation with utilization of <https://code.google.com/p/randomforest-matlab/ *randomforest-matlab*> by Abhishek Jaiantilal
 % * <http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag- *Region Adjacency Graph (RAG)*> function is written by David Legland,
 % INRA, France, 2013
@@ -127,6 +135,9 @@
 % * <http://se.mathworks.com/matlabcentral/fileexchange/21993-viewer3d 
 % *VIEWER3D*> by Dirk-Jan Kroon, Focal Machine Vision en Optical Systems
 % was used as a basis for the volume rendering of datasets
+% * <https://se.mathworks.com/matlabcentral/fileexchange/45134-violin-plot 
+% *Violin plot*> by Holger Hoffmann, 2015 used for visualization of results
+% in some analysis functions
 % * <https://se.mathworks.com/matlabcentral/fileexchange/38591-xlwrite--generate-xls-x--files-without-excel-on-mac-linux-win 
 % *XLWRITE: Generate XLS(X) files without Excel on Mac/Linux/Win*> by Alec
 % de Zegher, NV Bekaert SA 2013

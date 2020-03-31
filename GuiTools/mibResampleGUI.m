@@ -132,7 +132,8 @@ else
     handles.Percentage.Enable = 'on';
     uicontrol(handles.Percentage);  % set focus
 end
-handles.winController.updateBatchOptFromGUI(hObject);
+%handles.winController.updateBatchOptFromGUI(hObject);
+handles.winController.updateBatchOptFromGUI(handles.ResamplingMode);
 end
 
 

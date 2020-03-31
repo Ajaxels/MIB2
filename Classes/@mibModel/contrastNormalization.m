@@ -346,8 +346,14 @@ for colCh = 1:numel(colorChannel)
             % fill gaps in the vectors
             for i=1:numel(nanIds)
                 valIndex = find(valIds > nanIds(i), 1);
+                
                 if isempty(valIndex)
                     valIndex = find(valIds < nanIds(i), 1, 'last');
+                    if isempty(valIndex)
+                        errordlg(sprintf('!!! Error !!!\n\nThe "%s" layer containing the masked areas seems to be empty!\nPlease draw the masks or select correct mask layer in the "Mask layer" field of the dialog', BatchOpt.MaskLayer{1}));
+                        if BatchOpt.showWaitbar; delete(wb); end
+                        return;
+                    end
                 end
                 mean_val(nanIds(i)) = mean_val(valIds(valIndex));
                 std_val(nanIds(i)) = std_val(valIds(valIndex));

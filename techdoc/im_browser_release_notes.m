@@ -5,7 +5,34 @@
 %
 %
 %
-%% 2.601 / 10.10.2019
+%% 2.65 / 23.03.2020
+% 
+% * Added Drag and drop files into the Image View panel 
+% * Added dialog with 30 new image filters (Menu->Image->Image filters...)
+% * Added dataset alignment using AMST: Align to Median Smoothed Template (Menu->Dataset->Alignment)
+% * Added wound healing assay (Menu->Tools->Wound healing assay)
+% * Added transformation of Z to C (Menu->Dataset->Transform...)
+% * Added additional options to the batch processing: file loop/combine
+% files -> current MIB directory; selection/removal of multiple directories in the
+% Directrory loops
+% * Added backup of the full mibImage class
+% * Added full backup for dataset transform, resize, crop operations
+% * Added squeezing of material indices for models with more than 255 materials (Segmentation panel->Squeeze button)
+% * Added a new key shortcut ('n') to increase index of the active material by 1 for the models with more than 255 materials
+% * Added saving snapshots in PNG format
+% * Added measurements to restore shuffled datasets
+% * Updated resampling for batch processing mode
+% * Updated Bio-Formats to 6.4.0 (Requires Matlab R2017b or newer)
+% * Swapped Log and Info buttons in the Path panel
+% * Tweaked names of plugins to include spaces between capital letters
+% * Optimized handling of Java classes
+% * Plugins: Surface Area 3D - a plugin for analysis of 3D surfaces and
+% contacts (Menu->Plugins->Organelle analysis->Surface area3D)
+% * Plugins: Spacial Control Points to generate a set of random points over the masked area (Menu->Plugins->Plasmodesmata->SpatialControlPoints)
+% * Plugins: Cell Wall Thickness to calculate thickness of cell walls (Menu->Plugins->Plasmodesmata->Cell wall thickness)
+%
+%
+%% 2.601 / 04.11.2019
 %
 % * The deployed version of MIB comes with R2019b instead of R2017a
 % * Added the Batch mode for repetitive processing of images (Menu->File->Batch processing)
@@ -28,7 +55,7 @@
 % * Updated use of xlswrite, for R2019a or newer writecell function will be used
 % * Updated data conversion from 32-bit to 8- and 16-bit; from 8-bit to 16-bit
 % * Updated Bio-Formats to 6.2.1 (Requires Matlab R2017b or newer)
-% * [2.601] Bug fixed
+% * [2.601] Bug fixes
 % * [2.601] Added export of annotations to CSV format
 %
 %

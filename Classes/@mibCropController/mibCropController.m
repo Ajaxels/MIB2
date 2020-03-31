@@ -458,9 +458,11 @@ classdef mibCropController  < handle
             if ~strcmp(BatchOptLoc.Destination{1}, sprintf('Container %d', obj.mibModel.Id))
                 bufferId = str2double(BatchOptLoc.Destination{1}(end));
                 % copy dataset to the destination buffer
-                obj.mibModel.mibImageDeepCopy(bufferId, obj.mibModel.Id);
+                obj.mibModel.mibImageDeepCopy(obj.mibModel.Id, bufferId);
             else
                 bufferId = obj.mibModel.Id;
+                % do full backup
+                obj.mibModel.mibDoBackup('mibImage');
             end
             
             cropDim = str2num(BatchOptLoc.Time); %#ok<ST2NM>
@@ -477,8 +479,12 @@ classdef mibCropController  < handle
             obj.mibModel.I{bufferId}.updateImgInfo(log_text);
 
             obj.listener{1}.Enabled = 0;    % disable listener to do not update widgets
-            eventdata = ToggleEventData(bufferId);  
-            notify(obj.mibModel, 'newDataset', eventdata);  % notify newDataset with the index of the dataset
+            if bufferId == obj.mibModel.Id     % the current dataset
+                notify(obj.mibModel, 'newDatasetLite');
+            else
+                eventdata = ToggleEventData(bufferId);  
+                notify(obj.mibModel, 'newDataset', eventdata);  % notify newDataset with the index of the dataset
+            end
             obj.listener{1}.Enabled = 1;    % re-enable listener to do not update widgets
             
             if strcmp(BatchOptLoc.Destination{1}, sprintf('Container %d', obj.mibModel.Id))

@@ -21,17 +21,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/01/12 17:22:51 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 04b6cb6df697 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -77,7 +76,7 @@ if nargin > 2
 end
 
 clf
-[nX nY nZ] = size(stack);
+[nX, nY, nZ] = size(stack);
 
 minStack = min(stack(:));
 maxStack = max(stack(:));
@@ -111,15 +110,16 @@ for iZ = 1:nZ
   left = rem(iZ-1, nCols) * cStep + leftMargin;
   bottom = (nRows - ceil(iZ / nCols)) * rStep + bottomMargin;
 
-  hAxes(iZ) = subplot('position', [left bottom cStep*shrink rStep*shrink]);
+  hAxes(iZ) = subplot('position',                                      ...
+                      [left bottom cStep*shrink rStep*shrink]); %#ok<AGROW>
 
   if interpFactor == 1
     intX = 1:nX;
     intY = 1:nY;
     im = stack(:,:,iZ);
   else
-    intX = [1:1/interpFactor:nX];
-    intY = [1:1/interpFactor:nY]';
+    intX = 1:1/interpFactor:nX;
+    intY = (1:1/interpFactor:nY)';
     im = interp2(stack(:,:,iZ), intX, intY, 'spline');
   end
   showMRCImage(im, intX, intY);
@@ -133,12 +133,12 @@ for iZ = 1:nZ
     if length(scaleBar) > 3
       sbPos = [scaleBar(2) scaleBar(3)];
     else
-      sbPos(1) = nX*0.95 - sbLength;
-      sbPos(2) = nY*0.95;
+      sbPos(1) = nX * 0.95 - sbLength;
+      sbPos(2) = nY * 0.95;
     end
     hold on
-    hSB = plot([sbPos(1) sbPos(1)+sbLength], [sbPos(2) sbPos(2)], ...
-      'linewidth', sbWidth, 'color', [0 1 0]);
+    hSB = plot([sbPos(1) sbPos(1)+sbLength], [sbPos(2) sbPos(2)],      ...
+      'linewidth', sbWidth, 'color', [0 1 0]); %#ok<NASGU>
   end
   if ~flgCaxis
     colorAxis =[minStack maxStack];
@@ -189,11 +189,9 @@ if flgColorbar
   colorbarWidth = 0.08;
   subplot('position', ...
     [1-rightMargin+colorbarMargin bottomMargin colorbarWidth rStep*nRows])
-  map = colormap;
   nMap = size(colormap, 1);
-  image(1, linspace(colorAxis(1), colorAxis(2), nMap)', [1:nMap]')
+  image(1, linspace(colorAxis(1), colorAxis(2), nMap)', (1:nMap)')
   set(gca, 'ydir', 'normal');
   set(gca, 'XTickLabel', []);
   set(gca, 'box', 'on');
 end
-

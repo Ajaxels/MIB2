@@ -100,6 +100,7 @@ classdef mibDebrisRemovalController < handle
             obj.BatchOpt.mibBatchActionName = 'Tools for Images -> Debris removal';           % name of the plugin
             
             % tooltips that will accompany the BatchOpt
+            obj.BatchOpt.mibBatchTooltip.DetectionMode = 'Detection mode: automatic or use masked/selected areas';
             obj.BatchOpt.mibBatchTooltip.Intensitythreshold = sprintf('Intensity threshold for detection of debris in the difference of images');
             obj.BatchOpt.mibBatchTooltip.ObjectSizeTheshold = sprintf('Detected objects larger than this value are considered as debris and removed');
             obj.BatchOpt.mibBatchTooltip.StrelSize = sprintf('Size of the strel element for morphological operations');

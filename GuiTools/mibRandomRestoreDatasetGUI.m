@@ -174,6 +174,12 @@ if handles.includeAnnotationsCheck.Value == 1
 end
 end
 
+% --- Executes on button press in includeAnnotationsCheck.
+function includeMeasurementsCheck_Callback(hObject, eventdata, handles)
+if handles.includeMeasurementsCheck.Value == 1
+    warndlg(sprintf('!!! Warning !!!\n\nPlease make sure:\n1. Each folder has only one measurements file in the *.measure format'));
+end
+end
 
 % --- Executes when mibRandomRestoreDatasetGUI is resized.
 function mibRandomRestoreDatasetGUI_SizeChangedFcn(hObject, eventdata, handles)

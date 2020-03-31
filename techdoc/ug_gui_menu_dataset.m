@@ -85,25 +85,27 @@
 % </td>
 % </tr>
 % <tr><td><b>Flip horizontally</b></td>
-% <td>- flips dataset left to right, returns the dataset with columns flipped in the left-right direction, that is, about a vertical axis
+% <td>- flip dataset left to right, returns the dataset with columns flipped in the left-right direction, that is, about a vertical axis
 % <tr><td><b>Flip vertically</b></td>
-% <td>- flips dataset up to down, returns the dataset with rows flipped in the up-down direction, that is, about a horizontal axis</td></tr>
+% <td>- flip dataset up to down, returns the dataset with rows flipped in the up-down direction, that is, about a horizontal axis</td></tr>
 % <tr><td><b>Flip Z</b></td>
-% <td>- flips dataset in the Z dimension, returns the dataset with slices flipped in the first-last direction, that is, about a middle slice of the dataset</td></tr>
+% <td>- flip dataset in the Z dimension, returns the dataset with slices flipped in the first-last direction, that is, about a middle slice of the dataset</td></tr>
 % <tr><td><b>Flip Y</b></td>
-% <td>- flips dataset in the T dimension, returns the dataset with time frames flipped in the first-last direction, that is, about a middle frame of the dataset</td></tr>
+% <td>- flip dataset in the T dimension, returns the dataset with time frames flipped in the first-last direction, that is, about a middle frame of the dataset</td></tr>
 % <tr><td><b>Rotate 90 degrees</b></td>
-% <td>- rotates dataset 90 degrees clockwise diirection</td></tr>
+% <td>- rotate dataset 90 degrees clockwise diirection</td></tr>
 % <tr><td><b>Rotate -90 degrees</b></td>
-% <td>- rotates dataset 90 degrees anti-clockwise diirection</td></tr>
+% <td>- rotate dataset 90 degrees anti-clockwise diirection</td></tr>
 % <tr><td><b>Transpose XY -> ZX</b></td>
-% <td>- physically transposes the dataset, so that the XY orienation, becomes ZX</td></tr>
+% <td>- physically transpose the dataset, so that the XY orienation, becomes ZX</td></tr>
 % <tr><td><b>Transpose XY -> ZY</b></td>
-% <td>- physically transposes the dataset, so that the XY orienation, becomes ZY</td></tr>
+% <td>- physically transpose the dataset, so that the XY orienation, becomes ZY</td></tr>
 % <tr><td><b>Transpose ZX -> ZY</b></td>
-% <td>- physically transposes the dataset, so that the ZX orienation, becomes ZY</td></tr>
+% <td>- physically transpose the dataset, so that the ZX orienation, becomes ZY</td></tr>
 % <tr><td><b>Transpose Z <-> T</b></td>
-% <td>- physically transposes the dataset, so that the Z orienation, becomes T</td></tr>
+% <td>- physically transpose the dataset, so that the Z orienation, becomes T</td></tr>
+% <tr><td><b>Transpose Z <-> C</b></td>
+% <td>- physically transpose the dataset, so that the Z (depth) orienation, becomes C (color)</td></tr>
 % </table>
 % A brief demonstration is available in the following videos:<br>
 % Flip: <a href="https://youtu.be/lGjhB-NJZMk"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/lGjhB-NJZMk</a><br>

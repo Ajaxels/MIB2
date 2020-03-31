@@ -165,9 +165,9 @@ switch BatchOptLocal.Target{1}
         end
         options.dataType = '3D';
         for t=t1:t2
-            mask = cell2mat(obj.getData3D(BatchOptLocal.Target{1}, t, 4, NaN, backupOpt));
+            mask = cell2mat(obj.getData3D(BatchOptLocal.Target{1}, t, NaN, NaN, backupOpt));
             mask = mibDoImageFiltering(mask, options);
-            obj.setData3D(BatchOptLocal.Target{1}, mask, t, 4, NaN, backupOpt);
+            obj.setData3D(BatchOptLocal.Target{1}, mask, t, NaN, NaN, backupOpt);
             if BatchOptLocal.showWaitbar; waitbar(t/t2, wb); end
         end
     case 'model'
@@ -185,9 +185,9 @@ switch BatchOptLocal.Target{1}
         
         for t=t1:t2
             for object = start_no:end_no
-                model = cell2mat(obj.getData3D('model', t, 4, object, backupOpt));
+                model = cell2mat(obj.getData3D('model', t, NaN, object, backupOpt));
                 model = mibDoImageFiltering(model, options);
-                obj.setData3D('model', model, t, 4, object, backupOpt);
+                obj.setData3D('model', model, t, NaN, object, backupOpt);
             end
             if BatchOptLocal.showWaitbar; waitbar(t/t2,wb); end
         end

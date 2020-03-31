@@ -154,7 +154,7 @@ end
 
 [~, filename, ext] = fileparts(filename);
 
-pause(.1);
+pause(.05);
 showLocalWaitbar = false;   % switch to show or not waitbar in this function
 if t1 ~= t2
     showLocalWaitbar = options.showWaitbar;
@@ -171,7 +171,7 @@ if ismember(options.Format, ...
     if ~isfield(options, 'FilenameGenerator')
         options.FilenameGenerator = 'Use sequential filename';
         if isKey(obj.meta, 'SliceName') && ...
-                numel(obj.meta('SliceName')) == obj.depth && obj.time == 1
+                numel(obj.meta('SliceName')) == obj.depth && obj.time == 1 && obj.depth > 1
             
             exportChoice2D = questdlg('Would you like to use original or sequential filenaming?', 'Define naming', 'Use original filename', 'Use sequential filename', 'Cancel', 'Use sequential filename');
             if strcmp(exportChoice2D, 'Cancel'); return; end
@@ -224,7 +224,11 @@ for t=t1:t2
             if exist('savingOptions', 'var') == 0   % define parameters for the first time use
                 savingOptions = struct('overwrite', 1);
                 savingOptions.colors = obj.lutColors;   % store colors for color channels 0-1;
-                savingOptions.showWaitbar = ~showLocalWaitbar;  % show or not waitbar in bitmap2amiraMesh
+                if showLocalWaitbar     % show or not waitbar in bitmap2amiraMesh
+                    savingOptions.showWaitbar = false; 
+                else
+                    savingOptions.showWaitbar = options.showWaitbar; 
+                end
                 savingOptions.Saving3d = 'multi';    % save all stacks to a single file
             end
             bitmap2amiraMesh(fullfile(pathStr, fnOut), img, ...
@@ -233,7 +237,11 @@ for t=t1:t2
             if exist('savingOptions', 'var') == 0   % define parameters for the first time use
                 savingOptions = struct('overwrite', 1);
                 savingOptions.colors = obj.lutColors;   % store colors for color channels 0-1;
-                savingOptions.showWaitbar = ~showLocalWaitbar;  % show or not waitbar in bitmap2amiraMesh
+                if showLocalWaitbar     % show or not waitbar in bitmap2amiraMesh
+                    savingOptions.showWaitbar = false; 
+                else
+                    savingOptions.showWaitbar = options.showWaitbar; 
+                end
                 savingOptions.Saving3d = 'sequence';    % save as sequence of files
             end
             
@@ -297,7 +305,11 @@ for t=t1:t2
                 optionsHDF.depth = obj.depth;
                 optionsHDF.time = obj.time;
                 optionsHDF.pixSize = obj.pixSize;    % !!! check .units = 'um'
-                optionsHDF.showWaitbar = ~showLocalWaitbar;        % show or not waitbar in data saving function
+                if showLocalWaitbar     % show or not waitbar in data saving function
+                    optionsHDF.showWaitbar = false; 
+                else
+                    optionsHDF.showWaitbar = options.showWaitbar; 
+                end
                 optionsHDF.lutColors = obj.lutColors;    % store LUT colors for channels
                 optionsHDF.ImageDescription = ImageDescription;
                 optionsHDF.DatasetName = filename;
@@ -324,7 +336,7 @@ for t=t1:t2
             end
         case 'Joint Photographic Experts Group (*.jpg)'    % jpg format
             if exist('savingOptions', 'var') == 0   % define parameters for the first time use
-                savingOptions = struct('overwrite', 1,'Comment', obj.meta('ImageDescription'));
+                savingOptions = struct('overwrite', 1, 'Comment', obj.meta('ImageDescription'));
                 if strcmp(obj.meta('ColorType'), 'indexed')
                     savingOptions.cmap = obj.meta('Colormap');
                 else
@@ -341,10 +353,16 @@ for t=t1:t2
                     savingOptions.Compression = answer{1};
                     savingOptions.Quality = str2double(answer{2});
                 else
-                    savingOptions.Compression = 'lossless';
+                    savingOptions.Compression = 'lossy';
                     savingOptions.Quality = 90;
+                    if isfield(options, 'Compression'); savingOptions.Compression = options.Compression; end
+                    if isfield(options, 'Quality'); savingOptions.Quality = options.Quality; end
                 end
-                savingOptions.showWaitbar = ~showLocalWaitbar;
+                if showLocalWaitbar     % show or not waitbar in data saving function
+                    savingOptions.showWaitbar = false; 
+                else
+                    savingOptions.showWaitbar = options.showWaitbar; 
+                end
                 
                 % get list of filenames for slices
                 if strcmp(options.FilenameGenerator, 'Use original filename') && isKey(obj.meta, 'SliceName')
@@ -369,7 +387,11 @@ for t=t1:t2
                 savingOptions.volumeFilename = fullfile(pathStr, fnOut);
             end
             savingOptions.pixSize = obj.pixSize;
-            savingOptions.showWaitbar = ~showLocalWaitbar;
+            if showLocalWaitbar     % show or not waitbar in data saving function
+                savingOptions.showWaitbar = false;
+            else
+                savingOptions.showWaitbar = options.showWaitbar;
+            end
             mibImage2mrc(img, savingOptions);
         case 'Portable Network Graphics (*.png)'    % PNG format
             if exist('savingOptions', 'var') == 0   % define parameters for the first time use
@@ -388,13 +410,21 @@ for t=t1:t2
                         savingOptions.SliceName = SliceName; 
                     end
                 end
-                savingOptions.showWaitbar = ~showLocalWaitbar;
+                if showLocalWaitbar     % show or not waitbar in data saving function
+                    savingOptions.showWaitbar = false; 
+                else
+                    savingOptions.showWaitbar = options.showWaitbar; 
+                end
             end
             mibImage2png(fullfile(pathStr, fnOut), img, savingOptions);
         case 'NRRD Data Format (*.nrrd)'   % PNG format
             if ~isfield(options, 'FilenameGenerator'); options.FilenameGenerator = 'Use sequential filename'; end
             savingOptions = struct('overwrite', 1);
-            savingOptions.showWaitbar = ~showLocalWaitbar;
+            if showLocalWaitbar     % show or not waitbar in data saving function
+                savingOptions.showWaitbar = false;
+            else
+                savingOptions.showWaitbar = options.showWaitbar;
+            end
             bb = obj.getBoundingBox();
             if strcmp(options.FilenameGenerator, 'Use original filename') && isKey(obj.meta, 'SliceName')
                 SliceNames = obj.meta('SliceName');
@@ -442,7 +472,11 @@ for t=t1:t2
                 
                 savingOptions = struct('Resolution', [obj.meta('XResolution') obj.meta('YResolution')],...
                     'overwrite', 1, 'Saving3d', NaN, 'cmap', cmap, 'Compression', compression);
-                savingOptions.showWaitbar = ~showLocalWaitbar;
+                if showLocalWaitbar     % show or not waitbar in data saving function
+                    savingOptions.showWaitbar = false; 
+                else
+                    savingOptions.showWaitbar = options.showWaitbar; 
+                end
                 if obj.depth == 1; savingOptions.Saving3d = 'multi'; end
                 
                 % get list of filenames for slices

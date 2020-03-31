@@ -14,17 +14,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/06/26 17:04:12 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 8ebca3b313c1 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -56,7 +55,7 @@ else
   
   if flgComplex      % handle reading a complex image
     % Read in the image from the MRC file
-    [temp count] = fread(mRCImage.fid, 2 * nImageElements, precision);
+    [temp, count] = fread(mRCImage.fid, 2 * nImageElements, precision);
     if count ~= 2 * nImageElements
       PEETError(['Expected ' int2str(nImageElements) ' elements, read ' ...
         int2str(count / 2)]);
@@ -64,7 +63,7 @@ else
     img = complex(temp(1:2:end-1), temp(2:2:end));
   else               % normal (not complex) image
     % Read in the image from the MRC file
-    [img count] = fread(mRCImage.fid, nImageElements, precision);
+    [img, count] = fread(mRCImage.fid, nImageElements, precision);
     if count ~= nImageElements
       PEETError(['Expected ' int2str(nImageElements) ' elements, read ' ...
         int2str(count)]);
@@ -79,7 +78,6 @@ else
     topHalf = img >= 0 & img < 127;
     img(topHalf) = img(topHalf) + 128;
     img(~topHalf) = img(~topHalf) - 128;
-    mRCImage = setStatisticsFromVolume(mRCImage);
   end
 
   % Reshape the image to match nX and nY

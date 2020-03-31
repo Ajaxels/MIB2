@@ -144,8 +144,8 @@ classdef mibImageArithmeticController < handle
                     mibUpdateFontSize(obj.View.gui, Font);
                 end
             end
-            
-           obj.updateWidgets();
+            obj.View.handles.Expression.FontSize = Font.FontSize+2;     % increase font size for the Expression box
+            obj.updateWidgets();
             
             % obj.View.gui.WindowStyle = 'modal';     % make window modal
             
@@ -267,30 +267,32 @@ classdef mibImageArithmeticController < handle
             
             % find output variable
             obj.BatchOpt.OutputVariables = strtrim(obj.BatchOpt.OutputVariables);
-            switch obj.BatchOpt.OutputVariables(1)
-                case 'I'
-                    outputType = 'image';
-                case 'O'
-                    outputType = 'model';
-                case 'M'
-                    outputType = 'mask';
-                case 'S'
-                    outputType = 'selection';
-                otherwise
-                    errordlg(sprintf('!!! Error !!!\n\nWrong expression:\n%s', obj.BatchOpt.Expression));
-                    notify(obj.mibModel, 'stopProtocol');
-                    return;
-            end
-            setDataOptions.id = obj.mibModel.Id;
-            setDataOptions.blockModeSwitch = 0;
-            datasetOutputString = obj.BatchOpt.OutputVariables(1);
-            if numel(obj.BatchOpt.OutputVariables) > 1
-                if ~isnan(str2double(obj.BatchOpt.OutputVariables(2)))
-                    setDataOptions.id = str2double(obj.BatchOpt.OutputVariables(2)); %#ok<STRNU>
-                    datasetOutputString = [datasetOutputString obj.BatchOpt.OutputVariables(2)];
+            if ~isempty(obj.BatchOpt.OutputVariables)
+                switch obj.BatchOpt.OutputVariables(1)
+                    case 'I'
+                        outputType = 'image';
+                    case 'O'
+                        outputType = 'model';
+                    case 'M'
+                        outputType = 'mask';
+                    case 'S'
+                        outputType = 'selection';
+                    otherwise
+                        errordlg(sprintf('!!! Error !!!\n\nWrong expression:\n%s', obj.BatchOpt.Expression));
+                        notify(obj.mibModel, 'stopProtocol');
+                        return;
                 end
+                setDataOptions.id = obj.mibModel.Id;
+                setDataOptions.blockModeSwitch = 0;
+                datasetOutputString = obj.BatchOpt.OutputVariables(1);
+                if numel(obj.BatchOpt.OutputVariables) > 1
+                    if ~isnan(str2double(obj.BatchOpt.OutputVariables(2)))
+                        setDataOptions.id = str2double(obj.BatchOpt.OutputVariables(2)); %#ok<STRNU>
+                        datasetOutputString = [datasetOutputString obj.BatchOpt.OutputVariables(2)];
+                    end
+                end
+                if obj.BatchOpt.showWaitbar; waitbar(0.25, wb); end
             end
-            if obj.BatchOpt.showWaitbar; waitbar(0.25, wb); end
             
             % evaluate expression
             try
@@ -302,8 +304,30 @@ classdef mibImageArithmeticController < handle
                 errordlg(sprintf('!!! Error !!!\n\nWrong expression!\n%s\nPlease try again!', err.message), 'Error');
                 return;
             end
-            if obj.BatchOpt.showWaitbar; waitbar(0.9, wb); end
             
+            if isempty(obj.BatchOpt.OutputVariables)    % stop here if the output is not required
+                % store the expression and update prevExpPopup
+                if ~ismember(obj.BatchOpt.Expression, obj.mibModel.preferences.imagearithmetic.actions)
+                    obj.mibModel.preferences.imagearithmetic.actions(end+1) = {obj.BatchOpt.Expression};
+                    obj.mibModel.preferences.imagearithmetic.outputvars(end+1) = {obj.BatchOpt.OutputVariables};
+                    obj.mibModel.preferences.imagearithmetic.inputvars(end+1) = {obj.BatchOpt.InputVariables};
+                    if numel(obj.mibModel.preferences.imagearithmetic.actions) > obj.mibModel.preferences.imagearithmetic.no_stored_actions
+                        obj.mibModel.preferences.imagearithmetic.actions = obj.mibModel.preferences.imagearithmetic.actions(2:end);
+                        obj.mibModel.preferences.imagearithmetic.outputvars = obj.mibModel.preferences.imagearithmetic.outputvars(2:end);
+                        obj.mibModel.preferences.imagearithmetic.inputvars = obj.mibModel.preferences.imagearithmetic.inputvars(2:end);
+                    end
+                    obj.View.handles.prevExpPopup.String = cellfun(@(x) strrep(x,sprintf('\n'),''), obj.mibModel.preferences.imagearithmetic.actions, 'UniformOutput', false); %#ok<SPRINTFN>
+                    obj.View.handles.prevExpPopup.Value = numel(obj.mibModel.preferences.imagearithmetic.actions);
+                end
+                
+                if obj.BatchOpt.showWaitbar
+                    waitbar(1, wb);
+                    delete(wb);
+                end
+                return;
+            end
+            
+            if obj.BatchOpt.showWaitbar; waitbar(0.9, wb); end
             obj.mibModel.mibDoBackup(outputType, 1, setDataOptions);
             
             switch outputType
@@ -347,6 +371,9 @@ classdef mibImageArithmeticController < handle
                         eventdata = ToggleEventData(setDataOptions.id);
                         notify(obj.mibModel, 'newDataset', eventdata);
                     end
+                    % update log only if the image was modified
+                    logText = sprintf('%s: %s;', logText, obj.BatchOpt.Expression);
+                    obj.mibModel.I{setDataOptions.id}.updateImgInfo(logText);
                 case 'model'
                     execString = sprintf('obj.mibModel.setData4D(''%s'', %s, 4, NaN, setDataOptions);', outputType, datasetOutputString);
                     try 
@@ -377,8 +404,6 @@ classdef mibImageArithmeticController < handle
             
             if obj.BatchOpt.showWaitbar; waitbar(0.95, wb); end
             
-            logText = sprintf('%s: %s;', logText, obj.BatchOpt.Expression);
-            obj.mibModel.I{setDataOptions.id}.updateImgInfo(logText);
             
             % store the expression and update prevExpPopup
             if ~ismember(obj.BatchOpt.Expression, obj.mibModel.preferences.imagearithmetic.actions)

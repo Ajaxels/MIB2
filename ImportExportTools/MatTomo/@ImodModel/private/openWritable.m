@@ -13,17 +13,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/01/12 17:22:51 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 04b6cb6df697 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -42,7 +41,7 @@ else
   % Failsafe, this shouldn't happen
   if ~ isempty(imodModel.fid)
     disp('Found an FID in an ImodModel object that did not have a filename');
-    PEETWarning('Closing stale FID; this close the wrong object!');
+    PEETWarning('Closing stale FID; this may close the wrong object!');
     close(imodModel);
   end
 end
@@ -54,9 +53,8 @@ if isempty(imodModel.fid)
     disp(msg)
     PEETError(['Unable to open ' imodModel.filename ' as ' format]);
   end
-
 else
-  [name permission] = fopen(imodModel.fid);
+  [~, permission] = fopen(imodModel.fid);
   switch permission
    case {'r', 'a', 'a+'}
     % Close and reopen the file to get a writable mode

@@ -235,6 +235,7 @@ classdef mibRechopDatasetController < handle
                     bb(6) = bb(5) + (stacks-1)*pixSize{1}.z;
                     
                     obj.mibModel.I{obj.mibModel.Id}.updateBoundingBox(bb);
+                    notify(obj.mibModel, 'newDataset'); 
                 end
                 
                 height = obj.mibModel.I{obj.mibModel.Id}.height;

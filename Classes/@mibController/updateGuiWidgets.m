@@ -84,13 +84,18 @@ end
 if obj.mibModel.getImageProperty('modelType') < 256
     obj.mibView.handles.mibAddMaterialBtn.CData = obj.mibModel.sessionSettings.guiImages.plus;
     obj.mibView.handles.mibAddMaterialBtn.TooltipString = 'press to add Material to the model';
-    obj.mibView.handles.mibRemoveMaterialBtn.Enable = 'on';
     obj.mibView.handles.mibSegmShowTypePopup.Enable = 'on';
+    
+    obj.mibView.handles.mibRemoveMaterialBtn.CData = obj.mibModel.sessionSettings.guiImages.minus;
+    obj.mibView.handles.mibRemoveMaterialBtn.TooltipString = 'remove selected material from the model';
 else
     %obj.mibView.handles.mibAddMaterialBtn.String = 'E';
     obj.mibView.handles.mibAddMaterialBtn.CData = obj.mibModel.sessionSettings.guiImages.next;
     obj.mibView.handles.mibAddMaterialBtn.TooltipString = 'press to find and select the next empty material';
-    obj.mibView.handles.mibRemoveMaterialBtn.Enable = 'off';
+    
+    obj.mibView.handles.mibRemoveMaterialBtn.CData = obj.mibModel.sessionSettings.guiImages.shrink;
+    obj.mibView.handles.mibRemoveMaterialBtn.TooltipString = 'squeeze the labels to remove all empty indices and select next available index';
+    
     obj.mibView.handles.mibSegmShowTypePopup.Enable = 'off';
     obj.mibView.handles.mibSegmShowTypePopup.Value = 1;
     obj.mibModel.mibSegmShowTypePopup = 1;

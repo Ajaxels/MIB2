@@ -101,4 +101,77 @@
 % lower than 100%. To see the grid also at low magnification, increase the
 % |extra grid thickness| value.
 %
+%% Wound healing assay
+% The wound healing assay is designed to measure migration parameters of
+% cells. It was tested on Imagen Cell-IQ platform that allows to obtain a
+% grid of images taken with 0-pixel overlaps
+%
+% <html>
+% A demonstration is available in the following video:<br>
+% <a href="https://youtu.be/D9hvyXMyNfU"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/D9hvyXMyNfU</a>
+% </html>
+% 
+% <<images\menuToolsWoundHealing.png>>
+% 
+% The tool has two parts:
+% 
+% <html>
+% <table style="width: 750px; text-align: center;" cellspacing=2px cellpadding=2px >
+% <tr>
+%   <td style="width=250px;"><b>Stitching</b></td>
+%   <td>
+%   <ul>
+%   <li>Use the Stitching settings panel to specify number of cells in a
+%   grid; each cell defined by an own directory with images. The directory
+%   names have to be in a sequence starting from upper-left corner and
+%   progressing horizontally to the bottom-right corner</li>
+%   <li>Specify filename extension</li>
+%   <li>Select direcotries with the grid images for stitching (the
+%   <em>Select directories...</em> button)</li>
+%   <li>Specify the output directrory for results (The <em>Output...</em> button)</li>
+%   <li>Press the <em>Stitch</em> button to start stitching</li>
+%   </ul>
+%   </td>
+% </tr>
+% <tr>
+%   <td><b>Wound healing analysis</b></td>
+%   <td>
+%   <ul>
+%   <li>Populate the <em>Wound healing settings</em> panel: set the pixel size, time step and optional downsampling of resulting images for evaluation. 
+% When the <em>show interactive graph</em> checkbox is checked, the tool will generate an interactive plot with results after each time point</li>
+%   <li>Select directories with the stitched images for the wound healing
+%   assay (the <em>Select directories...</em> button)</li>
+%   <li>Press the <em>Wound healing</em> button to start</li>
+%   </ul>
+%   </td>
+% </tr>
+% <tr>
+% <td></td>
+% <td><b>Results:</b><br>
+% <ul>
+%   <li>A plot showing minimal, average and maximal width of the wound</li>
+%   <li>A sheet in Microsoft Excel format and a file in Matlab format with the wound width values</li>
+%   <li>A directory with snapshots of the detected wound</li>
+%   <li>A text file with time stamps of the original images used during
+%   stitching</li>
+%   </ul>
+% </td>
+% </tr>
+% <tr>
+% <td><b>Reference</b></td>
+% <td>The function is based on a Cell Migration in Scratch Wound Assays code provided by 
+% Constantino Carlos Reyes-Aldasoro (<a
+% href="https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays">see more</a>)<br>
+%     <b>Cite as</b><br>
+%     CC Reyes-Aldasoro, D Biram, GM Tozer, C Kanthou
+%     Electronics Letters 44 (13), 791-793<br><br>
+%     The code is also available from github: <a
+%     href="">https://www.github.com/reyesaldasoro/Cell-Migration</a>
+% </td>
+% </tr>
+% </table>
+% </html>
+%
+%
+%
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>

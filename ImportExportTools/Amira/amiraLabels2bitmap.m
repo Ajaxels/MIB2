@@ -153,8 +153,8 @@ end
 
 % fclose(fid);
 %bitmap_list = reshape(permute(bitmap,[2 1 3]),1,[])';
-bitmap = reshape(bitmap_vec,[width, height, depth]);
-bitmap= permute(bitmap,[2 1 3]);
+bitmap = reshape(bitmap_vec, [width, height, depth]);
+bitmap = permute(bitmap, [2 1 3]);
 toc
 disp(['amiraLabels2bitmap: ' filename ' was loaded!']);
 

@@ -9,17 +9,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/01/12 17:22:51 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 04b6cb6df697 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -35,7 +34,7 @@ if debug
 end
 
 %JMH 11/9/11: If you do as Matlab suggests and change the following freads
-% fread's to *uchar and remove the cast, the header is read incorrectly.
+%to *uchar and remove the cast, the header is read incorrectly.
 tag = char(fread(imodModel.fid, [1 8], 'uchar')); %#ok<FREAD>
 if ~ strncmp(tag, 'IMOD', 4)
   imodModel = close(imodModel);
@@ -89,9 +88,8 @@ if debug
 end
 
 % FIXME need to add the ability to read global data chunks
-[buffer nRead] = fread(imodModel.fid, [1 4], 'uchar');
+[buffer, nRead] = fread(imodModel.fid, [1 4], 'uchar');
 iObj = 0;
-iMat = 0;
 while nRead > 0
   tag = char(buffer);
   if debug
@@ -103,18 +101,16 @@ while nRead > 0
     imodModel.Objects{iObj} = ImodObject;
     imodModel.Objects{iObj} = freadObject(imodModel.Objects{iObj}, imodModel.fid, debug);
     
-    %FIXME read in IMAT objects and associate them with the particular
-    % iObj
-
   elseif strcmp(tag, 'IMAT')
-    iMat = iMat + 1;
     fseek(imodModel.fid, -4, 'cof');
-    %fseek(imodModel.fid, 20, 'cof');
     imodModel.Objects{iObj}=freadObjectMat(imodModel.Objects{iObj}, imodModel.fid, debug);
     
   elseif strcmp(tag, 'MINX')
-    iMat = iMat + 1;
-    fseek(imodModel.fid, 76, 'cof');
+    length = fread(imodModel.fid, 1, 'int32');
+    [imodModel.MINX, nRead] = fread(imodModel.fid, 18, 'float32');
+    if length ~= 72 || nRead ~= 18
+      PEETError('Error reading MINX chunk!');
+    end
     
   elseif strcmp(tag, 'IEOF')
     break;
@@ -126,9 +122,9 @@ while nRead > 0
     imodChunk = freadChunk(imodChunk, imodModel.fid); %#ok<NASGU>
     %imodObject.chunk{iChunk} = imodChunk;
     %iChunk = iChunk + 1;
-    PEETWarning(['Ignoring unknown object type: ' tag]);
+    %PEETWarning(['Ignoring unknown object type: ' tag]);
     %break;
   end
-  [buffer nRead] = fread(imodModel.fid, [1 4], 'uchar');
+  [buffer, nRead] = fread(imodModel.fid, [1 4], 'uchar');
 end
 imodModel = close(imodModel);

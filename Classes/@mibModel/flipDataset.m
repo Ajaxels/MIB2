@@ -33,7 +33,6 @@ tic
 options.blockModeSwitch = 0;    % overwrite blockmode switch
 if showWaitbar; wb = waitbar(0,sprintf('Flipping image\nPlease wait...'), 'Name', 'Flip dataset', 'WindowStyle', 'modal'); end
 time = obj.getImageProperty('time');
-if time < 2; obj.mibDoBackup('image', 1); end
 
 if strcmp(mode, 'Flip T')
     img = cell2mat(obj.getData4D('image', 4, 0, options));   % get dataset (image)
@@ -96,7 +95,7 @@ if strcmp(mode, 'Flip T')
     if showWaitbar; delete(wb); end
     toc;
     
-    notify(obj, 'newDataset');  % notify newDataset with the index of the dataset
+    notify(obj, 'newDatasetLite');  % notify newDataset with the index of the dataset
     eventdata = ToggleEventData(1);
     notify(obj, 'plotImage', eventdata);
     return;
@@ -118,9 +117,7 @@ clear img;
 % flip other layers
 if obj.getImageProperty('modelType') == 63 && obj.I{obj.Id}.disableSelection == 0
     if showWaitbar; waitbar(0.5, wb, sprintf('Flipping other layers\nPlease wait...')); end
-    if time < 2
-        obj.mibDoBackup('everything', 1);  % backup other layers
-    end
+
     for t=1:time
         img = cell2mat(obj.getData3D('everything', t, 4, NaN, options));   % get dataset (image)
         %if handles.matlabVersion < 8.2
@@ -181,7 +178,7 @@ log_text = ['Flip: mode=' mode];
 obj.getImageMethod('updateImgInfo', NaN, log_text);
 if showWaitbar; delete(wb); end
 
-notify(obj, 'newDataset');  % notify newDataset with the index of the dataset
+notify(obj, 'newDatasetLite');  % notify newDataset with the index of the dataset
 eventdata = ToggleEventData(1);
 notify(obj, 'plotImage', eventdata);
 

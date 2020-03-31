@@ -71,7 +71,7 @@ image_formats = imformats();  % get readable image formats
 no_files = numel(filenames);
 layer_id = 1;
 
-if options.waitbar==1; wb = waitbar(0,sprintf('Loading metadata\nPlease wait...'),'Name','Metadata import'); end
+if options.waitbar==1; wb = waitbar(0, sprintf('Loading metadata\nPlease wait...'), 'Name', 'Metadata import'); end
 
 files = struct();   % structure that keeps info about each file in the series
 % .object_type -> 'movie', 'hdf5_image', 'image'
@@ -857,8 +857,9 @@ for fn_index = 1:no_files
         if fn_index == 1
             %omeMeta = filesTemp.hDataset.getMetadataStore();
             omeXML = char(omeMeta.dumpXML());    % to xml
-            omeXML = strrep(omeXML, sprintf('\xB5'),'u');     % mu, replace utf-8 characters
-            omeXML = strrep(omeXML,sprintf('\xC5'),'A');      % Angstrem
+            omeXML = strrep(omeXML, sprintf('\xB5'), 'u');     % mu, replace utf-8 characters
+            omeXML = strrep(omeXML, sprintf('\xC5'), 'A');      % Angstrem
+            omeXML(omeXML==65533) = 'u';      % mu, replace utf-8 characters
             
             dummyXMLFilename = fullfile(dirId, 'dummy.xml');    % save xml to a file
             fid = fopen(dummyXMLFilename, 'w');
@@ -925,12 +926,13 @@ for fn_index = 1:no_files
         if ~isempty(omeMeta.getChannelColor(indexOfDataset, 0))
             rgb = zeros(maxColorChannel, 3);
             for colCh=1:maxColorChannel
+                if isempty(omeMeta.getChannelColor(indexOfDataset, colCh-1)); continue; end
                 rgb(colCh, 1) = omeMeta.getChannelColor(indexOfDataset, colCh-1).getRed();
                 rgb(colCh, 2) = omeMeta.getChannelColor(indexOfDataset, colCh-1).getGreen();
                 rgb(colCh, 3) = omeMeta.getChannelColor(indexOfDataset, colCh-1).getBlue();
             end
             img_info('lutColors') = rgb/255;
-        elseif ~isempty(omeMeta.getChannelExcitationWavelength(indexOfDataset, 0))
+        elseif ~isempty(omeMeta.getChannelExcitationWavelength(indexOfDataset, 0)) && ~isempty(omeMeta.getChannelEmissionWavelength(indexOfDataset, 0))
             rgb = zeros(maxColorChannel, 3);
             for colCh=1:maxColorChannel
                 Wavelength = double(omeMeta.getChannelEmissionWavelength(indexOfDataset, colCh-1).value());
@@ -939,6 +941,9 @@ for fn_index = 1:no_files
             end
             img_info('lutColors') = rgb/255;
         end
+    else
+        if options.waitbar==1; delete(wb); end
+        return;
     end
     
     if options.waitbar==1 && mod(layer_id, ceil(no_files/20))==0

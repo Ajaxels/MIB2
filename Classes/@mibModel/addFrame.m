@@ -228,7 +228,7 @@ toc;
 BatchOptOut.Method{2} = {'use the pad value', 'replicate', 'circular', 'symmetric'};
 BatchOptOut.Direction{2} = {'both', 'pre', 'post'};
 
-notify(obj, 'newDataset');  % notify newDataset with the index of the dataset
+notify(obj, 'newDatasetLite');  % notify newDataset with the index of the dataset
 eventdata = ToggleEventData(1);
 notify(obj, 'plotImage', eventdata);
 end

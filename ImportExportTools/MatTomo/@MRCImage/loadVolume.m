@@ -1,27 +1,28 @@
 %loadVolume     Attempt to load the complete data volume into memory
 %
-%   mRCImage = loadVolume(mRCImage, debug)
+%   [mRCImage, vol] = loadVolume(mRCImage, debug)
 %
 %   mRCImage    The opened MRCImage object
+%
+%   vol         The complete volume
 %
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/06/26 17:04:12 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 8ebca3b313c1 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function mRCImage = loadVolume(mRCImage)
+function [mRCImage, vol] = loadVolume(mRCImage)
 
 
 % Move the file pointer to the start of the volume data
@@ -36,14 +37,14 @@ if strcmp(modeStr, 'int16*2') || strcmp(modeStr, 'float32*2')
   modeStr = modeStr(1 : end - 2);
   precision = [modeStr '=>' modeStr];
   nEff = 2 * nVoxels;
-  [temp count] = fread(mRCImage.fid, nEff, precision);
+  [temp, count] = fread(mRCImage.fid, nEff, precision);
   if count ~= nEff
     PEETError(['Could not read complete volume\n  ' ferror(mRCImage.fid)]);
   end
   mRCImage.volume = complex(temp(1:2:end-1), temp(2:2:end));
 else % normal (not complex) volume
   precision = [modeStr '=>' modeStr];
-  [mRCImage.volume count] = fread(mRCImage.fid, nVoxels, precision);
+  [mRCImage.volume, count] = fread(mRCImage.fid, nVoxels, precision);
   if count ~= nVoxels
     PEETError(['Could not read complete volume\n  ' ferror(mRCImage.fid)]);
   end
@@ -67,3 +68,7 @@ mRCImage.volume = reshape(mRCImage.volume, ...
                           mRCImage.header.nY, ...
                           mRCImage.header.nZ);
 
+if nargout > 1
+  vol = mRCImage.volume;
+end
+                        

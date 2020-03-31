@@ -22,7 +22,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 06-Oct-2019 23:29:41
+% Last Modified by GUIDE v2.5 09-Feb-2020 12:13:22
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -311,7 +311,14 @@ if numel(customContents1) > 2
                         if ~isdeployed
                             addpath(custom_dir2);
                         end
-                        uimenu(hSubmenu,'Label', customContents2(customDirIdx2).name, 'Callback', (@(src, event) handles.mibController.startPlugin(customContents2(customDirIdx2).name)));
+                        % add labels for plugins, add spaces between
+                        % capital latters and make all letters except first
+                        % to small
+                        if ~strcmp(customContents2(customDirIdx2).name, 'MCcalc')   % keep MCcalc as an exception
+                            uimenu(hSubmenu,'Label', [customContents2(customDirIdx2).name(1) regexprep(customContents2(customDirIdx2).name(2:end), '([A-Z][a-z])', ' ${lower($1)}')], 'Callback', (@(src, event) handles.mibController.startPlugin(customContents2(customDirIdx2).name)));
+                        else    
+                            uimenu(hSubmenu,'Label', customContents2(customDirIdx2).name, 'Callback', (@(src, event) handles.mibController.startPlugin(customContents2(customDirIdx2).name)));
+                        end
                     end
                 end
             end
@@ -1583,6 +1590,11 @@ function mibImageFilterDoitBtn_Callback(hObject, eventdata, handles)
 handles.mibController.mibImageFilterDoitBtn_Callback();
 end
 
+% --- Executes on button press in mibNewFiltersButton.
+function mibNewFiltersButton_Callback(hObject, eventdata, handles)
+handles.mibController.startController('mibImageFiltersController');
+end
+
 %% --------------------- MASK GENERATOR PANEL CALLBACKS ---------------------
 % --- Executes on selection change in mibMaskGenTypePopup.
 function mibMaskGenTypePopup_Callback(hObject, eventdata, handles)
@@ -1845,6 +1857,10 @@ function menuImageMode_Callback(hObject, eventdata, handles)
 handles.mibController.menuImageMode_Callback(hObject);
 end
 
+function menuImageAdjust_Callback(hObject, eventdata, handles)
+handles.mibController.startController('mibImageAdjController');
+end
+
 % --------------------------------------------------------------------
 function menuImageColorCh_Callback(hObject, eventdata, handles, parameter)
 handles.mibController.menuImageColorCh_Callback(parameter);
@@ -1888,6 +1904,11 @@ end
 % --------------------------------------------------------------------
 function menuImageMorph_Callback(hObject, eventdata, handles, parameter)
 handles.mibController.startController('mibImageMorphOpsController', parameter);
+end
+
+% --------------------------------------------------------------------
+function menuImageFilters_Callback(hObject, eventdata, handles)
+handles.mibController.startController('mibImageFiltersController');
 end
 
 % --------------------------------------------------------------------
@@ -2101,6 +2122,12 @@ end
 function menuToolsObjSep_Callback(hObject, eventdata, handles)
 handles.mibController.startController('mibObjSepController');
 end
+
+% --------------------------------------------------------------------
+function menuToolsWound_Callback(hObject, eventdata, handles)
+handles.mibController.startController('mibWoundHealingAssayController');
+end
+
 
 %% ------------------ Help menu ------------------ 
 % --------------------------------------------------------------------

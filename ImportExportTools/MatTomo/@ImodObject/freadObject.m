@@ -1,6 +1,6 @@
 %freadObject  ImodObject file reader
 %
-%   imodObject = freadObject(imodObject, fid)
+%   imodObject = freadObject(imodObject, fid, debug)
 %
 %   imodObject  The ImodObject
 %
@@ -10,31 +10,30 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/01/12 17:22:51 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 04b6cb6df697 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function imodObject = freadObject(imodObject, fid, debug)
 
 %  Check to make sure we have a Imod Object
-ID = char(fread(fid, [1 4], 'uchar'));
+ID = char(fread(fid, [1 4], 'uchar')); %#ok<*FREAD>
 
 if strncmp('OBJT', ID, 4) ~= 1
   PEETError('This is not an IMOD Object!');
 end
 
 imodObject.name = char(fread(fid, [1 64], 'uchar'));
-junk = char(fread(fid, [1 64], 'uchar'));
+junk = char(fread(fid, [1 64], 'uchar')); %#ok<NASGU>
 imodObject.nContours = fread(fid, 1, 'int32');
 imodObject.flags = fread(fid, 1, 'uint32'); %
 imodObject.axis = fread(fid, 1, 'int32');  %
@@ -66,8 +65,8 @@ end
 %  Read in each of the specified objects
 iContour = 1;
 iMesh = 1;
-iSurface = 1;
-iChunk = 1;
+%iSurface = 1;
+%iChunk = 1;
 
 while iContour <= imodObject.nContours || iMesh <= imodObject.nMeshes 
      % iSurface <= imodObject.nSurfaces %surface is different
@@ -85,6 +84,18 @@ while iContour <= imodObject.nContours || iMesh <= imodObject.nMeshes
    case {'CONT'}
     imodContour = ImodContour;
     imodContour = freadContour(imodContour, fid, debug);
+    % A contour can optionally be followed by a point SIZE structure
+    id = char(fread(fid, [1 4], 'uchar'));
+    if strcmp(id, 'SIZE');
+      nPoints = fread(fid, 1, 'int32') / 4;
+      if (nPoints ~= getNPoints(imodContour));
+        PEETError('SIZE record contains incorrect number of points!');
+      end
+      pointSizes = fread(fid, nPoints,'float32');
+      imodContour = setPointSizes(imodContour, pointSizes);
+    else
+      fseek(fid, -4, 'cof');
+    end    
     imodObject.contour{iContour} = imodContour;
     iContour = iContour + 1;
     
@@ -102,9 +113,11 @@ while iContour <= imodObject.nContours || iMesh <= imodObject.nMeshes
     
    otherwise
     imodChunk = ImodChunk;
-    imodChunk = freadChunk(imodChunk, fid);
+    imodChunk = freadChunk(imodChunk, fid); %#ok<NASGU>
+    % No longer storing unrecognized chunks
+    clear imodChunk
     %imodObject.chunk{iChunk} = imodChunk;
-    iChunk = iChunk + 1;
+    %iChunk = iChunk + 1;
   end
 
 end

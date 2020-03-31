@@ -5,7 +5,7 @@ function [img, img_info, pixSize] = mibLoadImages(filenames, options)
 % Load images contained in the array of cells 'filesnames' and return 'img_info' containers.Map 
 %
 % Parameters:
-% filenames: array of cells with filenames
+% filenames: array of cells with filenames, if empty a load files dialog appears
 % options: -> a structure with parameters
 %     - .mibBioformatsCheck -> if @b 0 -> open standard image types, if @b 1 -> open images using BioFormats library
 %     - .waitbar -> @b 1 - show waitbar, @b 0 - do not show waitbar
@@ -21,6 +21,8 @@ function [img, img_info, pixSize] = mibLoadImages(filenames, options)
 %     - .BioFormatsMemoizerMemoDir -> obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
 %     - .BackgroundColorIntensity -> numeric, background intensity for cases, when width/height of combined images mismatch, when it is missing a dialog box is shown
 %     - .BioFormatsIndices -> numeric, indices of images in file container to be opened with BioFormats 
+%     - .startDir - starting directory, when filenames are empty
+%     - .silentMode - switch for the batch mode, when 1 - do not ask questions
 %
 % Return values:
 % img: - a dataset, [1:height, 1:width, 1:colors, 1:no_stacks]
@@ -56,8 +58,30 @@ if ~isfield(options, 'Font');    options.Font = Font;  end
 if ~isfield(options, 'virtual');    options.virtual = 0;  end
 if ~isfield(options, 'id');    options.id = 1;  end
 if ~isfield(options, 'BioFormatsMemoizerMemoDir');    options.BioFormatsMemoizerMemoDir = 'c:\temp';  end
+if ~isfield(options, 'startDir');    options.startDir = [];  end
+if ~isfield(options, 'silentMode');    options.silentMode = false;  end
+
 
 autoCropSw = 0;     % auto crop images that have dimension mismatch
+img = [];
+
+if isempty(filenames)
+    [filename, dirName] = uigetfile(...
+        {'*.am;',  'Amira mesh format (*.am)'; ...
+        '*.h5',   'Hierarchical Data Format (*.h5)'; ...
+        '*.mrc',   'Medical Research Council format (*.mrc)'; ...
+        '*.nrrd;',  'NRRD format (*.nrrd)'; ...
+        '*.tif;',  'TIF format (*.tif)'; ...
+        '*.xml',   'Hierarchical Data Format with XML header (*.xml)'; ...
+        '*.*',  'All Files (*.*)'}, ...
+        'Open model data...', options.startDir, 'MultiSelect', 'on');
+    if isequal(filename, 0); return; end % check for cancel
+    if ischar(filename); filename = cellstr(filename); end     % convert to cell type
+    
+    filenames = arrayfun(@(x) fullfile(dirName, x), filename);
+elseif ischar(filenames)
+    filenames = {filenames};
+end
 
 no_files = numel(filenames);
 
@@ -159,13 +183,17 @@ end
 % fill img_info and preallocate memory for the dataset
 % check files for dimensions and class
 if options.imgStretch == 1
-    if strcmp(files(1).imgClass, 'int16') || strcmp(files(1).imgClass, 'uint32') %|| ...
-        %strcmp(files(1).imgClass, 'single') || strcmp(files(1).imgClass, 'double')    
-        choice = questdlg(sprintf('The original image is in the %s format\n\nIt will be converted into uint16 format!', files(1).imgClass), ...
-            'Image Format Warning!', ...
-            'Sure', 'Keep 32bit', 'Cancel', 'Sure');
-        if strcmp(choice, 'Cancel'); img = []; return; end
-        if strcmp(choice, 'Keep 32bit');options.imgStretch = 0; end
+    if options.silentMode   % preserve 32 bit for the batch mode
+         options.imgStretch = 0;
+    else
+        if strcmp(files(1).imgClass, 'int16') || strcmp(files(1).imgClass, 'uint32') %|| ...
+            %strcmp(files(1).imgClass, 'single') || strcmp(files(1).imgClass, 'double')    
+            choice = questdlg(sprintf('The original image is in the %s format\n\nWould you like to convert them into uint16 format?', files(1).imgClass), ...
+                'Image Format Warning!', ...
+                'Keep 32bit', 'Convert to 16bit', 'Cancel', 'Sure');
+            if strcmp(choice, 'Cancel'); img = []; return; end
+            if strcmp(choice, 'Keep 32bit'); options.imgStretch = 0; end
+        end
     end
 end
 

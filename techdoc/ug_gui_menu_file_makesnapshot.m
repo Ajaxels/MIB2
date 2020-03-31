@@ -80,6 +80,7 @@
 % 
 % * *BMP* - Windows Bitmap (BMP); 1-bit, 8-bit, and 24-bit uncompressed images.
 % * *JPG* - Joint Photographic Experts Group (JPEG), 8-bit, 12-bit, and 16-bit Baseline JPEG images.  
+% * *PNG* - Portable Network Graphics (PNG) format
 % * *TIF* - Baseline Tagged Image File Format images, including 1-bit, 8-bit, 16-bit, and 24-bit uncompressed images.
 % 
 %

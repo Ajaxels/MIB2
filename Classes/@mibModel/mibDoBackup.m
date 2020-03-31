@@ -6,7 +6,8 @@ function mibDoBackup(obj, type, switch3d, getDataOptions)
 % 
 % Parameters:
 % type: ''image'', ''selection'', ''mask'', ''model'', 'labels',
-% ''everything'' (for mibImage.modelType==63 only), ''lines3d'', ''labels''
+% ''everything'' (for mibImage.modelType==63 only), ''lines3d'',
+% ''labels'', ''mibImage''
 % switch3d: - a switch to define a 2D or 3D mode to store the dataset dataset
 % - @b 0 - 2D slice
 % - @b 1 - 3D dataset
@@ -32,10 +33,11 @@ function mibDoBackup(obj, type, switch3d, getDataOptions)
 %
 % Updates
 % 01.07.2019 added getDataOptions.id option
+% 21.11.2019 added mibImage type
 
 % check for the virtual stacking mode and return
 if obj.I{obj.Id}.Virtual.virtual == 1
-    if ismember(type, {'mask','selection','model','everything'})    % disable backup for these modes
+    if ismember(type, {'mask', 'selection', 'model', 'everything'})    % disable backup for these modes
         return;
     end
 end
@@ -46,7 +48,23 @@ if nargin < 4; getDataOptions = struct(); end
 if ~isfield(getDataOptions, 'id'); getDataOptions.id = obj.Id; end
 
 if strcmp(type, 'lines3d')
-    obj.U.store(type, {copy(obj.I{getDataOptions.id}.hLines3D)});
+    obj.U.store(type, {copy(obj.I{getDataOptions.id}.hLines3D)}, [], getDataOptions);
+    return;
+end
+
+% disable backup for 5D datasets
+if ~isfield(getDataOptions, 'x') || ~isfield(getDataOptions, 'y') || ...
+        ~isfield(getDataOptions, 'z') || ~isfield(getDataOptions, 't')
+    depth = obj.I{getDataOptions.id}.depth;
+    time = obj.I{getDataOptions.id}.time;
+    if depth>1 && time>1
+        return;
+    end
+end
+
+if strcmp(type, 'mibImage')
+    mibImg = obj.mibImageDeepCopy(obj.I{getDataOptions.id});
+    obj.U.store(type, mibImg, [], getDataOptions);
     return;
 end
 
@@ -103,7 +121,6 @@ if isfield(getDataOptions, 'roiId') && blockModeSwitch == 0     % roi mode is di
                 roiId2 = roiId2 + 1;
             end
             getDataOptions.orient = obj.I{getDataOptions.id}.orientation;
-            
         end
     end
 else
@@ -166,13 +183,13 @@ end
 if ~isfield(getDataOptions, 'z') && switch3d==0
     sliceNo = obj.I{getDataOptions.id}.getCurrentSliceNumber();
     getDataOptions.z = [sliceNo, sliceNo];
-    getDataOptions.z = repmat(getDataOptions.z, [numel(roiIds), 1]);
+    %getDataOptions.z = repmat(getDataOptions.z, [numel(roiIds), 1]);
 end
 
 if ~isfield(getDataOptions, 't')
     timePnt = obj.I{getDataOptions.id}.getCurrentTimePoint();
     getDataOptions.t = [timePnt, timePnt];
-    getDataOptions.t = repmat(getDataOptions.t, [numel(roiIds), 1]);
+    %getDataOptions.t = repmat(getDataOptions.t, [numel(roiIds), 1]);
 end
 
 if switch3d == 1        % 3D mode

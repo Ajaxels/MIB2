@@ -102,7 +102,9 @@ classdef mibImageUndo < handle
             %
             % Parameters:
             % type: a string that defines the type of the stored data:
-            % ''image'', ''model'', ''selection'', ''mask'', ''everything'' (for imageData.model_type==''uint6'' only), 'labels', 'lines3d'
+            % ''image'', ''model'', ''selection'', ''mask'', ''everything''
+            % (for imageData.model_type==''uint6'' only), 'labels',
+            % 'lines3d', 'mibImage'
             % data: a cell/cell array with actual 3D or 2D dataset to store, 
             %       or with a structure for labels or with Lines3D class for lines3d object
             % meta: [@em optional] a imageData.meta containers.Map, not required for ''model'', ''selection'', ''mask'', ''everything'', can be @em NaN
@@ -130,53 +132,61 @@ classdef mibImageUndo < handle
             if ~isfield(options, 'viewPort'); options.viewPort = []; end
             if ~isfield(options, 'id'); options.id = []; end
             
-            % check for empty datasets, that are coming for example from
-            % ROIs outside the image
-            for roiId=numel(data):-1:1
-                if isempty(data{roiId})
-                    data{roiId} = [];
-                    if isfield(options, 'x')
-                        options.x(roiId, :) = [];
-                    end
-                    if isfield(options, 'y')
-                        options.y(roiId, :) = [];
-                    end
-                end
-            end
-            if isempty(data{1}); return; end   % no data to store
-            
-            if ~isfield(options, 'switch3d') 
-                if strcmp(type, 'image')
-                    dimId = 4;
-                else
-                    dimId = 3;
-                end
-                if size(data{1}, dimId) > 1
-                    options.switch3d = 1;
-                else
-                    options.switch3d = 0;
-                end
-            end
-            if ~isfield(options, 'orient'); options.orient = NaN; end % options.orient = NaN identifies 3D dataset
-            if ~isfield(options, 'x'); options.x = [1, size(data{1}, 2)]; end
-            if ~isfield(options, 'y'); options.y = [1, size(data{1}, 1)]; end
-            if strcmp(type, 'image')
-                if ~isfield(options, 'z'); options.z = [1, size(data{1}, 4)]; end
-                if ~isfield(options, 't'); options.t = [1, size(data{1}, 5)]; end
+            if strcmp(type, 'mibImage')
+                options.switch3d = 1;
+                depth = 2;  % set depth to 2 to make sure options.switch3d operation
             else
-                if ~isfield(options, 'z'); options.z = [1, size(data{1}, 3)]; end
-                if ~isfield(options, 't'); options.t = [1, size(data{1}, 4)]; end
+                % check for empty datasets, that are coming for example from
+                % ROIs outside the image
+                for roiId=numel(data):-1:1
+                    if isempty(data{roiId})
+                        data{roiId} = [];
+                        if isfield(options, 'x')
+                            options.x(roiId, :) = [];
+                        end
+                        if isfield(options, 'y')
+                            options.y(roiId, :) = [];
+                        end
+                    end
+                end
+                if isempty(data{1}(1)); return; end   % no data to store
+            
+                if ~isfield(options, 'switch3d') 
+                    if strcmp(type, 'image')
+                        dimId = 4;
+                    else
+                        dimId = 3;
+                    end
+                    if size(data{1}, dimId) > 1
+                        options.switch3d = 1;
+                    else
+                        options.switch3d = 0;
+                    end
+                end
+                if ~isfield(options, 'orient'); options.orient = NaN; end % options.orient = NaN identifies 3D dataset
+                if ~isfield(options, 'x'); options.x = [1, size(data{1}, 2)]; end
+                if ~isfield(options, 'y'); options.y = [1, size(data{1}, 1)]; end
+                if strcmp(type, 'image')
+                    if ~isfield(options, 'z'); options.z = [1, size(data{1}, 4)]; end
+                    if ~isfield(options, 't'); options.t = [1, size(data{1}, 5)]; end
+                else
+                    if ~isfield(options, 'z'); options.z = [1, size(data{1}, 3)]; end
+                    if ~isfield(options, 't'); options.t = [1, size(data{1}, 4)]; end
+                end
+                depth = size(data{1}, 4);
             end
             
             % crop undoList
-            if options.switch3d && obj.max3d_steps == 0 && size(data{1}, 4) > 1
+            if options.switch3d && obj.max3d_steps == 0 && depth > 1
                 clearContents(obj);
                 return;
             else
                 obj.undoList = obj.undoList(1:obj.undoIndex);
                 obj.index3d = obj.index3d(obj.index3d < obj.undoIndex);
             end
-            if isnan(options.t(1)); options.t = [1 1]; end
+            if ~strcmp(type, 'mibImage')
+                if isnan(options.t(1)); options.t = [1 1]; end
+            end
                 
             % calculate number of stored 3d datasets
             newMinIndex = 1;
@@ -201,13 +211,17 @@ classdef mibImageUndo < handle
             obj.index3d = obj.index3d(obj.index3d>0);
             
             % to check for entry of the first element
-            if isstruct(obj.undoList(1).data{1}) || isa(obj.undoList(1).data{1}, 'Lines3D')
+            if isa(obj.undoList(1).data, 'mibImage')
                 obj.undoIndex = numel(obj.undoList) + 1;
             else
-                if ~isnan(obj.undoList(1).data{1}(1))
+                if isstruct(obj.undoList(1).data{1}) || isa(obj.undoList(1).data{1}, 'Lines3D')
                     obj.undoIndex = numel(obj.undoList) + 1;
                 else
-                    obj.undoIndex = 2;      
+                    if ~isnan(obj.undoList(1).data{1}(1))
+                        obj.undoIndex = numel(obj.undoList) + 1;
+                    else
+                        obj.undoIndex = 2;      
+                    end
                 end
             end
             
@@ -307,7 +321,9 @@ classdef mibImageUndo < handle
             %
             % Parameters:
             % index: an index of the item to replace, when @em empty replace the last entry
-            % type: a string that defines the type of the new dataset:  ''image'', ''model'', ''selection'', ''mask'', ''everything'' (for imageData.model_type==''uint6'' only)
+            % type: a string that defines the type of the new dataset:
+            % ''image'', ''model'', ''selection'', ''mask'', ''everything''
+            % (for imageData.model_type==''uint6'' only), or ''mibImage''
             % data: a variable with the new dataset to store
             % meta: [@em optional] imageData.meta containers.Map, not required for ''model'', ''selection'', ''mask'', ''everything'', can be @em NaN
             % options: a structure with fields:

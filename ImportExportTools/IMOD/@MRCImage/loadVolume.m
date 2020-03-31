@@ -55,6 +55,7 @@ if mRCImage.header.mode == 0 && getReadBytesAsSigned(mRCImage)
   % values accordingly to preserve the correct ordering. In either case,
   % the volume will be represented internally as unsigned bytes 0..255.
   topHalf = mRCImage.volume >= 0 & mRCImage.volume <= 127;
+  
   mRCImage.volume(topHalf) = mRCImage.volume(topHalf) + 128;
   mRCImage.volume(~topHalf) = mRCImage.volume(~topHalf) - 128;
   mRCImage = setStatisticsFromVolume(mRCImage);

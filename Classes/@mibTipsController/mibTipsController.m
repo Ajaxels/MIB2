@@ -87,7 +87,6 @@ classdef mibTipsController < handle
             obj.View.gui = moveWindowOutside(obj.View.gui, 'center', 'center');
             obj.View.gui.Visible = 'on';    % make the window visible
             
-            
             % resize all elements of the GUI
             mibRescaleWidgets(obj.View.gui);
             
@@ -95,7 +94,6 @@ classdef mibTipsController < handle
             jObject = com.mathworks.mlwidgets.html.HTMLBrowserPanel;
             [obj.webBrowser, obj.hMainPanel] = javacomponent(jObject, [], obj.View.handles.mibTipsGUI);
             set(obj.hMainPanel, 'Units', 'points', 'Position', panelPos);
-            
             
             % % update font and size
             % % you may need to replace "obj.View.handles.text1" with tag of any text field of your own GUI

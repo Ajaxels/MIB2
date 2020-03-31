@@ -1,6 +1,6 @@
 function bb = getBoundingBox(obj)
 % function bb = getBoundingBox(obj)
-% Get Bounding box info as a vector [xmin, width, ymin, height, zmin, depth]
+% Get Bounding box info as a vector [xmin, xmax, ymin, ymax, zmin, zmax]
 %
 % The bounding box info is needed to properly put the dataset in the 3D space. It is stored in the header of the
 % Amira mesh file, or in the beginning of the ImageDescription field of the TIF file.
@@ -10,11 +10,11 @@ function bb = getBoundingBox(obj)
 % Return values:
 % bb: - bounding box info
 % @li bb(1) = Xmin
-% @li bb(2) = Width
+% @li bb(2) = Xmax
 % @li bb(3) = Ymin
-% @li bb(4) = Height
+% @li bb(4) = Ymax
 % @li bb(5) = Zmin
-% @li bb(6) = Depth
+% @li bb(6) = Zmax
 
 %| 
 % @b Examples:

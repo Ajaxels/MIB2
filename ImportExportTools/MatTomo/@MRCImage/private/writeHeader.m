@@ -14,8 +14,7 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 % TODO:
@@ -26,9 +25,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/01/12 17:22:51 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 04b6cb6df697 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -82,11 +81,11 @@ writeAndCheck(mRCImage.fid, mRCImage.header.nSymmetryBytes, 'int16');
 writeAndCheck(mRCImage.fid, mRCImage.header.nBytesExtended, 'int32');
 % MRC EXTRA section
 writeAndCheck(mRCImage.fid, mRCImage.header.creatorID, 'int16');
-writeAndCheck(mRCImage.fid, blanks(30), 'uchar');
+writeAndCheck(mRCImage.fid, char(zeros(1, 30)), 'uchar');
   
 writeAndCheck(mRCImage.fid, mRCImage.header.nBytesPerSection, 'int16');
 writeAndCheck(mRCImage.fid, mRCImage.header.serialEMType, 'int16');
-writeAndCheck(mRCImage.fid, blanks(20), 'uchar');
+writeAndCheck(mRCImage.fid, char(zeros(1, 20)), 'uchar');
   
 mRCImage.header.imodStamp = defaultIMODStamp();
 writeAndCheck(mRCImage.fid, mRCImage.header.imodStamp, 'int32');
@@ -113,14 +112,28 @@ writeAndCheck(mRCImage.fid, mRCImage.header.machineStamp, 'uchar');
 writeAndCheck(mRCImage.fid, mRCImage.header.densityRMS, 'float32');
 
 % Write out the label data and skip blank labels 
-writeAndCheck(mRCImage.fid, mRCImage.header.nLabels, 'int32');
+if mRCImage.header.nLabels < 10
+  writeAndCheck(mRCImage.fid, mRCImage.header.nLabels + 1, 'int32');
+else
+  writeAndCheck(mRCImage.fid, mRCImage.header.nLabels, 'int32');
+end
 
+% Write any pre-existing labels
 for iLabel = 1:mRCImage.header.nLabels
   writeAndCheck(mRCImage.fid, mRCImage.header.labels(iLabel,:), 'uchar');
 end
 
+% If there's room, add a label indicating writing by PEET
+if mRCImage.header.nLabels < 10
+  msg = ['Written by PEET / MatTomo ' datestr(now)];
+  writeAndCheck(mRCImage.fid, msg, 'uchar');
+  writeAndCheck(mRCImage.fid, char(blanks(80 - length(msg))), 'uchar');
+  mRCImage.header.nLabels = mRCImage.header.nLabels + 1;
+end
+
+% Use blank messages for the remainder
 for iJunk = mRCImage.header.nLabels+1:10
-  writeAndCheck(mRCImage.fid, blanks(80), 'uchar');
+  writeAndCheck(mRCImage.fid, char(zeros(1, 80)), 'uchar');
 end
 
 writeAndCheck(mRCImage.fid, mRCImage.extended, 'uchar');

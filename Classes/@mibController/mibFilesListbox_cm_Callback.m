@@ -21,6 +21,7 @@ function mibFilesListbox_cm_Callback(obj, parameter, BatchOptIn)
 % @li .Mode -> [cell], desired mode to combine the images: 'Combine datasets', 'Load each N-th dataset', 'Insert into open dataset', 'Combine files as color channels', 'Add as new color channel', 'Add each N-th dataset as new color channel'
 % @li .DirectoryName -> [cell] directory name, where the files are located, use the right mouse click over the Parameters table to modify the directory
 % @li .FilenameFilter -> [string] filter for filenames: *.* - process all files in the directory; *.tif - process only the TIF files; could also be a filename
+% @li .Filenames -> [A CELL WITHIN CELL ARRAY, optional] with list of full path filenames to open, only for the batch mode
 % @li .UseBioFormats -> [logical] when checked the Bio-Formats reader will be used
 % @li .BioFormatsIndices -> [string, BioFormats only] indices of images to be opened for file containers, when empty load all
 % @li .EachNthStep -> [string] define step to be used for combining images using each N-th option
@@ -54,14 +55,15 @@ end
 BatchOpt.Mode{2} = {'Combine datasets', 'Load each N-th dataset', ...
         'Insert into open dataset', 'Combine files as color channels', 'Add as new color channel', ...
         'Add each N-th dataset as new color channel'};
-BatchOpt.DirectoryName = {obj.mibModel.myPath};   % specify the target directory
-BatchOpt.DirectoryName{2} = {obj.mibModel.myPath, 'Inherit from Directory/File loop'};  % this option forces the directories to be provided from the Dir/File loops
+BatchOpt.DirectoryName = {'Current MIB path'};   % specify the target directory
+BatchOpt.DirectoryName{2} = {'Current MIB path', 'Inherit from Directory/File loop', obj.mibModel.myPath};  % this option forces the directories to be provided from the Dir/File loops
 filter = obj.mibView.handles.mibFileFilterPopup.String{obj.mibView.handles.mibFileFilterPopup.Value};
 if strcmp(filter, 'all known')
     BatchOpt.FilenameFilter = '*.*';
 else
     BatchOpt.FilenameFilter = ['*.' filter];
 end
+% BatchOpt.Filenames -> this is optional parameter, when it is provided the loaded files are taken only from this list box
 BatchOpt.UseBioFormats = logical(obj.mibView.handles.mibBioformatsCheck.Value);
 BatchOpt.BioFormatsIndices = '';
 BatchOpt.EachNthStep = '2'; 
@@ -85,6 +87,8 @@ BatchOpt.mibBatchTooltip.InsertDatasetDimension = sprintf('[Insert only] Image d
 BatchOpt.mibBatchTooltip.InsertDatasetPosition = sprintf('[Insert only] insert position; 1 - beginning of the open dataset; 0 - end of the open dataset\nor type any number to define position');
 BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the waitbar');
 
+batchModeSwitch = 0;    % indicates that the function is running in the gui mode
+
 %% Batch mode check actions
 if nargin == 3  % batch mode 
     if isstruct(BatchOptIn) == 0
@@ -102,13 +106,20 @@ if nargin == 3  % batch mode
         % combine fields from input and default structures
         BatchOpt = updateBatchOptCombineFields_Shared(BatchOpt, BatchOptIn);
     end
-    filename = dir(fullfile(BatchOpt.DirectoryName{1}, BatchOpt.FilenameFilter));   % get list of files
-    filename2 = arrayfun(@(filename) fullfile(BatchOpt.DirectoryName{1}, filename.name), filename, 'UniformOutput', false);  % generate full paths
-    notDirsIndices = arrayfun(@(filename2) ~isdir(cell2mat(filename2)), filename2);     % get indices of not directories
-    fn = filename2(notDirsIndices);     % generate full path file names
-    filename = {filename(notDirsIndices).name}';
-    batchModeSwitch = 1;    % indicates that the function is running in the batch mode
+    if strcmp(BatchOpt.DirectoryName{1}, 'Current MIB path'); BatchOpt.DirectoryName{1} = obj.mibModel.myPath; end
+    if ~isfield(BatchOptIn, 'Filenames')
+        filename = dir(fullfile(BatchOpt.DirectoryName{1}, BatchOpt.FilenameFilter));   % get list of files
+        filename2 = arrayfun(@(filename) fullfile(BatchOpt.DirectoryName{1}, filename.name), filename, 'UniformOutput', false);  % generate full paths
+        notDirsIndices = arrayfun(@(filename2) ~isdir(cell2mat(filename2)), filename2);     % get indices of not directories
+        BatchOpt.Filenames = filename2(notDirsIndices);     % generate full path file names
+        %filename = {filename(notDirsIndices).name}';
+    else
+        BatchOpt.Filenames = BatchOptIn.Filenames{1};   % convert from cell with cell array to cell array
+        if ischar(BatchOpt.Filenames); BatchOpt.Filenames = {BatchOpt.Filenames}; end
+    end
+    if isfield(BatchOptIn, 'mibBatchTooltip'); batchModeSwitch = 1; end    % indicates that the function is running in the batch mode
 else
+    if strcmp(BatchOpt.DirectoryName{1}, 'Current MIB path'); BatchOpt.DirectoryName{1} = obj.mibModel.myPath; end
     % generate a dataset from the selected files
     % generate list of files
     val = obj.mibView.handles.mibFilesListbox.Value;
@@ -120,17 +131,16 @@ else
             notDirsIndices(i) = 1;
         end
     end
-    fn = arrayfun(@(filename) fullfile(BatchOpt.DirectoryName{1}, cell2mat(filename)), filename(notDirsIndices), 'UniformOutput', false);  % generate full paths
+    BatchOpt.Filenames = arrayfun(@(filename) fullfile(BatchOpt.DirectoryName{1}, cell2mat(filename)), filename(notDirsIndices), 'UniformOutput', false);  % generate full paths
     
     if strcmp(BatchOpt.Mode{1}, 'Load each N-th dataset') || strcmp(BatchOpt.Mode{1}, 'Add each N-th dataset as new color channel')
-        answer = mibInputDlg({mibPath}, sprintf('There are %d file selected; please enter the loading step:\n\nFor example when step is 2 \nMIB loads each second dataset', numel(fn)),'Enter the step','2');
+        answer = mibInputDlg({mibPath}, sprintf('There are %d file selected; please enter the loading step:\n\nFor example when step is 2 \nMIB loads each second dataset', numel(BatchOpt.Filenames)),'Enter the step','2');
         if isempty(answer); return; end
         BatchOpt.EachNthStep = answer{1};
     end
-    batchModeSwitch = 0;    % indicates that the function is running in the gui mode
 end
 
-if numel(fn) < 1
+if numel(BatchOpt.Filenames) < 1
     errordlg(sprintf('No files were selected!!!\nPlease select desired files and try again!\nYou can use Ctrl and Shift for the selection.'), 'Wrong selection!');
     notify(obj.mibModel, 'stopProtocol');
     return; 
@@ -157,7 +167,7 @@ end
 
 if strcmp(BatchOpt.Mode{1}, 'Load each N-th dataset') || strcmp(BatchOpt.Mode{1}, 'Add each N-th dataset as new color channel')
     step = str2double(BatchOpt.EachNthStep);
-    fn = fn(1:step:end);
+    BatchOpt.Filenames = BatchOpt.Filenames(1:step:end);
 end
 
 switch BatchOpt.Mode{1}
@@ -176,9 +186,9 @@ switch BatchOpt.Mode{1}
         options.virtual = obj.mibModel.I{BatchOpt.id}.Virtual.virtual;
         
         if ~strcmp(BatchOpt.Mode{1}, 'Combine files as color channels') 
-            [img, img_info, pixSize] = mibLoadImages(fn, options);
+            [img, img_info, pixSize] = mibLoadImages(BatchOpt.Filenames, options);
             if isempty(img)
-                errordlg(sprintf('!!! Error !!!\n\nIt is not possible to load the dataset...\nDimensions mismatch, perhaps?'), 'Wrong file', 'modal');
+                errordlg(sprintf('!!! Error !!!\n\nIt is not possible to load the dataset...\nDimensions mismatch or not an image?'), 'Wrong file', 'modal');
                 notify(obj.mibModel, 'stopProtocol');
                 return;
             end
@@ -196,23 +206,23 @@ switch BatchOpt.Mode{1}
                 img_info('lutColors') = lutColors;
             end
         else
-            for colChannelId = 1:numel(fn)
+            for colChannelId = 1:numel(BatchOpt.Filenames)
                 if colChannelId==1
-                    [img_temp, img_info, pixSize] = mibLoadImages(fn(colChannelId), options);
+                    [img_temp, img_info, pixSize] = mibLoadImages(BatchOpt.Filenames(colChannelId), options);
                     if isempty(img_temp)
                         errordlg(sprintf('!!! Error !!!\n\nIt is not possible to load the dataset...\nDimensions mismatch, perhaps?'), 'Wrong file', 'modal');
                         notify(obj.mibModel, 'stopProtocol');
                         return;
                     end
-                    img = zeros([img_info('Height'), img_info('Width'), img_info('Colors')*numel(fn), img_info('Depth'), img_info('Time')], img_info('imgClass'));
+                    img = zeros([img_info('Height'), img_info('Width'), img_info('Colors')*numel(BatchOpt.Filenames), img_info('Depth'), img_info('Time')], img_info('imgClass'));
                     img(:,:,1:img_info('Colors'),:,:) = img_temp;
-                    lutColors = zeros(img_info('Colors')*numel(fn), 3);
+                    lutColors = zeros(img_info('Colors')*numel(BatchOpt.Filenames), 3);
                     if isKey(img_info, 'lutColors')
                         lutTemp = img_info('lutColors');
                         lutColors(1:img_info('Colors'), :) = lutTemp(1:img_info('Colors'));
                     end
                 else
-                    [img_temp, img_info_temp, pixSize] = mibLoadImages(fn(colChannelId), options);
+                    [img_temp, img_info_temp, pixSize] = mibLoadImages(BatchOpt.Filenames(colChannelId), options);
                     if isempty(img_temp)
                         errordlg(sprintf('!!! Error !!!\n\nIt is not possible to load the dataset...\nDimensions mismatch, perhaps?'), 'Wrong file', 'modal');
                         notify(obj.mibModel, 'stopProtocol');
@@ -236,7 +246,7 @@ switch BatchOpt.Mode{1}
             if isKey(img_info, 'lutColors')
                 img_info('lutColors') = lutColors;
             end
-            img_info('Colors') = img_info('Colors')*numel(fn);
+            img_info('Colors') = img_info('Colors')*numel(BatchOpt.Filenames);
         end
         
         obj.mibModel.I{BatchOpt.id}.clearContents(img, img_info, obj.mibModel.preferences.disableSelection);
@@ -282,7 +292,7 @@ switch BatchOpt.Mode{1}
             options.bgColor = str2double(BatchOpt.InsertDatasetPosition);
         end
         options.virtual = obj.mibModel.I{BatchOpt.id}.Virtual.virtual;
-        [img, img_info, ~] = mibLoadImages(fn, options);
+        [img, img_info, ~] = mibLoadImages(BatchOpt.Filenames, options);
         obj.mibModel.I{BatchOpt.id}.insertSlice(img, insertPosition, img_info, options);
         
         if obj.mibView.handles.mibLutCheckbox.Value == 1
@@ -293,33 +303,33 @@ switch BatchOpt.Mode{1}
         notify(obj.mibModel, 'newDataset');   % notify mibView about a new dataset; see function obj.mibView.Listner2_Callback for details
         obj.plotImage(1);
     case 'rename'
-        if numel(fn) ~= 1
+        if numel(BatchOpt.Filenames) ~= 1
             msgbox('Please select a single file!', 'Rename file', 'warn');
             return;
         end
         %options.Resize='on';
         %options.WindowStyle='normal';
         %options.Interpreter='none';
-        [path, filename, ext] = fileparts(fn{1});
+        [path, filename, ext] = fileparts(BatchOpt.Filenames{1});
         answer = mibInputDlg({obj.mibPath}, 'Please enter new file name','Rename file',[filename, ext]);
         if isempty(answer); return; end
-        movefile(fn{1}, fullfile(path, answer{1}));
+        movefile(BatchOpt.Filenames{1}, fullfile(path, answer{1}));
         obj.updateFilelist(answer{1});
     case 'delete'
-        if numel(fn) == 1
-            msg = sprintf('You are going to delete\n%s', fn{1});
+        if numel(BatchOpt.Filenames) == 1
+            msg = sprintf('You are going to delete\n%s', BatchOpt.Filenames{1});
         else
-            msg = sprintf('You are going to delete\n%d files', numel(fn));
+            msg = sprintf('You are going to delete\n%d files', numel(BatchOpt.Filenames));
         end
         button =  questdlg(msg,'Delete file(s)?','Delete','Cancel','Cancel');
         if strcmp(button, 'Cancel') == 1; return; end
-        for i=1:numel(fn)
-            delete(fn{i});
+        for i=1:numel(BatchOpt.Filenames)
+            delete(BatchOpt.Filenames{i});
         end
         obj.updateFilelist();
     case 'file_properties'
-        if exist('fn','var') == 0; return; end
-        properties = dir(fn{1});
+        if exist('BatchOpt.Filenames','var') == 0; return; end
+        properties = dir(BatchOpt.Filenames{1});
         msgbox(sprintf('Filename: %s\nDate: %s\nSize: %.3f KB', properties.name, properties.date, properties.bytes/1000),...
             'File info');
     case {'Add as new color channel' 'Add each N-th dataset as new color channel'}   % add color channel
@@ -331,7 +341,7 @@ switch BatchOpt.Mode{1}
             return;
         end
 
-        [img, img_info, ~] = mibLoadImages(fn, options);
+        [img, img_info, ~] = mibLoadImages(BatchOpt.Filenames, options);
         if isempty(img(1)); notify(obj.mibModel, 'stopProtocol'); return; end
         
         if isKey(img_info, 'lutColors')

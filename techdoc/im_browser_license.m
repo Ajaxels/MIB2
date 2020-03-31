@@ -21,7 +21,7 @@
 %
 % <html>
 % Microscopy Image Browser (MIB) a handy tool for image management<br>
-% Copyright (c) 2010-2018<br>
+% Copyright (c) 2010-2020<br>
 % Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br>
 % http://mib.helsinki.fi<br>
 % </html>
@@ -49,6 +49,7 @@
 %
 % * <https://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29 *FreeBSD*>, Berkeley Software Distribution, 2-clause license, GPL compatible
 % * <http://www.gnu.org/licenses/gpl-2.0.html *GPL*>, GNU General Public License, version 2
+% * <https://www.gnu.org/licenses/gpl-3.0.en.html *GPL3*>, GNU General Public License, version 3
 % * <https://en.wikipedia.org/wiki/BSD_licenses#3-clause_license_.28.22Revised_BSD_License.22.2C_.22New_BSD_License.22.2C_or_.22Modified_BSD_License.22.29 *ModifiedBSD*>, Berkeley Software Distribution, 3-clause license, GPL compatible 
 % * <http://en.wikipedia.org/wiki/MIT_License *MIT*>, a free software license originating at the Massachusetts Institute of Technology, GPL compatible
 % * <https://creativecommons.org/licenses/by-nd/3.0/ *CC BY-ND 3.0*>, Attribution-NoDerivs 3.0 Unported
@@ -92,6 +93,21 @@
 %   <td><a href="http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio">via Matlab Exchange</a></td>
 %   <td>FreeBSD,<br> 2007-2013</td>
 %   <td>0.x-2.x</td>
+% </tr>
+% <tr style="">
+%   <td style="font-weight: bold">Cell migration in scratch wound assays</td>
+%   <td>Constantino Carlos Reyes-Aldasoro, City, University of London</td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays">via Matlab Exchange</a></td>
+%   <td>GPL3,<br> 2018</td>
+%   <td>2.65-</td>
+% </tr>
+% <tr style="">
+%   <td style="font-weight: bold">Drag & Drop functionality for JAVA GUI components</td>
+%   <td>Maarten van der Seijs<br>
+%   Delft University of Technology, the Netherlands</td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/53511-drag-drop-functionality-for-java-gui-components">via Matlab Exchange</a></td>
+%   <td>FreeBSD,<br> 2015</td>
+%   <td>2.61-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">DrawRegionBoundaries</td>
@@ -230,6 +246,13 @@
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/8303-local-normalization">via Matlab Exchange</a></td>
 %   <td>ND,<br> 2005</td>
 %   <td>0.x-1.x</td>
+% </tr>
+% <tr style="">
+%   <td style="font-weight: bold">MatGeom</td>
+%   <td>David Legland, INRA, France</td>
+%   <td><a href="https://github.com/mattools/matGeom">GitHub</a></td>
+%   <td>FreeBSD,<br> 2011-</td>
+%   <td>2.3-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">MatTomo, a part of PEET</td>
@@ -372,6 +395,13 @@
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">via Matlab Exchange</a></td>
 %   <td>FreeBSD,<br> 1999</td>
 %   <td>0.x-2.x</td>
+% </tr>
+% <tr style="">
+%   <td style="font-weight: bold">VIOLIN</td>
+%   <td>Holger Hoffmann</td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/45134-violin-plot">via Matlab Exchange</a></td>
+%   <td>FreeBSD,<br>2015</td>
+%   <td>2.65-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">XLWRITE: Generate XLS(X) files without Excel on Mac/Linux/Win</td>

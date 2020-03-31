@@ -75,6 +75,25 @@ if nargin == 2  % batch mode
     end
     BatchModeSwitch = 1;
 else
+    if obj.mibModel.I{BatchOpt.id}.modelType > 256 % squeeze model
+        wb = waitbar(0, sprintf('Squeezing labels\nPlease wait...'));
+        obj.mibModel.mibDoBackup('model', 1);
+        for t=1:obj.mibModel.I{BatchOpt.id}.time
+            SqueezeOpt.blockModeSwitch = 0;
+            SqueezeOpt.id = BatchOpt.id;
+            img = cell2mat(obj.mibModel.getData3D('model', t, 4, NaN, SqueezeOpt));
+            [a, ~, c] = unique(img);    % process further c
+            if a(1) == 0; c = c - 1; end    % remove zeros
+            img = reshape(c, size(img));
+            obj.mibModel.setData3D('model', img, t, 4, NaN, SqueezeOpt);
+            waitbar(t/obj.mibModel.I{BatchOpt.id}.time, wb);
+        end
+        delete(wb);
+        obj.mibAddMaterialBtn_Callback();   % update max available index
+        return;
+    end
+    
+    
     prompts = {sprintf('Specify indices of materials to be removed\n(for example, 2,4,6:8)')};
     defAns = {BatchOpt.MaterialIndices};
     dlgTitle = 'Delete materials';

@@ -14,17 +14,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/01/12 17:22:51 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 04b6cb6df697 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -37,14 +36,8 @@ end
 
 index = double(index); % avoid overflow in idxDataStart computation
 
-[nX nY] = size(img);
-if nX ~= mRCImage.header.nX
-  fprintf('Image size: %d x %d\n', nX, nY);
-  fprintf('Stack image size: %d x %d\n', ...
-          mRCImage.header.nX,  mRCImage.header.nY);
-  PEETError('Image is not the same size as the stack!');
-end
-if nY ~= mRCImage.header.nY
+[nX, nY] = size(img);
+if (nX ~= mRCImage.header.nX || nY ~= mRCImage.header.nY)
   fprintf('Image size: %d x %d\n', nX, nY);
   fprintf('Stack image size: %d x %d\n', ...
           mRCImage.header.nX,  mRCImage.header.nY);
@@ -73,9 +66,9 @@ else
   % Write out the image from the MRC file
   if flgComplex      % handle complex image
     if modeStr(1) == 'i'
-      temp = int16(zeros(2*nX, nY));
+      temp = int16(zeros(2 * nX, nY));
     else
-      temp = single(zeros(2*nX, nY));
+      temp = single(zeros(2 * nX, nY));
     end
     temp(1:2:2*nX-1, :) = real(img);
     temp(2:2:2*nX, :) = imag(img);
@@ -106,7 +99,7 @@ function moveOrExtendFP(fid, index, totalSize)
 status = fseek(fid, index, 'bof');
 
 if status
-  [message errno] = ferror(fid); %#ok<ASGLU>
+  [message, errno] = ferror(fid); %#ok<ASGLU>
   if errno == -27
     %  Seek to the end of the file
     stat2 = fseek(fid, 0, 'eof');

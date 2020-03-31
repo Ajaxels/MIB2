@@ -193,7 +193,7 @@ selectedColorsLUT = obj.I{obj.Id}.lutColors(slices{3},:);     % take LUT colors 
 
 switch colortype
     case 'grayscale'
-        if currViewPort.min(1) ~= 0 || currViewPort.max(1) ~= max_int || currViewPort.gamma ~= 1
+        if obj.mibLiveStretchCheck == 0 && (currViewPort.min(1) ~= 0 || currViewPort.max(1) ~= max_int || currViewPort.gamma ~= 1)
             % convert to the 8bit image
             if ~isa(sImg, 'uint32')
                 sImg = imadjust(sImg,[currViewPort.min(1)/max_int currViewPort.max(1)/max_int],[0 1],currViewPort.gamma(1));    
@@ -360,6 +360,7 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
                     B(modIndeces) = B(modIndeces)*T + modColors(colorId, 3) * (1-T);
                 end
             end
+            
         elseif selectedObject > 0
             i = selectedObject;
             pntlist = find(M==i);

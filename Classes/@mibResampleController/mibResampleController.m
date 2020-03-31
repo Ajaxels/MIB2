@@ -1,17 +1,17 @@
 classdef mibResampleController  < handle
     % @type mibResampleController class is resposnible for showing the dataset
-    % resample window, available from MIB->Menu->Dataset->Resample 
+    % resample window, available from MIB->Menu->Dataset->Resample
     
-	% Copyright (C) 01.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-	% 
-	% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+    % Copyright (C) 01.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+    %
+    % part of Microscopy Image Browser, http:\\mib.helsinki.fi
     % This program is free software; you can redistribute it and/or
     % modify it under the terms of the GNU General Public License
     % as published by the Free Software Foundation; either version 2
     % of the License, or (at your option) any later version.
-	%
-	% Updates
-	% 30.08.2017 IB added shift of annotations during resampling
+    %
+    % Updates
+    % 30.08.2017 IB added shift of annotations during resampling
     % 12.03.2019 IB updated for the batch mode
     
     properties
@@ -56,17 +56,15 @@ classdef mibResampleController  < handle
             [height, width, ~, depth] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, NaN, getDataOpt);
             
             % fill BatchOpt structure with default values
+            obj.BatchOpt.ResamplingMode = {'Dimensions'};
+            obj.BatchOpt.ResamplingMode{2} = {'Dimensions', 'Voxels', 'PercentageXYZ', 'PercentageXY'};
             obj.BatchOpt.ResamplingFunction = {'imresize'};     % function used for resampling
             obj.BatchOpt.ResamplingFunction{2} = [{'interpn'},{'imresize'},{'tformarray'}];
             obj.BatchOpt.ResamplingMethod = {'cubic'};            % method used for resampling of images
             obj.BatchOpt.ResamplingMethod{2} = [{'nearest'},{'linear'},{'spline'},{'cubic'},{'box'},{'triangle'},{'lanczos2'},{'lanczos2'}];
             obj.BatchOpt.ResamplingMethodModels = {'nearest'};    % method used for resampling of models
             obj.BatchOpt.ResamplingMethodModels{2} = [{'nearest'},{'linear'},{'spline'},{'cubic'}];
-            obj.BatchOpt.Dimensions = true;                    % type of values for resampling, dims in pixels
-            obj.BatchOpt.Voxels = false;                        % type of values for resampling, voxels
-            obj.BatchOpt.PercentageXYZ = false;                 % type of values for resampling, percentage
-            obj.BatchOpt.PercentageXY = false;                  % type of values for resampling, percentage
-            obj.BatchOpt.DimensionX = num2str(width);        % new width in pix                
+            obj.BatchOpt.DimensionX = num2str(width);        % new width in pix
             obj.BatchOpt.DimensionY = num2str(height);        % new height in pix
             obj.BatchOpt.DimensionZ = num2str(depth);          % new depth in pix
             obj.BatchOpt.Percentage = '100';        % new relative percentage
@@ -80,13 +78,10 @@ classdef mibResampleController  < handle
             obj.BatchOpt.mibBatchActionName = 'Resample...';
             
             % tooltips that will accompany the BatchOpt
+            obj.BatchOpt.mibBatchTooltip.ResamplingMode = 'Do resampling based on this selected property';
             obj.BatchOpt.mibBatchTooltip.ResamplingFunction = sprintf('Resampling function used to resize the dataset');
             obj.BatchOpt.mibBatchTooltip.ResamplingMethod = sprintf('Resampling method for images\nit is recommended to use "cubic" for downsampling and "nearest" for upsampling');
             obj.BatchOpt.mibBatchTooltip.ResamplingMethodModels = sprintf('Resampling method for models\nit is recommended to use "nearest"');
-            obj.BatchOpt.mibBatchTooltip.Dimensions = sprintf('Resample the dataset based on provided dimensions in pixels');
-            obj.BatchOpt.mibBatchTooltip.Voxels = sprintf('Resample the dataset based on provided voxel size');
-            obj.BatchOpt.mibBatchTooltip.PercentageXYZ = sprintf('Resample the dataset based on provided scaling in %% for XYZ dimensions');
-            obj.BatchOpt.mibBatchTooltip.PercentageXY = sprintf('Resample the dataset based on provided scaling in %% for XY dimensions');
             obj.BatchOpt.mibBatchTooltip.DimensionX = sprintf('[Dimensions only]\nNew width of the dataset');
             obj.BatchOpt.mibBatchTooltip.DimensionY = sprintf('[Dimensions only]\nNew height of the dataset');
             obj.BatchOpt.mibBatchTooltip.DimensionZ = sprintf('[Dimensions only]\nNew depth of the dataset');
@@ -96,7 +91,7 @@ classdef mibResampleController  < handle
             obj.BatchOpt.mibBatchTooltip.VoxelZ = sprintf('[Voxels only]\nNew voxel size in Z');
             obj.BatchOpt.mibBatchTooltip.FixAspectRatio = sprintf('Fix the aspect ratio during resizing');
             obj.BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');
-           
+            
             options.blockModeSwitch = 0;
             [obj.height, obj.width, obj.color, obj.depth] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, 0, options);
             obj.color = numel(obj.color);
@@ -106,11 +101,11 @@ classdef mibResampleController  < handle
             % and performs the function in the headless mode without GUI
             if nargin == 3
                 BatchOptInput = varargin{2};
-                if isstruct(BatchOptInput) == 0 
+                if isstruct(BatchOptInput) == 0
                     if isnan(BatchOptInput)
                         obj.returnBatchOpt();   % obtain Batch parameters
                     else
-                        errordlg(sprintf('A structure as the 4th parameter is required!')); 
+                        errordlg(sprintf('A structure as the 4th parameter is required!'));
                     end
                     return;
                 end
@@ -118,30 +113,24 @@ classdef mibResampleController  < handle
                 % combine fields from input and default structures
                 obj.BatchOpt = updateBatchOptCombineFields_Shared(obj.BatchOpt, BatchOptInput);
                 
-                % check the radio button names
-                if obj.BatchOpt.Dimensions + obj.BatchOpt.Voxels + obj.BatchOpt.PercentageXYZ + obj.BatchOpt.PercentageXY > 1
-                    errordlg(sprintf('The wrong initialization of radio buttons!\n\nOnly one of the following options should be used:\n.Dimensions=true (.DimensionX, .DimensionY, .DimensionZ)\n.Voxels=true (.VoxelX, .VoxelY, .VoxelZ)\n.PercentageXYZ=true (.Percentage)\n.PercentageXY=true (.Percentage)'), 'Resamping: initialization error');
-                    notify(obj.mibModel, 'stopProtocol');
-                    return;
-                end
-                
                 if isfield(obj.BatchOpt, 'id')
                     errordlg(sprintf('!!! Error !!!\n\nCrop tool is not compatible with the "id" field yet'), 'Crop: initialization error');
                     notify(obj.mibModel, 'stopProtocol');
                 end
                 
-                obj.resampleBtn_Callback();
+                batchModeSwitch = 1;
+                obj.resampleBtn_Callback(batchModeSwitch);
                 return;
             end
             
             guiName = 'mibResampleGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
-				
-			obj.updateWidgets();
-			
-			% add listner to obj.mibModel and call controller function as a callback
-             % option 1: recommended, detects event triggered by mibController.updateGuiWidgets
-             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes updateGuiWidgets
+            
+            obj.updateWidgets();
+            
+            % add listner to obj.mibModel and call controller function as a callback
+            % option 1: recommended, detects event triggered by mibController.updateGuiWidgets
+            obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes updateGuiWidgets
         end
         
         function closeWindow(obj)
@@ -194,10 +183,10 @@ classdef mibResampleController  < handle
             % BatchOptOut: a local structure with Batch Options generated
             % during Continue callback. It may contain more fields than
             % obj.BatchOpt structure
-             
+            
             if nargin < 2; BatchOptOut = obj.BatchOpt; end
             
-            % trigger syncBatch event to send BatchOptOut to mibBatchController 
+            % trigger syncBatch event to send BatchOptOut to mibBatchController
             eventdata = ToggleEventData(BatchOptOut);
             notify(obj.mibModel, 'syncBatch', eventdata);
         end
@@ -223,70 +212,71 @@ classdef mibResampleController  < handle
             % hObject: handle to the editbox
             pixSize = obj.mibModel.getImageProperty('pixSize');
             
-            if obj.BatchOpt.Dimensions
-                switch hObject.Tag
-                    case 'DimensionX'
-                        val = str2double(hObject.String);
-                        ratio = obj.width / val;
-                        obj.View.handles.VoxelX.String = num2str(pixSize.x*ratio);
-                        if obj.View.handles.FixAspectRatio.Value
-                            obj.View.handles.DimensionY.String = num2str(floor(obj.height/ratio));
-                            obj.View.handles.VoxelY.String = num2str(pixSize.y*ratio);
-                        end
-                    case 'DimensionY'
-                        val = str2double(hObject.String);
-                        ratio = obj.height / val;
-                        obj.View.handles.VoxelY.String = num2str(pixSize.y*ratio);
-                        if obj.View.handles.FixAspectRatio.Value
-                            obj.View.handles.DimensionX.String = num2str(floor(obj.width/ratio));
+            switch obj.BatchOpt.ResamplingMode{1}
+                case 'Dimensions'
+                    switch hObject.Tag
+                        case 'DimensionX'
+                            val = str2double(hObject.String);
+                            ratio = obj.width / val;
                             obj.View.handles.VoxelX.String = num2str(pixSize.x*ratio);
-                        end
-                    case 'DimensionZ'
-                        val = str2double(hObject.String);
-                        ratio = obj.depth / val;
-                        obj.View.handles.VoxelZ.String = num2str(pixSize.z*ratio);
-                end
-            elseif obj.BatchOpt.Voxels
-                switch hObject.Tag
-                    case 'VoxelX'
-                        val = str2double(hObject.String);
-                        ratio = val / pixSize.x;
-                        obj.View.handles.DimensionX.String = num2str(floor(obj.width/ratio));
-                        if obj.View.handles.FixAspectRatio.Value
-                            obj.View.handles.DimensionY.String = num2str(floor(obj.height/ratio));
+                            if obj.View.handles.FixAspectRatio.Value
+                                obj.View.handles.DimensionY.String = num2str(floor(obj.height/ratio));
+                                obj.View.handles.VoxelY.String = num2str(pixSize.y*ratio);
+                            end
+                        case 'DimensionY'
+                            val = str2double(hObject.String);
+                            ratio = obj.height / val;
                             obj.View.handles.VoxelY.String = num2str(pixSize.y*ratio);
-                        end
-                    case 'VoxelY'
-                        val = str2double(hObject.String);
-                        ratio = val / pixSize.y;
-                        obj.View.handles.DimensionY.String = num2str(floor(obj.height/ratio));
-                        if obj.View.handles.FixAspectRatio.Value
+                            if obj.View.handles.FixAspectRatio.Value
+                                obj.View.handles.DimensionX.String = num2str(floor(obj.width/ratio));
+                                obj.View.handles.VoxelX.String = num2str(pixSize.x*ratio);
+                            end
+                        case 'DimensionZ'
+                            val = str2double(hObject.String);
+                            ratio = obj.depth / val;
+                            obj.View.handles.VoxelZ.String = num2str(pixSize.z*ratio);
+                    end
+                case 'Voxels'
+                    switch hObject.Tag
+                        case 'VoxelX'
+                            val = str2double(hObject.String);
+                            ratio = val / pixSize.x;
                             obj.View.handles.DimensionX.String = num2str(floor(obj.width/ratio));
-                            obj.View.handles.VoxelX.String = num2str(pixSize.x*ratio);
-                        end
-                    case 'VoxelZ'
-                        val = str2double(hObject.String);
-                        ratio = val / pixSize.z;
-                        obj.View.handles.DimensionZ.String = num2str(floor(obj.depth/ratio));
-                end
-            elseif obj.BatchOpt.PercentageXYZ
-                val = str2double(obj.View.handles.Percentage.String);
-                obj.View.handles.DimensionX.String = num2str(floor(obj.width/100*val));
-                obj.View.handles.DimensionY.String = num2str(floor(obj.height/100*val));
-                obj.View.handles.DimensionZ.String = num2str(floor(obj.depth/100*val));
-                obj.View.handles.VoxelX.String = num2str(pixSize.x*obj.width/floor(obj.width/100*val));
-                obj.View.handles.VoxelY.String = num2str(pixSize.y*obj.height/floor(obj.height/100*val));
-                obj.View.handles.VoxelZ.String = num2str(pixSize.z*obj.depth/floor(obj.depth/100*val));
-            elseif obj.BatchOpt.PercentageXY
-                val = str2double(obj.View.handles.Percentage.String);
-                obj.View.handles.DimensionX.String = num2str(floor(obj.width/100*val));
-                obj.View.handles.DimensionY.String = num2str(floor(obj.height/100*val));
-                obj.View.handles.VoxelX.String = num2str(pixSize.x*obj.width/floor(obj.width/100*val));
-                obj.View.handles.VoxelY.String = num2str(pixSize.y*obj.height/floor(obj.height/100*val));
+                            if obj.View.handles.FixAspectRatio.Value
+                                obj.View.handles.DimensionY.String = num2str(floor(obj.height/ratio));
+                                obj.View.handles.VoxelY.String = num2str(pixSize.y*ratio);
+                            end
+                        case 'VoxelY'
+                            val = str2double(hObject.String);
+                            ratio = val / pixSize.y;
+                            obj.View.handles.DimensionY.String = num2str(floor(obj.height/ratio));
+                            if obj.View.handles.FixAspectRatio.Value
+                                obj.View.handles.DimensionX.String = num2str(floor(obj.width/ratio));
+                                obj.View.handles.VoxelX.String = num2str(pixSize.x*ratio);
+                            end
+                        case 'VoxelZ'
+                            val = str2double(hObject.String);
+                            ratio = val / pixSize.z;
+                            obj.View.handles.DimensionZ.String = num2str(floor(obj.depth/ratio));
+                    end
+                case 'PercentageXYZ'
+                    val = str2double(obj.View.handles.Percentage.String);
+                    obj.View.handles.DimensionX.String = num2str(floor(obj.width/100*val));
+                    obj.View.handles.DimensionY.String = num2str(floor(obj.height/100*val));
+                    obj.View.handles.DimensionZ.String = num2str(floor(obj.depth/100*val));
+                    obj.View.handles.VoxelX.String = num2str(pixSize.x*obj.width/floor(obj.width/100*val));
+                    obj.View.handles.VoxelY.String = num2str(pixSize.y*obj.height/floor(obj.height/100*val));
+                    obj.View.handles.VoxelZ.String = num2str(pixSize.z*obj.depth/floor(obj.depth/100*val));
+                case 'PercentageXY'
+                    val = str2double(obj.View.handles.Percentage.String);
+                    obj.View.handles.DimensionX.String = num2str(floor(obj.width/100*val));
+                    obj.View.handles.DimensionY.String = num2str(floor(obj.height/100*val));
+                    obj.View.handles.VoxelX.String = num2str(pixSize.x*obj.width/floor(obj.width/100*val));
+                    obj.View.handles.VoxelY.String = num2str(pixSize.y*obj.height/floor(obj.height/100*val));
             end
             
             % update obj.BatchOpt
-            obj.BatchOpt.DimensionX = obj.View.handles.DimensionX.String;        % new width in pix                
+            obj.BatchOpt.DimensionX = obj.View.handles.DimensionX.String;        % new width in pix
             obj.BatchOpt.DimensionY = obj.View.handles.DimensionY.String;        % new height in pix
             obj.BatchOpt.DimensionZ = obj.View.handles.DimensionZ.String;          % new depth in pix
             obj.BatchOpt.Percentage = obj.View.handles.Percentage.String;        % new relative percentage
@@ -295,37 +285,47 @@ classdef mibResampleController  < handle
             obj.BatchOpt.VoxelZ = obj.View.handles.VoxelZ.String;      % new voxel size for Z
         end
         
-        function resampleBtn_Callback(obj)
-            % function resampleBtn_Callback(obj)
+        function resampleBtn_Callback(obj, batchModeSwitch)
+            % function resampleBtn_Callback(obj, batchModeSwitch)
             % resample the current dataset
+            %
+            % Parameters:
+            % batchModeSwitch: [@em optional] switch indicating the batch
+            % mode
+            
+            if nargin < 2; batchModeSwitch = 0; end
             tic
             pixSize = obj.mibModel.getImageProperty('pixSize');
             
+            % do full backup
+            if batchModeSwitch == 0; obj.mibModel.mibDoBackup('mibImage'); end
+            
             BatchOptLoc = obj.BatchOpt;
             % recompute provided values to width/height/depth
-            if BatchOptLoc.Voxels 
-                voxX = str2double(BatchOptLoc.VoxelX);
-                ratio = voxX / pixSize.x;
-                BatchOptLoc.DimensionX = num2str(floor(obj.width/ratio));
-                if BatchOptLoc.FixAspectRatio
-                    BatchOptLoc.DimensionY = num2str(floor(obj.height/ratio));
-                else
-                    voxY = str2double(BatchOptLoc.VoxelY);
-                    ratio = voxY / pixSize.y;
-                    BatchOptLoc.DimensionY = num2str(floor(obj.height/ratio));
-                end
-                valZ = str2double(BatchOptLoc.VoxelZ);
-                ratio = valZ / pixSize.z;
-                BatchOptLoc.DimensionZ = num2str(floor(obj.depth/ratio));
-            elseif BatchOptLoc.PercentageXYZ
-                val = str2double(BatchOptLoc.Percentage);
-                BatchOptLoc.DimensionX = num2str(floor(obj.width/100*val));
-                BatchOptLoc.DimensionY = num2str(floor(obj.height/100*val));
-                BatchOptLoc.DimensionZ = num2str(floor(obj.depth/100*val));
-            elseif BatchOptLoc.PercentageXY
-                val = str2double(BatchOptLoc.Percentage);
-                BatchOptLoc.DimensionX = num2str(floor(obj.width/100*val));
-                BatchOptLoc.DimensionY = num2str(floor(obj.height/100*val));
+            switch BatchOptLoc.ResamplingMode{1}
+                case 'Voxels'
+                    voxX = str2double(BatchOptLoc.VoxelX);
+                    ratio = voxX / pixSize.x;
+                    BatchOptLoc.DimensionX = num2str(floor(obj.width/ratio));
+                    if BatchOptLoc.FixAspectRatio
+                        BatchOptLoc.DimensionY = num2str(floor(obj.height/ratio));
+                    else
+                        voxY = str2double(BatchOptLoc.VoxelY);
+                        ratio = voxY / pixSize.y;
+                        BatchOptLoc.DimensionY = num2str(floor(obj.height/ratio));
+                    end
+                    valZ = str2double(BatchOptLoc.VoxelZ);
+                    ratio = valZ / pixSize.z;
+                    BatchOptLoc.DimensionZ = num2str(floor(obj.depth/ratio));
+                case 'PercentageXYZ'
+                    val = str2double(BatchOptLoc.Percentage);
+                    BatchOptLoc.DimensionX = num2str(floor(obj.width/100*val));
+                    BatchOptLoc.DimensionY = num2str(floor(obj.height/100*val));
+                    BatchOptLoc.DimensionZ = num2str(floor(obj.depth/100*val));
+                case 'PercentageXY'
+                    val = str2double(BatchOptLoc.Percentage);
+                    BatchOptLoc.DimensionX = num2str(floor(obj.width/100*val));
+                    BatchOptLoc.DimensionY = num2str(floor(obj.height/100*val));
             end
             
             newW = str2double(BatchOptLoc.DimensionX);
@@ -404,7 +404,7 @@ classdef mibResampleController  < handle
             options.method = ResamplingMethodModels;
             options.imgType = '3D';
             % resample model and mask
-            modelDataType = 'model'; 
+            modelDataType = 'model';
             if obj.mibModel.I{obj.mibModel.Id}.modelExist
                 if BatchOptLoc.showWaitbar
                     waitbar(0.75,wb,sprintf('Resampling model...\n[%d %d %d %d]->[%d %d %d %d]', ...
@@ -485,13 +485,14 @@ classdef mibResampleController  < handle
             end
             toc;
             
-            notify(obj.mibModel, 'newDataset');
+            notify(obj.mibModel, 'newDatasetLite');
             eventdata = ToggleEventData(1);
             notify(obj.mibModel, 'plotImage', eventdata);
             
             % for batch need to generate an event and send the BatchOptLoc
             % structure with it to the macro recorder / mibBatchController
-            obj.returnBatchOpt(BatchOptLoc);
+            %obj.returnBatchOpt(BatchOptLoc);
+            obj.returnBatchOpt(obj.BatchOpt);
             
             %obj.closeWindow();
         end

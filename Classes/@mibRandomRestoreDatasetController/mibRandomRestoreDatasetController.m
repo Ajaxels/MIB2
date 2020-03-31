@@ -165,7 +165,7 @@ classdef mibRandomRestoreDatasetController < handle
             includeModels = obj.View.handles.includeModelCheck.Value;   % switch to include or not model files that are places in the input folders
             includeMasks = obj.View.handles.includeMaskCheck.Value;   % switch to include or not mask files that are places in the input folders
             includeAnnotations = obj.View.handles.includeAnnotationsCheck.Value;   % switch to include or not annotations files that are places in the input folders
-            %includeMeasurements = 1;
+            includeMeasurements = obj.View.handles.includeMeasurementsCheck.Value;   % switch to include measurements
             
             filename = obj.inputFilename;
             if exist(filename, 'file') == 0   % file does not exist
@@ -442,7 +442,7 @@ classdef mibRandomRestoreDatasetController < handle
                 
                 for dirId = 1:numel(obj.Settings.inputDirName)
                     outputIndices = find(obj.Settings.inputIndices==dirId);     % find linear indices for each unrandomized directory
-                    
+                    Data = [];
                     for sliceIndex = 1:numel(outputIndices)
                         dirInId = obj.Settings.outputIndices(outputIndices(sliceIndex));   % index of the randomized directory
                         randomSliceNumber = find(obj.Settings.OutputIndicesSorted{dirInId} == outputIndices(sliceIndex));  % slice number of the randomized dataset that correspond to sliceIndex of the non-rand dataset
@@ -450,12 +450,16 @@ classdef mibRandomRestoreDatasetController < handle
                         
                         if ~isempty(posIndices)
                             CurrData = InputModels{dirInId}.Data(posIndices);
+                            %for i=1:numel(CurrData)
+                            %    CurrData(i).Z = sliceIndex;     % update slice number
+                            %    CurrData(i).Z = sliceIndex;     % update the index
+                            %end
                             [CurrData.Z] = deal(sliceIndex);
-                            if sliceIndex > 1
+                            %if sliceIndex > 1
                                 Data = [Data, CurrData]; %#ok<AGROW>
-                            else
-                                Data = CurrData;
-                            end
+                            %else
+                            %    Data = CurrData;
+                            %end
                         end
                     end
                     
@@ -465,6 +469,11 @@ classdef mibRandomRestoreDatasetController < handle
                     
                     % generate measurement filename
                     measurementsFilename = fullfile(obj.Settings.inputDirName{dirId}, sprintf('Measure_RestoreRand_%s.measure', dateTag));
+                    
+                    % update indices
+                    for i=1:numel(Data)
+                        Data(i).n = i; %#ok<AGROW>
+                    end
                     
                     % save measurements
                     save(measurementsFilename, 'Data', '-mat', '-v7.3');

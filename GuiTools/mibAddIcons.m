@@ -106,20 +106,23 @@ jImageMenu.doClick; % open the Image menu
 drawnow;    % set delay
 jImageMenu.doClick; % close the menu
 drawnow;    % set delay
-
     Item = jImageMenu.getMenuComponent(0);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'changemode.png')));
     Item = jImageMenu.getMenuComponent(1);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'colorchannels.png')));
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'adjust_display.png')));
     Item = jImageMenu.getMenuComponent(2);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'contrast.png')));
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'colorchannels.png')));
     Item = jImageMenu.getMenuComponent(3);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'contrast.png')));
+    Item = jImageMenu.getMenuComponent(4);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'invert.png')));
-    Item = jImageMenu.getMenuComponent(5);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'tools.png')));
     Item = jImageMenu.getMenuComponent(6);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'morph_ops.png')));
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'collage.png')));
+    Item = jImageMenu.getMenuComponent(7);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'tools.png')));
     Item = jImageMenu.getMenuComponent(8);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'morph_ops.png')));
+    Item = jImageMenu.getMenuComponent(10);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'intensity.png')));
     
 jModelMenu = jMenuBar.getComponent(3);
@@ -212,6 +215,8 @@ drawnow;    % set delay
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'watershed.png')));     
     Item = jMeasureMenu.getMenuComponent(4);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'stereology.png')));     
+    Item = jMeasureMenu.getMenuComponent(5);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'merge-vertical.png')));     
     
 jHelpMenu = jMenuBar.getComponent(8);
 jHelpMenu.doClick; % open the Help menu

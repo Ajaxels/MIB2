@@ -57,7 +57,9 @@
                 <tocitem target="ug_gui_menu_dataset.html">Dataset
                   <tocitem target="ug_gui_menu_dataset_alignment.html">Alignment...</tocitem>
                 </tocitem>
-                <tocitem target="ug_gui_menu_image.html">Image</tocitem>
+                <tocitem target="ug_gui_menu_image.html">Image
+                    <tocitem target="ug_gui_menu_image_filters.html">Image filters</tocitem>
+                </tocitem>
                 <tocitem target="ug_gui_menu_models.html">Models
                   <tocitem target="ug_gui_menu_mask_statistics.html">Model statistics</tocitem>
                 </tocitem>

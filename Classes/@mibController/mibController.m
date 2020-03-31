@@ -10,7 +10,7 @@ classdef mibController < handle
     %
     
     properties
-        mibVersion = 'ver. 2.601 / 04.11.2019';  % ATTENTION! it is important to have the version number between "ver." and "/"
+        mibVersion % = 'ver. 2.601 / 04.11.2019';  % ATTENTION! it is important to have the version number between "ver." and "/"
         % version of MIB
         mibModel
         % handles to the model
@@ -22,6 +22,8 @@ classdef mibController < handle
         % version of Matlab
         mibPath 
         % path to MIB installation directory
+        DragNDrop
+        % drag and drop handle for dropping the files to the file listbox
         brushSizeNumbers
         % matrix with the font for changing of brush size
         childControllers
@@ -58,7 +60,7 @@ classdef mibController < handle
             switch evnt.EventName
                 case 'updateId'
                     obj.updateGuiWidgets();
-                case 'newDataset'
+                case {'newDataset', 'newDatasetLite'}
                     if ismember('Parameter', fieldnames(evnt))
                         obj.updateAxesLimits('resize', evnt.Parameter);     % where evnt.Parameter is index if the container to update
                         obj.mibModel.I{evnt.Parameter}.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;   % update BioFormatsMemoizer directory
@@ -68,7 +70,9 @@ classdef mibController < handle
                     end
                     obj.updateGuiWidgets();
                     obj.mibModel.newDatasetSwitch = abs(obj.mibModel.newDatasetSwitch) - 1;
-                    obj.mibModel.U.clearContents();  % clear undo history
+                    if strcmp(evnt.EventName, 'newDataset')
+                        obj.mibModel.U.clearContents();  % clear undo history
+                    end
                 case 'plotImage'
                     if ismember('Parameter', fieldnames(evnt))
                         if isa(evnt.Parameter, 'double')   % if number, use evnt.Parameter as resize switch in plotImage
@@ -208,6 +212,8 @@ classdef mibController < handle
         mibCreateModelBtn_Callback(obj)        % Create a new model
         
         mibDoUndo(obj, newIndex)        % Undo the recent changes with Ctrl+Z shortcut
+        
+        mibDragAndDropFiles(obj, DragNDrop, event)  % drag and drop files to mibFilesListbox
         
         mibEraserEdit_Callback(obj)        % increase size of the eraser tool with the provided in obj.mibView.handles.mibEraserEdit
         
@@ -415,8 +421,8 @@ classdef mibController < handle
 %             obj.childControllers(id) = [];
 %         end
         
-        function obj = mibController(mibModel)
-            % function obj = mibController(mibModel)
+        function obj = mibController(mibModel, mibVersion)
+            % function obj = mibController(mibModel, mibVersion)
             % mibController class constructor
             %
             % Constructor for the mibController class. Create a new instance of
@@ -424,9 +430,12 @@ classdef mibController < handle
             %
             % Parameters:
             % mibModel: a handle to mibModel class
+            % mibVersion: a string with the current version of MIB
             
             % define some global variables
             global Font mibPath scalingGUI DejaVuSansMono;
+            
+            obj.mibVersion = mibVersion;
             
             % when insertText is missing MIB will use a legacy function to add text to image
             % load the text table and keep it in a global variable
@@ -438,6 +447,16 @@ classdef mibController < handle
             try
                 if isdeployed()
                     obj.mibPath = fileparts(GetExeLocation());
+                    %q = questdlg(sprintf('mib path: %s', obj.mibPath), 'yes');
+                    
+                    if ismac
+                        % fix  obj.mibPath = '/Applications/MIB/application/MIB.app/Contents/MacOS'
+                        % for some macos versions
+                        posIndex = strfind(obj.mibPath, 'MIB.app');
+                        if ~isempty(posIndex)
+                            obj.mibPath = obj.mibPath(1:posIndex-2);    % clip the path to '/Applications/MIB/application'
+                        end
+                    end
                 else
                     obj.mibPath = fileparts(which('mib'));
                 end
@@ -525,7 +544,7 @@ classdef mibController < handle
             obj.mibView = mibView(obj);
             
             % add icons for buttons
-            imageList = {'plus', 'minus', 'settings', 'next', 'step', 'step_and_advance', 'eye'};
+            imageList = {'plus', 'minus', 'settings', 'next', 'step', 'step_and_advance', 'eye', 'shrink'};
             for fnId=1:numel(imageList)
                 fn = fullfile(mibPath, 'Resources', [imageList{fnId} '.png']);
                 [I, map, transparency] = imread(fn);
@@ -536,7 +555,6 @@ classdef mibController < handle
             end
             obj.mibView.handles.mibRemoveMaterialBtn.CData = obj.mibModel.sessionSettings.guiImages.minus;
             obj.mibView.handles.mibBrushPanelInterpolationSettingsBtn.CData = obj.mibModel.sessionSettings.guiImages.settings;
-            
             
             % update parameters for mibImages
             for i=1:obj.mibModel.maxId
@@ -585,6 +603,7 @@ classdef mibController < handle
             obj.listener{5} = addlistener(obj.mibModel, 'updateTimeSlider', @(src,evnt) mibController.Listner2_Callback(obj,src,evnt));
             obj.listener{6} = addlistener(obj.mibModel, 'showMask', @(src,evnt) mibController.Listner2_Callback(obj,src,evnt));
             obj.listener{7} = addlistener(obj.mibModel, 'showModel', @(src,evnt) mibController.Listner2_Callback(obj,src,evnt));
+            obj.listener{8} = addlistener(obj.mibModel, 'newDatasetLite', @(src,evnt) mibController.Listner2_Callback(obj, src, evnt));
             
             % update version specific elements
             if obj.matlabVersion < 9
@@ -611,6 +630,19 @@ classdef mibController < handle
                         obj.mibView.handles.mibImageFilterPopup.String = currStr;
                     end
                 end
+            end
+            
+            % define drag and drop functionality for dragging the files
+            % into the View panel of MIB
+            obj.mibView.handles.jmibViewPanel = findjobj(obj.mibView.handles.mibViewPanel);
+            obj.DragNDrop = mibDragNDropControl(obj.mibView.handles.jmibViewPanel);
+            if obj.DragNDrop.initStatus
+                obj.DragNDrop.DropFileFcn = @obj.mibDragAndDropFiles;
+                fprintf('Drag and drop of files to the Image View panel: ENABLED\n');
+            else
+                delete(obj.DragNDrop);  % delete class and make property empty
+                obj.DragNDrop = [];
+                fprintf('Drag and drop of files to the Image View panel: DISABLED\n');
             end
             
             if exist('frame','var')     % close splash window

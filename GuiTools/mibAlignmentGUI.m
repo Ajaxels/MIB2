@@ -187,8 +187,8 @@ if strcmp(tagId, 'TwoStacks')
     handles.CorrelateWith.Enable = 'off';
     handles.correlateWithText.Enable = 'off';
 else
-    handles.Algorithm.String = {'Drift correction','Template matching','Automatic feature-based','Single landmark point',...
-                                    'Landmarks, multi points', 'Three landmark points', 'Color channels, multi points'};
+    handles.Algorithm.String = {'Drift correction','Template matching','Automatic feature-based','AMST: median-smoothed template', ...
+            'Single landmark point', 'Landmarks, multi points', 'Three landmark points', 'Color channels, multi points'};
     handles.secondDatasetPanel.Visible = 'off';
     handles.saveShiftsPanel.Visible = 'on';
     handles.currStackOptionsPanel.Visible = 'on';
@@ -263,7 +263,10 @@ handles.CorrelateWith.Enable = 'off';
 handles.TransformationDegree.Enable = 'off';
 handles.FeatureDetectorType.Enable = 'off';
 handles.previewFeaturesBtn.Enable = 'off';
-
+handles.MedianSize.Enable = 'off';
+handles.UseParallelComputing.Enable = 'off';
+handles.previewFeaturesBtn.String = 'Preview';
+handles.Subarea.Enable = 'on';
 switch methodSelected
     case 'Drift correction'
         textStr = sprintf('Use the Drift correction mode for small shifts or comparably sized images');
@@ -285,6 +288,22 @@ switch methodSelected
         handles.previewFeaturesBtn.Enable = 'on';
         handles.ColorChannel.Enable = 'on';
         handles.winController.updateBatchOptFromGUI(handles.TransformationType);   % update BatchOpt parameters
+    case 'AMST: median-smoothed template'
+        if handles.TransformationType.Value > 3; handles.TransformationType.Value = 1; end
+        textStr = sprintf('Align dataset to a median smoothed in Z version of itself which compensate for local deformations, the dataset has to be prealigned with Drift correction');
+        handles.TransformationType.Enable = 'on';
+        %handles.TransformationMode.Enable = 'on';
+        handles.TransformationMode.Value = 2;
+        handles.TransformationType.String = {'similarity', 'affine', 'projective'};
+        handles.TransformationType.Value = 2;
+        handles.previewFeaturesBtn.Enable = 'on';
+        handles.ColorChannel.Enable = 'on';
+        handles.MedianSize.Enable = 'on';
+        handles.UseParallelComputing.Enable = 'on';
+        handles.previewFeaturesBtn.String = 'Settings';
+        handles.Subarea.Enable = 'off';
+        handles.winController.updateBatchOptFromGUI(handles.TransformationType);   % update BatchOpt parameters
+        handles.winController.updateBatchOptFromGUI(handles.TransformationMode);   % update BatchOpt parameters
     case 'Single landmark point'
         textStr = sprintf('Use the brush tool to mark two corresponding spots on consecutive slices. The dataset will be translated to align the marked spots');
     case 'Three landmark points'

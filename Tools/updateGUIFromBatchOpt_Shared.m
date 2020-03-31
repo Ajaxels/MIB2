@@ -37,6 +37,9 @@ for fieldId = 1:numel(fieldNames)
                     end
                     View.Figure.(fieldNames{fieldId}).Value = BatchOpt.(fieldNames{fieldId}){1};
             end
+            if isfield(BatchOpt, 'mibBatchTooltip')
+                View.Figure.(fieldNames{fieldId}).Tooltip = BatchOpt.mibBatchTooltip.(fieldNames{fieldId});
+            end
         end
     else    % for GUIs made with GUIDE
         if isfield(View.handles, fieldNames{fieldId})

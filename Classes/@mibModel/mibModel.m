@@ -75,6 +75,8 @@ classdef mibModel < handle
         % change of a time point using the slider
         newDataset
         % loaded or imported a new dataset
+        newDatasetLite
+        % loaded or imported a new dataset but without clearing the undo history
         plotImage
         % ask to redraw the image from mibController
         setData
@@ -181,7 +183,7 @@ classdef mibModel < handle
         
         mibDoBackup(obj, type, switch3d, storeOptions)        % store the dataset for Undo
         
-        mibImageDeepCopy(obj, toId, fromId)        % copy mibImage class from one container to another; used in mibBufferToggleContext_Callback, duplicate
+        mibImg = mibImageDeepCopy(obj, fromId, toId)        % copy mibImage class from one container to another; used in mibBufferToggleContext_Callback, duplicate
         
         moveLayers(obj, SourceLayer, DestinationLayer, DatasetType, ActionType, BatchOptIn)  % to move datasets between the layers (image, model, mask, selection)
         
@@ -209,7 +211,7 @@ classdef mibModel < handle
         
         smoothImage(obj, type, BatchOptIn)        % smooth 'Mask', 'Selection' or 'Model' layer
         
-        transposeDataset(obj, mode, showWaitbar)        % Transpose dataset physically between dimensions
+        transposeDataset(obj, mode, showWaitbar, noColorChannels)        % Transpose dataset physically between dimensions
         
         transposeZ2T(obj)        % transpose Z to T dimension
         

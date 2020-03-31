@@ -13,17 +13,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/01/12 17:22:51 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 04b6cb6df697 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -49,19 +48,19 @@ end
 
 % Check to see if the file is already open
 if isempty(mRCImage.fid)
-  [fid msg]= fopen(mRCImage.filename, format, mRCImage.endianFormat);
+  [fid, msg]= fopen(mRCImage.filename, format, mRCImage.endianFormat);
   if fid == -1
     disp(msg)
     PEETError(['Unable to open ' mRCImage.filename ' as ' format]);
   end
 
 else
-  [name permission] = fopen(mRCImage.fid);
+  [~, permission] = fopen(mRCImage.fid);
   switch permission
    case {'r', 'a', 'a+'}
     % Close and reopen the file to get a writable mode
     fclose(mRCImage.fid);
-    [fid msg]= fopen(mRCImage.filename, format, mRCImage.endianFormat);
+    [fid, msg]= fopen(mRCImage.filename, format, mRCImage.endianFormat);
     if fid == -1
       disp(msg)
       PEETError(['Unable to reopen ' mRCImage.filename ' as ' format]);

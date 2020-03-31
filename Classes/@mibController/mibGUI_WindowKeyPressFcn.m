@@ -346,6 +346,16 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             if new_index > obj.mibModel.I{obj.mibModel.Id}.time;  new_index = obj.mibModel.I{obj.mibModel.Id}.time; end
             obj.mibView.handles.mibChangeTimeSlider.Value = new_index;
             obj.mibChangeTimeSlider_Callback();
+        case 'Increse active material index by 1 for models with 65535 materials' 
+            if obj.mibModel.I{obj.mibModel.Id}.modelType > 255
+                contIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;   % do not change to obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex() here!
+                if contIndex < 1; return; end  % do not rename Mask/Exterior
+                segmList = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames;
+                val = str2double(segmList{contIndex}) + 1;
+                segmList{contIndex} = num2str(val);
+                obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames = segmList;
+                obj.updateSegmentationTable();
+            end
     end
 else    % all other possible shortcuts
     switch char

@@ -9,17 +9,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/01/12 17:22:51 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 04b6cb6df697 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -69,18 +68,23 @@ end
 if isempty(mRCImage.filename)
   mRCImage.filename = 'MRCData';
 end
-[path name] = fileparts(mRCImage.filename);
+[~, name] = fileparts(mRCImage.filename);
 
 fprintf(fid, 'SCALARS %s %s 1\n', name, dataType);
 fprintf(fid, 'LOOKUP_TABLE default\n');
 
 % TODO: finish scaling and datatype conversion
 % Fit the data to the expect range
+
+% JMH commented out because not yet functional and conflicts with Matlab
+%  built-in function "range"
+%{
 if length(scaleOffset) == 1 && scaleOffset ~= 0
   header = getHeader(mRCImage);
   shift = header.minDensity
   range = header.maxDensity - header.minDensity
 end
+%}
 for iZ = 1:getNZ(mRCImage)
   im = getImage(mRCImage, iZ);
   im = im(:);

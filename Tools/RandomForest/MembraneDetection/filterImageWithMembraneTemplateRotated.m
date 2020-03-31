@@ -15,7 +15,7 @@ function rot = filterImageWithMembraneTemplateRotated(im, d, noRotations)
 % original function is written by Verena Kaynig, vkaynig [at] seas.harvard.edu
 % modified: Ilya Belevich, ilya.belevich @ helsinki.fi
 
-if nargin < 3;    noRotations = 8;  end;
+if nargin < 3;    noRotations = 8;  end
 
 a = pi / noRotations;   % calculate rotation angle
 im = double(im);    % convert image to doubles

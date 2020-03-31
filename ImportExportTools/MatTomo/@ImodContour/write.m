@@ -14,25 +14,35 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/01/12 17:22:51 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 04b6cb6df697 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function write(imodContour, fid)
 
-writeAndCheck(fid, 'CONT', 'uchar');
-writeAndCheck(fid, imodContour.nPoints, 'int32');
-writeAndCheck(fid, imodContour.flags, 'int32');
-writeAndCheck(fid, imodContour.type, 'int32');
-writeAndCheck(fid, imodContour.iSurface, 'int32');
-writeAndCheck(fid, imodContour.points, 'float32');
+  writeAndCheck(fid, 'CONT', 'uchar');
+  writeAndCheck(fid, imodContour.nPoints, 'int32');
+  writeAndCheck(fid, imodContour.flags, 'int32');
+  writeAndCheck(fid, imodContour.type, 'int32');
+  writeAndCheck(fid, imodContour.iSurface, 'int32');
+  writeAndCheck(fid, imodContour.points, 'float32');
+  % Write optional SIZE record if point sizes have been specified
+  if ~isempty(imodContour.pointSizes)
+    if length(imodContour.pointSizes) ~= imodContour.nPoints
+      PEETError('Number of point sizes must match number of points!');
+    end
+    writeAndCheck(fid, 'SIZE', 'uchar');
+    writeAndCheck(fid, 4 * imodContour.nPoints, 'int32');
+    writeAndCheck(fid, imodContour.pointSizes, 'float32');
+  end
+  
+end

@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="4106764217" file="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac.prj" location="/Volumes/VERBATIM/MIB2/MIB2_deploy" name="MIB_Mac" preferred-package-location="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="148230112" file="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac.prj" location="/Volumes/VERBATIM/MIB2/MIB2_deploy" name="MIB_Mac" preferred-package-location="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}/MIB_Mac_resources/icon.icns</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
     </param.icons>
-    <param.version>2.60</param.version>
+    <param.version>2.65</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -134,7 +134,6 @@ ${DYLD_LIBRARY_PATH}:MR/v97/runtime/maci64:MR/v97/sys/os/maci64:MR/v97/bin/maci6
       <file>/Applications/Fiji.app/scripts/InstallJava3D.m</file>
       <file>/Applications/Fiji.app/scripts/IsJava3DInstalled.m</file>
       <file>/Applications/Fiji.app/scripts/Miji.m</file>
-      <file>/Applications/Fiji.app/scripts/bfopen.m</file>
       <file>${PROJECT_ROOT}/mib.m</file>
       <file>/Volumes/VERBATIM/MIB2/OMERO/connectOmero.m</file>
       <file>/Volumes/VERBATIM/MIB2/OMERO/findOmero.m</file>

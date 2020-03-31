@@ -1,9 +1,8 @@
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
-function imodObject=freadObjectMat(imodObject, fid, debug)
+function imodObject = freadObjectMat(imodObject, fid, debug) %#ok<INUSD>
 ID = fread(fid,[1 4], '*char');
 if strncmp('IMAT', ID, 4) ~= 1
   PEETError('This is not an IMAT section of an ImodObject!');

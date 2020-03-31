@@ -9,17 +9,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2012 The Regents of the University of Colorado & BLD3EMC:
-%           The Boulder Laboratory For 3D Electron Microscopy of Cells.
+% Copyright 2000-2020 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2012/01/12 17:22:51 $
+%  $Date: 2020/01/02 23:33:44 $
 %
-%  $Revision: 04b6cb6df697 $
+%  $Revision: ce44cef00aca $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -52,3 +51,14 @@ fprintf('csum %d\n', imodModel.csum);
 fprintf('alpha %d\n', imodModel.alpha);
 fprintf('beta %d\n', imodModel.beta);
 fprintf('gamma %d\n', imodModel.gamma);
+
+% Not really part of the header, but display MINX chunk if present
+if ~isempty(imodModel.MINX)
+  fprintf('Model-to-voxel transform:\n')
+  %fprintf('  old scale %f %f %f\n', imodModel.MINX(1:3));
+  %fprintf('  old offset %f %f %f\n', imodModel.MINX(4:6));
+  %fprintf('  old angles %f %f %f\n', imodModel.MINX(7:9));
+  fprintf('  scale %f %f %f\n', imodModel.MINX(10:12));
+  fprintf('  offset %f %f %f\n', imodModel.MINX(13:15));
+  fprintf('  angles %f %f %f\n', imodModel.MINX(16:18));
+end

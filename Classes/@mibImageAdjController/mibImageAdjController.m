@@ -64,6 +64,8 @@ classdef mibImageAdjController < handle
             obj.BatchOpt.detectMinQuantile = '0';           % %% of points to be excluded from the blacks when detectMinPoint is enabled
             obj.BatchOpt.detectMaxPoint = false;            % switch whether or not automatically detect the max point
             obj.BatchOpt.detectMaxQuantile = '0';           % %% of points to be excluded from the blacks when detectMaxPoint is enabled
+            obj.BatchOpt.showWaitbar = true;   % show or not the waitbar
+            
             % tooltips that will accompany the BatchOpt
             obj.BatchOpt.mibBatchTooltip.ColChannel = sprintf('Apply Min/Max coefficients to the specified color channels');
             obj.BatchOpt.mibBatchTooltip.Min = sprintf('Intensities below this value will be shown in black');
@@ -73,7 +75,7 @@ classdef mibImageAdjController < handle
             obj.BatchOpt.mibBatchTooltip.detectMinQuantile = sprintf('%% of points (0-100) to be excluded from the blacks when detectMinPoint is enabled');
             obj.BatchOpt.mibBatchTooltip.detectMaxPoint = sprintf('When enabled, the max point is automatically calculated from the dataset');
             obj.BatchOpt.mibBatchTooltip.detectMaxQuantile = sprintf('%% of points (0-100) to be excluded from the whites when detectMaxPoint is enabled');
-
+            obj.BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');
             
             % add here a code for the batch mode, for example
             if nargin == 3
@@ -374,7 +376,7 @@ classdef mibImageAdjController < handle
             if nargin < 2; colorCh = []; end
             if isempty(colorCh); colorCh = obj.View.handles.colorChannelCombo.Value; end
             
-            wb = waitbar(0, sprintf('Calculating the minimal value\nPlease wait...'));
+            if obj.BatchOpt.showWaitbar; wb = waitbar(0, sprintf('Calculating the minimal value\nPlease wait...')); end
             minval = zeros([numel(colorCh), 1]);
             
             if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
@@ -387,7 +389,7 @@ classdef mibImageAdjController < handle
                         %minval2(colId) = max(mink(img(:), round(numel(img)/100*threshold)));
                         minval(colId) = quantile(img(:), threshold/100);
                     end
-                    waitbar(colId/numel(colorCh), wb);
+                    if obj.BatchOpt.showWaitbar; waitbar(colId/numel(colorCh), wb); end
                 end
                 toc
             else
@@ -407,7 +409,7 @@ classdef mibImageAdjController < handle
                             minval(colId) = min([minval(colId), min(img(:))]);
                             if minval(colId) == 0; break; end
                             
-                            waitbar(waitbarIndex/maxWaitbarIndex, wb);
+                            if obj.BatchOpt.showWaitbar; waitbar(waitbarIndex/maxWaitbarIndex, wb); end
                             waitbarIndex = waitbarIndex + 1;
                         end
                         if minval(colId) == 0; break; end
@@ -419,8 +421,10 @@ classdef mibImageAdjController < handle
                 obj.View.handles.minEdit.String = num2str(minval);
                 obj.minEdit_Callback();
             end
-            waitbar(1, wb);
-            delete(wb);
+            if obj.BatchOpt.showWaitbar
+                waitbar(1, wb);
+                delete(wb);
+            end
         end
         
         % --- Executes on button press in findMaxBtn.
@@ -439,7 +443,7 @@ classdef mibImageAdjController < handle
             if nargin < 2; colorCh = []; end
             if isempty(colorCh); colorCh = obj.View.handles.colorChannelCombo.Value; end
             
-            wb = waitbar(0, sprintf('Calculating the maximal value\nPlease wait...'));
+            if obj.BatchOpt.showWaitbar; wb = waitbar(0, sprintf('Calculating the maximal value\nPlease wait...')); end
             maxval = zeros([numel(colorCh), 1]);
             
             if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
@@ -451,7 +455,7 @@ classdef mibImageAdjController < handle
                         %minval2(colId) = max(mink(img(:), round(numel(img)/100*threshold)));
                         maxval(colId) = quantile(img(:), 1-threshold/100);
                     end
-                    waitbar(colId/numel(colorCh), wb);
+                    if obj.BatchOpt.showWaitbar; waitbar(colId/numel(colorCh), wb); end
                 end
             else
                 if threshold ~= 0
@@ -469,7 +473,7 @@ classdef mibImageAdjController < handle
                             maxval(colId) = max([maxval(colId), max(img(:))]);
                             if maxval(colId) == obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt'); break; end
                             
-                            waitbar(waitbarIndex/maxWaitbarIndex, wb);
+                            if obj.BatchOpt.showWaitbar; waitbar(waitbarIndex/maxWaitbarIndex, wb); end
                             waitbarIndex = waitbarIndex + 1;
                         end
                         if maxval(colId) == obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt'); break; end
@@ -480,8 +484,10 @@ classdef mibImageAdjController < handle
                 obj.View.handles.maxEdit.String = num2str(maxval);
                 obj.maxEdit_Callback();
             end
-            waitbar(1, wb);
-            delete(wb);
+            if obj.BatchOpt.showWaitbar
+                waitbar(1, wb);
+                delete(wb);
+            end
         end
         
         function minSlider_ButtonDownFcn(obj)
@@ -625,7 +631,7 @@ classdef mibImageAdjController < handle
             res = questdlg(sprintf('You are going to recalculate intensities of the original image by stretching!\n\nAre you sure?'),'!!! Warning !!!','Proceed','Cancel','Cancel');
             if strcmp(res,'Cancel'); return; end
             
-            wb = waitbar(0,'Please wait...','Name','Adjusting...');
+            if obj.BatchOpt.showWaitbar; wb = waitbar(0,'Please wait...','Name','Adjusting...'); end
             
             maxZ = obj.mibModel.getImageProperty('depth');
             maxT = obj.mibModel.getImageProperty('time');
@@ -639,7 +645,7 @@ classdef mibImageAdjController < handle
                     obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,channel,i,t) = imadjust(obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,channel,i,t),...
                         [viewPort.min(channel)/max_int viewPort.max(channel)/max_int],...
                         [0 1], viewPort.gamma(channel));
-                    if mod(i, waitbarStep) == 0; waitbar(i/(maxZ*maxT), wb); end   % update waitbar
+                    if obj.BatchOpt.showWaitbar; if mod(i, waitbarStep) == 0; waitbar(i/(maxZ*maxT), wb); end; end  % update waitbar
                 end
             end
             
@@ -651,7 +657,7 @@ classdef mibImageAdjController < handle
             obj.mibModel.I{obj.mibModel.Id}.viewPort.gamma(channel) = 1;
             
             obj.updateSliders();
-            delete(wb);
+            if obj.BatchOpt.showWaitbar; delete(wb); end
             notify(obj.mibModel, 'plotImage');
         end
         

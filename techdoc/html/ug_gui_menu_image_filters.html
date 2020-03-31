@@ -1,0 +1,587 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Image Filters dialog</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-03-31"><meta name="DC.source" content="ug_gui_menu_image_filters.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Image Filters dialog</h1><!--introduction--><p>collection of image filters arranged into 4 categories:</p><div><ul><li>Basic image filtering in the spacial domain</li><li>Edge-preserving filtering</li><li>Contrast adjustment</li><li>Image binarization</li></ul></div><p>
+A demonstration is available in the following video:<br>
+<a href="https://youtu.be/QZU3jSoEXJM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/QZU3jSoEXJM</a>
+</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_image.html"><b>Image</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Options</a></li><li><a href="#2">Basic image filtering in the spacial domain</a></li><li><a href="#3">Edge-preserving filtering</a></li><li><a href="#4">Contrast adjustment</a></li><li><a href="#5">Image binarization</a></li></ul></div><h2 id="1">Options</h2><p>Prior filtering of images the following options may be tweaked:</p><div><ul><li><b>Dataset type</b> - specify whether the image filtering should be done for the shown slice, current 3D stack of the whole dataset</li><li><b>Source layer</b> - allows to select a source layer which will be filtered</li><li><b>Color channel</b> - list of existing color channels. It is possible to select a specific color channel, all shown color channels or just all color channels of the image</li><li><b>Material index</b> - index of material to filter, only when <tt>Source layer</tt> is <tt>Model</tt></li><li><b>3D</b> - check to apply 3D filter</li></ul></div><p>The filtered image may additionally be post-processed (a dropdown at the bottom of the dialog window) as</p><div><ul><li><b>Filter image</b> - filter image and display it as result of the operation</li><li><b>Filter and subtract</b> - filter image and subtract the result from the unfiltered image</li><li><b>Filter and add</b> - filter image and add the result to the unfiltered image</li></ul></div><h2 id="2">Basic image filtering in the spacial domain</h2><p>table with the list of available filters</p><p>
+<table>
+<table style="width: 800px; text-align: left; border: 0px" cellspacing=2px cellpadding=2px >
+<tr>
+  <td><img src="images\image_filters_average.jpg"></td>
+  <td><b>Average filter</b><br>
+       average image signal using a rectanlular filter; the filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">average</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
+  </td>
+  <td>2D/3D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_average.jpg"></td>
+  <td><b>Circular averaging filter (pillbox)</b><br>
+       average image signal using a disk-shaped filter; the filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">disk</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_entropy.jpg"></td>
+  <td><b>Entropy filter</b><br>
+       Local entropy filter, returns an image, where each output pixel contains the entropy <em>(-sum(p.*log2(p)</em>, where <em>p</em> contains the normalized histogram counts) of the defined neighborhood around the corresponding pixel, see details in <a href="https://www.mathworks.com/help/images/ref/entropyfilt.html" target="_blank">entropyfilt</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_frangi.jpg"></td>
+  <td><b>Frangi filter</b><br>
+       Frangi filter to enhance elongated or tubular structures using Hessian-based multiscale filtering<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/fibermetric.html" target="_blank">fibermetric</a>
+  </td>
+  <td>2D/3D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_gaussian.jpg"></td>
+  <td><b>Gaussian smoothing filter</b><br>
+       Rotationally symmetric Gaussian lowpass filter of size (Hsize) with standard deviation (Sigma).<br>The 2D filtering is done with <a href="https://www.mathworks.com/help/images/ref/imgaussfilt.html" target="_blank">imgaussfilt</a> and 3D with <a href="https://www.mathworks.com/help/images/ref/imgaussfilt3.html" target="_blank">imgaussfilt3</a>
+  </td>
+  <td>2D/3D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_gradient.jpg"></td>
+  <td><b>Gradient filter</b><br>
+       Calculate image gradient<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/gradient.html" target="_blank">gradient</a> function and the acquired X,Y,Z components are converted to the resulting image as <em>sqrt(X<sup>2</sup> + Y<sup>2</sup> + Z<sup>2</sup>)</em>
+  </td>
+  <td>2D/3D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_LoG.jpg"></td>
+  <td><b>Laplacian of Gaussian filter</b><br>
+       Filter the image using the Laplacian of Gaussian filter, which highlights the edges<br>The resulting image is converted to unsigned integers by its multiplying with the NormalizationFactor and adding half of max class integer value.  The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">log</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
+  </td>
+  <td>2D/3D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_motion.jpg"></td>
+  <td><b>Motion filter</b><br>
+       the filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">motion</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_prewitt.jpg"></td>
+  <td><b>Prewitt filter</b><br>
+       Prewitt filter for edge enhancement<br>the filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">prewitt</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
+  </td>
+  <td>2D/3D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_range.jpg"></td>
+  <td><b>Range filter</b><br>
+       Local range filter, returns an image, where each output pixel contains the range value (maximum value - minimum value) of the defined neighborhood around the corresponding pixel. See details in <a href="https://www.mathworks.com/help/images/ref/rangefilt.html" target="_blank">rangefilt</a>
+  </td>
+  <td>2D/3D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_salt_and_pepper.jpg"></td>
+  <td><b>Salt and pepper filter</b><br>
+       Remove salt & pepper noise from image<br>The images are filtered using the median filter, after that a difference between the original and the median filtered images is taken. Pixels that have threshold higher than IntensityThreshold are considered as noise and removed
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_sobel.jpg"></td>
+  <td><b>Sobel filter</b><br>
+       Sobel filter for edge enhancement<br>the filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "sobel" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_std.jpg"></td>
+  <td><b>Std filter</b><br>
+       Local standard deviation of image. The value of each output pixel is the standard deviation of a neighborhood around the corresponding input pixel. The borders are extimated via symmetric padding: i.e. the values of padding pixels are a mirror reflection of the border pixels. See details in <a href="https://www.mathworks.com/help/images/ref/stdfilt.html" target="_blank">stdfilt</a>
+  </td>
+  <td>2D</td>
+</tr>
+</table>
+</p><h2 id="3">Edge-preserving filtering</h2><p>Remove noise while preserve the edges of the objects using one of the following filters</p><p>
+<table>
+<table style="width: 800px; text-align: left; " cellspacing=2px cellpadding=2px >
+<tr>
+  <td><img src="images\image_filters_ani_diff.jpg"></td>
+  <td><b>Anisotropic diffusion filter</b><br>
+       Edge preserving anisotropic diffusion filtering of images with Perona-Malik algorithm<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imdiffusefilt.html" target="_blank">imdiffusefilt</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_bilateral.jpg"></td>
+  <td><b>Bilateral filter</b><br>
+       Edge preserving bilateral filtering of images with Gaussian kernels<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imbilatfilt.html" target="_blank">imbilatfilt</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_dnn_denoise.jpg"></td>
+  <td><b>DNNdenoise filter</b><br>
+       Denoise image using deep neural network<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/denoiseimage.html" target="_blank">denoiseImage</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_median.jpg"></td>
+  <td><b>Median filter</b><br>
+       Median filtering of images in 2D or 3D. Each output pixel contains the median value in the specified neighborhood<br>The 2D filtering is done with <a href="https://www.mathworks.com/help/images/ref/medfilt2.html" target="_blank">medfilt2</a> and 3D with <a href="https://www.mathworks.com/help/images/ref/medfilt3.html" target="_blank">medfilt3</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_non_local_means.jpg"></td>
+  <td><b>Non-local means filter</b><br>
+       The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imnlmfilt.html" target="_blank">imnlmfilt</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_BMxD.jpg"></td>
+  <td><b>BMxD filter</b><br>
+       Filtering image using the block-matching and 3D collaborative
+       algorithm, please note that this filter is only licensed to be
+       used in non-profit organizations<br>
+       Please follow <a href="im_browser_system_requirements.html">the system requirements page</a> on details how to
+       install it.
+  </td>
+  <td>2D</td>
+</tr>
+</table>
+</p><h2 id="4">Contrast adjustment</h2><p>Here the list of filters that are intended to adjust the contrast of images</p><p>
+<table>
+<table style="width: 800px; text-align: left; " cellspacing=2px cellpadding=2px >
+<tr>
+  <td><img src="images\image_filters_addnoise.jpg"></td>
+  <td><b>Add noise filter</b><br>
+       Add noise to image<br>The filtering is done with <a
+       href="https://www.mathworks.com/help/images/ref/imnoise.html"
+       target="_blank">imnoise</a><br><br>
+       <ul>Several noising schemes are available:
+       <li>gaussian - Gaussian white noise</li>
+       <li>poisson - Poisson noise from the data</li>
+       <li>salt & pepper - adds salt and pepper noise</li>
+       <li>speckle - multiplicative noise using the equation <code>J = I+n*I</code>, where n is uniformly distributed random noise with mean 0 and variance 0.05.</li>
+       </ul>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_fast_loc_lap.jpg"></td>
+  <td><b>Fast Local Laplacian filter</b><br>
+       Fast local Laplacian filtering of images to enhance contrast, remove noise or smooth image details<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/locallapfilt.html" target="_blank">locallapfilt</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_flatfield.jpg"></td>
+  <td><b>Flat-field correction</b><br>
+       Flat-field correction to the grayscale or RGB image. The correction uses Gaussian smoothing with a standard deviation of sigma to approximate the shading component of the image<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imflatfield.html" target="_blank">imflatfield</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_local_bright.jpg"></td>
+  <td><b>Local Brighten filter</b><br>
+       Brighten low-light image<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imlocalbrighten.html" target="_blank">imlocalbrighten</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_loc_contrast.jpg"></td>
+  <td><b>Local Contrast filter</b><br>
+       Edge-aware local contrast manipulation of images<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/localcontrast.html" target="_blank">localcontrast</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_reducehaze.jpg"></td>
+  <td><b>Reduce Haze filter</b><br>
+       Reduce atmospheric haze<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imreducehaze.html" target="_blank">imreducehaze</a>
+  </td>
+  <td>2D</td>
+</tr>
+<tr>
+  <td><img src="images\image_filters_unsharpmask.jpg"></td>
+  <td><b>Unsharp mask filter</b><br>
+       Sharpen image using unsharp masking: when an image is sharpened by subtracting a blurred (unsharp) version of the image from itself<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imsharpen.html" target="_blank">imsharpen</a>
+  </td>
+  <td>2D</td>
+</tr>
+</table>
+</p><h2 id="5">Image binarization</h2><p>The image binarization filters process the image and generate bitmap mask that can be assigned to the selection or mask layers of MIB (use the <tt>DestinationLayer</tt> dropdown to specify it)</p><p>
+<table>
+<table style="width: 800px; text-align: left; " cellspacing=2px cellpadding=2px >
+<tr>
+  <td><img src="images\image_filters_edge.jpg"></td>
+  <td><b>Edge filter</b><br>
+       Find edges in intensity image;<br>the filtering is done with <a href="https://www.mathworks.com/help/images/ref/edge.html" target="_blank">edge</a>
+       <br><br>
+       <ul>Several edge detection schemes are available:
+       <li><b>approxcanny</b> - finds edges using an approximate version of the Canny edge detection algorithm that provides faster execution time at the expense of less precise detection</li>
+       <li><b>Canny</b> - finds edges by looking for local maxima of the gradient of I. The edge function calculates the gradient using the derivative of a Gaussian filter. This method uses two thresholds to detect strong and weak edges, including weak edges in the output if they are connected to strong edges. By using two thresholds, the Canny method is less likely than the other methods to be fooled by noise, and more likely to detect true weak edges</li>
+       <li><b>log</b> - finds edges by looking for zero-crossings after filtering I with a Laplacian of Gaussian (LoG) filter</li>
+       <li><b>Prewitt</b> - finds edges at those points where the gradient of I is maximum, using the Prewitt approximation to the derivative</li>
+       <li><b>Roberts</b> - finds edges at those points where the gradient of I is maximum, using the Roberts approximation to the derivative</li>
+       <li><b>Sobel</b> - Finds edges at those points where the gradient of the image I is maximum, using the Sobel approximation to the derivative</li>
+       </ul>
+  </td>
+  <td>2D</td>
+</tr>
+</table>
+</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_image.html"><b>Image</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Image Filters dialog
+% collection of image filters arranged into 4 categories: 
+%
+% * Basic image filtering in the spacial domain
+% * Edge-preserving filtering
+% * Contrast adjustment
+% * Image binarization
+%
+% <html>
+% A demonstration is available in the following video:<br>
+% <a href="https://youtu.be/QZU3jSoEXJM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/QZU3jSoEXJM</a>
+% </html>
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_image.html *Image*>
+%
+%% Options
+% Prior filtering of images the following options may be tweaked:
+% 
+% * *Dataset type* - specify whether the image filtering should be done for
+% the shown slice, current 3D stack of the whole dataset
+% * *Source layer* - allows to select a source layer which will be filtered
+% * *Color channel* - list of existing color channels. It is possible to
+% select a specific color channel, all shown color channels or just all
+% color channels of the image
+% * *Material index* - index of material to filter, only when |Source
+% layer| is |Model|
+% * *3D* - check to apply 3D filter
+%
+% The filtered image may additionally be post-processed (a dropdown at the bottom of the dialog window) as 
+% 
+% * *Filter image* - filter image and display it as result of the operation
+% * *Filter and subtract* - filter image and subtract the result from the unfiltered image
+% * *Filter and add* - filter image and add the result to the unfiltered image
+%
+%% Basic image filtering in the spacial domain
+% table with the list of available filters
+%
+% <html>
+% <table>
+% <table style="width: 800px; text-align: left; border: 0px" cellspacing=2px cellpadding=2px >
+% <tr>
+%   <td><img src="images\image_filters_average.jpg"></td>
+%   <td><b>Average filter</b><br>
+%        average image signal using a rectanlular filter; the filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">average</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
+%   </td>
+%   <td>2D/3D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_average.jpg"></td>
+%   <td><b>Circular averaging filter (pillbox)</b><br>
+%        average image signal using a disk-shaped filter; the filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">disk</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_entropy.jpg"></td>
+%   <td><b>Entropy filter</b><br>
+%        Local entropy filter, returns an image, where each output pixel contains the entropy <em>(-sum(p.*log2(p)</em>, where <em>p</em> contains the normalized histogram counts) of the defined neighborhood around the corresponding pixel, see details in <a href="https://www.mathworks.com/help/images/ref/entropyfilt.html" target="_blank">entropyfilt</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_frangi.jpg"></td>
+%   <td><b>Frangi filter</b><br>
+%        Frangi filter to enhance elongated or tubular structures using Hessian-based multiscale filtering<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/fibermetric.html" target="_blank">fibermetric</a>
+%   </td>
+%   <td>2D/3D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_gaussian.jpg"></td>
+%   <td><b>Gaussian smoothing filter</b><br>
+%        Rotationally symmetric Gaussian lowpass filter of size (Hsize) with standard deviation (Sigma).<br>The 2D filtering is done with <a href="https://www.mathworks.com/help/images/ref/imgaussfilt.html" target="_blank">imgaussfilt</a> and 3D with <a href="https://www.mathworks.com/help/images/ref/imgaussfilt3.html" target="_blank">imgaussfilt3</a>
+%   </td>
+%   <td>2D/3D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_gradient.jpg"></td>
+%   <td><b>Gradient filter</b><br>
+%        Calculate image gradient<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/gradient.html" target="_blank">gradient</a> function and the acquired X,Y,Z components are converted to the resulting image as <em>sqrt(X<sup>2</sup> + Y<sup>2</sup> + Z<sup>2</sup>)</em>
+%   </td>
+%   <td>2D/3D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_LoG.jpg"></td>
+%   <td><b>Laplacian of Gaussian filter</b><br>
+%        Filter the image using the Laplacian of Gaussian filter, which highlights the edges<br>The resulting image is converted to unsigned integers by its multiplying with the NormalizationFactor and adding half of max class integer value.  The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">log</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
+%   </td>
+%   <td>2D/3D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_motion.jpg"></td>
+%   <td><b>Motion filter</b><br>
+%        the filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">motion</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_prewitt.jpg"></td>
+%   <td><b>Prewitt filter</b><br>
+%        Prewitt filter for edge enhancement<br>the filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">prewitt</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
+%   </td>
+%   <td>2D/3D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_range.jpg"></td>
+%   <td><b>Range filter</b><br>
+%        Local range filter, returns an image, where each output pixel contains the range value (maximum value - minimum value) of the defined neighborhood around the corresponding pixel. See details in <a href="https://www.mathworks.com/help/images/ref/rangefilt.html" target="_blank">rangefilt</a>
+%   </td>
+%   <td>2D/3D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_salt_and_pepper.jpg"></td>
+%   <td><b>Salt and pepper filter</b><br>
+%        Remove salt & pepper noise from image<br>The images are filtered using the median filter, after that a difference between the original and the median filtered images is taken. Pixels that have threshold higher than IntensityThreshold are considered as noise and removed
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_sobel.jpg"></td>
+%   <td><b>Sobel filter</b><br>
+%        Sobel filter for edge enhancement<br>the filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "sobel" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_std.jpg"></td>
+%   <td><b>Std filter</b><br>
+%        Local standard deviation of image. The value of each output pixel is the standard deviation of a neighborhood around the corresponding input pixel. The borders are extimated via symmetric padding: i.e. the values of padding pixels are a mirror reflection of the border pixels. See details in <a href="https://www.mathworks.com/help/images/ref/stdfilt.html" target="_blank">stdfilt</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% </table>
+% </html>
+% 
+%% Edge-preserving filtering
+% Remove noise while preserve the edges of the objects using one of the
+% following filters
+%
+%
+% <html>
+% <table>
+% <table style="width: 800px; text-align: left; " cellspacing=2px cellpadding=2px >
+% <tr>
+%   <td><img src="images\image_filters_ani_diff.jpg"></td>
+%   <td><b>Anisotropic diffusion filter</b><br>
+%        Edge preserving anisotropic diffusion filtering of images with Perona-Malik algorithm<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imdiffusefilt.html" target="_blank">imdiffusefilt</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_bilateral.jpg"></td>
+%   <td><b>Bilateral filter</b><br>
+%        Edge preserving bilateral filtering of images with Gaussian kernels<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imbilatfilt.html" target="_blank">imbilatfilt</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_dnn_denoise.jpg"></td>
+%   <td><b>DNNdenoise filter</b><br>
+%        Denoise image using deep neural network<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/denoiseimage.html" target="_blank">denoiseImage</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_median.jpg"></td>
+%   <td><b>Median filter</b><br>
+%        Median filtering of images in 2D or 3D. Each output pixel contains the median value in the specified neighborhood<br>The 2D filtering is done with <a href="https://www.mathworks.com/help/images/ref/medfilt2.html" target="_blank">medfilt2</a> and 3D with <a href="https://www.mathworks.com/help/images/ref/medfilt3.html" target="_blank">medfilt3</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_non_local_means.jpg"></td>
+%   <td><b>Non-local means filter</b><br>
+%        The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imnlmfilt.html" target="_blank">imnlmfilt</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_BMxD.jpg"></td>
+%   <td><b>BMxD filter</b><br>
+%        Filtering image using the block-matching and 3D collaborative
+%        algorithm, please note that this filter is only licensed to be
+%        used in non-profit organizations<br>
+%        Please follow <a href="im_browser_system_requirements.html">the system requirements page</a> on details how to
+%        install it.
+%   </td>
+%   <td>2D</td>
+% </tr>
+% </table>
+% </html>
+%
+%% Contrast adjustment
+% Here the list of filters that are intended to adjust the contrast of
+% images
+%
+% <html>
+% <table>
+% <table style="width: 800px; text-align: left; " cellspacing=2px cellpadding=2px >
+% <tr>
+%   <td><img src="images\image_filters_addnoise.jpg"></td>
+%   <td><b>Add noise filter</b><br>
+%        Add noise to image<br>The filtering is done with <a
+%        href="https://www.mathworks.com/help/images/ref/imnoise.html"
+%        target="_blank">imnoise</a><br><br>
+%        <ul>Several noising schemes are available:
+%        <li>gaussian - Gaussian white noise</li>
+%        <li>poisson - Poisson noise from the data</li>
+%        <li>salt & pepper - adds salt and pepper noise</li>
+%        <li>speckle - multiplicative noise using the equation <code>J = I+n*I</code>, where n is uniformly distributed random noise with mean 0 and variance 0.05.</li>
+%        </ul>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_fast_loc_lap.jpg"></td>
+%   <td><b>Fast Local Laplacian filter</b><br>
+%        Fast local Laplacian filtering of images to enhance contrast, remove noise or smooth image details<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/locallapfilt.html" target="_blank">locallapfilt</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_flatfield.jpg"></td>
+%   <td><b>Flat-field correction</b><br>
+%        Flat-field correction to the grayscale or RGB image. The correction uses Gaussian smoothing with a standard deviation of sigma to approximate the shading component of the image<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imflatfield.html" target="_blank">imflatfield</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_local_bright.jpg"></td>
+%   <td><b>Local Brighten filter</b><br>
+%        Brighten low-light image<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imlocalbrighten.html" target="_blank">imlocalbrighten</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_loc_contrast.jpg"></td>
+%   <td><b>Local Contrast filter</b><br>
+%        Edge-aware local contrast manipulation of images<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/localcontrast.html" target="_blank">localcontrast</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_reducehaze.jpg"></td>
+%   <td><b>Reduce Haze filter</b><br>
+%        Reduce atmospheric haze<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imreducehaze.html" target="_blank">imreducehaze</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_unsharpmask.jpg"></td>
+%   <td><b>Unsharp mask filter</b><br>
+%        Sharpen image using unsharp masking: when an image is sharpened by subtracting a blurred (unsharp) version of the image from itself<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imsharpen.html" target="_blank">imsharpen</a>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% </table>
+% </html>
+%% Image binarization
+% The image binarization filters process the image and generate bitmap mask
+% that can be assigned to the selection or mask layers of MIB (use the |DestinationLayer| dropdown to specify it)
+%
+% <html>
+% <table>
+% <table style="width: 800px; text-align: left; " cellspacing=2px cellpadding=2px >
+% <tr>
+%   <td><img src="images\image_filters_edge.jpg"></td>
+%   <td><b>Edge filter</b><br>
+%        Find edges in intensity image;<br>the filtering is done with <a href="https://www.mathworks.com/help/images/ref/edge.html" target="_blank">edge</a>
+%        <br><br>
+%        <ul>Several edge detection schemes are available:
+%        <li><b>approxcanny</b> - finds edges using an approximate version of the Canny edge detection algorithm that provides faster execution time at the expense of less precise detection</li>
+%        <li><b>Canny</b> - finds edges by looking for local maxima of the gradient of I. The edge function calculates the gradient using the derivative of a Gaussian filter. This method uses two thresholds to detect strong and weak edges, including weak edges in the output if they are connected to strong edges. By using two thresholds, the Canny method is less likely than the other methods to be fooled by noise, and more likely to detect true weak edges</li>
+%        <li><b>log</b> - finds edges by looking for zero-crossings after filtering I with a Laplacian of Gaussian (LoG) filter</li>
+%        <li><b>Prewitt</b> - finds edges at those points where the gradient of I is maximum, using the Prewitt approximation to the derivative</li>
+%        <li><b>Roberts</b> - finds edges at those points where the gradient of I is maximum, using the Roberts approximation to the derivative</li>
+%        <li><b>Sobel</b> - Finds edges at those points where the gradient of the image I is maximum, using the Sobel approximation to the derivative</li>
+%        </ul>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% </table>
+% </html>
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_image.html *Image*>
+%
+##### SOURCE END #####
+--></body></html>
