@@ -23,7 +23,7 @@ for i=numel(obj.childControllers):-1:1
     end
 end
 
-if ~isempty(obj.DragNDrop)
+if isprop(obj, 'DragNDrop') && ~isempty(obj.DragNDrop)
     delete(obj.DragNDrop);  % delete class and make property empty
     obj.DragNDrop = [];
 end
