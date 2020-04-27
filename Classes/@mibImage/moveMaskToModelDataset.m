@@ -108,8 +108,10 @@ switch action_type
         if obj.modelType == 63
             if isnan(imgTemp(1))    % add layers for the whole dataset
                 M = bitshift(bitshift(obj.model{options.level}, -6), 6);     % store mask and selection
-                obj.model{options.level}(bitand(obj.model{options.level}, options.contAddIndex)==options.contAddIndex) = ...
-                    bitand(obj.model{options.level}(bitand(obj.model{options.level}, options.contAddIndex)==options.contAddIndex), 192);  % 192 = 11000000 clear destination material
+                %obj.model{options.level}(bitand(obj.model{options.level}, options.contAddIndex)==options.contAddIndex) = ...
+                %    bitand(obj.model{options.level}(bitand(obj.model{options.level}, options.contAddIndex)==options.contAddIndex), 192);  % 192 = 11000000 clear destination material
+                obj.model{options.level}(bitand(obj.model{options.level}, 63)==options.contAddIndex) = ...
+                    bitand(obj.model{options.level}(bitand(obj.model{options.level}, 63)==options.contAddIndex), 192);  % 192 = 11000000 clear destination material
                 obj.model{options.level}(bitand(M, 64) == 64) = options.contAddIndex;   % set new destination material
                 obj.model{options.level} = bitor(obj.model{options.level}, M);  % restore mask and selection
             else     % add layers for the selected or masked areas only

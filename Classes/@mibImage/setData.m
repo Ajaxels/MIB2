@@ -214,7 +214,7 @@ if obj.modelType > 63  % uint8/int8 type of the model
                 dataset = permute(dataset,[1 3 2 4]);
             end
             if ~isnan(col_channel)     % take only specific object
-                currentDataset = obj.model{1}(Zlim(1):Zlim(2),max([Ylim(1) 1]):min([Ylim(2) obj.width]),max([Xlim(1) 1]):min([Xlim(2) obj.no_stacks]));
+                currentDataset = obj.model{1}(Ylim(1):Ylim(2),Xlim(1):Xlim(2),Zlim(1):Zlim(2),Tlim(1):Tlim(2));
                 currentDataset(currentDataset == col_channel) = 0;
                 currentDataset(dataset == 1) = col_channel;
                 dataset = currentDataset;
@@ -279,7 +279,8 @@ else        % ************ uint6 model type
             switch type
                 case 'model'
                     if ~isnan(col_channel)     % set only specific object
-                        obj.model{1}(bitand(obj.model{1}, col_channel)==col_channel) = bitand(obj.model{1}(bitand(obj.model{1}, col_channel)==col_channel), 192);  % 192 = 11000000, remove Material from the model
+                        %obj.model{1}(bitand(obj.model{1}, col_channel)==col_channel) = bitand(obj.model{1}(bitand(obj.model{1}, col_channel)==col_channel), 192);  % 192 = 11000000, remove Material from the model
+                        obj.model{1}(bitand(obj.model{1}, 63)==col_channel) = bitand(obj.model{1}(bitand(obj.model{1}, 63)==col_channel), 192);  % 192 = 11000000, remove Material from the model
                         obj.model{1}(dataset==1) = bitand(obj.model{1}(dataset==1), 192);    % empty positions for the new material
                         obj.model{1}(dataset==1) = bitor(obj.model{1}(dataset==1), col_channel);    % update new material
                     else
@@ -316,7 +317,8 @@ else        % ************ uint6 model type
                 case 'model'
                     if ~isnan(col_channel)     % take only specific object
                         currentDataset = obj.model{1}(Ylim(1):Ylim(2),Xlim(1):Xlim(2),Zlim(1):Zlim(2),Tlim(1):Tlim(2));
-                        currentDataset(bitand(currentDataset, col_channel)==col_channel) = bitand(currentDataset(bitand(currentDataset, col_channel)==col_channel), 192);  % 192 = 11000000, remove Material from the model
+                        %currentDataset(bitand(currentDataset, col_channel)==col_channel) = bitand(currentDataset(bitand(currentDataset, col_channel)==col_channel), 192);  % 192 = 11000000, remove Material from the model
+                        currentDataset(bitand(currentDataset, 63)==col_channel) = bitand(currentDataset(bitand(currentDataset, 63)==col_channel), 192);  % 192 = 11000000, remove Material from the model
                         currentDataset(dataset==1) = bitor(currentDataset(dataset==1), col_channel);
                         obj.model{1}(Ylim(1):Ylim(2),Xlim(1):Xlim(2),Zlim(1):Zlim(2),Tlim(1):Tlim(2)) = currentDataset;
                     else

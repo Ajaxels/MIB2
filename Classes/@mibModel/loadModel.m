@@ -315,6 +315,16 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
             end
         end
         
+        % convert accidental doubles to uint32
+        if isa(model(1), 'double')
+            button = questdlg(sprintf('!!! Warning !!!\nThe loaded model has "double" data class.\nTo continue, it will be converted to "uint32" class with up to 4294967295 materials'),...
+                'Convert model', 'Continue', 'Cancel', 'Continue');
+            if strcmp(button, 'Cancel'); if BatchOpt.showWaitbar; delete(wb); end; return; end
+            
+            BatchOpt.modelType = 4294967295;
+            model = uint32(model);
+        end
+        
         if BatchOpt.modelType ~= obj.I{BatchOpt.id}.modelType
             obj.I{BatchOpt.id}.convertModel(BatchOpt.modelType);
         end

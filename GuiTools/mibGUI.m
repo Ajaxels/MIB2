@@ -173,6 +173,18 @@ uimenu(h2,'label','REMOVE (3D, Stack)','callback', {@mibGUI_moveLayers, NaN,'mod
 uimenu(h2,'label','NEW (4D, Dataset)','Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','mask','4D, Dataset','replace'});
 uimenu(h2,'label','ADD (4D, Dataset)','callback', {@mibGUI_moveLayers, NaN, 'model','mask','4D, Dataset','add'});
 uimenu(h2,'label','REMOVE (4D, Dataset)','callback', {@mibGUI_moveLayers, NaN,'model','mask','4D, Dataset','remove'});
+
+h3=uimenu(handles.mibSegmentationTable_cm,'label','Mask to Material...');
+uimenu(h3,'label','NEW (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '2D, Slice', 'replace'});
+uimenu(h3,'label','ADD (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '2D, Slice', 'add'});
+uimenu(h3,'label','REMOVE (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model','2D, Slice', 'remove'});
+uimenu(h3,'label','NEW (3D, Stack)', 'Separator', 'on','callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '3D, Stack', 'replace'});
+uimenu(h3,'label','ADD (3D, Stack)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '3D, Stack', 'add'});
+uimenu(h3,'label','REMOVE (3D, Stack)', 'callback', {@mibGUI_moveLayers, NaN,'mask', 'model', '3D, Stack', 'remove'});
+uimenu(h3,'label','NEW (4D, Dataset)', 'Separator', 'on','callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '4D, Dataset', 'replace'});
+uimenu(h3,'label','ADD (4D, Dataset)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '4D, Dataset', 'add'});
+uimenu(h3,'label','REMOVE (4D, Dataset)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '4D, Dataset', 'remove'});
+
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show as volume (MIB)...', 'Separator', 'on', 'Callback', {@mibSegmentationTable_cm_Callback, 'mib'});
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show isosurface (Matlab)...', 'Callback', {@mibSegmentationTable_cm_Callback, 'isosurface'});
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show as volume (Fiji)...', 'Callback', {@mibSegmentationTable_cm_Callback, 'volumeFiji'});
@@ -887,7 +899,14 @@ end
 function mibGUI_moveLayers(hObject, ~, ~, obj_type_from, obj_type_to, layers_id, action_type)
 % move data between layers, a callback to the context menu of mibSegmentationTable
 handles = guidata(hObject);
-handles.mibController.mibModel.moveLayers(obj_type_from, obj_type_to, layers_id, action_type);
+
+if strcmp(action_type, 'remove') && strcmp(obj_type_from, 'mask') && strcmp(obj_type_to, 'model')
+    BatchOpt.fixSelectionToMaterial = 1;
+    handles.mibController.mibModel.moveLayers(obj_type_from, obj_type_to, layers_id, action_type, BatchOpt);
+else
+    handles.mibController.mibModel.moveLayers(obj_type_from, obj_type_to, layers_id, action_type);    
+end
+
 end
 
 function mibEraserEdit_Callback(hObject, eventdata, handles)

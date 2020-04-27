@@ -25,7 +25,7 @@ function smoothImage(obj, type, BatchOptIn)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 23.04.2020 added smoothing of multiple materials
 
 %% Declaration of the BatchOpt structure
 BatchOpt = struct();
@@ -63,7 +63,7 @@ BatchOpt.mibBatchTooltip.KernelSizeX = sprintf('X-size of the smoothing kernel i
 BatchOpt.mibBatchTooltip.KernelSizeY = sprintf('Y-size of the smoothing kernel in pixels, leave empty for automatic calculation');
 BatchOpt.mibBatchTooltip.KernelSizeZ = sprintf('[3D mode only]\nZ-size of the smoothing kernel in pixels');
 BatchOpt.mibBatchTooltip.Sigma = sprintf('Smoothing sigma');
-BatchOpt.mibBatchTooltip.MaterialIndex = sprintf('Index of material in the model to be smoothed');
+BatchOpt.mibBatchTooltip.MaterialIndex = sprintf('Index or indices of material in the model to be smoothed, for example: 1,3 or 2:4');
 BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');
 
 %% Batch mode check actions
@@ -113,7 +113,7 @@ if nargin < 3
         'X Kernel size:', ...
         sprintf('Y Kernel size\nleave empty for automatic calculation based on voxel size:'), ...
         sprintf('Z Kernel size for 3D:'),...
-        'Sigma', '[models only], index of the material:'};
+        'Sigma', '[models only], index(es) of the material:'};
     
     mibInputMultiDlgOpt.PromptLines = [1, 1, 3, 1, 1, 1];
     answer = mibInputMultiDlg([], prompt, defAns, sprintf('Smooth %s', BatchOpt.Target{1}), mibInputMultiDlgOpt);
@@ -172,24 +172,24 @@ switch BatchOptLocal.Target{1}
         end
     case 'model'
         options.dataType = '3D';
-        sel_model = str2double(BatchOptLocal.MaterialIndex);
-        if sel_model < 1
+        sel_model = str2num(BatchOptLocal.MaterialIndex); %#ok<ST2NM>
+        if min(sel_model) < 1
             if BatchOptLocal.showWaitbar; delete(wb); end
             return; 
         end
         if t1==t2
             obj.mibDoBackup('model', 1, backupOpt);
         end
-        start_no=sel_model;
-        end_no=sel_model;
-        
+        index = 0;
+        maxIndex = numel(sel_model)*(t2-t1+1);
         for t=t1:t2
-            for object = start_no:end_no
+            for object = sel_model
                 model = cell2mat(obj.getData3D('model', t, NaN, object, backupOpt));
                 model = mibDoImageFiltering(model, options);
                 obj.setData3D('model', model, t, NaN, object, backupOpt);
+                index = index + 1;
+                if BatchOptLocal.showWaitbar; waitbar(index/maxIndex,wb); end
             end
-            if BatchOptLocal.showWaitbar; waitbar(t/t2,wb); end
         end
 end
 

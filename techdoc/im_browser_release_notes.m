@@ -5,6 +5,19 @@
 %
 %
 %
+%%
+%
+%% 2.66 / 25.04.2020
+%
+% * Added direct conversion from Mask to Model layer (Segmentation
+% panel->Material table->right click->Mask to Material)
+%
+%% 2.651 / 25.04.2020
+%
+% * Added smoothing of multiple materials of models via batch processing
+% * Fixed definition of the starting point for the Membrane ClickTracker tool
+% * Fixed setData method for specific materials of the model
+%
 %% 2.65 / 23.03.2020
 % 
 % * Added Drag and drop files into the Image View panel 

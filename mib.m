@@ -85,7 +85,7 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'Tools', 'Supervoxels'));
 end
 
-mibVersion = 'ver. 2.65 / 23.03.2020';  % ATTENTION! it is important to have the version number between "ver." and "/"
+mibVersion = 'ver. 2.651 / 25.04.2020';  % ATTENTION! it is important to have the version number between "ver." and "/"
 
 model = mibModel();     % initialize the model
 controller = mibController(model, mibVersion);  % initialize controller

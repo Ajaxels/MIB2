@@ -29,7 +29,7 @@ modifier = obj.mibView.gui.CurrentModifier;
 % R2018b and R2019b, the right click in the pen settings was replaced with
 % the "shift" key modifier
 if ~isempty(modifier)
-    fprintf('seltype: %s mod: %s\n', seltype, modifier{1})
+    %fprintf('seltype: %s mod: %s\n', seltype, modifier{1})
     if strcmp(modifier{1}, 'shift')
         seltype = 'alt';
         modifier = {};

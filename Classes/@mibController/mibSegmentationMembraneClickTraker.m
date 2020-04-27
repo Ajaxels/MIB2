@@ -142,14 +142,14 @@ else
     xCrop = yxzCoordinate(2);
     z = yxzCoordinate(3); 
     options.blockModeSwitch = 1;
-    if strcmp(modifier, 'shift')    % defines first point for the tracer
+    if strcmp(modifier, 'control')    % defines first point for the tracer
         obj.mibView.trackerYXZ = [yCrop; xCrop; z];
         currentSelection = cell2mat(obj.mibModel.getData2D('selection', NaN, NaN, NaN, options));
         selarea = zeros(size(currentSelection), 'uint8');
         selarea(ceil(yx(1)*magFactor),ceil(yx(2)*magFactor)) = 1;
     else    % start tracing
         if isnan(obj.mibView.trackerYXZ(1))
-            msgbox('Please use Shift+Mouse click to define the starting point!', 'Missing the starting point');
+            msgbox('Please use Ctrl+Mouse click to define the starting point!', 'Missing the starting point');
             return;
         end
         obj.mibView.trackerYXZ = obj.mibView.trackerYXZ(:,end);

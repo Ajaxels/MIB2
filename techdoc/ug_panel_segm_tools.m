@@ -289,8 +289,8 @@
 % References:
 %%
 % 
-% * Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine Süsstrunk, SLIC Superpixels Compared to State-of-the-art Superpixel Methods, IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 34, num. 11, p. 2274 - 2282, May 2012.
-% * Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine Süsstrunk, SLIC Superpixels, EPFL Technical Report no. 149300, June 2010.
+% * Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, SLIC Superpixels Compared to State-of-the-art Superpixel Methods, IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 34, num. 11, p. 2274 - 2282, May 2012.
+% * Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, SLIC Superpixels, EPFL Technical Report no. 149300, June 2010.
 % 
 %%
 % 
@@ -477,7 +477,7 @@
 % <td style="border: 0px">
 % <b>How to use:</b>
 % <ul>
-% <li><b>Shift + left mouse click</b> to define the starting point of a membrane fragment</li>
+% <li><b>Ctrl + left mouse click</b> to define the starting point of a membrane fragment (before MIB version 2.651 the Shift + left mouse click combination was used)</li>
 % <li><b>mouse click</b> to trace the membrane from the starting point to the clicked point</li>
 % </ul>
 % </td>
