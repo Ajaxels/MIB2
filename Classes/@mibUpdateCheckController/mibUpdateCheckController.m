@@ -104,9 +104,9 @@ classdef mibUpdateCheckController < handle
             else
                 obj.View.handles.informationText.String = 'You are running the latest version of Microscopy Image Browser!';
                 obj.View.handles.jEditbox.setText(infoText);
-                obj.View.handles.updateBtn.Enable = 'off';
-                obj.View.handles.downloadBtn.Enable = 'off';
-                obj.View.handles.listofchangesBtn.Enable = 'off';
+                %obj.View.handles.updateBtn.Enable = 'off';
+                %obj.View.handles.downloadBtn.Enable = 'off';
+                %obj.View.handles.listofchangesBtn.Enable = 'off';
             end
         end
     end

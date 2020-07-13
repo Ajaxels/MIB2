@@ -22,6 +22,7 @@
 % * Alignment of multi-dimensional stacks and images within these stacks
 % * Brightness, contrast, gamma, image mode adjustments, resize, crop functions, rotate, etc
 % * Semi-automatic/manual image segmentation with help of filters and interpolation in XY, XZ, or YZ planes
+% * Train and predict datasets using deep convolutional neural networks
 % * Quantification and statistics for 2D/3D objects
 % * Export of images or models to Matlab, <http://www.vsg3d.com/amira/overview Amira> , <http://bio3d.colorado.edu/imod/ IMOD>, <https://youtu.be/G6z0pM3xOIk STL>, TIF, <http://www.slicer.org/ NRRD for 3D Slicer>, <http://imagej.net/BigDataViewer Fiji BigDataViewer> formats
 % * Direct 3D visualization using Matlab isosurfaces and volume rendering, <http://fiji.sc/3D_Viewer Fiji 3D viewer>, and <http://www.bitplane.com/ Imaris>

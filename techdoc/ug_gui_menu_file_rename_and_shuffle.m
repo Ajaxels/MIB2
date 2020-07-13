@@ -55,6 +55,9 @@
 % * *Include annotations*, same as above but for annotations. *Note!* It
 % is important that each folder contains only a single file in the
 % _*.ann_ format
+% * *Random seed*, a positive number defining a seed for random number
+% generator; the files will be sorted in the same way when the random seed
+% value stays unchanged
 % * *Filename extension*, provide extension for filenames with images
 % * *Filename templalte*, define filename template for the shuffled images
 % * *Output directory*, define the output directory

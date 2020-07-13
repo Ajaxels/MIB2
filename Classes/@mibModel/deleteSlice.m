@@ -112,6 +112,7 @@ if nargin < 4
     
     mibInputMultiDlgOptions.Title = sprintf('Please enter the slice/frame number (1-%d) to delete', maxSlice);
     mibInputMultiDlgOptions.TitleLines = 2;
+    mibInputMultiDlgOptions.WindowStyle = 'normal';
     answer = mibInputMultiDlg({mibPath}, prompt, defAns, 'Delete slice/frame', mibInputMultiDlgOptions);
     if isempty(answer); return; end
     

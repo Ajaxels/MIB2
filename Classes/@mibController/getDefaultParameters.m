@@ -136,34 +136,58 @@ obj.mibModel.preferences.gui.uitable = 1;   % scaling uicontrol
 obj.mibModel.preferences.gui.uicontrol = 1;   % scaling uicontrol
 
 % define settings for DeepMIB
-obj.mibModel.preferences.deep.solverName = 'adam';
-obj.mibModel.preferences.deep.MaxEpochs = 50;
-obj.mibModel.preferences.deep.MiniBatchSize = 4;
-obj.mibModel.preferences.deep.Shuffle = 'once';
-obj.mibModel.preferences.deep.InitialLearnRate = 0.0005;
-obj.mibModel.preferences.deep.LearnRateSchedule = 'piecewise';
-obj.mibModel.preferences.deep.LearnRateDropPeriod = 10;
-obj.mibModel.preferences.deep.LearnRateDropFactor = 0.1;
-obj.mibModel.preferences.deep.L2Regularization = 0.0001;
-obj.mibModel.preferences.deep.Momentum = 0.9;
-obj.mibModel.preferences.deep.ValidationFrequency = 400;
-obj.mibModel.preferences.deep.Plots = 'training-progress';
 obj.mibModel.preferences.deep.OriginalTrainingImagesDir = obj.mibModel.myPath;
 obj.mibModel.preferences.deep.OriginalPredictionImagesDir = obj.mibModel.myPath;
-obj.mibModel.preferences.deep.ImageFilenameExtension = {'.AM'};
+obj.mibModel.preferences.deep.ImageFilenameExtension = {'AM'};
 obj.mibModel.preferences.deep.ResultingImagesDir = obj.mibModel.myPath;
 obj.mibModel.preferences.deep.CompressProcessedImages = false;
-obj.mibModel.preferences.deep.ValidationFraction = {0.25};
+obj.mibModel.preferences.deep.CompressProcessedModels = true;
+obj.mibModel.preferences.deep.ValidationFraction = 0.25;
+obj.mibModel.preferences.deep.MiniBatchSize = 1;
+obj.mibModel.preferences.deep.RandomGeneratorSeed = 0;
+obj.mibModel.preferences.deep.RelativePaths = false;
 
-obj.mibModel.preferences.deep.aug2D.FillValue = 255;  % settings for 2D augumentation
-obj.mibModel.preferences.deep.aug2D.RandXReflection = true;
-obj.mibModel.preferences.deep.aug2D.RandYReflection = true;
-obj.mibModel.preferences.deep.aug2D.RandRotation = [-45, 45];  
-obj.mibModel.preferences.deep.aug2D.RandScale = [.95 1.05];
-obj.mibModel.preferences.deep.aug2D.RandXScale = [.95 1.05];
-obj.mibModel.preferences.deep.aug2D.RandYScale = [.95 1.05];
-obj.mibModel.preferences.deep.aug2D.RandXShear = [-5 5];
-obj.mibModel.preferences.deep.aug2D.RandYShear = [-5 5];
+obj.mibModel.preferences.deep.TrainingOpt.solverName = 'adam';
+obj.mibModel.preferences.deep.TrainingOpt.MaxEpochs = 50;
+obj.mibModel.preferences.deep.TrainingOpt.Shuffle = 'every-epoch';
+obj.mibModel.preferences.deep.TrainingOpt.InitialLearnRate = 0.0005;
+obj.mibModel.preferences.deep.TrainingOpt.LearnRateSchedule = 'piecewise';
+obj.mibModel.preferences.deep.TrainingOpt.LearnRateDropPeriod = 10;
+obj.mibModel.preferences.deep.TrainingOpt.LearnRateDropFactor = 0.1;
+obj.mibModel.preferences.deep.TrainingOpt.L2Regularization = 0.0001;
+obj.mibModel.preferences.deep.TrainingOpt.Momentum = 0.9;
+obj.mibModel.preferences.deep.TrainingOpt.ValidationFrequency = 400;
+obj.mibModel.preferences.deep.TrainingOpt.Plots = 'training-progress';
+
+obj.mibModel.preferences.deep.InputLayerOpt.Normalization = 'none';
+obj.mibModel.preferences.deep.InputLayerOpt.Mean = [];
+obj.mibModel.preferences.deep.InputLayerOpt.StandardDeviation = [];
+obj.mibModel.preferences.deep.InputLayerOpt.Min = [];
+obj.mibModel.preferences.deep.InputLayerOpt.Max = [];
+
+obj.mibModel.preferences.deep.AugOpt2D.FillValue = 0;  % settings for 2D augumentation
+obj.mibModel.preferences.deep.AugOpt2D.RandXReflection = true;
+obj.mibModel.preferences.deep.AugOpt2D.RandYReflection = true;
+obj.mibModel.preferences.deep.AugOpt2D.RandRotation = [-10, 10];  
+obj.mibModel.preferences.deep.AugOpt2D.RandScale = [.95 1.05];
+obj.mibModel.preferences.deep.AugOpt2D.RandXScale = [1 1];
+obj.mibModel.preferences.deep.AugOpt2D.RandYScale = [1 1];
+obj.mibModel.preferences.deep.AugOpt2D.RandXShear = [-5 5];
+obj.mibModel.preferences.deep.AugOpt2D.RandYShear = [-5 5];
+
+obj.mibModel.preferences.deep.AugOpt3D.Fraction = 0.6;     % settings for 3D augumentation
+obj.mibModel.preferences.deep.AugOpt3D.FillValue = 0;    
+obj.mibModel.preferences.deep.AugOpt3D.RandXReflection = true;
+obj.mibModel.preferences.deep.AugOpt3D.RandYReflection = true;
+obj.mibModel.preferences.deep.AugOpt3D.RandZReflection = true;
+obj.mibModel.preferences.deep.AugOpt3D.Rotation90 = true;
+obj.mibModel.preferences.deep.AugOpt3D.ReflectedRotation90 = true;
+
+obj.mibModel.preferences.deep.Metrics.Accuracy = true;  % parameters for metrics evaluation
+obj.mibModel.preferences.deep.Metrics.BFscore = false;
+obj.mibModel.preferences.deep.Metrics.GlobalAccuracy = true;
+obj.mibModel.preferences.deep.Metrics.IOU = true;
+obj.mibModel.preferences.deep.Metrics.WeightedIOU = true;
 
 % define keyboard shortcuts
 maxShortCutIndex = 32;  % total number of shortcuts
@@ -327,6 +351,11 @@ obj.mibModel.preferences.Filefilter.bioVirtExt = sort([{'am'}, bioList]);
 
 %% update preferences
 if exist('mib_pars', 'var') && isfield(mib_pars, 'preferences')
+    
+    if isfield(mib_pars.preferences.deep, 'aug2D')  % a .deep preferences fields in MIB ver 2.70 were changed had
+        mib_pars.preferences = rmfield(mib_pars.preferences, 'deep');
+    end
+    
     realFields = fieldnames(obj.mibModel.preferences);
     loadedFields = fieldnames(mib_pars.preferences);
     % check difference between loaded and needed preferences
@@ -373,7 +402,6 @@ if ~isfield(obj.mibModel.preferences.dirs, 'BioFormatsMemoizerMemoDir');  obj.mi
 if ~isfield(obj.mibModel.preferences.dirs, 'bm3dInstallationPath'); obj.mibModel.preferences.dirs.bm3dInstallationPath = []; end    % BM3D filter
 if ~isfield(obj.mibModel.preferences.dirs, 'bm4dInstallationPath'); obj.mibModel.preferences.dirs.bm4dInstallationPath = []; end    % BM4D filter
 
-
 %% Update Java libraries
 % update Fiji and Omero libs if they are present in Matlab path already
 warning_state = warning('off');     % store warning settings
@@ -399,7 +427,7 @@ if exist(obj.mibModel.preferences.dirs.omeroInstallationPath, 'dir') == 7
     end
 else
     if ~isempty(obj.mibModel.preferences.dirs.omeroInstallationPath)
-        fprintf('Warning! Omero path is not correct!\nPlease fix it using MIB Preferences dialog (MIB->Menu->File->Preferences->External dirs)');
+        fprintf('Warning! Omero path is not correct!\nPlease fix it using MIB Preferences dialog (MIB->Menu->File->Preferences->External dirs)\n');
     end
 end
 
@@ -466,7 +494,7 @@ if exist(obj.mibModel.preferences.dirs.fijiInstallationPath, 'dir') == 7
     end
 else
     if ~isempty(obj.mibModel.preferences.dirs.fijiInstallationPath)
-        fprintf('Warning! Fiji path is not correct!\nPlease fix it using MIB Preferences dialog (MIB->Menu->File->Preferences->External dirs)');
+        fprintf('Warning! Fiji path is not correct!\nPlease fix it using MIB Preferences dialog (MIB->Menu->File->Preferences->External dirs)\n');
     end
 end
 
@@ -542,6 +570,23 @@ if ~isfield(obj.mibModel.sessionSettings, 'ImageFilters') || ~isfield(obj.mibMod
     obj.mibModel.sessionSettings.ImageFilters.Disk.Radius{1} = 3;
     obj.mibModel.sessionSettings.ImageFilters.Disk.Radius{2} = [0 Inf];
     obj.mibModel.sessionSettings.ImageFilters.Disk.mibBatchTooltip.Radius = 'Radius of a disk-shaped filter, specified as a positive number';
+    
+    if obj.matlabVersion >= 9.7
+        obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.mibBatchTooltip.Info = 'Elastic distortion filter, see details in <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.160.8494&rep=rep1&type=pdf" target="_blank">Best Practices for Convolutional Neural Networks Applied to Visual Document Analysis</a>';
+    else
+        obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.mibBatchTooltip.Info = 'Elastic distortion filter, see details in Best Practices for Convolutional Neural Networks Applied to Visual Document Analysis, http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.160.8494&rep=rep1&type=pdf';
+    end
+    obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.ScalingFactor{1} = 30;
+    obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.ScalingFactor{2} = [1 Inf];
+    obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.mibBatchTooltip.ScalingFactor = 'Scaling factor for distortions';
+    obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.HSize = '7';
+    obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.mibBatchTooltip.HSize = 'Size of the filter, specified as a positive integer or 2-element (3 element for 3D) vector of positive integers; HAS TO BE ODD';
+    obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.Sigma{1} = 4;
+    obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.Sigma{2} = [0 Inf];
+    obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.Sigma{3} = 'off';
+    obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.mibBatchTooltip.Sigma = 'Standard deviation of the Gaussian distribution, normally HSize/5';
+    obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.DistortAllLAyers = true;
+    obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.mibBatchTooltip.DistortAllLAyers = 'When ticked the distortions are applied to all layers except selection';
     
     if obj.matlabVersion >= 9.7
         obj.mibModel.sessionSettings.ImageFilters.Entropy.mibBatchTooltip.Info = 'Local entropy filter, returns an image, where each output pixel contains the entropy (<em>-sum(p.*log2(p))</em>, where <em>p</em> contains the normalized histogram counts) of the defined neighborhood around the corresponding pixel, see details in <a href="https://www.mathworks.com/help/images/ref/entropyfilt.html" target="_blank">entropyfilt</a>.';

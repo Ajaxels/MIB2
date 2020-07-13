@@ -183,6 +183,9 @@ contAddIndex = BatchOptLocal.SelectedAddToMaterial;
 if strcmp(BatchOptLocal.SourceLayer{1}, 'model') && contSelIndex < 0; BatchOptLocal.SourceLayer{1} = 'mask'; end     % when ones press Ctrl+A to highlight the Mask layer
 if strcmp(BatchOptLocal.SourceLayer{1}, 'model') && contAddIndex < 0; BatchOptLocal.DestinationLayer{1} = 'mask'; end     % when ones press Ctrl+A to highlight the Mask layer
 
+if strcmp(BatchOptLocal.SourceLayer{1}, 'mask') && ...
+        strcmp(BatchOptLocal.DestinationLayer{1}, 'model') && contAddIndex < 0; return; end
+
 % fix situation when using Alt+A shortcut over the Mask entry when Fix
 % selection to meterial is enabled
 if BatchOptLocal.fixSelectionToMaterial == 1 && strcmp(BatchOptLocal.SourceLayer{1}, 'mask') && contAddIndex == -1

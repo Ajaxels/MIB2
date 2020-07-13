@@ -14,13 +14,20 @@ for fieldId = 1:numel(fieldNames)
             switch View.Figure.(fieldNames{fieldId}).Type
                 case 'uieditfield'
                     View.Figure.(fieldNames{fieldId}).Value = BatchOpt.(fieldNames{fieldId});
-                case 'uinumericeditfield'
-                    View.Figure.(fieldNames{fieldId}).Value = BatchOpt.(fieldNames{fieldId}){1};
+                case {'uinumericeditfield', 'uispinner'}
                     if numel(BatchOpt.(fieldNames{fieldId})) >= 2
+                        if BatchOpt.(fieldNames{fieldId}){2}(1) == BatchOpt.(fieldNames{fieldId}){2}(2)     % limits can't be the same value
+                            BatchOpt.(fieldNames{fieldId}){2}(2) = BatchOpt.(fieldNames{fieldId}){2}(2) + .0001;
+                        end
                         View.Figure.(fieldNames{fieldId}).Limits = BatchOpt.(fieldNames{fieldId}){2};
                     end
                     if numel(BatchOpt.(fieldNames{fieldId})) >= 3
                         View.Figure.(fieldNames{fieldId}).RoundFractionalValues = BatchOpt.(fieldNames{fieldId}){3};
+                    end
+                    try
+                        View.Figure.(fieldNames{fieldId}).Value = BatchOpt.(fieldNames{fieldId}){1};
+                    catch err
+                        err
                     end
                 case 'uicheckbox'
                     View.Figure.(fieldNames{fieldId}).Value = BatchOpt.(fieldNames{fieldId});
@@ -35,10 +42,16 @@ for fieldId = 1:numel(fieldNames)
                     if numel(BatchOpt.(fieldNames{fieldId})) == 2   % populate the contents of the dropdown
                         View.Figure.(fieldNames{fieldId}).Items = BatchOpt.(fieldNames{fieldId}){2};
                     end
-                    View.Figure.(fieldNames{fieldId}).Value = BatchOpt.(fieldNames{fieldId}){1};
+                    try
+                        View.Figure.(fieldNames{fieldId}).Value = BatchOpt.(fieldNames{fieldId}){1};
+                    catch err
+                        err
+                    end
             end
             if isfield(BatchOpt, 'mibBatchTooltip')
-                View.Figure.(fieldNames{fieldId}).Tooltip = BatchOpt.mibBatchTooltip.(fieldNames{fieldId});
+                if isfield(BatchOpt.mibBatchTooltip, fieldNames{fieldId})
+                    View.Figure.(fieldNames{fieldId}).Tooltip = BatchOpt.mibBatchTooltip.(fieldNames{fieldId});
+                end
             end
         end
     else    % for GUIs made with GUIDE

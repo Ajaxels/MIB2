@@ -167,7 +167,7 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
         wb.Children.Title.Interpreter = 'none';
         drawnow;
     end
-    
+    z1 = 1;     % z counter for models, when loaded multiple 3D *.model files
     for fnId = 1:numel(filename)
         if ismember(filename{fnId}(end-3:end), {'.mat', 'odel'}) % loading model in the matlab format
             res = load(fullfile(BatchOpt.DirectoryName{1}, filename{fnId}), '-mat');
@@ -175,7 +175,13 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
             Fields = fieldnames(res);
             % find a field name for the data
             if ismember('modelVariable', Fields)
-                BatchOpt.modelVariable = res.(Fields{ismember(Fields, 'modelVariable')});
+                if isfield(res, res.(Fields{ismember(Fields, 'modelVariable')}))
+                    BatchOpt.modelVariable = res.(Fields{ismember(Fields, 'modelVariable')});
+                else
+                    if isfield(res, 'mibModel')
+                        BatchOpt.modelVariable = 'mibModel';
+                    end
+                end
             elseif ismember('model_var', Fields)
                 BatchOpt.modelVariable = res.(Fields{ismember(Fields, 'model_var')});    % mib version 1
             else
@@ -261,7 +267,7 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
             model = nrrdLoadWithMetadata(fullfile(BatchOpt.DirectoryName{1}, filename{fnId}));
             model =  uint8(permute(model.data, [2 1 3]));
             BatchOpt.model_fn = fullfile(BatchOpt.DirectoryName{1}, [filename{fnId}(1:end-2) 'model']);
-            BatchOpt.modelVariable = 'nrrd_model';
+            BatchOpt.modelVariable = 'mibModel';
         elseif strcmp(filename{fnId}(end-3:end),'mrc') % loading model in mrc format            
             BatchOpt.mibBioformatsCheck = 0;
             BatchOpt.waitbar = 0;
@@ -274,7 +280,7 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
             [model, ~, ~] = mibLoadImages({fullfile(BatchOpt.DirectoryName{1}, filename{fnId})}, BatchOpt);
             model =  squeeze(model);
             BatchOpt.model_fn = fullfile(BatchOpt.DirectoryName{1}, [filename{1}(1:end-3) 'model']);
-            BatchOpt.modelVariable = 'tif_model';
+            BatchOpt.modelVariable = 'mibModel';
         end
         
         % check H/W/Z dimensions
@@ -286,13 +292,13 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
             return;
         end
         
-        if size(model,3) ~= obj.I{BatchOpt.id}.depth && size(model,3) > 1
-            if BatchOpt.showWaitbar; delete(wb); end
-            notify(obj, 'stopProtocol');
-            msgbox(sprintf('Model and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nModel (HxWxZ) = %d x %d x %d pixels',...
-                obj.I{BatchOpt.id}.height, obj.I{BatchOpt.id}.width, obj.I{BatchOpt.id}.depth, size(model,1), size(model,2), size(model,3)),'Error!','error','modal');
-            return;
-        end
+%         if size(model,3) ~= obj.I{BatchOpt.id}.depth && size(model,3) > 1
+%             if BatchOpt.showWaitbar; delete(wb); end
+%             notify(obj, 'stopProtocol');
+%             msgbox(sprintf('Model and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nModel (HxWxZ) = %d x %d x %d pixels',...
+%                 obj.I{BatchOpt.id}.height, obj.I{BatchOpt.id}.width, obj.I{BatchOpt.id}.depth, size(model,1), size(model,2), size(model,3)),'Error!','error','modal');
+%             return;
+%         end
         
         % get the type of the model
         if ~isfield(BatchOpt, 'modelType')
@@ -356,6 +362,18 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
                 obj.setData2D('model', {model}, fnId, 4, NaN, BatchOpt);
             else
                 obj.setData2D('model', {model}, NaN, 4, NaN, BatchOpt);
+            end
+        elseif size(model, 3) > 1
+            if numel(filename) > 1
+                BatchOpt.z = [z1, z1+size(model,3)-1];
+                z1 = z1+size(model,3);
+                obj.setData3D('model', {model}, NaN, 4, NaN, BatchOpt);
+            else
+                if BatchOpt.showWaitbar; delete(wb); end
+                notify(obj, 'stopProtocol');
+                msgbox(sprintf('Model and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nModel (HxWxZ) = %d x %d x %d pixels',...
+                    obj.I{BatchOpt.id}.height, obj.I{BatchOpt.id}.width, obj.I{BatchOpt.id}.depth, size(model,1), size(model,2), size(model,3)),'Error!','error','modal');
+                return;
             end
         end
         if BatchOpt.showWaitbar; waitbar(fnId/numel(filename),wb); end
@@ -425,7 +443,9 @@ elseif isfield(BatchOpt, 'modelMaterialNames')
 else
     switch class(model)
         case 'uint8'
-            max_color = max(max(max(max(model))));
+            %max_color = max(max(max(max(model))));
+            M = cell2mat(obj.getData3D('model'));
+            max_color = max(M(:));
             if max_color > 0
                 obj.I{BatchOpt.id}.modelMaterialNames = cell(max_color, 1);
                 for i=1:max_color

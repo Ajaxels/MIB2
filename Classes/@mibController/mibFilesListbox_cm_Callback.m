@@ -21,7 +21,7 @@ function mibFilesListbox_cm_Callback(obj, parameter, BatchOptIn)
 % @li .Mode -> [cell], desired mode to combine the images: 'Combine datasets', 'Load each N-th dataset', 'Insert into open dataset', 'Combine files as color channels', 'Add as new color channel', 'Add each N-th dataset as new color channel'
 % @li .DirectoryName -> [cell] directory name, where the files are located, use the right mouse click over the Parameters table to modify the directory
 % @li .FilenameFilter -> [string] filter for filenames: *.* - process all files in the directory; *.tif - process only the TIF files; could also be a filename
-% @li .Filenames -> [A CELL WITHIN CELL ARRAY, optional] with list of full path filenames to open, only for the batch mode
+% @li .Filenames -> [A CELL WITHIN CELL ARRAY, optional] with list of FULL PATH filenames to open, only for the batch mode
 % @li .UseBioFormats -> [logical] when checked the Bio-Formats reader will be used
 % @li .BioFormatsIndices -> [string, BioFormats only] indices of images to be opened for file containers, when empty load all
 % @li .EachNthStep -> [string] define step to be used for combining images using each N-th option

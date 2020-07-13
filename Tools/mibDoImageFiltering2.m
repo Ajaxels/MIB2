@@ -203,6 +203,14 @@ if BatchOpt.Mode3D  % perform the 3D filters
                     img = zeros(size(img), 'uint8');
                     img(ridges) = 1; %#ok<FNDSB>
                 end
+            case 'ElasticDistortion'
+                if colCh==1
+                    logText = sprintf('%s 3D, ScalingFactor: %d, HSize: %s, Sigma: %.1f', logText, BatchOpt.ScalingFactor{1}, BatchOpt.HSize, BatchOpt.Sigma{1});
+                    randomSeed = 0;     % define random seed
+                    [img(:,:,colCh,:), DisplacementField] = mibElasticDistortionFilter(img(:,:,colCh,:), BatchOpt, randomSeed);
+                else
+                    img(:,:,colCh,:) = mibElasticDistortionFilter(img(:,:,:,z), BatchOpt, randomSeed, DisplacementField);
+                end
                 
         end
         if BatchOpt.showWaitbar; pwb.increment(); end
@@ -470,6 +478,16 @@ else    % perform 2D filters
                     if BatchOpt.showWaitbar; pwb.increment(); end
                 end
             end
+        case 'ElasticDistortion'
+            % not implemented, this version is very slow
+            logText = sprintf('%s, ScalingFactor: %d, HSize: %s, Sigma: %.1f', logText, BatchOpt.ScalingFactor{1}, BatchOpt.HSize, BatchOpt.Sigma{1});
+            %for colCh=1:size(img, 3)
+                parfor (z = 1:size(img, 4), parforArg)
+                    randomSeed = z;     % define random
+                    img(:,:,:,z) = mibElasticDistortionFilter(img(:,:,:,z), BatchOpt, randomSeed);
+                    if BatchOpt.showWaitbar; pwb.increment(); end
+                end
+            %end
         case 'Gaussian'
             HSize = str2num(BatchOpt.HSize);
             HSize = HSize - mod(HSize,2) + 1; % should be an odd number

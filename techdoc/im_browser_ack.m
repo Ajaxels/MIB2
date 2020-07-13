@@ -41,7 +41,7 @@
 % * Inspired by <http://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer *IMAGEVIEWER*>
 % by Jiro Doke, MathWorks 2010
 % * Documentation done with <http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools *MTOC++ - Doxygen filter for Matlab and tools*>
-% written by Martin Drohmann (Universit?t M?nster) and Daniel Wirtz (Universit?t Stuttgart), 2011-2013
+% written by Martin Drohmann (Universitat Munster) and Daniel Wirtz (Universitat Stuttgart), 2011-2013
 % * <http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching
 % *Accurate Fast Marching function*> by Dirk-Jan Kroon, University of Twente, 2011 is utilized in the Membrane Click Tracker tool
 % * <http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff *ANISODIFF*> function written by Peter Kovesi, 2000-2002
@@ -53,7 +53,7 @@
 % * <https://se.mathworks.com/matlabcentral/fileexchange/53511-drag-drop-functionality-for-java-gui-components *Drag & Drop functionality for JAVA GUI components*> written by Maarten
 % van der Seijs, Delft University of Technology, the Netherlands, 2015
 % * <https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays
-% *Cell migration in scratch wound assaysELL MIGRATION IN SCRATCH WOUND ASSAYS*> by Constantino Carlos
+% *CELL MIGRATION IN SCRATCH WOUND ASSAYS*> by Constantino Carlos
 % Reyes-Aldasoro, City, University of London was used for the wound healing assay tool
 % * <http://www.peterkovesi.com/projects/segmentation/ *DRAWREGIONBOUNDARIES*>
 % a function to draw boundaries of labeled regions in an image, written by Peter Kovesi
@@ -62,6 +62,9 @@
 % * <https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m
 % *DRIFTY_SHIFTY_DELUXE*>, written by Joshua D. Sugar, Sandia National
 % Laboratories, Livermore, CA (2014); part of code from this function was adopted in mibCalcShifts.m
+% * *Elastic Distortion filter* is based on <https://se.mathworks.com/matlabcentral/fileexchange/66663-elastic-distortion-transformation-on-an-image
+% *Elastic Distortion Transformation on an image*> by David Franco, Catholic
+% University of Parana
 % * <http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig
 % *EXPORT_FIG*> function to add measurements to snapshots is written by Oliver Woodford and Yair Altman 
 % * <http://www.mathworks.com/matlabcentral/fileexchange/41666-fast-3d-2d-region-growing--mex-

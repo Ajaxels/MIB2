@@ -1194,7 +1194,7 @@ classdef mibStatisticsController < handle
             elseif ismember(obj.BatchOpt.ExportResultsTo{1}, obj.BatchOpt.ExportResultsTo{2}(3:5))
                 if obj.BatchOpt.ExportFilename(1) ~= filesep; obj.BatchOpt.ExportFilename = [filesep obj.BatchOpt.ExportFilename]; end  % add slash before the filename
                 fn = [Path, obj.BatchOpt.ExportFilename Extension];
-                if obj.BatchOpt.showWaitbar; wb = waitbar(0,sprintf('%s\nPlease wait...',fn), 'Name', 'Saving the results', 'WindowStyle', 'modal'); end
+                if obj.BatchOpt.showWaitbar; wb = waitbar(0,sprintf('%s\nPlease wait...',fn), 'Name', 'Saving the results', 'WindowStyle', 'modal'); wb.Children.Title.Interpreter = 'none'; end
                 Path2 = fileparts(fn);
                 if exist(Path2, 'dir') == 0; mkdir(Path2); end  % create a new directory
                 if exist(fn, 'file') == 2;  delete(fn);  end    % delete exising file
@@ -1375,10 +1375,12 @@ classdef mibStatisticsController < handle
                 end
                 if obj.BatchOpt.showWaitbar
                     if numel(property) == 1
-                        wb = waitbar(0,sprintf('Calculating "%s" of %s for %s\nMaterial: "%s"\nPlease wait...',property{1}, obj.BatchOpt.Shape{1}, obj.BatchOpt.DatasetType{1}, materialName),'Name', 'Shape statistics...','WindowStyle','modal');
+                        wb = waitbar(0, sprintf('Calculating "%s" of %s for %s\nMaterial: "%s"\nPlease wait...',property{1}, obj.BatchOpt.Shape{1}, obj.BatchOpt.DatasetType{1}, materialName),'Name', 'Shape statistics...','WindowStyle','modal');
                     else
                         wb = waitbar(0,sprintf('Calculating multiple parameters of %s for %s\nMaterial: "%s"\nPlease wait...', obj.BatchOpt.Shape{1}, obj.BatchOpt.DatasetType{1}, materialName),'Name','Shape statistics...','WindowStyle','modal');
                     end
+                    wb.Children.Title.Interpreter = 'none'; 
+                    drawnow;
                 end
             else    % mask
                 if obj.mibModel.getImageProperty('maskExist') == 0
@@ -1392,6 +1394,8 @@ classdef mibStatisticsController < handle
                     else
                         wb = waitbar(0,sprintf('Calculating multiple parameters of %s for %s\n Material: Mask\nPlease wait...',obj.BatchOpt.Shape{1}, obj.BatchOpt.DatasetType{1}),'Name','Shape statistics...','WindowStyle','modal');
                     end
+                    wb.Children.Title.Interpreter = 'none'; 
+                    drawnow;
                 end
             end
             

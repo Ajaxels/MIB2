@@ -32,9 +32,9 @@ if nargin < 3   % this when returning from fine-tuning of ROIs via the Escape ke
     char=hObject.Character;
     modifier = hObject.Modifier;
 else
-    % return when editing the edit boxes
+    % return when editing the edit, list boxes
     if ~isempty(hObject.CurrentObject)
-        if ~isempty(strfind(lower(hObject.CurrentObject.Tag), 'edit')) 
+        if isprop(hObject.CurrentObject, 'Style') && ismember(hObject.CurrentObject.Style, {'listbox', 'edit'})
             return; 
         end
     end

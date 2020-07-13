@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
     </param.icons>
-    <param.version>2.65</param.version>
+    <param.version>2.70</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -17,7 +17,7 @@
 If you have not previously installed the MATLAB Compiler Runtime (MCR) it will be automatically downloaded and installed during the installation.
 
 Microscopy Image Browser (MIB) a handy tool for image management
-Copyright (c) 2010-2017
+Copyright (c) 2010-2020
 Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
 http://mib.helsinki.fi
 
@@ -88,7 +88,38 @@ ${DYLD_LIBRARY_PATH}:MR/v97/runtime/maci64:MR/v97/sys/os/maci64:MR/v97/bin/maci6
 	 
  Input Arguments 
 	 -?  print help on how to use the application 
-	 input arguments</param.help.text>
+	 input arguments 
+ Description 
+ 	 You are going to install MIB that has been compiled to stand-alone executables (exe-files).
+If you have not previously installed the MATLAB Compiler Runtime (MCR) it will be automatically downloaded and installed during the installation.
+
+Microscopy Image Browser (MIB) a handy tool for image management
+Copyright (c) 2010-2020
+Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
+http://mib.helsinki.fi
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+
+GNU GENERAL PUBLIC LICENSE
+Version 2, June 1991
+
+Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Everyone is permitted to copy and distribute verbatim copies
+of this license document, but changing it is not allowed.</param.help.text>
     <unset>
       <param.guid />
       <param.installpath.combo />

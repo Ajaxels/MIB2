@@ -47,6 +47,10 @@ if isempty(img)
     else
         backupLayer = BatchOptOut.SourceLayer{1};
     end
+    % define if full backup is needed
+    if strcmp(BatchOptOut.FilterName{1}, 'ElasticDistortion') && BatchOptOut.DistortAllLAyers
+        backupLayer = 'mibImage';
+    end
     
     switch obj.BatchOpt.DatasetType{1}
         case '2D, Slice'
@@ -103,97 +107,113 @@ switch BatchOptOut.ColorChannel{1}
     otherwise
         colChannel = str2double(BatchOptOut.ColorChannel{1});
 end
-if strcmp(BatchOptOut.SourceLayer{1}, 'model')
+if strcmp(BatchOptOut.SourceLayer{1}, 'model') %&& ~strcmp(BatchOptOut.FilterName{1}, 'ElasticDistortion')
     colChannel = str2double(BatchOptOut.MaterialIndex);
 end
 
-for t=timeVector(1):timeVector(2)
-    if ~strcmp(BatchOptOut.DatasetType{1}, '2D, Slice')
-        img = obj.mibModel.getData3D(BatchOptOut.SourceLayer{1}, t, NaN, colChannel, getDataOptions);
+% define layers to be processed
+if strcmp(BatchOptOut.FilterName{1}, 'ElasticDistortion') && BatchOptOut.DistortAllLAyers
+    if obj.mibModel.I{obj.BatchOpt.id}.modelType == 63
+        sourceLayersList = {'image', 'everything'};
     else
-        getDataOptions.t = [t t];
-        img = obj.mibModel.getData2D(BatchOptOut.SourceLayer{1}, obj.mibModel.I{obj.BatchOpt.id}.getCurrentSliceNumber(), NaN, colChannel, getDataOptions);
+        sourceLayersList = {'image', 'model', 'mask'};
     end
-    
-    if strcmp(BatchOptOut.FilterGroup{1}, 'Image Binarization') && size(img{1}, 3) > 1
-        errordlg(sprintf('!!! Error !!!\n\nPlease select a single color channel before binarization'), 'Too many color channels');
-        return;
-    end
-    
-    % add the following code inside the new imageFilter function
-    for roi = 1:numel(img)
-        
-        if ismember(BatchOptOut.FilterName{1}, {'SlicClustering', 'WatershedClustering'}) % adjust the image and convert to 8bit
-            currViewPort = obj.mibModel.I{obj.mibModel.Id}.viewPort;
-            if colChannel == 0  % define index of the color channel
-                col_channel = 1;
-            else
-                col_channel = colChannel;
-            end
-            if isa(img{roi}, 'uint16')
-                if obj.mibModel.mibLiveStretchCheck   % on fly mode
-                    for sliceId=1:size(img{roi}, 4)
-                        img{roi}(:,:,1,sliceId) = imadjust(img{roi}(:,:,1,sliceId), stretchlim(img{roi}(:,:,1,sliceId),[0 1]),[]);
-                    end
-                else
-                    for sliceId=1:size(img{roi}, 4)
-                        img{roi}(:,:,1,sliceId) = imadjust(img{roi}(:,:,1,sliceId), [currViewPort.min(col_channel)/65535 currViewPort.max(col_channel)/65535],[0 1],currViewPort.gamma(col_channel));
-                    end
-                end
-                img{roi} = uint8(img{roi}/255);
-            else
-                if currViewPort.min(col_channel) > 1 || currViewPort.max(col_channel) < 255
-                    for sliceId=1:size(img{roi}, 4)
-                        img{roi}(:,:,1,sliceId) = imadjust(img{roi}(:,:,1,sliceId), [currViewPort.min(col_channel)/255 currViewPort.max(col_channel)/255],[0 1],currViewPort.gamma(col_channel));
-                    end
-                end
-            end
-        end
-        
-        switch BatchOptOut.ActionToResult{1}
-            case 'Fitler image'
-                [img{roi}, log_text] = mibDoImageFiltering2(img{roi}, BatchOptOut);
-            case 'Filter and add'
-                [imgOut, log_text] = mibDoImageFiltering2(img{roi}, BatchOptOut);
-                img{roi} = img{roi}+imgOut;
-            case 'Filter and subtract'
-                [imgOut, log_text] = mibDoImageFiltering2(img{roi}, BatchOptOut);
-                img{roi} = img{roi}-imgOut;
-        end
-    end
-    
-    if ~ismember(BatchOptOut.FilterName{1}, obj.BinarizationFiltersList)
+else
+    sourceLayersList = BatchOptOut.SourceLayer(1);
+end
+
+for sourceLayerId = 1:numel(sourceLayersList)
+    BatchOptOut.SourceLayer(1) = sourceLayersList(sourceLayerId);
+    for t=timeVector(1):timeVector(2)
         if ~strcmp(BatchOptOut.DatasetType{1}, '2D, Slice')
-            obj.mibModel.setData3D(BatchOptOut.SourceLayer{1}, img, t, NaN, colChannel, getDataOptions);
+            img = obj.mibModel.getData3D(sourceLayersList{sourceLayerId}, t, NaN, colChannel, getDataOptions);
         else
-            obj.mibModel.setData2D(BatchOptOut.SourceLayer{1}, img, obj.mibModel.I{obj.BatchOpt.id}.getCurrentSliceNumber(), NaN, colChannel, getDataOptions);
+            getDataOptions.t = [t t];
+            img = obj.mibModel.getData2D(sourceLayersList{sourceLayerId}, obj.mibModel.I{obj.BatchOpt.id}.getCurrentSliceNumber(), NaN, colChannel, getDataOptions);
         end
-    else    % for binarization filters
-        if strcmp(BatchOptOut.DestinationLayer{1}, 'model')
-            if isa(img{1}, 'uint16'); ModelType = 65535; else; ModelType = 4294967295; end  % define model type
-            if ~strcmp(BatchOptOut.DatasetType{1}, '2D, Slice')
-                obj.mibModel.createModel(ModelType);
-                obj.mibModel.setData3D(BatchOptOut.DestinationLayer{1}, img, t, NaN, NaN, getDataOptions);
-            else
-                if obj.mibModel.I{obj.mibModel.Id}.modelType ~= ModelType
-                    obj.mibModel.createModel(ModelType);
+
+        if strcmp(BatchOptOut.FilterGroup{1}, 'Image Binarization') && size(img{1}, 3) > 1
+            errordlg(sprintf('!!! Error !!!\n\nPlease select a single color channel before binarization'), 'Too many color channels');
+            return;
+        end
+
+        % add the following code inside the new imageFilter function
+        for roi = 1:numel(img)
+            if ismember(BatchOptOut.FilterName{1}, {'SlicClustering', 'WatershedClustering'}) % adjust the image and convert to 8bit
+                currViewPort = obj.mibModel.I{obj.mibModel.Id}.viewPort;
+                if colChannel == 0  % define index of the color channel
+                    col_channel = 1;
+                else
+                    col_channel = colChannel;
                 end
-                obj.mibModel.setData2D(BatchOptOut.DestinationLayer{1}, img, obj.mibModel.I{obj.BatchOpt.id}.getCurrentSliceNumber(), NaN, NaN, getDataOptions);
-            end 
-            notify(obj.mibModel, 'showModel');
-        else
-            if ~strcmp(BatchOptOut.DatasetType{1}, '2D, Slice')
-                obj.mibModel.setData3D(BatchOptOut.DestinationLayer{1}, img, t, NaN, NaN, getDataOptions);
-            else
-                obj.mibModel.setData2D(BatchOptOut.DestinationLayer{1}, img, obj.mibModel.I{obj.BatchOpt.id}.getCurrentSliceNumber(), NaN, NaN, getDataOptions);
-            end 
-            if strcmp(BatchOptOut.DestinationLayer{1}, 'mask'); notify(obj.mibModel, 'showMask'); end
+                if isa(img{roi}, 'uint16')
+                    if obj.mibModel.mibLiveStretchCheck   % on fly mode
+                        for sliceId=1:size(img{roi}, 4)
+                            img{roi}(:,:,1,sliceId) = imadjust(img{roi}(:,:,1,sliceId), stretchlim(img{roi}(:,:,1,sliceId),[0 1]),[]);
+                        end
+                    else
+                        for sliceId=1:size(img{roi}, 4)
+                            img{roi}(:,:,1,sliceId) = imadjust(img{roi}(:,:,1,sliceId), [currViewPort.min(col_channel)/65535 currViewPort.max(col_channel)/65535],[0 1],currViewPort.gamma(col_channel));
+                        end
+                    end
+                    img{roi} = uint8(img{roi}/255);
+                else
+                    if currViewPort.min(col_channel) > 1 || currViewPort.max(col_channel) < 255
+                        for sliceId=1:size(img{roi}, 4)
+                            img{roi}(:,:,1,sliceId) = imadjust(img{roi}(:,:,1,sliceId), [currViewPort.min(col_channel)/255 currViewPort.max(col_channel)/255],[0 1],currViewPort.gamma(col_channel));
+                        end
+                    end
+                end
+            end
+
+            switch BatchOptOut.ActionToResult{1}
+                case 'Fitler image'
+                    [img{roi}, log_text] = mibDoImageFiltering2(img{roi}, BatchOptOut);
+                case 'Filter and add'
+                    [imgOut, log_text] = mibDoImageFiltering2(img{roi}, BatchOptOut);
+                    img{roi} = img{roi}+imgOut;
+                case 'Filter and subtract'
+                    [imgOut, log_text] = mibDoImageFiltering2(img{roi}, BatchOptOut);
+                    img{roi} = img{roi}-imgOut;
+            end
+            if ~strcmp(sourceLayersList{sourceLayerId}, 'image')
+                img{roi} = squeeze(img{roi});
+            end
         end
+
+        if ~ismember(BatchOptOut.FilterName{1}, obj.BinarizationFiltersList)
+            if ~strcmp(BatchOptOut.DatasetType{1}, '2D, Slice')
+                obj.mibModel.setData3D(sourceLayersList{sourceLayerId}, img, t, NaN, colChannel, getDataOptions);
+            else
+                obj.mibModel.setData2D(sourceLayersList{sourceLayerId}, img, obj.mibModel.I{obj.BatchOpt.id}.getCurrentSliceNumber(), NaN, colChannel, getDataOptions);
+            end
+        else    % for binarization filters
+            if strcmp(BatchOptOut.DestinationLayer{1}, 'model')
+                if isa(img{1}, 'uint16'); ModelType = 65535; else; ModelType = 4294967295; end  % define model type
+                if ~strcmp(BatchOptOut.DatasetType{1}, '2D, Slice')
+                    obj.mibModel.createModel(ModelType);
+                    obj.mibModel.setData3D(BatchOptOut.DestinationLayer{1}, img, t, NaN, NaN, getDataOptions);
+                else
+                    if obj.mibModel.I{obj.mibModel.Id}.modelType ~= ModelType
+                        obj.mibModel.createModel(ModelType);
+                    end
+                    obj.mibModel.setData2D(BatchOptOut.DestinationLayer{1}, img, obj.mibModel.I{obj.BatchOpt.id}.getCurrentSliceNumber(), NaN, NaN, getDataOptions);
+                end 
+                notify(obj.mibModel, 'showModel');
+            else
+                if ~strcmp(BatchOptOut.DatasetType{1}, '2D, Slice')
+                    obj.mibModel.setData3D(BatchOptOut.DestinationLayer{1}, img, t, NaN, NaN, getDataOptions);
+                else
+                    obj.mibModel.setData2D(BatchOptOut.DestinationLayer{1}, img, obj.mibModel.I{obj.BatchOpt.id}.getCurrentSliceNumber(), NaN, NaN, getDataOptions);
+                end 
+                if strcmp(BatchOptOut.DestinationLayer{1}, 'mask'); notify(obj.mibModel, 'showMask'); end
+            end
+        end
+
+        %     if showWaitbarLocal == 1
+        %         waitbar(t/(timeVector(2)-timeVector(1)),wb);
+        %     end
     end
-    
-    %     if showWaitbarLocal == 1
-    %         waitbar(t/(timeVector(2)-timeVector(1)),wb);
-    %     end
 end
 
 if strcmp(BatchOptOut.DatasetType{1}, '2D, Slice')

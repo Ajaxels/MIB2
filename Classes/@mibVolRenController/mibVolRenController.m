@@ -58,7 +58,6 @@ classdef mibVolRenController < handle
         % .ColormapInvert - true/false, invert or not the colormap
         % .animationPath - a structure with animation path
         % .noFramesPreview - number of frames for the preview
-        
         volume
         % loaded volume
         volumeAlphaCurve

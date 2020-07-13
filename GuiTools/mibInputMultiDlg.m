@@ -26,8 +26,8 @@ function varargout = mibInputMultiDlg(varargin)
 % .LastItemColumns - [optional] force the last entry to be on a single column, 1 or 0
 % .Focus - define index of the widget to get focused
 % .okBtnText -  text for the OK button
-% .HelpUrl - URL to the help page, when provided a Help button is
-% displayed, press of the button opens the url in a browser
+% .HelpUrl - URL to the help page, when provided a Help button is displayed, press of the button opens the url in a browser
+% .msgBoxOnly - logical, to mimic message box without input fields
 %
 % Return values:
 % answer: a cell array with the entered values, or @em empty, when cancelled
@@ -50,6 +50,7 @@ function varargout = mibInputMultiDlg(varargin)
 % options.Focus = 1;      // [optional] define index of the widget to get focus
 % options.HelpUrl = 'http:\\mib.helsinki.fi'; // [optional], an url for the Help button
 % options.LastItemColumns = 1; // [optional] force the last entry to be on a single column
+% options.msgBoxOnly = false; // [optional] mimic message box without input fields
 % [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
 % if isempty(answer); return; end 
 % @endcode
@@ -149,7 +150,7 @@ else
     handles.HelpUrl = options.HelpUrl;
 end
 if ~isempty(handles.HelpUrl); handles.Help.Visible = 'on'; end
-
+if ~isfield(options, 'msgBoxOnly'); options.msgBoxOnly = false; end
 
 if ~isfield(options, 'PromptLines')
     PromptLines = ones([numel(prompts) 1]);
@@ -219,50 +220,52 @@ for elementId = 1:numel(prompts)
     widgetId = widgetId + 1;
     maxShiftY = max([maxShiftY shiftY]);
 end
-if min(posVec(:,2)) < 0
-    posVec(:,2) = posVec(:,2) - min(posVec(:,2));
-end
-maxY = max(posVec(:,2));
-posVec(:,2) = maxY - posVec(:,2)+posButton(2)+posButton(4)+de/2;
+if options.msgBoxOnly == false  % add input widgets
+    if min(posVec(:,2)) < 0
+        posVec(:,2) = posVec(:,2) - min(posVec(:,2));
+    end
+    maxY = max(posVec(:,2));
+    posVec(:,2) = maxY - posVec(:,2)+posButton(2)+posButton(4)+de/2;
 
-widgetId = 1;
-for elementId = 1:numel(prompts)
-    if ~islogical(defAns{elementId})
-        handles.hText(elementId) = uicontrol('Parent', handles.mibInputMultiDlg, 'Style', 'text', ...
-            'Units', 'points', 'HorizontalAlignment', 'left', ...
-            'String', prompts{elementId}, ...
-            'Position', posVec(widgetId,:));
-    end
-    widgetId = widgetId + 1;
-    
-    if ~iscell(defAns{elementId}) || isempty(defAns{elementId})
-        if islogical(defAns{elementId})     % make a checkbox
-            handles.hWidget(elementId) = uicontrol('Parent', handles.mibInputMultiDlg, 'Style', 'checkbox', 'Units', 'points', ...
-                'String', prompts{elementId}, ...
-                'Value', defAns{elementId}, ...
-                'Position', posVec(widgetId,:));
-        else                                % make an editbox
-            if isempty(defAns{elementId}); defAns{elementId} = ''; end
-            
-            handles.hWidget(elementId) = uicontrol('Parent', handles.mibInputMultiDlg, 'Style', 'edit', ...
+    widgetId = 1;
+    for elementId = 1:numel(prompts)
+        if ~islogical(defAns{elementId})
+            handles.hText(elementId) = uicontrol('Parent', handles.mibInputMultiDlg, 'Style', 'text', ...
                 'Units', 'points', 'HorizontalAlignment', 'left', ...
-                'String', defAns{elementId}, ...
+                'String', prompts{elementId}, ...
                 'Position', posVec(widgetId,:));
         end
-    else    % make a combobox
-        if isnumeric(defAns{elementId}{end})
-            entriesList = defAns{elementId}(1:end-1);
-            selectedValue = defAns{elementId}{end};
-        else
-            entriesList = defAns{elementId};
-            selectedValue = 1;
+        widgetId = widgetId + 1;
+
+        if ~iscell(defAns{elementId}) || isempty(defAns{elementId})
+            if islogical(defAns{elementId})     % make a checkbox
+                handles.hWidget(elementId) = uicontrol('Parent', handles.mibInputMultiDlg, 'Style', 'checkbox', 'Units', 'points', ...
+                    'String', prompts{elementId}, ...
+                    'Value', defAns{elementId}, ...
+                    'Position', posVec(widgetId,:));
+            else                                % make an editbox
+                if isempty(defAns{elementId}); defAns{elementId} = ''; end
+
+                handles.hWidget(elementId) = uicontrol('Parent', handles.mibInputMultiDlg, 'Style', 'edit', ...
+                    'Units', 'points', 'HorizontalAlignment', 'left', ...
+                    'String', defAns{elementId}, ...
+                    'Position', posVec(widgetId,:));
+            end
+        else    % make a combobox
+            if isnumeric(defAns{elementId}{end})
+                entriesList = defAns{elementId}(1:end-1);
+                selectedValue = defAns{elementId}{end};
+            else
+                entriesList = defAns{elementId};
+                selectedValue = 1;
+            end
+            handles.hWidget(elementId) = uicontrol('Parent', handles.mibInputMultiDlg, 'Style', 'popupmenu', 'Units', 'points', ...
+                'String', entriesList, ...
+                'Position', posVec(widgetId,:));
+            handles.hWidget(elementId).Value = selectedValue;
         end
-        handles.hWidget(elementId) = uicontrol('Parent', handles.mibInputMultiDlg, 'Style', 'popupmenu', 'Units', 'points', ...
-            'String', entriesList, ...
-            'Position', posVec(widgetId,:));
-        handles.hWidget(elementId).Value = selectedValue;
+        widgetId = widgetId + 1;
     end
-    widgetId = widgetId + 1;
 end
 
 % Adding the widgets to the figure
@@ -371,7 +374,13 @@ end
 handles.mibInputMultiDlg.Visible = 'on';
 
 % highlight text in the edit box
-uicontrol(handles.hWidget(options.Focus));
+if ~options.msgBoxOnly
+    uicontrol(handles.hWidget(options.Focus));
+else
+    % for message box disable OK button and rename Cancel to OK
+    handles.okBtn.Visible = 'off';
+    handles.cancelBtn.String = 'OK';
+end
 
 % UIWAIT makes mibInputMultiDlg wait for user response (see UIRESUME)
 uiwait(handles.mibInputMultiDlg);

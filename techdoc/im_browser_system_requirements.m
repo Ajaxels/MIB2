@@ -15,7 +15,7 @@
 %
 % It is highly recommended to use 64-bit operating system with sufficient amount of memory.
 %% MATLAB
-% *MATLAB, Release 2014b*, (_and newer_). MIB was tested with Matlab R2014b - R2017b.
+% *MATLAB, Release 2014b*, (original MIB version 2.00; the newer versions of MIB may require R2017a or newer). MIB was tested with Matlab R2014b - R2020a.
 % 
 %% Toolboxes
 %%
@@ -25,7 +25,12 @@
 % * <http://se.mathworks.com/products/statistics/ Statistics and Machine Learning Toolbox> (_optional_) for alternative to the Random Forest classifiers
 % * <http://se.mathworks.com/products/statistics/ Statistics Toolbox> (_optional_) for alternative to the Random Forest classifiers
 % * <http://se.mathworks.com/products/optimization/ Optimization Toolbox> (_optional_) for alternative to the Random Forest classifiers
-% * <https://se.mathworks.com/help/vision/index.html Computer Vision System Toolbox> for automatic alignement using detected image features
+% * <https://se.mathworks.com/help/vision/index.html Computer Vision System
+% Toolbox> for automatic alignement using detected image features and for
+% Deep MIB (Matlab R2019b or newer, MIB version 2.70)
+% * <https://se.mathworks.com/help/deeplearning/index.html Deep Learning Toolbox> for
+% Deep MIB (Matlab R2019b or newer, MIB version 2.70)
+% 
 % 
 %% Bio-Formats
 % The Bio-Formats library brings support of multiple microscopy image formats. To use the library check the Bio checkbox in the Directory Contents panel of MIB.

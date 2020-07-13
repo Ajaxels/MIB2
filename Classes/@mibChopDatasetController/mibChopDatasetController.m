@@ -369,7 +369,7 @@ classdef mibChopDatasetController < handle
                             fn = sprintf('Mask_%s_Z%.2d-X%.2d-Y%.2d.mask', fnTemplate, z, x, y);
                             fnModel = fullfile(outDir, fn);
                             imOut = cell2mat(obj.mibModel.getData3D('mask', timePnt, 4, 0, options)); %#ok<NASGU>
-                            save(fnModel, 'imOut', '-mat', '-v7.3');
+                            save(fnModel, 'maskImg', '-mat', '-v7.3');
                         end
                         index = index + 1;
                     end

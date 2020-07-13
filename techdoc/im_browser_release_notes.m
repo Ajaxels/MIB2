@@ -7,10 +7,22 @@
 %
 %%
 %
+%% 2.70 / 18.05.2020
+% 
+% * Added Deep MIB for training and prediction of datasets using
+% deep convolutional networks
+% * Added 2D Elastic Distortion filter (Menu->Image->Image Filters)
+% * Added resizing of the Image Arithmetics window
+% * Added selection of a seed for random generator for Rename and Shuffle
+% tool
+% * Fixed issues with importing of chopped cropped datasets
+%
 %% 2.66 / 25.04.2020
 %
 % * Added direct conversion from Mask to Model layer (Segmentation
 % panel->Material table->right click->Mask to Material)
+% * Added drag-and-drop for opening of *.model files by dragging them from
+% elsewhere to the Image View panel
 %
 %% 2.651 / 25.04.2020
 %

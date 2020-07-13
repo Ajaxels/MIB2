@@ -22,7 +22,7 @@ function varargout = mibImageArithmeticGUI(varargin)
 
 % Edit the above text to modify the response to help mibImageArithmeticGUI
 
-% Last Modified by GUIDE v2.5 29-Sep-2019 14:48:33
+% Last Modified by GUIDE v2.5 25-May-2020 17:42:58
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -141,4 +141,32 @@ end
 % --- Executes on selection change in prevExpPopup.
 function prevExpPopup_Callback(hObject, eventdata, handles)
 handles.winController.prevExpPopup_Callback();
+end
+
+
+% --- Executes when mibImageArithmeticGUI is resized.
+function mibImageArithmeticGUI_SizeChangedFcn(hObject, eventdata, handles)
+
+mainFigPos = handles.mibImageArithmeticGUI.Position;
+handles.infoPanel.Position(1) = 3;
+handles.infoPanel.Position(2) = mainFigPos(4) - handles.infoPanel.Position(4);
+handles.infoPanel.Position(3) = mainFigPos(3)-6;
+
+handles.settingsPanel.Position(1) = 3;
+handles.settingsPanel.Position(2) = mainFigPos(4) - handles.infoPanel.Position(4) - handles.settingsPanel.Position(4);
+handles.settingsPanel.Position(3) = mainFigPos(3)-6;
+
+handles.examplesPanel.Position(1) = 3;
+handles.examplesPanel.Position(4) = handles.settingsPanel.Position(2) - handles.examplesPanel.Position(2);
+handles.examplesPanel.Position(3) = mainFigPos(3)-6;
+
+handles.examplesText.Position(1) = 6;
+handles.examplesText.Position(2) = handles.examplesPanel.Position(4) - handles.examplesText.Position(4) - 15;
+
+handles.examplesText.Position(1) = 6;
+handles.Expression.Position(3) = handles.examplesPanel.Position(3) - handles.Expression.Position(1) - 6;
+handles.Expression.Position(4) = handles.examplesText.Position(2) - handles.Expression.Position(2);
+
+handles.expressionText.Position(2) = handles.Expression.Position(2) + handles.Expression.Position(4) - 10;
+
 end

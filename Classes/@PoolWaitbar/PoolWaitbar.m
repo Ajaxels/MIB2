@@ -57,7 +57,7 @@ classdef PoolWaitbar < handle
     end
     
     properties (Access = private, Transient)
-        N
+        N   % number of iterations
         ClientHandle = []
         Count = 0
         Increment = 1
@@ -105,6 +105,8 @@ classdef PoolWaitbar < handle
             end
             obj.Queue = parallel.pool.DataQueue;
             obj.Listener = afterEach(obj.Queue, @(~) localIncrement(obj));
+            
+            obj.ClientHandle.Children.Title.Interpreter = 'none';
         end
         
         function updateMaxNumberOfIterations(obj, N)
@@ -117,6 +119,12 @@ classdef PoolWaitbar < handle
             % function increaseMaxNumberOfIterations(obj, N)
             % increase maximal number of iterations by N
             obj.N = obj.N + N;
+        end
+        
+        function result = getMaxNumberOfIterations(obj)
+            % function result = getMaxNumberOfIterations(obj)
+            % get number of iterations
+            result = obj.N;
         end
         
         function updateText(obj, newText)

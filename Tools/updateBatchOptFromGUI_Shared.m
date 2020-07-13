@@ -30,7 +30,7 @@ switch hObject.Type
         BatchOpt.(hObject.Tag)(1) = {hObject.SelectedTab.Tag};
     case {'uieditfield', 'uicheckbox'}  % app designer GUI
         BatchOpt.(hObject.Tag) = hObject.Value;
-    case 'uinumericeditfield'   % app designer GUI
+    case {'uinumericeditfield', 'uispinner'}   % app designer GUI
         BatchOpt.(hObject.Tag){1} = hObject.Value;
         BatchOpt.(hObject.Tag){2} = hObject.Limits;
         BatchOpt.(hObject.Tag){3} = hObject.RoundFractionalValues;

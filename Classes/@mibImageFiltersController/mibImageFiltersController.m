@@ -125,7 +125,7 @@ classdef mibImageFiltersController < handle
             % update certain parameters
             obj.ImageFilters.Bilateral.degreeOfSmoothing = num2str(obj.mibModel.I{obj.BatchOpt.id}.meta('MaxInt')^2*.01);
             
-            obj.BasicFiltersList = {'Average', 'Disk', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std'};
+            obj.BasicFiltersList = {'Average', 'Disk', 'ElasticDistortion', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std'};
             obj.EdgePreservingFiltersList = {'AnisotropicDiffusion', 'Bilateral', 'DNNdenoise', 'Median', 'NonLocalMeans', 'Wiener'};
             obj.ContrastFiltersList = {'AddNoise', 'FastLocalLaplacian', 'FlatfieldCorrection', 'LocalBrighten', 'LocalContrast', 'ReduceHaze', 'UnsharpMask'};
             obj.BinarizationFiltersList = {'Edge', 'SlicClustering', 'WatershedClustering'};
@@ -633,7 +633,5 @@ classdef mibImageFiltersController < handle
                     notify(obj.mibModel, 'plotImage', eventdata);
             end
         end
-        
-        
     end
 end

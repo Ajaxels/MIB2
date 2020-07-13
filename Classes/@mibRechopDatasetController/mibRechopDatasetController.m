@@ -161,9 +161,10 @@ classdef mibRechopDatasetController < handle
             
             if obj.View.handles.newRadio.Value   % generate new stack mode
                 % detect grid
-                Zno = zeros([no_files 1]);
+                Zno = zeros([no_files 1]);  % number of the z-section from the filename
                 Xno = zeros([no_files 1]);
                 Yno = zeros([no_files 1]);
+                
                 options.waitbar = 1;
                 for fnId=1:no_files
                     [path, fn, ext] = fileparts(obj.filenames{fnId});
@@ -182,6 +183,10 @@ classdef mibRechopDatasetController < handle
                 tilesX = max(Xno);
                 
                 if imgSw    % combine images
+                    yStep = arrayfun(@(x) files{x}.height, 1:numel(files));
+                    xStep = arrayfun(@(x) files{x}.width, 1:numel(files));
+                    zStep = arrayfun(@(x) files{x}.noLayers, 1:numel(files));
+                    
                     % get dimensions of the output dataset
                     stacks = 0;
                     for i=1:tilesZ
@@ -199,22 +204,17 @@ classdef mibRechopDatasetController < handle
                         width = width + files{id}.width;
                     end
                     
-                    % get the step size
-                    yStep = files{find(Yno==1, 1)}.height;
-                    xStep = files{find(Xno==1, 1)}.width;
-                    zStep = files{find(Zno==1, 1)}.noLayers;
-                    
                     imgOut = zeros([height, width, files{1}.color, stacks], files{1}.imgClass);
                     
                     for fnId=1:no_files
                         [img, img_info{fnId}] = mibGetImages(files{fnId}, img_info{fnId});
                         
-                        yMin = (Yno(fnId)-1)*yStep+1;
-                        yMax = min([(Yno(fnId)-1)*yStep+yStep, height]);
-                        xMin = (Xno(fnId)-1)*xStep+1;
-                        xMax = min([(Xno(fnId)-1)*xStep+xStep, width]);
-                        zMin = (Zno(fnId)-1)*zStep+1;
-                        zMax = min([(Zno(fnId)-1)*zStep+zStep, stacks]);
+                        yMin = sum(yStep(1:Yno(fnId)-1))+1;
+                        yMax = min([sum(yStep(1:Yno(fnId))), height]);
+                        xMin = sum(xStep(1:Xno(fnId)-1))+1;
+                        xMax = min([sum(xStep(1:Xno(fnId))), width]);
+                        zMin = sum(zStep(1:Zno(fnId)-1))+1;
+                        zMax = min([sum(zStep(1:Zno(fnId))), stacks]);
                         
                         imgOut(yMin:yMax, xMin:xMax, :, zMin:zMax) = img;
                     end
@@ -247,9 +247,16 @@ classdef mibRechopDatasetController < handle
                     obj.mibModel.I{obj.mibModel.Id}.createModel();
                     imgOut = zeros([height, width, stacks], 'uint8');
                     modelMaterialNames = cellstr('');
+
+                    % allocate space for steps
+                    xStep = zeros([no_files, 1]);
+                    yStep = zeros([no_files, 1]);
+                    zStep = zeros([no_files, 1]);
+                    
+                    % get dimensions of the model files 
                     for fnId=1:no_files
-                        [path, fn, ext] = fileparts(obj.filenames{fnId});
-                        if isempty(strfind(fn, 'Labels'))
+                        [path, fn] = fileparts(obj.filenames{fnId});
+                        if isempty(strfind(fn, 'Labels')) %#ok<STREMP>
                             fn = fullfile(path, ['Labels_' fn modelExt]);     % Add Labels_ to the filename and change extension
                         else
                             fn = fullfile(path, [fn modelExt]);     % change extension
@@ -261,6 +268,31 @@ classdef mibRechopDatasetController < handle
                             delete(wb);
                             return;
                         end
+                        
+                        % find variable for the model
+                        if fnId == 1
+                            res = whos('-file', fn, 'modelVariable');
+                            if isempty(res)
+                                modelVariable = 'imgOut';
+                            else
+                                res = load(fn, '-mat', 'modelVariable');
+                                modelVariable = res.modelVariable;
+                            end
+                        end
+                        res = whos('-file', fn, modelVariable);
+                        yStep(fnId) = res.size(1);
+                        xStep(fnId) = res.size(2);
+                        zStep(fnId) = res.size(3);
+                    end
+                    
+                    for fnId=1:no_files
+                        [path, fn, ext] = fileparts(obj.filenames{fnId});
+                        if isempty(strfind(fn, 'Labels')) %#ok<STREMP>
+                            fn = fullfile(path, ['Labels_' fn modelExt]);     % Add Labels_ to the filename and change extension
+                        else
+                            fn = fullfile(path, [fn modelExt]);     % change extension
+                        end
+                        
                         R = obj.loadModels(fn);
                         obj.mibModel.I{obj.mibModel.Id}.modelFilename = fn;
                         obj.mibModel.I{obj.mibModel.Id}.modelVariable = 'mibModel';
@@ -278,25 +310,23 @@ classdef mibRechopDatasetController < handle
                         if isfield(R, 'modelMaterialColors')
                             if fnId == 1
                                 modelMaterialColors = R.modelMaterialColors;
-                                imgDim = size(R.imOut);
                             elseif size(R.modelMaterialColors,1) > size(modelMaterialColors, 1)
                                 modelMaterialColors = R.modelMaterialColors;
                             end
                         elseif isfield(R, 'color_list')
                             if fnId == 1
                                 modelMaterialColors = R.color_list;
-                                imgDim = size(R.imOut);
                             elseif size(R.color_list,1) > size(modelMaterialColors, 1)
                                 modelMaterialColors = R.color_list;
                             end
                         end
                         
-                        yMin = (Yno(fnId)-1)*imgDim(1)+1;
-                        yMax = min([(Yno(fnId)-1)*imgDim(1)+imgDim(1), height]);
-                        xMin = (Xno(fnId)-1)*imgDim(2)+1;
-                        xMax = min([(Xno(fnId)-1)*imgDim(2)+imgDim(2), width]);
-                        zMin = (Zno(fnId)-1)*imgDim(3)+1;
-                        zMax = min([(Zno(fnId)-1)*imgDim(3)+imgDim(3), stacks]);
+                        yMin = sum(yStep(1:Yno(fnId)-1))+1;
+                        yMax = min([sum(yStep(1:Yno(fnId))), height]);
+                        xMin = sum(xStep(1:Xno(fnId)-1))+1;
+                        xMax = min([sum(xStep(1:Xno(fnId))), width]);
+                        zMin = sum(zStep(1:Zno(fnId)-1))+1;
+                        zMax = min([sum(zStep(1:Zno(fnId))), stacks]);
                         
                         imgOut(yMin:yMax, xMin:xMax, zMin:zMax) = R.imOut;
                         waitbar(fnId/no_files, wb);
@@ -312,29 +342,53 @@ classdef mibRechopDatasetController < handle
                     obj.mibModel.I{obj.mibModel.Id}.maskExist = 1;
                     imgOut = zeros([height, width, stacks], 'uint8');
                     
+                    % allocate space for steps
+                    xStep = zeros([no_files, 1]);
+                    yStep = zeros([no_files, 1]);
+                    zStep = zeros([no_files, 1]);
+                    
+                    % find mask files dimensions
                     for fnId=1:no_files
                         [path, fn, ext] = fileparts(obj.filenames{fnId});
-                        fn = fullfile(path, ['Mask_' fn '.mask']);     % Change extension
+                        if isempty(strfind(fn, 'Mask')) %#ok<STREMP>
+                            fn = fullfile(path, ['Mask_' fn '.mask']);     % Change extension
+                        else
+                            fn = fullfile(path, [fn '.mask']);
+                        end
+                        
                         if exist(fn, 'file') == 0
                             errordlg(sprintf('!!! Error !!!\n\nThe file for the Mask:\n%s\nwas not found!\nPlease check the filenames or unselect the Masks checkbox!', fn),'Missing the mask files');
                             delete(wb);
                             return;
                         end
                         
-                        R = load(fn, '-mat');
-                        field_name = fieldnames(R);
-                        R = R.(field_name{1});
-                        
-                        if fnId == 1
-                            imgDim = size(R);
+                        if fnId==1
+                            res = whos('-file', fn);
+                            maskVar = res(1).name;
+                        end
+                        res = whos('-file', fn, '-mat', maskVar);
+                        yStep(fnId) = res.size(1);
+                        xStep(fnId) = res.size(2);
+                        zStep(fnId) = res.size(3);
+                    end
+                    
+                    for fnId=1:no_files
+                        [path, fn, ext] = fileparts(obj.filenames{fnId});
+                        if isempty(strfind(fn, 'Mask')) %#ok<STREMP>
+                            fn = fullfile(path, ['Mask_' fn '.mask']);     % Change extension
+                        else
+                            fn = fullfile(path, [fn '.mask']);
                         end
                         
-                        yMin = (Yno(fnId)-1)*imgDim(1)+1;
-                        yMax = min([(Yno(fnId)-1)*imgDim(1)+imgDim(1), height]);
-                        xMin = (Xno(fnId)-1)*imgDim(2)+1;
-                        xMax = min([(Xno(fnId)-1)*imgDim(2)+imgDim(2), width]);
-                        zMin = (Zno(fnId)-1)*imgDim(3)+1;
-                        zMax = min([(Zno(fnId)-1)*imgDim(3)+imgDim(3), stacks]);
+                        R = load(fn, '-mat');
+                        R = R.(maskVar);
+                        
+                        yMin = sum(yStep(1:Yno(fnId)-1))+1;
+                        yMax = min([sum(yStep(1:Yno(fnId))), height]);
+                        xMin = sum(xStep(1:Xno(fnId)-1))+1;
+                        xMax = min([sum(xStep(1:Xno(fnId))), width]);
+                        zMin = sum(zStep(1:Zno(fnId)-1))+1;
+                        zMax = min([sum(zStep(1:Zno(fnId))), stacks]);
                         
                         imgOut(yMin:yMax, xMin:xMax, zMin:zMax) = R;
                         waitbar(fnId/no_files, wb);

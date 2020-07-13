@@ -48,7 +48,7 @@ Model
 % * Hierarchial Data Format with XML header (*.XML); 
 % * all standard file formats can be opened when selecting "All files(*.*)"
 % 
-% Alternatively it is possible to use the <ug_gui_menu_models.html |Menu->Models->Load model|> .
+% Alternatively it is possible to use the <ug_gui_menu_models.html |Menu->Models->Load model|> or directly drag-and-drop |*.model| file to the Image View panel.
 %
 %% The +, -, and E buttons
 %

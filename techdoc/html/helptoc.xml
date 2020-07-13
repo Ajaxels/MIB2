@@ -69,6 +69,7 @@
                 <tocitem target="ug_gui_menu_selection.html">Selection</tocitem>
                 <tocitem target="ug_gui_menu_tools.html">Tools
                     <tocitem target="ug_gui_menu_tools_measure.html">Measure tool</tocitem>
+					<tocitem target="ug_gui_menu_tools_deeplearning.html">Deep learning segmentation</tocitem>
 					<tocitem target="ug_gui_menu_tools_random_forest.html">Classifier->Membrane detection</tocitem>
 					<tocitem target="ug_gui_menu_tools_random_forest_superpixels.html">Classifier->Superpixels classification</tocitem>
 					<tocitem target="ug_gui_menu_tools_global_thresholding.html">Semi-automatic segmentation->Global thresholding</tocitem>

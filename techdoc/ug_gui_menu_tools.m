@@ -32,6 +32,12 @@
 % be drawn arbitrarily.
 %
 % 
+%% Deep learning segmentation
+% The deep learning tool provides access to training of deep convolutional
+% networks over the user data and utilization of those networks for image
+% segmentation tasks.
+% 
+% Please refer to the corrsponding section for details: <ug_gui_menu_tools_deeplearning.html click here>.
 %
 %% Classifiers
 % In this section MIB has two classifiers. One is designed for membrane

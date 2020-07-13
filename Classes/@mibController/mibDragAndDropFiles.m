@@ -13,12 +13,21 @@ function mibDragAndDropFiles(obj, DragNDrop, event)
 
 switch event.DropType
     case 'file'
-        BatchOpt.Mode = {'Combine datasets'};
-        BatchOpt.DirectoryName = {fileparts(event.Data{1})};
-        BatchOpt.Filenames = {event.Data};
+        [path, fn, ext] = fileparts(event.Data{1});
+        switch ext
+            case '.model'   % drag and drop model files to load
+                BatchOpt.DirectoryName = {path};
+                BatchOpt.FilenameFilter = [fn, ext];
+                obj.mibModel.loadModel([], BatchOpt);
+            otherwise   % drag and drop image files to open
+                BatchOpt.Mode = {'Combine datasets'};
+                BatchOpt.DirectoryName = {fileparts(event.Data{1})};
+                BatchOpt.Filenames = {event.Data};
+
+                obj.mibModel.myPath = BatchOpt.DirectoryName{1};
+                obj.mibFilesListbox_cm_Callback([], BatchOpt);        
+        end
         
-        obj.mibModel.myPath = BatchOpt.DirectoryName{1};
-        obj.mibFilesListbox_cm_Callback([], BatchOpt);
     case 'string'
         % nothing here yet
 end

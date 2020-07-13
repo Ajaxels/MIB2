@@ -54,6 +54,18 @@
 %   <td>2D</td>
 % </tr>
 % <tr>
+%   <td><img src="images\image_filters_elasticdist.jpg"></td>
+%   <td><b>Elastic distortion filter</b><br>
+%        Elastic distortion filter, based on Best Practices for Convolutional Neural Networks
+%        Applied to Visual Document Analysis by Patrice Y. Simard, Dave Steinkraus, John C. Platt
+%        <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.160.8494&rep=rep1&type=pdf">(link)</a><br><br>
+%        and codes available:<br>
+%        <a href="https://stackoverflow.com/questions/39308301/expand-mnist-elastic-deformations-matlab">stackoverflow</a><br>
+%        <a href="https://se.mathworks.com/matlabcentral/fileexchange/66663-elastic-distortion-transformation-on-an-image">Elastic Distortion Transformation by David Franco</a><br>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
 %   <td><img src="images\image_filters_entropy.jpg"></td>
 %   <td><b>Entropy filter</b><br>
 %        Local entropy filter, returns an image, where each output pixel contains the entropy <em>(-sum(p.*log2(p)</em>, where <em>p</em> contains the normalized histogram counts) of the defined neighborhood around the corresponding pixel, see details in <a href="https://www.mathworks.com/help/images/ref/entropyfilt.html" target="_blank">entropyfilt</a>

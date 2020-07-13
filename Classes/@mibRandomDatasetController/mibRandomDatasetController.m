@@ -38,6 +38,8 @@ classdef mibRandomDatasetController < handle
             obj.outputDir = fullfile(obj.mibModel.myPath, 'Shuffled');
             obj.View.handles.dirEdit.String = obj.outputDir;
             
+            randomSeed = round(now);  % init of a random generator 
+            obj.View.handles.randomSeed.String = num2str(randomSeed);
 			obj.updateWidgets();
         end
         
@@ -143,14 +145,15 @@ classdef mibRandomDatasetController < handle
             Settings.OutputImagesCombined = {}; % combined list of all files in the output directories
             Settings.outputIndices = [];    % indices of the output directories for each output file
             Settings.OutputIndicesSorted = {};  % sorted indices for each output directory: 
-             % index = Settings.OutputIndicesSorted{1}(1) - corresponds to Settings.InputImagesCombined(index)
+            Settings.randomSeed = round(str2double(obj.View.handles.randomSeed.String));  % init of a random generator 
+            % index = Settings.OutputIndicesSorted{1}(1) - corresponds to Settings.InputImagesCombined(index)
             
+            rng(Settings.randomSeed);   % init the random generator
             inputModelFilenames = [];    % filenames for the input model files
             
             if isempty(Settings.inputDirName); return; end
             
             wb = waitbar(0, sprintf('Checking input files\nPlease wait...'), 'Name', 'Randomize images');
-            
             for dirId=1:numel(Settings.inputDirName)
                 fileList = dir(Settings.inputDirName{dirId});   % list of files in each of the input directories
                 fnames = {fileList.name};
@@ -235,7 +238,7 @@ classdef mibRandomDatasetController < handle
                 
                 for dirId = 1:outputDirNum
                     curDirIndices = Settings.OutputIndicesSorted{dirId};
-                    mibModel = zeros([height, width, numel(curDirIndices)], class(InputModels{1}.(InputModels{1}.modelVariable)));  % allocate space
+                    mibModel = zeros([height, width, numel(curDirIndices)], class(InputModels{1}.(InputModels{1}.modelVariable)));  %#ok<PROP> % allocate space
                     %curDirIndices = sort(randomFilenameNumbers(curDirIndices));     % because MIB sorts files based on their names the curIndeces should be extracted from randomFilenameNumbers
                     
                     % define labels
@@ -247,7 +250,7 @@ classdef mibRandomDatasetController < handle
                         inputDirIndex = Settings.inputIndices(curDirIndices(sliceIndex));   % index of the input directory with the image
                         modelVariable = InputModels{inputDirIndex}.modelVariable;   % model variable in the structure
                         sliceNumber = Settings.InputImagesSliceNumber(curDirIndices(sliceIndex));   % index of the slice in the model
-                        mibModel(:,:,sliceIndex) = InputModels{inputDirIndex}.(modelVariable)(:,:,sliceNumber);
+                        mibModel(:,:,sliceIndex) = InputModels{inputDirIndex}.(modelVariable)(:,:,sliceNumber); %#ok<PROP>
                         if isfield(InputModels{inputDirIndex}, 'labelPosition')
                             labelIndices = find(InputModels{inputDirIndex}.labelPosition(:,1)==sliceNumber);
                             currPos = InputModels{inputDirIndex}.labelPosition(labelIndices,:);
@@ -258,6 +261,7 @@ classdef mibRandomDatasetController < handle
                         end
                     end
                     modelFilename = fullfile(Settings.outputDirName{dirId}, sprintf('Labels_%s_%.3d.model', fnTemplate, dirId));
+                    modelVariable = 'mibModel';
                     if isempty(labelPosition)
                         save(modelFilename, 'mibModel','modelVariable','modelMaterialColors','modelMaterialNames','modelType', '-mat', '-v7.3');
                     else
@@ -336,6 +340,7 @@ classdef mibRandomDatasetController < handle
                 warning('off', 'MATLAB:xlswrite:AddSheet');
                 % Sheet 1
                 s = {'Rename and Shuffle parameters'};
+                s(1,5) = {sprintf('Random seed: %d', Settings.randomSeed)};
                 s(2,1) = {'Note! MIB opens images sorted in alphabetical order'};
                 
                 s(4,1) = {'Slice No.'}; s(4,2) = {'Original filename'}; s(4,3) = {'->'}; s(4,4) = {'Slice No.'}; s(4,5) = {'Renamed and Shuffled filename'};

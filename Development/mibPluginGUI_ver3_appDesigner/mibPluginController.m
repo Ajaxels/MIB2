@@ -100,6 +100,8 @@ classdef mibPluginController < handle
             obj.BatchOpt.mibBatchTooltip.Parameter = sprintf('Provide text or number as string');
             obj.BatchOpt.mibBatchTooltip.Checkbox = sprintf('Specify checkboxes as logicals');
             obj.BatchOpt.mibBatchTooltip.Popup = sprintf('Popups populated using cells');
+			obj.BatchOpt.mibBatchTooltip.Dropdown = sprintf('Dropdown');
+            obj.BatchOpt.mibBatchTooltip.ParameterNumeric = sprintf('ParameterNumeric');
             obj.BatchOpt.mibBatchTooltip.Radio = sprintf('Selection of radio buttons, as cell with the handle of the target radio button');
             obj.BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not waitbar');
 
