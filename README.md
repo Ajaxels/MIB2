@@ -4,3 +4,5 @@ Microscopy Image Browser version 2 is a package for image processing, segmentati
 See more on http://mib.helsinki.fi
 
 Help and support: https://forum.image.sc/tags/mib
+
+Standalone compiled releases: https://github.com/Ajaxels/MIB2/releases
