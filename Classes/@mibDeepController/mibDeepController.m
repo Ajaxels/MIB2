@@ -2141,9 +2141,22 @@ classdef mibDeepController < handle
             if file == 0; return; end
             configName = fullfile(path, file);
             
-            obj.wb = waitbar(0, sprintf('Loadning config file\nPlease wait...'));
+            obj.wb = waitbar(0, sprintf('Loading config file\nPlease wait...'));
             
             res = load(configName, '-mat');  
+            
+            % correct the slash characters depending on OS
+            if ispc
+                res.BatchOpt.NetworkFilename = strrep(res.BatchOpt.NetworkFilename, '/', filesep);
+                res.BatchOpt.OriginalTrainingImagesDir = strrep(res.BatchOpt.OriginalTrainingImagesDir, '/', filesep);
+                res.BatchOpt.OriginalPredictionImagesDir = strrep(res.BatchOpt.OriginalPredictionImagesDir, '/', filesep);
+                res.BatchOpt.ResultingImagesDir = strrep(res.BatchOpt.ResultingImagesDir, '/', filesep);
+            else
+                res.BatchOpt.NetworkFilename = strrep(res.BatchOpt.NetworkFilename, '\', filesep);
+                res.BatchOpt.OriginalTrainingImagesDir = strrep(res.BatchOpt.OriginalTrainingImagesDir, '\', filesep);
+                res.BatchOpt.OriginalPredictionImagesDir = strrep(res.BatchOpt.OriginalPredictionImagesDir, '\', filesep);
+                res.BatchOpt.ResultingImagesDir = strrep(res.BatchOpt.ResultingImagesDir, '\', filesep);
+            end
             
             % restore full paths from relative
             res.BatchOpt.NetworkFilename = strrep(res.BatchOpt.NetworkFilename, '[RELATIVE]', path); %#ok<*PROP>
