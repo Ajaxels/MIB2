@@ -583,7 +583,7 @@ classdef mibDeepController < handle
                     delete(obj.wb);
                 case 'Train'
                     if isempty(networkName)
-                        [file, path] = uiputfile({'*.mibDeep;', 'mibDeep files (*.mibDeep)';
+                        [file, path] = uiputfile({'*.mibDeep', 'mibDeep files (*.mibDeep)';
                             '*.mat', 'Mat files (*.mat)'}, 'Select network file', ...
                             obj.BatchOpt.NetworkFilename);
                         if file == 0; return; end
@@ -2099,7 +2099,7 @@ classdef mibDeepController < handle
             
             if nargin < 2
                 [path, file] = fileparts(obj.BatchOpt.NetworkFilename);
-                [file, path] = uiputfile({'*.mibCfg;', 'mibDeep config files (*.mibCfg)';
+                [file, path] = uiputfile({'*.mibCfg', 'mibDeep config files (*.mibCfg)';
                     '*.mat', 'Mat files (*.mat)'}, 'Select config file', ...
                     fullfile(path, file));
                 if file == 0; return; end

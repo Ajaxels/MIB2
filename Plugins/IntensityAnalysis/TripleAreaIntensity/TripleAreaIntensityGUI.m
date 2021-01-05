@@ -120,7 +120,7 @@ formatText = {'*.xls', 'Microscoft Excel (*.xls)'};
 fn_out = handles.filenameEdit.String;
 [FileName,PathName,FilterIndex] = ...
     uiputfile(formatText, 'Select filename', fn_out);
-if isequal(FileName,0) || isequal(PathName,0); return; end;
+if isequal(FileName,0) || isequal(PathName,0); return; end
 
 fn_out = fullfile(PathName, FileName);
 handles.filenameEdit.String = fn_out;

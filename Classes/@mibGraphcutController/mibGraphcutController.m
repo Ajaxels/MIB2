@@ -1049,7 +1049,7 @@ classdef mibGraphcutController  < handle
                 if isempty(fn_out)
                     fn_out = obj.mibModel.myPath;
                 end
-                Filters = {'*.graph;',  'Matlab format (*.graph)'};
+                Filters = {'*.graph',  'Matlab format (*.graph)'};
                 
                 [filename, path, FilterIndex] = uiputfile(Filters, 'Save Graph...', fn_out); %...
                 if isequal(filename,0); return; end % check for cancel
@@ -1452,7 +1452,7 @@ classdef mibGraphcutController  < handle
                 if isempty(fn_out)
                     fn_out = obj.mibModel.myPath;
                 end
-                Filters = {'*.graph;',  'Matlab format (*.graph)'};
+                Filters = {'*.graph',  'Matlab format (*.graph)'};
             
                 [filename, path, FilterIndex] = uiputfile(Filters, 'Save Graph...', fn_out); %...
                 if isequal(filename,0); return; end % check for cancel

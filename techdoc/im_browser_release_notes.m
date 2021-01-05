@@ -7,7 +7,7 @@
 %
 %%
 %
-%% 2.70 / 18.05.2020
+%% 2.70 (2.701) / 18.05.2020 (05.01.2021)
 % 
 % * Added Deep MIB for training and prediction of datasets using
 % deep convolutional networks
@@ -16,6 +16,10 @@
 % * Added selection of a seed for random generator for Rename and Shuffle
 % tool
 % * Fixed issues with importing of chopped cropped datasets
+% * Fixed missing automatic file extension when using uiputfile on Linux
+% caused by ';' character (2.701)
+% * Fixed wrong file separator slash character in DeepMIB, when used on
+% Linux (2.701)
 %
 %% 2.66 / 25.04.2020
 %

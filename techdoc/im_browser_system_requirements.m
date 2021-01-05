@@ -20,8 +20,10 @@
 %% Toolboxes
 %%
 %
-% * <http://www.mathworks.com/products/image/ *Matlab Image Processing
-% Toolbox*>, V7.0 (R2010a) or newer is _*REQUIRED*_
+% * <http://www.mathworks.com/products/image/ *Image Processing Toolbox*>, V7.0 (R2010a) or newer is _*REQUIRED*_
+% * <https://se.mathworks.com/products/parallel-computing.html *Parallel Computing Toolbox*>, R2019b or newer is _*recommended*_
+% * <https://se.mathworks.com/products/computer-vision.html *Computer Vision Toolbox*>, (*required for DeepMIB*, Matlab R2019b and newer) for training of 2D, 3D CNNs and segmentation of datasets
+% * <https://se.mathworks.com/products/deep-learning.html *Deep Learning Toolbox*>, (*required for DeepMIB*, Matlab R2019b and newer) for training of 2D, 3D CNNs and segmentation of datasets
 % * <http://se.mathworks.com/products/statistics/ Statistics and Machine Learning Toolbox> (_optional_) for alternative to the Random Forest classifiers
 % * <http://se.mathworks.com/products/statistics/ Statistics Toolbox> (_optional_) for alternative to the Random Forest classifiers
 % * <http://se.mathworks.com/products/optimization/ Optimization Toolbox> (_optional_) for alternative to the Random Forest classifiers
