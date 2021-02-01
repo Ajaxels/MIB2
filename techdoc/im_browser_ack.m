@@ -4,7 +4,9 @@
 %
 %
 % <html>
-% Developed during 2010-2017 by<br>
+% <b>Powered by Matlab, <a href="https://www.mathworks.com/">The MathWorks,
+% Inc.</a></b><br><br>
+% Developed during 2010-2021 by<br>
 % Core developer:<br>
 % <a href="http://www.biocenter.helsinki.fi/~ibelev/">Ilya Belevich</a><br>
 % Developers:<br>

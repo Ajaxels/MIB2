@@ -33,8 +33,10 @@ classdef mibAnnotationsController < handle
         % java handle to the scroll bar of obj.View.handles.annotationTable
         jTable
         % java handle to the obj.View.handles.annotationTable
-        batchModifyExpression
-        % expression to use with the batch modify mode
+        batchModifyExpressionOperation
+        % operation
+        batchModifyExpressionFactor
+        % factor to modify value
     end
     
     events
@@ -69,7 +71,8 @@ classdef mibAnnotationsController < handle
                         
             obj.mibModel.mibShowAnnotationsCheck = 1;
             obj.View.handles.precisionEdit.String = num2str(obj.mibModel.mibAnnValuePrecision);
-            obj.batchModifyExpression = 'A=A*2';
+            obj.batchModifyExpressionOperation = 'Multiply';
+            obj.batchModifyExpressionFactor = '1.5';
             obj.updateWidgets();
             
             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
@@ -422,15 +425,20 @@ classdef mibAnnotationsController < handle
                     notify(obj.mibModel, 'plotImage');  % notify to plot the image
                 case 'Modify'   % batch modify selected annotations
                     if isempty(obj.indices); return; end
-                    inputDlgOptions.Title = sprintf('Input an arithmetic operation to modify the annotations\nFor example,\n   "A=A*2" - multiply each value by 2;\n   "A=round(A)" - rounds each value,\n   where A denotes each selected cell');
-                    inputDlgOptions.TitleLines = 5;
+                    
+                    operations = {'Add', 'Subtract', 'Multiply', 'Divide', 'Round', 'Floor', 'Ceil'};
+                    inputDlgOptions.Title = sprintf('Select dedired operation modify selected values using the provided factor:');
+                    inputDlgOptions.TitleLines = 2;
                     inputDlgOptions.WindowWidth = 1.2;
-                    prompt = {'Expression:'};
-                    defAns = {obj.batchModifyExpression};
-                    answer = mibInputMultiDlg({mibPath}, prompt, defAns, 'Batch modify', inputDlgOptions);
+                    prompt = {'Type of operation:', 'Factor:'};
+                    defAns = {[operations, find(ismember(operations, obj.batchModifyExpressionOperation))]; obj.batchModifyExpressionFactor};
+                    [answer, selInd] = mibInputMultiDlg({mibPath}, prompt, defAns, 'Batch modify', inputDlgOptions);
                     if isempty(answer); return; end
-                    currExpression = [answer{1} ';'];
+                    obj.batchModifyExpressionOperation = answer{1};
+                    obj.batchModifyExpressionFactor = answer{2};
                     [labelsList, labelValues, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
+                    
+                    value = str2double(obj.batchModifyExpressionFactor);
                     
                     for colId = 1:6
                         idx = find(obj.indices(:,2) == colId); %#ok<EFIND>
@@ -441,28 +449,41 @@ classdef mibAnnotationsController < handle
                                 return;
                             case 2
                                 A = labelValues(obj.indices(idx,1)); %#ok<NASGU>
-                                try
-                                    eval(currExpression);
-                                catch err
-                                    errordlg(sprintf('Wrong expression!\n\n%s\n%s', err.message, err.identifier), 'Wrong expression');
-                                    return;
-                                end
                                 labelValues(obj.indices(idx,1)) = A;
                             otherwise
                                 A = labelPositions(obj.indices(idx,1), colId-2); %#ok<NASGU>
-                                try
-                                    eval(currExpression);
-                                catch err
-                                    errordlg(sprintf('Wrong expression!\n\n%s\n%s', err.message, err.identifier), 'Wrong expression');
-                                    return;
-                                end
+                                labelPositions(obj.indices(idx,1), colId-2) = A;
+                        end
+                        
+                        switch obj.batchModifyExpressionOperation
+                            case 'Add'
+                                A = A + value;
+                            case 'Subtract'
+                                A = A - value;
+                            case 'Multiply'
+                                A = A * value;
+                            case 'Divide'
+                                A = A / value;
+                            case 'Round'
+                                A = round(A);
+                            case 'Floor'
+                                A = floor(A);
+                            case 'Ceil'
+                                A = ceil(A);
+                        end
+                        switch colId
+                            case 1
+                                errordlg(sprintf('!!! Error !!!\nModification of the label names using this function is not yet implemented...'), 'Not implemented');
+                                return;
+                            case 2
+                                labelValues(obj.indices(idx,1)) = A;
+                            otherwise
                                 labelPositions(obj.indices(idx,1), colId-2) = A;
                         end
                     end
                     obj.mibModel.mibDoBackup('labels', 0);
                     obj.mibModel.I{obj.mibModel.Id}.hLabels.clearContents();    % remove current labels
                     obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(labelsList, labelPositions, labelValues);     % add updated labels
-                    obj.batchModifyExpression = currExpression(1:end-1);
                     obj.updateWidgets();
                     notify(obj.mibModel, 'plotImage');  % notify to plot the image
                 case 'Rename'

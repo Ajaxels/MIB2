@@ -28,6 +28,11 @@ classdef mibAboutController < handle
             global Font mibPath;
             obj.mibModel = mibModel;    % assign model
             
+            % get matlab version
+            v = ver('Matlab');
+            matlabYear = v.Date(end-3:end);
+            MathworksString = sprintf('MATLAB(r). (c) 1984 - %s The MathWorks, Inc.', matlabYear);
+            
             guiName = 'mibAboutGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             obj.View.gui.WindowStyle = 'modal';     % make window modal
@@ -48,7 +53,8 @@ classdef mibAboutController < handle
             addTextOptions.markerText = 'text';
             addTextOptions.AnchorPoint = 'LeftBottom';
             dateTag = versionText(26:end);  % trim to remove 'Microscopy Image Browser ' text
-            img = mibAddText2Img(img, dateTag, [1,402], addTextOptions);
+            img = mibAddText2Img(img, dateTag, [1, 386], addTextOptions);
+            if isdeployed;  img = mibAddText2Img(img, 'for Academic research', [1, 402], addTextOptions); end
             
             imh = image(img, 'parent', obj.View.handles.axes1);
             obj.View.handles.axes1.XTick = [];
@@ -79,6 +85,8 @@ classdef mibAboutController < handle
                 {'Institute of Biotechnology'}
                 {'University of Helsinki'}
                 {'Finland'}
+                {''}
+                {MathworksString};
                 ];
             obj.View.handles.titleText.String = greet_txt1;
             obj.View.handles.descriptionText.String = greet_txt2;

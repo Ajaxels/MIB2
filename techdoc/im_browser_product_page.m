@@ -9,7 +9,9 @@
 %   <td><b>Microscopy Image Browser</b><br>
 %   <em>image segmentation and beyond</em><br><br>
 %   Microscopy Image Browser is a GUI tool that is written under Matlab environment and can be used for 
-%   segmentation of multidimentional datasets obtained by light or electron microscopy.</td>
+%   segmentation of multidimentional datasets obtained by light or electron microscopy.<br>
+%   <br><br><b>Powered by Matlab, <a href="https://www.mathworks.com/">The MathWorks, Inc.</a></b>
+% </td>
 % </tr>
 % </table>
 % </html>

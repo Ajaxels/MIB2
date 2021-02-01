@@ -4,44 +4,70 @@
 %%
 % 
 % <html>
-% Developed during 2010-2018 by<br>
+% Developed during 2010-2021 by<br>
 % Core developer:<br>
-% <a href="http://www.biocenter.helsinki.fi/~ibelev/">Ilya Belevich</a><br>
+% Ilya Belevich<br>
 % Developers:<br>
 % Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br><br>
-% <i><a href="http:\\www.biocenter.helsinki.fi/bi/em">Electron Microscopy Unit</a><br>
+% <i><a href="https://www.helsinki.fi/en/infrastructures/bioimaging/embi">Electron Microscopy Unit</a><br>
 % Institute of Biotechnology<br>
 % PO Box 56 (Viikinkaari 9)<br>
 % 00014, University of Helsinki<br>
 % Finland</i>
+% <br><br>
+% <h4>Microscopy Image Browser source code</h4>
+% MIB in MATLAB source code form is licensed under the GNU General Public License (<a href="http://mib.helsinki.fi/GNU2_license.txt">GPL2</a>), 
+% see GPL license of Microscopy Image Browser source code section below.<br>
+% <br>
+% <h4>Microscopy Image Browser as standalone version</h4>
+% The deployed application is governed by the <a href="http://mib.helsinki.fi/Matlab_MCR_license.txt">MathWorks MCR license</a> 
+% and applicable parts of <a
+% href="http://mib.helsinki.fi/Matlab_license.txt">The MathWorks, Inc.
+% Software License Agreement</a>.<br>
+% Using the Microscopy Image Browser deployed application for commercial purposes is prohibited.
 % </html>
 %
 %
-%% GPL license of Microscopy Image Browser
-%
+%% License for Microscopy Image Browser source code
 % <html>
-% Microscopy Image Browser (MIB) a handy tool for image management<br>
+% Microscopy Image Browser (MIB)
+% <br><em>image segmentation and beyond</em><br>
 % Copyright (c) 2010-2020<br>
 % Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br>
-% http://mib.helsinki.fi<br>
+% <a href="http://mib.helsinki.fi">http://mib.helsinki.fi</a><br>
 % </html>
 % 
-%
-% This program is free software; you can redistribute it and/or modify it under the terms of the <
-% http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License> as published by the Free Software 
+% This program is free software; you can redistribute it and/or modify it under the terms of the 
+% <http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License> as published by the Free Software 
 % Foundation; either version 2 of the License, or (at your option) any later version. 
 % 
 % This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
 % without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 %
-% <http://www.gnu.org/licenses/gpl-2.0.html See the GNU General Public License for more details> . 
+% <http://www.gnu.org/licenses/gpl-2.0.html See the GNU General Public License for more details>. 
 % 
 % You should have received a copy of the GNU General Public License along with this program; 
 % if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA. 
 %
+%% License for compiled application of Microscopy Image Browser
+% By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to the terms of the disclaimer below, 
+% the <http://mib.helsinki.fi/Matlab_MCR_license.txt Matlab Compiler Runtime (MCR) libraries license> and applicable parts of the MathWorks, Inc. 
+% <http://mib.helsinki.fi/Matlab_license.txt Software License Agreement>.
+% The corresponding license files are also included into the MIB distribution
+% under techdoc directory.
+% As Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited. 
+%
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+% INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+% IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+% OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+% MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.
+%
 %% EXTERNAL PACKAGES
 % 
-% Microscopy Image Browser as a bundle is licensed under the GPL, with exceptions for plugins and other components.  
+% Source code of Microscopy Image Browser is licensed under the GPL, with exceptions for plugins and other components.  
 % This section lists the license under which additional components are released. See also the <im_browser_ack.html Acknowledgements> section
 %
 % Abbreviations:
