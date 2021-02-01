@@ -66,6 +66,11 @@ classdef mibImageArithmeticController < handle
     
     methods
         function obj = mibImageArithmeticController(mibModel, varargin)
+            if isdeployed
+                errordlg(sprintf('!!! Warning !!!\nImage arithmetics is only available in Matlab version of MIB'), 'Not available');
+                return;
+            end
+            
             obj.mibModel = mibModel;    % assign model
             
             % fill the BatchOpt structure with default values
