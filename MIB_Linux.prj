@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="964571725" file="/home/ad/home/i/ibelev/Matlab/MIB_deploy/MIB_Linux.prj" location="/home/ad/home/i/ibelev/Matlab/MIB_deploy" name="MIB_Linux" preferred-package-location="/home/ad/home/i/ibelev/Matlab/MIB_deploy/MIB_Linux/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="2300552907" file="/home/ad/home/i/ibelev/Matlab/MIB_deploy/MIB_Linux.prj" location="/home/ad/home/i/ibelev/Matlab/MIB_deploy" name="MIB_Linux" preferred-package-location="/home/ad/home/i/ibelev/Matlab/MIB_deploy/MIB_Linux/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}/MIB_Mac_resources/icon.icns</param.icon>
     <param.icons>
@@ -8,41 +8,21 @@
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
     </param.icons>
-    <param.version>2.701</param.version>
+    <param.version>2.702</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
     <param.summary>Microscopy Image Browser (MIB) is software for advanced processing, segmentation and visualization of multi-dimensional microscopy datasets</param.summary>
-    <param.description>You are going to install MIB that has been compiled to stand-alone executables (exe-files).
-If you have not previously installed the MATLAB Compiler Runtime (MCR) it will be automatically downloaded and installed during the installation.
+    <param.description>You are going to install MIB that has been compiled to stand-alone executables (exe-files). By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to 
+- the terms of the disclaimer below, 
+- the Matlab Compiler Runtime (MCR) libraries license (http://mib.helsinki.fi/Matlab_MCR_license.txt) 
+- applicable parts of the MathWorks, Inc. Software License Agreement (http://mib.helsinki.fi/Matlab_license.txt)
+- as Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited
 
-Microscopy Image Browser (MIB) a handy tool for image management
-Copyright (c) 2010-2017
-Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
-http://mib.helsinki.fi
+The corresponding license files are also included into the MIB distribution under techdoc directory.
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-
-GNU GENERAL PUBLIC LICENSE
-Version 2, June 1991
-
-Copyright (C) 1989, 1991 Free Software Foundation, Inc.
-59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-Everyone is permitted to copy and distribute verbatim copies
-of this license document, but changing it is not allowed.</param.description>
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.</param.description>
     <param.screenshot>${PROJECT_ROOT}/Resources/mib_about.jpg</param.screenshot>
     <param.guid />
     <param.installpath.string>/MIB/</param.installpath.string>
@@ -93,7 +73,18 @@ ${LD_LIBRARY_PATH}:MR/v97/runtime/glnxa64:MR/v97/bin/glnxa64:MR/v97/sys/os/glnxa
 	 
  Input Arguments 
 	 -?  print help on how to use the application 
-	 input arguments</param.help.text>
+	 input arguments 
+ Description 
+ 	 You are going to install MIB that has been compiled to stand-alone executables (exe-files). By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to 
+- the terms of the disclaimer below, 
+- the Matlab Compiler Runtime (MCR) libraries license (http://mib.helsinki.fi/Matlab_MCR_license.txt) 
+- applicable parts of the MathWorks, Inc. Software License Agreement (http://mib.helsinki.fi/Matlab_license.txt)
+- as Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited
+
+The corresponding license files are also included into the MIB distribution under techdoc directory.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.</param.help.text>
     <unset>
       <param.guid />
       <param.installpath.combo />
@@ -137,24 +128,10 @@ ${LD_LIBRARY_PATH}:MR/v97/runtime/glnxa64:MR/v97/bin/glnxa64:MR/v97/sys/os/glnxa
     <fileset.package>
       <file>${PROJECT_ROOT}/Plugins</file>
       <file>${PROJECT_ROOT}/Resources</file>
+      <file>${PROJECT_ROOT}/jars</file>
       <file>${PROJECT_ROOT}/techdoc</file>
     </fileset.package>
-    <fileset.depfun>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM3D/BM3D.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM3D/bm3d_thr.mexa64</file>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM3D/bm3d_wiener.mexa64</file>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM4D/Transforms.mat</file>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM4D/bm4d.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM4D/bm4d_thr_mex.mexa64</file>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM4D/bm4d_wie_mex.mexa64</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/connectOmero.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/findOmero.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/getOmeroJars.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/helper/JavaImageToMatlab.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/loadOmero.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/omeroVersion.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/unloadOmero.m</file>
-    </fileset.depfun>
+    <fileset.depfun />
     <build-deliverables>
       <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="readme.txt" optional="true">/home/ad/home/i/ibelev/Matlab/MIB_deploy/MIB_Linux/for_testing/readme.txt</file>
       <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="run_MIB.sh" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy/MIB_Linux/for_testing/run_MIB.sh</file>
