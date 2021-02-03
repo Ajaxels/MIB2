@@ -7,7 +7,7 @@
 %
 %%
 %
-%% 2.70 (2.701) / 18.05.2020 (05.01.2021)
+%% 2.70 (2.702) / 18.05.2020 (01.02.2021)
 % 
 % * Added Deep MIB for training and prediction of datasets using
 % deep convolutional networks

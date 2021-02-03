@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="2300552907" file="/home/ad/home/i/ibelev/Matlab/MIB_deploy/MIB_Linux.prj" location="/home/ad/home/i/ibelev/Matlab/MIB_deploy" name="MIB_Linux" preferred-package-location="/home/ad/home/i/ibelev/Matlab/MIB_deploy/MIB_Linux/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="2189107742" file="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702/MIB_Linux.prj" location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702" name="MIB_Linux" preferred-package-location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702/MIB_Linux/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}/MIB_Mac_resources/icon.icns</param.icon>
     <param.icons>
@@ -73,18 +73,7 @@ ${LD_LIBRARY_PATH}:MR/v97/runtime/glnxa64:MR/v97/bin/glnxa64:MR/v97/sys/os/glnxa
 	 
  Input Arguments 
 	 -?  print help on how to use the application 
-	 input arguments 
- Description 
- 	 You are going to install MIB that has been compiled to stand-alone executables (exe-files). By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to 
-- the terms of the disclaimer below, 
-- the Matlab Compiler Runtime (MCR) libraries license (http://mib.helsinki.fi/Matlab_MCR_license.txt) 
-- applicable parts of the MathWorks, Inc. Software License Agreement (http://mib.helsinki.fi/Matlab_license.txt)
-- as Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited
-
-The corresponding license files are also included into the MIB distribution under techdoc directory.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.</param.help.text>
+	 input arguments</param.help.text>
     <unset>
       <param.guid />
       <param.installpath.combo />
@@ -131,12 +120,27 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
       <file>${PROJECT_ROOT}/jars</file>
       <file>${PROJECT_ROOT}/techdoc</file>
     </fileset.package>
-    <fileset.depfun />
+    <fileset.depfun>
+      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM3D/BM3D.m</file>
+      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM3D/bm3d_thr.mexa64</file>
+      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM3D/bm3d_wiener.mexa64</file>
+      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM4D/Transforms.mat</file>
+      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM4D/bm4d.m</file>
+      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM4D/bm4d_thr_mex.mexa64</file>
+      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM4D/bm4d_wie_mex.mexa64</file>
+      <file>/home/ad/home/i/ibelev/Matlab/OMERO/connectOmero.m</file>
+      <file>/home/ad/home/i/ibelev/Matlab/OMERO/findOmero.m</file>
+      <file>/home/ad/home/i/ibelev/Matlab/OMERO/getOmeroJars.m</file>
+      <file>/home/ad/home/i/ibelev/Matlab/OMERO/helper/JavaImageToMatlab.m</file>
+      <file>/home/ad/home/i/ibelev/Matlab/OMERO/loadOmero.m</file>
+      <file>/home/ad/home/i/ibelev/Matlab/OMERO/omeroVersion.m</file>
+      <file>/home/ad/home/i/ibelev/Matlab/OMERO/unloadOmero.m</file>
+    </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="readme.txt" optional="true">/home/ad/home/i/ibelev/Matlab/MIB_deploy/MIB_Linux/for_testing/readme.txt</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="run_MIB.sh" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy/MIB_Linux/for_testing/run_MIB.sh</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="MIB" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy/MIB_Linux/for_testing/MIB</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="splash.png" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy/MIB_Linux/for_testing/splash.png</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="readme.txt" optional="true">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702/MIB_Linux/for_testing/readme.txt</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="MIB" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702/MIB_Linux/for_testing/MIB</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="splash.png" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702/MIB_Linux/for_testing/splash.png</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="run_MIB.sh" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702/MIB_Linux/for_testing/run_MIB.sh</file>
     </build-deliverables>
     <workflow />
     <matlab>
@@ -189,7 +193,7 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
       <vista>false</vista>
       <linux>true</linux>
       <solaris>false</solaris>
-      <osver>5.4.0-58-generic</osver>
+      <osver>4.15.0-112-generic</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>glnxa64</arch>

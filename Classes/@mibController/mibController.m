@@ -504,8 +504,8 @@ classdef mibController < handle
                 addTextOptions.color = [1 1 0];
                 addTextOptions.fontSize = 3;
                 addTextOptions.markerText = 'text';
-                img = mibAddText2Img(img, obj.mibVersion, [1, 418], addTextOptions);
-                if isdeployed;  img = mibAddText2Img(img, 'for Academic research', [1, 436], addTextOptions); end
+                img = mibAddText2Img(img, obj.mibVersion, [1, 436], addTextOptions);
+                if isdeployed;  img = mibAddText2Img(img, 'for Academic research', [1, 418], addTextOptions); end
                 
                 jimg = im2java(img);
                 frame = javax.swing.JFrame;

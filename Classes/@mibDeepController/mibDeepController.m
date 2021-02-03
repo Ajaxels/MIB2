@@ -62,10 +62,10 @@ classdef mibDeepController < handle
         AugOpt2D
         % a structure with augumentation options for 2D unets, default
         % obtained from obj.mibModel.preferences.deep.AugOpt2D, see getDefaultParameters.m
-        % .FillValue = 0;  
+        % .FillValue = 0;
         % .RandXReflection = true;
         % .RandYReflection = true;
-        % .RandRotation = [-10, 10];  
+        % .RandRotation = [-10, 10];
         % .RandScale = [.95 1.05];
         % .RandXScale = [.95 1.05];
         % .RandYScale = [.95 1.05];
@@ -73,7 +73,7 @@ classdef mibDeepController < handle
         % .RandYShear = [-5 5];
         AugOpt3D
         % .Fraction = .6;   % augment 60% of patches
-        % .FillValue = 0;    
+        % .FillValue = 0;
         % .RandXReflection = true;
         % .RandYReflection = true;
         % .RandZReflection = true;
@@ -155,12 +155,12 @@ classdef mibDeepController < handle
             % single-input networks.
             %
             % Parameters:
-            % patch: a table [MinibatchSize; InputImage ResponsePixelLabelImage] patches to be cropped 
+            % patch: a table [MinibatchSize; InputImage ResponsePixelLabelImage] patches to be cropped
             % inputPatchSize: input patch size as [height, width, depth, color]
             % outputPatchSize: output patch size as [height, width, depth, classes]
             %
             % Return values:
-            % patch: a table [MinibatchSize; InputImage ResponsePixelLabelImage], 
+            % patch: a table [MinibatchSize; InputImage ResponsePixelLabelImage],
             %        where ResponsePixelLabelImage was cropped to outputPatchSize
             
             % allocate space for the output
@@ -193,8 +193,8 @@ classdef mibDeepController < handle
             % indicates field of the BatchOpt structure that defines value
             % for this widget
             
-            obj.BatchOpt.Bioformats = false;    % use bioformats file reader for prediction images 
-            obj.BatchOpt.BioformatsTraining = false;    % use bioformats file reader for training images 
+            obj.BatchOpt.Bioformats = false;    % use bioformats file reader for prediction images
+            obj.BatchOpt.BioformatsTraining = false;    % use bioformats file reader for training images
             obj.BatchOpt.NetworkFilename = fullfile(obj.mibModel.myPath, 'myLovelyNetwork.mibDeep');
             obj.BatchOpt.Architecture = {'2D U-net'};
             obj.BatchOpt.Architecture{2} = {'2D U-net', '2D SegNet', '3D U-net', '3D U-net Anisotropic'};
@@ -225,11 +225,11 @@ classdef mibDeepController < handle
             if strcmp(obj.mibModel.preferences.deep.OriginalTrainingImagesDir, '\')
                 obj.BatchOpt.OriginalTrainingImagesDir = obj.mibModel.myPath;
                 obj.BatchOpt.OriginalPredictionImagesDir = obj.mibModel.myPath;
-                obj.BatchOpt.ResultingImagesDir = obj.mibModel.myPath;    
+                obj.BatchOpt.ResultingImagesDir = obj.mibModel.myPath;
             else
                 obj.BatchOpt.OriginalTrainingImagesDir = obj.mibModel.preferences.deep.OriginalTrainingImagesDir;
                 obj.BatchOpt.OriginalPredictionImagesDir = obj.mibModel.preferences.deep.OriginalPredictionImagesDir;
-                obj.BatchOpt.ResultingImagesDir = obj.mibModel.preferences.deep.ResultingImagesDir;    
+                obj.BatchOpt.ResultingImagesDir = obj.mibModel.preferences.deep.ResultingImagesDir;
             end
             obj.BatchOpt.ImageFilenameExtension = obj.mibModel.preferences.deep.ImageFilenameExtension;
             obj.BatchOpt.ImageFilenameExtension{2} = upper(obj.mibModel.preferences.Filefilter.stdExt); %{'.AM', '.PNG', '.TIF'};
@@ -355,7 +355,7 @@ classdef mibDeepController < handle
             % add listner to obj.mibModel and call controller function as a callback
             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback(obj, src, evnt));    % listen changes in number of ROIs
             
-            try 
+            try
                 gpuInfo = gpuDevice;
                 obj.View.Figure.GPULabel.Text = sprintf('GPU: %s', gpuInfo(1).Name);
             catch err
@@ -406,7 +406,7 @@ classdef mibDeepController < handle
             % buffers, make sure that any widgets related changes are
             % correctly propagated into the BatchOpt structure
             if isfield(obj.BatchOpt, 'id'); obj.BatchOpt.id = obj.mibModel.Id; end
-
+            
             % update lined widgets
             event.Source.Tag = 'BioformatsTraining';
             obj.BioformatsCallback(event);
@@ -546,8 +546,8 @@ classdef mibDeepController < handle
                     end
                     if exist(networkName, 'file') ~= 2
                         errordlg(sprintf('!!! Error !!!\n\nThe provided file does not exist!\n\n%s', networkName), 'Wrong network name');
-                        obj.View.Figure.NetworkFilename.Value = obj.BatchOpt.NetworkFilename; 
-                        return; 
+                        obj.View.Figure.NetworkFilename.Value = obj.BatchOpt.NetworkFilename;
+                        return;
                     end
                     
                     obj.wb = waitbar(0, sprintf('Loadning the network\nPlease wait...'));
@@ -592,7 +592,7 @@ classdef mibDeepController < handle
                         if exist(networkName, 'file') == 2
                             choice = questdlg(sprintf('!!! Warning !!!\n\nThe provided file already exist!\n\n%s\n\nWould you like to overwrite it for new training?', networkName), 'File exists!', 'Overwrite', 'Cancel', 'Cancel');
                             if strcmp(choice, 'Cancel')
-                                obj.View.Figure.NetworkFilename.Value = obj.BatchOpt.NetworkFilename; 
+                                obj.View.Figure.NetworkFilename.Value = obj.BatchOpt.NetworkFilename;
                                 return;
                             end
                         end
@@ -754,27 +754,27 @@ classdef mibDeepController < handle
                             outputPatchSize = [];
                             %                             TrainingOptions = trainingOptions('adam', ...
                             %                                 'MaxEpochs', 1, ...
-%                                 'Shuffle', 'never', ...
-%                                 'Verbose', 0, ...
-%                                 'MiniBatchSize', 1);
-%                             
-%                             imgDS = imageDatastore(fullfile(obj.BatchOpt.ResultingImagesDir, 'TrainImages'), ...
-%                                 'FileExtensions', '.mat', 'ReadFcn', @mibDeepController.matlabFileRead);
-%                             % get class names
-%                             files = dir([obj.BatchOpt.OriginalTrainingImagesDir, filesep '*.model']);
-%                             modelFn = fullfile(files(1).folder, files(1).name);
-%                             res = load(modelFn, '-mat', 'modelMaterialNames', 'modelMaterialColors');
-%                             classColors = res.modelMaterialColors;  % get colors
-%                             classNames = [{'Exterior'}; res.modelMaterialNames];    % add Exterior
-%                             pixelLabelID = 0:numel(classNames) - 1;
-%                             labelsDS = pixelLabelDatastore(fullfile(obj.BatchOpt.ResultingImagesDir, 'TrainLabels'), ...
-%                                 classNames, pixelLabelID, 'FileExtensions', '.mat', 'ReadFcn', @mibDeepController.matlabFileRead);
-%                             patchDS = randomPatchExtractionDatastore(imgDS, labelsDS, InputPatchSize(1:3), ...
-%                                 'PatchesPerImage', 1, 'PatchesPerImage', 1);
-%                             AugTrainDS = transform(patchDS, @(patchIn)obj.augmentAndCrop3dPatch(patchIn, InputPatchSize(1:3), outputPatchSize, 1));
-%                             
-%                             [net, info] = trainNetwork(patchDS, lgraph, TrainingOptions);
-%                             imageActivation = activations(lgraph, imgBlock, obj.BatchOpt.NetworkLayerName{1});
+                            %                                 'Shuffle', 'never', ...
+                            %                                 'Verbose', 0, ...
+                            %                                 'MiniBatchSize', 1);
+                            %
+                            %                             imgDS = imageDatastore(fullfile(obj.BatchOpt.ResultingImagesDir, 'TrainImages'), ...
+                            %                                 'FileExtensions', '.mat', 'ReadFcn', @mibDeepController.matlabFileRead);
+                            %                             % get class names
+                            %                             files = dir([obj.BatchOpt.OriginalTrainingImagesDir, filesep '*.model']);
+                            %                             modelFn = fullfile(files(1).folder, files(1).name);
+                            %                             res = load(modelFn, '-mat', 'modelMaterialNames', 'modelMaterialColors');
+                            %                             classColors = res.modelMaterialColors;  % get colors
+                            %                             classNames = [{'Exterior'}; res.modelMaterialNames];    % add Exterior
+                            %                             pixelLabelID = 0:numel(classNames) - 1;
+                            %                             labelsDS = pixelLabelDatastore(fullfile(obj.BatchOpt.ResultingImagesDir, 'TrainLabels'), ...
+                            %                                 classNames, pixelLabelID, 'FileExtensions', '.mat', 'ReadFcn', @mibDeepController.matlabFileRead);
+                            %                             patchDS = randomPatchExtractionDatastore(imgDS, labelsDS, InputPatchSize(1:3), ...
+                            %                                 'PatchesPerImage', 1, 'PatchesPerImage', 1);
+                            %                             AugTrainDS = transform(patchDS, @(patchIn)obj.augmentAndCrop3dPatch(patchIn, InputPatchSize(1:3), outputPatchSize, 1));
+                            %
+                            %                             [net, info] = trainNetwork(patchDS, lgraph, TrainingOptions);
+                            %                             imageActivation = activations(lgraph, imgBlock, obj.BatchOpt.NetworkLayerName{1});
                         end
                     case '3D U-net'
                         [lgraph, outputPatchSize] = unet3dLayers(...
@@ -835,7 +835,7 @@ classdef mibDeepController < handle
                             otherwise
                                 errordlg(sprintf('!!! Error !!!\n\nWrong normlization paramter (%s)!\n\nUse one of those:\n - zerocenter\n - zscore\n - rescale-symmetric\n - rescale-zero-one\n - none', obj.InputLayerOpt.Normalization), 'Wrong normalization');
                                 return;
-                        end     
+                        end
                         lgraph = replaceLayer(lgraph, 'ImageInputLayer', inputLayer);
                         
                     case '2D SegNet'
@@ -877,16 +877,16 @@ classdef mibDeepController < handle
             if ~strcmp(obj.BatchOpt.T_SegmentationLayer{1}, 'pixelClassificationLayer')
                 switch obj.BatchOpt.T_SegmentationLayer{1}
                     case 'weightedClassificationLayer'
-%                         if previewSwitch == 0
-%                             reset(pxds);
-%                             Labels = read(pxds);
-%                             for classId = 1:numel(obj.BatchOpt.T_NumberOfClasses{1})
-%                                 classWeights(classId) = numel(find(Labels{1}==classNames{classId}));
-%                             end
-%                             classWeights = 1-(classWeights./sum(classWeights));
-%                         else
-%                             classWeights = ones([obj.BatchOpt.T_NumberOfClasses{1} 1])/obj.BatchOpt.T_NumberOfClasses{1};
-%                         end
+                        %                         if previewSwitch == 0
+                        %                             reset(pxds);
+                        %                             Labels = read(pxds);
+                        %                             for classId = 1:numel(obj.BatchOpt.T_NumberOfClasses{1})
+                        %                                 classWeights(classId) = numel(find(Labels{1}==classNames{classId}));
+                        %                             end
+                        %                             classWeights = 1-(classWeights./sum(classWeights));
+                        %                         else
+                        %                             classWeights = ones([obj.BatchOpt.T_NumberOfClasses{1} 1])/obj.BatchOpt.T_NumberOfClasses{1};
+                        %                         end
                         classWeights = [0.8251 0.1429 0.0283 0.0038];
                         outputLayer = weightedClassificationLayer('Segmentation-Layer', classWeights);
                         %if previewSwitch == 0; reset(pxds); end
@@ -927,8 +927,8 @@ classdef mibDeepController < handle
             % function patchOut = augmentAndCrop3dPatch(obj, patchIn, inputPatchSize, outputPatchSize, cropOnlySwitch)
             %
             % Augment training data by set of operations encoded in
-            % obj.AugOpt3D and/or crop the response to the network's output size. 
-            % 
+            % obj.AugOpt3D and/or crop the response to the network's output size.
+            %
             % Parameters:
             % patchIn:
             % inputPatchSize: input patch size as [height, width, depth, color]
@@ -947,15 +947,15 @@ classdef mibDeepController < handle
                 if obj.AugOpt3D.RandYReflection; augType = [augType, {@flipud}]; end
                 if obj.AugOpt3D.RandZReflection
                     flipZ = @(x) flip(x, 3);
-                    augType = [augType, {flipZ}]; 
+                    augType = [augType, {flipZ}];
                 end
                 if obj.AugOpt3D.Rotation90
                     rot270 = @(x) rot90(x, 3);
-                    augType = [augType, {@rot90}, {rot270}]; 
+                    augType = [augType, {@rot90}, {rot270}];
                 end
                 if obj.AugOpt3D.ReflectedRotation90
                     fliprot = @(x) rot90(fliplr(x));
-                    augType = [augType, {fliprot}]; 
+                    augType = [augType, {fliprot}];
                 end
                 if isempty(augType)
                     errordlg(sprintf('!!! Error !!!\n\nAugmentation types were not selected!\nPlease use set 3D augmentation settings dialog'), 'Wrong augmentation');
@@ -1021,21 +1021,21 @@ classdef mibDeepController < handle
             
             % rot90,fliplr,flipud,rot90(fliplr)
             prompts = { 'Fraction: fraction of patches to augment';...
-                        'FillValue: fill value used to define out-of-bounds points when resampling or rotating [NOT IN USE AT THE MOMENT]';...
-                        'RandXReflection: random reflection in the left-right direction'; ...
-                        'RandYReflection: random reflection in the up-down direction'; ...
-                        'RandZReflection: random reflection in the top-bottom direction'; ...
-                        'Rotation90: allow 90 degree rotation clock and anticlockwise directions'; ...
-                        'ReflectedRotation90: allow 90 degree rotation of the left-right reflected dataset'};
+                'FillValue: fill value used to define out-of-bounds points when resampling or rotating [NOT IN USE AT THE MOMENT]';...
+                'RandXReflection: random reflection in the left-right direction'; ...
+                'RandYReflection: random reflection in the up-down direction'; ...
+                'RandZReflection: random reflection in the top-bottom direction'; ...
+                'Rotation90: allow 90 degree rotation clock and anticlockwise directions'; ...
+                'ReflectedRotation90: allow 90 degree rotation of the left-right reflected dataset'};
             defAns = {num2str(obj.AugOpt3D.Fraction); ...
-                      num2str(obj.AugOpt3D.FillValue); ...
-                      obj.AugOpt3D.RandXReflection; ...
-                      obj.AugOpt3D.RandYReflection; ...
-                      obj.AugOpt3D.RandZReflection; ...
-                      obj.AugOpt3D.Rotation90; ...
-                      obj.AugOpt3D.ReflectedRotation90 ...
-                      };        
-                    
+                num2str(obj.AugOpt3D.FillValue); ...
+                obj.AugOpt3D.RandXReflection; ...
+                obj.AugOpt3D.RandYReflection; ...
+                obj.AugOpt3D.RandZReflection; ...
+                obj.AugOpt3D.Rotation90; ...
+                obj.AugOpt3D.ReflectedRotation90 ...
+                };
+            
             dlgTitle = '3D augmentation settings';
             options.WindowStyle = 'normal';
             options.PromptLines = [1, 2, 1, 1, 1, 1, 1];   % [optional] number of lines for widget titles
@@ -1067,28 +1067,28 @@ classdef mibDeepController < handle
             global mibPath;
             
             prompts = { 'FillValue: Fill value used to define out-of-bounds points when resampling or rotating';...
-                        'RandXReflection: random reflection in the left-right direction'; ...
-                        'RandYReflection: random reflection in the top-bottom direction'; ...
-                        'RandRotation: range of rotation, in degrees specified with two numbers, the rotation angle is picked randomly from a continuous uniform distribution between these numbers'; ...
-                        'RandScale: range of uniform (isotropic) scaling applied to the input image specified with 2 numbers'; ...
-                        'RandXScale: range of horizontal scaling applied to the input image, specified with 2 numbers'; ...
-                        'RandYScale: range of vertical scaling applied to the input image, specified with 2 numbers'; ...
-                        'RandXShear: range of horizontal shear applied to the input image, specified with 2 numbers. It is measured as an angle in degrees, and is in the range (-90, 90)'; ...
-                        'RandYShear: range of vertical shear applied to the input image, specified with 2 numbers. It is measured as an angle in degrees, and is in the range (-90, 90)'};
-        
+                'RandXReflection: random reflection in the left-right direction'; ...
+                'RandYReflection: random reflection in the top-bottom direction'; ...
+                'RandRotation: range of rotation, in degrees specified with two numbers, the rotation angle is picked randomly from a continuous uniform distribution between these numbers'; ...
+                'RandScale: range of uniform (isotropic) scaling applied to the input image specified with 2 numbers'; ...
+                'RandXScale: range of horizontal scaling applied to the input image, specified with 2 numbers'; ...
+                'RandYScale: range of vertical scaling applied to the input image, specified with 2 numbers'; ...
+                'RandXShear: range of horizontal shear applied to the input image, specified with 2 numbers. It is measured as an angle in degrees, and is in the range (-90, 90)'; ...
+                'RandYShear: range of vertical shear applied to the input image, specified with 2 numbers. It is measured as an angle in degrees, and is in the range (-90, 90)'};
+            
             defAns = {num2str(obj.AugOpt2D.FillValue); ...
-                        obj.AugOpt2D.RandXReflection; ...
-                        obj.AugOpt2D.RandYReflection; ...
-                        num2str(obj.AugOpt2D.RandRotation); ...
-                        num2str(obj.AugOpt2D.RandScale); ...
-                        num2str(obj.AugOpt2D.RandXScale); ...
-                        num2str(obj.AugOpt2D.RandYScale); ...
-                        num2str(obj.AugOpt2D.RandXShear); ...
-                        num2str(obj.AugOpt2D.RandYShear)};
+                obj.AugOpt2D.RandXReflection; ...
+                obj.AugOpt2D.RandYReflection; ...
+                num2str(obj.AugOpt2D.RandRotation); ...
+                num2str(obj.AugOpt2D.RandScale); ...
+                num2str(obj.AugOpt2D.RandXScale); ...
+                num2str(obj.AugOpt2D.RandYScale); ...
+                num2str(obj.AugOpt2D.RandXShear); ...
+                num2str(obj.AugOpt2D.RandYShear)};
             dlgTitle = '2D augmentation settings';
             options.WindowStyle = 'normal';
             options.PromptLines = [2, 1, 1, 2, 1, ...
-                                   1, 1, 2, 2];   % [optional] number of lines for widget titles
+                1, 1, 2, 2];   % [optional] number of lines for widget titles
             %options.Title = 'My test Input dialog';   % [optional] additional text at the top of the window
             %options.TitleLines = 2;                   % [optional] make it twice tall, number of text lines for the title
             options.WindowWidth = 2;    % [optional] make window x1.2 times wider
@@ -1135,8 +1135,8 @@ classdef mibDeepController < handle
                 sprintf('Standard deviation for z-score normalization [z-score]'); ...
                 sprintf('Minimum value for rescaling [rescale-symmetric or rescale-zero-one]');...
                 sprintf('Maximum value for rescaling [rescale-symmetric or rescale-zero-one]')};
-                
-            defAns = {{'zerocenter', 'zscore', 'rescale-symmetric', 'rescale-zero-one', 'none', find(ismember({'zerocenter', 'zscore', 'rescale-symmetric', 'rescale-zero-one', 'none'}, obj.InputLayerOpt.Normalization))};...    
+            
+            defAns = {{'zerocenter', 'zscore', 'rescale-symmetric', 'rescale-zero-one', 'none', find(ismember({'zerocenter', 'zscore', 'rescale-symmetric', 'rescale-zero-one', 'none'}, obj.InputLayerOpt.Normalization))};...
                 num2str(reshape(obj.InputLayerOpt.Mean, [1 numel(obj.InputLayerOpt.Mean)]));
                 num2str(reshape(obj.InputLayerOpt.StandardDeviation, [1 numel(obj.InputLayerOpt.StandardDeviation)]));
                 num2str(reshape(obj.InputLayerOpt.Min, [1 numel(obj.InputLayerOpt.Min)]));
@@ -1151,10 +1151,10 @@ classdef mibDeepController < handle
             if isempty(answer); return; end
             
             obj.InputLayerOpt.Normalization = answer{1};
-            obj.InputLayerOpt.Mean = str2num(answer{2});    
-            obj.InputLayerOpt.StandardDeviation = str2num(answer{3});    
-            obj.InputLayerOpt.Min = str2num(answer{4});    
-            obj.InputLayerOpt.Max = str2num(answer{5});    
+            obj.InputLayerOpt.Mean = str2num(answer{2});
+            obj.InputLayerOpt.StandardDeviation = str2num(answer{3});
+            obj.InputLayerOpt.Min = str2num(answer{4});
+            obj.InputLayerOpt.Max = str2num(answer{5});
         end
         
         function setTrainingSettings(obj)
@@ -1182,7 +1182,7 @@ classdef mibDeepController < handle
                 num2str(obj.TrainingOpt.L2Regularization);...
                 num2str(obj.TrainingOpt.Momentum);...
                 num2str(obj.TrainingOpt.ValidationFrequency);...
-                {'training-progress', 'none', find(ismember({'training-progress', 'none'}, obj.TrainingOpt.Plots))} };
+                {'training-progress-Matlab', 'training-progress', 'none', find(ismember({'training-progress-Matlab', 'training-progress', 'none'}, obj.TrainingOpt.Plots))} };
             dlgTitle = 'Training settings';
             options.WindowStyle = 'normal';
             options.PromptLines = [1, 2, 1, 6, 2, ...
@@ -1240,23 +1240,23 @@ classdef mibDeepController < handle
             % imgIn: input image, as matrix [heigth, width, color, depth]
             %
             % Return values:
-            % imgOut: resulting image, stretched between 0 and 1 
+            % imgOut: resulting image, stretched between 0 and 1
             
             imgIn = single(imgIn);
             
-%             % zscore normalization
-%             chn_Mean = mean(imgIn, [1 2 4]);
-%             chn_Std = std(imgIn,0, [1 2 4]);
-%             imgOut = (imgIn - chn_Mean)./chn_Std;
-%             
-%             rangeMin = -5;
-%             rangeMax = 5;
-%             
-%             imgOut(imgOut > rangeMax) = rangeMax;     % remove outliers
-%             imgOut(imgOut < rangeMin) = rangeMin;
-%            
-%             % Rescale the data to the range [0, 1].
-%             imgOut = (imgOut - rangeMin) / (rangeMax - rangeMin);
+            %             % zscore normalization
+            %             chn_Mean = mean(imgIn, [1 2 4]);
+            %             chn_Std = std(imgIn,0, [1 2 4]);
+            %             imgOut = (imgIn - chn_Mean)./chn_Std;
+            %
+            %             rangeMin = -5;
+            %             rangeMax = 5;
+            %
+            %             imgOut(imgOut > rangeMax) = rangeMax;     % remove outliers
+            %             imgOut(imgOut < rangeMin) = rangeMin;
+            %
+            %             % Rescale the data to the range [0, 1].
+            %             imgOut = (imgOut - rangeMin) / (rangeMax - rangeMin);
             
             % rescale-zeroone normalization
             chn_Min = min(imgIn, [], [1 2 4]);
@@ -1345,7 +1345,7 @@ classdef mibDeepController < handle
             % skip processing images for training if already processed or
             % prediction mode is selected
             if ismember(obj.BatchOpt.PreprocessingMode{1}, {'Already preprocessed', 'Prediction'}); return; end
-
+            
             if obj.BatchOpt.showWaitbar; obj.wb = waitbar(0, sprintf('Creating image datastore\nPlease wait...'), 'Name', sprintf('%s: processing for training', obj.BatchOpt.Architecture{1})); end
             
             warning('off', 'MATLAB:MKDIR:DirectoryExists');
@@ -1376,7 +1376,7 @@ classdef mibDeepController < handle
                 if isfolder(fullfile(obj.BatchOpt.ResultingImagesDir, 'ValidationLabels'))
                     rmdir(fullfile(obj.BatchOpt.ResultingImagesDir, 'ValidationLabels'), 's');
                 end
-            catch err    
+            catch err
                 
             end
             % make new directories
@@ -1418,7 +1418,7 @@ classdef mibDeepController < handle
             %% Process images and split them to training and validation dirs
             NumFiles = length(imgDS.Files);
             % init random generator
-            rng(obj.BatchOpt.RandomGeneratorSeed{1});     
+            rng(obj.BatchOpt.RandomGeneratorSeed{1});
             randIndices = randperm(NumFiles);   % Random permutation of integers
             validationIndices = randIndices(1:ceil(obj.BatchOpt.ValidationFraction{1}*NumFiles));   % get indices of images to be used for validation
             
@@ -1495,7 +1495,7 @@ classdef mibDeepController < handle
             % skip processing images for training if already processed or
             % training mode is selected
             if ismember(obj.BatchOpt.PreprocessingMode{1}, {'Already preprocessed', 'Training'}); return; end
-
+            
             if obj.BatchOpt.showWaitbar; obj.wb = waitbar(0, sprintf('Creating image datastore\nPlease wait...'), 'Name', sprintf('%s: processing for prediction', obj.BatchOpt.Architecture{1})); end
             warning('off', 'MATLAB:MKDIR:DirectoryExists');
             
@@ -1525,7 +1525,7 @@ classdef mibDeepController < handle
             
             % preprocessing of ground truth models is needed only for 2D
             % case, for 3D case the evaluation will be done over original files
-            if strcmp(obj.BatchOpt.Architecture{1}(1:2), '3D') 
+            if strcmp(obj.BatchOpt.Architecture{1}(1:2), '3D')
                 groundFiles = dir(fullfile(obj.BatchOpt.OriginalPredictionImagesDir, '*.model'));
             else
                 groundFiles = dir(fullfile(obj.BatchOpt.OriginalPredictionImagesDir, '*.model'));
@@ -1542,7 +1542,7 @@ classdef mibDeepController < handle
                 res = load(modelFn, '-mat', 'modelMaterialNames');
                 classNames = [{'Exterior'}; res.modelMaterialNames];    % add Exterior
                 pixelLabelID = 0:numel(classNames)-1;
-
+                
                 try
                     modDS = pixelLabelDatastore(obj.BatchOpt.OriginalPredictionImagesDir, classNames, pixelLabelID, ...
                         'FileExtensions', '.model', 'ReadFcn', @mibDeepController.readModel);
@@ -1569,7 +1569,7 @@ classdef mibDeepController < handle
                 
                 if ~isempty(groundFiles)
                     if strcmp(obj.BatchOpt.Architecture{1}(1:2), '3D')
-                        outModel = readNumeric(modDS); 
+                        outModel = readNumeric(modDS);
                     else
                         if imgId == 1; outModelFull = readNumeric(modDS);  end    % read ground truth model
                         outModel = outModelFull(:,:,imgId);    % get 2D slice from the model
@@ -1648,7 +1648,7 @@ classdef mibDeepController < handle
                 delete(fullfile(obj.BatchOpt.ResultingImagesDir, 'ScoreNetwork', '*.csv'));     % delete all csv files
                 delete(fullfile(obj.BatchOpt.ResultingImagesDir, 'ScoreNetwork', '*.score'));     % delete all score matlab files
             end
-
+            
             % check whether it is needed to continue the previous training
             % or start a new one
             checkPointRestoreFile = '';     % selected FULL filename for the network restore
@@ -1696,10 +1696,10 @@ classdef mibDeepController < handle
                 end
             end
             
-            if obj.BatchOpt.showWaitbar 
+            if obj.BatchOpt.showWaitbar
                 obj.wb = waitbar(0, sprintf('Creating datastores\nPlease wait...'), ...
                     'Name', 'Training network', ...
-                    'CreateCancelBtn', @obj.stopTrainingCallback); 
+                    'CreateCancelBtn', @obj.stopTrainingCallback);
             end
             
             % the other options are not available, require to process images
@@ -1755,7 +1755,7 @@ classdef mibDeepController < handle
                 case '2D'
                     % for 2D U-net augumentation is enabled already during
                     % randomPatchExtractionDatastore initiation
-
+                    
                     if obj.BatchOpt.T_augmentation  % define datastore with augmentation
                         try
                             imageAugmenter = imageDataAugmenter( ...
@@ -1771,7 +1771,7 @@ classdef mibDeepController < handle
                         catch err
                             errordlg(sprintf('!!! Error !!!\n\n%s\n\nPlease go back to 2D augmenter settings and fix this!', err.message), 'Augmenter error');
                         end
-
+                        
                         patchDS = randomPatchExtractionDatastore(imgDS, labelsDS, inputPatchSize(1:2), ...
                             'DataAugmentation',imageAugmenter, ...
                             'PatchesPerImage', obj.BatchOpt.T_PatchesPerImage{1}); %#ok<ST2NM>
@@ -1781,11 +1781,11 @@ classdef mibDeepController < handle
                     end
                     patchDS.MiniBatchSize = obj.BatchOpt.T_MiniBatchSize{1};
                     
-%                     % test
-%                     imgTest = read(AugTrainDS);
-%                     imtool(imgTest.InputImage{1});
-%                     imtool(uint8(imgTest.ResponsePixelLabelImage{1}), []);
-%                     reset(AugTrainDS);
+                    %                     % test
+                    %                     imgTest = read(AugTrainDS);
+                    %                     imtool(imgTest.InputImage{1});
+                    %                     imtool(uint8(imgTest.ResponsePixelLabelImage{1}), []);
+                    %                     reset(AugTrainDS);
                     
                     % create random patch extraction datastore for validation
                     if ~isempty(valImgDS)
@@ -1803,7 +1803,7 @@ classdef mibDeepController < handle
             %% create network
             if obj.BatchOpt.showWaitbar
                 if obj.TrainingProgress.stopTraining == true; if isvalid(obj.wb); delete(obj.wb); end; return; end
-                waitbar(0, obj.wb, 'Creating the network...'); 
+                waitbar(0, obj.wb, 'Creating the network...');
             end
             
             previewSwitch = 0; % 1 - the generated network is only for preview, i.e. weights of classes won't be calculated
@@ -1826,7 +1826,7 @@ classdef mibDeepController < handle
                     answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                     if isempty(answer)
                         if obj.BatchOpt.showWaitbar; delete(obj.wb); end
-                        return; 
+                        return;
                     end
                     outputPatchSize = str2num(answer{1});
                 end
@@ -1840,7 +1840,7 @@ classdef mibDeepController < handle
             %% Augment the training and validation data by using the transform function with custom preprocessing
             if obj.BatchOpt.showWaitbar
                 if obj.TrainingProgress.stopTraining == true; if isvalid(obj.wb); delete(obj.wb); end; return; end
-                waitbar(0, obj.wb, 'Defing augmentation...'); 
+                waitbar(0, obj.wb, 'Defing augmentation...');
             end
             
             % operations specified by the helper function augmentAndCrop3dPatch.
@@ -1866,9 +1866,9 @@ classdef mibDeepController < handle
                             else
                                 valDS = [];
                             end
-                                
+                            
                         else
-                            AugTrainDS = patchDS;  % no cropping needed for the same padding  
+                            AugTrainDS = patchDS;  % no cropping needed for the same padding
                             valDS = valPatchDS;
                         end
                     end
@@ -1877,7 +1877,7 @@ classdef mibDeepController < handle
                     % randomPatchExtractionDatastore initiation
                     if strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'valid')    % crop responses to the size of the network output
                         % datastore history
-                        % imgDS + labelsDS => AugTrainDS; 
+                        % imgDS + labelsDS => AugTrainDS;
                         % valImgDS + valLabelsDS => valDS
                         AugTrainDS = transform(patchDS, @(patchIn)mibDeepController.crop2dPatchForValid(patchIn, inputPatchSize, outputPatchSize));
                         if ~isempty(valPatchDS)
@@ -1909,29 +1909,43 @@ classdef mibDeepController < handle
                 case {'rescale-symmetric', 'rescale-zero-one'}
                     if ~isempty(obj.InputLayerOpt.Min) && ~isempty(obj.InputLayerOpt.Max); ResetInputNormalization = false; end
                 case 'none'
-                     
+                    
             end
             
             obj.TrainingProgress.useCustomProgressPlot = false;
-            % for debug purposes of the custom training plot for the
-            % deployed version of MIB
-            % set to true
-            %obj.TrainingProgress.useCustomProgressPlot = true;
-            
             verboseSwitch = false;
-            if strcmp(obj.TrainingOpt.Plots, 'none') 
-                verboseSwitch = true;   % drop message into the command window when the plots are disabled
-            end
-            
-            % since training plot is not available for the deployed
-            % version different initialization is required
             if isdeployed
-                PlotsSwitch = 'none';
-            else
-                if obj.TrainingProgress.useCustomProgressPlot   % for debug
+                if strcmp(obj.TrainingOpt.Plots, 'training-progress-Matlab')
+                    selection = uiconfirm(obj.View.gui, ...
+                        sprintf('Unfortunately Matlab progress plot is not available in the standalone version.\nWould you like to switch to a custom dialog or follow the training progress using the command prompt window?'), ...
+                        'Problem',...
+                        'Options',{'Use custom dialog','Use command prompt','Cancel'}, ...
+                        'Icon','warning');
+                    if strcmp(selection, 'Cancel'); if obj.BatchOpt.showWaitbar; delete(obj.wb); end; return; end
+                    if strcmp(selection, 'Use custom dialog')
+                        obj.TrainingOpt.Plots = 'training-progress';
+                    else    % Use command prompt
+                        obj.TrainingOpt.Plots = 'none';
+                    end
+                end
+                if strcmp(obj.TrainingOpt.Plots, 'training-progress')   % 'Use custom dialog'
                     PlotsSwitch = 'none';
-                else
-                    PlotsSwitch = obj.TrainingOpt.Plots;
+                    obj.TrainingProgress.useCustomProgressPlot = 1;
+                else % 'none'
+                    PlotsSwitch = 'none';
+                    verboseSwitch = true;   % drop message into the command window when the plots are disabled
+                end
+            else
+                switch obj.TrainingOpt.Plots
+                    case 'training-progress-Matlab'
+                        PlotsSwitch = 'training-progress';
+                        obj.TrainingProgress.useCustomProgressPlot = 0;
+                    case 'training-progress'
+                        PlotsSwitch = 'none';
+                        obj.TrainingProgress.useCustomProgressPlot = 1;
+                    case 'none'
+                        PlotsSwitch = 'none';
+                        verboseSwitch = true;   % drop message into the command window when the plots are disabled
                 end
             end
             
@@ -2031,7 +2045,7 @@ classdef mibDeepController < handle
             if obj.BatchOpt.showWaitbar
                 if obj.TrainingProgress.stopTraining == true; if isvalid(obj.wb); delete(obj.wb); end; return; end
                 if ~isvalid(obj.wb); return; end
-                waitbar(0, obj.wb, sprintf('Training\nPlease wait...')); 
+                waitbar(0, obj.wb, sprintf('Training\nPlease wait...'));
             end
             tic
             modelDateTime = datestr(now, 'dd-mmm-yyyy-HH-MM-SS');
@@ -2042,12 +2056,12 @@ classdef mibDeepController < handle
                 lgraph = layerGraph(net);
             end
             
-            BatchOpt = obj.BatchOpt; 
+            BatchOpt = obj.BatchOpt;
             % generate TrainingOptStruct, because TrainingOptions is
             % 'TrainingOptionsADAM' class
-            AugOpt2DStruct = obj.AugOpt2D; 
+            AugOpt2DStruct = obj.AugOpt2D;
             AugOpt3DStruct = obj.AugOpt3D;
-            InputLayerOpt = obj.InputLayerOpt; 
+            InputLayerOpt = obj.InputLayerOpt;
             TrainingOptStruct = obj.TrainingOpt;
             
             % generate config file; the config file is the same as *.mibDeep but without 'net' field
@@ -2057,7 +2071,7 @@ classdef mibDeepController < handle
             try
                 [net, info] = trainNetwork(AugTrainDS, lgraph, TrainingOptions);
             catch err
-                errordlg(sprintf('!!! Error !!!\n\n%s', err.message)); 
+                errordlg(sprintf('!!! Error !!!\n\n%s', err.message));
                 if obj.BatchOpt.showWaitbar; if isvalid(obj.wb); delete(obj.wb); end; end
                 return;
             end
@@ -2116,7 +2130,7 @@ classdef mibDeepController < handle
             % 'TrainingOptionsADAM' class
             AugOpt2DStruct = obj.AugOpt2D;
             AugOpt3DStruct = obj.AugOpt3D;
-            InputLayerOpt = obj.InputLayerOpt; 
+            InputLayerOpt = obj.InputLayerOpt;
             TrainingOptStruct = obj.TrainingOpt;
             
             % try to export path as relatives
@@ -2124,7 +2138,7 @@ classdef mibDeepController < handle
             BatchOpt.OriginalTrainingImagesDir = strrep(BatchOpt.OriginalTrainingImagesDir, path, '[RELATIVE]');
             BatchOpt.OriginalPredictionImagesDir = strrep(BatchOpt.OriginalPredictionImagesDir, path, '[RELATIVE]');
             BatchOpt.ResultingImagesDir = strrep(BatchOpt.ResultingImagesDir, path, '[RELATIVE]');
-                        
+            
             % generate config file; the config file is the same as *.mibDeep but without 'net' field
             save(configName, ...
                 'TrainingOptStruct', 'AugOpt2DStruct', 'AugOpt3DStruct', ...
@@ -2143,7 +2157,7 @@ classdef mibDeepController < handle
             
             obj.wb = waitbar(0, sprintf('Loading config file\nPlease wait...'));
             
-            res = load(configName, '-mat');  
+            res = load(configName, '-mat');
             
             % correct the slash characters depending on OS
             if ispc
@@ -2191,8 +2205,8 @@ classdef mibDeepController < handle
                 return;
             end
             if strcmp(varargin{2}.EventName, 'Close')   % close training progress window
-                if isfield(obj.TrainingProgress, 'hFig')    % otherwise it will try to trigger this upon X-button press of the waitbar
-                    delete(obj.TrainingProgress.hFig);  
+                if isfield(obj.TrainingProgress, 'UIFigure')    % otherwise it will try to trigger this upon X-button press of the waitbar
+                    delete(obj.TrainingProgress.UIFigure);
                 end
             end
         end
@@ -2200,7 +2214,7 @@ classdef mibDeepController < handle
         function result = trainingProgressDisplay(obj, ProgressStruct)
             % function res = trainingProgressDisplay(obj, ProgressStruct)
             % display network training progress for the compiled MIB
-            % 
+            %
             % Parameters:
             % ProgressStruct: a structure with various training parameters
             %
@@ -2211,25 +2225,17 @@ classdef mibDeepController < handle
             % this block controls execusion in MIB-Matlab and when verbose
             % is on
             
-            if ~obj.TrainingProgress.useCustomProgressPlot  % for debug of isdeploy 
+            if ~obj.TrainingProgress.useCustomProgressPlot  % for debug of isdeploy
                 if strcmp(obj.TrainingOpt.Plots, 'none') || ~isdeployed()
-                    result = obj.TrainingProgress.stopTraining; 
-                    drawnow; 
-                    return; 
+                    result = obj.TrainingProgress.stopTraining;
+                    drawnow;
+                    return;
                 end   % skip gui window if the progress plot is none
             end
             
             result = false;
             maxPoints = 1000;     % max number of points in the plots, should be an even number
             if ProgressStruct.Iteration == 0
-                %obj.TrainingProgress.hFig = uifigure('Name', 'Training progress', ...
-                %    'CloseRequestFcn', @obj.stopTrainingCallback);
-                obj.TrainingProgress.hFig = uifigure('Name', 'Training progress');
-                ScreenSize = get(0, 'ScreenSize');
-                FigPos(1) = 1/2*(ScreenSize(3)-800);
-                FigPos(2) = 2/3*(ScreenSize(4)-600);
-                obj.TrainingProgress.hFig.Position = [FigPos(1), FigPos(2), 800, 600];
-                
                 obj.TrainingProgress.TrainXvec = zeros([maxPoints, 1]);  % vector of iteration numbers for training
                 obj.TrainingProgress.TrainLoss = zeros([maxPoints, 1]);  % training loss vector
                 obj.TrainingProgress.TrainAccuracy = zeros([maxPoints, 1]);  % training accuracy vector
@@ -2239,100 +2245,158 @@ classdef mibDeepController < handle
                 obj.TrainingProgress.TrainXvecIndex = 1;    % index of the next point to be added to the training vectors
                 obj.TrainingProgress.ValidationXvecIndex = 1; % index of the next point to be added to the validation vectors
                 
-                obj.TrainingProgress.ax1 = uiaxes('Parent',obj.TrainingProgress.hFig,...
-                    'Units','pixels',...
-                    'Position', [20, 300, 560, 240]); 
-                obj.TrainingProgress.hP1 = plot(obj.TrainingProgress.ax1, 0, 0, '-', 0, 0, '-o');
-                obj.TrainingProgress.hP1(2).MarkerSize = 4;
-                obj.TrainingProgress.hP1(2).MarkerFaceColor = 'r';
-                obj.TrainingProgress.ax1.YLabel.String = 'Accuracy, %%';
-                obj.TrainingProgress.ax1.XLabel.String = 'Iteration';
-                obj.TrainingProgress.ax1.YLim = [0 100];
-                obj.TrainingProgress.ax1.XGrid = 'on';
-                obj.TrainingProgress.ax1.YGrid = 'on';
+                [~, netName] = fileparts(obj.BatchOpt.NetworkFilename);
+                obj.TrainingProgress.UIFigure = uifigure('Visible', 'off');
+                ScreenSize = get(0, 'ScreenSize');
+                FigPos(1) = 1/2*(ScreenSize(3)-800);
+                FigPos(2) = 2/3*(ScreenSize(4)-600);
+                obj.TrainingProgress.UIFigure.Position = [FigPos(1), FigPos(2), 800, 600];
+                obj.TrainingProgress.UIFigure.Name = sprintf('Training progress (%s)', netName);
                 
-                obj.TrainingProgress.ax2 = uiaxes('Parent',obj.TrainingProgress.hFig,...
-                    'Units','pixels',...
-                    'Position', [20, 30, 560, 240]);
-                obj.TrainingProgress.hP2 = plot(obj.TrainingProgress.ax2, 0, 0, '-', 0, 0, '-o');
-                obj.TrainingProgress.hP2(2).MarkerSize = 4;
-                obj.TrainingProgress.hP2(2).MarkerFaceColor = 'r';
-                obj.TrainingProgress.ax2.YLabel.String = 'Loss';
-                obj.TrainingProgress.ax2.XLabel.String = 'Iteration';
-                obj.TrainingProgress.ax2.YLim = [0 1];
-                obj.TrainingProgress.ax2.XGrid = 'on';
-                obj.TrainingProgress.ax2.YGrid = 'on';
+                % Create GridLayouts
+                obj.TrainingProgress.GridLayout = uigridlayout(obj.TrainingProgress.UIFigure);
+                obj.TrainingProgress.GridLayout.ColumnWidth = {'1x'};
                 
-                legend(obj.TrainingProgress.ax2, 'Training', 'Validation');
-                obj.TrainingProgress.stopTraining = false;
+                obj.TrainingProgress.GridLayout2 = uigridlayout(obj.TrainingProgress.GridLayout);
+                obj.TrainingProgress.GridLayout2.ColumnWidth = {'1x', '3.5x', '1x'};
+                obj.TrainingProgress.GridLayout2.RowHeight = {'1x'};
+                obj.TrainingProgress.GridLayout2.Layout.Row = 2;
+                obj.TrainingProgress.GridLayout2.Layout.Column = 1;
                 
-                obj.TrainingProgress.t1 = uilabel('Parent', obj.TrainingProgress.hFig, ...
-                    'Text', 'Training progress', 'FontSize', 14, 'FontWeight', 'bold',...
-                    'Position', [250, 540, 300, 50]);
+                % Create Panels
+                obj.TrainingProgress.AccuracyPanel = uipanel(obj.TrainingProgress.GridLayout2);
+                obj.TrainingProgress.AccuracyPanel.Title = 'Accuracy';
+                obj.TrainingProgress.AccuracyPanel.Layout.Row = 1;
+                obj.TrainingProgress.AccuracyPanel.Layout.Column = 1;
                 
-                obj.TrainingProgress.hPanel = uipanel(obj.TrainingProgress.hFig, ...
-                    'Title','Info',...
-                    'Position',[588 64 205 520]);
+                obj.TrainingProgress.InformationPanel = uipanel(obj.TrainingProgress.GridLayout2);
+                obj.TrainingProgress.InformationPanel.Title = 'Information';
+                obj.TrainingProgress.InformationPanel.Layout.Row = 1;
+                obj.TrainingProgress.InformationPanel.Layout.Column = 2;
                 
-                obj.TrainingProgress.tp1 = uilabel('Parent', obj.TrainingProgress.hPanel, ...
-                    'Text', 'Training time', 'FontSize', 12, 'FontWeight', 'bold',...
-                    'Position', [8, 475, 200, 15]);
+                obj.TrainingProgress.InputPatchPreviewPanel = uipanel(obj.TrainingProgress.GridLayout2);
+                obj.TrainingProgress.InputPatchPreviewPanel.Title = '';
+                obj.TrainingProgress.InputPatchPreviewPanel.Layout.Row = 1;
+                obj.TrainingProgress.InputPatchPreviewPanel.Layout.Column = 3;
+                obj.TrainingProgress.InputPatchPreviewPanel.BorderType = 'none';
                 
-                obj.TrainingProgress.tp2 = uilabel('Parent', obj.TrainingProgress.hPanel, ...
-                    'Text', sprintf('Start time: %s', datetime(now,'ConvertFrom','datenum')), ...
-                    'FontSize', 12, ...
-                    'Position', [8, 455, 200, 15]);
+                % Create widgets
+                obj.TrainingProgress.AccTrainGauge = uigauge(obj.TrainingProgress.AccuracyPanel, 'linear');
+                obj.TrainingProgress.AccTrainGauge.Orientation = 'vertical';
+                obj.TrainingProgress.AccTrainGauge.Position = [6 28 40 190];
                 
-                obj.TrainingProgress.tp3 = uilabel('Parent', obj.TrainingProgress.hPanel, ...
-                    'Text', 'Elapsed time: -', 'FontSize', 12, ...
-                    'Position', [8, 435, 200, 15]);
+                obj.TrainingProgress.AccValGauge = uigauge(obj.TrainingProgress.AccuracyPanel, 'linear');
+                obj.TrainingProgress.AccValGauge.Orientation = 'vertical';
+                obj.TrainingProgress.AccValGauge.Position = [64 28 40 190];
                 
-                obj.TrainingProgress.tp4 = uilabel('Parent', obj.TrainingProgress.hPanel, ...
-                    'Text', 'Time to go: -', 'FontSize', 12, ...
-                    'Position', [8, 415, 200, 15]);
+                obj.TrainingProgress.TrainingLabel = uilabel(obj.TrainingProgress.AccuracyPanel);
+                obj.TrainingProgress.TrainingLabel.Position = [10 221 48 22];
+                obj.TrainingProgress.TrainingLabel.Text = 'Train';
                 
-                obj.TrainingProgress.tp5 = uilabel('Parent', obj.TrainingProgress.hPanel, ...
-                    'Text', 'Training cycle', 'FontSize', 12, 'FontWeight', 'bold',...
-                    'Position', [8, 385, 200, 15]);
+                obj.TrainingProgress.ValidationLabel = uilabel(obj.TrainingProgress.AccuracyPanel);
+                obj.TrainingProgress.ValidationLabel.HorizontalAlignment = 'center';
+                obj.TrainingProgress.ValidationLabel.Position = [56 221 57 22];
+                obj.TrainingProgress.ValidationLabel.Text = 'Valid.';
                 
-                obj.TrainingProgress.tp6 = uilabel('Parent', obj.TrainingProgress.hPanel, ...
-                    'Text', 'Epoch: -', 'FontSize', 12, ...
-                    'Position', [8, 365, 200, 15]);
+                obj.TrainingProgress.AccTrainingValue = uilabel(obj.TrainingProgress.AccuracyPanel);
+                obj.TrainingProgress.AccTrainingValue.Position = [7 3 48 22];
+                obj.TrainingProgress.AccTrainingValue.Text = '0';
                 
-                obj.TrainingProgress.tp7 = uilabel('Parent', obj.TrainingProgress.hPanel, ...
-                    'Text', sprintf('Iterations per epoch: %d', obj.TrainingProgress.iterPerEpoch),...
-                    'FontSize', 12, 'Position', [8, 345, 200, 15]);
+                obj.TrainingProgress.AccValidationValue = uilabel(obj.TrainingProgress.AccuracyPanel);
+                obj.TrainingProgress.AccValidationValue.Position = [65 3 48 22];
+                obj.TrainingProgress.AccValidationValue.Text = '0';
                 
-                obj.TrainingProgress.tp8 = uilabel('Parent', obj.TrainingProgress.hPanel, ...
-                    'Text', sprintf('Maximum iterations: %d', obj.TrainingProgress.iterPerEpoch*obj.TrainingOpt.MaxEpochs),...
-                    'FontSize', 12, 'Position', [8, 325, 200, 15]);
+                obj.TrainingProgress.TrainingProgress = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.TrainingProgress.FontWeight = 'bold';
+                obj.TrainingProgress.TrainingProgress.Position = [7 218 107 22];
+                obj.TrainingProgress.TrainingProgress.Text = 'Training progress';
                 
-                obj.TrainingProgress.tp9 = uilabel('Parent', obj.TrainingProgress.hPanel, ...
-                    'Text', sprintf('Validation frequency: %d iter', obj.TrainingOpt.ValidationFrequency),...
-                    'FontSize', 12, 'Position', [8, 305, 200, 15]);
+                obj.TrainingProgress.StartTime = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.StartTime.Position = [7 196 175 22];
+                obj.TrainingProgress.StartTime.Text = sprintf('Started: %s', datetime(now,'ConvertFrom','datenum'));
                 
-                obj.TrainingProgress.tp10 = uilabel('Parent', obj.TrainingProgress.hPanel, ...
-                    'Text', sprintf('Learning rate schedule: %s', obj.TrainingOpt.LearnRateSchedule),...
-                    'FontSize', 12, 'Position', [8, 285, 200, 15]);
+                obj.TrainingProgress.ElapsedTime = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.ElapsedTime.Position = [7 176 175 22];
+                obj.TrainingProgress.ElapsedTime.Text = 'Elapsed: --.--.--';
                 
-                obj.TrainingProgress.tp11 = uilabel('Parent', obj.TrainingProgress.hPanel, ...
-                    'Text', sprintf('Initial learning rate: %.4f', obj.TrainingOpt.InitialLearnRate),...
-                    'FontSize', 12, 'Position', [8, 265, 200, 15]);
+                obj.TrainingProgress.TimeToGo = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.TimeToGo.Position = [7 156 175 22];
+                obj.TrainingProgress.TimeToGo.Text = 'Time to go: --.--.--';
                 
-                obj.TrainingProgress.tp12 = uilabel('Parent', obj.TrainingProgress.hPanel, ...
-                    'Text', 'Validation accuracy: - %',...
-                    'FontSize', 12, 'Position', [8, 230, 200, 15]);
+                obj.TrainingProgress.ProgressGauge = uigauge(obj.TrainingProgress.InformationPanel, 'semicircular');
+                obj.TrainingProgress.ProgressGauge.Position = [30 5 120 65];
                 
-                obj.TrainingProgress.tp13 = uilabel('Parent', obj.TrainingProgress.hPanel, ...
-                    'Text', 'Validation loss: - ',...
-                    'FontSize', 12, 'Position', [8, 210, 200, 15]);
+                obj.TrainingProgress.Epoch = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.Epoch.Position = [7 120 170 22];
+                obj.TrainingProgress.Epoch.Text = sprintf('Epoch: 0 of %d', obj.TrainingOpt.MaxEpochs);
                 
-                % Create a push button
-                obj.TrainingProgress.hStop = uibutton(obj.TrainingProgress.hFig, 'push',...
-                    'Position', [680, 30, 100, 22],...
-                    'Text', 'Stop', ...
+                obj.TrainingProgress.IterationNumber = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.IterationNumber.Position = [7 100 170 22];
+                obj.TrainingProgress.IterationNumber.Text = 'Iteration number:';
+                
+                obj.TrainingProgress.IterationNumberValue = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.IterationNumberValue.Position = [26 80 160 22];
+                obj.TrainingProgress.IterationNumberValue.Text = sprintf('0 of %d', obj.TrainingProgress.iterPerEpoch*obj.TrainingOpt.MaxEpochs);
+                
+                obj.TrainingProgress.TrainingOptions = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.TrainingOptions.FontWeight = 'bold';
+                obj.TrainingProgress.TrainingOptions.Position = [192 217 99 22];
+                obj.TrainingProgress.TrainingOptions.Text = 'Training options';
+                
+                obj.TrainingProgress.IterationsPerEpoch = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.IterationsPerEpoch.Position = [192 196 202 22];
+                obj.TrainingProgress.IterationsPerEpoch.Text = sprintf('Iterations per epoch: %d', obj.TrainingProgress.iterPerEpoch);
+                
+                obj.TrainingProgress.Solver = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.Solver.Position = [192 176 202 22];
+                obj.TrainingProgress.Solver.Text = sprintf('Solver name: %s', obj.TrainingOpt.solverName);
+                
+                obj.TrainingProgress.Shuffle = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.Shuffle.Position = [192 156 202 22];
+                obj.TrainingProgress.Shuffle.Text = sprintf('Shuffle: %s', obj.TrainingOpt.Shuffle);
+                
+                obj.TrainingProgress.LearnRateSchedule = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.LearnRateSchedule.Position = [192 136 202 22];
+                obj.TrainingProgress.LearnRateSchedule.Text = sprintf('Learn rate schedule: %s', obj.TrainingOpt.LearnRateSchedule);
+                
+                obj.TrainingProgress.InitialLearnRate = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.InitialLearnRate.Position = [192 106 202 22];
+                obj.TrainingProgress.InitialLearnRate.Text = sprintf('Initial learn rate: %f', obj.TrainingOpt.InitialLearnRate);
+                
+                obj.TrainingProgress.LearnRateDropPeriod = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.LearnRateDropPeriod.Position = [192 86 202 22];
+                obj.TrainingProgress.LearnRateDropPeriod.Text = sprintf('LearnRate Drop Period: %d', obj.TrainingOpt.LearnRateDropPeriod);
+                
+                obj.TrainingProgress.ValidationFrequency = uilabel(obj.TrainingProgress.InformationPanel);
+                obj.TrainingProgress.ValidationFrequency.Position = [192 46 202 22];
+                obj.TrainingProgress.ValidationFrequency.Text = sprintf('Validation frequency: each %.1f iter.', obj.TrainingOpt.ValidationFrequency);
+                
+                obj.TrainingProgress.StopTrainingButton = uibutton(obj.TrainingProgress.InputPatchPreviewPanel, 'push',...
                     'ButtonPushedFcn', @obj.stopTrainingCallback);
+                obj.TrainingProgress.StopTrainingButton.BackgroundColor = [0 1 0];
+                obj.TrainingProgress.StopTrainingButton.Position = [20 8 100 22];
+                obj.TrainingProgress.StopTrainingButton.Text = 'Stop training';
+                obj.TrainingProgress.StopTrainingButton.Tooltip = 'Stop and finalize the run, it may take significant time for large datasets';
                 
+                % Create axes
+                obj.TrainingProgress.UILossAxes = uiaxes(obj.TrainingProgress.GridLayout);
+                obj.TrainingProgress.UILossAxes.Units = 'pixels';
+                title(obj.TrainingProgress.UILossAxes, 'Loss function plot');
+                xlabel(obj.TrainingProgress.UILossAxes, 'Iteration');
+                ylabel(obj.TrainingProgress.UILossAxes, {'Loss value'; ''});
+                obj.TrainingProgress.UILossAxes.XGrid = 'on';
+                obj.TrainingProgress.UILossAxes.YGrid = 'on';
+                obj.TrainingProgress.UILossAxes.Layout.Row = 1;
+                obj.TrainingProgress.UILossAxes.Layout.Column = 1;
+                obj.TrainingProgress.hPlot = plot(obj.TrainingProgress.UILossAxes, 0, 0, '-', 0, 0, '-o');
+                obj.TrainingProgress.hPlot(2).MarkerSize = 4;
+                obj.TrainingProgress.hPlot(2).MarkerFaceColor = 'r';
+                legend(obj.TrainingProgress.UILossAxes, 'Training', 'Validation');
+                
+                % Show the figure after all components are created
+                obj.TrainingProgress.UIFigure.Visible = 'on';
+                obj.TrainingProgress.maxIter = obj.TrainingProgress.iterPerEpoch*obj.TrainingOpt.MaxEpochs;
+                obj.TrainingProgress.stopTraining = false;
             else
                 if obj.TrainingProgress.stopTraining == true % stop training
                     result = true;
@@ -2348,32 +2412,30 @@ classdef mibDeepController < handle
                 obj.TrainingProgress.TrainAccuracy(obj.TrainingProgress.TrainXvecIndex) = ProgressStruct.TrainingAccuracy;
                 obj.TrainingProgress.TrainXvecIndex = obj.TrainingProgress.TrainXvecIndex + 1;
                 
-                obj.TrainingProgress.hP1(1).XData = obj.TrainingProgress.TrainXvec(1:obj.TrainingProgress.TrainXvecIndex-1);
-                obj.TrainingProgress.hP1(1).YData = obj.TrainingProgress.TrainAccuracy(1:obj.TrainingProgress.TrainXvecIndex-1);
-                obj.TrainingProgress.hP2(1).XData = obj.TrainingProgress.TrainXvec(1:obj.TrainingProgress.TrainXvecIndex-1);
-                obj.TrainingProgress.hP2(1).YData = obj.TrainingProgress.TrainLoss(1:obj.TrainingProgress.TrainXvecIndex-1);
+                obj.TrainingProgress.hPlot(1).XData = obj.TrainingProgress.TrainXvec(1:obj.TrainingProgress.TrainXvecIndex-1);
+                obj.TrainingProgress.hPlot(1).YData = obj.TrainingProgress.TrainLoss(1:obj.TrainingProgress.TrainXvecIndex-1);
+                obj.TrainingProgress.AccTrainGauge.Value = ProgressStruct.TrainingAccuracy;
+                obj.TrainingProgress.AccTrainingValue.Text = sprintf('%.2f%%', ProgressStruct.TrainingAccuracy);
                 
-                obj.TrainingProgress.tp3.Text = sprintf('Elapsed time: %.0f h %.0f min %.2d sec', floor(ProgressStruct.TimeSinceStart/3600), floor(mod(round(ProgressStruct.TimeSinceStart),3600)/60), mod(round(ProgressStruct.TimeSinceStart),60));
+                obj.TrainingProgress.ElapsedTime.Text = ...
+                    sprintf('Elapsed time: %.0f h %.0f min %.2d sec', floor(ProgressStruct.TimeSinceStart/3600), floor(mod(round(ProgressStruct.TimeSinceStart),3600)/60), mod(round(ProgressStruct.TimeSinceStart),60));
                 timerValue = ProgressStruct.TimeSinceStart/ProgressStruct.Iteration*(obj.TrainingProgress.maxNoIter-ProgressStruct.Iteration);
-                obj.TrainingProgress.tp4.Text = sprintf('Time to go: ~%.0f h %.0f min %.2d sec', floor(timerValue/3600), floor(mod(round(timerValue),3600)/60), mod(round(timerValue),60));
-                obj.TrainingProgress.tp6.Text = sprintf('Epoch: %d of %d', ProgressStruct.Epoch, obj.TrainingOpt.MaxEpochs);
-                                        
+                obj.TrainingProgress.TimeToGo.Text = ...
+                    sprintf('Time to go: ~%.0f h %.0f min %.2d sec', floor(timerValue/3600), floor(mod(round(timerValue),3600)/60), mod(round(timerValue),60));
+                obj.TrainingProgress.Epoch.Text = sprintf('Epoch: %d of %d', ProgressStruct.Epoch, obj.TrainingOpt.MaxEpochs);
+                obj.TrainingProgress.IterationNumberValue.Text = sprintf('%d of %d', ProgressStruct.Iteration, obj.TrainingProgress.maxIter);
+                obj.TrainingProgress.ProgressGauge.Value = ProgressStruct.Iteration/obj.TrainingProgress.maxIter*100;
+                
                 if ~isempty(ProgressStruct.ValidationLoss)
                     obj.TrainingProgress.ValidationXvec(obj.TrainingProgress.ValidationXvecIndex) = ProgressStruct.Iteration;
                     obj.TrainingProgress.ValidationLoss(obj.TrainingProgress.ValidationXvecIndex) = ProgressStruct.ValidationLoss;
                     obj.TrainingProgress.ValidationAccuracy(obj.TrainingProgress.ValidationXvecIndex) = ProgressStruct.ValidationAccuracy;
                     obj.TrainingProgress.ValidationXvecIndex = obj.TrainingProgress.ValidationXvecIndex + 1;
                     
-                    obj.TrainingProgress.hP1(2).XData = obj.TrainingProgress.ValidationXvec(1:obj.TrainingProgress.ValidationXvecIndex-1);
-                    obj.TrainingProgress.hP1(2).YData = obj.TrainingProgress.ValidationAccuracy(1:obj.TrainingProgress.ValidationXvecIndex-1);
-                    obj.TrainingProgress.hP2(2).XData = obj.TrainingProgress.ValidationXvec(1:obj.TrainingProgress.ValidationXvecIndex-1);
-                    obj.TrainingProgress.hP2(2).YData = obj.TrainingProgress.ValidationLoss(1:obj.TrainingProgress.ValidationXvecIndex-1);
-                    
-                    obj.TrainingProgress.tp12.Text = ...
-                        sprintf('Validation accuracy: %.2f %%', ProgressStruct.ValidationAccuracy);
-                
-                    obj.TrainingProgress.tp13.Text = ...
-                        sprintf('Validation loss: %.4f', ProgressStruct.ValidationLoss);
+                    obj.TrainingProgress.hPlot(2).XData = obj.TrainingProgress.ValidationXvec(1:obj.TrainingProgress.ValidationXvecIndex-1);
+                    obj.TrainingProgress.hPlot(2).YData = obj.TrainingProgress.ValidationLoss(1:obj.TrainingProgress.ValidationXvecIndex-1);
+                    obj.TrainingProgress.AccValGauge.Value = ProgressStruct.ValidationAccuracy;
+                    obj.TrainingProgress.AccValidationValue.Text = sprintf('%.2f%%', ProgressStruct.ValidationAccuracy);
                 end
                 drawnow;
                 
@@ -2386,13 +2448,6 @@ classdef mibDeepController < handle
                     obj.TrainingProgress.TrainAccuracy(1:maxPoints/2) = ...
                         interp1(obj.TrainingProgress.TrainXvec, obj.TrainingProgress.TrainAccuracy, linvec);
                     obj.TrainingProgress.TrainXvec(1:maxPoints/2) = linvec;
-                    
-                    %obj.TrainingProgress.TrainXvec(2:maxPoints/2) = ...
-                    %    (obj.TrainingProgress.TrainXvec(2:2:maxPoints-1) + obj.TrainingProgress.TrainXvec(3:2:maxPoints)) / 2;
-                    %obj.TrainingProgress.TrainLoss(2:maxPoints/2) = ...
-                    %    (obj.TrainingProgress.TrainLoss(2:2:maxPoints-1) + obj.TrainingProgress.TrainLoss(3:2:maxPoints)) / 2;
-                    %obj.TrainingProgress.TrainAccuracy(2:maxPoints/2) = ...
-                    %    (obj.TrainingProgress.TrainAccuracy(2:2:maxPoints-1) + obj.TrainingProgress.TrainAccuracy(3:2:maxPoints)) / 2;        
                 end
                 
                 if obj.TrainingProgress.ValidationXvecIndex > maxPoints
@@ -2404,12 +2459,10 @@ classdef mibDeepController < handle
                         interp1(obj.TrainingProgress.ValidationXvec, obj.TrainingProgress.ValidationAccuracy, linvec);
                     obj.TrainingProgress.ValidationXvec(1:maxPoints/2) = linvec;
                     
-                    %obj.TrainingProgress.ValidationXvec(2:maxPoints/2) = ...
-                    %    (obj.TrainingProgress.ValidationXvec(2:2:maxPoints-1) + obj.TrainingProgress.ValidationXvec(3:2:maxPoints)) / 2;        
                     obj.TrainingProgress.ValidationLoss(2:maxPoints/2) = ...
                         (obj.TrainingProgress.ValidationLoss(2:2:maxPoints-1) + obj.TrainingProgress.ValidationLoss(3:2:maxPoints)) / 2;
                     obj.TrainingProgress.ValidationAccuracy(2:maxPoints/2) = ...
-                        (obj.TrainingProgress.ValidationAccuracy(2:2:maxPoints-1) + obj.TrainingProgress.ValidationAccuracy(3:2:maxPoints)) / 2;        
+                        (obj.TrainingProgress.ValidationAccuracy(2:2:maxPoints-1) + obj.TrainingProgress.ValidationAccuracy(3:2:maxPoints)) / 2;
                 end
             end
         end
@@ -2428,19 +2481,19 @@ classdef mibDeepController < handle
             warning('off', 'MATLAB:MKDIR:DirectoryExists');
             mkdir(fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores'));
             mkdir(fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels'));
-
+            
             %if strcmp(obj.BatchOpt.PreprocessingMode{1}, 'Already preprocessed')
             imgDS = imageDatastore(fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages'), ...
-                    'FileExtensions', '.mat', 'ReadFcn', @mibDeepController.matlabFileRead);
+                'FileExtensions', '.mat', 'ReadFcn', @mibDeepController.matlabFileRead);
             %else
             %    imgDS = imageDatastore(obj.BatchOpt.OriginalPredictionImagesDir, 'FileExtensions', lower(['.' obj.BatchOpt.ImageFilenameExtension{1}]), ...
-            %        'ReadFcn', @mibDeepController.loadAndTransposeImages);    
+            %        'ReadFcn', @mibDeepController.loadAndTransposeImages);
             %end
             
             if obj.BatchOpt.showWaitbar;  pwb.updateText('Loading network...'); end
             % loading: 'net', 'TrainingOptStruct', 'classNames',
             % 'inputPatchSize', 'outputPatchSize', 'BatchOpt' variables
-            load(obj.BatchOpt.NetworkFilename, '-mat');     
+            load(obj.BatchOpt.NetworkFilename, '-mat');
             
             numClasses = numel(classNames); %#ok<USENS>
             modelMaterialColors = classColors;  %#ok<PROP> % loaded from network file
@@ -2462,7 +2515,7 @@ classdef mibDeepController < handle
             noFiles = numel(imgDS.Files);
             Unet2DSwitch = 0;   % switch that defines 2D/3D unet; used for the waitbar
             if obj.BatchOpt.showWaitbar
-                pwb.updateText(sprintf('Starting prediction\nPlease wait...')); 
+                pwb.updateText(sprintf('Starting prediction\nPlease wait...'));
                 if ~strcmp(obj.BatchOpt.Architecture{1}(1:2), '3D')
                     pwb.increaseMaxNumberOfIterations(noFiles);
                     Unet2DSwitch = 1;
@@ -2479,7 +2532,7 @@ classdef mibDeepController < handle
             % that is not defined as pixelLabelID see more in isundefined
             % function, it should be compatible with crossentropy loss at
             % least.
-            % 
+            %
             
             nDims = 3;  % number of dimensions for data, 2 or 3
             if ~strcmp(obj.BatchOpt.Architecture{1}(1:2), '3D'); Unet2DSwitch = 1;  nDims = 2; end
@@ -2505,12 +2558,12 @@ classdef mibDeepController < handle
                             padSize(3) = 0;
                         end
                         volPadded = padarray(vol, padSize, 0, 'post');
-
+                        
                         [heightPad, widthPad, depthPad, colorPad] = size(volPadded);
-
+                        
                         outputLabels = zeros([heightPad, widthPad, depthPad], 'uint8');
                         scoreImg = zeros([heightPad, widthPad, depthPad, numClasses], 'uint8');
-                    
+                        
                         if obj.BatchOpt.showWaitbar
                             if Unet2DSwitch == 0    % 3D Unet
                                 iterNo = numel(1:inputPatchSize(3):depthPad) * ...
@@ -2551,7 +2604,7 @@ classdef mibDeepController < handle
                                             timerValue = elapsedTime/patchCount*(pwb.getMaxNumberOfIterations()-patchCount);
                                             pwb.updateText(sprintf('%s\nHold on ~%.0f:%.2d mins left...', fn, floor(timerValue/60), mod(round(timerValue),60)));
                                         end
-                                        pwb.increment(); 
+                                        pwb.increment();
                                     end
                                     patchCount = patchCount + 1;
                                 end
@@ -2581,7 +2634,7 @@ classdef mibDeepController < handle
                         padSize(3) = ceil(depthPad/outputPatchSize(3))*outputPatchSize(3) + padShift*2 - depthPad;
                         if Unet2DSwitch; padSize(3) = 0; end
                         volPadded = padarray(volPadded, padSize, 0, 'post');
-
+                        
                         [heightPad, widthPad, depthPad, colorPad] = size(volPadded);
                         outputLabels = zeros([heightPad, widthPad, depthPad], 'uint8');
                         scoreImg = zeros([heightPad, widthPad, depthPad, numClasses], 'uint8');
@@ -2607,10 +2660,10 @@ classdef mibDeepController < handle
                                     z1 = min(k + padShift - 1, depthPad);
                                     
                                     outputLabels(x1:x1+outputPatchSize(1)-1, ...
-                                            y1:y1+outputPatchSize(2)-1, ...
-                                            z1:z1+outputPatchSize(3)-1) = patchSeg(padShift:padShift+outputPatchSize(1)-1, ...
-                                            padShift:padShift+outputPatchSize(2)-1, ...
-                                            padShiftZ:padShiftZ+outputPatchSize(3)-1);
+                                        y1:y1+outputPatchSize(2)-1, ...
+                                        z1:z1+outputPatchSize(3)-1) = patchSeg(padShift:padShift+outputPatchSize(1)-1, ...
+                                        padShift:padShift+outputPatchSize(2)-1, ...
+                                        padShiftZ:padShiftZ+outputPatchSize(3)-1);
                                     
                                     if Unet2DSwitch == 1    % 2D Unet
                                         scoreImg(x1:x1+outputPatchSize(1)-1, ...
@@ -2631,7 +2684,7 @@ classdef mibDeepController < handle
                                             timerValue = elapsedTime/patchCount*(pwb.getMaxNumberOfIterations()-patchCount);
                                             pwb.updateText(sprintf('%s\nHold on ~%.0f:%.2d mins left...', fn, floor(timerValue/60), mod(round(timerValue),60)));
                                         end
-                                        pwb.increment(); 
+                                        pwb.increment();
                                     end
                                     patchCount = patchCount + 1;
                                 end
@@ -2681,24 +2734,24 @@ classdef mibDeepController < handle
                                 [patchSeg, ~, scoreBlock] = semanticseg(squeeze(patch), net, 'OutputType', 'uint8');
                                 
                                 outputLabels(i:i+outputPatchSize(1)-1, ...
-                                             j:j+outputPatchSize(2)-1, ...
-                                             k:k+outputPatchSize(3)-1) = patchSeg;
+                                    j:j+outputPatchSize(2)-1, ...
+                                    k:k+outputPatchSize(3)-1) = patchSeg;
                                 scoreImg(i:i+outputPatchSize(1)-1, ...
-                                         j:j+outputPatchSize(2)-1, ...
-                                         k:k+outputPatchSize(3)-1,:) = scoreBlock*255;
+                                    j:j+outputPatchSize(2)-1, ...
+                                    k:k+outputPatchSize(3)-1,:) = scoreBlock*255;
                                 if obj.BatchOpt.showWaitbar && Unet2DSwitch==0
                                     elapsedTime = toc(t1);
                                     if mod(patchCount, 10)
                                         timerValue = elapsedTime/patchCount*(pwb.getMaxNumberOfIterations()-patchCount);
                                         pwb.updateText(sprintf('%s\nHold on ~%.0f:%.2d mins left...', fn, floor(timerValue/60), mod(round(timerValue),60)));
                                     end
-                                    pwb.increment(); 
+                                    pwb.increment();
                                 end
                                 patchCount = patchCount + 1;
                             end
                         end
                     end
-
+                    
                     % Crop out the extra padded region.
                     outputLabels = outputLabels(1:height, 1:width, 1:depth);
                     scoreImg = scoreImg(1:height, 1:width, 1:depth, :);
@@ -2743,7 +2796,7 @@ classdef mibDeepController < handle
                     elapsedTime = toc(t1);
                     timerValue = elapsedTime/id*(noFiles-id);
                     pwb.updateText(sprintf('%s\nHold on ~%.0f:%.2d mins left...', fn, floor(timerValue/60), mod(round(timerValue),60)));
-                    pwb.increment(); 
+                    pwb.increment();
                 end
                 id=id+1;
             end
@@ -2821,33 +2874,33 @@ classdef mibDeepController < handle
                 errordlg(sprintf('!!! Error !!!\n\nModels were not found in\n%s\n\n%s\n\nPlease update the Directory prediction and resulting images fields of the Directories and Preprocessing tab!', truthDir, predictionDir), 'Missing files');
                 return;
             end
-        
-%             obj.mibModel.preferences.deep.Metrics.Accuracy = true;  % parameters for metrics evaluation
-%             obj.mibModel.preferences.deep.Metrics.BFscore = false;
-%             obj.mibModel.preferences.deep.Metrics.GlobalAccuracy = true;
-%             obj.mibModel.preferences.deep.Metrics.IOU = true;
-%             obj.mibModel.preferences.deep.Metrics.WeightedIOU = true;
+            
+            %             obj.mibModel.preferences.deep.Metrics.Accuracy = true;  % parameters for metrics evaluation
+            %             obj.mibModel.preferences.deep.Metrics.BFscore = false;
+            %             obj.mibModel.preferences.deep.Metrics.GlobalAccuracy = true;
+            %             obj.mibModel.preferences.deep.Metrics.IOU = true;
+            %             obj.mibModel.preferences.deep.Metrics.WeightedIOU = true;
             
             prompts = { 'Accuracy: the percentage of correctly identified pixels for each class';...
-                        'bfscore: the boundary F1 (BF) contour matching score indicates how well the predicted boundary of each class aligns with the true boundary';...
-                        'Global Accuracy: the ratio of correctly classified pixels, regardless of class, to the total number of pixels'; ...
-                        'IOU (Jaccard similarity coefficient): Intersection over union, a statistical accuracy measurement that penalizes false positives'; ...
-                        'Weighted IOU: average IoU of each class, weighted by the number of pixels in that class'; ...
-                        };
+                'bfscore: the boundary F1 (BF) contour matching score indicates how well the predicted boundary of each class aligns with the true boundary';...
+                'Global Accuracy: the ratio of correctly classified pixels, regardless of class, to the total number of pixels'; ...
+                'IOU (Jaccard similarity coefficient): Intersection over union, a statistical accuracy measurement that penalizes false positives'; ...
+                'Weighted IOU: average IoU of each class, weighted by the number of pixels in that class'; ...
+                };
             defAns = {obj.mibModel.preferences.deep.Metrics.Accuracy; ...
-                      obj.mibModel.preferences.deep.Metrics.BFscore; ...
-                      obj.mibModel.preferences.deep.Metrics.GlobalAccuracy; ...
-                      obj.mibModel.preferences.deep.Metrics.IOU; ...
-                      obj.mibModel.preferences.deep.Metrics.WeightedIOU ...
-                      };        
-                    
+                obj.mibModel.preferences.deep.Metrics.BFscore; ...
+                obj.mibModel.preferences.deep.Metrics.GlobalAccuracy; ...
+                obj.mibModel.preferences.deep.Metrics.IOU; ...
+                obj.mibModel.preferences.deep.Metrics.WeightedIOU ...
+                };
+            
             dlgTitle = 'Evaluation settings';
             options.Title = sprintf('Please select the metrics from the options below\nKeep in mind that the evaluation processs in rather slow\nRatio of execution times for each metric: 0.10 x 0.78 x 0.04 x 0.03 x 0.05');
             options.WindowStyle = 'normal';
-            options.PromptLines = [1, 1, 1, 1, 1]; 
-            options.WindowWidth = 3; 
+            options.PromptLines = [1, 1, 1, 1, 1];
+            options.WindowWidth = 3;
             options.TitleLines = 3;
-            options.HelpUrl = 'https://se.mathworks.com/help/vision/ref/evaluatesemanticsegmentation.html'; 
+            options.HelpUrl = 'https://se.mathworks.com/help/vision/ref/evaluatesemanticsegmentation.html';
             
             [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
             if isempty(answer); return; end
@@ -2865,7 +2918,7 @@ classdef mibDeepController < handle
             if obj.mibModel.preferences.deep.Metrics.IOU;               metricsList = [metricsList, {'iou'}]; end
             if obj.mibModel.preferences.deep.Metrics.WeightedIOU;       metricsList = [metricsList, {'weighted-iou'}]; end
             if isempty(metricsList); return; end
-           
+            
             try
                 if strcmp(obj.BatchOpt.Architecture{1}(1:2), '3D')  % take only the first file for 3D case
                     modelFn = fullfile(truthList(1).folder, truthList(1).name);
@@ -2887,8 +2940,8 @@ classdef mibDeepController < handle
                 return;
             end
             dsResults = pixelLabelDatastore(predictionDir, classNames, pixelLabelID, ...
-                    'FileExtensions', '.model', 'ReadFcn', @mibDeepController.readModel);
-                
+                'FileExtensions', '.model', 'ReadFcn', @mibDeepController.readModel);
+            
             wbar = waitbar(0, sprintf('Starting evaluation\nit may take a while...'), 'Name', 'Evaluate segmentation');
             tic
             ssm = evaluateSemanticSegmentation(dsResults, dsTruth, 'Metrics', metricsList);
@@ -2912,7 +2965,7 @@ classdef mibDeepController < handle
             s = sprintf('%sMeanIoU: (Jaccard similarity coefficient) average intersection over union (IoU) of all classes in the image\n', s);
             s = sprintf('%sWeightedIoU: average IoU of all classes in the image, weighted by the number of pixels in each class\n', s);
             s = sprintf('%sMeanBFScore: average boundary F1 (BF) score of each class in the image\n\n', s);
-
+            
             for i=1:numel(metricName)
                 s = sprintf('%s%s: %f            ', s, metricName{i}, metricValue(i));
                 if mod(i,2) == 0; s = sprintf('%s\n', s); end
@@ -2959,7 +3012,7 @@ classdef mibDeepController < handle
                 fprintf('Evaluation results were saved to:\n%s\n', fn);
                 delete(wbar);
             end
-   
+            
         end
         
         function ExploreActivations(obj)
