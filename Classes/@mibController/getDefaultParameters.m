@@ -352,7 +352,7 @@ obj.mibModel.preferences.Filefilter.bioVirtExt = sort([{'am'}, bioList]);
 %% update preferences
 if exist('mib_pars', 'var') && isfield(mib_pars, 'preferences')
     
-    if isfield(mib_pars.preferences.deep, 'aug2D')  % a .deep preferences fields in MIB ver 2.70 were changed had
+    if isfield(mib_pars.preferences, 'deep') && isfield(mib_pars.preferences.deep, 'aug2D')  % a .deep preferences fields in MIB ver 2.70 were changed had
         mib_pars.preferences = rmfield(mib_pars.preferences, 'deep');
     end
     

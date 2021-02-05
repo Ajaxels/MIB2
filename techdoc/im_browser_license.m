@@ -37,33 +37,34 @@
 % <a href="http://mib.helsinki.fi">http://mib.helsinki.fi</a><br>
 % </html>
 % 
-% This program is free software; you can redistribute it and/or modify it under the terms of the 
-% <http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License> as published by the Free Software 
-% Foundation; either version 2 of the License, or (at your option) any later version. 
-% 
-% This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-% without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+% Source code of Microscopy Image Browser (MIB) is licensed under the <http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License v2>.
 %
-% <http://www.gnu.org/licenses/gpl-2.0.html See the GNU General Public License for more details>. 
+% By using MIB in *MATLAB source code form*, you agree to the terms of
+%
+% * the GNU General Public License, version 2 (<http://www.gnu.org/licenses/gpl-2.0.html link>)
+% * the licenses of external packages (See the section below for details)
+% * the following disclaimer:
 % 
-% You should have received a copy of the GNU General Public License along with this program; 
-% if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA. 
+% |THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.|
 %
 %% License for compiled application of Microscopy Image Browser
-% By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to the terms of the disclaimer below, 
-% the <http://mib.helsinki.fi/Matlab_MCR_license.txt Matlab Compiler Runtime (MCR) libraries license> and applicable parts of the MathWorks, Inc. 
-% <http://mib.helsinki.fi/Matlab_license.txt Software License Agreement>.
-% The corresponding license files are also included into the MIB distribution
-% under techdoc directory.
-% As Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited. 
+% By using the <b>deployed compiled, standalone version of Microscopy Image Browser (MIB)</b>, you agree to the terms of 
+% 
+% * the disclaimer below;
+% * the <http://mib.helsinki.fi/Matlab_MCR_license.txt Matlab Compiler Runtime (MCR) libraries license>;
+% * applicable parts of the MathWorks, Inc. <http://mib.helsinki.fi/Matlab_license.txt Software License Agreement>; 
+% * as Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited
 %
-% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+% |THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
 % INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
 % IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
 % CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
 % OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
 % NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
-% MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.
+% MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.|
+%
+% The corresponding license files are also included into the MIB distribution under |techdoc| directory.
+%
 %
 %% EXTERNAL PACKAGES
 % 
