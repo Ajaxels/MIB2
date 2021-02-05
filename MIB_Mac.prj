@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="148230112" file="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac.prj" location="/Volumes/VERBATIM/MIB2/MIB2_deploy" name="MIB_Mac" preferred-package-location="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="148230112" file="/Volumes/VERBATIM/MIB2/MIB_deploy_v2702/MIB_Mac.prj" location="/Volumes/VERBATIM/MIB2/MIB_deploy_v2702" name="MIB_Mac" preferred-package-location="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}/MIB_Mac_resources/icon.icns</param.icon>
     <param.icons>
@@ -8,41 +8,21 @@
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
     </param.icons>
-    <param.version>2.70</param.version>
+    <param.version>2.702</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
     <param.summary>Microscopy Image Browser (MIB) is software for advanced processing, segmentation and visualization of multi-dimensional microscopy datasets</param.summary>
-    <param.description>You are going to install MIB that has been compiled to stand-alone executables (exe-files).
-If you have not previously installed the MATLAB Compiler Runtime (MCR) it will be automatically downloaded and installed during the installation.
+    <param.description>You are going to install MIB that has been compiled to stand-alone executables. By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to 
+- the terms of the disclaimer below, 
+- the Matlab Compiler Runtime (MCR) libraries license (http://mib.helsinki.fi/Matlab_MCR_license.txt) 
+- applicable parts of the MathWorks, Inc. Software License Agreement (http://mib.helsinki.fi/Matlab_license.txt)
+- as Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited
 
-Microscopy Image Browser (MIB) a handy tool for image management
-Copyright (c) 2010-2020
-Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
-http://mib.helsinki.fi
+The corresponding license files are also included into the MIB distribution under techdoc directory.
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-
-GNU GENERAL PUBLIC LICENSE
-Version 2, June 1991
-
-Copyright (C) 1989, 1991 Free Software Foundation, Inc.
-59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-Everyone is permitted to copy and distribute verbatim copies
-of this license document, but changing it is not allowed.</param.description>
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.</param.description>
     <param.screenshot>${PROJECT_ROOT}/Resources/mib_about.jpg</param.screenshot>
     <param.guid />
     <param.installpath.string>/MIB/</param.installpath.string>
@@ -90,36 +70,16 @@ ${DYLD_LIBRARY_PATH}:MR/v97/runtime/maci64:MR/v97/sys/os/maci64:MR/v97/bin/maci6
 	 -?  print help on how to use the application 
 	 input arguments 
  Description 
- 	 You are going to install MIB that has been compiled to stand-alone executables (exe-files).
-If you have not previously installed the MATLAB Compiler Runtime (MCR) it will be automatically downloaded and installed during the installation.
+ 	 You are going to install MIB that has been compiled to stand-alone executables. By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to 
+- the terms of the disclaimer below, 
+- the Matlab Compiler Runtime (MCR) libraries license (http://mib.helsinki.fi/Matlab_MCR_license.txt) 
+- applicable parts of the MathWorks, Inc. Software License Agreement (http://mib.helsinki.fi/Matlab_license.txt)
+- as Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited
 
-Microscopy Image Browser (MIB) a handy tool for image management
-Copyright (c) 2010-2020
-Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
-http://mib.helsinki.fi
+The corresponding license files are also included into the MIB distribution under techdoc directory.
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-
-GNU GENERAL PUBLIC LICENSE
-Version 2, June 1991
-
-Copyright (C) 1989, 1991 Free Software Foundation, Inc.
-59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-Everyone is permitted to copy and distribute verbatim copies
-of this license document, but changing it is not allowed.</param.help.text>
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.</param.help.text>
     <unset>
       <param.guid />
       <param.installpath.combo />
@@ -175,10 +135,10 @@ of this license document, but changing it is not allowed.</param.help.text>
       <file>/Volumes/VERBATIM/MIB2/OMERO/unloadOmero.m</file>
     </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="readme.txt" optional="true">/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_testing/readme.txt</file>
-      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="MIB.app" optional="false">/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_testing/MIB.app</file>
-      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="splash.png" optional="false">/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_testing/splash.png</file>
-      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="run_MIB.sh" optional="false">/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_testing/run_MIB.sh</file>
+      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="readme.txt" optional="true">/Volumes/VERBATIM/MIB2/MIB_deploy_v2702/MIB_Mac/for_testing/readme.txt</file>
+      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="run_MIB.sh" optional="false">/Volumes/VERBATIM/MIB2/MIB_deploy_v2702/MIB_Mac/for_testing/run_MIB.sh</file>
+      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="MIB.app" optional="false">/Volumes/VERBATIM/MIB2/MIB_deploy_v2702/MIB_Mac/for_testing/MIB.app</file>
+      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="splash.png" optional="false">/Volumes/VERBATIM/MIB2/MIB_deploy_v2702/MIB_Mac/for_testing/splash.png</file>
     </build-deliverables>
     <workflow />
     <matlab>
@@ -213,7 +173,7 @@ of this license document, but changing it is not allowed.</param.help.text>
       <vista>false</vista>
       <linux>false</linux>
       <solaris>false</solaris>
-      <osver>10.14.6</osver>
+      <osver>10.15.7</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>maci64</arch>
