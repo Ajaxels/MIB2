@@ -43,10 +43,15 @@ end
 obj.mibModel.preferences = obj.generateDefaultPreferences();
 
 %% update preferences
-if exist('mib_pars', 'var') && isfield(mib_pars, 'mibVersion')  % % detection for new preferences from MIB 2.72
+if exist('mib_pars', 'var') && isfield(mib_pars, 'mibVersion')  %#ok<NODEF> % % detection for new preferences from MIB 2.72
     % concatenate stored with default preference structures only when
     % versions dismatch
     if mib_pars.mibVersion < obj.mibVersionNumeric
+        if isfield(mib_pars.preferences.ExternalDirs, 'fijiInstallationPath')
+            % fix of field names used before 2.80, where
+            % fijiInstallationPath was used instead of FijiInstallationPath
+            mib_pars.preferences = rmfield(mib_pars.preferences, 'ExternalDirs');
+        end
         obj.mibModel.preferences = mibConcatenateStructures(obj.mibModel.preferences, mib_pars.preferences);
     elseif mib_pars.mibVersion == obj.mibVersionNumeric
         obj.mibModel.preferences = mib_pars.preferences; 

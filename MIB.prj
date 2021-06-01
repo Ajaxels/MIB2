@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="1452786825" file="C:\Matlab\Scripts\MIB2\MIB_deploy_v280\MIB.prj" location="C:\Matlab\Scripts\MIB2\MIB_deploy_v280" name="MIB" preferred-package-location="C:\Matlab\Scripts\MIB2\MIB2_deploy\MIB\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="1601618835" file="C:\Matlab\Scripts\MIB2\MIB_deploy_v280\MIB.prj" location="C:\Matlab\Scripts\MIB2\MIB_deploy_v280" name="MIB" preferred-package-location="C:\Matlab\Scripts\MIB2\MIB_deploy_v280\MIB\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}\MIB_resources\icon.ico</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}\MIB_resources\icon_24.png</file>
       <file>${PROJECT_ROOT}\MIB_resources\icon_16.png</file>
     </param.icons>
-    <param.version>2.80</param.version>
+    <param.version>2.801</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -43,8 +43,8 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
     <param.user.defined.mcr.options />
     <param.target.type>subtarget.standalone</param.target.type>
     <param.support.packages />
-    <param.web.mcr>false</param.web.mcr>
-    <param.package.mcr>true</param.package.mcr>
+    <param.web.mcr>true</param.web.mcr>
+    <param.package.mcr>false</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
     <param.web.mcr.name>MIB_Win</param.web.mcr.name>
     <param.package.mcr.name>MyAppInstaller_mcr</param.package.mcr.name>
@@ -73,6 +73,8 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
       <param.user.defined.mcr.options />
       <param.target.type />
       <param.support.packages />
+      <param.web.mcr />
+      <param.package.mcr />
       <param.no.mcr />
       <param.package.mcr.name />
       <param.no.mcr.name />

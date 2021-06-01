@@ -157,7 +157,7 @@ Prefs.Undo.Max3dUndoHistory = 3;
 % these paths should be updated on each workstation individually
 % Fiji
 % old: preferences.dirs.FijiInstallationPath
-Prefs.ExternalDirs.fijiInstallationPath = [];
+Prefs.ExternalDirs.FijiInstallationPath = [];
 
 % Omero
 % old: preferences.dirs.OmeroInstallationPath
