@@ -83,8 +83,6 @@ else
         color_end = options.colorChannel;
     end
 end
-matlabVersion = ver('Matlab');
-matlabVersion = str2double(matlabVersion(1).Version);
 
 maxVal = double(intmax(class(img)));
 
@@ -198,7 +196,7 @@ else    % 2D filters
             log_text = ['ImFilter: ' options.fitType ', HSize:' num2str(options.hSize) ...
                 ',Orient:' num2str(options.orientation) ',ColCh:' num2str(options.colorChannel)];
         case 'Unsharp'
-            if matlabVersion >= 8.1
+            if ~verLessThan('matlab', '8.1') % matlabVersion >= 8.1
                 log_text = ['ImFilter: ' options.fitType ', Radius:' num2str(options.hSize) ...
                     ',Amount:' num2str(options.sigma) ',Thres:' num2str(options.lambda) ...
                     ',Orient:' num2str(options.orientation) ',ColCh:' num2str(options.colorChannel)];
@@ -287,7 +285,7 @@ else    % 2D filters
                     imgOut = FrangiFilter2D(double(img(:,:,color_ch,id)), FrangiOptions);
                     img(:,:,color_ch,id) = imgOut*maxVal;
                 case 'Unsharp'
-                    if matlabVersion >= 8.1
+                    if ~verLessThan('matlab', '8.1') % matlabVersion >= 8.1
                         img(:,:,color_ch,id) = imsharpen(img(:,:,color_ch,id),'Radius',options.hSize,'Amount',options.sigma, 'Threshold', options.lambda);
                     else
                         img(:,:,color_ch,id) = imfilter(img(:,:,color_ch,id), filter2d, 'replicate');

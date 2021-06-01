@@ -43,6 +43,7 @@ Formats = {'*.model',  'Matlab format (*.model)'; ...
     '*.am',  'Amira mesh binary (*.am)'; ...
     '*.am',  'Amira mesh ascii (*.am)'; ...
     '*.h5',   'Hierarchical Data Format (*.h5)'; ...
+    '*.model',  'Matlab format 2D sequence (*.model)'; ...
     '*.mat',   'Matlab format for MIB ver. 1 (*.mat)'; ...
     '*.mod',  'Contours for IMOD (*.mod)'; ...
     '*.mrc',  'Volume for IMOD (*.mrc)'; ...
@@ -153,6 +154,7 @@ if isfield(options, 'MaterialIndex')
 else
     selMaterial = 0;    % save all materials
 end
+
 tic
 obj.modelVariable = strrep(obj.modelVariable, '-', '_');
 warning('off', 'MATLAB:handle_graphics:exceptions:SceneNode');
@@ -401,6 +403,69 @@ else
                 else
                     mibExportModelToImodModel(model, savingOptions);
                 end
+            case 'Matlab format 2D sequence (*.model)'  % MIB Matlab format 2D sequence
+                useOriginalFilenames = false;
+                if options.showWaitbar && t1==t2
+                    if isKey(obj.meta, 'SliceName') && numel(obj.meta('SliceName'))==size(model,3)
+                        answer = questdlg('Would you like to use original filenames or sequential?', ...
+                            'Save model as...', ...
+                            'Original', 'Sequential', 'Cancel', 'Original');
+                        if strcmp(answer, 'Cancel'); return; end
+                        if strcmp(answer, 'Original'); useOriginalFilenames = true; end
+                        originalFilenames = obj.meta('SliceName');
+                        [~, originalFilenames] = arrayfun(@(fn) fileparts(cell2mat(fn)), originalFilenames, 'UniformOutput', false);  % remove extensions
+                        %if t1 == t2
+                        %    savingOptions.SliceName = arrayfun(@(fn) sprintf('Labels_%s', cell2mat(fn)), obj.meta('SliceName'), 'UniformOutput', false);
+                        %else
+                        %    savingOptions.SliceName = arrayfun(@(t, fn) sprintf('Labels_t%.3d_%s', t, cell2mat(fn)), repmat(t, [size(model,3), 1]), obj.meta('SliceName'), 'UniformOutput', false);
+                        %end
+                    end
+                    
+                    wb2 = waitbar(0, 'Please wait...', 'Name', 'Saving the model', 'WindowStyle', 'modal');
+                    wb2.Children.Title.Interpreter = 'none';
+                    drawnow;
+                end
+                modelMaterialNames = obj.modelMaterialNames; %#ok<NASGU>
+                modelMaterialColors = obj.modelMaterialColors; %#ok<NASGU>
+                BoundingBox = obj.getBoundingBox(); %#ok<NASGU>
+                modelVariable = obj.modelVariable; %#ok<NASGU>    % name of a variable that has the dataset
+                modelType = obj.modelType;  %#ok<NASGU> % type of the model
+                
+                zMax = size(model, 3);
+                [~, fnLocal, extLocal] = fileparts(fnOutLocal);
+                
+                if obj.hLabels.getLabelsNumber() > 1  % save annotations
+                    includeAnnotations = true;
+                    [labelText, labelValue, labelPosition] = obj.hLabels.getLabels();
+                else
+                    includeAnnotations = false;
+                end
+                                
+                for z=1:zMax
+                    mibModel = model(:,:,z); %#ok<NASGU>
+                    if useOriginalFilenames     % use original filenames
+                        if t1==t2
+                            fnOut = fullfile(path, sprintf('Labels_%s.model', originalFilenames{z}));
+                        else
+                            fnOut = fullfile(path, sprintf('Labels_%.3d_%s.model', t, originalFilenames{z}));
+                        end
+                    else    % use sequential filenames
+                        fnOut = generateSequentialFilename(fullfile(path, fnLocal), z, zMax, extLocal);
+                    end
+                    
+                    if options.showWaitbar && t1==t2; waitbar(z/zMax, wb2, sprintf('%s\nPlease wait...', fnOut)); end
+                    if includeAnnotations  % save with annotations
+                        %[labelText, labelValue, labelPosition] = obj.hLabels.getLabels(z); %#ok<ASGLU>
+                        str1 = ['save ''' fnOut ''' ' obj.modelVariable ...
+                            ' modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType labelText labelValue labelPosition -mat -v7.3'];
+                    else    % save without annotations
+                        str1 = ['save ''' fnOut ''' ' obj.modelVariable ...
+                            ' modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType -mat -v7.3'];
+                    end
+                    eval(str1);
+                    obj.modelFilename = fnOut;
+                end
+                if options.showWaitbar && t1==t2; delete(wb2); end
             case 'Volume for IMOD (*.mrc)'     % Volume for IMOD (*.mrc)
                 Options.volumeFilename = fullfile(path, fnOutLocal);
                 Options.pixSize = obj.pixSize;
@@ -461,6 +526,13 @@ else
                         else
                             savingOptions.Saving3d = 'sequence';
                         end
+                    end
+                end
+                if isKey(obj.meta, 'SliceName') && numel(obj.meta('SliceName'))==size(model,3)
+                    if t1 == t2
+                        savingOptions.SliceName = arrayfun(@(fn) sprintf('Labels_%s', cell2mat(fn)), obj.meta('SliceName'), 'UniformOutput', false);
+                    else
+                        savingOptions.SliceName = arrayfun(@(t, fn) sprintf('Labels_t%.3d_%s', t, cell2mat(fn)), repmat(t, [size(model,3), 1]), obj.meta('SliceName'), 'UniformOutput', false);
                     end
                 end
                 savingOptions.showWaitbar = showWaitbar;  % show or not waitbar in ib_image2tiff

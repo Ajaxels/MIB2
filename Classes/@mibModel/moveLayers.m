@@ -151,8 +151,8 @@ end
 
 % when the Selection layer is disabled and SourceLayer/to is selection ->
 % return
-if obj.I{BatchOpt.id}.disableSelection == 1
-    warndlg(sprintf('The models, selection and mask layers are switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),'The models are disabled','modal');
+if obj.I{BatchOpt.id}.enableSelection == 0
+    warndlg(sprintf('The models, selection and mask layers are switched off!\n\nPlease make sure that the "Enable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "yes" and try again...'),'The models are disabled','modal');
     notify(obj, 'stopProtocol');
     return; 
 end

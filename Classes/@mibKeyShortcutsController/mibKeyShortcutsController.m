@@ -173,7 +173,7 @@ classdef mibKeyShortcutsController < handle
                         obj.duplicateEntries = unique(obj.duplicateEntries);     % add index of a duplicate entry
                         
                         data(ActionId, 1) = cellstr(repmat(colergen('rgb(255, 0, 0)','&nbsp;'), numel(ActionId)));
-                    end;
+                    end
                 else
                     obj.duplicateEntries(obj.duplicateEntries==ActionId) = [];  % remove possible diplicate
                     if numel(obj.duplicateEntries) < 2
@@ -203,7 +203,7 @@ classdef mibKeyShortcutsController < handle
                 'Restore default shortcuts', 'Restore', 'Cancel', 'Cancel');
             if strcmp(button, 'Cancel'); return; end
             
-            maxShortCutIndex = 29;  % total number of shortcuts
+            maxShortCutIndex = 32;  % total number of shortcuts
             obj.KeyShortcuts.shift(1:maxShortCutIndex) = 0;
             obj.KeyShortcuts.control(1:maxShortCutIndex) = 0;
             obj.KeyShortcuts.alt(1:maxShortCutIndex) = 0;
@@ -303,10 +303,20 @@ classdef mibKeyShortcutsController < handle
             obj.KeyShortcuts.Action{28} = 'Find material under cursor';
             obj.KeyShortcuts.control(28) = 1;
             
-            obj.KeyShortcuts.Key{maxShortCutIndex} = 'v';
-            obj.KeyShortcuts.Action{maxShortCutIndex} = 'Paste buffered selection to all slices';
-            obj.KeyShortcuts.control(maxShortCutIndex) = 1;
-            obj.KeyShortcuts.shift(maxShortCutIndex) = 1;
+            obj.KeyShortcuts.Key{29} = 'v';
+            obj.KeyShortcuts.Action{29} = 'Paste buffered selection to all slices';
+            obj.KeyShortcuts.control(29) = 1;
+            obj.KeyShortcuts.shift(29) = 1;
+            
+            obj.KeyShortcuts.Key{30} = 'm';
+            obj.KeyShortcuts.Action{30} = 'Add measurement (Measure tool)';
+            
+            obj.KeyShortcuts.Key{31} = 'e';
+            obj.KeyShortcuts.Action{31} = 'Toggle current and previous buffer';
+            obj.KeyShortcuts.control(31) = 1;
+            
+            obj.KeyShortcuts.Key{maxShortCutIndex} = 'n';
+            obj.KeyShortcuts.Action{maxShortCutIndex} = 'Increse active material index by 1 for models with 65535 materials';
             
             obj.duplicateEntries = [];  % array with duplicate entries
             

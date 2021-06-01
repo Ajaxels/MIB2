@@ -22,12 +22,12 @@ toolId = obj.mibView.handles.mibSegmentationToolPopup.Value;
 favId = obj.mibView.handles.mibSegmFavToolCheck.Value;
 
 if favId == 1 % add the selected tool to the list of fast access tools
-    obj.mibModel.preferences.lastSegmTool(end+1) = toolId;
+    obj.mibModel.preferences.SegmTools.PreviousTool(end+1) = toolId;
     obj.mibView.handles.mibSegmentationToolPopup.BackgroundColor = [1 .69 .39];
 else    % remove the selected tool to the list of fast access tools
-    pos = obj.mibModel.preferences.lastSegmTool(find(obj.mibModel.preferences.lastSegmTool == toolId, 1));
-    obj.mibModel.preferences.lastSegmTool = obj.mibModel.preferences.lastSegmTool(obj.mibModel.preferences.lastSegmTool ~= pos);
+    pos = obj.mibModel.preferences.SegmTools.PreviousTool(find(obj.mibModel.preferences.SegmTools.PreviousTool == toolId, 1));
+    obj.mibModel.preferences.SegmTools.PreviousTool = obj.mibModel.preferences.SegmTools.PreviousTool(obj.mibModel.preferences.SegmTools.PreviousTool ~= pos);
     obj.mibView.handles.mibSegmentationToolPopup.BackgroundColor = [1 1 1];
 end
-obj.mibModel.preferences.lastSegmTool = sort(obj.mibModel.preferences.lastSegmTool);
+obj.mibModel.preferences.SegmTools.PreviousTool = sort(obj.mibModel.preferences.SegmTools.PreviousTool);
 end

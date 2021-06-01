@@ -68,7 +68,10 @@ classdef mibAnnotationsController < handle
             obj.jScroll = findjobj(obj.View.handles.annotationTable);
             obj.jTable = obj.jScroll.getViewport.getComponent(0);
             obj.jTable.setAutoResizeMode(obj.jTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
-                        
+
+            % add icons to buttons
+            obj.View.handles.settingsButton.CData = obj.mibModel.sessionSettings.guiImages.settings;
+            
             obj.mibModel.mibShowAnnotationsCheck = 1;
             obj.View.handles.precisionEdit.String = num2str(obj.mibModel.mibAnnValuePrecision);
             obj.batchModifyExpressionOperation = 'Multiply';
@@ -176,7 +179,7 @@ classdef mibAnnotationsController < handle
                     end
                     obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(Labels.Text, Labels.Positions, Labels.Values);
                 case 'Load from a file'
-                    [filename, path] = uigetfile(...
+                    [filename, path] = mib_uigetfile(...
                         {'*.ann;',  'Matlab format (*.ann)'; ...
                         '*.*',  'All Files (*.*)'}, ...
                         'Load annotations...', obj.mibModel.myPath);
@@ -268,9 +271,9 @@ classdef mibAnnotationsController < handle
                        '*.landmarksBin',   'Amira landmarks BINARY(*.landmarksBin)';...
                        '*.psi',   'PSI format ASCII(*.psi)';...
                        '*.xls',   'Excel format (*.xls)'; };
-            
-            [filename, path, FilterIndex] = uiputfile(Filters, 'Save annotations...',fn_out); %...
+            [filename, path, FilterIndex] = uiputfile(Filters, 'Save annotations...', fn_out); %...
             if isequal(filename,0); return; end % check for cancel
+            
             fn_out = fullfile(path, filename);
             
             switch Filters{FilterIndex,2}
@@ -371,6 +374,8 @@ classdef mibAnnotationsController < handle
             if result == 0; return; end
             obj.mibModel.mibAnnValuePrecision = str2double(obj.View.handles.precisionEdit.String);
             obj.updateWidgets();
+            
+            notify(obj.mibModel, 'updateId');  % notify to plot the image
             notify(obj.mibModel, 'plotImage');  % notify to plot the image
         end
         
@@ -388,6 +393,7 @@ classdef mibAnnotationsController < handle
             % ''Clipboard'' - copy selected annotations to the system clipboard
             % ''Export'' - export/save annotations to matlab or to a file
             % ''Imaris'' - export annotations to Imaris
+            %% ''OrderTop'', ''OrderUp'', ''OrderDown'', ''OrderBottom'' - change order of the annotation in the list
             % ''Delete'' - delete selected annotations
             
             global mibPath;
@@ -423,6 +429,45 @@ classdef mibAnnotationsController < handle
                     obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(labelsText, labelsPosition, labelsValue);
                     obj.updateWidgets();
                     notify(obj.mibModel, 'plotImage');  % notify to plot the image
+                case {'OrderTop', 'OrderUp', 'OrderDown', 'OrderBottom'}     % 
+                    [labelsList, labelValues, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabels();
+                    indicesList = 1:numel(labelsList);
+                    switch parameter
+                        case 'OrderTop'
+                            newIndices = [obj.indices(:,1); indicesList(~ismember(indicesList, obj.indices(:,1)))'];
+                        case 'OrderUp'
+                            newIndices = indicesList;
+                            for i=1:numel(labelsList)
+                                if ismember(i, obj.indices(:,1)-1)
+                                    newIndices(i+1) = newIndices(i);
+                                    newIndices(i) = indicesList(i+1);
+                                end
+                            end
+                            obj.indices(:,1) = obj.indices(:,1) - 1;
+                        case 'OrderDown'
+                            newIndices = indicesList;
+                            for i=numel(labelsList):-1:1
+                                if ismember(i, obj.indices(:,1))
+                                    if i==numel(labelsList); return; end
+                                    newIndices(i) = newIndices(i+1);
+                                    newIndices(i+1) = indicesList(i);
+                                end
+                            end
+                            obj.indices(:,1) = obj.indices(:,1) + 1;
+                        case 'OrderBottom'
+                            newIndices = [indicesList(~ismember(indicesList, obj.indices(:,1)))'; obj.indices(:,1)];
+                    end
+                    
+                    labelsList = labelsList(newIndices);
+                    labelValues = labelValues(newIndices);
+                    labelPositions = labelPositions(newIndices, :);
+                    
+                    obj.mibModel.mibDoBackup('labels', 0);
+                    obj.mibModel.I{obj.mibModel.Id}.hLabels.clearContents();    % remove current labels
+                    obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(labelsList, labelPositions, labelValues);     % add updated labels
+                    
+                    obj.updateWidgets();
+                    notify(obj.mibModel, 'plotImage');  % notify to plot the image
                 case 'Modify'   % batch modify selected annotations
                     if isempty(obj.indices); return; end
                     
@@ -432,7 +477,7 @@ classdef mibAnnotationsController < handle
                     inputDlgOptions.WindowWidth = 1.2;
                     prompt = {'Type of operation:', 'Factor:'};
                     defAns = {[operations, find(ismember(operations, obj.batchModifyExpressionOperation))]; obj.batchModifyExpressionFactor};
-                    [answer, selInd] = mibInputMultiDlg({mibPath}, prompt, defAns, 'Batch modify', inputDlgOptions);
+                    answer = mibInputMultiDlg({mibPath}, prompt, defAns, 'Batch modify', inputDlgOptions);
                     if isempty(answer); return; end
                     obj.batchModifyExpressionOperation = answer{1};
                     obj.batchModifyExpressionFactor = answer{2};
@@ -642,6 +687,29 @@ classdef mibAnnotationsController < handle
             end
         end
         
+        function annotationTable_KeyPressFcn(obj, eventdata)
+            if ismember('control', eventdata.Modifier)
+                if ismember('shift', eventdata.Modifier)
+                    switch eventdata.Key
+                        case 'uparrow'
+                            obj.tableContextMenu_cb('OrderTop');
+                        case 'downarrow'
+                            obj.tableContextMenu_cb('OrderBottom');
+                    end
+                else
+                    switch eventdata.Key
+                        case 'uparrow'
+                            obj.tableContextMenu_cb('OrderUp');
+                        case 'downarrow'
+                            obj.tableContextMenu_cb('OrderDown');
+                    end
+                end
+            
+            end
+           
+        end
+        
+        
         function resortTablePopup_Callback(obj)
             % function resortTablePopup_Callback(obj, sortBy, direction)
             % Resort the list of annotation labels
@@ -656,6 +724,32 @@ classdef mibAnnotationsController < handle
             sortBy = lower(sortingList{obj.View.handles.resortTablePopup.Value});
             obj.mibModel.I{obj.mibModel.Id}.hLabels.sortLabels(sortBy);
             obj.updateWidgets();
+        end
+        
+        function settingsBtn_Callback(obj)
+            % function settingsBtn_Callback(obj)
+            % define additional settings for the annotations
+            global mibPath;
+            
+            prompts = {sprintf('Show annotations for extra slices (positive integer):')};
+                defAns = {sprintf('%d', obj.mibModel.preferences.SegmTools.Annotations.ShownExtraDepth); ...
+                    };
+                dlgTitle = 'Annotation settings';
+                options.WindowStyle = 'normal';       % [optional] style of the window
+                options.PromptLines = [2];   % [optional] number of lines for widget titles
+                %options.Title = 'Title';
+                %options.TitleLines = 1;
+                %options.Columns = 2;    % [optional] make window x1.2 times wider
+                options.WindowWidth = 1.2;    % [optional] make window x1.2 times wider
+                %options.Focus = 1;      % [optional] define index of the widget to get focus
+                [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                if isempty(answer); return; end
+            value = str2double(answer{1});
+            if isnan(value)
+                errordlg(sprintf('!!! Error !!!\n\nA wrong value ("%s") was provided!\nPlease enter positive integer or 0', answer{1}), 'Wrong value');
+                return
+            end
+            obj.mibModel.preferences.SegmTools.Annotations.ShownExtraDepth = abs(round(value));
         end
         
     end

@@ -108,8 +108,17 @@ classdef mibDeepActivationsController < handle
             obj.deltaZ = 0;     % difference between the Z of the image and the show patch patch Z
             
             % init the image store
-            obj.imgDS = imageDatastore(fullfile(obj.mibDeep.BatchOpt.ResultingImagesDir, 'PredictionImages'), ...
-                    'FileExtensions', '.mat', 'ReadFcn', @mibDeepController.matlabFileRead);
+            if strcmp(obj.mibDeep.BatchOpt.PreprocessingMode{1}, 'Preprocessing is not required') || strcmp(obj.mibDeep.BatchOpt.PreprocessingMode{1}, 'Split files for training/validation')
+                fnExtention = lower(['.' obj.mibDeep.BatchOpt.ImageFilenameExtension{1}]);
+                obj.imgDS = imageDatastore(fullfile(obj.mibDeep.BatchOpt.OriginalPredictionImagesDir, 'Images'), ...
+                        'FileExtensions', fnExtention, ...
+                        'IncludeSubfolders', false, ...
+                        'ReadFcn', @(fn)obj.mibDeep.loadImages(fn, fnExtention));
+            else
+                obj.imgDS = imageDatastore(fullfile(obj.mibDeep.BatchOpt.ResultingImagesDir, 'PredictionImages'), ...
+                    'FileExtensions', '.mibImg', 'ReadFcn', @mibDeepController.mibImgFileRead);
+            end
+            
             [~, fnames] = arrayfun(@(x) fileparts(cell2mat(x)), obj.imgDS.Files, 'UniformOutput', false);   % get filenames
             
             %% fill the BatchOpt structure with default values
@@ -453,6 +462,9 @@ classdef mibDeepActivationsController < handle
             end
             obj.View.Figure.MinLabelValue.Text = num2str(minVal);
             obj.View.Figure.MaxLabelValue.Text = num2str(maxVal);
+            newWidth = size(obj.View.Figure.ImageOriginal.ImageSource, 2);
+            newHeight = size(obj.View.Figure.ImageOriginal.ImageSource, 1);
+            imgToPrev = padarray(imgToPrev, [floor(newWidth-size(imgToPrev,1))/2 floor(newHeight-size(imgToPrev,2))/2], 0, 'both');
             obj.View.Figure.ImageActivation.ImageSource = imgToPrev;
         end
         

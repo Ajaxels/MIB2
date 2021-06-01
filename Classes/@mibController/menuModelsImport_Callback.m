@@ -93,8 +93,8 @@ if obj.mibModel.I{BatchOpt.id}.Virtual.virtual == 1
 end
 
 % do nothing is selection is disabled
-if obj.mibModel.I{BatchOpt.id}.disableSelection == 1
-    warndlg(sprintf('The model layer is switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),...
+if obj.mibModel.I{BatchOpt.id}.enableSelection == 0
+    warndlg(sprintf('The model layer is switched off!\n\nPlease make sure that the "Enable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "yes" and try again...'),...
         'The models are disabled', 'modal');
     notify(obj.mibModel, 'stopProtocol');
     return;

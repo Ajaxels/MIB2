@@ -34,7 +34,7 @@ if ~isfield(options, 'showWaitbar'); options.showWaitbar = true; end
 if nargin < 3; channel2 = []; end
 if nargin < 2; channel2 = []; end
 
-if obj.colors < 2; errordlg(sprintf('Error!\nThere is only one color available!\nCancelling...'), 'Now enough colors', 'modal'); return; end
+if obj.colors < 2; errordlg(sprintf('Error!\nThere is only one color available!\nCancelling...'), 'Not enough colors', 'modal'); return; end
 
 if isempty(channel1) || isempty(channel2)
     if isempty(channel1); channel1 = max([1 obj.selectedColorChannel]); end

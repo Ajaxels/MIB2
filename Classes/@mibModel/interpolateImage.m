@@ -47,7 +47,7 @@ BatchOpt.Target{2} = {'mask', 'selection', 'model'};
 if ~isempty(intType)
     BatchOpt.InterpolationType = {intType};
 else
-    BatchOpt.InterpolationType = {obj.preferences.interpolationType};
+    BatchOpt.InterpolationType = {obj.preferences.SegmTools.Interpolation.Type};
 end
 BatchOpt.InterpolationType{2} = {'shape', 'line'};
 BatchOpt.MaterialIndex = '1';
@@ -98,8 +98,8 @@ else
 end
 
 %% do nothing is selection is disabled
-if obj.I{BatchOptLocal.id}.disableSelection == 1
-    warndlg(sprintf('The selection layer is switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),...
+if obj.I{BatchOptLocal.id}.enableSelection == 0
+    warndlg(sprintf('The selection layer is switched off!\n\nPlease make sure that the "Enable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "yes" and try again...'),...
         'The selection layer is disabled', 'modal');
     notify(obj, 'stopProtocol');
     return; 
@@ -148,7 +148,7 @@ end
 
 storeOptions.id = getDataOpt.id;
 if strcmp(BatchOptLocal.InterpolationType{1}, 'shape')    % shape interpolation
-    [selection, bb] = mibInterpolateShapes(selection, obj.preferences.interpolationNoPoints);
+    [selection, bb] = mibInterpolateShapes(selection, obj.preferences.SegmTools.Interpolation.NoPoints);
     if isempty(bb)
         if BatchOptLocal.showWaitbar; delete(wb); end
         return;
@@ -169,7 +169,7 @@ if strcmp(BatchOptLocal.InterpolationType{1}, 'shape')    % shape interpolation
         storeOptions.z = [bb(5)+zShift, bb(6)+zShift];    
     end
 else    % line interpolation
-    selection = mibInterpolateLines(selection, obj.preferences.interpolationNoPoints, obj.preferences.interpolationLineWidth);
+    selection = mibInterpolateLines(selection, obj.preferences.SegmTools.Interpolation.NoPoints, obj.preferences.SegmTools.Interpolation.LineWidth);
 end
 obj.mibDoBackup(BatchOptLocal.Target{1}, 1, storeOptions);
 

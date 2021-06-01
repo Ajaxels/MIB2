@@ -114,10 +114,10 @@ elseif strcmp(mode, 'zoom')
         % check for out of image boundaries cases
         if xLim(2) < 1 || xLim(1) > Width
             xLim = xLim - xLim(1);
-        end;
+        end
         if yLim(2) < 1 || yLim(1) > Height
             yLim = yLim - yLim(1);
-        end;
+        end
         
         obj.mibModel.setAxesLimits(xLim, yLim, index)
     else

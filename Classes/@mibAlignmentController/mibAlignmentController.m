@@ -60,6 +60,9 @@ classdef mibAlignmentController < handle
         % .amst.MinimumStepLength = .0001;   % parameters for imregconfig optimizer, Tolerance for convergence,  with a small value, the optimization takes longer to compute, but it is likely to converge on a more accurate metric value.
         % .amst.MaximumStepLength = 0.0625;  % parameters for imregconfig optimizer, Initial step length, whan a large value, the computation time decreases. However, the optimizer might fail to converge
         % .amst.RelaxationFactor = 0.5;      % parameters for imregconfig optimizer, Step length reduction factor, defines the rate at which the optimizer reduces step size during convergence
+        % .estGeomTransform.MaxNumTrials = 1000; % Maximum number of random trials for finding the inliers,  increasing this value improves the robustness of the results at the expense of additional computations.
+        % .estGeomTransform.Confidence = 99; % Confidence (0-100) of finding maximum number of inliers,  increasing this value improves the robustness of the results at the expense of additional computations.
+        % .estGeomTransform.MaxDistance = 1.5; % Maximum distance in pixels, from a point to the projection of its corresponding point
         BatchOpt
         % a structure compatible with batch operation, see details in the contsructor
     end
@@ -169,6 +172,10 @@ classdef mibAlignmentController < handle
                 obj.automaticOptions.amst.MinimumStepLength = .0001;   % parameters for imregconfig optimizer, Tolerance for convergence,  with a small value, the optimization takes longer to compute, but it is likely to converge on a more accurate metric value.
                 obj.automaticOptions.amst.MaximumStepLength = 0.0625;  % parameters for imregconfig optimizer, Initial step length, whan a large value, the computation time decreases. However, the optimizer might fail to converge
                 obj.automaticOptions.amst.RelaxationFactor = 0.5;      % parameters for imregconfig optimizer, Step length reduction factor, defines the rate at which the optimizer reduces step size during convergence
+                obj.automaticOptions.estGeomTransform.MaxNumTrials = 1000; % Maximum number of random trials for finding the inliers,  increasing this value improves the robustness of the results at the expense of additional computations.
+                obj.automaticOptions.estGeomTransform.Confidence = 99; % Confidence (0-100) of finding maximum number of inliers,  increasing this value improves the robustness of the results at the expense of additional computations.
+                obj.automaticOptions.estGeomTransform.MaxDistance = 1.5; % Maximum distance in pixels, from a point to the projection of its corresponding point
+        
             end
             
             obj.BatchOpt.Mode = {'CurrentDataset'};     % align the current dataset
@@ -209,11 +216,23 @@ classdef mibAlignmentController < handle
             obj.BatchOpt.SubtractRunningAverageExcludePeaks = '10';  % exclude peaks higher than this value from running average calculation
             obj.BatchOpt.SubtractRunningAverageFixStretch = true;     % apply running average to fix stretching (automatic mode)
             obj.BatchOpt.SubtractRunningAverageFixShear = true;     % apply running average to fix shear (automatic mode)
+            obj.BatchOpt.SubtractRunningAverageExcludeStretchPeaks = '0';  % exclude stretch peaks higher than this value from running average calculation
+            obj.BatchOpt.SubtractRunningAverageExcludeShearPeaks = '0';  % exclude shear peaks higher than this value from running average calculation
             obj.BatchOpt.SaveShiftsToFile = false;
             obj.BatchOpt.TwoStacksAutomaticMode = true;     % automatic mode for TwoStacks mode
             obj.BatchOpt.TwoStacksShiftX = '0';     % shift X for the manual mode of the TwoStacks mode
             obj.BatchOpt.TwoStacksShiftY = '0';     % shift Y for the manual mode of the TwoStacks mode
             obj.BatchOpt.showWaitbar = true;   % show or not the waitbar
+            % HDD mode settings
+            obj.BatchOpt.HDD_Mode = false;
+            obj.BatchOpt.HDD_InputDir = obj.mibModel.myPath;
+            obj.BatchOpt.HDD_OutputSubfolderName = 'MIB_Align';
+            obj.BatchOpt.HDD_InputFilenameExtension = {'TIF'};
+            obj.BatchOpt.HDD_InputFilenameExtension{2} = upper(obj.mibModel.preferences.System.Files.StdExt);
+            obj.BatchOpt.HDD_BioformatsReader = false;    % use bioformats file reader 
+            obj.BatchOpt.HDD_BioformatsIndex = '1';    % index of a serie to be used with bio-formats reader
+            obj.BatchOpt.HDD_OutputFileExtension = {'TIF'};
+            obj.BatchOpt.HDD_OutputFileExtension{2} = {'AM', 'JPG', 'MRC', 'NRRD', 'PNG', 'TIF'};
             
             % add section name and action name for the batch tool
             obj.BatchOpt.mibBatchSectionName = 'Menu -> Dataset';
@@ -244,12 +263,22 @@ classdef mibAlignmentController < handle
             obj.BatchOpt.mibBatchTooltip.SubtractRunningAverageExcludePeaks = sprintf('Exclude peaks higher than this value from the running average calculation');
             obj.BatchOpt.mibBatchTooltip.SubtractRunningAverageFixStretch = sprintf('[Automatic]:\nFix stretch using the running average');
             obj.BatchOpt.mibBatchTooltip.SubtractRunningAverageFixShear = sprintf('[Automatic]:\nFix shear using the running average');
+            obj.BatchOpt.mibBatchTooltip.SubtractRunningAverageExcludeStretchPeaks = sprintf('Exclude stretch peaks higher than this value from the running average calculation');
+            obj.BatchOpt.mibBatchTooltip.SubtractRunningAverageExcludeShearPeaks = sprintf('Exclude shear peaks higher than this value from the running average calculation');
             obj.BatchOpt.mibBatchTooltip.SaveShiftsToFile = sprintf('Automatically save detected shifts to a file, the filename is generated automatically from the dataset name');
             obj.BatchOpt.mibBatchTooltip.TwoStacksAutomaticMode = '[TwoStacks only] automatic detection of shifts between the stacks for the TwoStacks mode';
             obj.BatchOpt.mibBatchTooltip.TwoStacksShiftX = '[TwoStacks only] manually provided X value for shifting the datasets';
             obj.BatchOpt.mibBatchTooltip.TwoStacksShiftY = '[TwoStacks only] manually provided X value for shifting the datasets';
             obj.BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');
-
+            % HDD mode settings
+            obj.BatchOpt.mibBatchTooltip.HDD_Mode = '[Drift correction only] Use HDD processing mode, when files are not loaded into memory';
+            obj.BatchOpt.mibBatchTooltip.HDD_InputDir = 'Input directory with image files to be aligned';
+            obj.BatchOpt.mibBatchTooltip.HDD_OutputSubfolderName = 'Name of the output subfolder';
+            obj.BatchOpt.mibBatchTooltip.HDD_InputFilenameExtension = 'Extension of image files';
+            obj.BatchOpt.mibBatchTooltip.HDD_BioformatsReader = 'Use Bio-Formats reader to read the files';    % use bioformats file reader 
+            obj.BatchOpt.mibBatchTooltip.HDD_BioformatsIndex = 'Index of the series to read from the bio-formats compatible file';    % index of a serie to be used with bio-formats reader
+            obj.BatchOpt.mibBatchTooltip.HDD_OutputFileExtension = 'Extension for output files'; 
+            
             % add here a code for the batch mode, for example
             % when the BatchOpt stucture is provided the controller will
             % use it as the parameters, and performs the function in the
@@ -396,7 +425,7 @@ classdef mibAlignmentController < handle
                 obj.View.handles.SecondDatasetPath.TooltipString = newValue;
                 obj.BatchOpt.SecondDatasetPath = fullfile(newValue, '*.*');
             elseif obj.View.handles.fileRadio.Value
-                [FileName, PathName] = uigetfile({'*.tif; *.am','(*.tif; *.am) TIF/AM Files';
+                [FileName, PathName] = mib_uigetfile({'*.tif; *.am','(*.tif; *.am) TIF/AM Files';
                     '*.am','(*.am) Amira Mesh Files';
                     '*.tif','(*.tif) TIF Files';
                     '*.*','All Files'}, 'Select file...', startingPath);
@@ -550,7 +579,7 @@ classdef mibAlignmentController < handle
             % --- Executes on button press in loadShiftsCheck.
             if obj.View.handles.loadShiftsCheck.Value
                 startingPath = obj.View.handles.loadShiftsXYpath.String;
-                [FileName, PathName] = uigetfile({'*.coefXY','*.coefXY (Matlab format)'; '*.*','All Files'}, 'Select file...', startingPath);
+                [FileName, PathName] = mib_uigetfile({'*.coefXY','*.coefXY (Matlab format)'; '*.*','All Files'}, 'Select file...', startingPath);
                 if FileName == 0; obj.View.handles.loadShiftsCheck.Value = 0; return; end
                 obj.View.handles.loadShiftsXYpath.String = fullfile(PathName, FileName);
                 obj.View.handles.loadShiftsXYpath.Enable = 'on';
@@ -835,192 +864,227 @@ classdef mibAlignmentController < handle
                     return;
                 elseif strcmp(parameters.method, 'AMST: median-smoothed template')
                     parameters.detectPointsType = obj.BatchOpt.FeatureDetectorType{1};
+                    %parameters.automaticOptions = obj.automaticOptions;
                     obj.AlignMedianSmoothTemplate(parameters);  % external file
                     return;
                 else        % standard alignement
-                    %parameters.step = str2double(obj.View.handles.CorrelateStep,'string'));
-                    tic
-                    % calculate shifts
-                    if isempty(obj.shiftsX)
-                        if strcmp(obj.BatchOpt.Subarea{1}, 'Manually specified')
-                            optionsGetData.x(1) = str2double(obj.BatchOpt.minX);
-                            optionsGetData.x(2) = str2double(obj.BatchOpt.maxX);
-                            optionsGetData.y(1) = str2double(obj.BatchOpt.minY);
-                            optionsGetData.y(2) = str2double(obj.BatchOpt.maxY);
-                            optionsGetData.z(1) = 1;
-                            optionsGetData.z(2) = Depth;
-                            I = squeeze(cell2mat(obj.mibModel.getData4D('image', NaN, parameters.colorCh, optionsGetData)));
-                            optionsGetData = rmfield(optionsGetData, 'x');
-                            optionsGetData = rmfield(optionsGetData, 'y');
-                            optionsGetData = rmfield(optionsGetData, 'z');
-                            %I = squeeze(handles.I.img(y1:y2, x1:x2, parameters.colorCh, :, handles.I.slices{5}(1)));
-                        else
-                            %I = squeeze(handles.I.img(:, :, parameters.colorCh, :, handles.I.slices{5}(1)));
-                            I = squeeze(cell2mat(obj.mibModel.getData4D('image', NaN, parameters.colorCh, optionsGetData)));
-                        end
-                        
+                    if obj.BatchOpt.HDD_Mode == 1
                         if ismember(obj.BatchOpt.Subarea{1}, {'Mask', 'Selection'})
-                            if obj.BatchOpt.showWaitbar; waitbar(0, parameters.waitbar, sprintf('Extracting masked areas\nPlease wait...')); end
-                            %intensityShift =  mean(I(:));   % needed for better correlation of images of different size
-                            img = zeros(size(I), class(I));% + intensityShift;
-                            bb = nan([size(I, 3), 4]);
-                            
-                            for slice = 1:size(I, 3)
-                                mask = cell2mat(obj.mibModel.getData2D(lower(obj.BatchOpt.Subarea{1}), slice, NaN, NaN, optionsGetData));
-                                stats = regionprops(mask, 'BoundingBox');
-                                if numel(stats) == 0; continue; end
-                                
-                                currBB = ceil(stats.BoundingBox);
-                                mask = mask(currBB(2):currBB(2)+currBB(4)-1, currBB(1):currBB(1)+currBB(3)-1);
-                                currImg = I(currBB(2):currBB(2)+currBB(4)-1, currBB(1):currBB(1)+currBB(3)-1, slice);
-                                intensityShift = mean(mean(currImg));  % needed for better correlation of images of different size
-                                currImg(~mask) = intensityShift;
-                                img(:, :, slice) = intensityShift;
-                                img(1:currBB(4), 1:currBB(3), slice) = currImg;
-                                
-                                bb(slice, :) = currBB;
-                                if obj.BatchOpt.showWaitbar; waitbar(slice/size(I, 3), parameters.waitbar); end
-                            end
-                            sliceIndices = find(~isnan(bb(:,1)));   % find indices of slices that have mask
-                            if isempty(sliceIndices)
-                                if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
-                                errordlg(sprintf('No %s areas were found!', obj.BatchOpt.Subarea{1}), sprintf('Missing %s layer', obj.BatchOpt.Subarea{1}));
-                                notify(obj.mibModel, 'stopProtocol');
-                                return;
-                            end
-                            I = img(1:max(bb(:, 4)), 1:max(bb(:, 3)), sliceIndices);
-                            clear img;
+                            errordlg(sprintf('!!! Error !!!\n\nThis mode is not compatible with %s mode!', obj.BatchOpt.Subarea{1}));
+                            return;
                         end
-                        
-                        if obj.BatchOpt.IntensityGradient
-                            if obj.BatchOpt.showWaitbar; waitbar(0, parameters.waitbar, sprintf('Calculating intensity gradient for color channel %d ...', parameters.colorCh)); end
-                            
-                            img = zeros(size(I), class(I));
-                            % generate gradient image
-                            hy = fspecial('sobel');
-                            hx = hy';
-                            for slice = 1:size(I, 3)
-                                Im = I(:,:,slice);   % get a slice
-                                Iy = imfilter(double(Im), hy, 'replicate');
-                                Ix = imfilter(double(Im), hx, 'replicate');
-                                img(:,:,slice) = sqrt(Ix.^2 + Iy.^2);
-                                if obj.BatchOpt.showWaitbar; waitbar(slice/size(I, 3), parameters.waitbar); end
-                            end
-                            I = img;
-                            clear img;
+                        if parameters.refFrame ~= 0
+                            errordlg(sprintf('!!! Error !!!\n\nThis mode is implemented for "correlate with the previous slice"!'));
+                            return;
                         end
+                        parameters.useBatchMode = useBatchMode;
+                        result = obj.alignDriftCorrectionHDD(parameters);
+                        if result == 0; return; end
                         
-                        % calculate drifts
-                        [shiftX, shiftY] = mibCalcShifts(I, parameters);
-                        if isempty(shiftX); notify(obj.mibModel, 'stopProtocol'); return; end
-                        
-                        if ismember(obj.BatchOpt.Subarea{1}, {'Mask', 'Selection'})
-                            % check for missing mask slices
-                            if length(sliceIndices) ~= Depth
-                                shX = zeros([Depth, 1]);
-                                shY = zeros([Depth, 1]);
-                                
-                                index = 1;
-                                breakBegin = 0;
-                                for i=2:Depth
-                                    if isnan(bb(i,1))
-                                        if breakBegin == 0
-                                            breakBegin = 1;
-                                            shX(i) = shX(i-1);
-                                            shY(i) = shY(i-1);
-                                        else
-                                            shX(i) = shX(i-1);
-                                            shY(i) = shY(i-1);
-                                        end
-                                    else
-                                        if breakBegin == 1
-                                            shX(i) = shX(i-1);
-                                            shY(i) = shY(i-1);
-                                            breakBegin = 0;
-                                        else
-                                            if index > 1
-                                                shX(i) = shX(i-1) + shiftX(index)-shiftX(index-1)-(bb(i,1)-bb(i-1,1));
-                                                shY(i) = shY(i-1) + shiftY(index)-shiftY(index-1)-(bb(i,2)-bb(i-1,2));
-                                            else
-                                                shX(i) = shX(i-1) + shiftX(index)-(bb(i,1)-bb(i-1,1));
-                                                shY(i) = shY(i-1) + shiftY(index)-(bb(i,2)-bb(i-1,2));
-                                            end
-                                        end
-                                        index = index + 1;
-                                    end
-                                end
-                                shiftX = shX;
-                                shiftY = shY;
+                        if obj.BatchOpt.SaveShiftsToFile     % save shifts to a file
+                            if useBatchMode == 1
+                                fn = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
+                                [obj.pathstr, name, ext] = fileparts(fn);
+                                fn = fullfile(obj.pathstr, [name '_align.coefXY']);
                             else
-                                difX = [0; diff(bb(:,1))];
-                                difX = cumsum(difX);
-                                shiftX = shiftX - difX;
-                                difY = [0; diff(bb(:,2))];
-                                difY = cumsum(difY);
-                                shiftY = shiftY - difY;
+                                fn = obj.View.handles.saveShiftsXYpath.String;
                             end
+                            shiftsX = obj.shiftsX; %#ok<PROP,NASGU>
+                            shiftsY = obj.shiftsY; %#ok<PROP,NASGU>
+                            fprintf('Saving alignement shifts to file: %s ...', fn);
+                            save(fn, 'shiftsX', 'shiftsY');
+                            fprintf('done!\n');
                         end
                         
-                        %             % ---- start of drift problems correction
-                        fixDrifts = '';
-                        if useBatchMode == 0
-                            figure(155);
-                            %subplot(2,1,1);
-                            plot(1:length(shiftX), shiftX, 1:length(shiftY), shiftY);
-                            %plot(1:length(shiftX), shiftX, 1:length(shiftX), windv(shiftX, 25), 1:length(shiftX), shiftX2);
-                            legend('Shift X', 'Shift Y');
-                            %legend('Shift X', 'Smoothed 50 pnts window', 'Final shifts');
-                            grid;
-                            xlabel('Frame number');
-                            ylabel('Displacement');
-                            title('Before drift correction');
-                        
-                            fixDrifts = questdlg('Align the stack using detected displacements?','Fix drifts','Yes','Subtract running average','No','Yes');
-                            if strcmp(fixDrifts, 'No')
-                                if isdeployed == 0
-                                    assignin('base', 'shiftX', shiftX);
-                                    assignin('base', 'shiftY', shiftY);
-                                    fprintf('Shifts between images were exported to the Matlab workspace (shiftX, shiftY)\nThese variables can be modified and saved to a disk using the following command:\nsave ''myfile.mat'' shiftX shiftY;\n');
+                        obj.returnBatchOpt(obj.BatchOpt);
+                        if useBatchMode == 0; obj.closeWindow(); end
+                        return;
+                    else
+                        %parameters.step = str2double(obj.View.handles.CorrelateStep,'string'));
+                        tic
+                        % calculate shifts
+                        if isempty(obj.shiftsX)
+                            if strcmp(obj.BatchOpt.Subarea{1}, 'Manually specified')
+                                optionsGetData.x(1) = str2double(obj.BatchOpt.minX);
+                                optionsGetData.x(2) = str2double(obj.BatchOpt.maxX);
+                                optionsGetData.y(1) = str2double(obj.BatchOpt.minY);
+                                optionsGetData.y(2) = str2double(obj.BatchOpt.maxY);
+                                optionsGetData.z(1) = 1;
+                                optionsGetData.z(2) = Depth;
+                                I = squeeze(cell2mat(obj.mibModel.getData4D('image', NaN, parameters.colorCh, optionsGetData)));
+                                optionsGetData = rmfield(optionsGetData, 'x');
+                                optionsGetData = rmfield(optionsGetData, 'y');
+                                optionsGetData = rmfield(optionsGetData, 'z');
+                                %I = squeeze(handles.I.img(y1:y2, x1:x2, parameters.colorCh, :, handles.I.slices{5}(1)));
+                            else
+                                %I = squeeze(handles.I.img(:, :, parameters.colorCh, :, handles.I.slices{5}(1)));
+                                I = squeeze(cell2mat(obj.mibModel.getData4D('image', NaN, parameters.colorCh, optionsGetData)));
+                            end
+
+                            if ismember(obj.BatchOpt.Subarea{1}, {'Mask', 'Selection'})
+                                if obj.BatchOpt.showWaitbar; waitbar(0, parameters.waitbar, sprintf('Extracting masked areas\nPlease wait...')); end
+                                %intensityShift =  mean(I(:));   % needed for better correlation of images of different size
+                                img = zeros(size(I), class(I));% + intensityShift;
+                                bb = nan([size(I, 3), 4]);
+
+                                for slice = 1:size(I, 3)
+                                    mask = cell2mat(obj.mibModel.getData2D(lower(obj.BatchOpt.Subarea{1}), slice, NaN, NaN, optionsGetData));
+                                    stats = regionprops(mask, 'BoundingBox');
+                                    if numel(stats) == 0; continue; end
+
+                                    currBB = ceil(stats.BoundingBox);
+                                    mask = mask(currBB(2):currBB(2)+currBB(4)-1, currBB(1):currBB(1)+currBB(3)-1);
+                                    currImg = I(currBB(2):currBB(2)+currBB(4)-1, currBB(1):currBB(1)+currBB(3)-1, slice);
+                                    intensityShift = mean(mean(currImg));  % needed for better correlation of images of different size
+                                    currImg(~mask) = intensityShift;
+                                    img(:, :, slice) = intensityShift;
+                                    img(1:currBB(4), 1:currBB(3), slice) = currImg;
+
+                                    bb(slice, :) = currBB;
+                                    if obj.BatchOpt.showWaitbar; waitbar(slice/size(I, 3), parameters.waitbar); end
                                 end
-                                if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
-                                return;
+                                sliceIndices = find(~isnan(bb(:,1)));   % find indices of slices that have mask
+                                if isempty(sliceIndices)
+                                    if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
+                                    errordlg(sprintf('No %s areas were found!', obj.BatchOpt.Subarea{1}), sprintf('Missing %s layer', obj.BatchOpt.Subarea{1}));
+                                    notify(obj.mibModel, 'stopProtocol');
+                                    return;
+                                end
+                                I = img(1:max(bb(:, 4)), 1:max(bb(:, 3)), sliceIndices);
+                                clear img;
                             end
-                        end
-                        
-                        % fix drifts
-                        if strcmp(fixDrifts, 'Subtract running average') || obj.BatchOpt.SubtractRunningAverage == 1
-                            halfwidth = str2double(obj.BatchOpt.SubtractRunningAverageStep);
-                            excludePeaks = str2double(obj.BatchOpt.SubtractRunningAverageExcludePeaks);
-                            [shiftX, shiftY, halfwidth, excludePeaks] = mibSubtractRunningAverage(shiftX, shiftY, halfwidth, excludePeaks, useBatchMode);
-                            if isempty(shiftX)
-                                if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
-                                notify(obj.mibModel, 'stopProtocol');
-                                return;    
+
+                            if obj.BatchOpt.IntensityGradient
+                                if obj.BatchOpt.showWaitbar; waitbar(0, parameters.waitbar, sprintf('Calculating intensity gradient for color channel %d ...', parameters.colorCh)); end
+
+                                img = zeros(size(I), class(I));
+                                % generate gradient image
+                                hy = fspecial('sobel');
+                                hx = hy';
+                                for slice = 1:size(I, 3)
+                                    Im = I(:,:,slice);   % get a slice
+                                    Iy = imfilter(double(Im), hy, 'replicate');
+                                    Ix = imfilter(double(Im), hx, 'replicate');
+                                    img(:,:,slice) = sqrt(Ix.^2 + Iy.^2);
+                                    if obj.BatchOpt.showWaitbar; waitbar(slice/size(I, 3), parameters.waitbar); end
+                                end
+                                I = img;
+                                clear img;
                             end
-                            if halfwidth > 0
-                                obj.BatchOpt.SubtractRunningAverage = true;
-                                obj.BatchOpt.SubtractRunningAverageStep = num2str(halfwidth);    
-                                obj.BatchOpt.SubtractRunningAverageExcludePeaks = num2str(excludePeaks);
+
+                            % calculate drifts
+                            [shiftX, shiftY] = mibCalcShifts(I, parameters);
+                            if isempty(shiftX); notify(obj.mibModel, 'stopProtocol'); return; end
+
+                            if ismember(obj.BatchOpt.Subarea{1}, {'Mask', 'Selection'})
+                                % check for missing mask slices
+                                if length(sliceIndices) ~= Depth
+                                    shX = zeros([Depth, 1]);
+                                    shY = zeros([Depth, 1]);
+
+                                    index = 1;
+                                    breakBegin = 0;
+                                    for i=2:Depth
+                                        if isnan(bb(i,1))
+                                            if breakBegin == 0
+                                                breakBegin = 1;
+                                                shX(i) = shX(i-1);
+                                                shY(i) = shY(i-1);
+                                            else
+                                                shX(i) = shX(i-1);
+                                                shY(i) = shY(i-1);
+                                            end
+                                        else
+                                            if breakBegin == 1
+                                                shX(i) = shX(i-1);
+                                                shY(i) = shY(i-1);
+                                                breakBegin = 0;
+                                            else
+                                                if index > 1
+                                                    shX(i) = shX(i-1) + shiftX(index)-shiftX(index-1)-(bb(i,1)-bb(i-1,1));
+                                                    shY(i) = shY(i-1) + shiftY(index)-shiftY(index-1)-(bb(i,2)-bb(i-1,2));
+                                                else
+                                                    shX(i) = shX(i-1) + shiftX(index)-(bb(i,1)-bb(i-1,1));
+                                                    shY(i) = shY(i-1) + shiftY(index)-(bb(i,2)-bb(i-1,2));
+                                                end
+                                            end
+                                            index = index + 1;
+                                        end
+                                    end
+                                    shiftX = shX;
+                                    shiftY = shY;
+                                else
+                                    difX = [0; diff(bb(:,1))];
+                                    difX = cumsum(difX);
+                                    shiftX = shiftX - difX;
+                                    difY = [0; diff(bb(:,2))];
+                                    difY = cumsum(difY);
+                                    shiftY = shiftY - difY;
+                                end
                             end
+
+                            %             % ---- start of drift problems correction
+                            fixDrifts = '';
+                            if useBatchMode == 0
+                                figure(155);
+                                %subplot(2,1,1);
+                                plot(1:length(shiftX), shiftX, 1:length(shiftY), shiftY);
+                                %plot(1:length(shiftX), shiftX, 1:length(shiftX), windv(shiftX, 25), 1:length(shiftX), shiftX2);
+                                legend('Shift X', 'Shift Y');
+                                %legend('Shift X', 'Smoothed 50 pnts window', 'Final shifts');
+                                grid;
+                                xlabel('Frame number');
+                                ylabel('Displacement');
+                                title('Before drift correction');
+
+                                fixDrifts = questdlg('Align the stack using detected displacements?','Fix drifts','Yes','Subtract running average','No','Yes');
+                                if strcmp(fixDrifts, 'No')
+                                    if isdeployed == 0
+                                        assignin('base', 'shiftX', shiftX);
+                                        assignin('base', 'shiftY', shiftY);
+                                        fprintf('Shifts between images were exported to the Matlab workspace (shiftX, shiftY)\nThese variables can be modified and saved to a disk using the following command:\nsave ''myfile.mat'' shiftX shiftY;\n');
+                                    end
+                                    if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
+                                    return;
+                                end
+                            end
+
+                            % fix drifts
+                            if strcmp(fixDrifts, 'Subtract running average') || obj.BatchOpt.SubtractRunningAverage == 1
+                                halfwidth = str2double(obj.BatchOpt.SubtractRunningAverageStep);
+                                excludePeaks = str2double(obj.BatchOpt.SubtractRunningAverageExcludePeaks);
+                                [shiftX, shiftY, halfwidth, excludePeaks] = mibSubtractRunningAverage(shiftX, shiftY, halfwidth, excludePeaks, useBatchMode);
+
+                                if isempty(shiftX)
+                                    if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
+                                    notify(obj.mibModel, 'stopProtocol');
+                                    return;    
+                                end
+                                if halfwidth > 0
+                                    obj.BatchOpt.SubtractRunningAverage = true;
+                                    obj.BatchOpt.SubtractRunningAverageStep = num2str(halfwidth);    
+                                    obj.BatchOpt.SubtractRunningAverageExcludePeaks = num2str(excludePeaks);
+                                end
+                            end
+
+                            % exporting shifts to Matlab
+                            if isdeployed == 0
+                                assignin('base', 'shiftX', shiftX);
+                                assignin('base', 'shiftY', shiftY);
+                                fprintf('Shifts between images were exported to the Matlab workspace (shiftX, shiftY)\nThese variables can be modified and saved to a disk using the following command:\nsave ''myfile.mat'' shiftX shiftY;\n');
+                            end
+
+                            obj.shiftsX = shiftX;
+                            obj.shiftsY = shiftY;
                         end
-                        
-                        % exporting shifts to Matlab
-                        if isdeployed == 0
-                            assignin('base', 'shiftX', shiftX);
-                            assignin('base', 'shiftY', shiftY);
-                            fprintf('Shifts between images were exported to the Matlab workspace (shiftX, shiftY)\nThese variables can be modified and saved to a disk using the following command:\nsave ''myfile.mat'' shiftX shiftY;\n');
-                        end
-                        
-                        obj.shiftsX = shiftX;
-                        obj.shiftsY = shiftY;
+                        if obj.BatchOpt.showWaitbar; waitbar(0, parameters.waitbar, sprintf('Aligning the images\nPlease wait...')); end
+
+                        %img = mib_crossShiftStack(handles.I.img, obj.shiftsX, obj.shiftsY, parameters);
+                        img = mibCrossShiftStack(cell2mat(obj.mibModel.getData4D('image', NaN, 0)), obj.shiftsX, obj.shiftsY, parameters);
+                        if isempty(img); notify(obj.mibModel, 'stopProtocol'); return; end
+                        %obj.mibModel.setData4D('image', img, NaN, 0);
+                        obj.mibModel.setData4D('image', img, NaN, 0, optionsGetData);
                     end
-                    if obj.BatchOpt.showWaitbar; waitbar(0, parameters.waitbar, sprintf('Aligning the images\nPlease wait...')); end
-                    
-                    %img = mib_crossShiftStack(handles.I.img, obj.shiftsX, obj.shiftsY, parameters);
-                    img = mibCrossShiftStack(cell2mat(obj.mibModel.getData4D('image', NaN, 0)), obj.shiftsX, obj.shiftsY, parameters);
-                    if isempty(img); notify(obj.mibModel, 'stopProtocol'); return; end
-                    %obj.mibModel.setData4D('image', img, NaN, 0);
-                    obj.mibModel.setData4D('image', img, NaN, 0, optionsGetData);
                 end
                 
                 % aligning the service layers: mask, selection, model
@@ -1902,6 +1966,16 @@ classdef mibAlignmentController < handle
                     sprintf('Rotation invariance')};
                 defAns = {num2str(obj.automaticOptions.imgWidthForAnalysis), obj.automaticOptions.rotationInvariance};
                 
+                % define parameters for estimate geometric transform function
+                estGeomPrompts{1} = sprintf('Estimate Geometric Transform settings:\nMaximum number of random trials for finding the inliers, increasing this value improves the robustness (positive integer)');
+                estGeomPrompts{2} = sprintf('Confidence of finding maximum number of inliers, increasing this value improves the robustness (value between 0 and 100)');
+                estGeomPrompts{3} = sprintf('Maximum distance in pixels, from a point to the projection of its corresponding point (positive number)');
+                estGeomDefAns{1} = num2str(obj.automaticOptions.estGeomTransform.MaxNumTrials);
+                estGeomDefAns{2} = num2str(obj.automaticOptions.estGeomTransform.Confidence);
+                estGeomDefAns{3} = num2str(obj.automaticOptions.estGeomTransform.MaxDistance);
+                estGeomPromptLines = [3, 2, 2];
+                options.WindowWidth = 1.8;    % make window x1.2 times wider
+                        
                 switch featureDetectorType
                     case 'Blobs: Speeded-Up Robust Features (SURF) algorithm'
                         prompts{3} = sprintf('Strongest feature threshold\nto return more blobs, decrease the value of this threshold\n(a non-negative scalar)');
@@ -1910,15 +1984,17 @@ classdef mibAlignmentController < handle
                         defAns{3} = num2str(obj.automaticOptions.detectSURFFeatures.MetricThreshold);
                         defAns{4} = num2str(obj.automaticOptions.detectSURFFeatures.NumOctaves);
                         defAns{5} = num2str(obj.automaticOptions.detectSURFFeatures.NumScaleLevels);
-                        options.PromptLines = [3, 1, 3, 4, 4];   % [optional] number of lines for widget titles
+                        prompts(6:8) = estGeomPrompts;
+                        defAns(6:8) = estGeomDefAns;
+                        options.PromptLines = [3, 1, 3, 4, 4, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
-                        options.WindowWidth = 1.6;    % make window x1.2 times wider
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
                         
                         obj.automaticOptions.detectSURFFeatures.MetricThreshold = str2double(answer{3});
                         obj.automaticOptions.detectSURFFeatures.NumOctaves = str2double(answer{4});
                         obj.automaticOptions.detectSURFFeatures.NumScaleLevels = str2double(answer{5});
+                        % see more in the end of switch
                     case 'Regions: Maximally Stable Extremal Regions (MSER) algorithm'
                         prompts{3} = sprintf('Step size between intensity threshold levels\nused in selecting extremal regions while testing for their stability. Decrease this value to return more regions\n(percent numeric value; typical: 0.8 to 4)');
                         prompts{4} = sprintf('Size of the region in pixels\nallows the selection of regions containing pixels to be between minArea and maxArea, inclusive\n(a two-element vector: minArea, maxArea)');
@@ -1926,30 +2002,34 @@ classdef mibAlignmentController < handle
                         defAns{3} = num2str(obj.automaticOptions.detectMSERFeatures.ThresholdDelta);
                         defAns{4} = num2str(obj.automaticOptions.detectMSERFeatures.RegionAreaRange);
                         defAns{5} = num2str(obj.automaticOptions.detectMSERFeatures.MaxAreaVariation);
-                        options.PromptLines = [2, 1, 4, 4, 3];   % [optional] number of lines for widget titles
+                        prompts(6:8) = estGeomPrompts;
+                        defAns(6:8) = estGeomDefAns;
+                        options.PromptLines = [2, 1, 4, 4, 3, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
-                        options.WindowWidth = 1.7;    % make window x1.2 times wider
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
                         
                         obj.automaticOptions.detectMSERFeatures.ThresholdDelta = str2double(answer{3}); % percent numeric value; step size between intensity threshold levels, decrease this value to return more regions. Typical values range from 0.8 to 4.
                         obj.automaticOptions.detectMSERFeatures.RegionAreaRange = str2num(answer{4}); %#ok<ST2NM> % two-element vector, size of the region in pixels, allows the selection of regions containing pixels between the provided range
                         obj.automaticOptions.detectMSERFeatures.MaxAreaVariation = str2double(answer{5}); % positive scalar, maximum area variation between extremal regions at varying intensity thresholds; Increasing this value returns a greater number of regions, but they may be less stable. Stable regions are very similar in size over varying intensity thresholds. Typical values range from 0.1 to 1.0.
+                        % see more in the end of switch
                         
                     case 'Corners: Harris-Stephens algorithm'
                         prompts{3} = sprintf('Minimum accepted quality of corners.\nThe minimum accepted quality of corners represents\na fraction of the maximum corner metric value in the image.\nLarger values can be used to remove erroneous corners\n(a scalar value in the range [0,1])');
                         prompts{4} = sprintf('Gaussian filter dimension.\nThe Gaussian filter smooths the gradient of the input image\n(an odd integer value in the range [3, min(size(I))])');
                         defAns{3} = num2str(obj.automaticOptions.detectHarrisFeatures.MinQuality);
                         defAns{4} = num2str(obj.automaticOptions.detectHarrisFeatures.FilterSize);
+                        prompts(5:7) = estGeomPrompts;
+                        defAns(5:7) = estGeomDefAns;
                         
-                        options.PromptLines = [2, 3, 5, 3];   % [optional] number of lines for widget titles
+                        options.PromptLines = [2, 3, 5, 3, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
-                        options.WindowWidth = 1.6;    % make window x1.2 times wider
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
                         
                         obj.automaticOptions.detectHarrisFeatures.MinQuality = str2double(answer{3});
                         obj.automaticOptions.detectHarrisFeatures.FilterSize = str2double(answer{4});
+                        % see more in the end of switch
                     case 'Corners: Binary Robust Invariant Scalable Keypoints (BRISK)'
                         prompts{3} = sprintf('Minimum intensity difference between a corner and its surrounding region.\nThe minimum contrast value represents a fraction of the maximum value\nof the image class. Increase this value to reduce the number of detected corners\n(a scalar in the range [0 1])');
                         prompts{4} = sprintf('Minimum accepted quality of corners\nrepresents a fraction of the maximum corner metric value in the image.\nIncrease this value to remove erroneous corners\n(a scalar value in the range [0,1])');
@@ -1957,55 +2037,67 @@ classdef mibAlignmentController < handle
                         defAns{3} = num2str(obj.automaticOptions.detectBRISKFeatures.MinContrast);
                         defAns{4} = num2str(obj.automaticOptions.detectBRISKFeatures.MinQuality);
                         defAns{5} = num2str(obj.automaticOptions.detectBRISKFeatures.NumOctaves);
-                        options.PromptLines = [2, 3, 4, 4, 4];   % [optional] number of lines for widget titles
+                        prompts(6:8) = estGeomPrompts;
+                        defAns(6:8) = estGeomDefAns;
+                        options.PromptLines = [2, 3, 4, 4, 4, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
-                        options.WindowWidth = 1.6;    % make window x1.2 times wider
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
                         
                         obj.automaticOptions.detectBRISKFeatures.MinContrast = str2double(answer{3});
                         obj.automaticOptions.detectBRISKFeatures.MinQuality = str2double(answer{4});
                         obj.automaticOptions.detectBRISKFeatures.NumOctaves = str2double(answer{5});
+                        % see more in the end of switch
                     case 'Corners: Features from Accelerated Segment Test (FAST)'
                         prompts{3} = sprintf('Minimum accepted quality of corners\nrepresents a fraction of the maximum corner metric value in the image.\nLarger values can be used to remove erroneous corners.\n(a scalar value in the range [0,1])');
                         prompts{4} = sprintf('Minimum intensity difference between corner and surrounding region\nrepresents a fraction of the maximum value of the image class.\nIncreasing the value reduces the number of detected corners.\n(a scalar value in the range [0,1])');
                         defAns{3} = num2str(obj.automaticOptions.detectFASTFeatures.MinQuality);
                         defAns{4} = num2str(obj.automaticOptions.detectFASTFeatures.MinContrast);
-                        options.PromptLines = [2, 3, 4, 4];   % [optional] number of lines for widget titles
+                        prompts(5:7) = estGeomPrompts;
+                        defAns(5:7) = estGeomDefAns;
+                        options.PromptLines = [2, 3, 4, 4, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
-                        options.WindowWidth = 1.6;    % make window x1.2 times wider
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
                         
                         obj.automaticOptions.detectFASTFeatures.MinQuality = str2double(answer{3});
                         obj.automaticOptions.detectFASTFeatures.MinContrast = str2double(answer{4});
+                        % see more in the end of switch
                     case 'Corners: Minimum Eigenvalue algorithm'
                         prompts{3} = sprintf('Minimum accepted quality of corners\nrepresents a fraction of the maximum corner metric value in the image.\nLarger values can be used to remove erroneous corners.\n(a scalar value in the range [0,1])');
                         prompts{4} = sprintf('Gaussian filter dimension.\nThe Gaussian filter smooths the gradient of the input image.\n(an odd integer value in the range [3, inf])');
                         defAns{3} = num2str(obj.automaticOptions.detectMinEigenFeatures.MinQuality);
                         defAns{4} = num2str(obj.automaticOptions.detectMinEigenFeatures.FilterSize);
-                        options.PromptLines = [2, 3, 4, 3];   % [optional] number of lines for widget titles
+                        prompts(5:7) = estGeomPrompts;
+                        defAns(5:7) = estGeomDefAns;
+                        options.PromptLines = [2, 3, 4, 3, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
-                        options.WindowWidth = 1.6;    % make window x1.2 times wider
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
                         
                         obj.automaticOptions.detectMinEigenFeatures.MinQuality = str2double(answer{3});
                         obj.automaticOptions.detectMinEigenFeatures.FilterSize = str2double(answer{4});
+                        % see more in the end of switch
                     case 'Oriented FAST and rotated BRIEF (ORB)'
                         prompts{2} = sprintf('Scale factor for image decomposition\n(an integer greater than 1)');
                         prompts{3} = sprintf('Number of decomposition levels. Increase this value to extract keypoints from the image at more levels of decomposition (an integer greater than or equal to 1)');
                         defAns{2} = num2str(obj.automaticOptions.detectORBFeatures.ScaleFactor);
                         defAns{3} = num2str(obj.automaticOptions.detectORBFeatures.NumLevels);
-                        options.PromptLines = [2, 2, 2];   % [optional] number of lines for widget titles
+                        prompts(4:6) = estGeomPrompts;
+                        defAns(4:6) = estGeomDefAns;
+                        options.PromptLines = [2, 2, 2, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
-                        options.WindowWidth = 1.6;    % make window x1.2 times wider
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
                         
                         obj.automaticOptions.detectORBFeatures.ScaleFactor = str2double(answer{2});
                         obj.automaticOptions.detectORBFeatures.NumLevels = str2double(answer{3});
+                        % see more in the end of switch
                 end
+                obj.automaticOptions.estGeomTransform.MaxNumTrials = str2double(answer{end-2});
+                obj.automaticOptions.estGeomTransform.Confidence = str2double(answer{end-1});
+                obj.automaticOptions.estGeomTransform.MaxDistance = str2double(answer{end});
+                        
                 if ~strcmp(featureDetectorType, 'Oriented FAST and rotated BRIEF (ORB)')
                     obj.automaticOptions.rotationInvariance = logical(answer{2});  % Rotation invariance flag, specified a logical scalar; When you set this property to true, the orientation of the feature vectors are not estimated and the feature orientation is set to pi/2.
                 end
@@ -2258,8 +2350,14 @@ classdef mibAlignmentController < handle
                     % is a variant of the RANSAC algorithm. It removes outliers while computing 
                     % the transformation matrix. You may see varying results of the transformation 
                     % computation because of the random sampling employed by the MSAC algorithm.
+                    %[tform, inlierDistorted, inlierOriginal] = estimateGeometricTransform(...
+                    %    matchedDistorted, matchedOriginal, parameters.TransformationType);
+                    
                     [tform, inlierDistorted, inlierOriginal] = estimateGeometricTransform(...
-                        matchedDistorted, matchedOriginal, parameters.TransformationType);
+                        matchedDistorted, matchedOriginal, parameters.TransformationType, ...,
+                        'MaxNumTrials', obj.automaticOptions.estGeomTransform.MaxNumTrials, ...
+                        'Confidence', obj.automaticOptions.estGeomTransform.Confidence, ...
+                        'MaxDistance', obj.automaticOptions.estGeomTransform.MaxDistance);
 
                     % recalculate transformations
                     % https://se.mathworks.com/help/images/matrix-representation-of-geometric-transformations.html
@@ -2312,10 +2410,11 @@ classdef mibAlignmentController < handle
                     else
                         halfWidthDefault = num2str(floor(Depth/2-1));
                     end
-                    prompts = {'Fix stretching'; 'Fix shear'; 'Half-width of the averaging window'};
-                    defAns = {true; true; halfWidthDefault};
+                    prompts = {'Fix stretching'; 'Fix shear'; 'Half-width of the averaging window'; 'Exclude stretch peaks higher than this value from the running average:'; 'Exclude shear peaks higher than this value from the running average:'};
+                    defAns = {true; true; halfWidthDefault; obj.BatchOpt.SubtractRunningAverageExcludeStretchPeaks; obj.BatchOpt.SubtractRunningAverageExcludeShearPeaks};
                     dlgTitle = 'Correction settings';
                     options.Title = 'Please select suitable settings for the correction';
+                    options.PromptLines = [1, 1, 1, 2, 2];
                 end
             
                 if strcmp(fixDrifts2, 'Subtract running average') || obj.BatchOpt.SubtractRunningAverage == 1
@@ -2334,8 +2433,15 @@ classdef mibAlignmentController < handle
                             obj.BatchOpt.SubtractRunningAverageFixStretch = logical(answer{1}); 
                             obj.BatchOpt.SubtractRunningAverageFixShear = logical(answer{2}); 
                             halfwidth = str2double(answer{3});
+                            excludeStretchPeaks = str2double(answer{4});
+                            obj.BatchOpt.SubtractRunningAverageExcludeStretchPeaks = answer{4};
+                            excludeShearPeaks = str2double(answer{5});
+                            obj.BatchOpt.SubtractRunningAverageExcludeShearPeaks = answer{5};
                         else
                             halfwidth = str2double(obj.BatchOpt.SubtractRunningAverageStep);
+                            excludeStretchPeaks = str2double(obj.BatchOpt.SubtractRunningAverageExcludeStretchPeaks);
+                            excludeShearPeaks = str2double(obj.BatchOpt.SubtractRunningAverageExcludeShearPeaks);
+                            
                             notOk = 0;
                             if obj.BatchOpt.SubtractRunningAverage == 1
                                 fixDrifts = 'Yes';
@@ -2349,16 +2455,22 @@ classdef mibAlignmentController < handle
 
                         if obj.BatchOpt.SubtractRunningAverageFixStretch
                             % fixing the stretching
-                            x_stretch2 = x_stretch-windv(x_stretch, halfwidth)+1;   % stretch should be 1 when no changes
-                            y_stretch2 = y_stretch-windv(y_stretch, halfwidth)+1;
+                            x_stretch2 = mibRunningAverageSmoothPoints(x_stretch, halfwidth, excludeStretchPeaks) + 1; % stretch should be 1 when no changes
+                            y_stretch2 = mibRunningAverageSmoothPoints(y_stretch, halfwidth, excludeStretchPeaks) + 1;
+       
+                            %x_stretch2 = x_stretch-windv(x_stretch, halfwidth)+1;   % stretch should be 1 when no changes
+                            %y_stretch2 = y_stretch-windv(y_stretch, halfwidth)+1;
                         else
                             x_stretch2 = x_stretch;
                             y_stretch2 = y_stretch;
                         end
                         if obj.BatchOpt.SubtractRunningAverageFixShear
                             % fixing the shear
-                            x_shear2 = x_shear-windv(x_shear, halfwidth);        % shear should be 0 when no changes
-                            y_shear2 = y_shear-windv(y_shear, halfwidth);
+                            x_shear2 = mibRunningAverageSmoothPoints(x_shear, halfwidth, excludeShearPeaks); % shear should be 0 when no changes
+                            y_shear2 = mibRunningAverageSmoothPoints(y_shear, halfwidth, excludeShearPeaks);
+       
+                            %x_shear2 = x_shear-windv(x_shear, halfwidth);        % shear should be 0 when no changes
+                            %y_shear2 = y_shear-windv(y_shear, halfwidth);
                         else
                             x_shear2 = x_shear;
                             y_shear2 = y_shear;
@@ -2396,6 +2508,8 @@ classdef mibAlignmentController < handle
                                 tformMatrix{i}.T(1,2) = y_shear2(i-1);
                             end
                             notOk = 0;
+                        else
+                            defAns = {obj.BatchOpt.SubtractRunningAverageFixStretch; obj.BatchOpt.SubtractRunningAverageFixShear; halfwidth; obj.BatchOpt.SubtractRunningAverageExcludeStretchPeaks; obj.BatchOpt.SubtractRunningAverageExcludeShearPeaks};
                         end
                     end
                 end
@@ -2657,6 +2771,21 @@ classdef mibAlignmentController < handle
             obj.returnBatchOpt(obj.BatchOpt);
             
             if parameters.useBatchMode == 0; obj.closeWindow(); end
+        end
+        
+        function HDD_BioformatsReader_Callback(obj)
+        % callback for selection of bio-formats reader for the HDD mode
+        
+            obj.BatchOpt.HDD_BioformatsReader = obj.View.handles.HDD_BioformatsReader.Value;
+            if obj.BatchOpt.HDD_BioformatsReader
+                obj.BatchOpt.HDD_InputFilenameExtension = {'CZI'};
+                obj.BatchOpt.HDD_InputFilenameExtension{2} = upper(obj.mibModel.preferences.System.Files.BioFormatsExt); %{'.LEI', '.ZVI''};
+            else
+                obj.BatchOpt.HDD_InputFilenameExtension = {'TIF'};
+                obj.BatchOpt.HDD_InputFilenameExtension{2} = upper(obj.mibModel.preferences.System.Files.StdExt);
+            end
+            % update elements of GUI from the BatchMode
+            obj.View = updateGUIFromBatchOpt_Shared(obj.View, obj.BatchOpt);
         end
         
     end

@@ -27,11 +27,13 @@ function mibModelPropertyUpdate(obj, parameter)
 
 switch parameter
     case 'mibSelectionTransparencySlider'
-        obj.mibModel.preferences.mibSelectionTransparencySlider = obj.mibView.handles.(parameter).Value;
+        obj.mibModel.preferences.Colors.SelectionTransparency = obj.mibView.handles.(parameter).Value;
     case 'mibModelTransparencySlider'
-        obj.mibModel.preferences.mibModelTransparencySlider = obj.mibView.handles.(parameter).Value;
+        obj.mibModel.preferences.Colors.ModelTransparency = obj.mibView.handles.(parameter).Value;
     case 'mibMaskTransparencySlider'        
-        obj.mibModel.preferences.mibMaskTransparencySlider = obj.mibView.handles.(parameter).Value;
+        obj.mibModel.preferences.Colors.MaskTransparency = obj.mibView.handles.(parameter).Value;
+    case 'mibAnnotationPrecisionEdit'
+        obj.mibModel.mibAnnValuePrecision = str2double(obj.mibView.handles.mibAnnotationPrecisionEdit.String);
     otherwise
         obj.mibModel.(parameter) = obj.mibView.handles.(parameter).Value;
 end

@@ -20,19 +20,22 @@
 % </html>
 %
 %
-% Special thanks come to
-%%
+% *Special thanks come to*
+%
 % 
-% * *Konstantin Kogan*, University of Helsinki for assistance with Mac OS
 % * *Radhakrishna Achanta*, Ecole Polytechnique Federale de Lausanne (EPFL)
 % for the mex code for SLIC supervoxels and superpixels
+% * *Tom Boissonnet* (EMBL) and *Elena Bertseva* (University of Copenhagen) for extensive testing
+% * *John Heumann*, The Boulder Laboratory For 3-D Electron Microscopy of
+% Cells for help with Mattomo
+% * *Konstantin Kogan*, University of Helsinki for assistance with Mac OS
 % * *David Legland*, INRA, France for modification of the
 % <http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-
 % Region Adjacency Graph (imRAG)> function for detection of indices between
 % watershed regions and help with few other functions
-% * *John Heumann*, The Boulder Laboratory For 3-D Electron Microscopy of
-% Cells for help with Mattomo
-% * *Tom Boissonnet* (EMBL) and *Elena Bertseva* (University of Copenhagen) for extensive testing
+% * *Henrik P Sahlin Pettersen*, Norwegian University of Science and
+% Technology/St. Olavs hospital, Trondheim for extensive testing of
+% DeepMIB.
 %
 % Microscopy Image Browser team would like to acknowledge the <http://www.mathworks.se/matlabcentral/ User Community of Matlab-Central> and the authors whose code was used during MIB development. 
 % Microscopy Image Browser adapts partially or completely codes from the
@@ -103,9 +106,11 @@
 % * *NRRD*, Nearly Raw Raster Data format is implemented using  
 % <http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule
 % *Projects:MATLABSlicerExampleModule*> written by John Melonakos for NRRD
-% reading using <http://teem.sourceforge.net/ TEEM>; and a custom function for reading metadata based on
+% reading using <http://teem.sourceforge.net/TEEM>; and a custom function for reading metadata based on
 % <http://www.mathworks.com/matlabcentral/fileexchange/34653-nrrd-format-file-reader
 % *NRRD Format File Reader*> written by Jeff Mather, 2012
+% * <https://se.mathworks.com/matlabcentral/fileexchange/66645-nrrd-nhdr-reader-and-writer *NRRD NHDR reader and writer*> 
+% functions by Gaetan Rensonnet, 2018 is used to read NRRD format files on MacOS
 % * <http://www.openmicroscopy.org/site/products/omero/downloads *OMERO Matlab bindings*> (included into the compiled version, but should be downloaded separetly for the Matlab version) are used for
 % connection to OMERO servers
 % * <http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser

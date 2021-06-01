@@ -28,7 +28,7 @@ if isempty(scalingGUI); return; end
 if scalingGUI.scaling == 1; return; end
 
 scaleFactor = scalingGUI.scaling;
-scaleWidgets = rmfield(scalingGUI, 'scaling');
+scaleWidgets = rmfield(scalingGUI, {'scaling', 'systemscaling'});
 
 % list of affected widgets
 %list = {'uipanel','uibuttongroup','uitab','uitabgroup','axes','uitable','uicontrol'};

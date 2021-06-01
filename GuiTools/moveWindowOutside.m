@@ -17,7 +17,7 @@ if ismember(alignH, {'left', 'right', 'center'}) == 0
 end
 
 if ismember(alignV, {'top', 'bottom', 'center'}) == 0
-    warndlg('Wrong alignH parameter; alignV should be one of those: ''top'',''bottom'',''center''', 'moveWindowOutside');
+    warndlg('Wrong alignV parameter; alignV should be one of those: ''top'',''bottom'',''center''', 'moveWindowOutside');
     alignV = 'top';
 end
 

@@ -23,11 +23,11 @@ if isempty(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'))
 else
     path = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
 end
-[filename, path] = uigetfile(...
+[filename, path] = mib_uigetfile(...
     {'*.roi',  'Area shape, Matlab format (*.roi)'; ...
     '*.*',  'All Files (*.*)'}, ...
     'Open ROI shape file...',path);
-if isequal(filename,0); return; end; % check for cancel
+if isequal(filename,0); return; end % check for cancel
 
 res = load(fullfile(path, filename),'-mat');
 obj.mibModel.I{obj.mibModel.Id}.hROI.Data = res.Data;

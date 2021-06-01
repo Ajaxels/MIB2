@@ -57,7 +57,7 @@ classdef mibStereologyController < handle
             mibRescaleWidgets(obj.View.gui);
             
             % update font and size
-            Font = obj.mibModel.preferences.Font;
+            Font = obj.mibModel.preferences.System.Font;
             if obj.View.handles.infoText.FontSize ~= Font.FontSize ...
                     || ~strcmp(obj.View.handles.infoText.FontName, Font.FontName)
                 mibUpdateFontSize(obj.View.gui, Font);
@@ -98,8 +98,8 @@ classdef mibStereologyController < handle
             % function generateGrid_Callback(obj)
             % generate grid over the image and put it into the Mask layer
             
-            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1
-                errordlg(sprintf('!!! Error !!!\n\nSelection is disabled\nEnable it in the\nMenu->File->Preferences->Disable selection: no'), 'Error');
+            if obj.mibModel.I{obj.mibModel.Id}.enbleSelection == 0
+                errordlg(sprintf('!!! Error !!!\n\nSelection is disabled\nEnable it in the\nMenu->File->Preferences->Enable selection: yes'), 'Error');
                 return;
             end
             options.blockModeSwitch = 0;    % turn off the blockmode switch to get dimensions of the whole dataset

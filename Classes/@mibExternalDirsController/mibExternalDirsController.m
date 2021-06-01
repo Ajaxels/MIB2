@@ -98,17 +98,17 @@ classdef mibExternalDirsController < handle
             
             switch obj.View.handles.externalToolPopup.String{obj.View.handles.externalToolPopup.Value}
                 case 'Fiji installation folder'
-                    obj.localPreferences.dirs.fijiInstallationPath = obj.View.handles.dirEdit.String;
+                    obj.localPreferences.ExternalDirs.FijiInstallationPath = obj.View.handles.dirEdit.String;
                 case 'Omero installation folder'
-                    obj.localPreferences.dirs.omeroInstallationPath = obj.View.handles.dirEdit.String;
+                    obj.localPreferences.ExternalDirs.OmeroInstallationPath = obj.View.handles.dirEdit.String;
                 case 'Imaris installation folder'
-                    obj.localPreferences.dirs.imarisInstallationPath = obj.View.handles.dirEdit.String;
+                    obj.localPreferences.ExternalDirs.ImarisInstallationPath = obj.View.handles.dirEdit.String;
                 case 'BM3D filter'
-                    obj.localPreferences.dirs.bm3dInstallationPath = obj.View.handles.dirEdit.String;
+                    obj.localPreferences.ExternalDirs.bm3dInstallationPath = obj.View.handles.dirEdit.String;
                 case 'BM4D filter'
-                    obj.localPreferences.dirs.bm4dInstallationPath = obj.View.handles.dirEdit.String;                    
+                    obj.localPreferences.ExternalDirs.bm4dInstallationPath = obj.View.handles.dirEdit.String;                    
                 case 'BioFormats Memoizer temporary directory'
-                    obj.localPreferences.dirs.BioFormatsMemoizerMemoDir = obj.View.handles.dirEdit.String;                    
+                    obj.localPreferences.ExternalDirs.BioFormatsMemoizerMemoDir = obj.View.handles.dirEdit.String;                    
             end
         end
         
@@ -123,17 +123,17 @@ classdef mibExternalDirsController < handle
             
             switch name
                 case 'Fiji installation folder'
-                    obj.View.handles.dirEdit.String = obj.localPreferences.dirs.fijiInstallationPath;
+                    obj.View.handles.dirEdit.String = obj.localPreferences.ExternalDirs.FijiInstallationPath;
                 case 'Omero installation folder'
-                    obj.View.handles.dirEdit.String = obj.localPreferences.dirs.omeroInstallationPath;
+                    obj.View.handles.dirEdit.String = obj.localPreferences.ExternalDirs.OmeroInstallationPath;
                 case 'Imaris installation folder'
-                    obj.View.handles.dirEdit.String  = obj.localPreferences.dirs.imarisInstallationPath;
+                    obj.View.handles.dirEdit.String  = obj.localPreferences.ExternalDirs.ImarisInstallationPath;
                 case 'BM3D filter'
-                    obj.View.handles.dirEdit.String = obj.localPreferences.dirs.bm3dInstallationPath;
+                    obj.View.handles.dirEdit.String = obj.localPreferences.ExternalDirs.bm3dInstallationPath;
                 case 'BM4D filter'
-                    obj.View.handles.dirEdit.String = obj.localPreferences.dirs.bm4dInstallationPath;
+                    obj.View.handles.dirEdit.String = obj.localPreferences.ExternalDirs.bm4dInstallationPath;
                 case 'BioFormats Memoizer temporary directory'
-                    obj.View.handles.dirEdit.String = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;
+                    obj.View.handles.dirEdit.String = obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir;
             end
             obj.dirEdit_Callback();
         end

@@ -377,7 +377,7 @@ classdef mibImageAdjController < handle
             if isempty(colorCh); colorCh = obj.View.handles.colorChannelCombo.Value; end
             
             if obj.BatchOpt.showWaitbar; wb = waitbar(0, sprintf('Calculating the minimal value\nPlease wait...')); end
-            minval = zeros([numel(colorCh), 1]);
+            minval = zeros([numel(colorCh), 1], obj.mibModel.I{obj.mibModel.Id}.meta('imgClass'));
             
             if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
                 tic
@@ -387,7 +387,11 @@ classdef mibImageAdjController < handle
                     else
                         img = obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,colorCh(colId),:,:);
                         %minval2(colId) = max(mink(img(:), round(numel(img)/100*threshold)));
-                        minval(colId) = quantile(img(:), threshold/100);
+                        %minval(colId) = quantile(img(:), threshold/100); % quantile is a function of Statistics and Machine Learning Toolbox, repaced it with the following code
+                        
+                        img = sort(img(:));
+                        noElem = numel(img);
+                        minval(colId) = (double(img(max([1 floor(noElem*threshold/100)]))) + double(img(ceil(noElem*threshold/100))))/2;
                     end
                     if obj.BatchOpt.showWaitbar; waitbar(colId/numel(colorCh), wb); end
                 end
@@ -444,7 +448,7 @@ classdef mibImageAdjController < handle
             if isempty(colorCh); colorCh = obj.View.handles.colorChannelCombo.Value; end
             
             if obj.BatchOpt.showWaitbar; wb = waitbar(0, sprintf('Calculating the maximal value\nPlease wait...')); end
-            maxval = zeros([numel(colorCh), 1]);
+            maxval = zeros([numel(colorCh), 1], obj.mibModel.I{obj.mibModel.Id}.meta('imgClass'));
             
             if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0
                 for colId = 1:numel(colorCh)
@@ -453,7 +457,11 @@ classdef mibImageAdjController < handle
                     else
                         img = obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,colorCh(colId),:,:);
                         %minval2(colId) = max(mink(img(:), round(numel(img)/100*threshold)));
-                        maxval(colId) = quantile(img(:), 1-threshold/100);
+                        % maxval(colId) = quantile(img(:), 1-threshold/100);     % quantile is a function of Statistics and Machine Learning Toolbox, repaced it with the following code
+                        
+                        img = sort(img(:));
+                        noElem = numel(img);
+                        maxval(colId) = (double(img(max([1 floor(noElem*(1-threshold/100))]))) + double(img(ceil(noElem*(1-threshold/100)))))/2;
                     end
                     if obj.BatchOpt.showWaitbar; waitbar(colId/numel(colorCh), wb); end
                 end

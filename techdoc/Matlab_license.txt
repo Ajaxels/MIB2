@@ -628,13 +628,12 @@ executed before or after this Agreement), this Agreement shall prevail.
 
 Program Offering Guide 
 
-Release 2019b
+Release 2021a
 
 About This Guide
-______________________________________________________________________________
 
 This Program Offering Guide is an integral part of the Documentation for
-Release 2019b.
+Release 2021a.
 
 * Part One describes each of the different License Offerings.
 
@@ -657,7 +656,6 @@ Release 2019b.
 The Software License Agreement contains additional rights, restrictions, and
 obligations that apply to your licensed Programs and Applications. 
 
------------------------------     
 
 Part One: License Offerings
 
@@ -666,12 +664,11 @@ A License Offering is comprised of:
 (i) a License Option that specifies principally how the License Offering works
 and is measured or counted; 
 
-(ii) a License Use that specifies who can use the
-Programs in terms of the types of organizations, individuals, or activities
-eligible to use the License Offering; and, if applicable,
+(ii) a License Use that specifies who can use the Programs in terms of the
+types of organizations, individuals, or activities eligible to use the License
+Offering; and, 
 
-(iii) Specific Program Use Rights for MATLAB Parallel Server and MATLAB
-Production Server. 
+(iii) Specific Program Use Rights for individual Programs, if applicable.
 
 Each License Offering is subject to the applicable term of the License:
 Perpetual, Annual, or other specific term. 
@@ -708,10 +705,10 @@ Use, and the Specific Program Use Rights.
     time. 
 
     (iii) The Programs must be operated from the Designated Computer's console,
-    except for remote access as allowed in Section 1.6 below.
+    except for remote access as allowed in Section 1.8 below.
 
     (iv) The Licensee may redesignate the Computer, whether temporarily or not,
-    up to four (4) times in any twelve (12) month period. 
+    up to four (4) times in any twelve (12) month period.
 
     1.3. Network Named User License Option 
 
@@ -738,8 +735,10 @@ Use, and the Specific Program Use Rights.
     (vii) A Computer login of a Named User may not be shared with any other
     individual.
 
-    (viii) The Network Named User License Option is only available for Standard
-    License Use.
+    (viii) For Programs that require MATLAB, Named Users of such Programs must
+    also have a Network Named User license for MATLAB.
+
+    (ix) The Network Named User License Option is only available for Standard
 
     1.4. Concurrent License Option[fn1]
 
@@ -768,8 +767,8 @@ Use, and the Specific Program Use Rights.
 
     (i) The Total Headcount License Option provides for use of the Programs by
     a certain institution, organization, location, or other identified group of
-    users, in accordance with the Campus-Wide, Total Student Headcount, and
-    Primary and Secondary Schools License Uses described in Section 2 below. 
+    users, in accordance with the Campus-Wide and Primary and Secondary Schools
+    License Uses described in Section 2 below. 
 
     1.6. Enterprise License Option
 
@@ -777,19 +776,37 @@ Use, and the Specific Program Use Rights.
     employees and consultants of Licensee and approved Affiliates on Computers
     controlled by Licensee, and is only available for Standard License Use.
 
-    1.7. Remote Desktop and Shared Desktop
+    1.7. Counted Individual License Option
+
+    (i) The Counted Individual License Option provides for use of Programs by a
+    specified number of designated Named Users. 
+
+    (ii) A Named User may install the Programs on up to two (2) different
+    Computers for their own use.  
+
+    (iii) The Licensee may redesignate the Named Users authorized to use a Program. 
+
+    (iv) The Computer login of the Named User may not be shared with any other
+    individual.   
+
+    (v) The Counted Individual License Option is only available for Community and
+    Technical College License Use. 
+
+
+    1.8. Remote Desktop and Shared Desktop
     This section applies to all License Options above.
 
     (i) Remote Desktop: A Licensed User may remotely access Programs using the
     Microsoft(r) Remote Desktop connection feature or similar technologies. For
     the Designated Computer License Option, only one named Licensed User may
-    remotely access the Programs, such Licensed User not to be redesignated
-    more than four (4) times in any twelve (12) month period.
+    remotely access the Programs for software administration purposes, such
+    Licensed User not to be redesignated more than four (4) times in any twelve
+    (12) month period.
 
     (ii) Shared Desktop: A Licensed User may share remotely the desktop view of
     a Program session with another individual for assistive or demonstrative
-    purposes only, using Microsoft(r) Remote Assistance technology, Skype(r)
-    conferencing software, or similar technologies.[fn3] 
+    purposes only, using Microsoft(r) Remote Assistance technology,
+    teleconferencing software, or similar technologies.[fn3] 
 
 2. License Uses
 
@@ -808,8 +825,8 @@ Use, and the Specific Program Use Rights.
     licensing the Programs for Academic Internal Operations.
 
     (ii) Use rights and associated License Options are determined based on the
-    type of License acquired: Academic, Classroom, Campus-Wide, Total Student
-    Headcount, or Primary and Secondary Schools.
+    type of License acquired: Academic, Classroom, Campus-Wide, Community and
+    Technical College, or Primary and Secondary Schools.
 
     (iii) Technical support and installation support are available for faculty
     and academic staff. Installation support is available for students.
@@ -853,11 +870,19 @@ Use, and the Specific Program Use Rights.
         (ii) The Campus-Wide License is available solely under the Total
         Headcount License Option.
 
-        2.2.4. Total Student Headcount
+        2.2.4. Community and Technical College
 
-        (i) Program use is restricted to all students of the institution on
-        Computers owned or leased by the student, and solely under the Total
-        Headcount License Option.
+        (i) Program use is restricted to individuals listed in the definition
+        of Academic Internal Operations (see Glossary) on Computers owned or
+        leased by the institution or by such individual.
+
+        (ii) The Community and Technical College License is available solely to
+        institutions where the dominant form of degree conferred meets the
+        International Standard Classification of Education 2011 Level 5,
+        Short-Cycle Tertiary Education as qualified by MathWorks.
+
+        (iii) Community and Technical College Licenses are solely
+        available under the Counted Individual License Option.
 
         2.2.5. Primary and Secondary School
 
@@ -865,10 +890,13 @@ Use, and the Specific Program Use Rights.
         students of the school on Computers owned or leased by the school or by
         the individual faculty, staff, or student.
 
-        (ii) Primary and Secondary School Licenses are available solely to
-        primary and secondary schools under the Total Headcount License Option.
+        (ii) The Primary and Secondary School License is available solely to
+        primary and secondary schools.
 
-        (iii) Each Primary and Secondary School License is limited to a single
+        (iii) The Primary and Secondary School License is available solely
+        under the Total Headcount License Option.
+
+        (iv) Each Primary and Secondary School License is limited to a single
         physical address.
 
     2.3. Student 
@@ -931,19 +959,19 @@ Use, and the Specific Program Use Rights.
         Server, subject to the restrictions below:
 
         (i) The number of simultaneous Program sessions by all Licensed Users
-        may not exceed the number of workers licensed, except that if a
-        Licensed User has 200 workers checked out, the Licensed User can scale
-        to an unlimited number of workers without checking out any additional
-        workers. (This does not apply to on-demand use of MATLAB Parallel
-        Server. See Section 3.1.2 below for details.)
+        may not exceed the number of worker instances licensed, except that if
+        a Licensed User has 200 worker instances checked out, the Licensed User 
+        can scale to an unlimited number of Program sessions without checking 
+        out any additional worker instances. (This does not apply to on-demand
+        use of MATLAB Parallel Server. See Section 3.1.2 below for details.)
 
         (ii) You must have access to a valid license to Parallel Computing
         Toolbox and any Programs you wish to use in order to be able to run
         sessions of such Programs through MATLAB Parallel Server.  However, a
         license to Parallel Computing Toolbox is not required when running
         Polyspace Bug Finder Server or Polyspace Code Prover Server with MATLAB
-        Parallel Server, or when running Applications generated with the MATLAB
-        Compiler.
+        Parallel Server, or when running Applications generated with a Compiler
+        Program.
 
         (iii) Access to MATLAB Parallel Server may be made available to
         Licensed Users globally.
@@ -956,25 +984,49 @@ Use, and the Specific Program Use Rights.
         On-demand use of MATLAB Parallel Server allows you to pay based on
         usage.  Subject to all other restrictions in Section 3.1.1 above,
         Licensed Users of MATLAB Parallel Server may scale the number of
-        workers on the following additional terms: 
+        worker instances on the following additional terms: 
         (1) Licensee uses online licensing; and (2) Licensee agrees to pay all
         MATLAB Parallel Server on-demand fees incurred by its Licensed Users
-        applicable to their on-demand use, if any, of workers.  Any fees that
-        may be due to any cloud providers for use of their platforms, programs,
-        or services are separate and are the responsibility of the Licensee.
+        applicable to their on-demand use, if any, of worker instances.  Any 
+        fees that may be due to any cloud providers for use of their platforms,
+        programs, or services are separate and are the responsibility of the 
+        Licensee.
 
     3.2. MATLAB Production Server 
 
     Licensed Users of MATLAB Production Server are permitted to install and use
     MATLAB Production Server for the sole purpose of scheduling and running
-    Applications generated with Licensee's validly licensed MATLAB Compiler
-    Program, provided that the number of workers running simultaneously on one
-    or more Computers does not exceed the number of workers acquired.  Licensee
-    may make the Applications running on MATLAB Production Server accessible to
-    end-users globally, including Third Parties, via a web interface, or other
-    interface provided by Licensee, subject to the restrictions of Part Two,
-    Section 3.1 of this document (Deployment Rights; MATLAB Compiler).
+    Applications generated with Licensee's validly licensed Compiler Program,
+    provided that the number of worker instances running simultaneously on one 
+    or more Computers does not exceed the number of worker instances acquired.
+    Licensee may make the Applications running on MATLAB Production Server
+    accessible to end-users globally, including Third Parties, via a web 
+    interface, or other interface provided by Licensee, subject to the 
+    restrictions of Part Two, Section 3.1 of this document (Deployment Rights; 
+    Compiler Programs).  
 
+    3.3. MATLAB Web App Server
+
+    Licensed Users of MATLAB Web App Server are permitted to install and use
+    MATLAB Web App Server globally to run Applications, provided that the total
+    number of server instances does not exceed the number of server instances
+    acquired. End-users of the Applications need not be Licensed Users of 
+    MathWorks Programs and can access the Applications through a web browser.
+
+    3.4. MATLAB Online Server
+
+    Licensed Users of MATLAB Online Server are permitted to install and use
+    MATLAB Online Server globally to run MathWorks Programs, provided that the
+    total number of server instances does not exceed the number of server 
+    instances acquired. End-users of Programs running on MATLAB Online Server 
+    must have a valid license to any such Programs.
+
+    3.5. Polyspace Bug Finder Server and Polyspace Code Prover Server
+
+    Licensed Users of Polyspace Bug Finder Server and Polyspace Code Prover
+    Server are permitted to install and use such Programs, provided that the
+    number of worker instances running simultaneously on one or more Computers 
+    does not exceed the number of worker instances acquired.
 
 
 Part Two: Deployment Rights 
@@ -987,13 +1039,13 @@ derivative works. This Part Two sets forth additional limited rights to modify,
 create derivative works of, and/or distribute certain Program Components as
 specifically set forth below. 
 
-Certain Programs, such as the MATLAB Compiler and the Coder Programs, generate
-output in the form of Source Code, Object Code, or other files and materials.
-For example, the MATLAB Compiler can be used to create an executable program,
-and MATLAB Coder and other Coder Programs can be used to generate Source Code
-in C and C++. Under certain circumstances described below, you are permitted to
-use and distribute the files, models, Applications, and Generated Forms that
-you create using the Programs. 
+Certain Programs, such as the Compiler Programs and the Coder Programs,
+generate output in the form of Source Code, Object Code, or other files and
+materials.  For example, MATLAB Compiler and Simulink Compiler can be used to
+create an executable program, and MATLAB Coder and other Coder Programs can be
+used to generate Source Code in C and C++. Under certain circumstances
+described below, you are permitted to use and distribute the files, models,
+Applications, and Generated Forms that you create using the Programs. 
 
 Some Programs are technically prevented from being compiled, distributed,
 called from an external application, or used with MATLAB Parallel Server. 
@@ -1007,11 +1059,12 @@ You may distribute or sublicense User Files without restriction, provided that
 a principal purpose of the distribution or sublicense is not to replace or
 replicate a Program or any part of a Program and you otherwise comply with the
 general restrictions of the Software License Agreement and your License
-Offering.  "User Files" are MATLAB code files, Simulink model files, MEX-files,
-MAT-files, VHDL-files, Verilog-files, FIG-files or P-files that you create and
-that do not include any code obtained from MATLAB code files, Simulink model
-files, MAT-files, VHDL-files, Verilog-files, TLC-files, P-code, C/C++ files or
-other Source Code files supplied with the Programs.
+Offering.  "User Files" are MATLAB code files, Simulink model files, files
+generated by RoadRunner Programs, MEX-files, MAT-files, VHDL-files,
+Verilog-files, FIG-files or P-files that you create and that do not include any
+code obtained from MATLAB code files, Simulink model files, MAT-files,
+VHDL-files, Verilog-files, TLC-files, P-code, C/C++ files or other Source Code
+files supplied with the Programs.
 
 2.  Deployment Rights for Derivative Forms
 
@@ -1039,26 +1092,26 @@ No further license or royalty fees shall be due to MathWorks for deployment as
 expressly permitted in this Section, regardless of whether the deployment is
 solely for your Internal Operations or to Third Parties. 
 
-    3.1. MATLAB Compiler
+    3.1. Compiler Programs
 
-    If you license the MATLAB Compiler, you may create and deploy Applications
-    generated by the MATLAB Compiler that meet the requirements of this Section
+    If you license a Compiler Program, you may create and deploy Applications
+    generated by the Compiler Program that meet the requirements of this Section
     and comply with the restrictions in the Software License Agreement. 
 
-    These Applications may include compiled versions of MATLAB code files, but
-    only as required for the Application and from Programs that you have
-    licensed. You may also use and distribute the MATLAB Runtime together with
-    these Applications for the sole purpose of running the Applications.
-    However, you are prohibited from making copies of the MATLAB Runtime
-    accessible to any Third Party separate from or for use other than with your
-    Application, and from providing the MATLAB Runtime for service bureau or
-    similar service use.
+    These Applications may include compiled versions of MATLAB code files or
+    Simulink model files, but only as required for the Application and from
+    Programs that you have licensed. You may also use and distribute the MATLAB
+    Runtime together with these Applications for the sole purpose of running
+    the Applications.  However, you are prohibited from making copies of the
+    MATLAB Runtime accessible to any Third Party separate from or for use other
+    than with your Application, and from providing the MATLAB Runtime for
+    service bureau or similar service use.
 
-    If you license the Parallel Computing Toolbox (PCT) and generate an
-    Application using any functionality of the PCT, that Application may enable
-    up to the number of workers provided by the PCT used to build the
+    If you license Parallel Computing Toolbox (PCT) and generate an
+    Application using any functionality of PCT, that Application may enable
+    up to the number of worker instances provided by PCT used to build the
     Application. End-users of your Application do not need to have a license to
-    the PCT. 
+    PCT. 
 
     Your exercise of any of the rights granted here is subject to the
     restrictions in the Software License Agreement, including the following:
@@ -1143,7 +1196,7 @@ solely for your Internal Operations or to Third Parties.
     3.5. MAT-Files
 
     You may create and distribute Applications that read MAT-files using the
-    MAT-file API, but if you distribute such Applications to third parties,
+    MAT-file API, but if you distribute such Applications to Third Parties,
     they must also implement MAT-file write capability. As an exception to
     Section 3.4 above, in connection with Applications that read and write
     MAT-files, you may use, copy, and distribute certain shared Object Code
@@ -1176,9 +1229,11 @@ cluster, grid, build system, continuous integration system, regression server,
 data center, and similar types of systems. Automation Server also means an
 individual executing a Program to process Program Input Artifacts on behalf of
 other individuals in order to minimize or avoid purchasing additional licenses
-for such Program.  "External Application" means an external interface or
-application, such as a web application or an application written in another
-language, that calls or invokes the Programs. 
+for such Program.  
+
+"External Application" means an external interface or application, such as a
+web application or an application written in another language, that calls or
+invokes the Programs. 
 
 "Personal Automation Server" and "Personal External Application" mean,
 respectively, an Automation Server or External Application wherein 1) the
@@ -1258,27 +1313,27 @@ Programs may be run on an Automation Server or from an External Application.
 
     HDL Coder
 
-    GPU Coder
-
     Filter Design HDL Coder 
 
     Simulink PLC Coder
+
+    GPU Coder
 
     MATLAB Compiler
 
     MATLAB Compiler SDK
 
-    Simulink Design Verifier
-
+    Simulink Compiler
+    
     Simulink Code Inspector
+
+    Simulink Design Verifier
 
     Polyspace Bug Finder
 
-    Polyspace Bug Finder Server
-
     Polyspace Code Prover
 
-    Polyspace Code Prover Server
+    RoadRunner Scene Builder
 
 
     Section 3.14 of the Software License Agreement states that you are not
@@ -1288,6 +1343,20 @@ Programs may be run on an Automation Server or from an External Application.
     Servers or Personal External Applications. The Transformation Programs may
     only be used in Automation Servers or External Applications if you have
     sufficient licenses as described in Section 3.2 below.
+
+    Polyspace Bug Finder and Polyspace Code Prover may not be used in an
+    Automation Server except to prepare and initiate analysis performed by
+    Polyspace Bug Finder Server and Polyspace Code Prover Server when used in
+    conjunction with MATLAB Parallel Server.
+
+    RoadRunner Scene Builder may not be used in an Automation Server. It may,
+    however, be used by an individual to process Program Input Artifacts on 
+    behalf of other individuals working in the same, single vehicle program
+    without purchasing additional licenses for RoadRunner Scene Builder for 
+    such other individuals. "Vehicle program" means a feature or suite of
+    features for automated driving, marketed or intended to be marketed under a
+    single name.  Any use for other vehicle programs requires the purchase of
+    additional licenses. 
 
     3.2. Client Access Licenses
     Client Access Licenses (CALs) are licenses that give you the right to use
@@ -1302,7 +1371,7 @@ Programs may be run on an Automation Server or from an External Application.
     Artifacts in an Automation Server, or calling a Transformation Program from
     an External Application: 
     
-    * For Transformational Programs in the MATLAB and Simulink product
+    * For Transformation Programs in the MATLAB and Simulink product
       families, the Licensee's total number of licenses (including CALs) for
       the Transformation Program must be no less than the number of MATLAB or
       Simulink licenses used to create or modify the Program Input Artifacts. 
@@ -1319,16 +1388,6 @@ Programs may be run on an Automation Server or from an External Application.
       Transformation Program), must be no less than such user's total desktop
       usage of the MATLAB or Simulink licenses used to create or modify the
       Program Input Artifacts processed by such Transformation Program.
-
-    * For Polyspace Bug Finder Server or Polyspace Code Prover Server,
-      Licensee's total number of licenses for Polyspace Bug Finder Access or
-      Polyspace Code Prover Access (which serve as CALs for the respective
-      Programs) must be no less than the number of individuals creating or
-      modifying Source Code files processed by the respective Programs.
-      Polyspace Bug Finder and Polyspace Code Prover may not  be used in an
-      Automation Server or External Application, under any circumstances,
-      unless it is a Personal Automation Server or Personal External
-      Application.
 
     Examples:
 
@@ -1348,11 +1407,6 @@ Programs may be run on an Automation Server or from an External Application.
       Coder keys, Licensee needs 7 Simulink Coder CAL keys.
     * If Licensee has a Concurrent license with 10 Simulink keys and 10
       Simulink Coder keys, no CAL keys are needed. 
-
-
-    3. Licensee creates or modifies Source Code files processed by Polyspace Bug Finder Server.
-    * If Licensee has 10 individuals creating or modifying the Source Code,
-      Licensee needs 10 Polyspace Bug Finder Access keys.
 
 
 
@@ -1405,7 +1459,7 @@ be purchased for a minimum of one year (12 months) forward.
     Your quote to reinstate lapsed Software Maintenance Service for Programs
     will include fees for the forward service period, any applicable back
     maintenance fees for the lapsed period, and a reinstatement fee of 25% of
-    the anual cost of Software Maintenance Service. These fees are subject to
+    the annual cost of Software Maintenance Service. These fees are subject to
     change.
 
 
@@ -1462,7 +1516,7 @@ warranty for any Program; (d) do not transfer or convey any use or deployment
 rights for any Program without MathWorks consent; and (e) prohibit the removal
 of any copyright, trademark, logo, proprietary rights, disclaimer or warning
 notice included on or embedded in any part of the deployed Application.
-Further, if Licensee's Application is generated with the MATLAB Compiler, then
+Further, if Licensee's Application is generated with a Compiler Program, then
 Licensee's Application License shall include or incorporate by reference the
 terms of the MATLAB Runtime License included in a text file at [MCR Install
 Directory]\[version_number]\MCR_license.txt located within the installation for
@@ -1470,6 +1524,8 @@ the MATLAB Runtime.
 
 "Coder Programs" means Simulink Coder, MATLAB Coder, Embedded Coder, HDL Coder,
 Filter Design HDL Coder, Simulink PLC Coder, and GPU Coder.
+
+"Compiler Programs" means MATLAB Compiler and Simulink Compiler.
 
 "Derivative Form" means a software file that Licensee has derived from one or
 more Program Components (including without limitation by incorporating,
@@ -1491,7 +1547,7 @@ Affiliate on behalf of the Licensee or Affiliate.
 program combining Object Code module files.
 
 "MATLAB Runtime" means MATLAB Runtime support libraries and other files for
-deployment of Applications created with the MATLAB Compiler. MATLAB Runtime is
+deployment of Applications created with a Compiler Program. MATLAB Runtime is
 a Program Component of the MATLAB Compiler.
 
 "Named User" means a Licensed User, that must be an individual, designated and
@@ -1526,12 +1582,12 @@ Section 2.
 
 Footnotes
 
-[fn1] Details for MATLAB Parallel Server and MATLAB Production Server vary. See
-Section 3 below.
+[fn1] Details vary for Programs listed in Section 3 below, Specific Program
+Use Rights
 
 [fn2] Solely in respect to a Concurrent License Option licensed for a Standard
-License Use, "Country" means in respect to member countries of the North
-American Free Trade Agreement ("NAFTA") or any successor agreement, all such
+License Use, "Country" means in respect to member countries of the United
+States-Mexico-Canada Agreement (USMCA) or any successor agreement, all such
 countries collectively; and in respect to Iceland, Norway, Switzerland, the
 United Kingdom, and member countries of the European Union ("EU"), all such
 countries collectively. 
@@ -1544,6 +1600,6 @@ countries collectively.
 
 [fn6] Additional fees may apply.
 
-09/2019
+03/2021
 
 

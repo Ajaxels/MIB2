@@ -1,0 +1,52 @@
+<productinfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:noNamespaceSchemaLocation="optional">
+    <?xml-stylesheet type="text/xsl"href="optional"?>
+    <!-- info.xml file for the Microscopy Image Browser -->
+    <!-- Author: Ilya Belevich -->
+    <!-- Copyright 2010-2019 Electron Microscopy Unit, Institute of Biotechnology, University of Helsinki -->
+    
+    <!-- Release element is not used, but provides documentation -->
+    <matlabrelease>2014b</matlabrelease>
+    <!-- (Required) The name element appears in the Contents pane -->
+    <name>Microscopy Image Browser</name>
+    <!-- (Required) The type elementidentifies your package; pick one: -->
+    <!-- matlab, toolbox, simulink, blockset, links_targets  -->
+    <type>other</type>
+    <!-- The icon element is used in the Start button -->
+    <icon>$toolbox/matlab/icons/matlabicon.gif</icon>
+    <!-- (Required) The help_location is relative path to help (HTML) file folder -->
+    <help_location>html</help_location>
+    
+    <!-- - - - - - - - - - - - -  Start menu - - - - - - - - - - - - - - - -->
+    <!-- Optional list of entries to display on Start Menu -->
+    <!-- Callback items are function calls or commands for toolbox -->
+    <!-- You must Refresh the Start button to see your entries -->
+    <!-- Remove this entire list if you do not want a Start button entry -->
+    <list>
+         <listitem>
+            <!-- The label provides the text for this menu item --> 
+            <label>Microscopy Image Browser Documentation</label>
+            <!-- This callback is a command to open your documentation -->
+            <callback>web(fullfile(fileparts(which('im_browser')),'techdoc','html','im_browser_product_page.html'),'-helpbrowser')
+            </callback>
+            <!-- Menu item icon (a toolbox icon from the help browser ) -->
+            <icon>$toolbox/matlab/icons/bookicon.gif</icon>
+        </listitem>
+
+        <listitem>
+            <!-- Include call to show release note, if any -->
+            <label>Microscopy Image Browser Release Notes</label>
+            <callback>web(fullfile(fileparts(which('im_browser')),'techdoc','html','im_browser_release_notes.html'),'-helpbrowser')</callback>
+            <icon>$toolbox/matlab/icons/help_rn.png</icon>
+        </listitem>
+        
+        <listitem>
+             <!-- Include call to open your Web site, if any -->
+           <label>Microscopy Image Browser Web Site</label>
+            <callback>web http://mib.helsinki.fi;</callback>
+            <icon>$docroot/techdoc/matlab_env/examples/webicon.gif</icon>
+        </listitem>
+        <!-- Add listitems for other features of your toolbox... -->
+    </list>
+    <!-- - - - - - - - - - - - -  Start menu - - - - - - - - - - - - - - - -->
+</productinfo>

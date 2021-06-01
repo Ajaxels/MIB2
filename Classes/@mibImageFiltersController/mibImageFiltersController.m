@@ -82,6 +82,10 @@ classdef mibImageFiltersController < handle
             switch evnt.EventName
                 case {'updateGuiWidgets'}
                     obj.updateWidgets();
+                case 'changeSlice'
+                    if obj.View.handles.AutopreviewCheckBox.Value == 1
+                        obj.PreviewButtonPushed();
+                    end
             end
         end
     end
@@ -125,15 +129,19 @@ classdef mibImageFiltersController < handle
             % update certain parameters
             obj.ImageFilters.Bilateral.degreeOfSmoothing = num2str(obj.mibModel.I{obj.BatchOpt.id}.meta('MaxInt')^2*.01);
             
-            obj.BasicFiltersList = {'Average', 'Disk', 'ElasticDistortion', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std'};
+            if verLessThan('Matlab', '9.8')
+                obj.BasicFiltersList = {'Average', 'Disk', 'ElasticDistortion', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std'};
+            else
+                obj.BasicFiltersList = {'Average', 'Disk', 'ElasticDistortion', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Mode', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std'};
+            end
             obj.EdgePreservingFiltersList = {'AnisotropicDiffusion', 'Bilateral', 'DNNdenoise', 'Median', 'NonLocalMeans', 'Wiener'};
             obj.ContrastFiltersList = {'AddNoise', 'FastLocalLaplacian', 'FlatfieldCorrection', 'LocalBrighten', 'LocalContrast', 'ReduceHaze', 'UnsharpMask'};
             obj.BinarizationFiltersList = {'Edge', 'SlicClustering', 'WatershedClustering'};
-            obj.Filters3D = {'Average', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Median', 'Prewitt', 'SlicClustering', 'Sobel', 'WatershedClustering'};     % list of 3D compatible filters
+            obj.Filters3D = {'Average', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Median', 'Mode', 'Prewitt', 'SlicClustering', 'Sobel', 'WatershedClustering'};     % list of 3D compatible filters
             
             % add BMxD filter if available
-            if ~isempty(obj.mibModel.preferences.dirs.bm3dInstallationPath)
-                if exist(fullfile(obj.mibModel.preferences.dirs.bm3dInstallationPath, 'BM3D.m'), 'file') == 2
+            if ~isempty(obj.mibModel.preferences.ExternalDirs.bm3dInstallationPath)
+                if exist(fullfile(obj.mibModel.preferences.ExternalDirs.bm3dInstallationPath, 'BM3D.m'), 'file') == 2
                     obj.EdgePreservingFiltersList{end+1} = 'BMxD';
                 end
             end
@@ -277,6 +285,7 @@ classdef mibImageFiltersController < handle
 			
 			% add listner to obj.mibModel and call controller function as a callback
             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback(obj, src, evnt));    % listen changes in number of ROIs
+            obj.listener{2} = addlistener(obj.mibModel, 'changeSlice', @(src,evnt) obj.ViewListner_Callback(obj, src, evnt));    % listen changes in number of ROIs
         end
         
         function closeWindow(obj)
@@ -516,8 +525,20 @@ classdef mibImageFiltersController < handle
             
             obj.BatchOpt.FilterName{1} = value;
             obj.BatchOpt.Mode3D = obj.View.handles.Mode3D.Value;
-            obj.renderThumbnailPreview();
-            if obj.View.handles.AutopreviewCheckBox.Value; obj.PreviewButtonPushed(); end     % auto preview
+            
+            % enable/disable preview function for 3D datasets
+            if obj.BatchOpt.Mode3D == 1
+                obj.View.Figure.PreviewButton.Enable = 'off';
+                obj.View.Figure.AutopreviewCheckBox.Enable = 'off';
+                obj.View.Figure.AutopreviewCheckBox.Value = false;
+            else
+                obj.View.Figure.PreviewButton.Enable = 'on';
+                obj.View.Figure.AutopreviewCheckBox.Enable = 'on';
+                
+                obj.renderThumbnailPreview();
+                if obj.View.handles.AutopreviewCheckBox.Value; obj.PreviewButtonPushed(); end     % auto preview
+            end
+            
         end
         
         function Mode3DValueChanged(obj)
@@ -528,13 +549,27 @@ classdef mibImageFiltersController < handle
                 obj.View.handles.DatasetType.Value = '3D, Stack';
                 obj.BatchOpt = updateBatchOptFromGUI_Shared(obj.BatchOpt, obj.View.handles.DatasetType);
             end
+            
+            % enable/disable preview function for 3D datasets
+            if obj.View.handles.Mode3D.Value == 1
+                obj.View.Figure.PreviewButton.Enable = 'off';
+                obj.View.Figure.AutopreviewCheckBox.Enable = 'off';
+                obj.View.Figure.AutopreviewCheckBox.Value = false;
+            else
+                obj.View.Figure.PreviewButton.Enable = 'on';
+                obj.View.Figure.AutopreviewCheckBox.Enable = 'on';
+            end
+            
         end
         
         function renderThumbnailPreview(obj)
             % function renderThumbnailPreview(obj)
             % render an image for the thumbnail preview
             %if ismember(obj.BatchOpt.FilterName{1}, {'DNNdenoise','FastLocalLaplacian','FlatfieldCorrection', 'LocalBrighten', 'ReduceHaze', 'UnsharpMask'}); return; end % do not render preview for these filters
-            if ismember(obj.BatchOpt.FilterName{1}, {'DNNdenoise'}); return; end % do not render preview for these filters
+            if ismember(obj.BatchOpt.FilterName{1}, {'DNNdenoise'}) || obj.BatchOpt.Mode3D
+                return; 
+            end % do not render preview for these filters and 3D mode
+            
             img = obj.Filter(obj.mibModel.sessionSettings.ImageFilters.TestImg);
             
             if strcmp(obj.BatchOpt.FilterGroup{1}, 'Image Binarization')
@@ -601,33 +636,33 @@ classdef mibImageFiltersController < handle
                 case 'selection'
                     getRGBimageOptions.blockModeSwitch = 1;
                     getRGBimageOptions.resize = 'no';
-                    currTransparency = obj.mibModel.preferences.mibSelectionTransparencySlider;
-                    obj.mibModel.preferences.mibSelectionTransparencySlider = 1;
+                    currTransparency = obj.mibModel.preferences.Colors.SelectionTransparency;
+                    obj.mibModel.preferences.Colors.SelectionTransparency = 1;
                     I = obj.mibModel.getRGBimage(getRGBimageOptions);
                     I(img==1) = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
                     eventdata = ToggleEventData(I);   % send image to show in  mibView.handles.mibImageAxes as ToggleEventData class
                     notify(obj.mibModel, 'plotImage', eventdata);
-                    obj.mibModel.preferences.mibSelectionTransparencySlider = currTransparency;
+                    obj.mibModel.preferences.Colors.SelectionTransparency = currTransparency;
                 case 'mask'
                     getRGBimageOptions.blockModeSwitch = 1;
                     getRGBimageOptions.resize = 'no';
-                    currTransparency = obj.mibModel.preferences.mibMaskTransparencySlider;
-                    obj.mibModel.preferences.mibMaskTransparencySlider = 1;
+                    currTransparency = obj.mibModel.preferences.Colors.MaskTransparency;
+                    obj.mibModel.preferences.Colors.MaskTransparency = 1;
                     I = obj.mibModel.getRGBimage(getRGBimageOptions);
                     I(img==1) = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
                     eventdata = ToggleEventData(I);   % send image to show in  mibView.handles.mibImageAxes as ToggleEventData class
                     notify(obj.mibModel, 'plotImage', eventdata);
-                    obj.mibModel.preferences.mibMaskTransparencySlider = currTransparency;
+                    obj.mibModel.preferences.Colors.MaskTransparency = currTransparency;
                 case 'model'
                     getRGBimageOptions.blockModeSwitch = 1;
                     getRGBimageOptions.resize = 'no';
-                    currTransparency = obj.mibModel.preferences.mibMaskTransparencySlider;
-                    obj.mibModel.preferences.mibModelTransparencySlider = 1;
+                    currTransparency = obj.mibModel.preferences.Colors.MaskTransparency;
+                    obj.mibModel.preferences.Colors.ModelTransparency = 1;
                     I = obj.mibModel.getRGBimage(getRGBimageOptions);
                     I(img==1) = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
                     eventdata = ToggleEventData(I);   % send image to show in  mibView.handles.mibImageAxes as ToggleEventData class
                     notify(obj.mibModel, 'plotImage', eventdata);
-                    obj.mibModel.preferences.mibModelTransparencySlider = currTransparency;
+                    obj.mibModel.preferences.Colors.ModelTransparency = currTransparency;
                 otherwise
                     eventdata = ToggleEventData(img);   % send image to show in  mibView.handles.mibImageAxes as ToggleEventData class
                     notify(obj.mibModel, 'plotImage', eventdata);

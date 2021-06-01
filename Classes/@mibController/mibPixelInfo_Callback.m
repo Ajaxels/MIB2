@@ -113,7 +113,7 @@ switch parameter
         screenSize = get(0, 'screensize');
         x1 = pos1(1) + pos2(1) + pos3(1) + pos3(3)/2;
         y1 = screenSize(4) - (pos1(2) + pos2(2) + pos3(2) + pos3(4)/2);
-        mouse.mouseMove(x1*obj.mibModel.preferences.gui.systemscaling, y1*obj.mibModel.preferences.gui.systemscaling);
+        mouse.mouseMove(x1*obj.mibModel.preferences.System.GUI.systemscaling, y1*obj.mibModel.preferences.System.GUI.systemscaling);
         % recenter the view
         obj.mibModel.I{obj.mibModel.Id}.moveView(x, y);
         

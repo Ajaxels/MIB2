@@ -22,13 +22,13 @@ classdef mibImageUndo < handle
         % @li @b 1 - enable
         % @li @b 0 - disable
         type
-        % a variable to store type of the data: ''image'', ''model'', ''selection'', ''mask'','labels',''measurement'',''everything'' (for imageData.model_type==''uint6'' only)
+        % a variable to store type of the data: ''image'', ''model'', ''selection'', ''mask'', ''labels'', ''measurement'',''everything'' (for imageData.model_type==''uint6'' only)
         undoList
         % a structure to store the list of the actions for undo
-        % @li @b .type - type of the data: ''image'', ''model'', ''selection'', ''mask'', 'labels',''measurement'',''everything'' (for imageData.model_type==''uint6'' only)
+        % @li @b .type - type of the data: ''image'', ''model'', ''selection'', ''mask'', ''labels'', ''measurement'',''everything'' (for imageData.model_type==''uint6'' only)
         % @li @b .data - a field to store a cell with 3D dataset or 2D slice
         % @li @b .meta - meta containers.Map , for the ''image'' type
-        % @li @b .options - a substructure with all additional paramters,
+        % @li @b .options - a substructure with all additional parameters,
         % as for example the following list
         % @li @b .orient - orientation of the slice, @b 1 - xz, @b 2 - yz, @b 4 - yx
         % @li @b .switch3d - a switch indicating 3D dataset

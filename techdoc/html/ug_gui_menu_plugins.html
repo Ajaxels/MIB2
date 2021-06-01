@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Plugins Menu</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-06-08"><meta name="DC.source" content="ug_gui_menu_plugins.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>Plugins Menu</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-01"><meta name="DC.source" content="ug_gui_menu_plugins.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Plugins Menu</h1><p>This menu allows access to custom plugins.</p><p>The plugins should be placed under <tt>mib-&gt;Plugins</tt> directory as <tt>PLUGIN_GROUP_NAME/PLUGIN_NAME</tt>, where PLUGIN_GROUP_NAME is a directory with similarly grouped plugins. PLUGIN_NAME - is a directory with the actual plugin. The name of controller for each plugin should be formed as: PLUGIN_NAMEController, for example <tt>mytestController.m</tt>. So the full filename may look like this:</p><p><i>c:\Matlab\Scripts\mib\Plugins\MyPlugings\myPlugin\myPluginController.m</i></p><p>Please check the contents of <tt>Plugins-&gt;Tutorials</tt> for examples. See more in the corresponding <a href="http://mib.helsinki.fi/tutorials_programming.html">tutorials</a> .</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
+  </style></head><body><div class="content"><h1>Plugins Menu</h1><!--introduction--><p>This menu allows access to custom plugins.</p><p>The plugins should be placed under <tt>mib-&gt;Plugins</tt> directory as <tt>PLUGIN_GROUP_NAME/PLUGIN_NAME</tt>, where PLUGIN_GROUP_NAME is a directory with similarly grouped plugins. PLUGIN_NAME - is a directory with the actual plugin. The name of controller for each plugin should be formed as: PLUGIN_NAMEController, for example <tt>mytestController.m</tt>. So the full filename may look like this:</p><p><i>c:\Matlab\Scripts\mib\Plugins\MyPlugings\myPlugin\myPluginController.m</i></p><p>Please check the contents of <tt>Plugins-&gt;Tutorials</tt> for examples. See more in the corresponding <a href="http://mib.helsinki.fi/tutorials_programming.html">tutorials</a> .</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">File processing</a></li><li><a href="#2">Intensity analysis</a></li><li><a href="#3">Organelle analysis</a></li><li><a href="#4">Plasmodesmata</a></li><li><a href="#5">Tutorials</a></li></ul></div><h2 id="1">File processing</h2><div><ul><li><b>Image converter</b> - a plugin for bulk conversion of files from one format to another. A small video tutorial is available via this link <a href="https://youtu.be/Xu1waZ913bE">&lt;https://youtu.be/Xu1waZ913bE</a>&gt;</li><li><b>ITEM2</b></li></ul></div><h2 id="2">Intensity analysis</h2><p>Plugins for analysis of intensities in images</p><div><ul><li><b>Triple area intensity</b> - a plugin to calculate intensity in 3 related areas in images and calculate the ratios. Click the Help button in the plugin for details</li></ul></div><h2 id="3">Organelle analysis</h2><p>Analysis of biological objects</p><div><ul><li><b>MCcalc</b>, a plugin for detection of contacts and calculation of distance distributions from TEM images. See more in the the full MCcalc workflow presented on <a href="http://mib.helsinki.fi/tutorials_tools.html">&lt;http://mib.helsinki.fi/tutorials_tools.html</a>&gt;</li><li><b>Surface Area 3D</b> - calculation of surface areas for planar structures from MIB models. Use the Help button inside the plugin for details</li></ul></div><h2 id="4">Plasmodesmata</h2><p>Plugins for analysis of plasmadesmata in roots of Arabidopsis thaliana. For details please follow to this publication: Paterlini A, Belevich I, Jokitalo E, Helariutta Y., Computational Tools for Serial Block Electron Microscopy Reveal Plasmodesmata Distributions and Wall Environments, Plant Physiol. 2020 Sep;184(1):53-64. doi: 10.1104/pp.20.00396. Epub 2020 Jul 23. <a href="https://pubmed.ncbi.nlm.nih.gov/32719057/">&lt;https://pubmed.ncbi.nlm.nih.gov/32719057/</a>&gt;</p><h2 id="5">Tutorials</h2><p>Demo examples from the tutorials section: <a href="http://mib.helsinki.fi/tutorials_programming.html">&lt;http://mib.helsinki.fi/tutorials_programming.html</a>&gt;</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Plugins Menu
 % This menu allows access to custom plugins. 
@@ -81,6 +82,47 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 %
 % Please check the contents of |Plugins->Tutorials| for examples. See more in the
 % corresponding <http://mib.helsinki.fi/tutorials_programming.html tutorials> .
+%
+%% File processing
+%
+% 
+% 
+% * *Image converter* - a plugin for bulk conversion of files from one
+% format to another. A small video tutorial is available via this link 
+% <https://youtu.be/Xu1waZ913bE https://youtu.be/Xu1waZ913bE>
+% * *ITEM2*
+% 
+% 
+%% Intensity analysis
+%
+% Plugins for analysis of intensities in images
+%
+% * *Triple area intensity* - a plugin to calculate intensity in 3 related
+% areas in images and calculate the ratios. Click the Help button in the
+% plugin for details
+%
+%% Organelle analysis
+%
+% Analysis of biological objects
+%
+% * *MCcalc*, a plugin for detection of contacts and calculation of
+% distance distributions from TEM images. See more in the the full MCcalc workflow presented on 
+% <http://mib.helsinki.fi/tutorials_tools.html http://mib.helsinki.fi/tutorials_tools.html>
+% * *Surface Area 3D* - calculation of surface areas for planar structures
+% from MIB models. Use the Help button inside the plugin for details
+%
+%% Plasmodesmata
+%
+% Plugins for analysis of plasmadesmata in roots of Arabidopsis thaliana. For details please follow to this publication:
+% Paterlini A, Belevich I, Jokitalo E, Helariutta Y., Computational Tools
+% for Serial Block Electron Microscopy Reveal Plasmodesmata Distributions and Wall Environments,
+% Plant Physiol. 2020 Sep;184(1):53-64. doi: 10.1104/pp.20.00396. Epub 2020 Jul 23.
+% <https://pubmed.ncbi.nlm.nih.gov/32719057/ https://pubmed.ncbi.nlm.nih.gov/32719057/>
+%
+%% Tutorials
+%
+% Demo examples from the tutorials section: <http://mib.helsinki.fi/tutorials_programming.html http://mib.helsinki.fi/tutorials_programming.html>
+%
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*>
 %

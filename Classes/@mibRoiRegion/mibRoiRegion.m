@@ -980,26 +980,26 @@ classdef mibRoiRegion < matlab.mixin.Copyable
             % Evaluate options
             % ==============================
             marker = O.marker;
-            markersize = eval(O.markersize);
+            markersize = str2double(O.markersize);
             if length(O.color) == 1 || strcmpi(O.color,'none')
                 color = O.color;
             else
-                color = eval(O.color);
+                color = str2num(O.color); %#ok<*ST2NM>
             end
             
             linestyle = O.linestyle;
-            linewidth = eval(O.linewidth);
+            linewidth = str2double(O.linewidth);
             if length(O.textcolorfg) == 1 || strcmpi(O.textcolorfg,'none')
                 textcolorfg = O.textcolorfg;
             else
-                textcolorfg = eval(O.textcolorfg);
+                textcolorfg = str2num(O.textcolorfg);
             end
             if length(O.textcolorbg) == 1  || strcmpi(O.textcolorbg,'none')
                 textcolorbg = O.textcolorbg;
             else
-                textcolorbg = eval(O.textcolorbg);
+                textcolorbg = str2num(O.textcolorbg);
             end
-            fontsize = eval(O.fontsize);
+            fontsize = str2double(O.fontsize);
             
             mibController.mibView.handles.mibImageAxes.NextPlot = 'add';
             indices = find([obj.Data.orientation]' == currOrientation);

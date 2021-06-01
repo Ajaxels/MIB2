@@ -11,9 +11,15 @@ function menuFilePreference_Callback(obj)
 % of the License, or (at your option) any later version.
 %
 % Updates
-%
+% 04.05.2021, added a new Preferences window for R2020a or newer
 
-obj.mibModel.preferences.modelMaterialColors = obj.mibModel.getImageProperty('modelMaterialColors');
-obj.mibModel.preferences.lutColors = obj.mibModel.getImageProperty('lutColors');
-obj.startController('mibPreferencesController', obj);
+obj.mibModel.preferences.Colors.ModelMaterialColors = obj.mibModel.getImageProperty('modelMaterialColors');
+obj.mibModel.preferences.Colors.LUTColors = obj.mibModel.getImageProperty('lutColors');
+if verLessThan('matlab','9.8')
+    obj.startController('mibPreferencesController', obj); % an old guide version
+else
+    
+    obj.startController('mibPreferencesAppController', obj);  % a new appdesigner version
+end
+
 end

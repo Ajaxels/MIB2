@@ -53,14 +53,14 @@ else
     magnificationFactor = obj.getMagFactor();
 end
 
-if strcmp(obj.preferences.imageResizeMethod, 'auto')
+if strcmp(obj.preferences.System.ImageResizeMethod, 'auto')
     if magnificationFactor > 1
         imageResizeMethod = 'bicubic';
     else
         imageResizeMethod = 'nearest';
     end
 else
-    imageResizeMethod = obj.preferences.imageResizeMethod;
+    imageResizeMethod = obj.preferences.System.ImageResizeMethod;
 end
 
 panModeException = 0; % otherwise in the pan mode the image may be huge
@@ -104,7 +104,7 @@ else
         else
             for colCh = 1:size(sImgIn,3)
                 if colCh==1
-                    sImg = imresize(sImgIn(:,:,colCh), 1/magnificationFactor, imageResizeMethod); 
+                    sImg = imresize(sImgIn(:,:,colCh), 1/magnificationFactor, imageResizeMethod);
                 else
                     sImg(:,:,colCh) = imresize(sImgIn(:,:,colCh), 1/magnificationFactor, imageResizeMethod);
                 end
@@ -175,7 +175,7 @@ else
 end
 
 % get the selection model
-if obj.I{obj.Id}.disableSelection == 0
+if obj.I{obj.Id}.enableSelection == 1
     selectionModel = cell2mat(obj.getData2D('selection', sliceToShowIdx, NaN, NaN, options));
     if panModeException == 0 && magnificationFactor > 1
         if strcmp(imageResizeMethod,'nearest')  || strcmp(colortype, 'indexed')   % because no matter of the resampling way, the indexed images are resampled via nearest
@@ -302,7 +302,7 @@ end
 
 if isnan(sOver1(1,1,1)) == 0   % segmentation model
     sList = obj.I{obj.Id}.modelMaterialNames;
-    T = obj.preferences.mibModelTransparencySlider; % transparency for the segmentation model
+    T = obj.preferences.Colors.ModelTransparency; % transparency for the segmentation model
     if obj.I{obj.Id}.modelType ~= 127 && obj.I{obj.Id}.modelType ~= 32767
         over_type = obj.mibSegmShowTypePopup;  % if 1=filled, 2=contour
         M = sOver1;   % Model
@@ -384,11 +384,11 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
 end
 
 
-T1 = obj.preferences.mibSelectionTransparencySlider; % transparency for selection
+T1 = obj.preferences.Colors.SelectionTransparency; % transparency for selection
 
 % add the mask layer
 if isnan(sOver2(1,1,1)) == 0
-    T2 = obj.preferences.mibMaskTransparencySlider; % transparency for mask
+    T2 = obj.preferences.Colors.MaskTransparency; % transparency for mask
     over_type = 2; %get(handles.segmShowTypePopup,'Value');  % if 1=filled, 2=contour
     %T1 = 0.65;    % transparency for mask model
     
@@ -401,18 +401,18 @@ if isnan(sOver2(1,1,1)) == 0
     
     pntlist = find(M==ind);
     if ~isempty(pntlist)
-        R(pntlist) = R(pntlist)*T2+obj.preferences.maskcolor(1)*colorScale*(1-T2);
-        G(pntlist) = G(pntlist)*T2+obj.preferences.maskcolor(2)*colorScale*(1-T2);
-        B(pntlist) = B(pntlist)*T2+obj.preferences.maskcolor(3)*colorScale*(1-T2);
+        R(pntlist) = R(pntlist)*T2+obj.preferences.Colors.MaskColor(1)*colorScale*(1-T2);
+        G(pntlist) = G(pntlist)*T2+obj.preferences.Colors.MaskColor(2)*colorScale*(1-T2);
+        B(pntlist) = B(pntlist)*T2+obj.preferences.Colors.MaskColor(3)*colorScale*(1-T2);
     end
 end
 
 % put a selection area on a top
 if ~isnan(selectionModel(1))
     pnt_list = find(selectionModel==1);
-    R(pnt_list) = R(pnt_list)*T1+obj.preferences.selectioncolor(1)*colorScale*(1-T1);
-    G(pnt_list) = G(pnt_list)*T1+obj.preferences.selectioncolor(2)*colorScale*(1-T1);
-    B(pnt_list) = B(pnt_list)*T1+obj.preferences.selectioncolor(3)*colorScale*(1-T1);
+    R(pnt_list) = R(pnt_list)*T1+obj.preferences.Colors.SelectionColor(1)*colorScale*(1-T1);
+    G(pnt_list) = G(pnt_list)*T1+obj.preferences.Colors.SelectionColor(2)*colorScale*(1-T1);
+    B(pnt_list) = B(pnt_list)*T1+obj.preferences.Colors.SelectionColor(3)*colorScale*(1-T1);
 end
 imgRGB = cat(3, R, G, B);
 
@@ -465,8 +465,13 @@ if obj.mibShowAnnotationsCheck %% && obj.orientation == 4
         if ~isfield(options, 'sliceNo')
             options.sliceNo = obj.I{obj.Id}.slices{obj.I{obj.Id}.orientation}(1);
         end
-        [labelsList, labelValues, labelPos] = obj.I{obj.Id}.getSliceLabels(options.sliceNo);
+        
+        % define depth randge to display annotation
+        zSlices = [options.sliceNo - obj.preferences.SegmTools.Annotations.ShownExtraDepth, ...
+                   options.sliceNo + obj.preferences.SegmTools.Annotations.ShownExtraDepth];
+        [labelsList, labelValues, labelPos] = obj.I{obj.Id}.getSliceLabels(zSlices);
         if isempty(labelsList); return; end
+        
         if orientation == 4     % get ids of the correct vectors in the matrix, depending on orientation
             xId = 2;
             yId = 3;
@@ -505,8 +510,8 @@ if obj.mibShowAnnotationsCheck %% && obj.orientation == 4
                 addTextOptions.markerText = 'both';
             end
         end
-        addTextOptions.color = obj.preferences.annotationColor;
-        addTextOptions.fontSize = obj.preferences.annotationFontSize;
+        addTextOptions.color = obj.preferences.SegmTools.Annotations.Color;
+        addTextOptions.fontSize = obj.preferences.SegmTools.Annotations.FontSize;
         
         switch obj.mibAnnMarkerEdit
             case 'value'

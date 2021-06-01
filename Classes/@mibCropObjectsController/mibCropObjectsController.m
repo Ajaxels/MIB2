@@ -483,7 +483,7 @@ classdef mibCropObjectsController < handle
                                     Options.overwrite = 1;
                                     Options.showWaitbar = 0;  % show or not waitbar in bitmap2nrrd
                                     bitmap2nrrd(fnModel, imOut, BoundingBox, Options);
-                                case {'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)}'}  % LZW TIF / uncompressed TIF
+                                case {'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)'}  % LZW TIF / uncompressed TIF
                                     fnModel = ['Labels_' fnModel '.tif']; %#ok<AGROW>
                                     fnModel = fullfile(obj.outputDir, fnModel);
                                     

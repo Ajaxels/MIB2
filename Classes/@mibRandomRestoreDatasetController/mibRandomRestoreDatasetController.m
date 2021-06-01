@@ -109,7 +109,7 @@ classdef mibRandomRestoreDatasetController < handle
                 filename = obj.mibModel.myPath;
             end
             
-            [filename, path] = uigetfile('*.mibShuffle', 'Select a project file', filename);
+            [filename, path] = mib_uigetfile('*.mibShuffle', 'Select a project file', filename);
             if filename == 0; return; end
             
             obj.inputFilename = fullfile(path, filename);

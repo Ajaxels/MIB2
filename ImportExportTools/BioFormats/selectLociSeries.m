@@ -116,6 +116,8 @@ end
 
 numSeries = r.getSeriesCount();
 data = cell(numSeries,6);  % prepare data for the table
+%pixSize = cell(numSeries);    % allocate space for pix size 
+%omeMeta = r.getMetadataStore();
 for seriesIndex = 1:numSeries
     r.setSeries(seriesIndex-1);
     data{seriesIndex,1} = char(r.getMetadataStore().getImageName(seriesIndex - 1));
@@ -124,9 +126,11 @@ for seriesIndex = 1:numSeries
     data{seriesIndex,4} = r.getSizeC();    % number of color layers
     data{seriesIndex,5} = r.getSizeZ();
     data{seriesIndex,6} = r.getSizeT();    % number of time layers
+     
+    %pixSize{seriesIndex}(1) = double(omeMeta.getPixelsPhysicalSizeX(seriesIndex-1).value(ome.units.UNITS.MICROM));   % in um
+    %pixSize{seriesIndex}(2) = double(omeMeta.getPixelsPhysicalSizeY(seriesIndex-1).value(ome.units.UNITS.MICROM));
 end
 handles.seriesTable.Data = data;
-
 handles.output2 = r;
 
 if numSeries > 0
@@ -243,7 +247,6 @@ function seriesTable_CellSelectionCallback(hObject, eventdata, handles)
 %	Indices: row and column indices of the cell(s) currently selecteds
 % handles    structure with handles and user data (see GUIDATA)
 oldOutput = handles.output;
-handles.selectedSeriesText.String = num2str(unique(eventdata.Indices(:,1)'));
 handles.output = unique(eventdata.Indices(:,1));
 handles.output2.setSeries(handles.output(1)-1);    % set desired series
 tableData = get(handles.seriesTable,'Data');
@@ -256,6 +259,14 @@ set(handles.sliceNumberSlider, 'Value', 1);
 set(handles.sliceNumberSlider, 'Min', .99);
 set(handles.sliceNumberSlider, 'Max', handles.output4(end, 4));
 set(handles.sliceNumberSlider, 'SliderStep', [.1 .1]);
+
+omeMeta = handles.output2.getMetadataStore();
+indeces = unique(eventdata.Indices(:,1)');
+pixSizeX = double(omeMeta.getPixelsPhysicalSizeX(indeces(1)-1).value(ome.units.UNITS.MICROM));   % in um
+pixSizeY = double(omeMeta.getPixelsPhysicalSizeY(indeces(1)-1).value(ome.units.UNITS.MICROM));
+    
+handles.selectedSeriesText.String = sprintf('%s, pixsize, x/y = %f, %f um', ...
+    num2str(indeces), pixSizeX, pixSizeY);
 
 if oldOutput(1) ~= handles.output(1)
     updateImagePreview(handles);

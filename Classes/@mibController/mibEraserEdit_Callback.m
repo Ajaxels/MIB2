@@ -19,8 +19,8 @@ function mibEraserEdit_Callback(obj)
 % 
 
 status = obj.mibView.editbox_Callback(obj.mibView.handles.mibEraserEdit, 'pfloat', '1.4');
-if status == 0; return; end;
+if status == 0; return; end
 
 val = str2double(obj.mibView.handles.mibEraserEdit.String);
-obj.mibModel.preferences.eraserRadiusFactor = val;
+obj.mibModel.preferences.SegmTools.Brush.EraserRadiusFactor = val;
 end

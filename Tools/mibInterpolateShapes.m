@@ -61,15 +61,18 @@ cent(:,2) = cent(:,2)-minY;
 for ind = 2:numel(slices)
     sl_id1 = slices(ind-1);     % number of the 1st slice with shape
     sl_id2 = slices(ind);       % number of the 2nd slice with shape
-    if sl_id1 == sl_id2 - 1; continue; end;     % do not consider consecutive slices
+    
+    if sl_id1 == sl_id2 - 1; continue; end     % do not consider consecutive slices
     bw1 = bwperim(img(minY:maxY, minX:maxX, sl_id1));  % get first shape
     bw2 = bwperim(img(minY:maxY, minX:maxX, sl_id2));    % get second shape
-    
-    
+   
     % get centroids to estimate starting point for perimeter trace
-    Cent1 = round(cent(sl_id1, :));
-    Cent2 = round(cent(sl_id2, :));
-
+    Cent1 = ceil(cent(sl_id1, :));
+    Cent2 = ceil(cent(sl_id2, :));
+    
+    if ismember(0, cent(sl_id1, :)); errordlg(sprintf('!!! Error !!!\n\nWrong selection (the area should be at least several pixels in size) is found on slice %d, fix it and try again', sl_id1)); return; end
+    if ismember(0, cent(sl_id2, :)); errordlg(sprintf('!!! Error !!!\n\nWrong selection (the area should be at least several pixels in size) is found on slice %d, fix it and try again', sl_id2)); return; end
+   
     if ~isempty(find(bw1(1:Cent1(2),Cent1(1))==1,1)) && ~isempty(find(bw2(1:Cent2(2),Cent2(1))==1,1)) % take northern points from centroids on both shapes
         start_pnt1 = [find(bw1(1:Cent1(2),Cent1(1))==1,1), Cent1(1)];
         start_pnt2 = [find(bw2(1:Cent2(2),Cent2(1))==1,1), Cent2(1)];

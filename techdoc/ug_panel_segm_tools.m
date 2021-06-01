@@ -170,6 +170,8 @@
 % annotations. It is possible to load and save annotations to the main Matlab
 % workspace or to a file (matlab and excel formats). See more below.</li>
 % <li>The <b>Delete All</b> button removes all annotations
+% <li><b>Precision</b> edit box - specify number of digits after decimal
+% point</li>
 % <li>The <b>Display as</b> combobox - enables way how the annotations are
 % displayed in the <a href="ug_panel_im_view.html">Image View panel</a>. 
     % <ul>The following modes are available:<br><br>
@@ -210,6 +212,7 @@
 %       <li><em><b>Copy selected annotations to clipboard</em></b>, the selected annotations are copied to the system clipboard as a text string ready to be pasted to Excel</li>
 %       <li><em><b>Export selected annotations</em></b>, export selected annotations in the Matlab format, landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>), PSI format for Amira and Excel</li>
 %       <li><em><b>Export selected annotations to Imaris</em></b>, export selected annotations to Imaris (<em><b>Note!</em> please first export the dataset!</b>)</li>
+%       <li><em><b>Order</b></em>, subitems of the Order entry can be used to move annotations towards the top or the bottom of the list</li>
 %       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
 %   </ul>
 % <li>The <b>Load</b> button, press to import annotations from the main Matlab workspace or load them from a file</li>
@@ -218,6 +221,7 @@
 % <li>The <b>Precision</b> editbox, modify precision of the value field in the table and for the visualization in the Image View panel
 % <li>The <b>Auto jump</b> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>
 % <li>The <b>Sort table</b> allows to sort annotations based on their Name, Value, X, Y, Z, T</li>
+% <li>The <b>Settings</b> provides configuration of additional settings: extra slices to display annotation, when this value 0 annotations only belonging to the current slice are displayed, when a positive number from -value to +value depth</li>
 % <li>The <b>Refresh table</b> button updates the list of annotations</li>
 % <li>The <b>Delete all</b> button removes all annotations</li>
 % </ul>
@@ -238,7 +242,8 @@
 % Use brush to make selection. The brush size is regulated with
 % the <b>Radius, px</b> edit box
 % <br>
-% A brief demonstration is available in the following video:<br>
+% A brief demonstration is available in the following videos:<br>
+% <a href="https://youtu.be/VlTCxVAUxFc"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/VlTCxVAUxFc</a>
 % <a href="https://youtu.be/ZcJQb59YzUA?t=37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=37s</a>
 % <br>
 % <br><br>Objects from different image slices may be connected

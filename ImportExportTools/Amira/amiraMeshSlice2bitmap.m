@@ -32,14 +32,15 @@ bitmap = [];
 if nargin < 7; options = struct(); end
 if nargin < 2; sliceNo = 1; end
 if nargin < 1
-    [filename, pathname] = uigetfile( ...
+    [filename, pathname] = mib_uigetfile( ...
         {'*.am','Amira mesh labels(*.am)';
         '*.*',  'All Files (*.*)'}, ...
         'Pick a file');
     if filename == 0; return; end
     filename = [pathname filename];
 end
-fid = fopen(filename, 'r');
+%fid = fopen(filename, 'r');
+fid = fopen(filename, 'r', 'n', 'UTF-8');
 
 fseek(fid, 1215, 'bof'); % skip to position after @1, which is 1215 for Huh7.am, find it with ftell
 

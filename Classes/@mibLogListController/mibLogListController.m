@@ -98,8 +98,8 @@ classdef mibLogListController < handle
                 msgbox('The BoundingBox information can not be deleted!', 'Error', 'error', 'modal') ;
                 return;
             end
-            button = questdlg(sprintf('You are goint to delete highlighted entry!\n\nAre you sure?'),'Delete entry','Delete','Cancel','Cancel');
-            if strcmp(button,'Cancel'); return; end;
+            button = questdlg(sprintf('You are going to delete highlighted entry!\n\nAre you sure?'),'Delete entry','Delete','Cancel','Cancel');
+            if strcmp(button,'Cancel'); return; end
             obj.View.handles.logList.Value = 1;
             for i=numel(pos):-1:1
                 obj.mibModel.getImageMethod('updateImgInfo', NaN, '', 'delete', pos(i));
@@ -140,7 +140,7 @@ classdef mibLogListController < handle
             colon = strfind(currEntry,':');
             currEntry = currEntry(colon(1)+2:end);
             answer =mibInputDlg({mibPath}, 'Modify the text:', 'Modify the entry', currEntry);
-            if isempty(answer); return;  end;
+            if isempty(answer); return;  end
             obj.mibModel.getImageMethod('updateImgInfo', NaN, answer{1},'modify',pos);
             obj.updateWidgets();
         end

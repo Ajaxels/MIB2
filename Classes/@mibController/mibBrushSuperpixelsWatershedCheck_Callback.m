@@ -30,8 +30,8 @@ else
             obj.mibView.handles.mibBrushPanelCompactText.TooltipString = 'compactness factor, the larger the number more square resulting superpixels';
             obj.mibView.handles.mibSuperpixelsCompactEdit.TooltipString = 'compactness factor, the larger the number more square resulting superpixels';
             %obj.mibView.handles.mibSuperpixelsCompactEdit.Callback = {@editbox_Callback, guidata(hObject), 'posint', '0', [0,200]};
-            obj.mibView.handles.mibSuperpixelsNumberEdit.String = num2str(obj.mibModel.preferences.superpixels.slic_n);
-            obj.mibView.handles.mibSuperpixelsCompactEdit.String = num2str(obj.mibModel.preferences.superpixels.slic_compact);
+            obj.mibView.handles.mibSuperpixelsNumberEdit.String = num2str(obj.mibModel.preferences.SegmTools.Superpixels.NoSLIC);
+            obj.mibView.handles.mibSuperpixelsCompactEdit.String = num2str(obj.mibModel.preferences.SegmTools.Superpixels.CompactSLIC);
         case 'mibBrushSuperpixelsWatershedCheck'       % Watershed superpixels
             obj.mibView.handles.mibBrushSuperpixelsCheck.Value = 0;
             obj.mibView.handles.mibBushPanelNText.TooltipString = 'factor to modify size of superpixels, the larger number gives bigger superpixels';
@@ -40,8 +40,8 @@ else
             obj.mibView.handles.mibBrushPanelCompactText.TooltipString = 'put 0 if objects have bright boundaries or 1 if objects have dark boundaries';
             obj.mibView.handles.mibSuperpixelsCompactEdit.TooltipString = 'put 0 if objects have bright boundaries or 1 if objects have dark boundaries';
             %obj.mibView.handles.mibSuperpixelsCompactEdit.Callback = {@editbox_Callback, guidata(hObject), 'posint', '1', [0,1]};
-            obj.mibView.handles.mibSuperpixelsNumberEdit.String = num2str(obj.mibModel.preferences.superpixels.watershed_n);
-            obj.mibView.handles.mibSuperpixelsCompactEdit.String = num2str(obj.mibModel.preferences.superpixels.watershed_invert);
+            obj.mibView.handles.mibSuperpixelsNumberEdit.String = num2str(obj.mibModel.preferences.SegmTools.Superpixels.NoWatershed);
+            obj.mibView.handles.mibSuperpixelsCompactEdit.String = num2str(obj.mibModel.preferences.SegmTools.Superpixels.InvertWatershed);
     end
 end
 end

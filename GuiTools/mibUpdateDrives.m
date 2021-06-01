@@ -21,7 +21,7 @@ if nargin < 2
     start_path = ''; 
 else
     start_path = lower(start_path);
-end;
+end
 
 % function gets available disk drives from C: to Z:
 os = getenv('OS');
@@ -33,7 +33,7 @@ if strcmp(os,'Windows_NT')
     for i = startletter:'z'
         if exist([i ':\'], 'dir') == 7
             ret{end+1} = [i ':']; %#ok<AGROW>
-            if strcmp(ret{end}, start_path); index = length(ret); end;
+            if strcmp(ret{end}, start_path); index = length(ret); end
         end
     end
     handles.mibDrivePopup.String = ret;

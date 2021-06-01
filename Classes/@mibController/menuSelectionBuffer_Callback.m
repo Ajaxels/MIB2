@@ -28,7 +28,7 @@ if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
 end
 
 % do nothing is selection is disabled
-if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
+if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 0; return; end
 options.blockModeSwitch = 0;
 
 switch parameter

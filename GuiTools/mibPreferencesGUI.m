@@ -201,7 +201,7 @@ function modelsColorsTable_CellSelectionCallback(hObject, eventdata, handles)
 %	Indices: row and column indices of the cell(s) currently selecteds
 % handles    structure with handles and user data (see GUIDATA)
 
-if isempty(eventdata.Indices); return; end; % for return after modelColorsTable_CellEditCallback error
+if isempty(eventdata.Indices); return; end % for return after modelColorsTable_CellEditCallback error
 
 handles.modelsColorsTable.UserData = eventdata.Indices;   % store selected position
 guidata(hObject, handles); % Update handles structure

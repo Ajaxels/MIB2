@@ -50,7 +50,7 @@ switch hObject
             x = pos1(1) + pos2(1) + pos3(1) + pos3(3)/2;
             y = screenSize(4) - (pos1(2) + pos2(2) + pos3(2) + pos3(4)/2);
 
-            mouse.mouseMove(x*obj.mibModel.preferences.gui.systemscaling, y*obj.mibModel.preferences.gui.systemscaling);
+            mouse.mouseMove(x*obj.mibModel.preferences.System.GUI.systemscaling, y*obj.mibModel.preferences.System.GUI.systemscaling);
             
             % restore the units
             obj.mibView.gui.Units = 'points';
@@ -84,7 +84,7 @@ switch hObject
             screenSize = get(0, 'screensize');
             x = pos1(1) + pos2(1) + pos3(1) + pos3(3)/2;
             y = screenSize(4) - (pos1(2) + pos2(2) + pos3(2) + pos3(4)/2);
-            mouse.mouseMove(x*obj.mibModel.preferences.gui.systemscaling, y*obj.mibModel.preferences.gui.systemscaling);
+            mouse.mouseMove(x*obj.mibModel.preferences.System.GUI.systemscaling, y*obj.mibModel.preferences.System.GUI.systemscaling);
             
             % restore the units
             obj.mibView.gui.Units = 'points';

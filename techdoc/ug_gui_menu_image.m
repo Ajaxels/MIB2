@@ -33,8 +33,15 @@
 % Perform some actions with color channels of the image
 % 
 % <html>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/gT-c8TiLcuY"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/gT-c8TiLcuY</a>
+% A brief demonstration is available in the following videos:<br>
+% <ul>
+% <li> General demonstration: <a href="https://youtu.be/gT-c8TiLcuY"><img
+% style="vertical-align:middle;" src="images\youtube2.png">
+% https://youtu.be/gT-c8TiLcuY</a></li>
+% <li> Correction of color shifts between images: <a href="https://youtu.be/-J2P8a_z7pE"><img
+% style="vertical-align:middle;" src="images\youtube2.png">
+% https://youtu.be/-J2P8a_z7pE</a></li>
+% </ul>
 % </html>
 %
 % * *Insert empty channel...*, insert an empty channel (intensity of all
@@ -42,6 +49,7 @@
 % * *Copy channel...*, copy one channel to another position 
 % * *Invert channel...*, invert intensities of the specified color channel
 % * *Rotate channel...*, rotate the specified color channel
+% * *Shift channel...*, allows to shift a channel by X and Y pixels
 % * *Swap channels...*, allows to swap two color channels between each other
 % * *Delete channel...*, deletes specified color channel from the dataset
 %

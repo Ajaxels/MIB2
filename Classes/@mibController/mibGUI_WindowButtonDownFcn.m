@@ -148,7 +148,7 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
     %% Start segmentation mode
     %y = round(xy(1,2));
     %x = round(xy(1,1));
-    if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1 && ~ismember(tool, {'Annotations', '3D lines'})
+    if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 0 && ~ismember(tool, {'Annotations', '3D lines'})
         return; 
     end    % no selection layer
     

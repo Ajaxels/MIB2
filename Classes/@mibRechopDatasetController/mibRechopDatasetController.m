@@ -112,8 +112,12 @@ classdef mibRechopDatasetController < handle
                 end
             end
             
-            [FileName, PathName, FilterIndex] = uigetfile(fileFormats,'Select chopped files', obj.outputDir, 'MultiSelect', 'on');
+            [FileName, PathName, FilterIndex] = ...
+                mib_uigetfile(fileFormats,'Select chopped files', obj.outputDir, 'on');
             if isequal(FileName,0);    return;  end
+            if ischar(FileName); FileName = {FileName}; end
+            FileName = sort(FileName);    % re-sort filenames to arrange as in dir
+            
             obj.View.handles.selectedFilesList.String = FileName;
             obj.filenames = fullfile(PathName, FileName);
             
@@ -727,14 +731,14 @@ classdef mibRechopDatasetController < handle
                     getDataOpt.bioformatsCheck = 0;
                     getDataOpt.waitbar = 1;
                     getDataOpt.id = obj.mibModel.Id;   % id of the current dataset
-                    getDataOpt.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
+                    getDataOpt.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
                     [R.imOut, img_info, ~] = mibLoadImages({fn}, getDataOpt);
                     R.imOut =  squeeze(R.imOut);
                 case '.xml'
                     getDataOpt.bioformatsCheck = 0;
                     getDataOpt.waitbar = 0;
                     getDataOpt.id = obj.mibModel.Id;   % id of the current dataset
-                    getDataOpt.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
+                    getDataOpt.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
                     [R.imOut, img_info] = mibLoadImages({fn}, getDataOpt);
                     R.imOut = squeeze(R.imOut);
                     if isKey(img_info, 'modelMaterialNames')     % add list of material names

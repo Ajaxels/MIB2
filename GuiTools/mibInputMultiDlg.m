@@ -38,11 +38,11 @@ function varargout = mibInputMultiDlg(varargin)
 % @b Examples:
 % @code
 % global mibPath;
-% prompts = {'Enter a text'; 'Select the option'; 'Are you sure?'; 'This is very very very very very very very very very very long prompt'};
-% defAns = {'my test string'; {'Option 1', 'Option 2', 'Option 3', 2}; true; []};
+% prompts = {'Enter a text'; 'Select the option'; 'Are you sure?'; 'placeholder, remove text to make empty'; 'This is very very very very very very very very very very long prompt'};
+% defAns = {'my test string'; {'Option 1', 'Option 2', 'Option 3', 2}; true; NaN; []};
 % dlgTitle = 'multi line input diglog';
 % options.WindowStyle = 'normal';       // [optional] style of the window
-% options.PromptLines = [1, 1, 1, 2];   // [optional] number of lines for widget titles
+% options.PromptLines = [1, 1, 1, 1, 2];   // [optional] number of lines for widget titles
 % options.Title = 'My test Input dialog';   // [optional] additional text at the top of the window
 % options.TitleLines = 2;                   // [optional] make it twice tall, number of text lines for the title
 % options.WindowWidth = 1.2;    // [optional] make window x1.2 times wider
@@ -64,10 +64,10 @@ function varargout = mibInputMultiDlg(varargin)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 13.01.2021, added syntax: prompt = 'text'; defAns = NaN to draw an empty placeholder without a widget
 
 % Begin initialization code - DO NOT EDIT
-gui_Singleton = 1;
+gui_Singleton = 0;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
                    'gui_OpeningFcn', @mibInputMultiDlg_OpeningFcn, ...
@@ -244,12 +244,16 @@ if options.msgBoxOnly == false  % add input widgets
                     'Value', defAns{elementId}, ...
                     'Position', posVec(widgetId,:));
             else                                % make an editbox
-                if isempty(defAns{elementId}); defAns{elementId} = ''; end
+                if ~isempty(isnan(defAns{elementId})) && isnan(defAns{elementId}(1))
+                    % place holder, no widget
+                else
+                    if isempty(defAns{elementId}); defAns{elementId} = ''; end
 
-                handles.hWidget(elementId) = uicontrol('Parent', handles.mibInputMultiDlg, 'Style', 'edit', ...
-                    'Units', 'points', 'HorizontalAlignment', 'left', ...
-                    'String', defAns{elementId}, ...
-                    'Position', posVec(widgetId,:));
+                    handles.hWidget(elementId) = uicontrol('Parent', handles.mibInputMultiDlg, 'Style', 'edit', ...
+                        'Units', 'points', 'HorizontalAlignment', 'left', ...
+                        'String', defAns{elementId}, ...
+                        'Position', posVec(widgetId,:));
+                end
             end
         else    % make a combobox
             if isnumeric(defAns{elementId}{end})
@@ -478,11 +482,17 @@ function mibInputMultiDlg_KeyPressFcn(hObject, eventdata, handles)
 
 if nargin < 3;    handles = guidata(hObject); end
 
+if strcmp(handles.okBtn.Visible, 'off') 
+    CurrentKey = 'escape'; 
+else
+    CurrentKey = hObject.CurrentKey;
+end
+
 % Check for "enter" or "escape"
-if isequal(hObject.CurrentKey, 'escape')
+if isequal(CurrentKey, 'escape')
     cancelBtn_Callback(hObject, eventdata, handles);
 end    
-if isequal(hObject.CurrentKey, 'return')
+if isequal(CurrentKey, 'return')
     okBtn_Callback(hObject, eventdata, handles);
 end    
 end

@@ -1,5 +1,5 @@
-function newMode = switchVirtualStackingMode(obj, newMode, disableSelection)
-% function newMode = switchVirtualStackingMode(obj, newMode, disableSelection)
+function newMode = switchVirtualStackingMode(obj, newMode, enableSelection)
+% function newMode = switchVirtualStackingMode(obj, newMode, enableSelection)
 % Function to switch between loading datasets to memory or reading them
 % from HDD on demand
 %
@@ -7,7 +7,8 @@ function newMode = switchVirtualStackingMode(obj, newMode, disableSelection)
 % newMode: [@em optional],
 % @li when @b 0 - uses the memory-resident mode, i.e. when the images loaded to memory
 % @li when @b 1 - uses the HDD-resident mode (virtual stacking), i.e. when the images kept on a hard drive
-% disableSelection: [@em optional] a switch to set disableSelection based on mibModel.preferences
+% enableSelection: [@em optional] a switch to set enableSelection based on
+% mibModel.preferences.System.EnableSelection
 %
 % Return values:
 % newMode: result of the function,
@@ -17,7 +18,7 @@ function newMode = switchVirtualStackingMode(obj, newMode, disableSelection)
 
 %|
 % @b Examples:
-% @code result = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(1, obj.mibModel.preferences.disableSelection);  // enable the virtual stacking mode @endcode
+% @code result = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(1, obj.mibModel.preferences.System.EnableSelection);  // enable the virtual stacking mode @endcode
 
 % Copyright (C) 06.08.2018, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi
@@ -29,7 +30,7 @@ function newMode = switchVirtualStackingMode(obj, newMode, disableSelection)
 % Updates
 %
 
-if nargin < 3; disableSelection = []; end
+if nargin < 3; enableSelection = []; end
 
 if ~strcmp(obj.meta('Filename'), 'none.tif')
     if ~isempty(newMode) && newMode ~= obj.Virtual.virtual
@@ -52,11 +53,11 @@ end
 if ~isempty(newMode)
     obj.Virtual.virtual = newMode;
     if newMode == 1     % virtual
-        obj.disableSelection = 1;  % turn off the selection layer for the virtual mode
+        obj.enableSelection = 0;  % turn off the selection layer for the virtual mode
     else
         % switch from virtual to the normal mode
-        if ~isempty(disableSelection)
-            obj.disableSelection = disableSelection;
+        if ~isempty(enableSelection)
+            obj.enableSelection = enableSelection;
         end
         obj.closeVirtualDataset();    % close the virtual datasets
     end

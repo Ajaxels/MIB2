@@ -101,7 +101,7 @@ if (obj.mibView.handles.mibBrushSuperpixelsCheck.Value == 1 || ...
         return;
     end
     getDataOptions.blockModeSwitch = 1;
-    sImage = cell2mat(obj.mibModel.getData2D('image', NaN, NaN, col_channel,getDataOptions));
+    sImage = cell2mat(obj.mibModel.getData2D('image', NaN, NaN, col_channel, getDataOptions));
     sImage = imresize(sImage, size(obj.mibView.brushSelection{1}));
     noLables = str2double(obj.mibView.handles.mibSuperpixelsNumberEdit.String);
     compactFactor = str2double(obj.mibView.handles.mibSuperpixelsCompactEdit.String);
@@ -130,7 +130,7 @@ if (obj.mibView.handles.mibBrushSuperpixelsCheck.Value == 1 || ...
             if currViewPort.min(selectedColChannels(colCh)) ~= 0 || ...
                 currViewPort.max(selectedColChannels(colCh)) ~= max_int || ...
                 currViewPort.gamma(selectedColChannels(colCh)) ~= 1
-                        sImage(:,:,colCh) = imadjust(sImage(:,:,colCh),[currViewPort.min(selectedColChannels(colCh))/max_int currViewPort.max(selectedColChannels(colCh))/max_int],[0 1],currViewPort.gamma(selectedColChannels(colCh)));
+                        sImage(:,:,colCh) = imadjust(sImage(:,:,colCh), [currViewPort.min(selectedColChannels(colCh))/max_int currViewPort.max(selectedColChannels(colCh))/max_int],[0 1],currViewPort.gamma(selectedColChannels(colCh)));
             end
         end
     end
@@ -167,10 +167,10 @@ if (obj.mibView.handles.mibBrushSuperpixelsCheck.Value == 1 || ...
     end
     
     CData = obj.mibView.imh.CData;
-    T2 = obj.mibModel.preferences.mibMaskTransparencySlider; % transparency for mask
+    T2 = obj.mibModel.preferences.Colors.MaskTransparency; % transparency for mask
     for ch=1:3
         img = CData(:,:,ch);
-        img(boundaries) =  img(boundaries)*T2+obj.mibModel.preferences.maskcolor(ch)*intmax(class(img))*(1-T2);
+        img(boundaries) =  img(boundaries)*T2+obj.mibModel.preferences.Colors.MaskColor(ch)*intmax(class(img))*(1-T2);
         CData(:,:,ch) = img;
     end
     obj.mibView.imh.CData = CData;
@@ -202,7 +202,6 @@ if (obj.mibView.handles.mibBrushSuperpixelsCheck.Value == 1 || ...
     obj.mibView.brushSelection{2}.selectedSlicIndices = selectedSlicIndices;     % list of indices of the currently selected superpixels
     obj.mibView.brushSelection{2}.CData = CData;     % store original CData with Boundaries of the superpixels
 end
-
 obj.mibView.updateCursor('solid');   % set the brush cursor in the drawing mode
 obj.mibView.gui.WindowButtonDownFcn = [];
 

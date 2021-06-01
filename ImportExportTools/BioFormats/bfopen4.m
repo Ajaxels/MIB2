@@ -51,6 +51,10 @@ function [result] = bfopen4(r, seriesNumber, sliceNo, options)
 if nargin < 4;     options = struct;   end
 if nargin < 3;     sliceNo = NaN;   end
 
+if ~isfield(options, 'DimensionOrder')
+    options.DimensionOrder = '';
+end
+
 if isa(r, 'loci.formats.Memoizer')  % r is a filename
    filename = [];
 else
@@ -149,18 +153,43 @@ for i = startSlice:endSlice
     end
     
     % save image plane and label into the list
-    result.img(:, :, colorID, sliceID, timeID) = arr;
-    colorID = colorID + 1;
+    switch options.DimensionOrder
+        case 'XYZCT'
+            result.img(:, :, colorID, sliceID, timeID) = arr;
+            sliceID = sliceID + 1;
+            if sliceID > ZStacks
+                sliceID = 1;
+                colorID = colorID + 1;
+            end
+            if colorID > Colors
+                colorID = 1;
+                timeID = timeID + 1;
+            end
+        case 'XYCZT'
+            result.img(:, :, colorID, sliceID, timeID) = arr;
+            colorID = colorID + 1;
+            if colorID > Colors
+                colorID = 1;
+                sliceID = sliceID + 1;
+            end
+            if sliceID > ZStacks
+                sliceID = 1;
+                timeID = timeID + 1;
+            end
+        otherwise
+            result.img(:, :, colorID, sliceID, timeID) = arr;
+            colorID = colorID + 1;
+            colorID = colorID + 1;
+            if colorID > Colors
+                colorID = 1;
+                sliceID = sliceID + 1;
+            end
+            if sliceID > ZStacks
+                sliceID = 1;
+                timeID = timeID + 1;
+            end
+    end
     index = index + 1;
-    
-    if colorID > Colors
-        colorID = 1; 
-        sliceID = sliceID + 1;
-    end 
-    if sliceID > ZStacks
-        sliceID = 1; 
-        timeID = timeID + 1;
-    end 
 end
 
 if isnan(result.ColorType)

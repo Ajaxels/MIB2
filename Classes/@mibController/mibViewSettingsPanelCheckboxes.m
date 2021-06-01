@@ -137,13 +137,13 @@ for fieldId = 1:numel(fieldNames)
                 obj.mibChannelMixerTable_CellEditCallback();
                 return;
             case 'TransparencyModel'
-                obj.mibModel.preferences.mibModelTransparencySlider = str2double(BatchOpt2.(fieldNames{fieldId}));
+                obj.mibModel.preferences.Colors.ModelTransparency = str2double(BatchOpt2.(fieldNames{fieldId}));
                 obj.mibView.handles.mibModelTransparencySlider.Value = str2double(BatchOpt2.(fieldNames{fieldId}));
             case 'TransparencyMask'
-                obj.mibModel.preferences.mibMaskTransparencySlider = str2double(BatchOpt2.(fieldNames{fieldId}));
+                obj.mibModel.preferences.Colors.MaskTransparency = str2double(BatchOpt2.(fieldNames{fieldId}));
                 obj.mibView.handles.mibMaskTransparencySlider.Value = str2double(BatchOpt2.(fieldNames{fieldId}));
             case 'TransparencySelection'
-                obj.mibModel.preferences.mibSelectionTransparencySlider = str2double(BatchOpt2.(fieldNames{fieldId}));
+                obj.mibModel.preferences.Colors.SelectionTransparency = str2double(BatchOpt2.(fieldNames{fieldId}));
                 obj.mibView.handles.mibSelectionTransparencySlider.Value = str2double(BatchOpt2.(fieldNames{fieldId}));
         end
     else

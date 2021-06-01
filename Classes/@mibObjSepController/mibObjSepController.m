@@ -64,7 +64,7 @@ classdef mibObjSepController  < handle
             mibRescaleWidgets(obj.View.gui);
             
             % update font and size
-            Font = obj.mibModel.preferences.Font;
+            Font = obj.mibModel.preferences.System.Font;
             if obj.View.handles.watSourceTxt2.FontSize ~= Font.FontSize ...
                     || ~strcmp(obj.View.handles.watSourceTxt2.FontName, Font.FontName)
                 mibUpdateFontSize(obj.View.gui, Font);

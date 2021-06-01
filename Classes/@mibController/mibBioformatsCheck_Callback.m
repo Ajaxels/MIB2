@@ -23,13 +23,13 @@ obj.mibView.handles.mibFileFilterPopup.UserData = obj.mibView.handles.mibFileFil
 
 if obj.mibView.handles.mibBioformatsCheck.Value == 1     % use bioformats reader
     % check for temp directory for the Memoizer
-    if ~isfield(obj.mibModel.preferences.dirs, 'BioFormatsMemoizerMemoDir')
-        obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir = 'c:\temp\mibVirtual';
+    if ~isfield(obj.mibModel.preferences.ExternalDirs, 'BioFormatsMemoizerMemoDir')
+        obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir = 'c:\temp\mibVirtual';
     end
     
-    if isdir(obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir) == 0 %#ok<ISDIR>
+    if isdir(obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir) == 0 %#ok<ISDIR>
         try
-            mkdir(obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir);
+            mkdir(obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir);
         catch err
             warndlg(sprintf('!!! Warning !!!\n\nUse of the BioFormats reader requires a directory to keep Memoizer class temporary files!\n\nPlease specify it in\nMenu->File->Preferences->External dirs...'), 'Missing required directory');
             return;
@@ -37,17 +37,17 @@ if obj.mibView.handles.mibBioformatsCheck.Value == 1     % use bioformats reader
     end
     
     if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1     % add amiramesh for the virtual mode
-        extentions = ['all known', obj.mibModel.preferences.Filefilter.bioVirtExt];
+        extentions = ['all known', obj.mibModel.preferences.System.Files.BioFormatsVirtExt];
     else
-        extentions = ['all known', obj.mibModel.preferences.Filefilter.bioExt];
+        extentions = ['all known', obj.mibModel.preferences.System.Files.BioFormatsExt];
     end
     obj.mibView.handles.mibFileFilterPopup.String = extentions;
     obj.mibView.handles.mibFileFilterPopup.Value = position;
 else
     if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1     % add amiramesh for the virtual mode
-        extentions = ['all known', obj.mibModel.preferences.Filefilter.stdVirtExt];
+        extentions = ['all known', obj.mibModel.preferences.System.Files.StdVirtExt];
     else
-        extentions = ['all known', obj.mibModel.preferences.Filefilter.stdExt];
+        extentions = ['all known', obj.mibModel.preferences.System.Files.StdExt];
     end
 
     obj.mibView.handles.mibFileFilterPopup.String = extentions;

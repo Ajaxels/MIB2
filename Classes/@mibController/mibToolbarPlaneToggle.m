@@ -102,7 +102,7 @@ if moveMouseSw
     % calculate position of the imageAxes center in pixels (for coordinates of the monitor)
     xMouse = pos1(1) + pos2(1) + pos3(1) + pos3(3)/2;
     yMouse = screenSize(4) - (pos1(2) + pos2(2) + pos3(2) + pos3(4)/2);
-    mouse.mouseMove(xMouse*obj.mibModel.preferences.gui.systemscaling, yMouse*obj.mibModel.preferences.gui.systemscaling);    % move the mouse
+    mouse.mouseMove(xMouse*obj.mibModel.preferences.System.GUI.systemscaling, yMouse*obj.mibModel.preferences.System.GUI.systemscaling);    % move the mouse
 end
 obj.mibView.gui.WindowButtonMotionFcn = (@(hObject, eventdata, handles) obj.mibGUI_WinMouseMotionFcn());   
 end

@@ -70,7 +70,7 @@ end
 
 %% start of the function
 % do nothing is selection is disabled
-if obj.I{BatchOpt.id}.disableSelection == 1; notify(obj, 'stopProtocol'); return; end
+if obj.I{BatchOpt.id}.enableSelection == 0; notify(obj, 'stopProtocol'); return; end
 
 % tweak when only one time point
 if strcmp(BatchOpt.DatasetType{1}, '4D, Dataset') && obj.I{BatchOpt.id}.time == 1

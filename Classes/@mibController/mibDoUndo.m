@@ -42,7 +42,7 @@ obj.mibModel.U.prevUndoIndex = newDataIndex;
 storeOptions.blockModeSwitch=0;
 getDataOptions = storeOptions;
 obj.mibModel.U.replaceItem(newIndex, NaN, {NaN}, NaN, storeOptions); %index, type, data, meta, options
-if obj.mibModel.preferences.max3dUndoHistory <= 1 && storeOptions.switch3d  % tweak for storing a single 3D dataset
+if obj.mibModel.preferences.Undo.Max3dUndoHistory <= 1 && storeOptions.switch3d  % tweak for storing a single 3D dataset
     if ~strcmp(type, 'mibImage')
         % store the current situation
         dataStore = cell([size(storeOptions.x,1), 1]);

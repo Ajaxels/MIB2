@@ -95,12 +95,17 @@ for fn_index = 1:no_files
         end
         if options.waitbar; waitbar(layer_id/maxZ, wb); end
     elseif strcmp(files(fn_index).object_type,'nrrd')        % NRRD format
-        I = nrrdLoadWithMetadata(files(fn_index).filename);
+        if ~ismac
+            I = nrrdLoadWithMetadata(files(fn_index).filename);
+        else
+            I = nhdr_nrrd_read(files(fn_index).filename, 1);
+        end
         if files(fn_index).dim_xyczt(3) == 1     % greyscale stack/image
             I.data = permute(I.data, [2 1 3]);
         else     % color stack/image
             I.data = permute(I.data, [3 2 1 4]);
         end
+        
         img(1:maxY,1:maxX,1:maxC,layer_id:layer_id+files(fn_index).noLayers-1) = I.data;
         layer_id = layer_id + files(fn_index).noLayers;
         if options.waitbar; waitbar(layer_id/maxZ, wb); end
@@ -252,6 +257,7 @@ for fn_index = 1:no_files
     elseif strcmp(files(fn_index).object_type,'mrc_image')        % IMOD mrc/rec image
         mrcFile = MRCImage(files(fn_index).filename, 1);
         mrc_image = getVolume(mrcFile);
+        %mrc_image = flip(mrc_image, 2);     % flip vertically
         if isa(mrc_image,'single') || isa(mrc_image,'int16')
             [minInt, maxInt] = getMinAndMaxDensity(mrcFile); %#ok<NASGU>
             if minInt < 0
@@ -276,20 +282,24 @@ for fn_index = 1:no_files
             %img(1:maxY,1:maxX,1:maxC,layer_id:layer_id+files(fn_index).noLayers-1) = mrc_image(1:maxY,1:maxX,1,:);
             
             for subLayer=1:files(fn_index).noLayers
-                img(1:maxY,1:maxX,1:maxC,layer_id) = mrc_image(:,:,subLayer)';
+                img(1:maxY,1:maxX,1:maxC,layer_id) = flip(mrc_image(:,:,subLayer)', 1);
                 layer_id = layer_id + 1;
                 if options.waitbar && mod(layer_id, ceil(maxZ/20))==0
                     waitbar(layer_id/maxZ,wb);
                 end
             end
         else
-            mrc_image = permute(mrc_image, [2 1 3]);
-            img(1:maxY,1:maxX,1:maxC,layer_id:layer_id+files(fn_index).noLayers-1) = reshape(mrc_image, [size(mrc_image,1), size(mrc_image,2),1,size(mrc_image,3)]);
+            mrc_image = flip(permute(mrc_image, [2 1 3]), 1);
+            img(1:maxY, 1:maxX, 1:maxC, layer_id:layer_id+files(fn_index).noLayers-1) = ...
+                reshape(mrc_image, [size(mrc_image,1), size(mrc_image,2),1,size(mrc_image,3)]);
         end
         layer_id = layer_id + files(fn_index).noLayers;
         close(mrcFile);
     elseif strcmp(files(fn_index).object_type,'bioformats')        % bioformats images
         bfopenOptions.BioFormatsMemoizerMemoDir = files(fn_index).BioFormatsMemoizerMemoDir;
+        if isfield(files, 'DimensionOrder')
+            bfopenOptions.DimensionOrder = files(fn_index).DimensionOrder;
+        end
         for serieIndex=1:numel(files(fn_index).seriesName)
             I  = bfopen4(files(fn_index).origFilename, files(fn_index).seriesName(serieIndex), NaN, bfopenOptions);
             
@@ -303,6 +313,14 @@ for fn_index = 1:no_files
                 end
             end
         end
+    elseif strcmp(files(fn_index).object_type,'mibImg')        % bioformats images
+        res = load(files(fn_index).filename, '-mat');
+        if strcmp(res.options.dimOrder, 'yxzct')
+            res.(res.imgVariable) = permute(res.(res.imgVariable), [1 2 4 3 5]);    % permute to yxczt
+        end
+        img(1:maxY, 1:maxX, 1:maxC, layer_id:layer_id+files(fn_index).noLayers-1) = ...
+                res.(res.imgVariable);
+        layer_id = layer_id + files(fn_index).noLayers;    
     end
 end
 

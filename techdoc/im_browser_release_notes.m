@@ -7,7 +7,55 @@
 %
 %%
 %
-%% 2.70 (2.702) / 18.05.2020 (01.02.2021)
+%
+%% 2.80 / 01.06.2021
+% * Added HDD mode to align datasets that can not be fit into memory (Menu->Dataset->Alignment tool->HDD)
+% * Added new preference dialog (Menu->File->Preferences)
+% * Added exclusion of Stretch and Shear peaks into the automatic alignment using image features
+% * Added re-ordering of annotations in the Annotation list via a popup menu
+% * Added precision edit box into the Annotation panel
+% * Added "Extra depth to show annotations" (Annotations->Annotation list->Settings)
+% * Added saving of models as 2D sequence MIB Matlab format (Menu->Models->Save model as->Matlab format 2D sequence (*.model))
+% * Added Mode filter (Menu->Image->Image filters...)
+% * Added "File and Directory operations" to batch processing
+% * Added plugin for converting images between different formats
+% (Menu->Plugins->File Processing->ImageConverter)
+% * Added <http://mib.helsinki.fi/tutorials_tools.html plugin> detection of contacts in 2D images
+% (Menu->Plugins->Organelle analysis->MCcalc)
+% * Added shift of color channels in X and Y (Menu->Image->Color channels->Shift channel)
+% * Added check for a new version for MIB compiled for Linux 
+% * [DeepMIB] Added selection of GPU/CPU/Multi-GPU
+% * [DeepMIB] Added GPU Info window (Network panel->?)
+% * [DeepMIB] Added possibility for training and prediction without preprocessing
+% * [DeepMIB] Added parallel pre-processing
+% * [DeepMIB] Added compatibility with models in TIF and PNG formats
+% * [DeepMIB] Added masking
+% * [DeepMIB] Added 19 2D augmentation operations with individual configuration settings
+% * [DeepMIB] Added configurable preview of augmentation patches (Train tab->Augmentation->Preview and ->Settings)
+% * [DeepMIB] Added configurable (Options tab->Custom training plot) preview of augmented patches during training
+% * [DeepMIB] Added possibility to select various activation layers
+% * [DeepMIB] Added Transfer Learning to update models to different number of classes (Prediction tab->Evaluate segmentation)
+% * [DeepMIB] Added setting of mini-batch size for prediction
+% * [DeepMIB] Added options for export of prediction scores
+% * [DeepMIB] Added calculation of occurrence and Sørensen-Dice similarity for comparison of ground truth and generated models
+% * [DeepMIB] Added filenames and export to CSV to evaluate segmentation operation
+% * [DeepMIB] Added export of trained models to ONNX format (Matlab version of MIB)
+% * Updated reading of NRRD files for MacOS (mibGetImages & mibModel.loadModel, nhdr_*.m nrrd_* files)
+% * Updated export statistics to annotations to keep settings during current session
+% * Updated Bio-Formats to 6.6.1
+% * Updated for Matlab R2021a
+% * Fixed missing the "Add to" checkbox Ctrl+F operation 
+% * Fixed loading of AM files on virtual machines due to encoding
+% * Fixed preview behavior for image filters in 3D
+% * Fixed 3d backup operation when number of 3D dataset == 0
+% * Fixed vertical flip of MRC datasets
+% * Replaced quantile function with a custom code
+% * Bug fixes for interpolation, crop
+% * [DeepMIB] Fixed loading of config on various OS
+% * [DeepMIB] Updated training progress plot and added configuration parameters
+% * [DeepMIB] Improved performance of image preprocessing for AmiraMesh
+%
+%% 2.70 / 18.05.2020
 % 
 % * Added Deep MIB for training and prediction of datasets using
 % deep convolutional networks
@@ -16,10 +64,6 @@
 % * Added selection of a seed for random generator for Rename and Shuffle
 % tool
 % * Fixed issues with importing of chopped cropped datasets
-% * Fixed missing automatic file extension when using uiputfile on Linux
-% caused by ';' character (2.701)
-% * Fixed wrong file separator slash character in DeepMIB, when used on
-% Linux (2.701)
 %
 %% 2.66 / 25.04.2020
 %

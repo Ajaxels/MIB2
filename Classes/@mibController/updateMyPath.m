@@ -1,5 +1,5 @@
 function updateMyPath(obj, myPath)
-% function exitProgram(obj)
+% function updateMyPath(obj, myPath)
 % update mibModel.myPath, which is the current working directory
 %
 % Parameters:

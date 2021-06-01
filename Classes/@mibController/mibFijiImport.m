@@ -95,7 +95,7 @@ if strcmp(datasetType, 'image')
         img = reshape(img, size(img,1), size(img,2), 1, size(img,3));
     end
     if roiNo == -1
-        obj.mibModel.I{obj.mibModel.Id}.clearContents(img, [], obj.mibModel.preferences.disableSelection);
+        obj.mibModel.I{obj.mibModel.Id}.clearContents(img, [], obj.mibModel.preferences.System.EnableSelection);
         obj.mibModel.I{obj.mibModel.Id}.updatePixSizeResolution();    % update pixels size, and resolution
         obj.mibModel.I{obj.mibModel.Id}.meta('Filename') = datasetName;
         notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details

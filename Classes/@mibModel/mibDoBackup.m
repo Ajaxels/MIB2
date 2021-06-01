@@ -45,6 +45,8 @@ end
 % cancel if the undo system is disabled
 if obj.U.enableSwitch == 0; return; end
 if nargin < 4; getDataOptions = struct(); end
+if nargin < 3; switch3d = 1; end
+
 if ~isfield(getDataOptions, 'id'); getDataOptions.id = obj.Id; end
 
 if strcmp(type, 'lines3d')
@@ -61,6 +63,7 @@ if ~isfield(getDataOptions, 'x') || ~isfield(getDataOptions, 'y') || ...
         return;
     end
 end
+if switch3d && obj.U.max3d_steps == 0; return; end
 
 if strcmp(type, 'mibImage')
     mibImg = obj.mibImageDeepCopy(obj.I{getDataOptions.id});
@@ -202,7 +205,7 @@ if switch3d == 1        % 3D mode
     elseif strcmp(type, 'measurements')
         obj.U.store(type, {obj.I{getDataOptions.id}.hMeasure.Data}, NaN);
     else
-        if obj.I{getDataOptions.id}.disableSelection == 1; return; end    % do not make backups if selection is disabled
+        if obj.I{getDataOptions.id}.enableSelection == 0; return; end    % do not make backups if selection is disabled
         if strcmp(type, 'image')
             obj.U.store(type, obj.getData3D(type, NaN, getDataOptions.orient, 0, getDataOptions), NaN, getDataOptions);
         else
@@ -219,7 +222,7 @@ else                    % 2D mode
     elseif strcmp(type, 'measurements')
         obj.U.store(type, {obj.I{getDataOptions.id}.hMeasure.Data}, NaN, getDataOptions);
     else
-        if obj.I{getDataOptions.id}.disableSelection == 1; return; end    % do not make backups if selection is disabled
+        if obj.I{getDataOptions.id}.enableSelection == 0; return; end    % do not make backups if selection is disabled
         if strcmp(type, 'image')
             obj.U.store(type, obj.getData2D(type, getDataOptions.z(1), getDataOptions.orient, 0, getDataOptions), NaN, getDataOptions);
         else

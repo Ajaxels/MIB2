@@ -23,7 +23,7 @@ function [bitmap] = amiraLabels2bitmap(filename)
 tic
 bitmap = NaN;
 if nargin < 1
-    [filename, pathname] = uigetfile( ...
+    [filename, pathname] = mib_uigetfile( ...
         {'*.am','Amira mesh labels(*.am)';
          '*.*',  'All Files (*.*)'}, ...
          'Pick a file');
@@ -31,7 +31,8 @@ if nargin < 1
     filename = [pathname filename];
 end
 %filename = 'ER.am';
-fid = fopen(filename, 'r');
+%fid = fopen(filename, 'r');
+fid = fopen(filename, 'r', 'n', 'UTF-8');
 
 % define type of data
 tline = fgetl(fid);

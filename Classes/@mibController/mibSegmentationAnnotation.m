@@ -59,7 +59,10 @@ if isempty(modifier) || strcmp(modifier, 'shift')  % add annotation
     obj.mibView.handles.mibShowAnnotationsCheck.Value = 1;
     obj.mibModel.mibShowAnnotationsCheck = 1;
 elseif strcmp(modifier, 'control')  % remove the closest to the mouse click annotation
-    [~, ~, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.getSliceLabels();
+    sliceNo = obj.mibModel.I{obj.mibModel.Id}.slices{obj.mibModel.I{obj.mibModel.Id}.orientation}(1);
+    sliceNo = [sliceNo - obj.mibModel.preferences.SegmTools.Annotations.ShownExtraDepth, ...
+               sliceNo + obj.mibModel.preferences.SegmTools.Annotations.ShownExtraDepth];
+    [~, ~, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.getSliceLabels(sliceNo);
     if isempty(labelPositions); return; end
     orientation = obj.mibModel.getImageProperty('orientation');
     if orientation == 4   % xy

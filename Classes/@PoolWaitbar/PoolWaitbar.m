@@ -59,7 +59,7 @@ classdef PoolWaitbar < handle
     properties (Access = private, Transient)
         N   % number of iterations
         ClientHandle = []
-        Count = 0
+        Count = 0   % current iteration
         Increment = 1
     end
     
@@ -133,6 +133,13 @@ classdef PoolWaitbar < handle
             childrenList = obj.ClientHandle.Children();
             childrenList(1).Title.String = newText;
         end
+        
+        function setCurrentIteration(obj, count)
+            % function setCurrentIteration(obj, N)
+            % set the current iteration of the poolwait bar to value N
+            obj.Count = count;
+        end
+            
         
         function setIncrement(obj, increment)
             % function setIncrement(obj, increment)

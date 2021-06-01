@@ -101,6 +101,15 @@
 %   <td>2D/3D</td>
 % </tr>
 % <tr>
+%   <td><img src="images\image_filters_mode.jpg"></td>
+%   <td><b>Mode filter (R2020a or newer)</b><br>
+%        the filtering is done with <a
+%        href="https://se.mathworks.com/help/releases/R2020a/images/ref/modefilt.html"
+%        target="_blank">modefilt</a> function. Each output pixel contains the mode (most frequently occurring value) in the neighborhood around the corresponding pixel in the input image
+%   </td>
+%   <td>2D/3D</td>
+% </tr>
+% <tr>
 %   <td><img src="images\image_filters_motion.jpg"></td>
 %   <td><b>Motion filter</b><br>
 %        the filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">motion</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>

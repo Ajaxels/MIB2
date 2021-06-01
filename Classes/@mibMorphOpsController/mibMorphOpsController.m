@@ -20,8 +20,6 @@ classdef mibMorphOpsController < handle
         % handle to the view
         listener
         % a cell array with handles to listeners
-        matlabVersion
-        % current version of Matlab
         type
         % type of action to perform
         type3d
@@ -62,7 +60,7 @@ classdef mibMorphOpsController < handle
             mibRescaleWidgets(obj.View.gui);
             
             % update font and size
-            Font = obj.mibModel.preferences.Font;
+            Font = obj.mibModel.preferences.System.Font;
             if obj.View.handles.infoText.FontSize ~= Font.FontSize ...
                     || ~strcmp(obj.View.handles.infoText.FontName, Font.FontName)
                 mibUpdateFontSize(obj.View.gui, Font);
@@ -70,9 +68,7 @@ classdef mibMorphOpsController < handle
             obj.type = parameter;
             obj.type3d = 'branchpoints';
             
-            matlabVer = ver('matlab');
-            obj.matlabVersion = str2double(matlabVer.Version);
-            if obj.matlabVersion >= 9.4
+            if ~verLessThan('matlab', '9.4') % obj.matlabVersion >= 9.4
                 obj.View.handles.objects3D.Enable = 'on';
             end
             
@@ -194,7 +190,7 @@ classdef mibMorphOpsController < handle
                         obj.View.handles.removeBranchesCheck.Enable = 'off';
                     end
                     
-                    if obj.matlabVersion >= 9.4
+                    if ~verLessThan('matlab', '9.4') % obj.matlabVersion >= 9.4
                         obj.View.handles.limitToRadio.Enable = 'on';
                         obj.View.handles.limitToRadio.String = 'Min branch length:';
                         obj.View.handles.iterEdit.Enable = 'on';
@@ -293,7 +289,7 @@ classdef mibMorphOpsController < handle
                         for roiId=1:numel(selection)
                             if obj.View.handles.objects3D.Value == 0   % perform 2D operations
                                 for layer = 1:size(selection{roiId}, 3)
-                                    if strcmp(obj.type, 'skel') && obj.matlabVersion >= 9.4
+                                    if strcmp(obj.type, 'skel') && ~verLessThan('matlab', '9.4') % obj.matlabVersion >= 9.4
                                         selection{roiId}(:,:,layer) = bwskel(logical(selection{roiId}(:,:,layer)), 'MinBranchLength', iterNo);
                                     else
                                         selection{roiId}(:,:,layer) = bwmorph(selection{roiId}(:,:,layer), obj.type, iterNo);
@@ -317,7 +313,7 @@ classdef mibMorphOpsController < handle
                     else
                         selection = obj.mibModel.getData2D('selection', NaN, NaN, NaN, getDataOptions);
                         for roiId=1:numel(selection)
-                            if strcmp(obj.type, 'skel') && obj.matlabVersion >= 9.4
+                            if strcmp(obj.type, 'skel') && ~verLessThan('matlab', '9.4') % obj.matlabVersion >= 9.4
                                 selection{roiId} = bwskel(logical(selection{roiId}), 'MinBranchLength', iterNo);
                             else
                                 selection{roiId} = bwmorph(selection{roiId}, obj.type, iterNo);

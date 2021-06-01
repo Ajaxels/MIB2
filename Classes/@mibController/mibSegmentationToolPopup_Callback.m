@@ -32,7 +32,7 @@ obj.mibView.handles.mibSegmMembTracerPanel.Visible = 'off';
 obj.mibView.handles.mibSegmDragDropPanel.Visible = 'off';
 obj.mibView.showBrushCursor = 0;
 
-if ~isempty(find(obj.mibModel.preferences.lastSegmTool == val, 1)) % the selected tool is also a fast access tool for the 'd' shortcut
+if ~isempty(find(obj.mibModel.preferences.SegmTools.PreviousTool == val, 1)) % the selected tool is also a fast access tool for the 'd' shortcut
     obj.mibView.handles.mibSegmFavToolCheck.Value = 1;
     obj.mibView.handles.mibSegmentationToolPopup.BackgroundColor = [1 .69 .39];    
 else
@@ -70,11 +70,11 @@ switch selectedTool
             obj.mibView.handles.mibFilterSelectionPopup.String = list;
             obj.mibView.handles.mibFilterSelectionPopup.Value = 1;
         end
-        if strcmp(list{obj.mibView.handles.mibFilterSelectionPopup.Value'}, 'Brush') && obj.mibModel.I{obj.mibModel.Id}.disableSelection == 0
+        if strcmp(list{obj.mibView.handles.mibFilterSelectionPopup.Value'}, 'Brush') && obj.mibModel.I{obj.mibModel.Id}.enableSelection == 1
             obj.mibView.showBrushCursor = 1;
         end
     case {'Spot', '3D ball'}
-        if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 0
+        if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 1
             obj.mibView.showBrushCursor = 1;
         end
         obj.mibView.handles.mibSegmSpotPanel.Visible = 'on';
@@ -87,7 +87,7 @@ switch selectedTool
         obj.mibView.handles.mibSuperpixelsCompactEdit.Visible = 'off';
     case 'Brush'
         obj.mibView.handles.mibSegmSpotPanel.Visible = 'on';
-        if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 0
+        if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 1
             obj.mibView.showBrushCursor = 1;
         end
         obj.mibView.handles.mibSpotPanelClusteringText.Visible = 'on';

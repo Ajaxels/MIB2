@@ -52,9 +52,9 @@ switch type
     case 'set color'
         contIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial;
         if contIndex == 1   % set color for the mask layer
-            c =  uisetcolor(obj.mibModel.preferences.maskcolor, 'Set color for Mask');
+            c =  uisetcolor(obj.mibModel.preferences.Colors.MaskColor, 'Set color for Mask');
             if length(c) ~= 1
-                obj.mibModel.preferences.maskcolor = c;
+                obj.mibModel.preferences.Colors.MaskColor = c;
             end
         elseif contIndex > 2    % set color for the selected material
             figTitle = ['Set color for ' obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{contIndex-2}];
@@ -95,7 +95,7 @@ switch type
         if contIndex == -1
             model = obj.mibModel.getData3D('mask', NaN, NaN, NaN, options);
             contIndex = 1;
-            modelMaterialColors = obj.mibModel.preferences.maskcolor;
+            modelMaterialColors = obj.mibModel.preferences.Colors.MaskColor;
             Options.modelMaterialNames = {'Mask'};
         else
             Options.modelMaterialNames = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames;
@@ -147,7 +147,7 @@ switch type
         
         mibRenderModel(model{1}, contIndex, obj.mibModel.I{obj.mibModel.Id}.pixSize, bb, modelMaterialColors, image, Options);
     case 'mib'
-        if obj.matlabVersion < 9.5
+        if verLessThan('matlab', '9.5') % obj.matlabVersion < 9.5
             errordlg(sprintf('!!! Error !!!\n\nHardware accelerated rendering is only available in Matlab R2018b or newer!'), 'Matlab version is too old');
             return;
         end
@@ -166,7 +166,7 @@ switch type
             end
             options.dataType = 'mask';
             options.colorChannel = 1;
-            options.Settings.IsoColor = obj.mibModel.preferences.maskcolor;
+            options.Settings.IsoColor = obj.mibModel.preferences.Colors.MaskColor;
         else
             options.dataType = 'model';
             modelMaterialColors = obj.mibModel.getImageProperty('modelMaterialColors');
@@ -187,7 +187,7 @@ switch type
         if contIndex == -1
             model = obj.mibModel.getData3D('mask', NaN, NaN, NaN, options);
             contIndex = 1;
-            modelMaterialColors = obj.mibModel.preferences.maskcolor;
+            modelMaterialColors = obj.mibModel.preferences.Colors.MaskColor;
         else
             model = obj.mibModel.getData3D('model', NaN, NaN, NaN, options);
             if obj.mibModel.showAllMaterials == 1; contIndex = 0; end      % show all materials

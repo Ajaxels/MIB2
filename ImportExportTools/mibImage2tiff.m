@@ -146,7 +146,7 @@ elseif strcmp(options.Saving3d,'sequence')
                 sequentialFn = 1;
             end
         else
-            choice = questdlg('Would you like to use original or sequential filenaming?','Save as TIF...','Original','Sequential','Cancel','Sequential');
+            choice = questdlg('Would you like to use original or sequential filenaming?','Save as TIF...', 'Original', 'Sequential', 'Cancel', 'Sequential');
             switch choice
                 case 'Cancel'
                     disp('Cancelled!')

@@ -121,13 +121,13 @@ elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 4 %'yx'
     obj.mibView.handles.xyPlaneToggle.State = 'on';
 end
 
-if strcmp(obj.mibModel.preferences.mouseWheel, 'zoom')
+if strcmp(obj.mibModel.preferences.System.MouseWheel, 'zoom')
     obj.mibView.handles.mouseWheelToolbarSw.State = 'off';
 else
     obj.mibView.handles.mouseWheelToolbarSw.State = 'on';
 end
 
-if strcmp(obj.mibModel.preferences.mouseButton, 'pan')
+if strcmp(obj.mibModel.preferences.System.LeftMouseButton, 'pan')
     obj.mibView.handles.toolbarSwapMouse.State = 'off';
 else
     obj.mibView.handles.toolbarSwapMouse.State = 'on';
@@ -301,6 +301,9 @@ for i=1:obj.mibModel.maxId
         obj.mibView.handles.(bufferId).TooltipString = 'Use the left mouse button to select the dataset and the right mouse button for additional menu';     % make a tooltip as filename
     end
 end
+
+obj.mibView.handles.mibAnnotationPrecisionEdit.String = num2str(obj.mibModel.mibAnnValuePrecision);
+obj.mibSegmentationToolPopup_Callback();            
 
 %% Virtual stacking mode related changes
 obj.mibBioformatsCheck_Callback();  % update the list of available extensions

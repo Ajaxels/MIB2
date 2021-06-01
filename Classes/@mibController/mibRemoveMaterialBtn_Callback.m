@@ -51,8 +51,8 @@ BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar dur
 
 
 % do nothing is selection is disabled
-if obj.mibModel.I{BatchOpt.id}.disableSelection == 1
-    warndlg(sprintf('The models are switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),'The models are disabled');
+if obj.mibModel.I{BatchOpt.id}.enableSelection == 0
+    warndlg(sprintf('The models are switched off!\n\nPlease make sure that the "Enable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "yes" and try again...'),'The models are disabled');
     notify(obj.mibModel, 'stopProtocol');
     return;
 end

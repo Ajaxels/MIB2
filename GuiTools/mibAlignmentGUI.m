@@ -32,7 +32,7 @@ function varargout = mibAlignmentGUI(varargin)
 
 % Edit the above text to modify the response to help mibalignmentgui
 
-% Last Modified by GUIDE v2.5 24-Sep-2019 12:59:35
+% Last Modified by GUIDE v2.5 22-Mar-2021 19:00:52
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,7 +79,7 @@ mibRescaleWidgets(handles.mibAlignmentGUI);
 
 % set size of the window, because in Guide it is bigger
 winPos = handles.mibAlignmentGUI.Position;
-handles.mibAlignmentGUI.Position = [winPos(1) winPos(2) handles.uipanel1.Position(3)+handles.uipanel1.Position(3)*.02 winPos(4)];
+handles.mibAlignmentGUI.Position = [winPos(1) winPos(2) handles.uipanel1.Position(3)+handles.uipanel1.Position(3)*.03 winPos(4)];
 
 % setting panels
 panelPosition = handles.secondDatasetPanel.Position;
@@ -210,7 +210,7 @@ end
 function SaveShiftsToFile_Callback(hObject, eventdata, handles)
 if handles.SaveShiftsToFile.Value
     startingPath = handles.saveShiftsXYpath.String;
-    [FileName, PathName] = uiputfile({'*.coefXY','*.coefXY (Matlab format)'; '*.*','All Files'}, 'Select file...', startingPath);
+    [FileName, PathName] = uiputfile({'*.coefXY', '*.coefXY (Matlab format)'; '*.*', 'All Files'}, 'Select file...', startingPath);
     if FileName == 0; handles.SaveShiftsToFile.Value = 0; return; end
     handles.saveShiftsXYpath.String = fullfile(PathName, FileName);
     handles.saveShiftsXYpath.Enable = 'on';
@@ -267,12 +267,18 @@ handles.MedianSize.Enable = 'off';
 handles.UseParallelComputing.Enable = 'off';
 handles.previewFeaturesBtn.String = 'Preview';
 handles.Subarea.Enable = 'on';
+handles.HDD_Mode.Enable = 'off';
+HDD_ModeValue = handles.HDD_Mode.Value;     % store current value of the HDD_Mode
+handles.HDD_Mode.Value = false; 
+
 switch methodSelected
     case 'Drift correction'
         textStr = sprintf('Use the Drift correction mode for small shifts or comparably sized images');
         handles.ColorChannel.Enable = 'on';
         handles.IntensityGradient.Enable = 'on';
         handles.CorrelateWith.Enable = 'on';
+        handles.HDD_Mode.Enable = 'on';
+        handles.HDD_Mode.Value = HDD_ModeValue;     % restore the value
     case 'Template matching'
         textStr = sprintf('Use the Template matching mode for when aligning two stacks with one of the stacks smaller in size');
         handles.ColorChannel.Enable = 'on';
@@ -328,6 +334,7 @@ switch methodSelected
 end
 handles.landmarkHelpText.String = textStr;
 handles.landmarkHelpText.TooltipString = textStr;
+HDD_Mode_Callback(handles.HDD_Mode, eventdata, handles);
 handles.winController.updateBatchOptFromGUI(hObject);   % update BatchOpt parameters
 end
 
@@ -412,4 +419,31 @@ switch hObject.Style
     otherwise
         handles.winController.updateBatchOptFromGUI(handles.BackgroundColor);   % update BatchOpt parameters
 end
+end
+
+
+% --- Executes on button press in HDD_Mode.
+function HDD_Mode_Callback(hObject, eventdata, handles)
+% callback for selection of HDD mode
+if handles.HDD_Mode.Value == 1
+    handles.HDD_Panel.Visible = 'on';
+else
+    handles.HDD_Panel.Visible = 'off';
+end
+handles.winController.updateBatchOptFromGUI(hObject);   % update BatchOpt parameters
+end
+
+
+% --- Executes on button press in HDD_SelectDirBtn.
+function HDD_SelectDirBtn_Callback(hObject, eventdata, handles)
+selpath = uigetdir(handles.winController.BatchOpt.HDD_InputDir, 'Select input directory');
+if selpath == 0; return; end
+handles.HDD_InputDir.String = selpath;
+handles.winController.updateBatchOptFromGUI(handles.HDD_InputDir);
+end
+
+
+% --- Executes on button press in HDD_BioformatsReader.
+function HDD_BioformatsReader_Callback(hObject, eventdata, handles)
+handles.winController.HDD_BioformatsReader_Callback();
 end

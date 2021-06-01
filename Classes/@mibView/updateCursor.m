@@ -21,7 +21,7 @@ function updateCursor(obj, mode)
 
 if nargin < 2; mode = 'dashed'; end
 
-xy=obj.handles.mibImageAxes.CurrentPoint;
+xy = obj.handles.mibImageAxes.CurrentPoint;
 
 x = round(xy(1,1));
 y = round(xy(1,2));

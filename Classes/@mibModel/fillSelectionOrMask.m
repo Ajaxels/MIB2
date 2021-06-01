@@ -29,7 +29,7 @@ function fillSelectionOrMask(obj, sel_switch, type, BatchOptIn)
 % batch mode
 
 % do nothing is selection is disabled
-if obj.I{obj.Id}.disableSelection == 1; notify(obj, 'stopProtocol'); return; end
+if obj.I{obj.Id}.enableSelection == 0; notify(obj, 'stopProtocol'); return; end
 
 if nargin < 4; BatchOptIn = struct; end
 if nargin < 3; type = []; end

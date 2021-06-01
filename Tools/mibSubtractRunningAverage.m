@@ -1,4 +1,31 @@
 function [shiftXOut, shiftYOut, halfwidth, excludePeaks] = mibSubtractRunningAverage(shiftX, shiftY, halfwidth, excludePeaks, useBatchMode)
+% function [shiftXOut, shiftYOut, halfwidth, excludePeaks] = mibSubtractRunningAverage(shiftX, shiftY, halfwidth, excludePeaks, useBatchMode)
+% smooth drift correction using the running average correction
+%
+% Parameters:
+% shiftX:    vector of input X values to be smoothed
+% shiftY:    vector of input Y values to be smoothed
+% halfwidth:    half-width of the smoothing window, when 0-do not smooth
+% excludePeaks: peaks higher than this value are excluded from the
+% correction, when 0 - do not consider peaks
+% useBatchMode: use the batch mode, i.e. no questions asked
+%
+% Return values:
+% shiftXOut: smoothed X vector
+% shiftYOut: smoothed X vector
+% halfwidth: used half-width
+% excludePeaks: excluded peaks value
+
+% Copyright (C) 24.08.2020, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+%
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi
+% This program is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public License
+% as published by the Free Software Foundation; either version 2
+% of the License, or (at your option) any later version.
+%
+% Updates
+%
 
 global mibPath;
 if nargin < 5; useBatchMode = 0; end
@@ -23,7 +50,8 @@ while notOk
         halfwidth = str2double(answer{1});
         excludePeaks = str2double(answer{2});
         
-        [shiftXOut, shiftYOut] = generatePoints(shiftX, shiftY, halfwidth, excludePeaks);
+        shiftXOut = round(mibRunningAverageSmoothPoints(shiftX, halfwidth, excludePeaks));
+        shiftYOut = round(mibRunningAverageSmoothPoints(shiftY, halfwidth, excludePeaks));
         
         figure(155);
         subplot(2,1,1)
@@ -55,45 +83,11 @@ while notOk
         if strcmp(fixDrifts, 'Yes')
             notOk = 0;
         end
-        delete(155);
+        %delete(155);
     else
-        [shiftXOut, shiftYOut] = generatePoints(shiftX, shiftY, halfwidth, excludePeaks);
+        shiftXOut = round(mibRunningAverageSmoothPoints(shiftX, halfwidth, excludePeaks));
+        shiftYOut = round(mibRunningAverageSmoothPoints(shiftY, halfwidth, excludePeaks));
         notOk = 0;
     end
-end
-end
-
-function [shiftXOut, shiftYOut] = generatePoints(shiftX, shiftY, halfwidth, excludePeaks)
-if halfwidth > 0
-    if excludePeaks > 0
-        diffX = diff(shiftX);
-        diffY = diff(shiftY);
-        peakPntsX = find(abs(diffX)>excludePeaks);
-        peakPntsY = find(abs(diffY)>excludePeaks);
-        shiftX3 = shiftX;
-        for pntId=1:numel(peakPntsX)
-            shiftX3(peakPntsX(pntId)+1:end) = shiftX3(peakPntsX(pntId)+1:end) - diffX(peakPntsX(pntId));
-        end
-        shiftY3 = shiftY;
-        for pntId=1:numel(peakPntsY)
-            shiftY3(peakPntsY(pntId)+1:end) = shiftY3(peakPntsY(pntId)+1:end) - diffY(peakPntsY(pntId));
-        end
-        shiftXOut = round(shiftX3-windv(shiftX3, halfwidth));
-        shiftYOut = round(shiftY3-windv(shiftY3, halfwidth));
-        
-        for pntId=1:numel(peakPntsX)
-            shiftXOut(peakPntsX(pntId)+1:end) = shiftXOut(peakPntsX(pntId)+1:end) + diffX(peakPntsX(pntId));
-        end
-        for pntId=1:numel(peakPntsY)
-            shiftYOut(peakPntsY(pntId)+1:end) = shiftYOut(peakPntsY(pntId)+1:end) + diffY(peakPntsY(pntId));
-        end
-    else
-        % subtract running average
-        shiftXOut = round(shiftX-windv(shiftX, halfwidth));
-        shiftYOut = round(shiftY-windv(shiftY, halfwidth));
-    end
-else
-    shiftXOut = shiftX;
-    shiftYOut = shiftY;
 end
 end

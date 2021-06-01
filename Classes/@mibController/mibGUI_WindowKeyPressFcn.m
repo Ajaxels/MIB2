@@ -137,7 +137,7 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             obj.menuImageInvert_Callback('4D');
         case 'Add to selection to material'     % default 'a'/'Shift+a'
             % do nothing is selection is disabled
-            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
+            if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 0; return; end
             
             if obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo') == -1    % Selection to Mask or Model
                 selectionTo = 'mask';
@@ -153,7 +153,7 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             end
         case 'Subtract from material'   % default 's'/'Shift+s'
             % do nothing is selection is disabled
-            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
+            if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 0; return; end
 
             if obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo') == -1   % Selection to Mask or Model
                 selectionTo = 'mask';
@@ -169,7 +169,7 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             end
         case 'Replace material with current selection'  % default 'r'/'Shift+r'
             % do nothing is selection is disabled
-            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
+            if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 0; return; end
         
             if obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo') == -1    % Selection to Mask or Model
                 selectionTo = 'mask';
@@ -187,14 +187,14 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
              obj.mibSelectionClearBtn_Callback();
         case 'Fill the holes in the Selection layer'   % default 'f'/'Shift+f'
             % do nothing is selection is disabled
-            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
+            if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 0; return; end
             obj.mibSelectionFillBtn_Callback();
         case 'Erode the Selection layer'    % default 'z'/'Shift+z'
             % do nothing is selection is disabled
-            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
+            if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 0; return; end
             obj.mibSelectionErodeBtn_Callback();
         case 'Dilate the Selection layer'   % default 'x'/'Shift + x'
-            if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
+            if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 0; return; end
             obj.mibSelectionDilateBtn_Callback();
         case {'Zoom out/Previous slice','Previous slice'}       % default 'q' / 'downarrow'
             % do nothing if the mouse not above the image
@@ -299,14 +299,14 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
         case 'Toggle current and previous buffer'
             obj.mibBufferToggle_Callback(obj.mibModel.mibPrevId);   % default ctrl+e, toggle buffer buttons
         case 'Loop through the list of favourite segmentation tools'    % default 'd'
-            if numel(obj.mibModel.preferences.lastSegmTool) == 0
+            if numel(obj.mibModel.preferences.SegmTools.PreviousTool) == 0
                 errordlg(sprintf('The selection tools for the fast access with the "D" shortcut are not difined!\n\nPlease use the "D" button in the Segmentation panel to select them!'),'No tools defined!');
                 return;
             end
             toolId = obj.mibView.handles.mibSegmentationToolPopup.Value;
-            nextTool = obj.mibModel.preferences.lastSegmTool(find(obj.mibModel.preferences.lastSegmTool > toolId, 1));
+            nextTool = obj.mibModel.preferences.SegmTools.PreviousTool(find(obj.mibModel.preferences.SegmTools.PreviousTool > toolId, 1));
             if isempty(nextTool)
-                nextTool = obj.mibModel.preferences.lastSegmTool(1);
+                nextTool = obj.mibModel.preferences.SegmTools.PreviousTool(1);
             end
             toolList = obj.mibView.handles.mibSegmentationToolPopup.String;
             
@@ -402,9 +402,9 @@ else    % all other possible shortcuts
             end
         case 'control'  % increase the radius of the brush for the erase tool
             if strcmp(modifier{1}, 'control') && obj.mibView.ctrlPressed == 0
-                if obj.mibModel.preferences.eraserRadiusFactor == 1; return; end
+                if obj.mibModel.preferences.SegmTools.Brush.EraserRadiusFactor == 1; return; end
                 radius = str2double(obj.mibView.handles.mibSegmSpotSizeEdit.String);
-                obj.mibView.ctrlPressed = max([floor(radius*obj.mibModel.preferences.eraserRadiusFactor - radius) 1]);
+                obj.mibView.ctrlPressed = max([floor(radius*obj.mibModel.preferences.SegmTools.Brush.EraserRadiusFactor - radius) 1]);
                 obj.mibView.handles.mibSegmSpotSizeEdit.String = num2str(radius+obj.mibView.ctrlPressed);
                 obj.mibView.updateCursor('solid');
             end

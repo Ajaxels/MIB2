@@ -66,7 +66,7 @@ if nargin == 3  % batch mode
 end
 
 %% do nothing is selection is disabled
-if obj.mibModel.preferences.disableSelection == 1
+if obj.mibModel.preferences.System.EnableSelection == 0
     warndlg(sprintf('The selection layer is switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),'The selection layer is disabled','modal');
     notify(obj.mibModel, 'stopProtocol');
     return; 

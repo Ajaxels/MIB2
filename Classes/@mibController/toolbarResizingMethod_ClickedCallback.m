@@ -11,7 +11,7 @@ function toolbarResizingMethod_ClickedCallback(obj, options)
 % options: [@em optional], 
 % @li when @b ''keepcurrent'' set the state of the button to the currently
 % selected type of the interpolation: @em
-% obj.mibModel.preferences.imageResizeMethod
+% obj.mibModel.preferences.System.ImageResizeMethod
 %
 % Return values:
 % 
@@ -34,19 +34,19 @@ if nargin == 2  % when options are available
         0;
     end
 else
-    if strcmp(obj.mibModel.preferences.imageResizeMethod, 'bicubic')
-        obj.mibModel.preferences.imageResizeMethod = 'nearest';
-    elseif strcmp(obj.mibModel.preferences.imageResizeMethod, 'nearest')
-        obj.mibModel.preferences.imageResizeMethod = 'auto';
+    if strcmp(obj.mibModel.preferences.System.ImageResizeMethod, 'bicubic')
+        obj.mibModel.preferences.System.ImageResizeMethod = 'nearest';
+    elseif strcmp(obj.mibModel.preferences.System.ImageResizeMethod, 'nearest')
+        obj.mibModel.preferences.System.ImageResizeMethod = 'auto';
     else
-        obj.mibModel.preferences.imageResizeMethod = 'bicubic';
+        obj.mibModel.preferences.System.ImageResizeMethod = 'bicubic';
     end
 end
 
-if strcmp(obj.mibModel.preferences.imageResizeMethod, 'auto')
+if strcmp(obj.mibModel.preferences.System.ImageResizeMethod, 'auto')
     filename = 'image_auto.res';
     obj.mibView.handles.toolbarResizingMethod.TooltipString = 'automatic interpolation: bicubic for magnification < 100% and nearest for >=100%';
-elseif strcmp(obj.mibModel.preferences.imageResizeMethod, 'bicubic')
+elseif strcmp(obj.mibModel.preferences.System.ImageResizeMethod, 'bicubic')
     filename = 'image_bicubic.res';
     obj.mibView.handles.toolbarResizingMethod.TooltipString = 'bicubic interpolation for the visualization, press for neareast';
 else

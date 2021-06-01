@@ -27,13 +27,11 @@ function contentAwareFill(obj, BatchOptIn)
 
 global mibPath;
 
-matlabVersion = ver('Matlab');
-matlabVersion = str2double(matlabVersion.Version);
-if matlabVersion < 9.6
+if verLessThan('matlab', '9.6') % matlabVersion < 9.6
     warndlg(sprintf('!!! Warning !!!\n\nMatlab R2019a or newer is required!'), 'Matlab is too old');
     notify(obj, 'stopProtocol');
     return;
-elseif matlabVersion < 9.7
+elseif verLessThan('matlab', '9.7') % matlabVersion < 9.7
     PossibleMethods = {'inpaintCoherent'};
 else
     PossibleMethods = {'inpaintCoherent','inpaintExemplar'};

@@ -118,19 +118,21 @@ if nargin == 3  % batch mode
     end
     batchModeSwitch = 1;    % indicates that the function is running in the batch mode
 else
-    [filename, BatchOpt.DirectoryName{1}] = uigetfile(...
+    [filename, BatchOpt.DirectoryName{1}] = mib_uigetfile(...
         {'*.model;',  'Matlab format (*.model)'; ...
         '*.mat;',  'Matlab format (*.mat)'; ...
         '*.am;',  'Amira mesh format (*.am)'; ...
         '*.h5',   'Hierarchical Data Format (*.h5)'; ...
+        '*.mibCat;',  'Matlab categorical format (*.mibCat)'; ...
         '*.mrc',   'Medical Research Council format (*.mrc)'; ...
         '*.nrrd;',  'NRRD format (*.nrrd)'; ...
         '*.tif;',  'TIF format (*.tif)'; ...
         '*.xml',   'Hierarchical Data Format with XML header (*.xml)'; ...
         '*.*',  'All Files (*.*)'}, ...
-        'Open model data...', BatchOpt.DirectoryName{1}, 'MultiSelect', 'on');
+        'Open model data...', BatchOpt.DirectoryName{1}, 'on');
     if isequal(filename, 0); return; end % check for cancel
     if ischar(filename); filename = cellstr(filename); end     % convert to cell type
+    filename = sort(filename);    % re-sort filenames to arrange as with dir
     
     batchModeSwitch = 0;    % indicates that the function is running in the gui mode
 end
@@ -159,7 +161,7 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
     end
     
     BatchOpt.imgStretch = 0;     % turn off conversion of images from uint32 to uint16 class
-    BatchOpt.BioFormatsMemoizerMemoDir = obj.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
+    BatchOpt.BioFormatsMemoizerMemoDir = obj.preferences.ExternalDirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
     
     if BatchOpt.showWaitbar
         warning('off', 'MATLAB:handle_graphics:exceptions:SceneNode');
@@ -197,8 +199,11 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
             elseif isfield(res, 'material_list')    % mib version 1
                 BatchOpt.material_list = res.material_list;
             else    % was using permute earlier to to match height and width with the image
-                model = permute(model,[2 1 3 4]); %#ok<NODEF>
+                if obj.I{obj.Id}.width ~= size(model, 2) && obj.I{obj.Id}.height ~= size(model, 1)
+                    model = permute(model, [2 1 3 4]); %#ok<NODEF>
+                end
             end
+            
             if isfield(res, 'modelMaterialColors')
                 BatchOpt.color_list = res.modelMaterialColors; %#ok<NASGU>
             elseif isfield(res, 'color_list')
@@ -264,10 +269,26 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
             end
             delete(img_info);
         elseif strcmp(filename{fnId}(end-3:end),'nrrd') % loading model in nrrd format
-            model = nrrdLoadWithMetadata(fullfile(BatchOpt.DirectoryName{1}, filename{fnId}));
+            if ~ismac
+                model = nrrdLoadWithMetadata(fullfile(BatchOpt.DirectoryName{1}, filename{fnId}));
+            else
+                model = nhdr_nrrd_read(fullfile(BatchOpt.DirectoryName{1}, filename{fnId}), 1);
+            end
             model =  uint8(permute(model.data, [2 1 3]));
+
             BatchOpt.model_fn = fullfile(BatchOpt.DirectoryName{1}, [filename{fnId}(1:end-2) 'model']);
             BatchOpt.modelVariable = 'mibModel';
+        elseif strcmp(filename{fnId}(end-3:end),'bCat') % loading model in mibCat format   
+            res = load(fullfile(BatchOpt.DirectoryName{1}, filename{fnId}), '-mat');
+            BatchOpt.model_fn = fullfile(BatchOpt.DirectoryName{1}, filename{1});
+            BatchOpt.modelVariable = res.imgVariable;
+            if strcmp(res.options.dimOrder, 'yxzct')    % convert to yxczt
+                res.(res.imgVariable) = permute(res.(res.imgVariable), [1 2 4 3 5]);
+            end
+            BatchOpt.material_list = res.options.modelMaterialNames;
+            BatchOpt.color_list = res.options.modelMaterialColors;
+            BatchOpt.modelType = res.options.modelType;
+            model = squeeze(uint8(res.(res.imgVariable)));
         elseif strcmp(filename{fnId}(end-3:end),'mrc') % loading model in mrc format            
             BatchOpt.mibBioformatsCheck = 0;
             BatchOpt.waitbar = 0;
@@ -467,7 +488,7 @@ else
     switch class(model)
         case 'uint8'
             max_color = numel(obj.I{BatchOpt.id}.modelMaterialNames);
-            obj.I{BatchOpt.id}.modelMaterialColors = obj.preferences.modelMaterialColors(1:min([max_color, size(obj.preferences.modelMaterialColors,1)]), :);
+            obj.I{BatchOpt.id}.modelMaterialColors = obj.preferences.Colors.ModelMaterialColors(1:min([max_color, size(obj.preferences.Colors.ModelMaterialColors,1)]), :);
         case 'uint16'
             obj.I{BatchOpt.id}.modelMaterialColors = rand([65535,3]);
         case 'uint32'

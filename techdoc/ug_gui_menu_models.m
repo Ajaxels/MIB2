@@ -21,7 +21,9 @@
 % * *65535 materials*, allows to have up to 65535 materials in the model,
 % requres ~1.25 times more memory than models with 255 materials. *Please
 % note* that when using this mode the look of the <ug_panel_segm.html segmentation panel> will
-% be different. <https://youtu.be/r3lpmWyvrJU Click here to see a short demonstration.>
+% be different. <https://youtu.be/r3lpmWyvrJU Click here to see a short demonstration>
+% * *4294967295 materials*, allows to have up to 4294967295 materials in
+% the model, requires twice more memory than 65535.
 % 
 % 
 % *Work with models with more than 255 materials*

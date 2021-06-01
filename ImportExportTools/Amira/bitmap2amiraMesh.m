@@ -10,10 +10,11 @@ function result = bitmap2amiraMesh(filename, bitmap, img_info, options)
 % - .overwrite - if @b 1 do not check whether file with provided filename already exists
 % - .showWaitbar - if @b 1 - show the wait bar, if @b 0 - do not show
 % - .colors - [@em optional] - a matrix of colors for multiple color channels, format: [color channel][Red Green Blue] in
-% range from 0-1. Applicable to the @em HxMultiChannelField3 type of data saving.
+%               range from 0-1. Applicable to the @em HxMultiChannelField3 type of data saving.
 % - .Saving3d: ''multi'' - save all stacks into a single file
 %              ''sequence'' - generate a sequence of files
 % - .SliceName: [optional] a cell array with filenames without path
+% - .verbose: [optional] a logical switch (default: true), report the saved filename
 %
 % Return values:
 % result: result of the function run, @b 1 - success, @b 0 - fail
@@ -48,6 +49,7 @@ end
 if ~isfield(options, 'overwrite'); options.overwrite = 0; end
 if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1; end
 if ~isfield(options, 'Saving3d'); options.Saving3d = 'multi'; end
+if ~isfield(options, 'verbose'); options.verbose = true; end
 % overwrite lutColors in the img_info
 if isfield(options, 'colors')
     img_info('lutColors') = options.colors;
@@ -83,7 +85,7 @@ else    % save dataset as sequence of images
     end
 end
 
-disp(['bitmap2amiraMesh: ' filename ' was created!']);
+if options.verbose; disp(['bitmap2amiraMesh: ' filename ' was created!']); end
 result = 1;
 if options.showWaitbar; set(0, 'DefaulttextInterpreter', curInt); delete(wb); end
 end

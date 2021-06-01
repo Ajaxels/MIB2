@@ -30,7 +30,7 @@ classdef mibImportOmeroController < handle
             
             % check for the virtual stacking mode and disable it
             if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
-                result = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(0, obj.mibModel.preferences.disableSelection);  % switch to the memory-resident mode
+                result = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(0, obj.mibModel.preferences.System.EnableSelection);  % switch to the memory-resident mode
                 if isempty(result) || result == 1
                     obj.closeWindow();
                     return;
@@ -446,7 +446,7 @@ classdef mibImportOmeroController < handle
             %img_info('ResolutionUnit') = 'Inch';
             img_info('Filename') = 'omero.tif';
             
-            obj.mibModel.I{obj.mibModel.Id}.clearContents(imgOut, img_info, obj.mibModel.preferences.disableSelection);
+            obj.mibModel.I{obj.mibModel.Id}.clearContents(imgOut, img_info, obj.mibModel.preferences.System.EnableSelection);
             
             obj.mibModel.I{obj.mibModel.Id}.pixSize.x = pixSizeX*stepX;
             obj.mibModel.I{obj.mibModel.Id}.pixSize.y = pixSizeY*stepY;

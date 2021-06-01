@@ -55,7 +55,7 @@ classdef mibMembraneDetectionController < handle
             mibRescaleWidgets(obj.View.gui);
             
             % update font and size
-            Font = obj.mibModel.preferences.Font;
+            Font = obj.mibModel.preferences.System.Font;
             if obj.View.handles.text1.FontSize ~= Font.FontSize ...
                     || ~strcmp(obj.View.handles.text1.FontName, Font.FontName)
                 mibUpdateFontSize(obj.View.gui, Font);
@@ -136,7 +136,7 @@ classdef mibMembraneDetectionController < handle
             
             currTempPath = obj.dirOut;
             currTempPath = uigetdir(currTempPath, 'Select temp directory');
-            if currTempPath == 0; return; end;   % cancel
+            if currTempPath == 0; return; end   % cancel
             obj.View.handles.tempDirEdit.String = currTempPath;
             obj.tempDirEdit_Callback();
         end
@@ -150,7 +150,7 @@ classdef mibMembraneDetectionController < handle
         function classifierFilenameBtn_Callback(obj)
             % function classifierFilenameEdit_Callback(obj)
             % callback for selection of the classifier filename
-            [FileName, PathName] = uigetfile('*.forest', 'Select filename for classifier', obj.classFilename);
+            [FileName, PathName] = mib_uigetfile('*.forest', 'Select filename for classifier', obj.classFilename);
             if isequal(FileName, 0)
                 return;
             end

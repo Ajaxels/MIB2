@@ -65,7 +65,9 @@ if nargin < 3   % generate Ishown from the dataset
         obj.mibView.handles.mibImageAxes.BusyAction = 'queue';
         obj.mibView.handles.mibImageAxes.HandleVisibility = 'callback';
         
-        if obj.matlabVersion > 9.6;  drawnow nocallbacks limitrate; end     % needs to be here, otherwise in R2019b drawing lags
+        if ~verLessThan('matlab', '9.7') % obj.matlabVersion > 9.6; % needs to be here, otherwise in R2019b drawing lags 
+            drawnow nocallbacks limitrate; 
+        end    
         return;
     end
 else    % use for Ishown the image provided in the sImgIn
@@ -190,7 +192,7 @@ else
         obj.mibView.handles.mibShowAnnotationsCheck.Value = 1;
         obj.mibModel.I{obj.mibModel.Id}.hMeasure.addMeasurementsToPlot(obj.mibModel, 'shown', obj.mibView.handles.mibImageAxes);
     end
-    if obj.matlabVersion > 9.6 
+    if ~verLessThan('matlab', '9.7') % obj.matlabVersion > 9.6 
         drawnow nocallbacks limitrate; 
     end     % needs to be here, otherwise in R2019b drawing lags
 end

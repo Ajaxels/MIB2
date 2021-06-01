@@ -42,8 +42,9 @@ end
 
 % define structure to store preferences
 mib_pars = struct();
-mib_pars.lastpath = obj.mibModel.myPath;    % store current path
 mib_pars.preferences = obj.mibModel.preferences; %#ok<STRNU>     % store preferences
+mib_pars.preferences.System.Dirs.LastPath = obj.mibModel.myPath;    % store current path
+mib_pars.mibVersion = obj.mibVersionNumeric;   % define version of MIB for which preferences generated
 
 prefdir = getPrefDir();
 try

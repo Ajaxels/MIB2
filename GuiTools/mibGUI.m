@@ -22,7 +22,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 15-May-2020 12:45:58
+% Last Modified by GUIDE v2.5 16-Sep-2020 17:44:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -51,7 +51,7 @@ handles.output = hObject;
 
 if isa(varargin{1}, 'mibController');    handles.mibController = varargin{1}; end
 
-if handles.mibController.matlabVersion >= 8.4 % R2014b
+if ~verLessThan('matlab', '8.4') % handles.mibController.matlabVersion >= 8.4 % R2014b
     handles.mibGUI.GraphicsSmoothing = 'off';  % turn off smoothing and turn opengl renderer
     handles.mibGUI.Renderer = 'opengl';
     handles.mibImageAxes.FontSmoothing = 'off';
@@ -71,6 +71,7 @@ end
 
 % resize all elements x1.25 times for macOS
 mibRescaleWidgets(handles.mibGUI);
+
 % update font and size
 global Font;
 if ~isempty(Font)
@@ -81,16 +82,17 @@ if ~isempty(Font)
 end
 
 % Set the font size for mibFilesListbox
-handles.mibFilesListbox.FontSize = handles.mibController.mibModel.preferences.fontSizeDir;
+handles.mibFilesListbox.FontSize = handles.mibController.mibModel.preferences.System.FontSizeDirView;
 
 handles.mibFileFilterPopup.UserData = 1;  % last selected file extention for use when swap bio/standard file reader
-mibUpdateDrives(handles, handles.mibController.mibModel.preferences.lastpath);  % get available disk drives
+mibUpdateDrives(handles, handles.mibController.mibModel.preferences.System.Dirs.LastPath);  % get available disk drives
 
 %% Adding Context menus
 % adding context menu for buffer toggles
 for i=1:9
     eval(sprintf('handles.mibBufferToggle%d_cm = uicontextmenu(''Parent'', handles.mibGUI);', i));
     eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Duplicate dataset'', ''Callback'', {@mibBufferToggleContext_Callback, ''duplicate'',%d});', i, i));
+    %eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Mirror image (BETA)'', ''Callback'', {@mibBufferToggleContext_Callback, ''mirror'',%d});', i, i));
     eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Sync view (x,y) with...'', ''Separator'',''on'',''Callback'', {@mibBufferToggleContext_Callback, ''sync_xy'',%d});', i, i));
     eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Sync view (x,y,z) with...'', ''Callback'', {@mibBufferToggleContext_Callback, ''sync_xyz'',%d});', i, i));
     eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Sync view (x,y,z,t) with...'', ''Callback'', {@mibBufferToggleContext_Callback, ''sync_xyzt'',%d});', i, i));
@@ -195,6 +197,7 @@ uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Insert empty channel', 'Callba
 uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Copy channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'Copy channel'});
 uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Invert channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'Invert channel'});
 uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Rotate channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'Rotate channel'});
+uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Shift channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'Shift channel'});
 uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Swap channels', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'Swap channels'});
 uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Delete channel', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'Delete channel'});
 uimenu(handles.mibChannelMixerTable_cm, 'Label', 'Set LUT color', 'Callback', {@mibChannelMixerTable_Callback, NaN, 'set color'}, 'Separator','on');
@@ -224,21 +227,21 @@ handles.mibSegmDragDropInfoText.String = sprintf('Control+Mouse -> move selected
 
 %%
 % Populate the recent directories popupmenu
-if ~isempty(handles.mibController.mibModel.preferences.recentDirs)
-    handles.mibRecentDirsPopup.String = handles.mibController.mibModel.preferences.recentDirs;
+if ~isempty(handles.mibController.mibModel.preferences.System.Dirs.RecentDirs)
+    handles.mibRecentDirsPopup.String = handles.mibController.mibModel.preferences.System.Dirs.RecentDirs;
 end
 
-handles.mibEraserEdit.String = num2str(handles.mibController.mibModel.preferences.eraserRadiusFactor);
+handles.mibEraserEdit.String = num2str(handles.mibController.mibModel.preferences.SegmTools.Brush.EraserRadiusFactor);
 
-if ~isempty(find(handles.mibController.mibModel.preferences.lastSegmTool == 3,1))  % set background for the brush when it is fast access tool
+if ~isempty(find(handles.mibController.mibModel.preferences.SegmTools.PreviousTool == 3,1))  % set background for the brush when it is fast access tool
     handles.mibSegmFavToolCheck.Value = 1;
     handles.mibSegmentationToolPopup.BackgroundColor = [1 .69 .39];
 end
 
 % update transparency sliders
-handles.mibSelectionTransparencySlider.Value = handles.mibController.mibModel.preferences.mibSelectionTransparencySlider;
-handles.mibMaskTransparencySlider.Value = handles.mibController.mibModel.preferences.mibMaskTransparencySlider;
-handles.mibModelTransparencySlider.Value = handles.mibController.mibModel.preferences.mibModelTransparencySlider;
+handles.mibSelectionTransparencySlider.Value = handles.mibController.mibModel.preferences.Colors.SelectionTransparency;
+handles.mibMaskTransparencySlider.Value = handles.mibController.mibModel.preferences.Colors.MaskTransparency;
+handles.mibModelTransparencySlider.Value = handles.mibController.mibModel.preferences.Colors.ModelTransparency;
 
 %% Placing panels
 handles.mibRoiPanel.Parent = handles.mibSegmentationPanel.Parent;
@@ -339,7 +342,7 @@ end
 %% define data for the mibSegmentationTable
 tableData = cell([2, 3]);
 tableData{1, 1} = sprintf('<html><table border=0 width=25 bgcolor=rgb(%d,%d,%d)><TR><TD>&nbsp;</TD></TR></table></html>', ...
-    round(handles.mibController.mibModel.preferences.maskcolor(1)*255), round(handles.mibController.mibModel.preferences.maskcolor(2)*255), round(handles.mibController.mibModel.preferences.maskcolor(3)*255));
+    round(handles.mibController.mibModel.preferences.Colors.MaskColor(1)*255), round(handles.mibController.mibModel.preferences.Colors.MaskColor(2)*255), round(handles.mibController.mibModel.preferences.Colors.MaskColor(3)*255));
 tableData{1, 2} = '<html><table border=0 width=300 bgcolor=rgb(255,255,255)><TR><TD>Mask</TD></TR></table></html>';
 tableData{1, 3} = true;
 tableData{2, 1} = '<html><table border=0 width=25 bgcolor=rgb(255,255,255)><TR><TD>&nbsp;</TD></TR></table></html>';
@@ -567,7 +570,7 @@ end
 
 % --------------------------------------------------------------------
 function toolbarParProcBtn_ClickedCallback(hObject, eventdata, handles)
-if handles.mibController.matlabVersion < 8.4
+if verLessThan('matlab', '8.4') % handles.mibController.matlabVersion < 8.4
     cores = matlabpool('size'); %#ok<DPOOL>
     if cores == 0
         matlabpool(feature('numCores')); %#ok<DPOOL>
@@ -693,12 +696,16 @@ switch parameter
         clipboard('copy', handles.mibPathEdit.String);
     case 'fileexplorer'
         if isdir(handles.mibPathEdit.String)
-            if ispc
+            if ispc     % for pc
                 system(sprintf('explorer.exe "%s"', handles.mibPathEdit.String));
-            elseif ismac
+            elseif ismac    % for linux
                 system(sprintf('open %s &', handles.mibPathEdit.String));
-            else
-                unix(sprintf('xterm -e cd %s &', handles.mibPathEdit.String));
+            else    % for linux
+                try 
+                    unix(sprintf('caja %s &', handles.mibPathEdit.String));     % try Caja first
+                catch err
+                    unix(sprintf('xterm -e cd %s &', handles.mibPathEdit.String));
+                end
             end
         else
             errordlg(sprintf('Wrong directory!\n\n%s', handles.mibPathEdit.String));
@@ -1465,7 +1472,7 @@ switch selfilter
         handles.mibImageFiltersTypePopup.String = {'Edges','Regions'};
         handles.mibImageFiltersTypePopup.TooltipString = 'Edges: favours high contrast edges over low contrast ones; Region: favours wide regions over smaller ones';
     case 'External: BMxD'
-        if isempty(handles.mibController.mibModel.preferences.dirs.bm3dInstallationPath) || exist(fullfile(handles.mibController.mibModel.preferences.dirs.bm3dInstallationPath, 'BM3D.m'), 'file') ~= 2
+        if isempty(handles.mibController.mibModel.preferences.ExternalDirs.bm3dInstallationPath) || exist(fullfile(handles.mibController.mibModel.preferences.ExternalDirs.bm3dInstallationPath, 'BM3D.m'), 'file') ~= 2
             handles.mibImageFilterDoitBtn.Enable = 'off';
         else
             res = which('bm4d');
@@ -1725,11 +1732,11 @@ end
 % --- Executes on button press in mibFijiSelectFileBtn.
 function mibFijiSelectFileBtn_Callback(hObject, eventdata, handles)
 % Select a text file with list of macro functions for Fiji
-[filename, path] = uigetfile(...
+[filename, path] = mib_uigetfile(...
     {'*.txt;',  'Text file (*.txt)'; ...
     '*.*',  'All Files (*.*)'}, ...
     'Select file...', handles.mibPathEdit.String);
-if isequal(filename,0); return; end; % check for cancel
+if isequal(filename,0); return; end % check for cancel
 handles.mibFijiMacroEdit.String = fullfile(path, filename);
 end
 
@@ -2177,7 +2184,7 @@ end
 function menuHelp_Callbacks(hObject, eventdata, handles, parameter)
 switch parameter
     case 'tip'
-        handles.mibController.mibModel.preferences.tips.showTips = 1;
+        handles.mibController.mibModel.preferences.Tips.ShowTips = 1;
         handles.mibController.startController('mibTipsController');
     case 'support'
         web('https://forum.image.sc/tags/mib', '-browser');

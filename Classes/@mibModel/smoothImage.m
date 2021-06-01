@@ -90,8 +90,8 @@ else
 end
 
 %% do nothing is selection is disabled
-if obj.I{BatchOptLocal.id}.disableSelection == 1
-    warndlg(sprintf('The selection layer is switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),...
+if obj.I{BatchOptLocal.id}.enableSelection == 0
+    warndlg(sprintf('The selection layer is switched off!\n\nPlease make sure that the "Enable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "yes" and try again...'),...
         'The selection layer is disabled', 'modal');
     notify(obj, 'stopProtocol');
     return; 

@@ -126,8 +126,6 @@ classdef Lines3D < matlab.mixin.Copyable
         % a vector with indicator whether the field in extraNodeFields is numeric (1) or not (0)
         filename = [];
         % filename of the Lines3D file
-        matlabVersion
-        % version of matlab, required for definition of the strel element
         nodeActiveColor = [1.0000    0.0000         0];
         % color of the active node [R, G, B], from 0 to 1
         nodeColor = [1.0000    1.0000         0];
@@ -183,9 +181,6 @@ classdef Lines3D < matlab.mixin.Copyable
             if nargin < 2; activeNodeId = []; end
             if nargin < 1; Gin = []; end
             
-            v = ver('Matlab');
-            obj.matlabVersion = str2double(v.Version);
-            
             obj.setOptions(options);
             
             obj.clearContents();
@@ -220,9 +215,9 @@ classdef Lines3D < matlab.mixin.Copyable
             
             obj.updateNodeStrel(obj.nodeRadius);     % update strel element
             
-            if obj.matlabVersion >= 8.6
+            %if ~verLessThan('matlab', '8.6')   % obj.matlabVersion >= 8.6  
                 %obj.makeDummyGraph();   % generate test graph
-            end
+            %end
             
             %             figure(1);
             %             h = plot(obj.G);
@@ -1091,7 +1086,7 @@ classdef Lines3D < matlab.mixin.Copyable
             % function updateNodeStrel(obj, nodeStrelSize)
             % update strel element for showing nodes as circles
             
-            if obj.matlabVersion < 9
+            if verLessThan('matlab', '9')
                 obj.nodeStrel = strel('disk', nodeStrelSize);
             else
                 se = strel('sphere', nodeStrelSize);

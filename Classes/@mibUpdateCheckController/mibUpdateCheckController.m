@@ -20,7 +20,7 @@ classdef mibUpdateCheckController < handle
         function obj = mibUpdateCheckController(mibModel, mibController)
             obj.mibModel = mibModel;    % assign model
             obj.mibController = mibController;    % current version of MIB
-            obj.mibVersion = obj.mibController.mibVersion;    % current version of MIB
+            obj.mibVersion = obj.mibController.mibVersionNumeric;    % current version of MIB in numerical format
             
             guiName = 'mibUpdateCheckGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
@@ -56,8 +56,10 @@ classdef mibUpdateCheckController < handle
             % update widgets of this window
             if isdeployed
                 obj.View.handles.updateBtn.Enable = 'off';
-                if ismac()
+                if ismac
                     link = 'http://mib.helsinki.fi/web-update/mib2_mac.txt';
+                elseif isunix   
+                    link = 'http://mib.helsinki.fi/web-update/mib2_linux.txt';
                 else
                     link = 'http://mib.helsinki.fi/web-update/mib2_win.txt';
                 end
@@ -88,17 +90,13 @@ classdef mibUpdateCheckController < handle
                 infoText = '';
             end
             
-            index1 = strfind(obj.mibVersion, 'ver.');
-            index2 = strfind(obj.mibVersion, '/');
-            currentVersion = str2double(obj.mibVersion(index1+4:index2-1));
-            
             jScrollPane = findjobj(obj.View.handles.informationEdit);
             jViewPort = jScrollPane.getViewport;
             obj.View.handles.jEditbox = jViewPort.getComponent(0);
             obj.View.handles.jEditbox.setContentType('text/html');
             obj.View.handles.jEditbox.setEditable(false);
             
-            if availableVersion - currentVersion > 0
+            if availableVersion - obj.mibVersion > 0
                 obj.View.handles.informationText.String = sprintf('New version (%f) of Microscopy Image Browser is available!', availableVersion);
                 obj.View.handles.jEditbox.setText(releaseComments);
             else

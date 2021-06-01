@@ -47,7 +47,8 @@ end
 
 % toggle the virtual switch
 if ~isempty(newMode)
-    newMode = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(newMode, obj.mibModel.preferences.disableSelection);
+    newMode = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(newMode, obj.mibModel.preferences.System.EnableSelection);
+    if isempty(newMode); return; end
     obj.mibModel.I{obj.mibModel.Id}.clearContents();
     eventdata = ToggleEventData(obj.mibModel.Id);
     notify(obj.mibModel, 'newDataset', eventdata);

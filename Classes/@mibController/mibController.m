@@ -12,6 +12,8 @@ classdef mibController < handle
     properties
         mibVersion % = 'ver. 2.601 / 04.11.2019';  % ATTENTION! it is important to have the version number between "ver." and "/"
         % version of MIB
+        mibVersionNumeric 
+        % version of MIB in numerical form
         mibModel
         % handles to the model
         mibView
@@ -63,10 +65,10 @@ classdef mibController < handle
                 case {'newDataset', 'newDatasetLite'}
                     if ismember('Parameter', fieldnames(evnt))
                         obj.updateAxesLimits('resize', evnt.Parameter);     % where evnt.Parameter is index if the container to update
-                        obj.mibModel.I{evnt.Parameter}.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;   % update BioFormatsMemoizer directory
+                        obj.mibModel.I{evnt.Parameter}.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir;   % update BioFormatsMemoizer directory
                     else
                         obj.updateAxesLimits('resize');
-                        obj.mibModel.I{obj.mibModel.Id}.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir; % update BioFormatsMemoizer directory
+                        obj.mibModel.I{obj.mibModel.Id}.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir; % update BioFormatsMemoizer directory
                     end
                     obj.updateGuiWidgets();
                     obj.mibModel.newDatasetSwitch = abs(obj.mibModel.newDatasetSwitch) - 1;
@@ -436,6 +438,9 @@ classdef mibController < handle
             global Font mibPath scalingGUI DejaVuSansMono;
             
             obj.mibVersion = mibVersion;
+            index1 = strfind(obj.mibVersion, 'ver.');
+            index2 = strfind(obj.mibVersion, '/');
+            obj.mibVersionNumeric = str2double(obj.mibVersion(index1+4:index2-1));
             
             % when insertText is missing MIB will use a legacy function to add text to image
             % load the text table and keep it in a global variable
@@ -464,6 +469,7 @@ classdef mibController < handle
                 fprintf('%s\n', err.message);
                 obj.mibPath = [];
             end
+            
             % try to obtain path differently
             if isempty(obj.mibPath)
                 if isdeployed
@@ -528,7 +534,7 @@ classdef mibController < handle
             % get the current version of Matlab; keep this variable to be faster and
             % not call ver function
             v = ver('matlab');
-            obj.matlabVersion = str2double(v(1).Version);
+            obj.matlabVersion = str2double(v(1).Version);   % conversion is not correct as version named as 9.8, 9.9, 9.10...
             
             obj.childControllers = {};    % initialize child controllers
             obj.childControllersIds = {};
@@ -539,8 +545,8 @@ classdef mibController < handle
             
             obj.getDefaultParameters();          % restore default/stored parameters
             
-            Font = obj.mibModel.preferences.Font;
-            scalingGUI = obj.mibModel.preferences.gui;
+            Font = obj.mibModel.preferences.System.Font;
+            scalingGUI = obj.mibModel.preferences.System.GUI;  % structure for rescaling of GUI elements
 
             obj.mibView = mibView(obj);
             
@@ -559,10 +565,10 @@ classdef mibController < handle
             
             % update parameters for mibImages
             for i=1:obj.mibModel.maxId
-                obj.mibModel.I{i}.modelMaterialColors = obj.mibModel.preferences.modelMaterialColors;
-                obj.mibModel.I{i}.lutColors = obj.mibModel.preferences.lutColors;
-                if obj.mibModel.preferences.disableSelection ~= obj.mibModel.I{i}.disableSelection
-                    obj.mibModel.I{i}.clearContents([], [], obj.mibModel.preferences.disableSelection);
+                obj.mibModel.I{i}.modelMaterialColors = obj.mibModel.preferences.Colors.ModelMaterialColors;
+                obj.mibModel.I{i}.lutColors = obj.mibModel.preferences.Colors.LUTColors;
+                if obj.mibModel.preferences.System.EnableSelection ~= obj.mibModel.I{i}.enableSelection
+                    obj.mibModel.I{i}.clearContents([], [], obj.mibModel.preferences.System.EnableSelection);
                 end
                 obj.updateAxesLimits('resize', i);
             end
@@ -578,17 +584,13 @@ classdef mibController < handle
             obj.mibModel.mibAnnValuePrecision = 0;   % precision of annotation values, an integer from 0 and above
             obj.mibModel.mibAnnMarkerEdit = 'label + value';
             obj.mibModel.mibSegmShowTypePopup = obj.mibView.handles.mibSegmShowTypePopup.Value;   % type of model visualization: @b 1 - filled; @b 2 - contour
-            
             obj.plotImage(1);
             
-            obj.mibModel.myPath = obj.mibModel.preferences.lastpath;  % define current working directory
-            obj.mibModel.U.setNumberOfHistorySteps(obj.mibModel.preferences.maxUndoHistory, obj.mibModel.preferences.max3dUndoHistory);    % update number of history steps
+            obj.mibModel.myPath = obj.mibModel.preferences.System.Dirs.LastPath;  % define current working directory
+            obj.mibModel.U.setNumberOfHistorySteps(obj.mibModel.preferences.Undo.MaxUndoHistory, obj.mibModel.preferences.Undo.Max3dUndoHistory);    % update number of history steps
             
-            if strcmp(obj.mibModel.preferences.undo, 'no')   % define enable/disable undo
-                obj.mibModel.U.enableSwitch = 0;
-            else
-                obj.mibModel.U.enableSwitch = 1;
-            end
+            % define enable/disable undo
+            obj.mibModel.U.enableSwitch = obj.mibModel.preferences.Undo.Enable;
             
             obj.mibBioformatsCheck_Callback();          % update list of file filters
             obj.updateMyPath(obj.mibModel.myPath);      % update list of files in the GUI
@@ -607,9 +609,9 @@ classdef mibController < handle
             obj.listener{8} = addlistener(obj.mibModel, 'newDatasetLite', @(src,evnt) mibController.Listner2_Callback(obj, src, evnt));
             
             % update version specific elements
-            if obj.matlabVersion < 9
+            if verLessThan('matlab', '9') % obj.matlabVersion < 9
                 obj.mibView.handles.mibSegmThresPanelAdaptiveCheck.Enable = 'off';
-            elseif obj.matlabVersion < 8.6  % remove 3D lines
+            elseif verLessThan('matlab', '8.6') % obj.matlabVersion < 8.6  % remove 3D lines
                 segmToolsList = obj.mibView.handles.mibSegmentationToolPopup.String;
                 segmToolsList(ismember(segmToolsList, '3D lines')) = [];
                 obj.mibView.handles.mibSegmentationToolPopup.String = segmToolsList;
@@ -624,8 +626,8 @@ classdef mibController < handle
                     obj.mibView.handles.mibImageFilterPopup.String = currStr;
                 end
             else
-                if ~isempty(obj.mibModel.preferences.dirs.bm3dInstallationPath)
-                    if exist(fullfile(obj.mibModel.preferences.dirs.bm3dInstallationPath, 'BM3D.m'), 'file') == 2
+                if ~isempty(obj.mibModel.preferences.ExternalDirs.bm3dInstallationPath)
+                    if exist(fullfile(obj.mibModel.preferences.ExternalDirs.bm3dInstallationPath, 'BM3D.m'), 'file') == 2
                         currStr = obj.mibView.handles.mibImageFilterPopup.String;
                         currStr{end+1} = 'External: BMxD';
                         obj.mibView.handles.mibImageFilterPopup.String = currStr;
@@ -647,18 +649,22 @@ classdef mibController < handle
             end
             
             if exist('frame','var')     % close splash window
-                frame.hide;
+                %frame.hide;
+                frame.dispose();
+                frame.setVisible(false);
                 clear frame;
             end
             
             % check for update
             currentDate = floor(now);
-            if currentDate - obj.mibModel.preferences.updateChecked > 30
+            if currentDate - obj.mibModel.preferences.System.Update.SinceLastCheck > obj.mibModel.preferences.System.Update.RecheckPeriod
                 % check for update
-                obj.mibModel.preferences.updateChecked = currentDate;
+                obj.mibModel.preferences.System.Update.SinceLastCheck = currentDate;
                 if isdeployed
-                    if ismac()
+                    if ismac
                         link = 'http://mib.helsinki.fi/web-update/mib2_mac.txt';
+                    elseif isunix
+                        link = 'http://mib.helsinki.fi/web-update/mib2_linux.txt';
                     else
                         link = 'http://mib.helsinki.fi/web-update/mib2_win.txt';
                     end
@@ -673,10 +679,7 @@ classdef mibController < handle
                 
                 linefeedPos = strfind(urlText, sprintf('\n'));
                 availableVersion = str2double(urlText(1:linefeedPos(1)));
-                index1 = strfind(obj.mibVersion, 'ver.');
-                index2 = strfind(obj.mibVersion, '/');
-                currentVersion = str2double(obj.mibVersion(index1+4:index2-1));
-                if availableVersion - currentVersion > 0
+                if availableVersion - obj.mibVersionNumeric > 0
                     anwser = questdlg(sprintf('A new version %f of MIB is available!\nWould you like to download/install it?\n\nYou can always do that later from Menu->Help->Check for Update', availableVersion),'New version', 'Update now', 'Later', 'Update');
                     if strcmp(anwser, 'Update now')
                         obj.startController('mibUpdateCheckController', obj);
@@ -687,7 +690,7 @@ classdef mibController < handle
             obj.mibView.handles.mibGUI.WindowKeyPressFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowKeyPressFcn(eventdata));   % turn ON callback for the keys
             obj.mibView.handles.mibGUI.WindowKeyReleaseFcn = (@(hObject, eventdata) obj.mibGUI_WindowKeyReleaseFcn(eventdata));   % turn ON callback for the keys
             
-            if obj.mibModel.preferences.tips.showTips == 1
+            if obj.mibModel.preferences.Tips.ShowTips == 1
                 obj.startController('mibTipsController');
             end
         end

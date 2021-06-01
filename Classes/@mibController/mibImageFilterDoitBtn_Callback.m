@@ -34,7 +34,7 @@ switch filter_list{filter_val}
 %         obj.plotImage(0);
 %         return;
     case 'DNN Denoise'
-        if obj.matlabVersion < 9.3
+        if verLessThan('matlab', '9.3') % obj.matlabVersion < 9.3
             errordlg(sprintf('!!! Error !!!\nMatlab R2017b or newer is required to use this function!'), 'Matlab version is too old');
             return;
         end

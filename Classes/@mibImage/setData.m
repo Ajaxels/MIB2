@@ -142,7 +142,7 @@ if obj.modelType > 63  % uint8/int8 type of the model
                 
                 % create a model layer for selection
                 if obj.Virtual.virtual == 0
-                    if obj.disableSelection == 0 && options.keepModel == 0
+                    if obj.enableSelection == 1 && options.keepModel == 0
                         obj.selection{1} = zeros([size(obj.img{1},1), size(obj.img{1},2), size(obj.img{1},4), size(obj.img{1},5)], 'uint8');
                     end
                 end
@@ -255,7 +255,7 @@ else        % ************ uint6 model type
                 
                 % create a model layer for selection
                 if obj.Virtual.virtual == 0
-                    if obj.disableSelection == 0 && options.keepModel == 0
+                    if obj.enableSelection == 1 && options.keepModel == 0
                         obj.model{1} = zeros([size(obj.img{1},1), size(obj.img{1},2), size(obj.img{1},4), size(obj.img{1},5)], 'uint8');
                     end
                 end

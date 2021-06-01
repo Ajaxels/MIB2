@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Alignment and Drift Correction</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-06-08"><meta name="DC.source" content="ug_gui_menu_dataset_alignment.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>Alignment and Drift Correction</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-01"><meta name="DC.source" content="ug_gui_menu_dataset_alignment.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -71,6 +72,7 @@ A demonstration is available in the following videos:<br>
 <a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/-qwoO5z02aA</a><br>
 <a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube2.png"> Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a><br>
 <a href="https://youtu.be/-en5zD5Ou9s"><img style="vertical-align:middle;" src="images\youtube2.png"> Automatic feature-based</a><br>
+<a href="https://youtu.be/FtvWjDUMZ1I"><img style="vertical-align:middle;" src="images\youtube2.png"> HDD mode</a><br>
 </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_dataset.html"><b>Dataset</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Current dataset panel</a></li><li><a href="#2">Align panel</a></li><li><a href="#3">Options panel</a></li><li><a href="#4">Second stack panel</a></li><li><a href="#5">Reference and Acknowledgements</a></li></ul></div><h2 id="1">Current dataset panel</h2><p>The <b>Current dataset panel</b> displays details of the currently opened dataset, such as its filename, dimensions and pixel size</p><p><img vspace="5" hspace="5" src="images/menuDatasetAlignTool_1.jpg" alt=""> </p><h2 id="2">Align panel</h2><p>The <b>Align panel</b> allows to select main parameters for the alignment and drift correction.</p><p><img vspace="5" hspace="5" src="images/menuDatasetAlignTool_2.jpg" alt=""> </p><p>
 <ul>
   <li>
@@ -198,6 +200,16 @@ A demonstration is available in the following videos:<br>
     </table>
   </li>
   <li>
+      <b>HDD mode</b> -
+      <a href="https://youtu.be/FtvWjDUMZ1I"><img src="images/youtube.png"></a>
+      when selected the alignment tool will align
+      files specified in the bottom panel of the window
+      (<em>HDD Mode (Image directories and formats)</em>). This mode is
+      suitable for large collection of images that can not be fit into
+      computer memory. This mode is only implemented for the "Drift
+      correction" algorithm.<br>
+  </li>
+  <li>
     <b>Correlate with</b> - three different options for the reference slide:
       <ul>
           <li><b>Previous slice</b>, align each slice to the previous one</li>
@@ -243,6 +255,22 @@ A demonstration is available in the following videos:<br>
     <b>Save/Load shifts to file</b> using this option it is possible to
     save and load the translation shifts to a disk
   </li>
+  <li>
+  <ul><b>HDD Mode (image directories and formats) panel</b><br>
+      this panel is used only when the <em>HDD Mode</em> is enabled.
+      <li><b>Extension</b> - extension of files that should be
+      aligned</li>
+      <li><b>Bio</b> - enable the Bio-Formats file reader to load images
+      in various microscope formats</li>
+      <li><b>Index</b> - a numeric index of a series to load from a
+      container of images [Bio-formats only]</li>
+      <li><b>...</b> - press to select directory with images to
+      process</li>
+      <li><b>Output subfolder and extension</b> - specify output
+      subfolder (relative to the input folder) to save aligned images and
+      set the output file format.</li>
+      </ul>
+  </li>
 </ul>
 </p><h2 id="4">Second stack panel</h2><p>The Options panel is shown only during alignment of two stacks</p><p><img vspace="5" hspace="5" src="images/menuDatasetAlignTool_4.jpg" alt=""> </p><p>
 <ul>
@@ -264,7 +292,7 @@ A demonstration is available in the following videos:<br>
     manually into the <em>ShiftX</em> and <em>ShiftY</em> edit boxes.
   </li>
 </ul>
-</p><h2 id="5">Reference and Acknowledgements</h2><p>The alignment algorithm is based on</p><div><ul><li>JC Russ, The image processing handbook, CRC Press, Boca Raton, FL, 1994</li><li>JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free Matlab Script For Spatial Drift Correction, Microscopy Today ? Volume 22, Number 5, 2014 <a href="https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m">&lt;https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m</a>&gt;</li><li><a href="http://onlinedigeditions.com/publication/?i=223321&amp;p=40">&lt;http://onlinedigeditions.com/publication/?i=223321&amp;p=40</a>&gt;</li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_dataset.html"><b>Dataset</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
+</p><h2 id="5">Reference and Acknowledgements</h2><p>The alignment algorithm is based on</p><div><ul><li>JC Russ, The image processing handbook, CRC Press, Boca Raton, FL, 1994</li><li>JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free Matlab Script For Spatial Drift Correction, Microscopy Today ? Volume 22, Number 5, 2014 <a href="https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m">&lt;https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m</a>&gt;</li><li><a href="http://onlinedigeditions.com/publication/?i=223321&amp;p=40">&lt;http://onlinedigeditions.com/publication/?i=223321&amp;p=40</a>&gt;</li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_dataset.html"><b>Dataset</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Alignment and Drift Correction
 % The Alignment and Drift Correction tool can be used either to align slice of the opened dataset or to align two
@@ -275,6 +303,7 @@ A demonstration is available in the following videos:<br>
 % <a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/-qwoO5z02aA</a><br>
 % <a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube2.png"> Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a><br>
 % <a href="https://youtu.be/-en5zD5Ou9s"><img style="vertical-align:middle;" src="images\youtube2.png"> Automatic feature-based</a><br>
+% <a href="https://youtu.be/FtvWjDUMZ1I"><img style="vertical-align:middle;" src="images\youtube2.png"> HDD mode</a><br>
 % </html>
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_dataset.html *Dataset*>
@@ -421,6 +450,16 @@ A demonstration is available in the following videos:<br>
 %     </table>
 %   </li>
 %   <li>
+%       <b>HDD mode</b> - 
+%       <a href="https://youtu.be/FtvWjDUMZ1I"><img src="images/youtube.png"></a> 
+%       when selected the alignment tool will align 
+%       files specified in the bottom panel of the window 
+%       (<em>HDD Mode (Image directories and formats)</em>). This mode is
+%       suitable for large collection of images that can not be fit into
+%       computer memory. This mode is only implemented for the "Drift
+%       correction" algorithm.<br>
+%   </li>
+%   <li>
 %     <b>Correlate with</b> - three different options for the reference slide:
 %       <ul>
 %           <li><b>Previous slice</b>, align each slice to the previous one</li>
@@ -476,6 +515,22 @@ A demonstration is available in the following videos:<br>
 %   <li>
 %     <b>Save/Load shifts to file</b> using this option it is possible to
 %     save and load the translation shifts to a disk
+%   </li>
+%   <li>
+%   <ul><b>HDD Mode (image directories and formats) panel</b><br>
+%       this panel is used only when the <em>HDD Mode</em> is enabled.
+%       <li><b>Extension</b> - extension of files that should be
+%       aligned</li>
+%       <li><b>Bio</b> - enable the Bio-Formats file reader to load images
+%       in various microscope formats</li>
+%       <li><b>Index</b> - a numeric index of a series to load from a
+%       container of images [Bio-formats only]</li>
+%       <li><b>...</b> - press to select directory with images to
+%       process</li>
+%       <li><b>Output subfolder and extension</b> - specify output
+%       subfolder (relative to the input folder) to save aligned images and
+%       set the output file format.</li>
+%       </ul>
 %   </li>
 % </ul>
 % </html>

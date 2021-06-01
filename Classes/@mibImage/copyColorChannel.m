@@ -5,8 +5,8 @@ function copyColorChannel(obj, channel1, channel2, options)
 % The first color channel will be copied to the position of the second color channel
 %
 % Parameters:
-% channel1: [@em optional] index of the first color channel
-% channel2: [@em optional] index of the second color channel
+% channel1: [@em optional] index of the source color channel
+% channel2: [@em optional] index of the target color channel
 % options: structure with additional parameters
 % .showWaitbar - logical, @b 1 [@em default] - show the waitbar, @b 0 - do not show
 % .autoOverwrite - logical, @b 1 [@em default] - overwrite one existing color channel without a question prompt, 0 - ask for permission

@@ -44,7 +44,7 @@ if ndims(imgIn) == 3
     imgIn = permute(imgIn, [1 2 4 3]);
 end
 
-[height,width, color, depth] = size(imgIn);
+[height, width, color, depth] = size(imgIn);
 minX = min(shiftsX);    % find minimal x shift for all stacks
 minY = min(shiftsY);    % find minimal y shift for all stacks
 

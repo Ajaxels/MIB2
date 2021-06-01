@@ -120,7 +120,7 @@ fprintf(fid, 'encoding: raw\n');
 fprintf(fid, 'endian: little\n');
 fprintf(fid, 'space origin: (%f,%f,%f)\n', -bb(1), -bb(3), bb(5));
 fprintf(fid, '\n');
-if options.showWaitbar; waitbar(.05,wb); end;
+if options.showWaitbar; waitbar(.05,wb); end
 % save data
 if colors == 1  % greyscale
     if ndims(bitmap) == 4
@@ -132,11 +132,11 @@ else
     bitmap = reshape(permute(bitmap,[3 2 1 4]),1,[])';
 end
 fwrite(fid, bitmap, class(bitmap), 0, 'ieee-le');  
-if options.showWaitbar; waitbar(1, wb); end;
+if options.showWaitbar; waitbar(1, wb); end
 fclose(fid);
 disp(['bitmap2nrrd: ' filename ' was created!']);
 result = 1;
-if options.showWaitbar; delete(wb); set(0, 'DefaulttextInterpreter', curInt); end;
+if options.showWaitbar; delete(wb); set(0, 'DefaulttextInterpreter', curInt); end
 end
 
 % maxZ = size(bitmap,4);

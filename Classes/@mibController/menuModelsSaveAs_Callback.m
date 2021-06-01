@@ -31,6 +31,7 @@ switch parameter
     case 'saveas'
         filename = obj.mibModel.saveModel([], BatchOpt);
 end
+if isempty(filename); return; end
 
 obj.updateFilelist(filename);
 obj.plotImage();

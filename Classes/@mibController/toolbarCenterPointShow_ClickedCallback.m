@@ -16,7 +16,7 @@ function toolbarCenterPointShow_ClickedCallback(obj)
 % 
 global mibPath;
 
-if obj.matlabVersion < 9.5
+if verLessThan('matlab', '9.5') % obj.matlabVersion < 9.5
     warndlg(sprintf('!!! Warning !!!\n\nThis feature requires MAtlab R2018b or newer'), 'Matlab version is too old');
     return; 
 end

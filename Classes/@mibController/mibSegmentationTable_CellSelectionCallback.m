@@ -48,12 +48,14 @@ if Indices(2) == 2        % selection of Material
     
     if unlink == 0
         obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial = selectedMaterial;
-        jTable.setValueAt(java.lang.Boolean(0), prevMaterial-1, 2);
+        if prevMaterial ~= selectedMaterial
+            jTable.setValueAt(java.lang.Boolean(0), prevMaterial-1, 2);
         
-        %drawnow limitrate nocallbacks;     % this syntax does not work with R2014b
-        refreshdata(obj.mibView.handles.mibSegmentationTable);  % instead of drawnow, seems to be faster
+            %drawnow limitrate nocallbacks;     % this syntax does not work with R2014b
+            refreshdata(obj.mibView.handles.mibSegmentationTable);  % instead of drawnow, seems to be faster
         
-        jTable.setValueAt(java.lang.Boolean(1), selectedMaterial-1, 2);
+            jTable.setValueAt(java.lang.Boolean(1), selectedMaterial-1, 2);
+        end
     end
     obj.mibView.handles.mibSegmentationTable.UserData = userData;
 elseif Indices(2) == 3    % click on the Add to checkbox
@@ -90,11 +92,11 @@ elseif Indices(2) == 3    % click on the Add to checkbox
     obj.mibView.handles.mibSegmentationTable.UserData = userData;
 else                        % define color
     if Indices(1) == 1    % mask
-        c = uisetcolor(obj.mibModel.preferences.maskcolor, 'Set color for Mask');
+        c = uisetcolor(obj.mibModel.preferences.Colors.MaskColor, 'Set color for Mask');
         if length(c) == 1
             return; 
         end
-        obj.mibModel.preferences.maskcolor = c;
+        obj.mibModel.preferences.Colors.MaskColor = c;
     elseif Indices(1) > 2
         figTitle = ['Set color for ' obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{Indices(1)-2}];
         c = uisetcolor(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(Indices(1)-2,:), figTitle);

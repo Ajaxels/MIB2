@@ -15,7 +15,7 @@ function mibSelectionErodeBtn_Callback(obj)
 % 19.09.2019 updated for the batch mode
 
 % do nothing is selection is disabled
-if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
+if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 0; return; end
 BatchOpt = struct();
 BatchOpt.TargetLayer = {'selection'};
 modifier = obj.mibView.gui.CurrentModifier;

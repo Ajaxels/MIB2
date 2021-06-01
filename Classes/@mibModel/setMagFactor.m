@@ -28,7 +28,7 @@ if nargin < 3; id = obj.Id; end
 if nargin < 2
     errordlg(sprintf('!!! Error !!!\n\nthe magFactor parameter is missing'),'mibModel.setMagFactor');
     return;
-end;
+end
 obj.I{id}.magFactor = magFactor;
 end
 

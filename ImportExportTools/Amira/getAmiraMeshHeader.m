@@ -25,14 +25,15 @@ function [par, img_info, dim_xyczt] = getAmiraMeshHeader(filename)
 
 img_info = containers.Map;
 if nargin < 1
-    [filename, pathname] = uigetfile( ...
+    [filename, pathname] = mib_uigetfile( ...
         {'*.am','Amira mesh labels(*.am)';
          '*.*',  'All Files (*.*)'}, ...
          'Pick a file');
     if filename == 0; return; end
     filename = [pathname filename];
 end
-fid = fopen(filename, 'r');
+%fid = fopen(filename, 'r');
+fid = fopen(filename, 'r', 'n', 'UTF-8');
 
 % define type of data
 tline = fgetl(fid);

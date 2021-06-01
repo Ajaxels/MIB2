@@ -94,7 +94,7 @@ classdef mibGraphcutController  < handle
             mibRescaleWidgets(obj.View.gui);
             
             % update font and size
-            Font = obj.mibModel.preferences.Font;
+            Font = obj.mibModel.preferences.System.Font;
             if obj.View.handles.text1.FontSize ~= Font.FontSize ...
                     || ~strcmp(obj.View.handles.text1.FontName, Font.FontName)
                 mibUpdateFontSize(obj.View.gui, Font);
@@ -1411,6 +1411,7 @@ classdef mibGraphcutController  < handle
             waitbar(1, wb, sprintf('Done!'));
             obj.View.handles.superpixelsBtn.BackgroundColor = 'g';
             obj.View.handles.superpixelsCountText.String = sprintf('Superpixels count: %d', sum([obj.graphcut(:).noPix]));
+            obj.View.handles.superpixelsCountText.Tooltip = sprintf('Superpixels count: %d', sum([obj.graphcut(:).noPix]));
             delete(wb);
             toc
         end
@@ -1651,7 +1652,7 @@ classdef mibGraphcutController  < handle
                 
                 switch answer{1}
                     case 'Load from a file'
-                        [filename, path] = uigetfile(...
+                        [filename, path] = mib_uigetfile(...
                             {'*.graph;',  'Matlab format (*.graph)'}, ...
                             'Load Graphcut data...', obj.mibModel.myPath);
                         if isequal(filename, 0); return; end % check for cancel

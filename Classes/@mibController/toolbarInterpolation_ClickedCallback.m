@@ -33,13 +33,13 @@ if nargin == 2  % when options are available
         0;
     end
 else
-    if strcmp(obj.mibModel.preferences.interpolationType, 'shape')
-        obj.mibModel.preferences.interpolationType = 'line';
+    if strcmp(obj.mibModel.preferences.SegmTools.Interpolation.Type, 'shape')
+        obj.mibModel.preferences.SegmTools.Interpolation.Type = 'line';
     else
-        obj.mibModel.preferences.interpolationType = 'shape';
+        obj.mibModel.preferences.SegmTools.Interpolation.Type = 'shape';
     end
 end
-if strcmp(obj.mibModel.preferences.interpolationType, 'line')
+if strcmp(obj.mibModel.preferences.SegmTools.Interpolation.Type, 'line')
     filename = 'line_interpolation.res';
     obj.mibView.handles.toolbarInterpolation.TooltipString = 'Use LINE interpolation';
     obj.mibView.handles.menuSelectionInterpolate.Label = 'Interpolate as Line (I)';

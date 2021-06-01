@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="2897195277" file="C:\Matlab\Scripts\MIB2\MIB_deploy_v2702\MIB.prj" location="C:\Matlab\Scripts\MIB2\MIB_deploy_v2702" name="MIB" preferred-package-location="C:\Matlab\Scripts\MIB2\MIB_deploy_v2702\MIB\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="1452786825" file="C:\Matlab\Scripts\MIB2\MIB_deploy_v280\MIB.prj" location="C:\Matlab\Scripts\MIB2\MIB_deploy_v280" name="MIB" preferred-package-location="C:\Matlab\Scripts\MIB2\MIB2_deploy\MIB\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}\MIB_resources\icon.ico</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}\MIB_resources\icon_24.png</file>
       <file>${PROJECT_ROOT}\MIB_resources\icon_16.png</file>
     </param.icons>
-    <param.version>2.702</param.version>
+    <param.version>2.80</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -43,10 +43,10 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
     <param.user.defined.mcr.options />
     <param.target.type>subtarget.standalone</param.target.type>
     <param.support.packages />
-    <param.web.mcr>true</param.web.mcr>
-    <param.package.mcr>false</param.package.mcr>
+    <param.web.mcr>false</param.web.mcr>
+    <param.package.mcr>true</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
-    <param.web.mcr.name>MIB2_Win</param.web.mcr.name>
+    <param.web.mcr.name>MIB_Win</param.web.mcr.name>
     <param.package.mcr.name>MyAppInstaller_mcr</param.package.mcr.name>
     <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
     <param.windows.command.prompt>false</param.windows.command.prompt>
@@ -73,8 +73,6 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
       <param.user.defined.mcr.options />
       <param.target.type />
       <param.support.packages />
-      <param.web.mcr />
-      <param.package.mcr />
       <param.no.mcr />
       <param.package.mcr.name />
       <param.no.mcr.name />
@@ -114,6 +112,7 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
       <file>C:\Matlab\Scripts\OMERO\connectOmero.m</file>
       <file>C:\Matlab\Scripts\OMERO\findOmero.m</file>
       <file>C:\Matlab\Scripts\OMERO\getOmeroJars.m</file>
+      <file>C:\Matlab\Scripts\OMERO\helper\JavaImageToMatlab.m</file>
       <file>C:\Matlab\Scripts\OMERO\loadOmero.m</file>
       <file>C:\Matlab\Scripts\OMERO\omeroVersion.m</file>
       <file>C:\Matlab\Scripts\OMERO\unloadOmero.m</file>
@@ -122,18 +121,17 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
       <file>D:\Tools\Science\Fiji.app\scripts\Miji.m</file>
     </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}\MIB\for_testing" name="MIB.exe" optional="false">C:\Matlab\Scripts\MIB2\MIB_deploy_v2702\MIB\for_testing\MIB.exe</file>
-      <file location="${PROJECT_ROOT}\MIB\for_testing" name="readme.txt" optional="true">C:\Matlab\Scripts\MIB2\MIB_deploy_v2702\MIB\for_testing\readme.txt</file>
-      <file location="${PROJECT_ROOT}\MIB\for_testing" name="splash.png" optional="false">C:\Matlab\Scripts\MIB2\MIB_deploy_v2702\MIB\for_testing\splash.png</file>
+      <file location="${PROJECT_ROOT}\MIB\for_testing" name="readme.txt" optional="true">C:\Matlab\Scripts\MIB2\MIB_deploy_v280\MIB\for_testing\readme.txt</file>
+      <file location="${PROJECT_ROOT}\MIB\for_testing" name="splash.png" optional="false">C:\Matlab\Scripts\MIB2\MIB_deploy_v280\MIB\for_testing\splash.png</file>
+      <file location="${PROJECT_ROOT}\MIB\for_testing" name="MIB.exe" optional="false">C:\Matlab\Scripts\MIB2\MIB_deploy_v280\MIB\for_testing\MIB.exe</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>D:\MATLAB\R2019b</root>
+      <root>D:\MATLAB\R2021a</root>
       <toolboxes>
         <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
         <toolbox name="gpucoder" />
-        <toolbox name="fixedpoint" />
-        <toolbox name="matlabhdlcoder" />
         <toolbox name="neuralnetwork" />
       </toolboxes>
       <toolbox>
@@ -142,19 +140,14 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
         </matlabcoder>
       </toolbox>
       <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+      <toolbox>
         <gpucoder>
           <enabled>true</enabled>
         </gpucoder>
-      </toolbox>
-      <toolbox>
-        <fixedpoint>
-          <enabled>true</enabled>
-        </fixedpoint>
-      </toolbox>
-      <toolbox>
-        <matlabhdlcoder>
-          <enabled>true</enabled>
-        </matlabhdlcoder>
       </toolbox>
       <toolbox>
         <neuralnetwork>

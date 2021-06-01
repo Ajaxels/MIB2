@@ -188,7 +188,7 @@ classdef mibVolRenController < handle
             mibRescaleWidgets(obj.View.gui);
             
             % update font and size
-            Font = obj.mibModel.preferences.Font;
+            Font = obj.mibModel.preferences.System.Font;
             if obj.View.handles.modeText.FontSize ~= Font.FontSize ...
                     || ~strcmp(obj.View.handles.modeText.FontName, Font.FontName)
                 mibUpdateFontSize(obj.View.gui, Font);
@@ -1115,7 +1115,7 @@ classdef mibVolRenController < handle
             % load animation path from a file
             
             mypath = fileparts(obj.animationFilename);
-            [filename, path] = uigetfile(...
+            [filename, path] = mib_uigetfile(...
                 {'*.animation;',  'Matlab format (*.animation)'; ...
                 '*.*', 'All Files (*.*)'}, ...
                 'Load animation...', mypath);

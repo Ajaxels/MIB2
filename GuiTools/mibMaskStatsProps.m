@@ -75,9 +75,7 @@ if handles.obj3d
     set(handles.shape2dPanel, 'visible', 'off');
     set(handles.shape3dPanel, 'visible', 'on');
 
-    matlabVersion = ver('Matlab');
-    matlabVersion = str2double(matlabVersion.Version);
-    if matlabVersion >= 9.3
+    if ~verLessThan('matlab', '9.3') % matlabVersion >= 9.3
         handles.ConvexVolume3d.Enable = 'on';
         handles.EquivDiameter3d.Enable = 'on';
         handles.Extent3d.Enable = 'on';

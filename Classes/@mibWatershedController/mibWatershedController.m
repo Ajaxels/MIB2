@@ -66,7 +66,7 @@ classdef mibWatershedController  < handle
             mibRescaleWidgets(obj.View.gui);
             
             % update font and size
-            Font = obj.mibModel.preferences.Font;
+            Font = obj.mibModel.preferences.System.Font;
             if obj.View.handles.text1.FontSize ~= Font.FontSize ...
                     || ~strcmp(obj.View.handles.text1.FontName, Font.FontName)
                 mibUpdateFontSize(obj.View.gui, Font);

@@ -134,7 +134,7 @@ classdef mibImageArithmeticController < handle
             
             obj.View.handles.InputVariables.String = obj.BatchOpt.InputVariables;
             obj.View.handles.OutputVariables.String = obj.BatchOpt.OutputVariables;
-            obj.View.handles.prevExpPopup.String = cellfun(@(x) strrep(x,sprintf('\n'),''), obj.mibModel.preferences.imagearithmetic.actions, 'UniformOutput', false); %#ok<SPRINTFN>
+            obj.View.handles.prevExpPopup.String = cellfun(@(x) strrep(x,sprintf('\n'),''), obj.mibModel.preferences.ImageArithmetic.Actions, 'UniformOutput', false); %#ok<SPRINTFN>
             obj.View.handles.Expression.String = obj.BatchOpt.Expression;
             
             % resize all elements of the GUI
@@ -212,12 +212,12 @@ classdef mibImageArithmeticController < handle
         end
         
         function prevExpPopup_Callback(obj)
-            selectedExpression = obj.mibModel.preferences.imagearithmetic.actions{obj.View.handles.prevExpPopup.Value};
+            selectedExpression = obj.mibModel.preferences.ImageArithmetic.Actions{obj.View.handles.prevExpPopup.Value};
             obj.BatchOpt.Expression = selectedExpression;
             obj.View.handles.Expression.String = selectedExpression;
-            obj.View.handles.InputVariables.String = obj.mibModel.preferences.imagearithmetic.inputvars{obj.View.handles.prevExpPopup.Value};
+            obj.View.handles.InputVariables.String = obj.mibModel.preferences.ImageArithmetic.InputVars{obj.View.handles.prevExpPopup.Value};
             obj.BatchOpt.InputVariables = obj.View.handles.InputVariables.String;
-            obj.View.handles.OutputVariables.String = obj.mibModel.preferences.imagearithmetic.outputvars{obj.View.handles.prevExpPopup.Value};
+            obj.View.handles.OutputVariables.String = obj.mibModel.preferences.ImageArithmetic.OutputVars{obj.View.handles.prevExpPopup.Value};
             obj.BatchOpt.OutputVariables = obj.View.handles.OutputVariables.String;
         end
         
@@ -226,7 +226,13 @@ classdef mibImageArithmeticController < handle
         function runExpressionBtn_Callback(obj)
             % start arithmetics
             
-            if obj.BatchOpt.showWaitbar; wb = waitbar(0, sprintf('Performing:\n%s\nPlease wait...', obj.BatchOpt.Expression), 'Name', 'Image arithmetics'); end
+            origState = warning;    % store current warnings
+            warning('off');         % turn warnings off, as there is a warning when a blank space is used in the expression
+            if obj.BatchOpt.showWaitbar
+                wb = waitbar(0, sprintf('Performing:\n%s\nPlease wait...', obj.BatchOpt.Expression), 'Name', 'Image arithmetics'); 
+            end
+            warning(origState);     % restore warnings
+            
             logText = 'Arithmetics:';
             if obj.BatchOpt.showWaitbar; waitbar(0.05, wb); end
             
@@ -312,17 +318,17 @@ classdef mibImageArithmeticController < handle
             
             if isempty(obj.BatchOpt.OutputVariables)    % stop here if the output is not required
                 % store the expression and update prevExpPopup
-                if ~ismember(obj.BatchOpt.Expression, obj.mibModel.preferences.imagearithmetic.actions)
-                    obj.mibModel.preferences.imagearithmetic.actions(end+1) = {obj.BatchOpt.Expression};
-                    obj.mibModel.preferences.imagearithmetic.outputvars(end+1) = {obj.BatchOpt.OutputVariables};
-                    obj.mibModel.preferences.imagearithmetic.inputvars(end+1) = {obj.BatchOpt.InputVariables};
-                    if numel(obj.mibModel.preferences.imagearithmetic.actions) > obj.mibModel.preferences.imagearithmetic.no_stored_actions
-                        obj.mibModel.preferences.imagearithmetic.actions = obj.mibModel.preferences.imagearithmetic.actions(2:end);
-                        obj.mibModel.preferences.imagearithmetic.outputvars = obj.mibModel.preferences.imagearithmetic.outputvars(2:end);
-                        obj.mibModel.preferences.imagearithmetic.inputvars = obj.mibModel.preferences.imagearithmetic.inputvars(2:end);
+                if ~ismember(obj.BatchOpt.Expression, obj.mibModel.preferences.ImageArithmetic.Actions)
+                    obj.mibModel.preferences.ImageArithmetic.Actions(end+1) = {obj.BatchOpt.Expression};
+                    obj.mibModel.preferences.ImageArithmetic.OutputVars(end+1) = {obj.BatchOpt.OutputVariables};
+                    obj.mibModel.preferences.ImageArithmetic.InputVars(end+1) = {obj.BatchOpt.InputVariables};
+                    if numel(obj.mibModel.preferences.ImageArithmetic.Actions) > obj.mibModel.preferences.ImageArithmetic.NoStoredActions
+                        obj.mibModel.preferences.ImageArithmetic.Actions = obj.mibModel.preferences.ImageArithmetic.Actions(2:end);
+                        obj.mibModel.preferences.ImageArithmetic.OutputVars = obj.mibModel.preferences.ImageArithmetic.OutputVars(2:end);
+                        obj.mibModel.preferences.ImageArithmetic.InputVars = obj.mibModel.preferences.ImageArithmetic.InputVars(2:end);
                     end
-                    obj.View.handles.prevExpPopup.String = cellfun(@(x) strrep(x,sprintf('\n'),''), obj.mibModel.preferences.imagearithmetic.actions, 'UniformOutput', false); %#ok<SPRINTFN>
-                    obj.View.handles.prevExpPopup.Value = numel(obj.mibModel.preferences.imagearithmetic.actions);
+                    obj.View.handles.prevExpPopup.String = cellfun(@(x) strrep(x,sprintf('\n'),''), obj.mibModel.preferences.ImageArithmetic.Actions, 'UniformOutput', false); %#ok<SPRINTFN>
+                    obj.View.handles.prevExpPopup.Value = numel(obj.mibModel.preferences.ImageArithmetic.Actions);
                 end
                 
                 if obj.BatchOpt.showWaitbar
@@ -377,7 +383,8 @@ classdef mibImageArithmeticController < handle
                         notify(obj.mibModel, 'newDataset', eventdata);
                     end
                     % update log only if the image was modified
-                    logText = sprintf('%s: %s;', logText, obj.BatchOpt.Expression);
+                    %logText = sprintf('%s: %s;', logText, obj.BatchOpt.Expression); % can make problem with amira mesh headers
+                    logText = sprintf('Image Arithmetics operation applied');
                     obj.mibModel.I{setDataOptions.id}.updateImgInfo(logText);
                 case 'model'
                     execString = sprintf('obj.mibModel.setData4D(''%s'', %s, 4, NaN, setDataOptions);', outputType, datasetOutputString);
@@ -411,17 +418,17 @@ classdef mibImageArithmeticController < handle
             
             
             % store the expression and update prevExpPopup
-            if ~ismember(obj.BatchOpt.Expression, obj.mibModel.preferences.imagearithmetic.actions)
-                obj.mibModel.preferences.imagearithmetic.actions(end+1) = {obj.BatchOpt.Expression};
-                obj.mibModel.preferences.imagearithmetic.outputvars(end+1) = {obj.BatchOpt.OutputVariables};
-                obj.mibModel.preferences.imagearithmetic.inputvars(end+1) = {obj.BatchOpt.InputVariables};
-                if numel(obj.mibModel.preferences.imagearithmetic.actions) > obj.mibModel.preferences.imagearithmetic.no_stored_actions
-                    obj.mibModel.preferences.imagearithmetic.actions = obj.mibModel.preferences.imagearithmetic.actions(2:end);
-                    obj.mibModel.preferences.imagearithmetic.outputvars = obj.mibModel.preferences.imagearithmetic.outputvars(2:end);
-                    obj.mibModel.preferences.imagearithmetic.inputvars = obj.mibModel.preferences.imagearithmetic.inputvars(2:end);
+            if ~ismember(obj.BatchOpt.Expression, obj.mibModel.preferences.ImageArithmetic.Actions)
+                obj.mibModel.preferences.ImageArithmetic.Actions(end+1) = {obj.BatchOpt.Expression};
+                obj.mibModel.preferences.ImageArithmetic.OutputVars(end+1) = {obj.BatchOpt.OutputVariables};
+                obj.mibModel.preferences.ImageArithmetic.InputVars(end+1) = {obj.BatchOpt.InputVariables};
+                if numel(obj.mibModel.preferences.ImageArithmetic.Actions) > obj.mibModel.preferences.ImageArithmetic.NoStoredActions
+                    obj.mibModel.preferences.ImageArithmetic.Actions = obj.mibModel.preferences.ImageArithmetic.Actions(2:end);
+                    obj.mibModel.preferences.ImageArithmetic.OutputVars = obj.mibModel.preferences.ImageArithmetic.OutputVars(2:end);
+                    obj.mibModel.preferences.ImageArithmetic.InputVars = obj.mibModel.preferences.ImageArithmetic.InputVars(2:end);
                 end
-                obj.View.handles.prevExpPopup.String = cellfun(@(x) strrep(x,sprintf('\n'),''), obj.mibModel.preferences.imagearithmetic.actions, 'UniformOutput', false); %#ok<SPRINTFN>
-                obj.View.handles.prevExpPopup.Value = numel(obj.mibModel.preferences.imagearithmetic.actions);
+                obj.View.handles.prevExpPopup.String = cellfun(@(x) strrep(x,sprintf('\n'),''), obj.mibModel.preferences.ImageArithmetic.Actions, 'UniformOutput', false); %#ok<SPRINTFN>
+                obj.View.handles.prevExpPopup.Value = numel(obj.mibModel.preferences.ImageArithmetic.Actions);
             end
             
             if obj.BatchOpt.showWaitbar; waitbar(1, wb); delete(wb); end

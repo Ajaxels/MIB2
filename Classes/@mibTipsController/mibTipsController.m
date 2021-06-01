@@ -60,12 +60,12 @@ classdef mibTipsController < handle
             
             obj.mibModel = mibModel;    % assign model
             % these are the preferences related to the tips
-            %obj.mibModel.preferences.tips.currentTip = 1;   % index of the next tip to show
-            %obj.mibModel.preferences.tips.showTips = 1;     % show or not the tips during startup
-            %obj.mibModel.preferences.tips.files
+            %obj.mibModel.preferences.Tips.CurrentTipIndex = 1;   % index of the next tip to show
+            %obj.mibModel.preferences.Tips.ShowTips = 1;     % show or not the tips during startup
+            %obj.mibModel.preferences.Tips.Files
             
             % do not show the tips
-            if obj.mibModel.preferences.tips.showTips == 0
+            if obj.mibModel.preferences.Tips.ShowTips == 0
                 notify(obj, 'closeEvent');
                 return;
             end
@@ -81,7 +81,7 @@ classdef mibTipsController < handle
                 return;
             end
             
-            obj.View.handles.showTipsCheck.Value = obj.mibModel.preferences.tips.showTips;
+            obj.View.handles.showTipsCheck.Value = obj.mibModel.preferences.Tips.ShowTips;
             
             % move the window to the left hand side of the main window
             obj.View.gui = moveWindowOutside(obj.View.gui, 'center', 'center');
@@ -122,10 +122,10 @@ classdef mibTipsController < handle
             % function closeWindow(obj)
             % close this window
             
-            obj.mibModel.preferences.tips.showTips = obj.View.handles.showTipsCheck.Value;
-            obj.mibModel.preferences.tips.currentTip = obj.mibModel.preferences.tips.currentTip + 1;
-            if obj.mibModel.preferences.tips.currentTip > numel(obj.mibModel.preferences.tips.files)
-                obj.mibModel.preferences.tips.currentTip = 1;
+            obj.mibModel.preferences.Tips.ShowTips = obj.View.handles.showTipsCheck.Value;
+            obj.mibModel.preferences.Tips.CurrentTipIndex = obj.mibModel.preferences.Tips.CurrentTipIndex + 1;
+            if obj.mibModel.preferences.Tips.CurrentTipIndex > numel(obj.mibModel.preferences.Tips.Files)
+                obj.mibModel.preferences.Tips.CurrentTipIndex = 1;
             end
             
             % closing mibTipsController window
@@ -146,12 +146,12 @@ classdef mibTipsController < handle
             % function updateWidgets(obj)
             % update widgets of this window
             
-            fnIndex = max([1, obj.mibModel.preferences.tips.currentTip]);
+            fnIndex = max([1, obj.mibModel.preferences.Tips.CurrentTipIndex]);
             
             % on PC path is file://c:/... or //ad.xxxxx.xxx.xx
             % on Mac file:///Volumes/Transcend/...
             if ispc
-                if obj.mibModel.preferences.tips.files{fnIndex}(1) == '\'
+                if obj.mibModel.preferences.Tips.Files{fnIndex}(1) == '\'
                     fileText = 'file:'; 
                 else
                     fileText = 'file:/'; 
@@ -159,7 +159,7 @@ classdef mibTipsController < handle
             else
                 fileText = 'file://';
             end
-            filename = obj.mibModel.preferences.tips.files{fnIndex};
+            filename = obj.mibModel.preferences.Tips.Files{fnIndex};
             linkURL = strrep([fileText filename],'\','/');
             obj.webBrowser.setCurrentLocation(linkURL);
         end
@@ -168,9 +168,9 @@ classdef mibTipsController < handle
             % function nextTipBtn_Callback(obj)
             % display the next tip
             
-            obj.mibModel.preferences.tips.currentTip = obj.mibModel.preferences.tips.currentTip + 1;
-            if obj.mibModel.preferences.tips.currentTip > numel(obj.mibModel.preferences.tips.files)
-                obj.mibModel.preferences.tips.currentTip = 1;
+            obj.mibModel.preferences.Tips.CurrentTipIndex = obj.mibModel.preferences.Tips.CurrentTipIndex + 1;
+            if obj.mibModel.preferences.Tips.CurrentTipIndex > numel(obj.mibModel.preferences.Tips.Files)
+                obj.mibModel.preferences.Tips.CurrentTipIndex = 1;
             end
             obj.updateWidgets();
         end
@@ -179,9 +179,9 @@ classdef mibTipsController < handle
             % function previousTipBtn_Callback(obj)
             % display the previous tip
             
-            obj.mibModel.preferences.tips.currentTip = obj.mibModel.preferences.tips.currentTip - 1;
-            if obj.mibModel.preferences.tips.currentTip == 0
-                obj.mibModel.preferences.tips.currentTip = numel(obj.mibModel.preferences.tips.files);
+            obj.mibModel.preferences.Tips.CurrentTipIndex = obj.mibModel.preferences.Tips.CurrentTipIndex - 1;
+            if obj.mibModel.preferences.Tips.CurrentTipIndex == 0
+                obj.mibModel.preferences.Tips.CurrentTipIndex = numel(obj.mibModel.preferences.Tips.Files);
             end
             obj.updateWidgets();
         end

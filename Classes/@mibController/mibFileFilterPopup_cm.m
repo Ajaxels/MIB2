@@ -33,26 +33,26 @@ switch parameter
         output = mibInputMultiDlg({mibPath}, prompts, defAns, dlgtitle, options);
         if isempty(output); return; end
         
-        %ismember(obj.mibModel.preferences.Filefilter.stdExt, output{4})
+        %ismember(obj.mibModel.preferences.System.Files.StdExt, output{4})
         if ~isempty(output{1})
             newExt = strsplit(strrep(output{1}, ' ', ''), ';');
-            newExt(ismember(newExt, obj.mibModel.preferences.Filefilter.stdExt)) = [];
-            obj.mibModel.preferences.Filefilter.stdExt = sort([obj.mibModel.preferences.Filefilter.stdExt, newExt]);
+            newExt(ismember(newExt, obj.mibModel.preferences.System.Files.StdExt)) = [];
+            obj.mibModel.preferences.System.Files.StdExt = sort([obj.mibModel.preferences.System.Files.StdExt, newExt]);
         end
         if ~isempty(output{2})
             newExt = strsplit(strrep(output{2}, ' ', ''), ';');
-            newExt(ismember(newExt, obj.mibModel.preferences.Filefilter.stdVirtExt)) = [];
-            obj.mibModel.preferences.Filefilter.stdVirtExt = sort([obj.mibModel.preferences.Filefilter.stdVirtExt, newExt]);
+            newExt(ismember(newExt, obj.mibModel.preferences.System.Files.StdVirtExt)) = [];
+            obj.mibModel.preferences.System.Files.StdVirtExt = sort([obj.mibModel.preferences.System.Files.StdVirtExt, newExt]);
         end
         if ~isempty(output{3})
             newExt = strsplit(strrep(output{3}, ' ', ''), ';');
-            newExt(ismember(newExt, obj.mibModel.preferences.Filefilter.bioExt)) = [];
-            obj.mibModel.preferences.Filefilter.bioExt = sort([obj.mibModel.preferences.Filefilter.bioExt, newExt]);
+            newExt(ismember(newExt, obj.mibModel.preferences.System.Files.BioFormatsExt)) = [];
+            obj.mibModel.preferences.System.Files.BioFormatsExt = sort([obj.mibModel.preferences.System.Files.BioFormatsExt, newExt]);
         end
         if ~isempty(output{4})
             newExt = strsplit(strrep(output{4}, ' ', ''), ';');
-            newExt(ismember(newExt, obj.mibModel.preferences.Filefilter.bioVirtExt)) = [];
-            obj.mibModel.preferences.Filefilter.bioVirtExt = sort([obj.mibModel.preferences.Filefilter.bioVirtExt, newExt]);
+            newExt(ismember(newExt, obj.mibModel.preferences.System.Files.BioFormatsVirtExt)) = [];
+            obj.mibModel.preferences.System.Files.BioFormatsVirtExt = sort([obj.mibModel.preferences.System.Files.BioFormatsVirtExt, newExt]);
         end
     case {'remove'}
         selVal = obj.mibView.handles.mibFileFilterPopup.Value;
@@ -66,15 +66,15 @@ switch parameter
         
         if obj.mibView.handles.mibBioformatsCheck.Value == 1     % use bioformats reader
             if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
-                obj.mibModel.preferences.Filefilter.bioVirtExt(ismember(obj.mibModel.preferences.Filefilter.bioVirtExt, extList{selVal})) = [];
+                obj.mibModel.preferences.System.Files.BioFormatsVirtExt(ismember(obj.mibModel.preferences.System.Files.BioFormatsVirtExt, extList{selVal})) = [];
             else
-                obj.mibModel.preferences.Filefilter.bioExt(ismember(obj.mibModel.preferences.Filefilter.bioExt, extList{selVal})) = [];
+                obj.mibModel.preferences.System.Files.BioFormatsExt(ismember(obj.mibModel.preferences.System.Files.BioFormatsExt, extList{selVal})) = [];
             end
         else
             if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
-                obj.mibModel.preferences.Filefilter.stdVirtExt(ismember(obj.mibModel.preferences.Filefilter.stdVirtExt, extList{selVal})) = [];
+                obj.mibModel.preferences.System.Files.StdVirtExt(ismember(obj.mibModel.preferences.System.Files.StdVirtExt, extList{selVal})) = [];
             else
-                obj.mibModel.preferences.Filefilter.stdExt(ismember(obj.mibModel.preferences.Filefilter.stdExt, extList{selVal})) = [];
+                obj.mibModel.preferences.System.Files.StdExt(ismember(obj.mibModel.preferences.System.Files.StdExt, extList{selVal})) = [];
             end
         end
         

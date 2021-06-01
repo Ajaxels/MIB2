@@ -25,14 +25,15 @@ if mypath(end) == ':'   % change from c: to c:\, because somehow dir('c:') gives
     mypath = [mypath '\'];
 end
 
-fileList = dir(mypath);
+fileList = dir(mypath);  % use mibDir to get sorted filenames: r01 R02 r03
 fnames = {fileList.name};
+
 dirs = fnames([fileList.isdir]);  % generate list of directories
 fileList = fnames(~[fileList.isdir]);     % generate structure with files
-[~,~,fileList_ext] = cellfun(@fileparts, fileList, 'UniformOutput', false);   % get extensions
+[~, ~, fileList_ext] = cellfun(@fileparts, fileList, 'UniformOutput', false);   % get extensions
 
 if strcmp(extention,'all known')
-    if obj.matlabVersion < 8.1    % strjoin appeared only in R2013a (8.1)
+    if verLessThan('matlab', '8.1') % obj.matlabVersion < 8.1    % strjoin appeared only in R2013a (8.1)
         extentions(2:end-1) = cellfun(@(x) sprintf('%s|',x),extentions(2:end-1),'UniformOutput', false);
         extensions = cell2mat(extentions(2:end)');
     else
@@ -42,7 +43,8 @@ if strcmp(extention,'all known')
 else
     files = fileList(~cellfun(@isempty, regexpi(fileList_ext, extention)))';
 end
-fnames = sort(files);
+fnames = files;
+%fnames = sort(files);
 
 if ~isempty(dirs)
     dirs = strcat(repmat({'['}, 1, length(dirs)), dirs, repmat({']'}, 1, length(dirs)));

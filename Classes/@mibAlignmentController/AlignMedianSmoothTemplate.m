@@ -102,6 +102,7 @@ if loadShifts == 0
     FilterOpt.Padding = {'replicate'};
     if obj.BatchOpt.UseParallelComputing == 0
         % without parallel pool, filter the whole stack at once
+        %fixedImg = evalin('base','fixedImg'); % for debug
         fixedImg = mibDoImageFiltering2(movingImg, FilterOpt);
     else
         % with parallel pool brake dataset into subvolumes equal to number
@@ -128,6 +129,7 @@ if loadShifts == 0
         end
         clear movImg fixImg;
     end
+    %assignin('base','fixedImg',fixedImg);     % for debug
     if obj.BatchOpt.showWaitbar; waitbar(1, parameters.waitbar); end
     
     % prepare imregconfig for imregister
@@ -156,6 +158,7 @@ if loadShifts == 0
     if obj.BatchOpt.showWaitbar; pw = PoolWaitbar(Depth, sprintf('Step 3: Calculating transformations\nPlease wait...'), parameters.waitbar); end
     
     parfor (layer = 1:Depth, parforArg)
+    %for layer = 1:Depth
         %% The first two methods are using imregdemons function that accepts local transformation, but it is better to use imregtform below
         % Detect features
         %         switch parameters.detectPointsType

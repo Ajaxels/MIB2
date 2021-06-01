@@ -12,6 +12,8 @@ function [bitmap, par] = amiraMesh2bitmap(filename, options)
 % - .depth_step -> [@em optional], Z-step to take not all sections
 % - .xy_step -> [@em optional], XY-step, i.e. binning factor
 % - .resizeMethod -> [@em optional], resize Method for binning the XY-dimension
+% - .getMeta -> [@em optional], logical, default=true, acquire meta data
+% - .verbose -> [@em optional], logical, default=true, make a printf message of the loaded file
 %
 % Return values:
 % bitmap: - dataset, [1:height, 1:width, 1:colors, 1:no_stacks]
@@ -42,21 +44,22 @@ function [bitmap, par] = amiraMesh2bitmap(filename, options)
 bitmap = NaN;
 if nargin < 2; options = struct(); end
 if ~isfield(options, 'hWaitbar');    options.hWaitbar = NaN; end
+if ~isfield(options, 'getMeta');    options.getMeta = true; end
+if ~isfield(options, 'verbose');    options.verbose = true; end
 
 customSections=0;
-if isfield(options, 'depth_start')
-    customSections=1;
-end
+if isfield(options, 'depth_start'); customSections=1; end
 
 if nargin < 1
-    [filename, pathname] = uigetfile( ...
+    [filename, pathname] = mib_uigetfile( ...
         {'*.am','Amira mesh labels(*.am)';
         '*.*',  'All Files (*.*)'}, ...
         'Pick a file');
     if filename == 0; return; end
     filename = [pathname filename];
 end
-fid = fopen(filename, 'r');
+%fid = fopen(filename, 'r');
+fid = fopen(filename, 'r', 'n', 'UTF-8');
 
 % define type of data
 tline = fgetl(fid);
@@ -91,86 +94,89 @@ if customSections
     resizeMethod = options.resizeMethod;
 end
 
-% get Parameters
-while numel(strfind(tline,'Parameters')) == 0
-    tline = fgetl(fid);
-end
-
 par = struct();
-level = 0;
-% skiping the header
-parIndex = 1;
-removeGroup.Switch = 0;  % indicator to remove certain groups
-removeGroup.Level = 0;  % indicator if the level to remove certain groups
-
-while numel(strfind(tline, 'Lattice')) == 0
-    tline = strtrim(fgetl(fid));
-    if numel(strfind(tline, 'Lattice')) ~= 0; break; end
-    if level == 0; field = cellstr(''); end
+if options.getMeta  % get Parameters
+    while numel(strfind(tline,'Parameters')) == 0
+        tline = fgetl(fid);
+    end
     
-    openGroup = strfind(tline, '{');
-    closeGroup = strfind(tline, '}');
-    if ~isempty(openGroup) & isempty(closeGroup)
-        level = level + 1;
-        if strcmp(strtrim(tline(1:openGroup(1)-1)),'im_browser')    % remove the group made with im_browser
-            field(level) = cellstr('');
-        elseif strcmp(strtrim(tline(1:openGroup(1)-1)),'HistoryLogHead')    % remove the group HistoryLogHead
-            removeGroup.Switch = 1;
-            removeGroup.Level = level;  % indicator if the level to remove certain groups            
-        elseif tline(end) == '{' && level > 1
-            if removeGroup.Switch == 1; continue; end
-            level = level - 1;
-            par(parIndex).Name = field{level};
-            %a = loopHeader(fid, tline, level);
-            par(parIndex).Value = cellstr(loopHeader(fid, tline, level));
-            parIndex = parIndex + 1;
-        else
-            field(level) = cellstr(tline(1:openGroup(1)-1));
-        end
-    elseif isempty(openGroup) & ~isempty(closeGroup)
-        level = level - 1;
-        if removeGroup.Switch == 1 && removeGroup.Level == level
-            removeGroup.Switch = 0;
-        end
-        if level == -1; break; end  % end of the Parameters section
-        field(level+1) = cellstr('');
-    else
-        if removeGroup.Switch == 1; continue; end    % skip elements 
-        
-        spaces = strfind(strtrim(tline), ' ');
-        if isempty(spaces); continue; end
-        parField = '';
-        for lev = 1:level
-            parField = [parField '_' field{lev}];
-        end
-        parField = [parField '_' tline(1:spaces(1)-1)];
-        if parField(1) == '_'; parField = parField(2:end); end
-        if parField(1) == '_'; parField = parField(2:end); end
-        value = tline(spaces(1)+1:end);
-        if value(end) == ','; value = value(1:end-1); end  % remove ending comma
-        if numel(value)>0 && value(1) == '"' && value(end) == '"'
-            value = value(2:end-1);
-        elseif numel(value)>0
-            if isempty(strfind(value, ' '))
-                value = str2num(value); 
+    level = 0;
+    % skiping the header
+    parIndex = 1;
+    removeGroup.Switch = 0;  % indicator to remove certain groups
+    removeGroup.Level = 0;  % indicator if the level to remove certain groups
+
+    while numel(strfind(tline, 'Lattice')) == 0
+        tline = strtrim(fgetl(fid));
+        if numel(strfind(tline, 'Lattice')) ~= 0; break; end
+        if level == 0; field = cellstr(''); end
+
+        openGroup = strfind(tline, '{');
+        closeGroup = strfind(tline, '}');
+        if ~isempty(openGroup) & isempty(closeGroup)
+            level = level + 1;
+            if strcmp(strtrim(tline(1:openGroup(1)-1)),'im_browser')    % remove the group made with im_browser
+                field(level) = cellstr('');
+            elseif strcmp(strtrim(tline(1:openGroup(1)-1)),'HistoryLogHead')    % remove the group HistoryLogHead
+                removeGroup.Switch = 1;
+                removeGroup.Level = level;  % indicator if the level to remove certain groups            
+            elseif tline(end) == '{' && level > 1
+                if removeGroup.Switch == 1; continue; end
+                level = level - 1;
+                par(parIndex).Name = field{level};
+                %a = loopHeader(fid, tline, level);
+                par(parIndex).Value = cellstr(loopHeader(fid, tline, level));
+                parIndex = parIndex + 1;
+            else
+                field(level) = cellstr(tline(1:openGroup(1)-1));
             end
-        end   % remove quotation marks from strings 
+        elseif isempty(openGroup) & ~isempty(closeGroup)
+            level = level - 1;
+            if removeGroup.Switch == 1 && removeGroup.Level == level
+                removeGroup.Switch = 0;
+            end
+            if level == -1; break; end  % end of the Parameters section
+            field(level+1) = cellstr('');
+        else
+            if removeGroup.Switch == 1; continue; end    % skip elements 
 
-        %par.(parField) = cellstr(value);
-        par(parIndex).Name = parField;
-        par(parIndex).Value = value;
-        parIndex = parIndex + 1;
-    end
-end
+            spaces = strfind(strtrim(tline), ' ');
+            if isempty(spaces); continue; end
+            parField = '';
+            for lev = 1:level
+                parField = [parField '_' field{lev}];
+            end
+            parField = [parField '_' tline(1:spaces(1)-1)];
+            if parField(1) == '_'; parField = parField(2:end); end
+            if parField(1) == '_'; parField = parField(2:end); end
+            value = tline(spaces(1)+1:end);
+            if value(end) == ','; value = value(1:end-1); end  % remove ending comma
+            if numel(value)>0 && value(1) == '"' && value(end) == '"'
+                value = value(2:end-1);
+            elseif numel(value)>0
+                if isempty(strfind(value, ' '))
+                    value = str2num(value); 
+                end
+            end   % remove quotation marks from strings 
 
-% check the header for proper CoordType
-for i=1:numel(par)
-    if strcmp(par(i).Name,'CoordType')
-        %CoordType = par(i).Value;
-        if strcmp(par(i).Value,'uniform') == 0
-            error('amiraMesh2bitmap: Wrong CoordType, works only with "uniform" data');
+            %par.(parField) = cellstr(value);
+            par(parIndex).Name = parField;
+            par(parIndex).Value = value;
+            parIndex = parIndex + 1;
         end
     end
+
+    % check the header for proper CoordType
+    for i=1:numel(par)
+        if strcmp(par(i).Name,'CoordType')
+            %CoordType = par(i).Value;
+            if strcmp(par(i).Value,'uniform') == 0
+                error('amiraMesh2bitmap: Wrong CoordType, works only with "uniform" data');
+            end
+        end
+    end
+else
+    tline = strtrim(fgetl(fid));
 end
 
 % get number of data blocks
@@ -275,7 +281,7 @@ for dataBlock = 1:dataIndex - 1
 end
 fclose(fid);
 
-disp(['amiraMesh2bitmap: ' filename ' was loaded!']);
+if options.verbose; disp(['amiraMesh2bitmap: ' filename ' was loaded!']); end
 end
 
 function parValueText = loopHeader(fid, parValueText, level)

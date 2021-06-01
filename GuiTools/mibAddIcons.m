@@ -39,7 +39,7 @@ global mibPath;
 %jFrame = handles.mibGUI.JavaFrame;
 jFrame = get(handle(handles.mibGUI), 'JavaFrame');
 try
-    if handles.mibController.matlabVersion >= 8.4     % R2014b at least
+    if ~verLessThan('matlab', '8.4') % handles.mibController.matlabVersion >= 8.4     % R2014b at least
         jMenuBar = jFrame.fHG2Client.getMenuBar;
     else
     % R2008a and later

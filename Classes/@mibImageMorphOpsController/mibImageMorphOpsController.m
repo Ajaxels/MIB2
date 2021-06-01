@@ -127,7 +127,7 @@ classdef mibImageMorphOpsController < handle
             mibRescaleWidgets(obj.View.gui);
             
             % update font and size
-            Font = obj.mibModel.preferences.Font;
+            Font = obj.mibModel.preferences.System.Font;
             if obj.View.handles.infoText.FontSize ~= Font.FontSize ...
                     || ~strcmp(obj.View.handles.infoText.FontName, Font.FontName)
                 mibUpdateFontSize(obj.View.gui, Font);

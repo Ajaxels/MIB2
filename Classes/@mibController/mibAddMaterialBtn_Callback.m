@@ -43,8 +43,8 @@ BatchOpt.mibBatchTooltip.MaterialName = sprintf('[Models with 63 or 255 material
 BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');
 
 % do nothing is selection is disabled
-if obj.mibModel.I{BatchOpt.id}.disableSelection == 1
-    warndlg(sprintf('The models are switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),'The models are disabled');
+if obj.mibModel.I{BatchOpt.id}.enableSelection == 0
+    warndlg(sprintf('The models are switched off!\n\nPlease make sure that the "Enable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "yes" and try again...'),'The models are disabled');
     notify(obj.mibModel, 'stopProtocol');
     return;
 end
@@ -71,7 +71,7 @@ else
         if isempty(list); list = cell(0); end    % remove empty entry from the list
         number = numel(list);
     
-        answer = mibInputDlg({mibPath}, sprintf('Please add a new name for this material:'), 'Rename material', num2str(number+1));
+        answer = mibInputDlg({mibPath}, sprintf('Please add a new name for this material:'), 'Rename material', sprintf('m%.3d', number+1));
         if ~isempty(answer)
             BatchOpt.MaterialName = answer{1};
         else

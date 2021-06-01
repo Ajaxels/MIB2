@@ -32,7 +32,7 @@ global mibPath; % path to mib installation folder
 %% Declaration of the BatchOpt structure
 BatchOpt = struct();
 switch parameter
-    case 'duplicate'
+    case {'duplicate', 'mirror'}
         destinationButton = obj.mibModel.maxId;
         for i=1:obj.mibModel.maxId-1
             if strcmp(obj.mibModel.I{i}.meta('Filename'), 'none.tif')
@@ -49,10 +49,16 @@ switch parameter
         BatchOpt.Destination = {sprintf('Container %d', destinationButton)};
         BatchOpt.Destination{2} = arrayfun(@(x) sprintf('Container %d', x), 1:obj.mibModel.maxId, 'UniformOutput', false);
         BatchOpt.showWaitbar = true;   % show or not the waitbar
-        BatchOpt.mibBatchTooltip.Source = sprintf('Index of the source container with a dataset to copy');
-        BatchOpt.mibBatchTooltip.Destination = sprintf('Index of the destination container to copy the current dataset');
         BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');
-        BatchOpt.mibBatchActionName = 'Duplicate dataset';
+        if strcmp(parameter, 'duplicate')
+            BatchOpt.mibBatchTooltip.Source = sprintf('Index of the source container with a dataset to copy');
+            BatchOpt.mibBatchTooltip.Destination = sprintf('Index of the destination container to copy the current dataset');
+            BatchOpt.mibBatchActionName = 'Duplicate dataset';
+        else    % mirror
+            BatchOpt.mibBatchTooltip.Source = sprintf('Index of the source container with a dataset to mirror');
+            BatchOpt.mibBatchTooltip.Destination = sprintf('Index of the destination container to mirror the current image');
+            BatchOpt.mibBatchActionName = 'Duplicate dataset';
+        end
     case 'close'
         if isempty(buttonID)
             BatchOpt.Target = {'Current'};
@@ -89,7 +95,7 @@ switch parameter
         
         BatchOpt.mibBatchTooltip.ApplyTo = sprintf('Index of a container to be synchronized with another one');
         BatchOpt.mibBatchTooltip.GetFrom = sprintf('Index of a container with desired viewing parameters');
-        BatchOpt.mibBatchTooltip.Mode = sprintf('Specify dimensions that should be syncronized');
+        BatchOpt.mibBatchTooltip.Mode = sprintf('Specify dimensions that should be synchronized');
         BatchOpt.mibBatchActionName = 'Sync views';
         
 end
@@ -114,7 +120,7 @@ if nargin == 4  % batch mode
 end
 
 switch parameter
-    case 'duplicate'    % duplicate dataset to a new position
+    case {'duplicate', 'mirror'}    % duplicate dataset to a new position
         if nargin < 4 
             prompts = {'Enter the destination buffer:'};
             defAns = {arrayfun(@(x) {sprintf('%d', x)}, 1:obj.mibModel.maxId)};
@@ -126,30 +132,37 @@ switch parameter
             
             destinationButton = str2double(BatchOpt.Destination{1}(10:end));  
             if ~strcmp(obj.mibModel.I{destinationButton}.meta('Filename'), 'none.tif')
-                button = questdlg(sprintf('You are goind to overwrite dataset in buffer %d\n\nAre you sure?', destinationButton), ...
+                button = questdlg(sprintf('You are going to overwrite dataset in buffer %d\n\nAre you sure?', destinationButton), ...
                     '!! Warning !!', 'Overwrite', 'Cancel', 'Cancel');
                 if strcmp(button, 'Cancel'); return; end
             end    
         end
-        if BatchOpt.showWaitbar; wb = waitbar(0, sprintf('Duplicate from %s to %s\nPlease wait...', BatchOpt.Source{1}, BatchOpt.Destination{1}), 'Name', 'Duplicate', 'WindowStyle', 'modal'); end
+        
         if strcmp(BatchOpt.Source{1}, 'Current')
             buttonID = obj.mibModel.Id;
         else
             buttonID = str2double(BatchOpt.Source{1}(10:end));
         end
         destinationButton = str2double(BatchOpt.Destination{1}(10:end));
-
-        obj.mibModel.mibImageDeepCopy(buttonID, destinationButton);
-        if BatchOpt.showWaitbar; waitbar(0.9, wb); end
-        bufferId = sprintf('mibBufferToggle%d', destinationButton);
-        if ismac()
-            obj.mibView.handles.(bufferId).ForegroundColor = [0 1 0];   % make green
-        else
-            obj.mibView.handles.(bufferId).BackgroundColor = [0 1 0]; % make green
-        end
-        obj.mibView.handles.(bufferId).TooltipString = obj.mibModel.I{i}.meta('Filename');     % make a tooltip as filename
-        if BatchOpt.showWaitbar; waitbar(1, wb); delete(wb); end
         
+        if strcmp(parameter, 'duplicate')
+            if BatchOpt.showWaitbar; wb = waitbar(0, sprintf('Duplicate from %s to %s\nPlease wait...', BatchOpt.Source{1}, BatchOpt.Destination{1}), 'Name', 'Duplicate', 'WindowStyle', 'modal'); end
+            
+            obj.mibModel.mibImageDeepCopy(buttonID, destinationButton);
+            if BatchOpt.showWaitbar; waitbar(0.9, wb); end
+            bufferId = sprintf('mibBufferToggle%d', destinationButton);
+            if ismac()
+                obj.mibView.handles.(bufferId).ForegroundColor = [0 1 0];   % make green
+            else
+                obj.mibView.handles.(bufferId).BackgroundColor = [0 1 0]; % make green
+            end
+            obj.mibView.handles.(bufferId).TooltipString = obj.mibModel.I{i}.meta('Filename');     % make a tooltip as filename
+        else    % mirror
+            if BatchOpt.showWaitbar; wb = waitbar(0, sprintf('Mirror image from %s to %s\nPlease wait...', BatchOpt.Source{1}, BatchOpt.Destination{1}), 'Name', 'Mirror', 'WindowStyle', 'modal'); end
+            obj.mibModel.mibImageDeepCopy(buttonID, destinationButton);
+        end
+        if BatchOpt.showWaitbar; waitbar(1, wb); delete(wb); end
+
         % notify the batch mode
         eventdata = ToggleEventData(BatchOpt);
         notify(obj.mibModel, 'syncBatch', eventdata);
@@ -231,7 +244,7 @@ switch parameter
         notify(obj.mibModel, 'syncBatch', eventdata);
     case 'closeAll'     % clear all stored datasets
         if nargin < 4
-            button = questdlg(sprintf('Warning!\n\nYou are going to clear all buffered datasets!\nContinue?'),...
+            button = questdlg(sprintf('!!! Warning !!!\n\nYou are going to close all open datasets!\nContinue?'),...
                 'Clear memory', 'Continue', 'Cancel', 'Cancel');
             if strcmp(button, 'Cancel'); return; end
             BatchOpt.AreYouSure = true;

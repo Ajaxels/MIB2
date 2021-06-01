@@ -53,11 +53,11 @@ switch obj.mibView.handles.mibGUI.SelectionType
         else        % open the selected file
             options.mibBioformatsCheck = obj.mibView.handles.mibBioformatsCheck.Value;  % use bioformat reader or not
             options.waitbar = 1;        % show progress dialog
-            options.Font = obj.mibModel.preferences.Font;    % pass font settings
+            options.Font = obj.mibModel.preferences.System.Font;    % pass font settings
             options.mibPath = mibPath;      % path to MIB, an optional parameter to mibInputDlg.m 
             options.virtual = obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual;  % to use or not the virtual stacking
             options.id = obj.mibModel.Id;   % id of the current dataset
-            options.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
+            options.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
             
             %obj.mibModel.I{obj.mibModel.Id}.clearContents();  % remove the current dataset
             obj.mibModel.U.clearContents();  % clear Undo history
@@ -67,7 +67,7 @@ switch obj.mibView.handles.mibGUI.SelectionType
             [img, img_info, pixSize] = mibLoadImages(cellstr(fn), options);
             
             if ~isempty(img)
-                obj.mibModel.I{obj.mibModel.Id}.clearContents(img, img_info, obj.mibModel.preferences.disableSelection);
+                obj.mibModel.I{obj.mibModel.Id}.clearContents(img, img_info, obj.mibModel.preferences.System.EnableSelection);
                 obj.mibModel.I{obj.mibModel.Id}.pixSize = pixSize;
                 notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details
                 
@@ -83,18 +83,18 @@ switch obj.mibView.handles.mibGUI.SelectionType
             unFocus(obj.mibView.handles.mibFilesListbox);   % remove focus from hObject);   % remove focus from hObject
             
             % update list of recent directories
-            dirPos = ismember(obj.mibModel.preferences.recentDirs, fileparts(fn));
+            dirPos = ismember(obj.mibModel.preferences.System.Dirs.RecentDirs, fileparts(fn));
             if sum(dirPos) == 0
-                obj.mibModel.preferences.recentDirs = [fileparts(fn) obj.mibModel.preferences.recentDirs];    % add the new folder to the list of folders
-                if numel(obj.mibModel.preferences.recentDirs) > 14    % trim the list
-                    obj.mibModel.preferences.recentDirs = obj.mibModel.preferences.recentDirs(1:14);
+                obj.mibModel.preferences.System.Dirs.RecentDirs = [fileparts(fn) obj.mibModel.preferences.System.Dirs.RecentDirs];    % add the new folder to the list of folders
+                if numel(obj.mibModel.preferences.System.Dirs.RecentDirs) > obj.mibModel.preferences.System.Dirs.RecentDirsNumber    % trim the list
+                    obj.mibModel.preferences.System.Dirs.RecentDirs = obj.mibModel.preferences.System.Dirs.RecentDirs(1:obj.mibModel.preferences.System.Dirs.RecentDirsNumber);
                 end
             else
                 % re-sort the list and put the opened folder to the top of
                 % the list
-                obj.mibModel.preferences.recentDirs = [obj.mibModel.preferences.recentDirs(dirPos==1) obj.mibModel.preferences.recentDirs(dirPos==0)];
+                obj.mibModel.preferences.System.Dirs.RecentDirs = [obj.mibModel.preferences.System.Dirs.RecentDirs(dirPos==1) obj.mibModel.preferences.System.Dirs.RecentDirs(dirPos==0)];
             end
-            obj.mibView.handles.mibRecentDirsPopup.String = obj.mibModel.preferences.recentDirs;
+            obj.mibView.handles.mibRecentDirsPopup.String = obj.mibModel.preferences.System.Dirs.RecentDirs;
         end
 end
 end

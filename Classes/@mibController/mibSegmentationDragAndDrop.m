@@ -60,7 +60,7 @@ elseif strcmp(modifier, 'control')
         mode = 'Object2D';
         obj.mibModel.mibDoBackup('selection', 0); % do backup
      else
-         if obj.matlabVersion < 9.3
+         if verLessThan('matlab', '9.3') % obj.matlabVersion < 9.3
             errordlg(sprintf('!!! Error !!!\n\nThis option is only available for Matlab release R2017b and newer!'), 'Matlab is too old');
             return;
          end

@@ -1,11 +1,11 @@
-function clearContents(obj, img, metaIn, disableSelection)
-% function clearContents(obj, img, metaIn, disableSelection)
+function clearContents(obj, img, metaIn, enableSelection)
+% function clearContents(obj, img, metaIn, enableSelection)
 % Set all elements of the class to default values
 %
 % Parameters:
 % img: @b [optional], image to use to initialize the imageData class
 % metaIn: @b [optional], 'containers'.'Map' class with parameters of the dataset, can be @e []
-% disableSelection: a switch (0 or 1) to enable/disable selection layer
+% enableSelection: a switch (0 or 1) to enable/disable selection layer
 %
 % Return values:
 % 
@@ -49,7 +49,7 @@ obj.lastSegmSelection = [2 1];  % last selected contours for use with the 'e' bu
 
 if isempty(obj.Virtual); obj.Virtual.virtual = 0; end   % define default mode to non-virtual
 
-if nargin < 4; disableSelection = 0; end
+if nargin < 4; enableSelection = 1; end
 if nargin < 3; metaIn = containers.Map(); end
 if nargin < 2; img = []; end
 
@@ -93,13 +93,13 @@ else
         obj.img = img;
     end
 end
-obj.disableSelection = disableSelection;
+obj.enableSelection = enableSelection;
 
 % disable selection for virtual stacks
-if obj.Virtual.virtual == 1;  obj.disableSelection = 1;  end
+if obj.Virtual.virtual == 1;  obj.enableSelection = 0;  end
 
 % allocate memory for service layers
-if obj.disableSelection == 0
+if obj.enableSelection == 1
     if obj.modelType == 255
         obj.maskImg{1} = zeros([size(obj.img{1},1) size(obj.img{1},2) size(obj.img{1},4) size(obj.img{1},5)], 'uint8'); % bw filter data
         obj.selection{1} = zeros([size(obj.img{1},1) size(obj.img{1},2) size(obj.img{1},4) size(obj.img{1},5)], 'uint8'); % selection mask image

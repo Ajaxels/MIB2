@@ -24,11 +24,11 @@ function header = getMRCheader(filename)
 
 header = struct();
 if nargin < 1
-    [filename, pathname] = uigetfile( ...
+    [filename, pathname] = mib_uigetfile( ...
         {'*.rec; *.mrc','MRC file (*.mrc; *.rec)';
          '*.*',  'All Files (*.*)'}, ...
          'Pick a file');
-    if filename == 0; return; end;
+    if filename == 0; return; end
     filename = fullfile(pathname, filename);
 end
 

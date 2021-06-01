@@ -15,7 +15,7 @@ function mibSelectionFillBtn_Callback(obj)
 % 25.09.2019, moved to mibModel.fillSelectionOrMask
 
 % do nothing is selection is disabled
-if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
+if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 0; return; end
 
 if nargin < 2
     modifier = obj.mibView.gui.CurrentModifier;

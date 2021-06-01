@@ -383,7 +383,7 @@ classdef mibResampleController  < handle
                 obj.mibModel.setData4D('image', imgOut, 4, 0, options);
             else
                 %obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual = 0;
-                %obj.mibModel.I{obj.mibModel.Id}.disableSelection = obj.mibModel.preferences.disableSelection;  % should be before cropDataset
+                %obj.mibModel.I{obj.mibModel.Id}.enableSelection = obj.mibModel.preferences.System.EnableSelection;  % should be before cropDataset
                 newMode = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(0);   % switch to the memory resident mode
                 if isempty(newMode); delete(wb); notify(obj.mibModel, 'stopProtocol'); return; end
                 obj.mibModel.setData4D('image', imgOut, 4, 0, options);

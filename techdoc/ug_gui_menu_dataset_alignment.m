@@ -7,6 +7,7 @@
 % <a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/-qwoO5z02aA</a><br>
 % <a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube2.png"> Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a><br>
 % <a href="https://youtu.be/-en5zD5Ou9s"><img style="vertical-align:middle;" src="images\youtube2.png"> Automatic feature-based</a><br>
+% <a href="https://youtu.be/FtvWjDUMZ1I"><img style="vertical-align:middle;" src="images\youtube2.png"> HDD mode</a><br>
 % </html>
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_dataset.html *Dataset*>
@@ -153,6 +154,16 @@
 %     </table>
 %   </li>
 %   <li>
+%       <b>HDD mode</b> - 
+%       <a href="https://youtu.be/FtvWjDUMZ1I"><img src="images/youtube.png"></a> 
+%       when selected the alignment tool will align 
+%       files specified in the bottom panel of the window 
+%       (<em>HDD Mode (Image directories and formats)</em>). This mode is
+%       suitable for large collection of images that can not be fit into
+%       computer memory. This mode is only implemented for the "Drift
+%       correction" algorithm.<br>
+%   </li>
+%   <li>
 %     <b>Correlate with</b> - three different options for the reference slide:
 %       <ul>
 %           <li><b>Previous slice</b>, align each slice to the previous one</li>
@@ -208,6 +219,22 @@
 %   <li>
 %     <b>Save/Load shifts to file</b> using this option it is possible to
 %     save and load the translation shifts to a disk
+%   </li>
+%   <li>
+%   <ul><b>HDD Mode (image directories and formats) panel</b><br>
+%       this panel is used only when the <em>HDD Mode</em> is enabled.
+%       <li><b>Extension</b> - extension of files that should be
+%       aligned</li>
+%       <li><b>Bio</b> - enable the Bio-Formats file reader to load images
+%       in various microscope formats</li>
+%       <li><b>Index</b> - a numeric index of a series to load from a
+%       container of images [Bio-formats only]</li>
+%       <li><b>...</b> - press to select directory with images to
+%       process</li>
+%       <li><b>Output subfolder and extension</b> - specify output
+%       subfolder (relative to the input folder) to save aligned images and
+%       set the output file format.</li>
+%       </ul>
 %   </li>
 % </ul>
 % </html>

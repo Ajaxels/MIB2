@@ -24,7 +24,7 @@ function clearSelection(obj, sel_switch, BatchOptIn)
 % 25.09.2019 updated for batch mode
 
 % do nothing is selection is disabled
-if obj.I{obj.Id}.disableSelection == 1; return; end
+if obj.I{obj.Id}.enableSelection == 0; return; end
 
 if nargin < 3; BatchOptIn = struct(); end
 if nargin < 2; sel_switch = []; end

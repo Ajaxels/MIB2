@@ -404,6 +404,12 @@ classdef mibCropController  < handle
                 delete(h);
                 obj.mibModel.disableSegmentation = 0;    % re-enable selection switch 
                 
+                if new_position(3) == 0 || new_position(4) == 0
+                    errordlg(sprintf('!!! Error !!!\n\nThe defined area is too small!\nTo select the area for crop press the left mouse button and drag the mouse while having the left mouse button pressed. To confirm selection, double click inside the selected area'));
+                    obj.View.gui.Visible = 'on';
+                    return;
+                end
+                
                 if isempty(new_position)
                     obj.View.gui.Visible = 'on';
                     return;
@@ -470,7 +476,7 @@ classdef mibCropController  < handle
             tMax = max(cropDim);
             
             crop_factor = [crop_factor tMin tMax-tMin+1];
-            obj.mibModel.I{bufferId}.disableSelection = obj.mibModel.preferences.disableSelection;  % should be before cropDataset
+            obj.mibModel.I{bufferId}.enableSelection = obj.mibModel.preferences.System.EnableSelection;  % should be before cropDataset
             result = obj.mibModel.I{bufferId}.cropDataset(crop_factor);
             if result == 0; notify(obj.mibModel, 'stopProtocol'); return; end
             obj.mibModel.I{bufferId}.hROI.crop(crop_factor);

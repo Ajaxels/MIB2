@@ -10,8 +10,8 @@ function [img_info, files, pixSize] = mibGetImageMetadata(filenames, options)
 % .customSections -> @b 0 or @b 1; when @b 1 obtain part of the dataset
 % .mibPath -> [optional] a string with path to MIB directory, an optional parameter to mibInputDlg.m
 % .id - id of the current dataset, needed to generate filename for Memoizer class for the virtual mode
-% .BioFormatsMemoizerMemoDir -> obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
-% .BioFormatsIndices -> numeric, indices of images in file container to be opened with BioFormats 
+% .BioFormatsMemoizerMemoDir -> obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
+% .BioFormatsIndices -> numeric, indices of images in file container to be opened with BioFormats, when [] or 0 - get all image series 
 % .Font -> [optional] a structure with the font settings from mib
 %    .FontName
 %    .FontUnits
@@ -464,6 +464,30 @@ for fn_index = 1:no_files
         
         files(fn_index).dim_xyczt = dim_xyczt;
         files(fn_index).imgClass = info('imgClass');
+    elseif strcmp('mibimg', ext(2:end)) && options.mibBioformatsCheck == 0     % mibImg
+        files(fn_index).extension = '.mibImg';
+        files(fn_index).filename = cell2mat(filenames(fn_index));
+        files(fn_index).object_type = 'mibImg';
+        res = matfile(files(fn_index).filename);
+        res2 = load(files(fn_index).filename, 'options', '-mat');
+        
+        files(fn_index).noLayers = size(res.(res.imgVariable), find(res2.options.dimOrder == 'z'));
+        files(fn_index).height = size(res.(res.imgVariable), find(res2.options.dimOrder == 'y'));
+        files(fn_index).width = size(res.(res.imgVariable), find(res2.options.dimOrder == 'x'));
+        files(fn_index).color = size(res.(res.imgVariable), find(res2.options.dimOrder == 'c'));
+        files(fn_index).time = size(res.(res.imgVariable), find(res2.options.dimOrder == 't'));
+        files(fn_index).imgClass = class(res.(res.imgVariable));
+        
+        if fn_index == 1
+            img_info = containers.Map;
+            img_info('imgClass') = class(res.(res.imgVariable));
+            if files(fn_index).color > 1
+                img_info('ColorType') = 'truecolor';
+            else
+                img_info('ColorType') = 'grayscale';
+            end
+            img_info('ImageDescription') = '';
+        end
     elseif strfind(cell2mat([image_formats.ext]), ext(2:end)) > 0 & options.mibBioformatsCheck == 0 %#ok<AND2> % standard image types
         files(fn_index).filename = cell2mat(filenames(fn_index));
         files(fn_index).object_type = 'image';
@@ -655,9 +679,12 @@ for fn_index = 1:no_files
                     [filesTemp.seriesIndex, filesTemp.hDataset, metaSwitch, filesTemp.dim_xyczt, filesTemp.seriesRealName] = ...
                         selectLociSeries(filenames(fn_index), options.Font, filesTemp.hDataset);  % select series with BioFormats
                 else
-                    if isempty(options.BioFormatsIndices)
+                    if isempty(options.BioFormatsIndices) || options.BioFormatsIndices == 0
                         filesTemp.seriesIndex = 1:numSeries;
                     else
+                        if options.BioFormatsIndices > numSeries    % index is too large
+                            return;
+                        end
                         filesTemp.seriesIndex = options.BioFormatsIndices;
                     end
                     metaSwitch = 1;

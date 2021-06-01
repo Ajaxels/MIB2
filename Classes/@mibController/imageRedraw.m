@@ -18,9 +18,9 @@ function imageRedraw(obj)
 % Updates
 % 
 
-obj.mibModel.preferences.mibSelectionTransparencySlider = obj.mibView.handles.mibSelectionTransparencySlider.Value;
-obj.mibModel.preferences.mibMaskTransparencySlider = obj.mibView.handles.mibMaskTransparencySlider.Value;
-obj.mibModel.preferences.mibModelTransparencySlider = obj.mibView.handles.mibModelTransparencySlider.Value;
-            
+obj.mibModel.preferences.Colors.SelectionTransparency = obj.mibView.handles.mibSelectionTransparencySlider.Value;
+obj.mibModel.preferences.Colors.MaskTransparency = obj.mibView.handles.mibMaskTransparencySlider.Value;
+obj.mibModel.preferences.Colors.ModelTransparency = obj.mibView.handles.mibModelTransparencySlider.Value;
+
 obj.plotImage(0);
 end

@@ -17,14 +17,14 @@ function mibBrushPanelInterpolationSettingsBtn_Callback(obj, hObject)
 
 global mibPath;
 
-if strcmp(obj.mibModel.preferences.interpolationType, 'shape')
+if strcmp(obj.mibModel.preferences.SegmTools.Interpolation.Type, 'shape')
     typeVal = 1;
 else
     typeVal = 2;
 end
 
 prompts = {'Interpolation type'; sprintf('Number of points\n(more points give smoother results\nbut longer to calculate):'); 'Line width (only for the line interpolation)'};
-defAns = {{'Shape', 'Line', typeVal}; obj.mibModel.preferences.interpolationNoPoints; obj.mibModel.preferences.interpolationLineWidth};
+defAns = {{'Shape', 'Line', typeVal}; obj.mibModel.preferences.SegmTools.Interpolation.NoPoints; obj.mibModel.preferences.SegmTools.Interpolation.LineWidth};
 dlgTitle = 'Interpolation settings';
 options.WindowStyle = 'normal';       % [optional] style of the window
 options.Focus = 1;      % [optional] define index of the widget to get focus
@@ -43,9 +43,9 @@ if lineWidth < 1
     return;
 end
     
-obj.mibModel.preferences.interpolationType = lower(answer{1});
-obj.mibModel.preferences.interpolationNoPoints = noPoints;
-obj.mibModel.preferences.interpolationLineWidth = lineWidth;
+obj.mibModel.preferences.SegmTools.Interpolation.Type = lower(answer{1});
+obj.mibModel.preferences.SegmTools.Interpolation.NoPoints = noPoints;
+obj.mibModel.preferences.SegmTools.Interpolation.LineWidth = lineWidth;
 obj.toolbarInterpolation_ClickedCallback('keepcurrent');     % update the interpolation button icon
 unFocus(obj.mibView.handles.mibBrushPanelInterpolationSettingsBtn);
 end

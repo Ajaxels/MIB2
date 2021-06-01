@@ -49,7 +49,8 @@ if Options.showWaitbar
 end
 
 mrcImage = MRCImage();
-mrcImage = setVolume(mrcImage, O);
+O = flip(O, 2);     % flip vertically
+mrcImage = setVolume(mrcImage, O);     
 
 switch Options.pixSize.units
     case 'm'
@@ -70,7 +71,7 @@ pixSizeZ_Angstrom = Options.pixSize.z/coef;
 mrcImage = setPixelSize(mrcImage, pixSizeX_Angstrom, pixSizeY_Angstrom, pixSizeZ_Angstrom);
 
 save(mrcImage, Options.volumeFilename);
-if Options.showWaitbar; delete(wb); set(0, 'DefaulttextInterpreter', curInt); end;
+if Options.showWaitbar; delete(wb); set(0, 'DefaulttextInterpreter', curInt); end
 
 
 result = result + 1;

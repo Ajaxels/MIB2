@@ -21,6 +21,7 @@
 % * *Copy channel*, to copy the selected color channel to a new channel (available also from <ug_gui_menu_image.html Menu-Image-Color Channels>)
 % * *Invert channel*, to invert the selected color channel (available also from <ug_gui_menu_image.html Menu-Image-Color Channels>)
 % * *Rotate channel*, rotate the specified color channel (available also from <ug_gui_menu_image.html Menu-Image-Color Channels>)
+% * *Shift channel*, allows to shift a channel by X and Y pixels (available also from <ug_gui_menu_image.html Menu-Image-Color Channels>)
 % * *Swap channels*, to swap the selected color channel with another one (available also from <ug_gui_menu_image.html Menu-Image-Color Channels>)
 % * *Delete channel*, to delete the selected color channel (available also from <ug_gui_menu_image.html Menu-Image-Color Channels>)
 % * *Set LUT color*, to set colors for use with the |LUT checkbox| (available also from <ug_gui_menu_file_preferences.html Menu-File-Preferences>)

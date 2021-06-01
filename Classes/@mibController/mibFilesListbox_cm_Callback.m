@@ -54,7 +54,7 @@ else
 end
 BatchOpt.Mode{2} = {'Combine datasets', 'Load each N-th dataset', ...
         'Insert into open dataset', 'Combine files as color channels', 'Add as new color channel', ...
-        'Add each N-th dataset as new color channel'};
+        'Add each N-th dataset as new color channel', 'Series-by-series'};
 BatchOpt.DirectoryName = {'Current MIB path'};   % specify the target directory
 BatchOpt.DirectoryName{2} = {'Current MIB path', 'Inherit from Directory/File loop', obj.mibModel.myPath};  % this option forces the directories to be provided from the Dir/File loops
 filter = obj.mibView.handles.mibFileFilterPopup.String{obj.mibView.handles.mibFileFilterPopup.Value};
@@ -76,7 +76,7 @@ BatchOpt.id = obj.mibModel.Id;   % optional, id
 
 BatchOpt.mibBatchSectionName = 'Menu -> File';    % section name for the Batch
 BatchOpt.mibBatchActionName = 'Load and combine images';
-BatchOpt.mibBatchTooltip.Mode = sprintf('Desired mode to combine the images');
+BatchOpt.mibBatchTooltip.Mode = sprintf('Desired mode to combine the images, use "Series-by-series" to process each dataset in a file-container individually (bio-formats only)');
 BatchOpt.mibBatchTooltip.DirectoryName = sprintf('Directory name, where the files are located, use the right mouse click over the Parameters table to modify the directory');
 BatchOpt.mibBatchTooltip.FilenameFilter = sprintf('Filter for filenames: *.* - process all files in the directory; *.tif - process only the TIF files; could also be a filename');
 BatchOpt.mibBatchTooltip.UseBioFormats = sprintf('When checked the Bio-Formats reader will be used');
@@ -151,13 +151,13 @@ options.mibBioformatsCheck = BatchOpt.UseBioFormats;
 options.waitbar = BatchOpt.showWaitbar;
 options.mibPath = mibPath;
 options.id = BatchOpt.id;   % id of the current dataset
-options.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
+options.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
 if batchModeSwitch == 1    % batch mode is used
     options.BackgroundColorIntensity = str2double(BatchOpt.BackgroundColorIntensity);   % add background color intensity, for cases when size of the combined slices mismatch; see more in mibLoadImages 
     options.silentMode = true;  % do not ask any questions in the subfunctions, i.e. insertSlice
     options.BioFormatsIndices = str2num(BatchOpt.BioFormatsIndices);    % get indices of images to load using bioformats
 end
-
+if isfield(BatchOpt, 'verbose'); options.verbose = BatchOpt.verbose; end
 
 % if (strcmp(BatchOpt.Mode{1}, 'Load each N-th dataset') || strcmp(BatchOpt.Mode{1}, 'Add each N-th dataset as new color channel')) && numel(filename) == 1     % combines all files in the directory starting from the selected
 %     filename = filename(val:end);
@@ -184,6 +184,11 @@ switch BatchOpt.Mode{1}
             options.customSections = 1;     % to load part of the dataset, for AM only
         end
         options.virtual = obj.mibModel.I{BatchOpt.id}.Virtual.virtual;
+        if ~isempty(BatchOpt.BioFormatsIndices)
+            options.BioFormatsIndices = str2num(BatchOpt.BioFormatsIndices);
+        else
+            options.BioFormatsIndices = BatchOpt.BioFormatsIndices;
+        end
         
         if ~strcmp(BatchOpt.Mode{1}, 'Combine files as color channels') 
             [img, img_info, pixSize] = mibLoadImages(BatchOpt.Filenames, options);
@@ -249,25 +254,25 @@ switch BatchOpt.Mode{1}
             img_info('Colors') = img_info('Colors')*numel(BatchOpt.Filenames);
         end
         
-        obj.mibModel.I{BatchOpt.id}.clearContents(img, img_info, obj.mibModel.preferences.disableSelection);
+        obj.mibModel.I{BatchOpt.id}.clearContents(img, img_info, obj.mibModel.preferences.System.EnableSelection);
         obj.mibModel.I{BatchOpt.id}.pixSize = pixSize;
         notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details
         obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection = [2 1];  % last selected contour for use with the 'e' button
         obj.plotImage(1);
         
         % update list of recent directories
-        dirPos = ismember(obj.mibModel.preferences.recentDirs, BatchOpt.DirectoryName{1});
+        dirPos = ismember(obj.mibModel.preferences.System.Dirs.RecentDirs, BatchOpt.DirectoryName{1});
         if sum(dirPos) == 0
-            obj.mibModel.preferences.recentDirs = [obj.mibModel.myPath obj.mibModel.preferences.recentDirs];    % add the new folder to the list of folders
-            if numel(obj.mibModel.preferences.recentDirs) > 14    % trim the list
-                obj.mibModel.preferences.recentDirs = obj.mibModel.preferences.recentDirs(1:14);
+            obj.mibModel.preferences.System.Dirs.RecentDirs = [obj.mibModel.myPath obj.mibModel.preferences.System.Dirs.RecentDirs];    % add the new folder to the list of folders
+            if numel(obj.mibModel.preferences.System.Dirs.RecentDirs) > obj.mibModel.preferences.System.Dirs.RecentDirsNumber    % trim the list
+                obj.mibModel.preferences.System.Dirs.RecentDirs = obj.mibModel.preferences.System.Dirs.RecentDirs(1:obj.mibModel.preferences.System.Dirs.RecentDirsNumber);
             end
         else
             % re-sort the list and put the opened folder to the top of
             % the list
-            obj.mibModel.preferences.recentDirs = [obj.mibModel.preferences.recentDirs(dirPos==1) obj.mibModel.preferences.recentDirs(dirPos==0)];
+            obj.mibModel.preferences.System.Dirs.RecentDirs = [obj.mibModel.preferences.System.Dirs.RecentDirs(dirPos==1) obj.mibModel.preferences.System.Dirs.RecentDirs(dirPos==0)];
         end
-        obj.mibView.handles.mibRecentDirsPopup.String = obj.mibModel.preferences.recentDirs;
+        obj.mibView.handles.mibRecentDirsPopup.String = obj.mibModel.preferences.System.Dirs.RecentDirs;
     case 'Insert into open dataset'
         if batchModeSwitch == 0
             prompts = {'Dimension:'; ...
@@ -328,10 +333,16 @@ switch BatchOpt.Mode{1}
         end
         obj.updateFilelist();
     case 'file_properties'
-        if exist('BatchOpt.Filenames','var') == 0; return; end
+        if ~isfield(BatchOpt, 'Filenames'); return; end
         properties = dir(BatchOpt.Filenames{1});
-        msgbox(sprintf('Filename: %s\nDate: %s\nSize: %.3f KB', properties.name, properties.date, properties.bytes/1000),...
-            'File info');
+%         msgbox(sprintf('Filename: %s\nDate: %s\nSize: %.3f KB', properties.name, properties.date, properties.bytes/1000),...
+%             'File info');
+        options.Title = sprintf('Filename: %s\nDate: %s\nSize: %.3f KB', properties.name, properties.date, properties.bytes/1000);
+        options.TitleLines = 4;
+        options.msgBoxOnly = true;
+        options.WindowStyle = 'normal';
+        mibInputMultiDlg({mibPath}, {}, {}, 'File info', options);
+        
     case {'Add as new color channel' 'Add each N-th dataset as new color channel'}   % add color channel
         if obj.mibModel.I{BatchOpt.id}.Virtual.virtual == 1
             toolname = 'The color channels can not be added in the virtual stacking mode.';

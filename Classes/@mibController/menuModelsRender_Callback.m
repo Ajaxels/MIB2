@@ -62,7 +62,7 @@ switch type
             materialIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
         end
         img = cell2mat(obj.mibModel.getData3D('model', NaN, 4, materialIndex));
-        if obj.matlabVersion >= 9.6
+        if ~verLessThan('matlab', '9.6') % obj.matlabVersion >= 9.6
             % % Labels only is not compatible with the scale factor
             %answer = questdlg(sprintf('Would you like to have the volume exported together with the model?'), ...
             %        'Include volume', 'Volume with model', 'Only model', 'Cancel', 'Only model');
@@ -92,7 +92,7 @@ switch type
 
                 volumeViewer(squeeze(Volume), img, 'ScaleFactors', [obj.mibModel.I{obj.mibModel.Id}.pixSize.x obj.mibModel.I{obj.mibModel.Id}.pixSize.y obj.mibModel.I{obj.mibModel.Id}.pixSize.z]);
             end
-        elseif obj.matlabVersion >= 9.4
+        elseif ~verLessThan('matlab', '9.4') % obj.matlabVersion >= 9.4
             tform = zeros(4);
             tform(1,1) = obj.mibModel.I{obj.mibModel.Id}.pixSize.x;
             tform(2,2) = obj.mibModel.I{obj.mibModel.Id}.pixSize.y;

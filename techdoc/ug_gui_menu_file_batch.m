@@ -4,7 +4,12 @@
 %
 % <html>
 % A demonstration is available in the following video:<br>
-% <a href="https://youtu.be/P6Rivp713qM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/P6Rivp713qM</a>
+% <a href="https://youtu.be/P6Rivp713qM"><img
+% style="vertical-align:middle;" src="images\youtube2.png">
+% https://youtu.be/P6Rivp713qM</a><br>
+% Another demo for File and Directory operations:<br><a href="https://youtu.be/8VlfR_CZNT4"><img
+% style="vertical-align:middle;" src="images\youtube2.png">
+% https://youtu.be/8VlfR_CZNT4</a><br>
 % </html>
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 

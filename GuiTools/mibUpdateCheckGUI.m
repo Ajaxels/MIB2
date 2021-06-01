@@ -132,9 +132,11 @@ function downloadBtn_Callback(hObject, eventdata, handles)
 % function downloadBtn_Callback(obj)
 % download MIB
 if isdeployed
-    if ismac()
+    if ismac
         web('http://mib.helsinki.fi/web-update/MIB2_Mac.zip', '-browser');
-    elseif ispc()
+    elseif isunix
+        web('http://mib.helsinki.fi/web-update/MIB2_Linux.zip', '-browser');
+    elseif ispc
         answer = questdlg('Would you like to download MIB compiled for the current or recent release of Matlab?', 'Matlab version', 'Current', 'Recent', 'Cancel', 'Current');
         switch answer
             case 'Cancel' 

@@ -65,7 +65,7 @@ classdef mibSupervoxelClassifierController < handle
             mibRescaleWidgets(obj.View.gui);
             
             % update font and size
-            Font = obj.mibModel.preferences.Font;
+            Font = obj.mibModel.preferences.System.Font;
             if obj.View.handles.text1.FontSize ~= Font.FontSize ...
                     || ~strcmp(obj.View.handles.text1.FontName, Font.FontName)
                 mibUpdateFontSize(obj.View.gui, Font);
@@ -1304,8 +1304,9 @@ classdef mibSupervoxelClassifierController < handle
             % load classifier from the disk
             
             tempDir = obj.View.handles.tempDirEdit.String;
-            [FileName,PathName,FilterIndex] = uigetfile('*.forest', 'Select trained classifier', tempDir, 'MultiSelect', 'off');
-            if FileName==0; return; end;
+            [FileName,PathName,FilterIndex] = ...
+                mib_uigetfile('*.forest', 'Select trained classifier', tempDir, 'off');
+            if FileName==0; return; end
             
             fn = fullfile(PathName, FileName);
             res = load(fn, '-mat');

@@ -24,7 +24,7 @@ global mibPath;
 
 switch parameter
     case 'mib'  % hardware rendering in MIB, from R2018b
-        if obj.matlabVersion < 9.5
+        if verLessThan('matlab', '9.5') % obj.matlabVersion < 9.5
             errordlg(sprintf('!!! Error !!!\n\nHardware accelerated rendering is only available in Matlab R2018b or newer!'),'Matlab version is too old');
             return;
         end
@@ -61,7 +61,7 @@ switch parameter
             errordlg(sprintf('!!! Error !!!\n\nVolume viewer is not compatible with multicolor images;\nplease keep only a single color channel displayed and try again!'), 'Not implemented');
             return;
         end
-        if obj.matlabVersion >= 9.6
+        if ~verLessThan('matlab', '9.6') % obj.matlabVersion >= 9.6
             answer = 'Only volume';
             if obj.mibModel.I{obj.mibModel.Id}.modelExist
                 answer = questdlg(sprintf('Would you like to have the model exported together with the volume?'), ...
@@ -74,7 +74,7 @@ switch parameter
                 Model = cell2mat(obj.mibModel.getData3D('model'));
                 volumeViewer(squeeze(img), Model, 'ScaleFactors', [obj.mibModel.I{obj.mibModel.Id}.pixSize.x obj.mibModel.I{obj.mibModel.Id}.pixSize.y obj.mibModel.I{obj.mibModel.Id}.pixSize.z]);
             end
-        elseif obj.matlabVersion >= 9.4
+        elseif ~verLessThan('matlab', '9.4') % obj.matlabVersion >= 9.4
             tform = zeros(4);
             tform(1,1) = obj.mibModel.I{obj.mibModel.Id}.pixSize.x;
             tform(2,2) = obj.mibModel.I{obj.mibModel.Id}.pixSize.y;

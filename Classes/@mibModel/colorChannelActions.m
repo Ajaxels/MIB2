@@ -3,9 +3,10 @@ function colorChannelActions(obj, mode, channel1, channel2, BatchOptIn)
 % handling various color channel operations
 %
 % Parameters:
-% mode: a string with the operaion to perform
+% mode: a string with the operation to perform
 % ''Insert empty channel'' - insert color channel
 % ''Copy channel'' - copy one color channel to another
+% ''Shift channel'' - shift color channel by dx/dy pixels
 % ''Invert channel'' - invert color channel
 % ''Rotate channel'' - rotate color channel
 % ''Swap channels'' - swap two color channels
@@ -16,10 +17,13 @@ function colorChannelActions(obj, mode, channel1, channel2, BatchOptIn)
 % BatchOptIn: a structure for batch processing mode, when NaN return
 %   a structure with default options via "syncBatch" event, see Declaration of the BatchOpt structure below for details, the function
 %   variables are preferred over the BatchOptIn variables
-% @li .Action - cell string, {'Insert empty channel', 'Copy channel', 'Invert channel', 'Rotate channel', 'Swap channels', 'Delete channel'} - action to perform
+% @li .Action - cell string, {'Insert empty channel', 'Copy channel', 'Invert channel', 'Rotate channel', Shift channel, 'Swap channels', 'Delete channel'} - action to perform
 % @li .Channel1 - string, index of the first (source) color channel
 % @li .Channel2 - string, index of the second (target) color channel
 % @li .RotationAngle - string, rotation angle
+% @li .dx - string, channel shift in X, in pixels
+% @li .dy - string, channel shift in Y, in pixels
+% @li .FillValue - string, value of intensity to fill the frame during channel shift
 % @li .showWaitbar - logical, show or not the waitbar
 % @li .id -> [@em optional], an index dataset from 1 to 9, defalt = currently shown dataset
 %
@@ -45,6 +49,7 @@ function colorChannelActions(obj, mode, channel1, channel2, BatchOptIn)
 % of the License, or (at your option) any later version.
 %
 % Updates
+% 12.05.2021, added channel shift
 
 global mibPath;
 
@@ -59,7 +64,7 @@ if ~isempty(mode)
 else
     BatchOpt.Action = {'Insert empty channel'};
 end
-BatchOpt.Action{2} = {'Insert empty channel', 'Copy channel', 'Invert channel', 'Rotate channel', 'Swap channels', 'Delete channel'};  % cell array with options
+BatchOpt.Action{2} = {'Insert empty channel', 'Copy channel', 'Invert channel', 'Rotate channel', 'Shift channel', 'Swap channels', 'Delete channel'};  % cell array with options
 
 if isempty(channel1)
     BatchOpt.Channel1 = num2str(max([1 obj.I{obj.Id}.selectedColorChannel])); % string, source position
@@ -81,6 +86,10 @@ else
     end
     BatchOpt.RotationAngle = num2str(channel2);
 end
+BatchOpt.dx = '0';
+BatchOpt.dy = '0';
+BatchOpt.FillValue = '0';
+
 BatchOpt.showWaitbar = true;   % logical, show or not the waitbar
 BatchOpt.id = obj.Id;   % optional, id
 
@@ -91,6 +100,9 @@ BatchOpt.mibBatchTooltip.Action = sprintf('Specify action for the color channels
 BatchOpt.mibBatchTooltip.Channel1 = sprintf('Index or indices of the first color channel to use');
 BatchOpt.mibBatchTooltip.Channel2 = sprintf('Index or indices of the second color channel to use');
 BatchOpt.mibBatchTooltip.RotationAngle = sprintf('Rotation angle\nshould be -90, 0, 90, 180 etc');
+BatchOpt.mibBatchTooltip.dx = sprintf('Value of the channel shift in X, in pixels');
+BatchOpt.mibBatchTooltip.dy = sprintf('Value of the channel shift in Y, in pixels');
+BatchOpt.mibBatchTooltip.FillValue = sprintf('Intensity value to fill the frame during channel shift');
 BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');
 
 if nargin == 5  % batch mode 
@@ -127,19 +139,33 @@ if nargin < 5
         prompt = {textString1; textString2};
         mibInputMultiDlgOptions.PromptLines = [1, 1];
         defAns = {BatchOpt.Channel1, BatchOpt.RotationAngle};    
+    elseif strcmp(BatchOpt.Action{1}, 'Shift channel')
+        textString1 = 'Index of the color channel:';
+        textString2 = 'dx shift in pixels:';
+        textString3 = 'dy shift in pixels:';
+        textString4 = sprintf('Intensity value to fill the frame [0-%d]:', obj.I{obj.Id}.meta('MaxInt'));
+        prompt = {textString1; textString2; textString3; textString4};
+        mibInputMultiDlgOptions.PromptLines = [1, 1, 1, 1];
+        defAns = {BatchOpt.Channel1, BatchOpt.dx, BatchOpt.dy, BatchOpt.FillValue};    
     else
         prompt = {'Index of the color channel:'};
         mibInputMultiDlgOptions.PromptLines = 1;
         defAns = {BatchOpt.Channel1};
     end
-    answer = mibInputMultiDlg({mibPath}, prompt, defAns, 'Copy slice', mibInputMultiDlgOptions);
+    answer = mibInputMultiDlg({mibPath}, prompt, defAns, BatchOpt.Action{1}, mibInputMultiDlgOptions);
     if isempty(answer); return; end
+    
     BatchOpt.Channel1 = answer{1};
     if ismember(BatchOpt.Action{1}, {'Copy channel', 'Swap channels'})
         BatchOpt.Channel2 = answer{2};
     end
     if strcmp(BatchOpt.Action{1}, 'Rotate channel')
         BatchOpt.RotationAngle = answer{2};
+    end
+    if strcmp(BatchOpt.Action{1}, 'Shift channel')
+        BatchOpt.dx = answer{2};
+        BatchOpt.dy = answer{3};
+        BatchOpt.FillValue = answer{4};
     end
 end
 
@@ -163,6 +189,9 @@ switch BatchOpt.Action{1}
     case 'Rotate channel'
         if obj.I{BatchOpt.id}.time < 2; obj.mibDoBackup('image', 1, BatchOpt); end
         obj.I{BatchOpt.id}.rotateColorChannel(channel1, angle, BatchOpt);     
+    case 'Shift channel'
+        if obj.I{BatchOpt.id}.time < 2; obj.mibDoBackup('image', 1, BatchOpt);  end
+        obj.I{BatchOpt.id}.shiftColorChannel(channel1, str2double(BatchOpt.dx), str2double(BatchOpt.dy), str2double(BatchOpt.FillValue), BatchOpt);
     case 'Swap channels'
         if obj.I{BatchOpt.id}.time < 2; obj.mibDoBackup('image', 1, BatchOpt);  end
         obj.I{BatchOpt.id}.swapColorChannels(channel1, channel2, BatchOpt);

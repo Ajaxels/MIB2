@@ -15,7 +15,7 @@ function mibSelectionClearBtn_Callback(obj)
 % 25.09.2019 updated for batch mode and moved to mibModel.clearSelection
 
 % do nothing is selection is disabled
-if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 1; return; end
+if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 0; return; end
 
 modifier = obj.mibView.gui.CurrentModifier;
 if sum(ismember({'alt', 'shift'}, modifier)) == 2

@@ -75,7 +75,7 @@ if BatchOptOut.Mode3D == 1 && ismember(BatchOptOut.FilterName{1}, obj.Filters3D)
 end
 
 % filter the provided img
-tic
+t1 = tic;
 if ~isempty(img)
     BatchOptOut.ColorChannel{1} = 1;
     BatchOptOut.Mode3D = false;
@@ -215,15 +215,14 @@ for sourceLayerId = 1:numel(sourceLayersList)
         %     end
     end
 end
-
 if strcmp(BatchOptOut.DatasetType{1}, '2D, Slice')
     log_text = [log_text ', slice=' num2str(obj.mibModel.I{obj.BatchOpt.id}.getCurrentSliceNumber())];
 end
 if isnan(log_text); return; end
-if ~strcmp(BatchOptOut.FilterGroup{1}, 'Image Binarization')
+if ~strcmp(BatchOptOut.FilterGroup{1}, 'Image Binarization') && ~ismember(BatchOptOut.SourceLayer{1}, {'selection', 'mask', 'model'})
     obj.mibModel.I{obj.mibModel.Id}.updateImgInfo(log_text);    % update the log
 end
-toc;
+toc(t1);
 %if obj.BatchOpt.showWaitbar; delete(wb); end
 
 % redraw the image if needed

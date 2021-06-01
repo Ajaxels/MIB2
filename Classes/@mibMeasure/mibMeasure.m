@@ -162,30 +162,30 @@ classdef mibMeasure < matlab.mixin.Copyable
             % Evaluate options
             % ==============================
             marker = {O.marker1 ; O.marker2};
-            markersize = eval(O.markersize);
+            markersize = str2double(O.markersize);
             if length(O.color1) == 1 || strcmpi(O.color1,'none')
                 color{1,1} = O.color1;
             else
-                color{1,1} = eval(O.color1);
+                color{1,1} = str2num(O.color1);
             end
             if length(O.color2) == 1 || strcmpi(O.color2,'none')
                 color{2,1} = O.color2;
             else
-                color{2,1} = eval(O.color2);
+                color{2,1} = str2num(O.color2);
             end
             linestyle = {O.linestyle1 ; O.linestyle2};
-            linewidth = eval(O.linewidth);
+            linewidth = str2double(O.linewidth);
             if length(O.textcolorfg) == 1 || strcmpi(O.textcolorfg,'none')
                 textcolorfg = O.textcolorfg;
             else
-                textcolorfg = eval(O.textcolorfg);
+                textcolorfg = str2num(O.textcolorfg); %#ok<*ST2NM>
             end
             if length(O.textcolorbg) == 1  || strcmpi(O.textcolorbg,'none')
                 textcolorbg = O.textcolorbg;
             else
-                textcolorbg = eval(O.textcolorbg);
+                textcolorbg = str2num(O.textcolorbg);
             end
-            fontsize = eval(O.fontsize);
+            fontsize = str2double(O.fontsize);
             
             set(axes, 'NextPlot', 'add');
             %indices = find([obj.Data.Z]' == sliceNo);

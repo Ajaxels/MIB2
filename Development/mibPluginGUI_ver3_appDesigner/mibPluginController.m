@@ -100,8 +100,6 @@ classdef mibPluginController < handle
             obj.BatchOpt.mibBatchTooltip.Parameter = sprintf('Provide text or number as string');
             obj.BatchOpt.mibBatchTooltip.Checkbox = sprintf('Specify checkboxes as logicals');
             obj.BatchOpt.mibBatchTooltip.Popup = sprintf('Popups populated using cells');
-			obj.BatchOpt.mibBatchTooltip.Dropdown = sprintf('Dropdown');
-            obj.BatchOpt.mibBatchTooltip.ParameterNumeric = sprintf('ParameterNumeric');
             obj.BatchOpt.mibBatchTooltip.Radio = sprintf('Selection of radio buttons, as cell with the handle of the target radio button');
             obj.BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not waitbar');
 
@@ -145,11 +143,11 @@ classdef mibPluginController < handle
             
             % update font and size
             % you may need to replace "obj.View.handles.text1" with tag of any text field of your own GUI
-            % % this function is not yet
 %             global Font;
 %             if ~isempty(Font)
-%               if obj.View.handles.text1.FontSize ~= Font.FontSize ...
-%                     || ~strcmp(obj.View.handles.text1.FontName, Font.FontName)
+%               if obj.View.handles.text1.FontSize ~= Font.FontSize+4 ...   
+%                     || ~strcmp(obj.View.handles.text1.FontName,
+%                     Font.FontName) % font size for appdesigner +4 larger than that for guide 
 %                   mibUpdateFontSize(obj.View.gui, Font);
 %               end
 %             end

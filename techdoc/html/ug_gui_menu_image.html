@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Image Menu</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-06-08"><meta name="DC.source" content="ug_gui_menu_image.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>Image Menu</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-01"><meta name="DC.source" content="ug_gui_menu_image.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -67,9 +68,16 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
   </style></head><body><div class="content"><h1>Image Menu</h1><!--introduction--><p>Image processing functions</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">Mode</a></li><li><a href="#3">Adjust Display/Image</a></li><li><a href="#4">Color Channels</a></li><li><a href="#5">Contrast</a></li><li><a href="#7">Invert image</a></li><li><a href="#8">Image filter</a></li><li><a href="#9">Tools for images --&gt; Content-aware fill</a></li><li><a href="#10">Tools for images --&gt; Debris removal</a></li><li><a href="#11">Tools for images --&gt; Image arithmetics</a></li><li><a href="#12">Tools for images --&gt; Intensity projection</a></li><li><a href="#13">Morphological operations</a></li><li><a href="#14">Intensity profile</a></li></ul></div><p><img vspace="5" hspace="5" src="images\menuImage.png" alt=""> </p><h2 id="2">Mode</h2><p>Allows to change mode of the shown dataset, the following options are available:</p><div><ul><li><b>Grayscale</b>, converts image to grayscale by removing any color information</li><li><b>RGB Color</b>, converts image to the RGB color space</li><li><b>HSV Color</b>, converts image to the HSV (hue, saturation, value) color space</li><li><b>Indexed</b>, converts image to the indexed colors (<tt>not implemented for True Color images</tt>)</li><li><b>8 bit</b>, convert dataset to the 8 bit format, the image intensities are scaled to preserve the adjusted from the <tt>View Settings Panel-&gt;Display dialog</tt></li><li><b>16 bit</b>, convert dataset to the 16 bit format, the image intensities are scaled to preserve contrast of the original dataset</li><li><b>32 bit</b>, convert dataset to the 32 bit format, the image intensities are scaled to preserve contrast of the original dataset</li></ul></div><h2 id="3">Adjust Display/Image</h2><p>Starts a dialog to adjust display settings or resample image intensities. See more in the <a href="ug_panel_adjustments.html">Adjust display window section</a></p><h2 id="4">Color Channels</h2><p>Perform some actions with color channels of the image</p><p>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/gT-c8TiLcuY"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/gT-c8TiLcuY</a>
-</p><div><ul><li><b>Insert empty channel...</b>, insert an empty channel (intensity of all pixels is 0) to the specified position</li><li><b>Copy channel...</b>, copy one channel to another position</li><li><b>Invert channel...</b>, invert intensities of the specified color channel</li><li><b>Rotate channel...</b>, rotate the specified color channel</li><li><b>Swap channels...</b>, allows to swap two color channels between each other</li><li><b>Delete channel...</b>, deletes specified color channel from the dataset</li></ul></div><p>It is also possible to do color channel operations from the <tt>Colors</tt> table in the <a href="ug_panel_view_settings.html">View settings panel</a>.</p><h2 id="5">Contrast</h2><p>Adjust contrast of the dataset. For the linear contrast stretching it is recommended to use Image Adjustment dialog available via the <a href="ug_panel_adjustments.html">Display button</a> in the <a href="ug_panel_view_settings.html">View Settings panel</a>.</p><p>
+A brief demonstration is available in the following videos:<br>
+<ul>
+<li> General demonstration: <a href="https://youtu.be/gT-c8TiLcuY"><img
+style="vertical-align:middle;" src="images\youtube2.png">
+https://youtu.be/gT-c8TiLcuY</a></li>
+<li> Correction of color shifts between images: <a href="https://youtu.be/-J2P8a_z7pE"><img
+style="vertical-align:middle;" src="images\youtube2.png">
+https://youtu.be/-J2P8a_z7pE</a></li>
+</ul>
+</p><div><ul><li><b>Insert empty channel...</b>, insert an empty channel (intensity of all pixels is 0) to the specified position</li><li><b>Copy channel...</b>, copy one channel to another position</li><li><b>Invert channel...</b>, invert intensities of the specified color channel</li><li><b>Rotate channel...</b>, rotate the specified color channel</li><li><b>Shift channel...</b>, allows to shift a channel by X and Y pixels</li><li><b>Swap channels...</b>, allows to swap two color channels between each other</li><li><b>Delete channel...</b>, deletes specified color channel from the dataset</li></ul></div><p>It is also possible to do color channel operations from the <tt>Colors</tt> table in the <a href="ug_panel_view_settings.html">View settings panel</a>.</p><h2 id="5">Contrast</h2><p>Adjust contrast of the dataset. For the linear contrast stretching it is recommended to use Image Adjustment dialog available via the <a href="ug_panel_adjustments.html">Display button</a> in the <a href="ug_panel_view_settings.html">View Settings panel</a>.</p><p>
 A tutorial on image normalization is available in the following video:<br>
 <a href="https://youtu.be/MmBmdGtuUdM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MmBmdGtuUdM</a>
 </p><div><ul><li><b>Linear contrast</b>, is no longer available in MIB, please use the Display button in the <a href="ug_panel_view_settings.html">View Settings panel</a>.</li><li><b>Contrast-limited adaptive histogram equalization</b>, CLAHE contrast equalization. CLAHE operates on small regions in the image, called tiles, rather than the entire image. Each tile's contrast is enhanced, so that the histogram of the output region approximately matches the histogram specified by the 'Distribution' parameter. The neighboring tiles are then combined using bilinear interpolation to eliminate artificially induced boundaries. The contrast, especially in homogeneous areas, can be limited to avoid amplifying any noise that might be present in the image. For details see documentation for Matlab function <tt>adapthisteq</tt>.</li><li><b>Normalize layers</b>, normalization of image intensities between the slices.  A) calculates mean intensity and standard deviation (std) for the whole dataset; B) calculates mean intensities and standard deviation for each image; C) shifts each image based on difference between mean values of that image and the whole dataset, plus stretches it based on ratio between standard deviation of the whole dataset and each image. For the 4D datasets it is possible to perform normalization also via the time dimension. For the Z stack it is possible to exclude black or white pixels from consideration</li><li><b>Normalize layers based on masked areas</b>, essentially similar to the <i>Normalize layers</i> mode, except that all values are calculated from the masked areas only.</li><li><b>Normalize based on masked background</b>, normalizes image intensities between the slices using background areas that should be masked. A) calculates mean intensity for the masked area for the whole dataset; B) calculates mean intensities for the masked area for each image; C) shifts each image based on difference between mean values of the image and the whole dataset</li></ul></div><h2 id="7">Invert image</h2><p>Invert image intensities, shortcut <tt>Ctrl+i</tt>.</p><p>
@@ -253,7 +261,7 @@ color for the <em>Image</em> layer.
 </p><h2 id="13">Morphological operations</h2><p>This section contains number of morphological operations that can be applied to images. The processed image may be also added or subtracted from the existing image (see the settings in the <tt>Additional action to the result</tt> panel).</p><p>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/itbVLFm0FKQ"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/itbVLFm0FKQ</a>
-</p><p><img vspace="5" hspace="5" src="images\MenuImageMorphOps.png" alt=""> </p><p>List of available morphological operations</p><div><ul><li><b>Bottom-hat filtering (imbothat)</b> computes the morphological closing of the image (using imclose`) and then subtracts the result from the original image</li><li><b>Clear border (imclearborder)</b> suppresses light structures connected to image border</li><li><b>Morphological closing (imclose)</b> morphologically closes the image: a dilation followed by an erosion</li><li><b>Dilate image (imdilate)</b></li><li><b>Erode image (imerode)</b></li><li><b>Fill regions (imfill)</b> fills holes in the image, where a hole is defined as an area of dark pixels surrounded by lighter pixels</li><li><b>H-maxima transform (imhmax)</b> suppresses all maxima in the image whose height is less than H</li><li><b>H-mminima transform (imhmin)</b> uppresses all minima in the image whose depth is less than H</li><li><b>Morphological opening (imopen)</b> morphologically opens image: an erosion followed by a dilation</li><li><b>Top-hat filtering (imtophat)</b> computes the morphological opening of the image (using imopen) and then subtracts the result from the original image</li></ul></div><h2 id="14">Intensity profile</h2><p>Generate an intensity profile of the image data. The profiles can be obtained in two modes:</p><div><ul><li><b>Line</b></li><li><b>Arbitrary</b></li></ul></div><p>For intensity profiles it is recommended to use the <a href="ug_gui_menu_tools_measure.html">Measure length tool</a>.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
+</p><p><img vspace="5" hspace="5" src="images\MenuImageMorphOps.png" alt=""> </p><p>List of available morphological operations</p><div><ul><li><b>Bottom-hat filtering (imbothat)</b> computes the morphological closing of the image (using imclose`) and then subtracts the result from the original image</li><li><b>Clear border (imclearborder)</b> suppresses light structures connected to image border</li><li><b>Morphological closing (imclose)</b> morphologically closes the image: a dilation followed by an erosion</li><li><b>Dilate image (imdilate)</b></li><li><b>Erode image (imerode)</b></li><li><b>Fill regions (imfill)</b> fills holes in the image, where a hole is defined as an area of dark pixels surrounded by lighter pixels</li><li><b>H-maxima transform (imhmax)</b> suppresses all maxima in the image whose height is less than H</li><li><b>H-mminima transform (imhmin)</b> uppresses all minima in the image whose depth is less than H</li><li><b>Morphological opening (imopen)</b> morphologically opens image: an erosion followed by a dilation</li><li><b>Top-hat filtering (imtophat)</b> computes the morphological opening of the image (using imopen) and then subtracts the result from the original image</li></ul></div><h2 id="14">Intensity profile</h2><p>Generate an intensity profile of the image data. The profiles can be obtained in two modes:</p><div><ul><li><b>Line</b></li><li><b>Arbitrary</b></li></ul></div><p>For intensity profiles it is recommended to use the <a href="ug_gui_menu_tools_measure.html">Measure length tool</a>.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Image Menu
 % Image processing functions
@@ -290,8 +298,15 @@ A brief demonstration is available in the following video:<br>
 % Perform some actions with color channels of the image
 % 
 % <html>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/gT-c8TiLcuY"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/gT-c8TiLcuY</a>
+% A brief demonstration is available in the following videos:<br>
+% <ul>
+% <li> General demonstration: <a href="https://youtu.be/gT-c8TiLcuY"><img
+% style="vertical-align:middle;" src="images\youtube2.png">
+% https://youtu.be/gT-c8TiLcuY</a></li>
+% <li> Correction of color shifts between images: <a href="https://youtu.be/-J2P8a_z7pE"><img
+% style="vertical-align:middle;" src="images\youtube2.png">
+% https://youtu.be/-J2P8a_z7pE</a></li>
+% </ul>
 % </html>
 %
 % * *Insert empty channel...*, insert an empty channel (intensity of all
@@ -299,6 +314,7 @@ A brief demonstration is available in the following video:<br>
 % * *Copy channel...*, copy one channel to another position 
 % * *Invert channel...*, invert intensities of the specified color channel
 % * *Rotate channel...*, rotate the specified color channel
+% * *Shift channel...*, allows to shift a channel by X and Y pixels
 % * *Swap channels...*, allows to swap two color channels between each other
 % * *Delete channel...*, deletes specified color channel from the dataset
 %

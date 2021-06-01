@@ -19,13 +19,13 @@ img = cell2mat(obj.getData4D('image', 4, 0, options));   % get dataset (image)
 img = permute(img,[1, 2, 3, 5, 4]);
 obj.setData4D('image', img, 4, 0, options);   % get dataset (image)
 % transpose other layers
-if obj.I{obj.Id}.modelType == 63 && obj.I{obj.Id}.disableSelection == 0
+if obj.I{obj.Id}.modelType == 63 && obj.I{obj.Id}.enableSelection == 1
     waitbar(0.5, wb, sprintf('Transposing other layers\nPlease wait...'));
     img = obj.I{obj.Id}.model{1};   % get dataset (image)
     obj.I{obj.Id}.model{1} = zeros([size(img, 1), size(img, 2), size(img, 4), size(img, 3)], 'uint8');
     img = permute(img,[1, 2, 4, 3]);
     obj.setData4D('everything', img, 4, 0, options);   % get dataset (image)
-elseif obj.I{obj.Id}.disableSelection == 0
+elseif obj.I{obj.Id}.enableSelection == 1
     waitbar(0.25, wb, sprintf('Transposing the selection layer\nPlease wait...'));
     img = obj.I{obj.Id}.selection{1};   % get dataset (image)
     obj.I{obj.Id}.selection{1} = zeros([size(img, 1), size(img, 2), size(img, 4), size(img, 3)], 'uint8');

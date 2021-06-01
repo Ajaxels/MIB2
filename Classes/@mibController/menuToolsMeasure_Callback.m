@@ -45,7 +45,7 @@ delete(roi);
 obj.mibView.gui.WindowButtonDownFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowButtonDownFcn());
 
 % helpSubString ='';
-% if obj.mibModel.I{obj.mibModel.Id}.disableSelection == 0
+% if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 1
 %     img = cell2mat(obj.mibModel.getData2D('selection'));
 %     img = mibConnectPoints(img, pos);
 %     obj.mibModel.setData2D('selection', {img});

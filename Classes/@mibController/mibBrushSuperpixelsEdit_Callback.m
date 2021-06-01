@@ -22,34 +22,34 @@ if obj.mibView.handles.mibBrushSuperpixelsCheck.Value == 1  % slic mode
         case 'mibSuperpixelsNumberEdit'
             if val < 1 
                 errordlg(sprintf('!!! Error !!!\nthe value should be positive integer!'), 'Wrong value', 'modal');
-                obj.mibView.handles.mibSuperpixelsCompactEdit.String = num2str(obj.mibModel.preferences.superpixels.slic_n);
+                obj.mibView.handles.mibSuperpixelsCompactEdit.String = num2str(obj.mibModel.preferences.SegmTools.Superpixels.NoSLIC);
                 return;
             end
-            obj.mibModel.preferences.superpixels.slic_n = val;
+            obj.mibModel.preferences.SegmTools.Superpixels.NoSLIC = val;
         case 'mibSuperpixelsCompactEdit'
             if val < 0 
                 errordlg(sprintf('!!! Error !!!\nthe value should be positive integer!'), 'Wrong value', 'modal');
-                obj.mibView.handles.mibSuperpixelsCompactEdit.String = num2str(obj.mibModel.preferences.superpixels.slic_compact);
+                obj.mibView.handles.mibSuperpixelsCompactEdit.String = num2str(obj.mibModel.preferences.SegmTools.Superpixels.CompactSLIC);
                 return;
             end
-            obj.mibModel.preferences.superpixels.slic_compact = val;
+            obj.mibModel.preferences.SegmTools.Superpixels.CompactSLIC = val;
     end
 elseif obj.mibView.handles.mibBrushSuperpixelsWatershedCheck.Value == 1     % watershed mode
     switch hObject.Tag
         case 'mibSuperpixelsNumberEdit'
             if val < 0 
                 errordlg(sprintf('!!! Error !!!\nthe value should be positive integer or 0!'), 'Wrong value', 'modal');
-                obj.mibView.handles.mibSuperpixelsCompactEdit.String = num2str(obj.mibModel.preferences.superpixels.watershed_n);
+                obj.mibView.handles.mibSuperpixelsCompactEdit.String = num2str(obj.mibModel.preferences.SegmTools.Superpixels.NoWatershed);
                 return;
             end
-            obj.mibModel.preferences.superpixels.watershed_n = val;
+            obj.mibModel.preferences.SegmTools.Superpixels.NoWatershed = val;
         case 'mibSuperpixelsCompactEdit'
             if ~ismember(val, [0 1]) 
                 errordlg(sprintf('!!! Error !!!\nthe value should be 0 or 1!'), 'Wrong value', 'modal');
-                obj.mibView.handles.mibSuperpixelsCompactEdit.String = num2str(obj.mibModel.preferences.superpixels.watershed_invert);
+                obj.mibView.handles.mibSuperpixelsCompactEdit.String = num2str(obj.mibModel.preferences.SegmTools.Superpixels.InvertWatershed);
                 return;
             end
-            obj.mibModel.preferences.superpixels.watershed_invert = val;
+            obj.mibModel.preferences.SegmTools.Superpixels.InvertWatershed = val;
     end
 end
 

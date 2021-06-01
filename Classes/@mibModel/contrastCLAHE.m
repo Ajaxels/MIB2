@@ -37,23 +37,23 @@ function contrastCLAHE(obj, mode, BatchOptIn)
 global mibPath;
 
 if nargin < 2; mode = []; end
-if ~isempty(mode); obj.preferences.CLAHE.Mode = mode; end
-if ~isfield(obj.preferences.CLAHE, 'Mode'); obj.preferences.CLAHE.Mode = 'Current stack (3D)'; end
+if ~isempty(mode); obj.sessionSettings.CLAHE.Mode = mode; end
+if ~isfield(obj.sessionSettings.CLAHE, 'Mode'); obj.sessionSettings.CLAHE.Mode = 'Current stack (3D)'; end
 
 %% Declaration of the BatchOpt structure
 PossibleColChannels = arrayfun(@(x) sprintf('ColCh %d', x), 1:obj.I{obj.Id}.colors, 'UniformOutput', false);
 PossibleColChannels = ['All channels', 'Shown channels', PossibleColChannels];
 BatchOpt = struct();
-BatchOpt.Mode = {obj.preferences.CLAHE.Mode};     % define dataset type
+BatchOpt.Mode = {obj.sessionSettings.CLAHE.Mode};     % define dataset type
 BatchOpt.Mode{2} = {'Shown slice (2D)','Current stack (3D)','Complete volume (4D)'};
 BatchOpt.ColChannel = {'All channels'};     % Define color channels for CLAHE
 BatchOpt.ColChannel{2} = PossibleColChannels;
-BatchOpt.NumTiles = num2str(obj.preferences.CLAHE.NumTiles); % Number of tiles
-BatchOpt.ClipLimit = num2str(obj.preferences.CLAHE.ClipLimit);   %  Contrast enhancement limit
-BatchOpt.NBins = num2str(obj.preferences.CLAHE.NBins);   %  Number of histogram bins used to build a contrast enhancing transformation
-BatchOpt.Distribution = {obj.preferences.CLAHE.Distribution};   % Desired histogram shape
+BatchOpt.NumTiles = num2str(obj.sessionSettings.CLAHE.NumTiles); % Number of tiles
+BatchOpt.ClipLimit = num2str(obj.sessionSettings.CLAHE.ClipLimit);   %  Contrast enhancement limit
+BatchOpt.NBins = num2str(obj.sessionSettings.CLAHE.NBins);   %  Number of histogram bins used to build a contrast enhancing transformation
+BatchOpt.Distribution = {obj.sessionSettings.CLAHE.Distribution};   % Desired histogram shape
 BatchOpt.Distribution{2} = {'uniform', 'rayleigh', 'exponential'};
-BatchOpt.Alpha = num2str(obj.preferences.CLAHE.Alpha);   % Distribution parameter, for 'rayleigh' and 'exponential'
+BatchOpt.Alpha = num2str(obj.sessionSettings.CLAHE.Alpha);   % Distribution parameter, for 'rayleigh' and 'exponential'
 BatchOpt.showWaitbar = true;   % show or not the waitbar
 BatchOpt.id = obj.Id;   % optional, id
 
@@ -221,16 +221,16 @@ for colCh = 1:numel(colorChannel)
     end
 end
 
-log_text = ['CLAHE; NumTiles: ' num2str(obj.preferences.CLAHE.NumTiles) ';clipLimit: ' num2str(obj.preferences.CLAHE.ClipLimit)...
-    ';NBins:' num2str(obj.preferences.CLAHE.NBins) ';Distribution:' obj.preferences.CLAHE.Distribution ';Alpha:' num2str(obj.preferences.CLAHE.Alpha) ';ColCh:' num2str(colCh)];
+log_text = ['CLAHE; NumTiles: ' num2str(obj.sessionSettings.CLAHE.NumTiles) ';clipLimit: ' num2str(obj.sessionSettings.CLAHE.ClipLimit)...
+    ';NBins:' num2str(obj.sessionSettings.CLAHE.NBins) ';Distribution:' obj.sessionSettings.CLAHE.Distribution ';Alpha:' num2str(obj.sessionSettings.CLAHE.Alpha) ';ColCh:' num2str(colCh)];
 obj.I{BatchOpt.id}.updateImgInfo(log_text);
 
 % update preference settings
-obj.preferences.CLAHE.NumTiles = NumTiles;
-obj.preferences.CLAHE.ClipLimit = ClipLimit;
-obj.preferences.CLAHE.NBins = NBins;
-obj.preferences.CLAHE.Distribution = Distribution;
-obj.preferences.CLAHE.Alpha = Alpha;
+obj.sessionSettings.CLAHE.NumTiles = NumTiles;
+obj.sessionSettings.CLAHE.ClipLimit = ClipLimit;
+obj.sessionSettings.CLAHE.NBins = NBins;
+obj.sessionSettings.CLAHE.Distribution = Distribution;
+obj.sessionSettings.CLAHE.Alpha = Alpha;
 
 % notify the batch mode
 BatchOpt = rmfield(BatchOpt, 'id');     % remove id field

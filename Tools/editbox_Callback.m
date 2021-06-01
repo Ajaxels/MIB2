@@ -72,14 +72,14 @@ switch chtype
         template = '[-0-9]';
         err_str = 'This value should be a positive integer range for example: 1-6';
     case 'posintx2'
-        template = '[0-9;]';
+        template = '[0-9;,]';
         err_str = 'This value should be one or two positive integers separated with a semicolon';        
         
 end
 if ~strcmp(err_str,'')
     num = regexp(txt,template);
     if length(num) ~= length(txt)
-        msgbox(err_str,'Error!','error');
+        msgbox(err_str,'Error!', 'error');
         hObject.String = default_val;
         status = 0;
     end

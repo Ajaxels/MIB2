@@ -76,7 +76,7 @@ else    % virtual stacking mode
     obj.setData('image', img);
     
     % allocate memory for service layers
-    if obj.disableSelection == 0
+    if obj.enableSelection == 1
         if obj.modelType == 255
             obj.maskImg{1} = zeros([size(obj.img{1},1) size(obj.img{1},2) size(obj.img{1},4) size(obj.img{1},5)], 'uint8'); % bw filter data
             obj.selection{1} = zeros([size(obj.img{1},1) size(obj.img{1},2) size(obj.img{1},4) size(obj.img{1},5)], 'uint8'); % selection mask image

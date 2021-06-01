@@ -1,5 +1,5 @@
 function mibImg = mibImageDeepCopy(obj, fromId, toId)
-% function mibImg = mibImageDeepCopy(obj, fromId, toId)
+% function mibImg = mibImageDeepCopy(obj, fromId, toId, options)
 % copy mibImage class from one container to another; used in mibBufferToggleContext_Callback, duplicate
 % 
 % Parameters:

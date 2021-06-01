@@ -39,7 +39,7 @@ classdef mibImage < matlab.mixin.Copyable
         % default text for the annotations
         defaultAnnotationValue
         % default value for the annotations
-        disableSelection
+        enableSelection
         % a switch (0/1) to enable or not the selection, mask, model layers
         fixSelectionToMask
         % a switch indicating the value of the obj.mibView.handles.mibMaskedAreaCheck
@@ -213,7 +213,7 @@ classdef mibImage < matlab.mixin.Copyable
         
         bbShiftXY = addStack(obj, I2, shiftX, shiftY, options)  % Add I2 to mibImage and shift stacks according to shiftX, shiftY translation coefficients
         
-        clearContents(obj, img, metaIn, disableSelection)        % set all elements of the class to default values
+        clearContents(obj, img, metaIn, enableSelection)        % set all elements of the class to default values
         
         clearMask(obj, options)        % clear the 'Mask' layer. It is also possible to specify the area where the 'Mask' layer should be cleared
         
@@ -303,11 +303,13 @@ classdef mibImage < matlab.mixin.Copyable
         
         result = setPixelIdxList(obj, type, dataset, PixelIdxList, options)      % update dataset using a vector of values and pixel ids
         
+        shiftColorChannel(obj, channel1, dx, dy, fillValue, options)            % shift color channel
+        
         swapColorChannels(obj, channel1, channel2, options)        % Swap two color channels of the dataset
         
         result = swapSlices(obj, sliceNumberFrom, sliceNumberTo, orient, options)  % Swap specified slices 
         
-        newMode = switchVirtualStackingMode(obj, newMode, disableSelection)   % switch on/off the virtual stacking mode
+        newMode = switchVirtualStackingMode(obj, newMode, enableSelection)   % switch on/off the virtual stacking mode
         
         transpose(obj, new_orient)        % change orientation of the image to the XY, XZ, or YZ plane.
         

@@ -119,13 +119,13 @@ if nargin == 3  % batch mode
     end
 else
     %% the standard mode, when only the output file is provided
-    saveImageOptions.MaskColor = obj.preferences.maskcolor;
+    saveImageOptions.MaskColor = obj.preferences.Colors.MaskColor;
     fnOut = obj.I{BatchOpt.id}.saveMask(filename, saveImageOptions);
     return;
 end
 %% when used in standard mode with parameters
 if ~isfield(BatchOptIn, 'mibBatchTooltip')  % not using the batch mode
-    BatchOptIn.MaskColor = obj.preferences.maskcolor;
+    BatchOptIn.MaskColor = obj.preferences.Colors.MaskColor;
     fnOut = obj.I{BatchOpt.id}.saveMask(filename, BatchOptIn);
     return;
 end
@@ -163,7 +163,7 @@ saveImageOptions.DestinationDirectory = BatchOpt.DestinationDirectory;
 saveImageOptions.Saving3DPolicy = BatchOpt.Saving3DPolicy{1};
 saveImageOptions.showWaitbar = BatchOpt.showWaitbar;
 saveImageOptions.silent = true;
-saveImageOptions.MaskColor = obj.preferences.maskcolor;
+saveImageOptions.MaskColor = obj.preferences.Colors.MaskColor;
 [~, fn, ext] = fileparts(BatchOpt.Filename);
 ext = saveImageOptions.Format(strfind(saveImageOptions.Format, '*')+1:end-1);
 BatchOpt.Filename = [fn ext];

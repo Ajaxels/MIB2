@@ -131,7 +131,7 @@ obj.setData4D('image', imgOut, 4, 0, options);   % set dataset (image) back
 clear imgOut;
 
 % transpose other layers
-if obj.I{obj.Id}.modelType == 63 && obj.I{obj.Id}.disableSelection == 0
+if obj.I{obj.Id}.modelType == 63 && obj.I{obj.Id}.enableSelection == 1
     if showWaitbar; waitbar(0.5, wb, sprintf('Transposing other layers\nPlease wait...')); end
     img = obj.I{obj.Id}.model{1};  % get everything
     obj.I{obj.Id}.model{1} = zeros([outputDims(1), outputDims(2), outputDims(4), outputDims(5)], 'uint8');
@@ -139,7 +139,7 @@ if obj.I{obj.Id}.modelType == 63 && obj.I{obj.Id}.disableSelection == 0
         obj.setData3D('everything', transposeme(img(:,:,:,t), mode), t, 4, NaN, options);   % set dataset (everything) back
         if showWaitbar; waitbar(t/tMax, wb); end
     end
-elseif  obj.I{obj.Id}.disableSelection == 0
+elseif  obj.I{obj.Id}.enableSelection == 1
     % transpose selection layer
     if showWaitbar; waitbar(0.25, wb, sprintf('Transposing the selection layer\nPlease wait...')); end
     img = obj.I{obj.Id}.selection{1};  % get selection

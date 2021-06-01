@@ -443,7 +443,9 @@ classdef mibSnapshotController < matlab.mixin.Copyable
             elseif formatValue == 2
                 formatText = {'*.jpg', 'JPG format (*.jpg)'};
             elseif    formatValue == 3
-                formatText = {'*.tif', 'TIF format (*.tif)'};
+                formatText = {'*.png', 'PNG format (*.png)'};
+            elseif    formatValue == 4
+                formatText = {'*.tif', 'TIF format (*.tif)'};    
             end
             
             [FileName, PathName, FilterIndex] = ...
@@ -608,7 +610,7 @@ classdef mibSnapshotController < matlab.mixin.Copyable
                         warning('on','images:initSize:adjustingMag');
                         warning('on','MATLAB:print:DeprecateZbuffer');
                         % crop the frame
-                        %                     if obj.mibController.matlabVersion < 8.4
+                        %                     if verLessThan('matlab', '8.4') % obj.mibController.matlabVersion < 8.4
                         %                         img2 = img2(2:end-1, 2:end-1, :);
                         %                     end
                         % the resulting image is few pixels larger than the original one

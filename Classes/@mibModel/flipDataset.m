@@ -44,7 +44,7 @@ if strcmp(mode, 'Flip T')
     end
     
     % flip other layers
-    if obj.getImageProperty('modelType') == 63 && obj.I{obj.Id}.disableSelection == 0
+    if obj.getImageProperty('modelType') == 63 && obj.I{obj.Id}.enableSelection == 1
         if showWaitbar; waitbar(0.5, wb, sprintf('Flipping other layers\nPlease wait...')); end
         img = cell2mat(obj.getData4D('everything', 4, 0, options));   % get dataset (image)
         index = 1;
@@ -53,7 +53,7 @@ if strcmp(mode, 'Flip T')
             index = index + 1;
             if showWaitbar; waitbar(index/time, wb); end
         end
-    elseif obj.I{obj.Id}.disableSelection == 0
+    elseif obj.I{obj.Id}.enableSelection == 1
         % flip selection layer
         if showWaitbar; waitbar(0.25, wb, sprintf('Flipping the selection layer\nPlease wait...')); end
         img = cell2mat(obj.getData4D('selection', 4, 0, options));   % get dataset (image)
@@ -104,7 +104,7 @@ end
 % flip image
 for t=1:time
     img = cell2mat(obj.getData3D('image', t, 4, 0, options));   % get dataset (image)
-    %if handles.matlabVersion < 8.2
+    %if verLessThan('matlab', '8.2') % handles.matlabVersion < 8.2
     %    img = flipme(img, mode);
     %else
         img = flipmeR2013b(img, mode);
@@ -115,12 +115,12 @@ end
 clear img;
 
 % flip other layers
-if obj.getImageProperty('modelType') == 63 && obj.I{obj.Id}.disableSelection == 0
+if obj.getImageProperty('modelType') == 63 && obj.I{obj.Id}.enableSelection == 1
     if showWaitbar; waitbar(0.5, wb, sprintf('Flipping other layers\nPlease wait...')); end
 
     for t=1:time
         img = cell2mat(obj.getData3D('everything', t, 4, NaN, options));   % get dataset (image)
-        %if handles.matlabVersion < 8.2
+        %if verLessThan('matlab', '8.2') % handles.matlabVersion < 8.2
         %    img = flipme(img, mode);
         %else
             img = flipmeR2013b(img, mode);
@@ -128,12 +128,12 @@ if obj.getImageProperty('modelType') == 63 && obj.I{obj.Id}.disableSelection == 
         obj.setData3D('everything', img, t, 4, NaN, options);   % set dataset (image) back
         if showWaitbar; waitbar(t/time, wb); end
     end
-elseif obj.I{obj.Id}.disableSelection == 0
+elseif obj.I{obj.Id}.enableSelection == 1
     % flip selection layer
     if showWaitbar; waitbar(0.25, wb, sprintf('Flipping the selection layer\nPlease wait...')); end
     for t=1:time
         img = cell2mat(obj.getData3D('selection', t, 4, NaN, options));   % get dataset (image)
-        %if handles.matlabVersion < 8.2
+        %if verLessThan('matlab', '8.2') % handles.matlabVersion < 8.2
         %    img = flipme(img, mode);
         %else
             img = flipmeR2013b(img, mode);
@@ -147,7 +147,7 @@ elseif obj.I{obj.Id}.disableSelection == 0
         if showWaitbar; waitbar(0.5, wb, sprintf('Flipping the mask layer\nPlease wait...')); end
         for t=1:time
             img = cell2mat(obj.getData3D('mask', t, 4, NaN, options));   % get dataset (image)
-            %if handles.matlabVersion < 8.2
+            %if verLessThan('matlab', '8.2') % handles.matlabVersion < 8.2
             %    img = flipme(img, mode);
             %else
                 img = flipmeR2013b(img, mode);
@@ -162,7 +162,7 @@ elseif obj.I{obj.Id}.disableSelection == 0
         if showWaitbar; waitbar(0.75, wb, sprintf('Flipping the model layer\nPlease wait...')); end
         for t=1:time
             img = cell2mat(obj.getData3D('model', t, 4, NaN, options));   % get dataset (image)
-            %if handles.matlabVersion < 8.2
+            %if verLessThan('matlab', '8.2') % handles.matlabVersion < 8.2
             %    img = flipme(img, mode);
             %else
                 img = flipmeR2013b(img, mode);

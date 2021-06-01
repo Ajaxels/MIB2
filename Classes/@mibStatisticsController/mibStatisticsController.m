@@ -31,8 +31,6 @@ classdef mibStatisticsController < handle
         % a cell array with handles to listeners
         intType
         % index of the selected mode for the intensity mode
-        matlabVersion
-        % version of Matlab
         obj2DType
         % index of the selected mode for the object mode
         obj3DType
@@ -251,8 +249,6 @@ classdef mibStatisticsController < handle
             obj.runId = [];
             obj.anisotropicVoxelsAgree = 0;     % warning dialog was shown or not
             
-            obj.matlabVersion = ver('Matlab');
-            obj.matlabVersion = str2double(obj.matlabVersion.Version);
             obj.updateWidgets();
             
             obj.childControllers = {};    % initialize child controllers
@@ -473,34 +469,37 @@ classdef mibStatisticsController < handle
                         obj.mibModel.I{obj.mibModel.Id}.hLabels.clearContents();
                     end
                     
-                    addObjId = false;
-                    addMaterialName = false;
+                    if ~isfield(obj.mibModel.sessionSettings, 'StatToAnnotation')
+                        obj.mibModel.sessionSettings.StatToAnnotation.CustomText = ''; 
+                        obj.mibModel.sessionSettings.StatToAnnotation.AddMaterialName = false;
+                        obj.mibModel.sessionSettings.StatToAnnotation.AddObjId = false;
+                    end
+                    
                     materialName = '';
-                    customText = '';
                     if ~strcmp(parameter, 'removeLabel')
                         prompts = {'Custom text:'; 'Add material name to the label'; 'Add object Id to the label'};
-                        defAns = {''; false; false;};
+                        defAns = {obj.mibModel.sessionSettings.StatToAnnotation.CustomText; obj.mibModel.sessionSettings.StatToAnnotation.AddMaterialName; obj.mibModel.sessionSettings.StatToAnnotation.AddObjId;};
                         dlgTitle = 'Add annotation settings';
                         options.WindowStyle = 'normal';       
                         options.PromptLines = [1, 1, 1];   
                         options.Title = 'Annotation labels settings:'; 
                         answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end 
-                        customText = answer{1};
-                        addMaterialName = answer{2};
-                        addObjId = answer{3};
+                        obj.mibModel.sessionSettings.StatToAnnotation.CustomText = answer{1};
+                        obj.mibModel.sessionSettings.StatToAnnotation.AddMaterialName = logical(answer{2});
+                        obj.mibModel.sessionSettings.StatToAnnotation.AddObjId = logical(answer{3});
                     end
                     
                     property = obj.View.handles.Property.String{obj.View.handles.Property.Value};
-                    if ~isempty(customText); materialName = [customText '_' materialName]; end
+                    if ~isempty(obj.mibModel.sessionSettings.StatToAnnotation.CustomText); materialName = [obj.mibModel.sessionSettings.StatToAnnotation.CustomText '_' materialName]; end
                     
-                    if addMaterialName
+                    if obj.mibModel.sessionSettings.StatToAnnotation.AddMaterialName
                         materialName = [materialName obj.View.handles.Material.String{obj.View.handles.Material.Value} '_'];
                     end
                     colIds = unique(obj.indices(:,1));
                     labelList = repmat({[materialName property]}, [numel(colIds), 1]);
                     
-                    if addObjId     % add indices of objects
+                    if obj.mibModel.sessionSettings.StatToAnnotation.AddObjId     % add indices of objects
                         noDecimails = numel(num2str(max(data(obj.indices(:,1)))));
                         if noDecimails <= 2
                             labelList = cellfun(@(x, y) sprintf('%s_%.2d', x, y), labelList, num2cell(data(colIds, 1)), 'UniformOutput', false);
@@ -707,7 +706,7 @@ classdef mibStatisticsController < handle
                         'Perimeter','SecondAxisLength','Solidity'};
                     obj.View.handles.Property.Value = obj.obj2DType;
                 else
-                    if obj.matlabVersion >= 9.3
+                    if ~verLessThan('matlab', '9.3') % obj.matlabVersion >= 9.3
                         list ={'Volume', 'ConvexVolume', 'EndpointsLength','EquatorialEccentricity', 'EquivDiameter','Extent',...
                                'FilledArea','HolesArea','MajorAxisLength', 'MeridionalEccentricity','SecondAxisLength','Solidity',...
                                'SurfaceArea', 'ThirdAxisLength'};
@@ -961,7 +960,8 @@ classdef mibStatisticsController < handle
                     % move image-view to the object
                     objId = data(newIndex(1,1), 1);
                     pixelId = max([1 floor(numel(obj.STATS(objId).PixelIdxList)/2)]);
-                    obj.mibModel.I{obj.mibModel.Id}.moveView(obj.STATS(objId).PixelIdxList(pixelId));
+                    %obj.mibModel.I{obj.mibModel.Id}.moveView(obj.STATS(objId).PixelIdxList(pixelId));
+                    obj.mibModel.I{obj.mibModel.Id}.moveView(obj.STATS(objId).Centroid(1), obj.STATS(objId).Centroid(2));
                     
                     eventdata = ToggleEventData(data(newIndex(1,1), 3));
                     notify(obj.mibModel, 'updateLayerSlider', eventdata);

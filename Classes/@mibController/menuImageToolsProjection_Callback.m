@@ -233,7 +233,7 @@ logText = sprintf('%s-intensity projection, dim=%c', lower(BatchOpt.ProjectionTy
 if ~strcmp(BatchOpt.Dimension{1}, 'C'); viewPort = obj.mibModel.I{obj.mibModel.Id}.viewPort;   end
 if bufferId == obj.mibModel.Id
     if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
-        newMode = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(0, obj.mibModel.preferences.disableSelection);
+        newMode = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(0, obj.mibModel.preferences.System.EnableSelection);
         if isempty(newMode); if BatchOpt.showWaitbar; delete(wb); end; notify(obj.mibModel, 'stopProtocol'); return; end
     end
     setDataOptions.replaceDatasetSwitch = 1;    % force to replace dataset

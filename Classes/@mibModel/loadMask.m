@@ -103,17 +103,18 @@ if nargin == 3  % batch mode
     end
     batchModeSwitch = 1;    % indicates that the function is running in the batch mode
 else
-    [filename, BatchOpt.DirectoryName{1}] = uigetfile(...
+    [filename, BatchOpt.DirectoryName{1}] = mib_uigetfile(...
     {'*.mask;',  'Matlab format (*.mask)'; ...
     '*.am;',  'Amira mesh format (*.am)'; ...
     '*.h5',   'Hierarchical Data Format (*.h5)'; ...
     '*.tif;', 'TIF format (*.tif)'; ...
     '*.xml',   'Hierarchical Data Format with XML header (*.xml)'; ...
     '*.*', 'All Files (*.*)'}, ...
-    'Open mask data...',  BatchOpt.DirectoryName{1}, 'MultiSelect', 'on');        
+    'Open mask data...',  BatchOpt.DirectoryName{1}, 'on');        
 
     if isequal(filename, 0); return; end % check for cancel
     if ischar(filename); filename = cellstr(filename); end     % convert to cell type
+    filename = sort(filename);    % re-sort filenames to arrange as in dir
     
     batchModeSwitch = 0;    % indicates that the function is running in the gui mode
 end
@@ -128,8 +129,8 @@ if obj.I{BatchOpt.id}.Virtual.virtual == 1
 end
 
 % do nothing is selection is disabled
-if obj.I{BatchOpt.id}.disableSelection == 1
-    warndlg(sprintf('The mask layer is switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),...
+if obj.I{BatchOpt.id}.enableSelection == 0
+    warndlg(sprintf('The mask layer is switched off!\n\nPlease make sure that the "Enable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "yes" and try again...'),...
         'The models are disabled', 'modal');
     return; 
 end
@@ -180,7 +181,7 @@ if isempty(mask) % mask and BatchOpt were not provided, load mask from a file
             options.bioformatsCheck = 0;
             options.progressDlg = 0;
             options.id = obj.Id;   % id of the current dataset
-            options.BioFormatsMemoizerMemoDir = obj.preferences.dirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
+            options.BioFormatsMemoizerMemoDir = obj.preferences.ExternalDirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
             [mask, ~, ~] = mibLoadImages({fullfile(BatchOpt.DirectoryName{1}, filename{fnId})}, options);
             mask =  squeeze(mask);
             mask = uint8(mask>0);    % set masked areas as 1

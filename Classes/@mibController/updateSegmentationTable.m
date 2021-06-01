@@ -54,8 +54,8 @@ if obj.mibModel.I{obj.mibModel.Id}.modelType < 256
     colergen2 = @(color,text) ['<html><table border=0 width=300 color=',color,'><TR><TD>',text,'</TD></TR></table></html>'];
     for i=1:max_color+2
         if i==1         % Mask
-            tableData{i, 1} = colergen(sprintf('''rgb(%d, %d, %d)''', round(obj.mibModel.preferences.maskcolor(1)*255), ...
-                round(obj.mibModel.preferences.maskcolor(2)*255), round(obj.mibModel.preferences.maskcolor(3)*255)),'&nbsp;');  % rgb(0,255,0)
+            tableData{i, 1} = colergen(sprintf('''rgb(%d, %d, %d)''', round(obj.mibModel.preferences.Colors.MaskColor(1)*255), ...
+                round(obj.mibModel.preferences.Colors.MaskColor(2)*255), round(obj.mibModel.preferences.Colors.MaskColor(3)*255)),'&nbsp;');  % rgb(0,255,0)
             tableData{i, 2} = colergen2(sprintf('''rgb(%d, %d, %d)''', fontColor(1), fontColor(2), fontColor(3)), 'Mask');  
             %tableData{i, 2} = 'Mask';  
             tableData{i, 3} = false;
@@ -79,8 +79,8 @@ if obj.mibModel.I{obj.mibModel.Id}.modelType < 256
         end
     end
 else
-    tableData{1, 1} = colergen(sprintf('''rgb(%d, %d, %d)''', round(obj.mibModel.preferences.maskcolor(1)*255), ...
-        round(obj.mibModel.preferences.maskcolor(2)*255), round(obj.mibModel.preferences.maskcolor(3)*255)),'&nbsp;');  % rgb(0,255,0)
+    tableData{1, 1} = colergen(sprintf('''rgb(%d, %d, %d)''', round(obj.mibModel.preferences.Colors.MaskColor(1)*255), ...
+        round(obj.mibModel.preferences.Colors.MaskColor(2)*255), round(obj.mibModel.preferences.Colors.MaskColor(3)*255)),'&nbsp;');  % rgb(0,255,0)
     tableData{1, 2} = 'Mask';
     tableData{1, 3} = false;
     tableData{2, 1} = colergen(sprintf('''rgb(%d, %d, %d)''', 255, 255, 255),'&nbsp;');  % rgb(0,255,0)

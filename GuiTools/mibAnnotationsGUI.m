@@ -15,7 +15,7 @@ function varargout = mibAnnotationsGUI(varargin)
 
 % Edit the above text to modify the response to help mibAnnotationsGUI
 
-% Last Modified by GUIDE v2.5 28-Feb-2018 18:07:05
+% Last Modified by GUIDE v2.5 27-Apr-2021 16:49:44
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,16 +55,22 @@ repositionSwitch = 1; % reposition the figure, when creating a new figure
 handles.indices = [];
 
 handles.labelsTable_cm = uicontextmenu('Parent',handles.mibAnnotationsGUI);
-uimenu(handles.labelsTable_cm, 'Label', 'Jump to annotation', 'Callback', {@tableContextMenu_cb, 'Jump'});
-uimenu(handles.labelsTable_cm, 'Label', 'Add annotation...', 'Callback', {@tableContextMenu_cb, 'Add'});
-uimenu(handles.labelsTable_cm, 'Label', 'Rename selected annotations...', 'Callback', {@tableContextMenu_cb, 'Rename'});
-uimenu(handles.labelsTable_cm, 'Label', 'Batch modify selected annotations...', 'Callback', {@tableContextMenu_cb, 'Modify'});
-uimenu(handles.labelsTable_cm, 'Label', 'Count selected annotations', 'Callback', {@tableContextMenu_cb, 'Count'});
-uimenu(handles.labelsTable_cm, 'Label', 'Copy selected annotations to clipboard', 'Callback', {@tableContextMenu_cb, 'Clipboard'}, 'Separator', 'on');
-uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations...', 'Callback', {@tableContextMenu_cb, 'Export'});
-uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations to Imaris', 'Callback', {@tableContextMenu_cb, 'Imaris'});
-uimenu(handles.labelsTable_cm, 'Label', 'Delete selected annotation(s)...', 'Separator','on', 'Callback', {@tableContextMenu_cb, 'Delete'});
+m01 = uimenu(handles.labelsTable_cm, 'Label', 'Jump to annotation', 'Callback', {@tableContextMenu_cb, 'Jump'});
+m02 = uimenu(handles.labelsTable_cm, 'Label', 'Add annotation...', 'Callback', {@tableContextMenu_cb, 'Add'});
+m03 = uimenu(handles.labelsTable_cm, 'Label', 'Rename selected annotations...', 'Callback', {@tableContextMenu_cb, 'Rename'});
+m04 = uimenu(handles.labelsTable_cm, 'Label', 'Batch modify selected annotations...', 'Callback', {@tableContextMenu_cb, 'Modify'});
+m05 = uimenu(handles.labelsTable_cm, 'Label', 'Count selected annotations', 'Callback', {@tableContextMenu_cb, 'Count'});
+m06 = uimenu(handles.labelsTable_cm, 'Label', 'Copy selected annotations to clipboard', 'Callback', {@tableContextMenu_cb, 'Clipboard'}, 'Separator', 'on');
+m07 = uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations...', 'Callback', {@tableContextMenu_cb, 'Export'});
+m08 = uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations to Imaris', 'Callback', {@tableContextMenu_cb, 'Imaris'});
+m09 = uimenu(handles.labelsTable_cm, 'Label', 'Order', 'Separator','on');
+m09a = uimenu(handles.labelsTable_cm, 'Parent', m09, 'Label', 'Move to top  (Ctrl+Shift+Up)', 'Callback', {@tableContextMenu_cb, 'OrderTop'});
+m09b = uimenu(handles.labelsTable_cm, 'Parent', m09, 'Label', 'Move up (Ctrl+Up)', 'Callback', {@tableContextMenu_cb, 'OrderUp'});
+m09c = uimenu(handles.labelsTable_cm, 'Parent', m09, 'Label', 'Move down  (Ctrl+Down)', 'Callback', {@tableContextMenu_cb, 'OrderDown'});
+m09d = uimenu(handles.labelsTable_cm, 'Parent', m09, 'Label', 'Move to bottom (Ctrl+Shift+Down)', 'Callback', {@tableContextMenu_cb, 'OrderBottom'});
+m10 = uimenu(handles.labelsTable_cm, 'Label', 'Delete selected annotation(s)...', 'Separator','on', 'Callback', {@tableContextMenu_cb, 'Delete'});
 set(handles.annotationTable,'UIContextMenu',handles.labelsTable_cm);
+
 
 % update font and size
 global Font;
@@ -166,4 +172,28 @@ end
 
 function precisionEdit_Callback(hObject, eventdata, handles)
 handles.winController.precisionEdit_Callback();
+end
+
+
+% --- Executes on key press with focus on annotationTable and none of its controls.
+function annotationTable_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to annotationTable (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+if isempty(eventdata.Modifier); return; end
+
+if ismember(eventdata.Key, {'uparrow', 'downarrow'}) && ...
+        ismember('control', eventdata.Modifier)
+    handles.winController.annotationTable_KeyPressFcn(eventdata);
+end
+end
+
+
+% --- Executes on button press in settingsButton.
+function settingsButton_Callback(hObject, eventdata, handles)
+handles.winController.settingsBtn_Callback();
 end

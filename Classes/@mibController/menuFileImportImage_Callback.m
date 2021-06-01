@@ -30,7 +30,7 @@ if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
     if isempty(result) || result == 1; return; end
     
     % this code is ok when used from subcontrollers
-%     result = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(0, obj.mibModel.preferences.disableSelection);  % switch to the memory-resident mode
+%     result = obj.mibModel.I{obj.mibModel.Id}.switchVirtualStackingMode(0, obj.mibModel.preferences.System.EnableSelection);  % switch to the memory-resident mode
 %     if isempty(result) || result == 1
 %         return;
 %     end
@@ -224,10 +224,10 @@ if ~isempty(answer{2})
     end
     obj.mibModel.I{obj.mibModel.Id}.meta = containers.Map(keys(info), values(info));  % create a copy of the containers.Map
     if isa(info, 'containers.Map')
-        obj.mibModel.I{obj.mibModel.Id}.clearContents(img, obj.mibModel.I{obj.mibModel.Id}.meta, obj.mibModel.preferences.disableSelection);
+        obj.mibModel.I{obj.mibModel.Id}.clearContents(img, obj.mibModel.I{obj.mibModel.Id}.meta, obj.mibModel.preferences.System.EnableSelection);
     end
 else
-    obj.mibModel.I{obj.mibModel.Id}.clearContents(img, [], obj.mibModel.preferences.disableSelection);
+    obj.mibModel.I{obj.mibModel.Id}.clearContents(img, [], obj.mibModel.preferences.System.EnableSelection);
     obj.mibModel.I{obj.mibModel.Id}.updatePixSizeResolution();    % update pixels size, and resolution
     obj.mibModel.I{obj.mibModel.Id}.meta('Filename') = fullfile(obj.mibModel.myPath, 'import.tif');
 end
