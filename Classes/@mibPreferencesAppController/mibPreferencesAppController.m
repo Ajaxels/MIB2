@@ -1104,6 +1104,10 @@ classdef mibPreferencesAppController < handle
             
             folder_name = uigetdir(obj.preferences.ExternalDirs.(field_name), 'Select directory');
             if folder_name==0; return; end
+            % the two following commands are fix of sending the DeepMIB
+            % window behind main MIB window
+            drawnow;
+            figure(obj.View.gui);
             
             if strcmp(field_name, 'bm3dInstallationPath') || strcmp(field_name, 'bm4dInstallationPath')
                 answer = uiconfirm(obj.View.gui, ...

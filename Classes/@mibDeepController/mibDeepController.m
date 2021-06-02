@@ -945,7 +945,10 @@ classdef mibDeepController < handle
             end
             selpath = uigetdir(obj.BatchOpt.(fieldName), title);
             if selpath == 0; return; end
-            
+            % the two following commands are fix of sending the DeepMIB
+            % window behind main MIB window
+            drawnow;
+            figure(obj.View.gui);
             obj.BatchOpt.(fieldName) = selpath;
             obj.View.Figure.(fieldName).Value = selpath;
         end
