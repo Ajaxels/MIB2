@@ -253,13 +253,13 @@
 % </li>
 % <li><b>Compress processed images checkbox</b>, tick to compress the processed images. 
 % The processed images are stored in <em>*.mibImg</em> format that can be loaded in MIB. 
-% <em>*.mibImg</em> is a variation of standard Matlab format and can also be directly loaded into Matlab 
+% <em>*.mibImg</em> is a variation of standard MATLAB format and can also be directly loaded into MATLAB 
 % using similar to this command: <em>res = load('img01.mibImg, '-mat');</em>.
 % <br>
 % Compression of images slows down performance!</li>
 % <li><b>Compress processed models</b>, tick to compress models during preprocessing. 
 % The processed models are stored in <em>*.mibCat</em> format that can be loaded in MIB (<em>Menu->Models->Load model</em>). 
-% It is a variation of a standard Matlab format, where the model is encoded using categorical class of Matlab.
+% It is a variation of a standard MATLAB format, where the model is encoded using categorical class of MATLAB.
 % <br> 
 % Compression of models slows down performance but brings significant benefit of small file sizes</li>
 % <li><b>Use parallel processing</b>, when ticked DeepMIB is using multiple
@@ -430,7 +430,7 @@
 % </li>
 % <li><b>Export training plots</b> when ticked accuracy and loss scores are
 % saved to <em>3_Results\ScoreNetwork</em> directory. Deep MIB uses the
-% network filename as a template and generates a file in Matlab format
+% network filename as a template and generates a file in MATLAB format
 % (*.score) and several files in CSV format
 % </li>
 % <li><b>Random seed</b> set a seed for random number generator used during initialization of training. 
@@ -451,7 +451,7 @@
 % used.
 % <br><br>
 % Please note that by default DeepMIB is using a custom progress plot. If you want to use 
-% the progress plot provided with Matlab (available only in Matlab version
+% the progress plot provided with MATLAB (available only in MATLAB version
 % of MIB), navigate to <em>Options tab->Custom training plot->Custom
 % training progress window: uncheck</em><br>
 % The plot can be completely disabled to improve performance: 
@@ -549,12 +549,12 @@
 % dropdown located in the right-bottom corner of the <em>Evaluation
 % results</em> window:<br>
 % <img src='images\DeepLearning_Evaluation3.jpg'></li>
-% <li>The evaluation results can be exported to Matlab or
-% saved in Matlab, Excel or CSV 
+% <li>The evaluation results can be exported to MATLAB or
+% saved in MATLAB, Excel or CSV 
 % formats to <em>3_Results\PredictionImages\ResultsModels</em> directory, see more in the 
 % <em>Directories and Preprocessing</em> section above. 
 % <br>For details of the
-% metrics refer to Matlab documentation for <a
+% metrics refer to MATLAB documentation for <a
 % href="https://se.mathworks.com/help/vision/ref/evaluatesemanticsegmentation.html">evaluatesemanticsegmentation
 % function</a></li>
 % </ul>
@@ -576,7 +576,7 @@
 % name and input and output directories but excluding the actual trained network. 
 % Normally, these files are automatically 
 % created during the training process and stored next to the network <em>*.mibDeep</em> 
-% files also in Matlab format using the <em>*.mibCfg</em> extension.<br>
+% files also in MATLAB format using the <em>*.mibCfg</em> extension.<br>
 % Alternatively, the files can be saved manually by pressing the
 % <em>Save</em> button.
 % <br><br>
@@ -585,8 +585,8 @@
 % during training. 
 % <ul>
 % <li><b>Custom training progress plot</b>, when checked the custom
-% training plot is used, when unchecked a standard Matlab training plot is
-% displayed (<em>the standard Matlab plot is only available for Matlab version
+% training plot is used, when unchecked a standard MATLAB training plot is
+% displayed (<em>the standard MATLAB plot is only available for MATLAB version
 % of MIB<em>)
 % </li>
 % <li><b>Refresh rate</b>, update the plot after the specified number of
@@ -614,7 +614,7 @@
 % <ul>
 % <li><b>Reset 2D augnentation</b>, press to reset 2D augmentation settings to default values
 % </li>
-% <li><b>Export network to ONNX</b>, (<em>only Matlab version of MIB, requires installation 
+% <li><b>Export network to ONNX</b>, (<em>only MATLAB version of MIB, requires installation 
 % of ONNX Model Format support package</em>) converts the network file to
 % ONNX format. Please note that some of networks can't be converted yet.
 % </li>

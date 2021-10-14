@@ -45,7 +45,7 @@ switch filter_list{filter_val}
             if strcmp(button, 'Cancel'); return; end
         end
     case 'Perona Malik anisotropic diffusion'
-        obj.mibAnisotropicDiffusion('anisodiff');
+        obj.mibAnisotropicDiffusion('anisodiff', obj.mibModel.cpuParallelLimit);
         obj.plotImage(0);
         return;
 %     case {'Diplib: Perona Malik anisotropic diffusion','Diplib: Robust Anisotropic Diffusion','Diplib: Mean Curvature Diffusion',...

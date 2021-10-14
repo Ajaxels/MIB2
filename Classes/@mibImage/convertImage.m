@@ -341,9 +341,28 @@ elseif strcmp(format,'uint16')   % -> uint16
         return;
     end
     switch obj.meta('imgClass')
-        case 'uint16'
-            if options.showWaitbar; delete(wb); end
-            return;
+        case 'uint16'   % uint16 -> uint16, i.e. stretching contrast
+            from = obj.meta('imgClass');
+            if max(obj.viewPort.min) > 0 || max(obj.viewPort.max)<65535 || mean(obj.viewPort.gamma) ~= 1
+                maxIndex = size(obj.img{1}, 5) * size(obj.img{1}, 3) * size(obj.img{1}, 4);
+                index = 1;
+                
+                for t=1:size(obj.img{1}, 5)
+                    for c=1:size(obj.img{1}, 3)
+                        for z=1:size(obj.img{1}, 4)
+                            obj.img{1}(:,:,c,z,t) = imadjust(obj.img{1}(:,:,c,z,t), [obj.viewPort.min(c)/65535 obj.viewPort.max(c)/65535], [0 1], obj.viewPort.gamma(c));
+                            if options.showWaitbar; if mod(index,10)==0; waitbar(index/maxIndex, wb); end; end
+                            index = index + 1;
+                        end
+                    end
+                end
+                log_text = ['ContrastGamma: Min:' num2str(obj.viewPort.min') ', Max: ' num2str(obj.viewPort.max') ,...
+                    ', Gamma: ' num2str(obj.viewPort.gamma')];
+                log_text = regexprep(log_text,' +',' ');
+                obj.updateImgInfo(log_text);
+            else
+                return
+            end
         case 'uint8'       % uint8->uint16 
             from = obj.meta('imgClass');
             if max(obj.viewPort.min) > 0 || max(obj.viewPort.max)<255 || mean(obj.viewPort.gamma) ~= 1

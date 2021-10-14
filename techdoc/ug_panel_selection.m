@@ -83,7 +83,7 @@
 % dimension
 % 
 %%  *'Erode'* button
-% Press to perform binary erosion=shrinkage (|imerode| Matlab function) of the |Selection| 
+% Press to perform binary erosion=shrinkage (|imerode| MATLAB function) of the |Selection| 
 % layer with the Strel size defined in the |Strel| edit box. 
 % The erotion works also in 3D, check the |3D| check box.
 % To get result as a difference between
@@ -97,7 +97,7 @@
 % dimension
 %
 %%  *'Dilate'* button
-% Press to perform binary dilation (expansion) (|imdilate| Matlab function) of the |Selection| layer with the 
+% Press to perform binary dilation (expansion) (|imdilate| MATLAB function) of the |Selection| layer with the 
 % Strel size defined in the |Strel| edit box. To dilate in 3D check
 % the |3D| checkbox in the |Selection| panel. To get result as a difference between
 % the current and the dilated selections check the |difference| checkbox.

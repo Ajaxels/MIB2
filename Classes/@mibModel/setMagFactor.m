@@ -12,8 +12,8 @@ function setMagFactor(obj, magFactor, id)
 
 %| 
 % @b Examples:
-% @code obj.mibModel.getMagFactor(2);     // call from mibController: set current magFactor to 2 @endcode
-% @code obj.mibModel.getMagFactor(2, 4);     // call from mibController: set current magFactor to 2 for dataset 4 @endcode
+% @code obj.mibModel.setMagFactor(2);     // call from mibController: set current magFactor to 2 @endcode
+% @code obj.mibModel.setMagFactor(2, 4);     // call from mibController: set current magFactor to 2 for dataset 4 @endcode
 
 % Copyright (C) 10.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % 

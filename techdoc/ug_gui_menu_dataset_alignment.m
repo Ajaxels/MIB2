@@ -33,7 +33,7 @@
 %     <b>The Mode panel</b> - selection of alignment mode:
 %       <ul>
 %           <li><b>Current dataset</b>, align the opened dataset</li>
-%           <li><b>Two stacks</b>, align two stacks. The second stack can either be loaded or imported from Matlab</li>
+%           <li><b>Two stacks</b>, align two stacks. The second stack can either be loaded or imported from MATLAB</li>
 %       </ul>
 %   </li>
 %   <li>
@@ -64,7 +64,7 @@
 %       Use the Preview button to check the number and
 %       positions of the detected points.<br>
 %       Please refer to the documentation of the <a href="https://se.mathworks.com/help/vision/ref/matchfeatures.html">matchFeatures</a> function of
-%       Matlab for more details.
+%       MATLAB for more details.
 %       <br><br>
 %       Here some short description of features, adapted from this <a
 %       href="https://stackoverflow.com/questions/49963061/what-is-the-best-feature-detection">topic</a><br>
@@ -102,7 +102,7 @@
 %       <li>Use the <em>Median size</em> editbox to specify number of Z-section
 %       to be used for median smoothing</li>
 %       <li>Press the <em>Settings</em> button to set the parameters, refer to
-%       Matlab documentation for <a
+%       MATLAB documentation for <a
 %       href="https://se.mathworks.com/help/images/ref/imregtform.html">imregtform
 %       function</a> for details</li>
 %       </ul><br>
@@ -257,7 +257,7 @@
 %     is embedded into a single file
 %   </li>
 %   <li>
-%     <b>Import from Matlab</b>, if another stack is already open in Matlab
+%     <b>Import from MATLAB</b>, if another stack is already open in MATLAB
 %     it can be imported and aligned with the currently open.
 %   </li>
 %   <li>
@@ -272,7 +272,7 @@
 % The alignment algorithm is based on 
 % 
 % * JC Russ, The image processing handbook, CRC Press, Boca Raton, FL, 1994
-% * JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free Matlab Script For Spatial Drift Correction, Microscopy Today ? Volume 22, Number 5, 2014
+% * JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free MATLAB Script For Spatial Drift Correction, Microscopy Today ? Volume 22, Number 5, 2014
 % <https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m>
 % * <http://onlinedigeditions.com/publication/?i=223321&p=40 http://onlinedigeditions.com/publication/?i=223321&p=40>
 %

@@ -50,7 +50,7 @@
 %
 %% License for compiled application of Microscopy Image Browser
 % By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to the terms of the disclaimer below, 
-% the <http://mib.helsinki.fi/Matlab_MCR_license.txt Matlab Compiler Runtime (MCR) libraries license> and applicable parts of the MathWorks, Inc. 
+% the <http://mib.helsinki.fi/Matlab_MCR_license.txt MATLAB Compiler Runtime (MCR) libraries license> and applicable parts of the MathWorks, Inc. 
 % <http://mib.helsinki.fi/Matlab_license.txt Software License Agreement>.
 % The corresponding license files are also included into the MIB distribution
 % under techdoc directory.
@@ -94,7 +94,7 @@
 % <tr style="">
 %   <td style="font-weight: bold">Accurate Fast Marching</td>
 %   <td>Dirk-Jan Kroon, University of Twente</td>
-%   <td><a href="http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2011</td>
 %   <td>0.x-2.x</td>
 % </tr>
@@ -115,14 +115,14 @@
 % <tr style="">
 %   <td style="font-weight: bold">bwdistsc, 3D Euclidean distance transform for variable data aspect ratio</td>
 %   <td>Yuriy Mishchenko, Toros University</td>
-%   <td><a href="http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2007-2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Cell migration in scratch wound assays</td>
 %   <td>Constantino Carlos Reyes-Aldasoro, City, University of London</td>
-%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays">via Matlab Exchange</a></td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays">via MATLAB Exchange</a></td>
 %   <td>GPL3,<br> 2018</td>
 %   <td>2.65-</td>
 % </tr>
@@ -130,7 +130,7 @@
 %   <td style="font-weight: bold">Drag & Drop functionality for JAVA GUI components</td>
 %   <td>Maarten van der Seijs<br>
 %   Delft University of Technology, the Netherlands</td>
-%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/53511-drag-drop-functionality-for-java-gui-components">via Matlab Exchange</a></td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/53511-drag-drop-functionality-for-java-gui-components">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2015</td>
 %   <td>2.61-</td>
 % </tr>
@@ -147,28 +147,28 @@
 %   <td style="font-weight: bold">drifty_shifty_deluxe</td>
 %   <td>Joshua D. Sugar<br>
 %   Sandia National Laboratories, Livermore, CA</td>
-%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m">via Matlab Exchange</a></td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m">via MATLAB Exchange</a></td>
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/view_license?file_info_id=45453">Custom</a>,<br> 2014</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Export_fig</td>
 %   <td>Oliver Woodford and Yair Altman</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig">via MATLAB Exchange</a></td>
 %   <td>ModifiedBSD,<br>2014-2015</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Extrema functions</td>
 %   <td>Carlos Adrian Vargas Aguilera, Universidad de Guadalajara</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/12275-extrema-m-extrema2-m">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/12275-extrema-m-extrema2-m">via MATLAB Exchange</a></td>
 %   <td>ND,<br> 2006-2007</td>
 %   <td>0.x-1.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Fast 3D/2D Region Growing (MEX)</td>
 %   <td>Christian Wuerslin, Stanford University</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/41666-fast-3d-2d-region-growing--mex-">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/41666-fast-3d-2d-region-growing--mex-">via MATLAB Exchange</a></td>
 %   <td>ModifiedBSD,<br> 2013-2015</td>
 %   <td>0.x-2.x</td>
 % </tr>
@@ -177,42 +177,42 @@
 %              <div style="font-weight: normal;">used in MIB 1.22 and earlier</div>
 %   </td>
 %   <td>Dirk-Jan Kroon, University of Twente</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/24925-fastrobust-template-matching">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/24925-fastrobust-template-matching">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2009-2011</td>
 %   <td>0.x-1.22</td>
 % </tr>
 % <tr style="">
-%   <td style="font-weight: bold">FindJObj - find java handles of Matlab graphic objects</td>
+%   <td style="font-weight: bold">FindJObj - find java handles of MATLAB graphic objects</td>
 %   <td>Yair Altman</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/14317-findjobj-find-java-handles-of-matlab-graphic-objects">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/14317-findjobj-find-java-handles-of-matlab-graphic-objects">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2007-2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">fstack - extended depth-of-field image</td>
 %   <td>Said Pertuz, Universitat Rovira i Virgili, Tarragona, Spain</td>
-%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/55115-extended-depth-of-field">via Matlab Exchange</a></td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/55115-extended-depth-of-field">via MATLAB Exchange</a></td>
 %   <td>ModifiedBSD,<br> 2013</td>
 %   <td>2.51-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Hardware accelerated 3D viewer for MATLAB</td>
 %   <td>Jean-Yves Tinevez, Institut Pasteur</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/32344-hardware-accelerated-3d-viewer-for-matlab">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/32344-hardware-accelerated-3d-viewer-for-matlab">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2011</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Hessian based Frangi Vesselness filter</td>
 %   <td>Marc Schrijver and Dirk-Jan Kroon, University of Twente</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2001-2009</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Highly portable JSON-input parser</td>
 %   <td>Nedialko</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser">via MATLAB Exchange</a></td>
 %   <td>GPL,<br> 2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
@@ -233,42 +233,42 @@
 % <tr style="">
 %   <td style="font-weight: bold">Image Edge Enhancing Coherence Filter</td>
 %   <td>Dirk-Jan Kroon, Pascal Getreuer University of Twente</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2009</td>
 %   <td>0.x-1.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Image Measurement Utility</td>
 %   <td>Jan Neggers, Eindhoven Univeristy of Technology</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2009-2014</td>
 %   <td>1.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">ImageViewer</td>
 %   <td>Jiro Doke, Mathworks</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer">via MATLAB Exchange</a></td>
 %   <td>ModifiedBSD,<br> 2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">ImClipboard</td>
 %   <td>Jiro Doke, MathWorks</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard">via MATLAB Exchange</a></td>
 %   <td>ModifiedBSD,<br> 2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">ImGaussian</td>
 %   <td>Dirk-Jan Kroon, University of Twente</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25397-imgaussian">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25397-imgaussian">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2009</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Local Normalization</td>
 %   <td>Guanglei Xiong at Tsinghua University, Beijing</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/8303-local-normalization">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/8303-local-normalization">via MATLAB Exchange</a></td>
 %   <td>ND,<br> 2005</td>
 %   <td>0.x-1.x</td>
 % </tr>
@@ -294,9 +294,9 @@
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
-%   <td style="font-weight: bold">MAXFLOW/MINCUT Matlab wrapper</td>
+%   <td style="font-weight: bold">MAXFLOW/MINCUT MATLAB wrapper</td>
 %   <td>Michael Rubinstein, Google</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2008</td>
 %   <td>0.x-2.x</td>
 % </tr>
@@ -308,35 +308,35 @@
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
-%   <td style="font-weight: bold">MIJ: Running ImageJ and Fiji within Matlab</td>
+%   <td style="font-weight: bold">MIJ: Running ImageJ and Fiji within MATLAB</td>
 %   <td>Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin, EPFL Lausanne</td>
-%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/47545-mij-running-imagej-and-fiji-within-matlab">via Matlab Exchange</a></td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/47545-mij-running-imagej-and-fiji-within-matlab">via MATLAB Exchange</a></td>
 %   <td>ModifiedBSD,<br>2012-2017</td>
 %   <td>2.6-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">MTOC++</td>
 %   <td>Martin Drohmann (Universit?t M?nster), Daniel Wirtz (Universit?t Stuttgart)</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2011-2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">NRRD Format File Reader</td>
 %   <td>Jeff Mather, the MathWorks, Inc.</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/34653-nrrd-format-file-reader">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/34653-nrrd-format-file-reader">via MATLAB Exchange</a></td>
 %   <td>ModifiedBSD,<br>2012</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">NRRD NHDR reader and writer</td>
 %   <td> Gaetan Rensonnet, Ecole polytechnique federale de Lausanne and Universite catholique de Louvain</td>
-%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/66645-nrrd-nhdr-reader-and-writer">via Matlab Exchange</a></td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/66645-nrrd-nhdr-reader-and-writer">via MATLAB Exchange</a></td>
 %   <td><a href="http://mib.helsinki.fi/help/NRRD NHDR reader and writer_license.txt">CustomBSD</a><br>2018</td>
 %   <td>2.7-</td>
 % </tr>
 % <tr style="">
-%   <td style="font-weight: bold">OMERO Matlab bindings</td>
+%   <td style="font-weight: bold">OMERO MATLAB bindings</td>
 %   <td>The Open Microscopy Environment</td>
 %   <td><a href="https://www.openmicroscopy.org/omero/">OME website</a></td>
 %   <td>GPL,<br>2019</td>
@@ -345,7 +345,7 @@
 % <tr style="">
 %   <td style="font-weight: bold">Patch Normals</td>
 %   <td>Dirk-Jan Kroon, University of Twente</td>
-%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/24330-patch-normals">via Matlab Exchange</a></td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/24330-patch-normals">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2009</td>
 %   <td>2.22-</td>
 % </tr>
@@ -357,7 +357,7 @@
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
-%   <td style="font-weight: bold">Random Forest Matlab</td>
+%   <td style="font-weight: bold">Random Forest MATLAB</td>
 %   <td>Abhishek Jaiantilal</td>
 %   <td><a href="https://code.google.com/p/randomforest-matlab/">web link</a></td>
 %   <td>GPL,<br> 2012</td>
@@ -366,28 +366,28 @@
 % <tr style="">
 %   <td style="font-weight: bold">Region Adjacency Graph (RAG)</td>
 %   <td>David Legland, INRA, France</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2007-2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">RegionProps3</td>
 %   <td>Chaoyuan Yeh</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/authors/393471">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/authors/393471">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2014</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Render</td>
 %   <td>Dirk-Jan Kroon, Focal Machine Vision en Optical Systems</td>
-%   <td><a href="http://se.mathworks.com/matlabcentral/fileexchange/21993-viewer3d">via Matlab Exchange</a></td>
+%   <td><a href="http://se.mathworks.com/matlabcentral/fileexchange/21993-viewer3d">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2008-2011</td>
 %   <td>1.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Render RGB text over RGB or Grayscale Image</td>
 %   <td>Davide Di Gloria, Universita di Genova</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/26940-render-rgb-text-over-rgb-or-grayscale-image">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/26940-render-rgb-text-over-rgb-or-grayscale-image">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
@@ -403,56 +403,56 @@
 % <tr style="">
 %   <td style="font-weight: bold">STLWRITE</td>
 %   <td>Sven Holcombe, University of Michigan</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/20922-stlwrite-filename--varargin-">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/20922-stlwrite-filename--varargin-">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2008-2015</td>
 %   <td>1.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">STRUCT2XML</td>
 %   <td>Wouter Falkena, Delft University of Technology</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28639-struct2xml">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28639-struct2xml">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">UIGETFILE_N_DIR</td>
 %   <td>Tiago / Peugas</td>
-%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/32555-uigetfile_n_dir-select-multiple-files-and-directories">via Matlab Exchange</a></td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/32555-uigetfile_n_dir-select-multiple-files-and-directories">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2011</td>
 %   <td>2.6-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">VIEW3D</td>
 %   <td>Torsten Vogel</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 1999</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">VIOLIN</td>
 %   <td>Holger Hoffmann</td>
-%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/45134-violin-plot">via Matlab Exchange</a></td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/45134-violin-plot">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br>2015</td>
 %   <td>2.65-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">XLWRITE: Generate XLS(X) files without Excel on Mac/Linux/Win</td>
 %   <td>Alec de Zegher, NV Bekaert SA</td>
-%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/38591-xlwrite--generate-xls-x--files-without-excel-on-mac-linux-win">via Matlab Exchange</a></td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/38591-xlwrite--generate-xls-x--files-without-excel-on-mac-linux-win">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2013</td>
 %   <td>2.1-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">XLSWRITE (improved)</td>
 %   <td>Barry Dillon, AON Insurance Brokers</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/27236-improved-xlswrite-m">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/27236-improved-xlswrite-m">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">XML2STRUCT</td>
 %   <td>Wouter Falkena, Delft University of Technology</td>
-%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28518-xml2struct">via Matlab Exchange</a></td>
+%   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28518-xml2struct">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2010</td>
 %   <td>0.x-2.x</td>
 % </tr>

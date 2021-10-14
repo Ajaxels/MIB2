@@ -14,6 +14,7 @@ function mask = mibGetStrelMask(img, Options)
 %  - .all_sw -> indicates full stack or single layer
 %  - .orientation -> indicates dimension for 2d iterations, 1-for XZ, 2 - YZ, 4  -XY
 %  - .currentIndex -> index of the current slice
+%  - .cpuParallelLimit -> number of CPU available for parallel processing
 %
 % Return values:
 % mask: generated mask image [1:height,1:width,1:no_stacks], (0/1);
@@ -109,7 +110,7 @@ else    % apply filter slice by slice in 2d
     wb = waitbar(0,'Generating Strel 2d filtered mask...','WindowStyle','modal');
     se = strel('disk',Options.se_size(1), 0); % create a structural element
     if Options.orientation == 4     % xy plane
-        parfor layer=start_no:end_no
+        parfor (layer=start_no:end_no, Options.cpuParallelLimit)
             if blackwhite       % background is white
                 result = imbothat(img(:,:,:,layer),se);
             else                % background is black
@@ -123,7 +124,7 @@ else    % apply filter slice by slice in 2d
             mask(:,:,layer) = bw;
         end
     elseif Options.orientation == 1     % xz plane
-        parfor layer=start_no:end_no
+        parfor (layer=start_no:end_no, Options.cpuParallelLimit)
             if blackwhite       % background is white
                 result = im2bw(imbothat(squeeze(img(layer,:,:,:)),se),bwthreshold);
             else                % background is black
@@ -136,7 +137,7 @@ else    % apply filter slice by slice in 2d
             mask(layer,:,:) = bw;
         end
     elseif Options.orientation == 2     % yz plane
-        parfor layer=start_no:end_no
+        parfor (layer=start_no:end_no, Options.cpuParallelLimit)
             if blackwhite       % background is white
                 result = im2bw(imbothat(squeeze(img(:,layer,:,:)),se),bwthreshold);
             else                % background is black

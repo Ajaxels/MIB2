@@ -864,6 +864,7 @@ classdef mibAlignmentController < handle
                     return;
                 elseif strcmp(parameters.method, 'AMST: median-smoothed template')
                     parameters.detectPointsType = obj.BatchOpt.FeatureDetectorType{1};
+                    parameters.cpuParallelLimit = obj.mibModel.cpuParallelLimit;
                     %parameters.automaticOptions = obj.automaticOptions;
                     obj.AlignMedianSmoothTemplate(parameters);  % external file
                     return;
@@ -2547,25 +2548,27 @@ classdef mibAlignmentController < handle
                         %                             Rin.YWorldLimits = Rin.YWorldLimits-mean(Rin.YWorldLimits);
                         %                             out = imwarp(A,Rin,tform);
                         
-                        if obj.mibModel.I{obj.mibModel.Id}.modelType == 63
-                            I = cell2mat(obj.mibModel.getData2D('everything', layer, 4, NaN, optionsGetData));
-                            I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
-                            obj.mibModel.setData2D('everything', I, layer, 4, NaN, optionsGetData);
-                        else
-                            if obj.mibModel.getImageProperty('modelExist')
-                                I = cell2mat(obj.mibModel.getData2D('model', layer, 4, NaN, optionsGetData));
+                        if obj.mibModel.preferences.System.EnableSelection == 1     % correct selection, model, mask layers
+                            if obj.mibModel.I{obj.mibModel.Id}.modelType == 63
+                                I = cell2mat(obj.mibModel.getData2D('everything', layer, 4, NaN, optionsGetData));
                                 I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
-                                obj.mibModel.setData2D('model', I, layer, 4, NaN, optionsGetData);
-                            end
-                            if obj.mibModel.getImageProperty('maskExist')
-                                I = cell2mat(obj.mibModel.getData2D('mask', layer, 4, NaN, optionsGetData));
-                                I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
-                                obj.mibModel.setData2D('mask', I, layer, 4, NaN, optionsGetData);
-                            end
-                            if  ~isnan(obj.mibModel.I{obj.mibModel.Id}.selection{1}(1))
-                                I = cell2mat(obj.mibModel.getData2D('selection', layer, 4, NaN, optionsGetData));
-                                I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
-                                obj.mibModel.setData2D('selection', I, layer, 4, NaN, optionsGetData);
+                                obj.mibModel.setData2D('everything', I, layer, 4, NaN, optionsGetData);
+                            else
+                                if obj.mibModel.getImageProperty('modelExist')
+                                    I = cell2mat(obj.mibModel.getData2D('model', layer, 4, NaN, optionsGetData));
+                                    I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
+                                    obj.mibModel.setData2D('model', I, layer, 4, NaN, optionsGetData);
+                                end
+                                if obj.mibModel.getImageProperty('maskExist')
+                                    I = cell2mat(obj.mibModel.getData2D('mask', layer, 4, NaN, optionsGetData));
+                                    I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
+                                    obj.mibModel.setData2D('mask', I, layer, 4, NaN, optionsGetData);
+                                end
+                                if  ~isnan(obj.mibModel.I{obj.mibModel.Id}.selection{1}(1))
+                                    I = cell2mat(obj.mibModel.getData2D('selection', layer, 4, NaN, optionsGetData));
+                                    I = imwarp(I, tformMatrix{layer}, 'nearest', 'OutputView', refImgSize, 'FillValues', 0);
+                                    obj.mibModel.setData2D('selection', I, layer, 4, NaN, optionsGetData);
+                                end
                             end
                         end
                         
@@ -2637,28 +2640,10 @@ classdef mibAlignmentController < handle
                 obj.mibModel.setData4D('image', Iout);
                 
                 % aligning the model
-                if obj.mibModel.I{obj.mibModel.Id}.modelType == 63
-                    Iout = zeros([nHeight, nWidth, numel(rbMatrix)], class(I));
-                    Model = cell2mat(obj.mibModel.getData4D('everything', 4, NaN, optionsGetData));
-                    for layer=1:Depth
-                        if ~isempty(tformMatrix{layer})
-                            I = imwarp(Model(:,:,layer), tformMatrix{layer}, 'nearest', 'FillValues', 0);
-                        else
-                            I = Model(:,:,layer);
-                        end
-                        x1 = xmin(layer)-dx+1;
-                        x2 = x1 + rbMatrix{layer}.ImageSize(2)-1;
-                        y1 = ymin(layer)-dy+1;
-                        y2 = y1 + rbMatrix{layer}.ImageSize(1)-1;
-                        Iout(y1:y2,x1:x2,layer) = I;
-                        if obj.BatchOpt.showWaitbar; waitbar((layer+Depth*3)/(Depth*4), parameters.waitbar, sprintf('Step 4: Assembling transformed models\nPlease wait...')); end
-                    end
-                    obj.mibModel.setData4D('everything', Iout, NaN, NaN, optionsGetData);
-                else
-                    % aligning the model layer
-                    if obj.mibModel.getImageProperty('modelExist')
+                if obj.mibModel.preferences.System.EnableSelection == 1
+                    if obj.mibModel.I{obj.mibModel.Id}.modelType == 63
                         Iout = zeros([nHeight, nWidth, numel(rbMatrix)], class(I));
-                        Model = cell2mat(obj.mibModel.getData4D('model', 4, NaN, optionsGetData));
+                        Model = cell2mat(obj.mibModel.getData4D('everything', 4, NaN, optionsGetData));
                         for layer=1:Depth
                             if ~isempty(tformMatrix{layer})
                                 I = imwarp(Model(:,:,layer), tformMatrix{layer}, 'nearest', 'FillValues', 0);
@@ -2670,47 +2655,67 @@ classdef mibAlignmentController < handle
                             y1 = ymin(layer)-dy+1;
                             y2 = y1 + rbMatrix{layer}.ImageSize(1)-1;
                             Iout(y1:y2,x1:x2,layer) = I;
-                            if obj.BatchOpt.showWaitbar; waitbar((layer+Depth*3)/(Depth*4), parameters.waitbar, sprintf('Step 4: Assembling transformed model\nPlease wait...')); end
+                            if obj.BatchOpt.showWaitbar; waitbar((layer+Depth*3)/(Depth*4), parameters.waitbar, sprintf('Step 4: Assembling transformed models\nPlease wait...')); end
                         end
-                        obj.mibModel.setData4D('model', Iout, 4, NaN, optionsGetData);
-                    end
-                    % aligning the mask layer
-                    if obj.mibModel.getImageProperty('maskExist')
-                        Iout = zeros([nHeight, nWidth, numel(rbMatrix)], class(I));
-                        Model = cell2mat(obj.mibModel.getData4D('mask', 4, NaN, optionsGetData));
-                        for layer=1:Depth
-                            if ~isempty(tformMatrix{layer})
-                                I = imwarp(Model(:,:,layer), tformMatrix{layer}, 'nearest', 'FillValues', 0);
-                            else
-                                I = Model(:,:,layer);
+                        obj.mibModel.setData4D('everything', Iout, NaN, NaN, optionsGetData);
+                    else
+                        % aligning the model layer
+                        if obj.mibModel.getImageProperty('modelExist')
+                            Iout = zeros([nHeight, nWidth, numel(rbMatrix)], class(I));
+                            Model = cell2mat(obj.mibModel.getData4D('model', 4, NaN, optionsGetData));
+                            for layer=1:Depth
+                                if ~isempty(tformMatrix{layer})
+                                    I = imwarp(Model(:,:,layer), tformMatrix{layer}, 'nearest', 'FillValues', 0);
+                                else
+                                    I = Model(:,:,layer);
+                                end
+                                x1 = xmin(layer)-dx+1;
+                                x2 = x1 + rbMatrix{layer}.ImageSize(2)-1;
+                                y1 = ymin(layer)-dy+1;
+                                y2 = y1 + rbMatrix{layer}.ImageSize(1)-1;
+                                Iout(y1:y2,x1:x2,layer) = I;
+                                if obj.BatchOpt.showWaitbar; waitbar((layer+Depth*3)/(Depth*4), parameters.waitbar, sprintf('Step 4: Assembling transformed model\nPlease wait...')); end
                             end
-                            x1 = xmin(layer)-dx+1;
-                            x2 = x1 + rbMatrix{layer}.ImageSize(2)-1;
-                            y1 = ymin(layer)-dy+1;
-                            y2 = y1 + rbMatrix{layer}.ImageSize(1)-1;
-                            Iout(y1:y2,x1:x2,layer) = I;
-                            if obj.BatchOpt.showWaitbar; waitbar((layer+Depth*3)/(Depth*4), parameters.waitbar, sprintf('Step 4: Assembling transformed mask\nPlease wait...')); end
+                            obj.mibModel.setData4D('model', Iout, 4, NaN, optionsGetData);
                         end
-                        obj.mibModel.setData4D('mask', Iout, 4, NaN, optionsGetData);
-                    end
-                    % aligning the selection layer
-                    if  ~isnan(obj.mibModel.I{obj.mibModel.Id}.selection{1}(1))
-                        Iout = zeros([nHeight, nWidth, numel(rbMatrix)], class(I));
-                        Model = cell2mat(obj.mibModel.getData4D('selection', 4, NaN, optionsGetData));
-                        for layer=1:Depth
-                            if ~isempty(tformMatrix{layer})
-                                I = imwarp(Model(:,:,layer), tformMatrix{layer}, 'nearest', 'FillValues', 0);
-                            else
-                                I = Model(:,:,layer);
+                        % aligning the mask layer
+                        if obj.mibModel.getImageProperty('maskExist')
+                            Iout = zeros([nHeight, nWidth, numel(rbMatrix)], class(I));
+                            Model = cell2mat(obj.mibModel.getData4D('mask', 4, NaN, optionsGetData));
+                            for layer=1:Depth
+                                if ~isempty(tformMatrix{layer})
+                                    I = imwarp(Model(:,:,layer), tformMatrix{layer}, 'nearest', 'FillValues', 0);
+                                else
+                                    I = Model(:,:,layer);
+                                end
+                                x1 = xmin(layer)-dx+1;
+                                x2 = x1 + rbMatrix{layer}.ImageSize(2)-1;
+                                y1 = ymin(layer)-dy+1;
+                                y2 = y1 + rbMatrix{layer}.ImageSize(1)-1;
+                                Iout(y1:y2,x1:x2,layer) = I;
+                                if obj.BatchOpt.showWaitbar; waitbar((layer+Depth*3)/(Depth*4), parameters.waitbar, sprintf('Step 4: Assembling transformed mask\nPlease wait...')); end
                             end
-                            x1 = xmin(layer)-dx+1;
-                            x2 = x1 + rbMatrix{layer}.ImageSize(2)-1;
-                            y1 = ymin(layer)-dy+1;
-                            y2 = y1 + rbMatrix{layer}.ImageSize(1)-1;
-                            Iout(y1:y2,x1:x2,layer) = I;
-                            if obj.BatchOpt.showWaitbar; waitbar((layer+Depth*3)/(Depth*4), parameters.waitbar, sprintf('Step 4: Assembling transformed selection\nPlease wait...')); end
+                            obj.mibModel.setData4D('mask', Iout, 4, NaN, optionsGetData);
                         end
-                        obj.mibModel.setData4D('selection', Iout, 4, NaN, optionsGetData);
+                        % aligning the selection layer
+                        if  ~isnan(obj.mibModel.I{obj.mibModel.Id}.selection{1}(1))
+                            Iout = zeros([nHeight, nWidth, numel(rbMatrix)], class(I));
+                            Model = cell2mat(obj.mibModel.getData4D('selection', 4, NaN, optionsGetData));
+                            for layer=1:Depth
+                                if ~isempty(tformMatrix{layer})
+                                    I = imwarp(Model(:,:,layer), tformMatrix{layer}, 'nearest', 'FillValues', 0);
+                                else
+                                    I = Model(:,:,layer);
+                                end
+                                x1 = xmin(layer)-dx+1;
+                                x2 = x1 + rbMatrix{layer}.ImageSize(2)-1;
+                                y1 = ymin(layer)-dy+1;
+                                y2 = y1 + rbMatrix{layer}.ImageSize(1)-1;
+                                Iout(y1:y2,x1:x2,layer) = I;
+                                if obj.BatchOpt.showWaitbar; waitbar((layer+Depth*3)/(Depth*4), parameters.waitbar, sprintf('Step 4: Assembling transformed selection\nPlease wait...')); end
+                            end
+                            obj.mibModel.setData4D('selection', Iout, 4, NaN, optionsGetData);
+                        end
                     end
                 end
                 

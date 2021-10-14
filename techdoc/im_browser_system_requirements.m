@@ -3,35 +3,35 @@
 % *Back to* <im_browser_product_page.html *Index*>
 %
 %% Computer
-% Microscopy Image Browser is a program written under Matlab environment and it
-% was tested to work under Windows/Linux/Mac installation of Matlab.
+% Microscopy Image Browser is a program written under MATLAB environment and it
+% was tested to work under Windows/Linux/Mac installation of MATLAB.
 %
 %
 % In addition compiled (standalone) versions of MIB are available for Windows and Mac 64-bit OS. 
-% The standalone versions of MIB may not have complete functionality of the original program but do not require to purchase Matlab license. 
+% The standalone versions of MIB may not have complete functionality of the original program but do not require to purchase MATLAB license. 
 % The standalone MIB requires
 % <http://www.mathworks.se/products/compiler/mcr/ MATLAB Compiler Runtime
 % (MCR)> that will be automatically installed during installation. 
 %
 % It is highly recommended to use 64-bit operating system with sufficient amount of memory.
 %% MATLAB
-% *MATLAB, Release 2014b*, (original MIB version 2.00; the newer versions of MIB may require R2017a or newer). MIB was tested with Matlab R2014b - R2020a.
+% *MATLAB, Release 2014b*, (original MIB version 2.00; the newer versions of MIB may require R2017a or newer). MIB was tested with MATLAB R2014b - R2020a.
 % 
 %% Toolboxes
 %%
 %
 % * <http://www.mathworks.com/products/image/ *Image Processing Toolbox*>, V7.0 (R2010a) or newer is _*REQUIRED*_
 % * <https://se.mathworks.com/products/parallel-computing.html *Parallel Computing Toolbox*>, R2019b or newer is _*recommended*_
-% * <https://se.mathworks.com/products/computer-vision.html *Computer Vision Toolbox*>, (*required for DeepMIB*, Matlab R2019b and newer) for training of 2D, 3D CNNs and segmentation of datasets
-% * <https://se.mathworks.com/products/deep-learning.html *Deep Learning Toolbox*>, (*required for DeepMIB*, Matlab R2019b and newer) for training of 2D, 3D CNNs and segmentation of datasets
+% * <https://se.mathworks.com/products/computer-vision.html *Computer Vision Toolbox*>, (*required for DeepMIB*, MATLAB R2019b and newer) for training of 2D, 3D CNNs and segmentation of datasets
+% * <https://se.mathworks.com/products/deep-learning.html *Deep Learning Toolbox*>, (*required for DeepMIB*, MATLAB R2019b and newer) for training of 2D, 3D CNNs and segmentation of datasets
 % * <http://se.mathworks.com/products/statistics/ Statistics and Machine Learning Toolbox> (_optional_) for alternative to the Random Forest classifiers
 % * <http://se.mathworks.com/products/statistics/ Statistics Toolbox> (_optional_) for alternative to the Random Forest classifiers
 % * <http://se.mathworks.com/products/optimization/ Optimization Toolbox> (_optional_) for alternative to the Random Forest classifiers
 % * <https://se.mathworks.com/help/vision/index.html Computer Vision System
 % Toolbox> for automatic alignement using detected image features and for
-% Deep MIB (Matlab R2019b or newer, MIB version 2.70)
+% Deep MIB (MATLAB R2019b or newer, MIB version 2.70)
 % * <https://se.mathworks.com/help/deeplearning/index.html Deep Learning Toolbox> for
-% Deep MIB (Matlab R2019b or newer, MIB version 2.70)
+% Deep MIB (MATLAB R2019b or newer, MIB version 2.70)
 % 
 % 
 %% Bio-Formats
@@ -43,7 +43,7 @@
 %% BMxD Image Filters
 % When installed MIB can use BM3D and BM4D filters to filter datasets. The
 % filters are not supplied with MIB due to license limitations and have to
-% be installed separetly (*_only for Matlab version of MIB!_*).
+% be installed separetly (*_only for MATLAB version of MIB!_*).
 % 
 % *Installation instructions:*
 %
@@ -51,11 +51,11 @@
 % * Download *BM3D MATLAB software* and *BM4D MATLAB software* from
 % <http://www.cs.tut.fi/~foi/GCF-BM3D/ Image and video denoising by sparse
 % 3D transform-domain collaborative filtering> webpage.
-% * Unzip the files to directory with Matlab scripts. For example,
+% * Unzip the files to directory with MATLAB scripts. For example,
 % _c:\MATLAB\Scripts\BMxD\BM3D_ and _c:\MATLAB\Scripts\BMxD\BM4D_
 % * Start MIB and specify these folders in MIB preferences:
 % |MIB->Menu->File->Preferences->External dirs|. Alternatively, the
-% directories can be added to Matlab path.
+% directories can be added to MATLAB path.
 % * Restart MIB
 % 
 %
@@ -65,7 +65,7 @@
 %
 % *!!! Warning !!!*
 %
-% It seems that Fiji 3D viewer is not compatible with Matlab on MacOS, please do not change write permission for the |sys\java\jre\win64\jre\lib\ext| on the MacOS
+% It seems that Fiji 3D viewer is not compatible with MATLAB on MacOS, please do not change write permission for the |sys\java\jre\win64\jre\lib\ext| on the MacOS
 %
 % Below are the datails of the installation process.
 %
@@ -74,32 +74,32 @@
 % * Update Fiji: Fiji->Menu->Help->Update Fiji  (it may be required to repeat this step one more time after restart of Fiji)
 % * In the Fiji folder should appear a folder |scripts| with the |Miji.m| file
 % * The |scripts| sub-folder containing |Miji.m| should appear within the Fiji folder
-% * Start Matlab
+% * Start MATLAB
 % * Start MIB and open the Preferences Window:
 % |MIB->Menu->Preferences->External dir|. Add path to the Fiji installation
 % folder there, for example as _C:\Tools\Fiji.app_ for Windows or _/Applications/Fiji.app/_ for Mac OS
 % 
-% *Note 1*, the following Matlab path should be open for writing:
+% *Note 1*, the following MATLAB path should be open for writing:
 %
-% |...\Matlab\sys\java\jre\win64\jre\lib\ext| and |...\Matlab\sys\java\jre\win64\jre\bin|
+% |...\MATLAB\sys\java\jre\win64\jre\lib\ext| and |...\MATLAB\sys\java\jre\win64\jre\bin|
 %
 % *Note 2*, if the |Failed to retrieve Exception Message| error appears,
-% please increase the heap space for the Java VM in Matlab,
+% please increase the heap space for the Java VM in MATLAB,
 % <http://www.mathworks.se/support/solutions/en/data/1-18I2C/index.html see
 % details here>. For example, rendering of 1818x1022x717 volume requires
 % 4Gb heap size.
 %
 % *Note 3*, the Fiji 3D viewer may not work when started for the first
-% time. In this case, Matlab should be restarted.
+% time. In this case, MATLAB should be restarted.
 %
 %% FRANGI: compiled Frangi mask filter
 % Compiled Frangi Mask filter is recommended for faster run. Please compile it for your OS.
 % Most of C-functions can be compiled using a single script:
 %%
 % 
-% * In Matlab command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
+% * In MATLAB command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
 %   for example _c:\MATLAB\Scripts\mib_
-% * To compile, type in Matlab command window _mib_compile_c_files_
+% * To compile, type in MATLAB command window _mib_compile_c_files_
 %
 % *Note!* These files should be already pre-compiled for win32, win64 and mac64.
 %
@@ -117,25 +117,25 @@
 % system settings->Environment Variables...->New..._. For example,
 % |IMARISPATH = c:\Tools\Science\Imaris\|. Also path to Imaris can be
 % specified from the MIB preferences: |Menu->File->Preferences->External dirs|
-% # Restart Matlab
+% # Restart MATLAB
 %
 % *Note:* it is recommended to put |ImarisLib.jar| to the static Java
-% path of Matlab. To do that:
+% path of MATLAB. To do that:
 %
-% # Start Matlab and note the start-up (home) directory. For example: _c:\Users\UserName\Documents\MATLAB_
+% # Start MATLAB and note the start-up (home) directory. For example: _c:\Users\UserName\Documents\MATLAB_
 % # Create |javaclasspath.txt| in this home directory and add path to
 % |ImarisLib.jar| to this file (for example, _c:\Program Files\Bitplane\Imaris x64 8.0.2\XT\matlab\ImarisLib.jar_). 
-% One way to do that (Windows) is to type in the Matlab command prompt:
+% One way to do that (Windows) is to type in the MATLAB command prompt:
 % |system('notepad javaclasspath.txt')|; add the path; and save the file
-% # Restart Matlab
+% # Restart MATLAB
 %
 %% Membrane Click Tracker
 % Compiled files are required to use Membrane Click Tracker tool. Please compile them for your OS. Most of C-functions can be compiled using a single script:
 %%
 % 
-% * In Matlab command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
+% * In MATLAB command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
 %   for example _c:\MATLAB\Scripts\mib_
-% * To compile, type in Matlab command window _mib_compile_c_files_
+% * To compile, type in MATLAB command window _mib_compile_c_files_
 %
 % *Note!* These files should be already pre-compiled for win32, win64 and mac64.
 %
@@ -150,22 +150,22 @@
 %
 %% OMERO: connection to OMERO server
 % Connection to <http://www.openmicroscopy.org/site OMERO server> requires the download of OMERO API bindings for
-% Matlab.
+% MATLAB.
 %
-% * Download Matlab plugin for OMERO 
+% * Download MATLAB plugin for OMERO 
 % <http://www.openmicroscopy.org/site/products/omero/ from here>.
-% It should be listed in the *OMERO->OMERO Downloads, Plugins/Matlab*
-% section. (*Note!* Make sure that the version of Matlab plugin corresponds
+% It should be listed in the *OMERO->OMERO Downloads, Plugins/MATLAB*
+% section. (*Note!* Make sure that the version of MATLAB plugin corresponds
 % to the version of OMERO server you are going to login. Old OMERO
 % downloads are listed in the _Previous versions_ section at the bottom of
 % the page.
 % * Unzip the file to your scripts directory, for example
-% |C:\Matlab\Scripts\OMERO_5|
-% * *FOR MATLAB VERSION* Add this directory (|C:\Matlab\Scripts\OMERO_5|) with subfolders to Matlab path (|Matlab->Home tab->Set Path...->Add with Subfolders...|) or run
-% |pathtool| in Matlab command window
+% |C:\MATLAB\Scripts\OMERO_5|
+% * *FOR MATLAB VERSION* Add this directory (|C:\MATLAB\Scripts\OMERO_5|) with subfolders to MATLAB path (|MATLAB->Home tab->Set Path...->Add with Subfolders...|) or run
+% |pathtool| in MATLAB command window
 % * *FOR DEPLOYED VERSION* Add path to the OMERO installation using the MIB Preferences dialog: |MIB->Menu->Preferences->External dirs|. For example,
-% _|C:\Matlab\Scripts\OMERO_5\libs\|_ for Omero version 5, or
-% _|C:\Matlab\Scripts\OMERO_4\libs\|_ for Omero verison 4
+% _|C:\MATLAB\Scripts\OMERO_5\libs\|_ for Omero version 5, or
+% _|C:\MATLAB\Scripts\OMERO_4\libs\|_ for Omero verison 4
 %
 %
 % When using Omero, MIB stores servers and ports in _mib_omero.mat_ file
@@ -193,9 +193,9 @@
 %
 %%
 % 
-% * In Matlab command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
+% * In MATLAB command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
 %   for example _c:\MATLAB\Scripts\mib_
-% * To compile, type in Matlab command window _mib_compile_c_files_
+% * To compile, type in MATLAB command window _mib_compile_c_files_
 %
 % *Note!* These files should be already pre-compiled for win32, win64 and mac64.
 %
@@ -203,9 +203,9 @@
 % Compiled |affine_transform_2d_double.c| function is required for volume rendering. Please compile it for your OS.
 % Most of C-functions can be compiled using a single script:
 % 
-% * In Matlab command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
+% * In MATLAB command window change directory to _mib\Tools\_, where _mib_ is the path where MIB was installed, 
 %   for example _c:\MATLAB\Scripts\mib_
-% * To compile, type in Matlab command window _mib_compile_c_files_
+% * To compile, type in MATLAB command window _mib_compile_c_files_
 %
 % *Note!* This file is already pre-compiled for win64.
 %

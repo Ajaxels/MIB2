@@ -471,7 +471,7 @@ classdef Labels < matlab.mixin.Copyable
             %
             % Parameters:
             % labels: a cell array with labels
-            % positions: a matrix with coordinates of the labels [pointIndex, x, y, z, t]
+            % positions: a matrix with coordinates of the labels [pointIndex, z  x  y  t]
             % values: an array of numbers with values of the labels, [@em optional] default = 1
             
             %| 
@@ -479,14 +479,14 @@ classdef Labels < matlab.mixin.Copyable
             % @code
             % labels{1} = 'my label 1';
             % labels{2} = 'my label 2';
-            % positions(1,:) = [50, 75, 1, 5]; // position 1: x=50, y=75, z=1,t=5;
-            % positions(2,:) = [50, 75, 2, 6]; // position 1: x=50, y=75, z=2, t=6;
+            % positions(1,:) = [1, 50, 75, 5]; // position 1: x=50, y=75, z=1,t=5;
+            % positions(2,:) = [2, 50, 75, 6]; // position 1: x=50, y=75, z=2, t=6;
             % @endcode
             % @code obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(labels, positions); // replace labels with a new list @endcode
             % @code replaceLabels(obj, labels, positions); // Call within the class; replace labels with a new list @endcode
             
             if ~iscell(labels); labels = cellstr(labels); end
-            if numel(labels) ~= size(positions, 1); error('Labels.replaceLabels: error, number of labels and coordinates mismatch!'); end;
+            if numel(labels) ~= size(positions, 1); error('Labels.replaceLabels: error, number of labels and coordinates mismatch!'); end
             
             if nargin < 4; values = zeros([numel(labels), 1]) + 1; end
             

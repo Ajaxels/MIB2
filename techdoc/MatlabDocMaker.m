@@ -42,7 +42,7 @@ classdef MatlabDocMaker
 % Mennerich <http://www.mathworks.com/matlabcentral/fileexchange/authors/272859> for the suggestion.
 % - Restructured the configuration, now only the project name function has to be implemented
 % (the preferences tag depends on it, there might be more than one project within the same
-% Matlab installation whos documentation is created using this tool). The rest can be provided
+% MATLAB installation whos documentation is created using this tool). The rest can be provided
 % either at setup time or later via suitable setters for the version, description and logo.
 % - Automatically setting HaveDot in the doxygen config whenever its found on the environment
 % path.
@@ -75,7 +75,7 @@ classdef MatlabDocMaker
 % tools must be present on the path anyways. The new paradigm is to
 % expect all required 3rd-party programmes to be available on PATH. As
 % backup the configuration files directory is
-% added to the Matlab PATH environment \b nonpermanently and any
+% added to the MATLAB PATH environment \b nonpermanently and any
 % executables found there will thus also be usable.
 % - Included checks for \c dot and \c latex at the setup stage to
 % recommend installation of those tools if not present (the default

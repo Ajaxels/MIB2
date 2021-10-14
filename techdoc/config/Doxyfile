@@ -25,16 +25,16 @@
 # MatlabDocMaker) in order to replace some values:
 # - Microscopy Image Browser: The project name configured in the tools
 #       (in MatlabDocMaker:MatlabDocMaker.getProjectVersion) 
-# - 2.60: Is substituted by the value returned by 
+# - 2.81: Is substituted by the value returned by 
 #       MatlabDocMaker.getProjectVersion inside MatLab. We decided to keep
 #       this flexible as project versions change over time and the documentation
 #       should of course reflect that with minimum effort (thus, only a change
 #       inside Matlab is necessary, where you're expected to be working anyways)
 # - : A short description of the project
 # - C:\Matlab\Scripts\MIB2\MIB2\techdoc\im_browser_splash_sm.jpg: An absolute path to an image file to include as project logo
-# - C:\Matlab\Scripts\MIB2\MIB2\techdoc\ClassReference: The output directory for the created documentation
-# - C:\Matlab\Scripts\MIB2\MIB2: The source directory containing the files of the project
-# - C:\Matlab\Scripts\MIB2\MIB2\techdoc\config: The configuration directory for mtoc++, containing this file
+# - C:\Matlab\Scripts\MIB2\MIB_deploy_v281\techdoc\ClassReference: The output directory for the created documentation
+# - C:\Matlab\Scripts\MIB2\MIB_deploy_v281: The source directory containing the files of the project
+# - C:\Matlab\Scripts\MIB2\MIB_deploy_v281\techdoc\config: The configuration directory for mtoc++, containing this file
 #       and some more.
 # - _FileSep_: The file separator character, "/" for linux and "\" for windows.
 # - NO: Switch to tell doxygen to also generate LaTeX output.
@@ -80,7 +80,7 @@
 #
 # mtoc++ 1.2: Restructured this file during tests for Windows doc creation.
 #             - Config stuff is now at the END of the file.
-#             - New macro C:\Matlab\Scripts\MIB2\MIB2\techdoc\config\mtocpp_filter.bat for .sh and .bat file support.
+#             - New macro C:\Matlab\Scripts\MIB2\MIB_deploy_v281\techdoc\config\mtocpp_filter.bat for .sh and .bat file support.
 #
 # mtoc++ 1.2: First version to contain this file.
 #
@@ -946,7 +946,7 @@ DOCSET_FEEDNAME        = "Microscopy Image Browser documentation"
 # reverse domain-name style string, e.g. com.mycompany.MyDocSet. Doxygen
 # will append .docset to the name.
 
-DOCSET_BUNDLE_ID       = Microscopy Image Browser.2.60
+DOCSET_BUNDLE_ID       = Microscopy Image Browser.2.81
 
 # When GENERATE_PUBLISHER_ID tag specifies a string that should uniquely identify
 # the documentation publisher. This should be a reverse domain-name style
@@ -1702,7 +1702,7 @@ PROJECT_NAME           = "Microscopy Image Browser"
 # This could be handy for archiving the generated documentation or
 # if some version control system is used.
 
-PROJECT_NUMBER         = 2.60
+PROJECT_NUMBER         = 2.81
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer
@@ -1714,7 +1714,7 @@ PROJECT_BRIEF          = ""
 # included in the documentation. The maximum height of the logo should not
 # exceed 55 pixels and the maximum width should not exceed 200 pixels.
 # Doxygen will copy the logo to the output directory.
-# Recall that you can use all the macros like C:\Matlab\Scripts\MIB2\MIB2\techdoc\config at this setting, too.
+# Recall that you can use all the macros like C:\Matlab\Scripts\MIB2\MIB_deploy_v281\techdoc\config at this setting, too.
 
 PROJECT_LOGO           = "C:\Matlab\Scripts\MIB2\MIB2\techdoc\im_browser_splash_sm.jpg"
 
@@ -1723,11 +1723,11 @@ PROJECT_LOGO           = "C:\Matlab\Scripts\MIB2\MIB2\techdoc\im_browser_splash_
 # If a relative path is entered, it will be relative to the location
 # where doxygen was started. If left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = "C:\Matlab\Scripts\MIB2\MIB2\techdoc\ClassReference"
+OUTPUT_DIRECTORY       = "C:\Matlab\Scripts\MIB2\MIB_deploy_v281\techdoc\ClassReference"
 
-# What to generate? HTML by default, directly into C:\Matlab\Scripts\MIB2\MIB2\techdoc\ClassReference
+# What to generate? HTML by default, directly into C:\Matlab\Scripts\MIB2\MIB_deploy_v281\techdoc\ClassReference
 GENERATE_HTML          = YES
-HTML_OUTPUT            = "C:\Matlab\Scripts\MIB2\MIB2\techdoc\ClassReference"
+HTML_OUTPUT            = "C:\Matlab\Scripts\MIB2\MIB_deploy_v281\techdoc\ClassReference"
 
 # Latex is an extra option.
 GENERATE_LATEX         = NO
@@ -1770,7 +1770,7 @@ HAVE_DOT               = YES
 EXTENSION_MAPPING = .m=C++
 
 # input is configured by MatlabDocMaker
-INPUT             = "C:\Matlab\Scripts\MIB2\MIB2" "C:\Matlab\Scripts\MIB2\MIB2\techdoc\config"
+INPUT             = "C:\Matlab\Scripts\MIB2\MIB_deploy_v281" "C:\Matlab\Scripts\MIB2\MIB_deploy_v281\techdoc\config"
 
 # doxygen bothers to look at .m files at all
 FILE_PATTERNS     = *.m \
@@ -1783,10 +1783,10 @@ FILE_PATTERNS     = *.m \
                     *.hpp \
 
 # the link between mtoc++ and doxygen (the `' separates the macros)
-FILTER_PATTERNS   = *.m="C:\Matlab\Scripts\MIB2\MIB2\techdoc\config\mtocpp_filter.bat"
+FILTER_PATTERNS   = *.m="C:\Matlab\Scripts\MIB2\MIB_deploy_v281\techdoc\config\mtocpp_filter.bat"
 
 # latex styles inclusion file
-EXTRA_PACKAGES    = "C:/Matlab/Scripts/MIB2/MIB2/techdoc/config/latexextras"
+EXTRA_PACKAGES    = "C:/Matlab/Scripts/MIB2/MIB_deploy_v281/techdoc/config/latexextras"
 
 # leave empty so MatlabDocMaker can capture doxygen warnings
 WARN_LOGFILE      = 

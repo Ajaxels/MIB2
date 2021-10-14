@@ -75,7 +75,7 @@
 % Load ROI from a disk. 
 %
 %% 10. Save button
-% Save ROI information to disk in Matlab format (a structure with _label,
+% Save ROI information to disk in MATLAB format (a structure with _label,
 % type, X, Y, orientation_ fields).
 %% 11. Show label
 % When enabled, a text with the label of the selected ROI is displayed in

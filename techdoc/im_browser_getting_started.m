@@ -23,7 +23,7 @@
 % and present a free, open-source software package, which can be used for image 
 % processing, analysis, segmentation and visualization of multidimensional datasets. 
 %
-% The program is designed to work in both Matlab environment and as stand-alone instance. In the latter case it is required to install 
+% The program is designed to work in both MATLAB environment and as stand-alone instance. In the latter case it is required to install 
 % MATLAB Compiler Runtime (MCR), which is freely available from <http://www.mathworks.com MathWorks>. 
 % 
 % *_Please note,_* that in the compiled version may not have all features available.
@@ -32,7 +32,7 @@
 % Please follow the steps described in the <im_browser_installation.html Installation section> to install the program. 
 %
 % Start Microscopy Image Browser with |MIB| command in the main 
-% Matlab window and refer to the following sections for details of
+% MATLAB window and refer to the following sections for details of
 % functioning; especially *User Guide* section.
 %
 %% Links

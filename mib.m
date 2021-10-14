@@ -85,9 +85,25 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'Tools', 'Supervoxels'));
 end
 
-mibVersion = 'ver. 2.802 / 02.06.2021';  % ATTENTION! it is important to have the version number between "ver." and "/"
+mibVersion = 'ver. 2.81 / 14.10.2021';  % ATTENTION! it is important to have the version number between "ver." and "/"
 
-model = mibModel();     % initialize the model
+% define max number of parallel workers for deployed versions
+% define workers for parallel pools
+parPool = parcluster('local'); % If no pool, do not create new one.
+if isdeployed
+    if ispc()
+        cpuParallelLimit = 8;
+    elseif ismac()
+        cpuParallelLimit = 4;
+    else
+        cpuParallelLimit = 2;
+    end
+else
+    cpuParallelLimit = Inf;
+end
+cpuParallelLimit = min([cpuParallelLimit, parPool.NumWorkers]);
+
+model = mibModel(cpuParallelLimit);     % initialize the model
 controller = mibController(model, mibVersion);  % initialize controller
 
 toc

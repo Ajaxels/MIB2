@@ -5,10 +5,10 @@
 %% |MIB| does not start
 %%
 % 
-% * Check that |MIB| directory is in Matlab path: |File->Set path...|.
+% * Check that |MIB| directory is in MATLAB path: |File->Set path...|.
 % If it is missing, add it with |->Add with Subfolders-> Save|.
 % * Delete old configuration file:
-% * *for Windows* - _C:\Users\Username\Matlab\mib.mat_ or in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
+% * *for Windows* - _C:\Users\Username\MATLAB\mib.mat_ or in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
 % The TEMP directory can be found and accessed with |Windows->Start button->%TEMP%| command
 % * *for Linux* - _/home/username/Matlab_ or local TEMP directory
 % * *for MacOS* - _/Users/username/Matlab_ or local TEMP directory
@@ -32,7 +32,7 @@
 %
 %% Fiji: reports Java3D is not installed.
 % Most likely there are no write permissions to some folders required for automatic installation of Fiji 3D viewer. Please
-% check carefully the Matlab command window, where Fiji reports required directories.
+% check carefully the MATLAB command window, where Fiji reports required directories.
 % 
 % For example in standard case the following directories should have write permissions: 
 %
@@ -42,7 +42,7 @@
 %% Fiji: Failed to retrieve Exception Message
 %
 % If the |Failed to retrieve Exception Message| error appears,
-% please increase the heap space for the Java VM in Matlab,
+% please increase the heap space for the Java VM in MATLAB,
 % <http://www.mathworks.se/support/solutions/en/data/1-18I2C/index.html see
 % details here>. 
 %

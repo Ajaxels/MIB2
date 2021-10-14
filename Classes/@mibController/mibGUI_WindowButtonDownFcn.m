@@ -15,7 +15,6 @@ function mibGUI_WindowButtonDownFcn(obj)
 % Updates
 % 
 
-
 val = obj.mibView.handles.mibSegmentationToolPopup.Value; % get a selected instrument: filter, magic wand, brush etc
 txt = obj.mibView.handles.mibSegmentationToolPopup.String;
 tool = cell2mat(txt(val));
@@ -140,7 +139,6 @@ if strcmp(seltype, 'normal') %& strcmp(modifier,'alt')
     obj.mibView.gui.WindowButtonDownFcn = [];  % turn off callback for the mouse key press during the pan mode
     obj.mibView.gui.WindowScrollWheelFcn = []; % turn off callback for the mouse wheel during the pan mode
     obj.mibView.gui.WindowButtonMotionFcn = (@(hObject, eventdata, handles) obj.mibGUI_panAxesFcn(xy2, imgWidth, imgHeight));
-    
     
     setptr(obj.mibView.gui, 'closedhand');  % undocumented matlab http://undocumentedmatlab.com/blog/undocumented-mouse-pointer-functions/
     obj.mibView.gui.WindowButtonUpFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowButtonUpFcn());

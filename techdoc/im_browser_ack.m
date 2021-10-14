@@ -4,7 +4,7 @@
 %
 %
 % <html>
-% <b>Powered by Matlab, <a href="https://www.mathworks.com/">The MathWorks,
+% <b>Powered by MATLAB, <a href="https://www.mathworks.com/">The MathWorks,
 % Inc.</a></b><br><br>
 % Developed during 2010-2021 by<br>
 % Core developer:<br>
@@ -37,7 +37,7 @@
 % Technology/St. Olavs hospital, Trondheim for extensive testing of
 % DeepMIB.
 %
-% Microscopy Image Browser team would like to acknowledge the <http://www.mathworks.se/matlabcentral/ User Community of Matlab-Central> and the authors whose code was used during MIB development. 
+% Microscopy Image Browser team would like to acknowledge the <http://www.mathworks.se/matlabcentral/ User Community of MATLAB-Central> and the authors whose code was used during MIB development. 
 % Microscopy Image Browser adapts partially or completely codes from the
 % following sources:
 %
@@ -45,7 +45,7 @@
 % 
 % * Inspired by <http://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer *IMAGEVIEWER*>
 % by Jiro Doke, MathWorks 2010
-% * Documentation done with <http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools *MTOC++ - Doxygen filter for Matlab and tools*>
+% * Documentation done with <http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools *MTOC++ - Doxygen filter for MATLAB and tools*>
 % written by Martin Drohmann (Universitat Munster) and Daniel Wirtz (Universitat Stuttgart), 2011-2013
 % * <http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching
 % *Accurate Fast Marching function*> by Dirk-Jan Kroon, University of Twente, 2011 is utilized in the Membrane Click Tracker tool
@@ -75,10 +75,10 @@
 % * <http://www.mathworks.com/matlabcentral/fileexchange/41666-fast-3d-2d-region-growing--mex-
 % *Fast 3D/2D Region Growing (MEX)*> by Christian Wuerslin, Stanford
 % University, 2013-2015.
-% * *Fiji Connect* is using <http://bigwww.epfl.ch/sage/soft/mij/ *MIJ*>, a Java package for bi-directional communication and data exchange from Matlab to ImageJ/Fiji,
+% * *Fiji Connect* is using <http://bigwww.epfl.ch/sage/soft/mij/ *MIJ*>, a Java package for bi-directional communication and data exchange from MATLAB to ImageJ/Fiji,
 % developed by Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin, 2012
 % * <http://www.mathworks.com/matlabcentral/fileexchange/14317-findjobj-find-java-handles-of-matlab-graphic-objects 
-% *FINDJOBJ*> - find java handles of Matlab graphic objects by Yair Altman, 2007-2013
+% *FINDJOBJ*> - find java handles of MATLAB graphic objects by Yair Altman, 2007-2013
 % * <http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter 
 % *FRANGI filter*> by Marc Schrijver and Dirk-Jan Kroon, University of Twente 2001-2009
 % * <https://se.mathworks.com/matlabcentral/fileexchange/55115-extended-depth-of-field *FSTACK*> extended depth-of-field image from focus sequence using noise-robust selective all-in-focus algorithm by Said Pertuz, Universitat
@@ -94,13 +94,13 @@
 % by  Jiro Doke, MathWorks, 2010 is used in the snapshot tool and import from system clipboard
 % * <http://www.mathworks.com/matlabcentral/fileexchange/25397-imgaussian *IMGAUSSIAN*> 
 % by Dirk-Jan Kroon, University of Twente, implementation 2009 is used in the 3D Gaussian filter
-% * <https://github.com/mattools/matGeom/ *MATGEOM*>, a Matlab geometry toolbox for 2D/3D geometric computing is written David Legland, INRA, France, 2013 is used in some functions
+% * <https://github.com/mattools/matGeom/ *MATGEOM*>, a MATLAB geometry toolbox for 2D/3D geometric computing is written David Legland, INRA, France, 2013 is used in some functions
 % * <http://bio3d.colorado.edu/PEET/index.html *MATTOMO*> is a part of PEET 
 % (Particle Estimation for Electron Tomography) package, developed at Boulder Laboratory for 3-D Electron Microscopy of Cells
 % was used for export of models to IMOD format
 % * <http://pub.ist.ac.at/~vnk/software.html *MAXFLOW/MINCUT algorithm, v.2.22*> written by Yuri Boykov, University of Western Ontario and Vladimir Kolmogorov, Microsoft research, Cambridge. 
 % * <http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow
-% *MAXFLOW/MINCUT Matlab wrapper*> is written by Michael Rubinstein, Google
+% *MAXFLOW/MINCUT MATLAB wrapper*> is written by Michael Rubinstein, Google
 % * <https://se.mathworks.com/matlabcentral/fileexchange/8472-num2clip-copy-numerical-arrays-to-clipboard *NUM2CLIP*> function
 % by Grigor Browning, 2005 is used to copy column items to the system clipboard
 % * *NRRD*, Nearly Raw Raster Data format is implemented using  
@@ -111,7 +111,7 @@
 % *NRRD Format File Reader*> written by Jeff Mather, 2012
 % * <https://se.mathworks.com/matlabcentral/fileexchange/66645-nrrd-nhdr-reader-and-writer *NRRD NHDR reader and writer*> 
 % functions by Gaetan Rensonnet, 2018 is used to read NRRD format files on MacOS
-% * <http://www.openmicroscopy.org/site/products/omero/downloads *OMERO Matlab bindings*> (included into the compiled version, but should be downloaded separetly for the Matlab version) are used for
+% * <http://www.openmicroscopy.org/site/products/omero/downloads *OMERO MATLAB bindings*> (included into the compiled version, but should be downloaded separetly for the MATLAB version) are used for
 % connection to OMERO servers
 % * <http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser
 % *P_JSON*>, highly portable JSON parser function is written by Nedialko, 2009
@@ -131,7 +131,7 @@
 % * Rendering with Fiji is based on
 % <http://www.mathworks.com/matlabcentral/fileexchange/32344-hardware-accelerated-3d-viewer-for-matlab
 % *Hardware accelerated 3D viewer for MATLAB*> written by Jean-Yves Tinevez, Institut Pasteur, 2011  
-% * Rendering with Matlab is using <http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m *VIEW3D*> function
+% * Rendering with MATLAB is using <http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m *VIEW3D*> function
 % written by  Torsten Vogel, 1999  
 % * <http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html 
 % *SLIC (Simple Linear Iterative Clustering)*> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, 

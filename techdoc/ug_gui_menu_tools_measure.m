@@ -160,10 +160,10 @@
 %
 %%
 % 
-% * *Load* - press to load from a file or import from the main Matlab
+% * *Load* - press to load from a file or import from the main MATLAB
 % workspace a structure with measurements;
-% * *Save* - press to save to a file (Matlab or Excel format) or export to
-% the main Matlab workspace results of the measurements. The saved results
+% * *Save* - press to save to a file (MATLAB or Excel format) or export to
+% the main MATLAB workspace results of the measurements. The saved results
 % contain both the measurements and intensity profiles;
 % * *Refresh table* - press to refresh the table with measurements;
 % * *Delete all* - press to remove all measurements;

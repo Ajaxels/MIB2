@@ -1,5 +1,5 @@
-function mibAnisotropicDiffusion(obj, filter_type)
-% function mibAnisotropicDiffusion(obj, filter_type)
+function mibAnisotropicDiffusion(obj, filter_type, cpuParallelLimit)
+% function mibAnisotropicDiffusion(obj, filter_type, cpuParallelLimit)
 % Filter image with Anisotropic diffusion filters
 % 
 % Parameters:
@@ -7,6 +7,7 @@ function mibAnisotropicDiffusion(obj, filter_type)
 %  - ''diplib'', use diplib library to do the filtering (http://www.diplib.org/)
 %  - ''anisodiff'', use anisodiff function by Peter Kovesi (http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff)
 %  - ''coherence_filter'', use Image Edge Enhancing Coherence Filter by Dirk-Jan Kroon and Pascal Getreuer (http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox)
+% cpuParallelLimit: max number of CPU available for parallel processing
 %
 % Return values:
 % 
@@ -20,6 +21,8 @@ function mibAnisotropicDiffusion(obj, filter_type)
 %
 % Updates
 % 
+
+if nargin < 3; cpuParallelLimit = 0; end
 
 switchIndexed = obj.mibView.handles.menuImageIndexed.Checked;
 if strcmp(switchIndexed,'on')
@@ -44,6 +47,9 @@ end
 doAfter = obj.mibView.handles.mibImageFiltersOptionsPopup.String;
 doAfter = doAfter{obj.mibView.handles.mibImageFiltersOptionsPopup.Value};
 
+% set max number of CPUs for parallel processing
+options.cpuParallelLimit = cpuParallelLimit;
+
 if strcmp(filter_type, 'anisodiff') %|| strcmp(filter_type,'diplib')   % do diplib or anisodiff filtering
     colorChannel = obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel;
     if colorChannel == 0 && obj.mibModel.getImageProperty('colors') > 1
@@ -64,6 +70,7 @@ if strcmp(filter_type, 'anisodiff') %|| strcmp(filter_type,'diplib')   % do dipl
     options.Orientation = obj.mibModel.getImageProperty('orientation');
     options.Color = colorChannel;
     options.Favours = obj.mibView.handles.mibImageFiltersTypePopup.Value; % 1: favours high contrast edges over low contrast ones; 2: favours wide regions over smaller ones. For 'anisodiff' only
+    
     switch sel_filter
         case 'Perona Malik anisotropic diffusion' 
             options.Filter = 'anisodiff'; 

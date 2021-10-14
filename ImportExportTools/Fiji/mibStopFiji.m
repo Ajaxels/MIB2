@@ -16,10 +16,15 @@ function mibStopFiji()
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 01.10.2021 - added automatic closing of all windows in Fiji
 
+answer = questdlg(sprintf('!!! Warning !!!\n\nYou are going to close Fiji, all images opened there are going to be closed\n\nContinue?'), ...
+	'Close Fiji', ...
+	'Close Fiji and all images','Cancel','Cancel');
+if strcmp(answer, 'Cancel'); return; end
 
 try
+    MIJ.closeAllWindows()   % close all windows in Fiji
     list = MIJ.getListImages;
 catch err
     if isfield(err, 'ExceptionObject')

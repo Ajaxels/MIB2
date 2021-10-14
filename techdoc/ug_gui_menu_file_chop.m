@@ -33,10 +33,10 @@
 % During the saving MIB will add "_Znn_Xnn_Ynn" tag to each block, where _nn_ is the index of the block.
 % * *Output format for images*, datasets can be saved in Amira Mesh, NRRD, 
 % 3D-TIF formats, or HDF5 with XML header formats. 
-% * *Output format for models*, models can also be stored in several formats: Matlab, AmiraMesh, NRRD, TIF or HDF5. 
+% * *Output format for models*, models can also be stored in several formats: MATLAB, AmiraMesh, NRRD, TIF or HDF5. 
 % When the models are saved a "Labels_" prefix is added to the beginning of the filename.
 %
-% The masks saved in the Matlab format with |Mask_[FN].mask| template, where [FN] is a filename of the corresponding image dataset.
+% The masks saved in the MATLAB format with |Mask_[FN].mask| template, where [FN] is a filename of the corresponding image dataset.
 %
 %% Import...
 % The import command restores previously chopped or cropped datasets.

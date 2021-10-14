@@ -2,7 +2,7 @@
 % Allows communication with <http://fiji.sc/Fiji Fiji>. Requires Fiji to be installed, please refer to the 
 % <im_browser_system_requirements.html System Requirements> section for
 % details. *Fiji Connect* uses
-% <http://bigwww.epfl.ch/sage/soft/mij/ MIJ> , a Java package for bi-directional communication and data exchange from Matlab to ImageJ/Fiji,
+% <http://bigwww.epfl.ch/sage/soft/mij/ MIJ> , a Java package for bi-directional communication and data exchange from MATLAB to ImageJ/Fiji,
 % developed by Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin. This package should be integrated into
 % Fiji.
 % 
@@ -23,8 +23,8 @@
 % </html>
 %
 %% 1. The Start Fiji button
-% Start an instance of Fiji by pressing this button. In order for communication between Matlab and Fiji to work, Fiji 
-% should be started from Matlab using this button. *_Press this button before doing anything else!_*
+% Start an instance of Fiji by pressing this button. In order for communication between MATLAB and Fiji to work, Fiji 
+% should be started from MATLAB using this button. *_Press this button before doing anything else!_*
 %
 %% 2. The Stop Fiji 
 % After finishing work, Fiji may be stopped using this button. Press it at the end use of Fiji.

@@ -224,7 +224,6 @@ classdef mibImageUndo < handle
                     end
                 end
             end
-            
             obj.prevUndoIndex = obj.undoIndex - 1;
             
             obj.undoList(obj.undoIndex-1).type = type;

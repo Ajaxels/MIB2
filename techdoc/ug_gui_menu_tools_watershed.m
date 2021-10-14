@@ -110,9 +110,9 @@
 %   <li><b>Gradient</b> filters the image before watershed using the
 %       Gradient filter to create borders around objects</li>
 %   <li><b>Eigenvalue of Hessian</b>, pre-processing the data using this option may sometimes be beneficial for the following watershed transfornation. Use the <b>Sigma</b> fields to fine-tune the filter</li>
-%   <li><b>Export to Matlab</b> exports pre-processed data to the main Matlab workspace</li>
+%   <li><b>Export to MATLAB</b> exports pre-processed data to the main MATLAB workspace</li>
 %   <li><b>Preview</b> shows the result of pre-processing in the Image View panel</li>
-%   <li><b>Import from Matlab</b> imports dataset that will be used for image segmentation from Matlab workspace</li>
+%   <li><b>Import from MATLAB</b> imports dataset that will be used for image segmentation from MATLAB workspace</li>
 %   <li><b>Pre-process</b> starts the data pre-processing process. When pre-processed data is present the color of the button turns to green</li>
 %   <li><b>Clear</b> removes the pre-processed data from the memory<br></li>
 %   </ul>

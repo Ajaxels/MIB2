@@ -1,8 +1,9 @@
 % featureMatrix  = membraneFeatures(image, contextSize,
 % membraneThickness, contextSizeHistogram, hessianSigma)
 %author: Verena Kaynig
-function [fm]  = membraneFeatures(im, cs, ms, csHist)
+function [fm]  = membraneFeatures(im, cs, ms, csHist, cpuParallelLimit)
 %normalize image contrast
+% cpuParallelLimit - number of parallel CPUs to use
 im = norm01(im);
 
 d = zeros(cs,cs);
@@ -20,7 +21,7 @@ fm(:,:,1) = im;
 
 im = adapthisteq(im);
 
-rot = filterImageWithMembraneTemplateRotated(im, d);
+rot = filterImageWithMembraneTemplateRotated(im, d, cpuParallelLimit);
 im = single(im);
 
 fm(:,:,2) = rot(:,:,1);

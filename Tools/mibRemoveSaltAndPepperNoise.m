@@ -1,5 +1,5 @@
-function img = mibRemoveSaltAndPepperNoise(img, BatchOpt)
-% function mibRemoveSaltAndPepperNoise(img, BatchOpt)
+function img = mibRemoveSaltAndPepperNoise(img, BatchOpt, cpuParallelLimit)
+% function mibRemoveSaltAndPepperNoise(img, BatchOpt, cpuParallelLimit)
 % remove salt and pepper noise from image. The images are filtered using
 % the median filter, after that a difference between the original and the
 % median filtered images is taken. Pixels that have threshold higher than
@@ -14,6 +14,7 @@ function img = mibRemoveSaltAndPepperNoise(img, BatchOpt)
 % white noise pixels, and pepper for the black noise pixels
 % @li .showWaitbar - logical, show or not the waitbar
 % @li .UseParallelComputing - logical, use or not the parallel computing
+% cpuParallelLimit:  number of CPU to use for parallel processing
 %
 % Return values:
 % img: denoised image
@@ -38,7 +39,7 @@ function img = mibRemoveSaltAndPepperNoise(img, BatchOpt)
 % Updates
 % 
 
-
+if nargin < 3; cpuParallelLimit = 0; end
 if nargin < 2; BatchOpt = struct(); end
 if ~isfield(BatchOpt, 'HSize'); BatchOpt.HSize = '3'; end
 if ~isfield(BatchOpt, 'IntensityThreshold'); BatchOpt.IntensityThreshold{1} = 50; end
@@ -60,7 +61,7 @@ end
 
 % define usage of parallel computing
 if BatchOpt.UseParallelComputing
-    parforArg = Inf;
+    parforArg = cpuParallelLimit;
 else
     parforArg = 0;
 end

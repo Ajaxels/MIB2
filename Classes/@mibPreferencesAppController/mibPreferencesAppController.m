@@ -303,14 +303,13 @@ classdef mibPreferencesAppController < handle
             status = 0;
             
             % update font size
-            obj.mibController.mibView.handles.mibFilesListbox.FontSize = obj.preferences.System.FontSizeDirView;
             Font = obj.preferences.System.Font;
-            
             if obj.mibController.mibView.handles.mibZoomText.FontSize ~= obj.preferences.System.Font.FontSize || ...
                     ~strcmp(obj.mibController.mibView.handles.mibZoomText.FontName, obj.preferences.System.Font.FontName)
                 mibUpdateFontSize(obj.mibController.mibView.gui, obj.preferences.System.Font);
                 %mibUpdateFontSize(obj.View.gui, obj.preferences.System.Font);
             end
+            obj.mibController.mibView.handles.mibFilesListbox.FontSize = obj.preferences.System.FontSizeDirView;
             
             % update key shortcuts
             if numel(obj.duplicateEntries) > 1
@@ -373,6 +372,8 @@ classdef mibPreferencesAppController < handle
             
             scalingGUI = obj.preferences.System.GUI;   % update scalingGUI
             mibRescaleWidgets(obj.mibController.mibView.gui);   % rescale main GUI
+            drawnow;
+            figure(obj.View.gui);   % set focus to main preference window and move it in front
         end
         
         function OKButtonPushedCallback(obj)
@@ -484,6 +485,7 @@ classdef mibPreferencesAppController < handle
                             noColors = str2double(answer{1});
                             if noColors > 255
                                 errordlg(sprintf('!!! Error !!!\n\nNumber of colors should be below 256'), 'Too many colors');
+                                figure(obj.View.gui);   % set focus to main preference window and move it in front
                                 return;
                             end
                             obj.View.handles.NumberOfColorsDropDown.Items = compose('%d', noColors);
@@ -491,8 +493,8 @@ classdef mibPreferencesAppController < handle
                     obj.updateColorPalette();
                 case 'NumberOfColorsDropDown'
                     obj.updateColorPalette();
-                    
             end
+            figure(obj.View.gui);   % set focus to main preference window and move it in front
         end
         
         function KeyboardShortcutsPanelCallbacks(obj, event)
@@ -616,6 +618,7 @@ classdef mibPreferencesAppController < handle
                     obj.preferences.System.Font = selectedFont;
                     obj.View.handles.FontSizeEditField.Value = obj.preferences.System.Font.FontSize;
                     mibUpdateFontSize(obj.View.gui, obj.preferences.System.Font);
+                    figure(obj.View.gui);   % set focus to main preference window and move it in front
                 case 'RecheckPeriod'
                     obj.preferences.System.Update.RecheckPeriod = obj.View.handles.RecheckPeriod.Value;
                 case 'SystemScalingEditField'
@@ -1126,7 +1129,7 @@ classdef mibPreferencesAppController < handle
             % update of external directories
             
             if ~isempty(obj.View.handles.(event.Source.Tag).Value)
-                if isfolder(obj.View.handles.(event.Source.Tag).Value) == 0
+                if exist(obj.View.handles.(event.Source.Tag).Value) ~= 7 %#ok<EXIST> % keep exists function here, for correct work with /Applications/Fiji.app 
                     uialert(obj.View.gui, ...
                         sprintf('!!! Warning !!!\n\nThe directory\n%s\nis missing', obj.View.handles.(event.Source.Tag).Value),...
                         'Wrong directory');
@@ -1139,8 +1142,8 @@ classdef mibPreferencesAppController < handle
                         if strcmp(answer, 'Cancel')
                             obj.View.handles.(event.Source.Tag).Value = '';
                         end
-                        obj.preferences.ExternalDirs.(event.Source.Tag) = obj.View.handles.(event.Source.Tag).Value;
                     end
+                    obj.preferences.ExternalDirs.(event.Source.Tag) = obj.View.handles.(event.Source.Tag).Value;
                 end
             else
                 obj.preferences.ExternalDirs.(event.Source.Tag) = [];

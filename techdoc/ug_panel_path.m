@@ -14,7 +14,7 @@
 % the '\' option.
 %
 %% 2. '...' button
-% This button is one of the ways to select a folder. It uses |uigetdir| Matlab built-in function.
+% This button is one of the ways to select a folder. It uses |uigetdir| MATLAB built-in function.
 %
 %% 3. Current path edit box
 % Current path edit box shows the path of the current folder. The contents of the folder is
@@ -62,7 +62,7 @@
 % There are number of actions that are possible to do with
 % the action log:
 % 
-% * *Print to Matlab* - prints the action log in the Matlab command window
+% * *Print to MATLAB* - prints the action log in the MATLAB command window
 % * *Copy to Clipboard* - stores the action log in the clipboard, so it can be pasted with Ctrl+V (Windows OS) command.
 % * *Insert after* - inserts a new entry after the one which is highlighted
 % * *Modify* - modifies the highlighted entry

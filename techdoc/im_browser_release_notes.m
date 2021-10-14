@@ -5,18 +5,28 @@
 %
 %
 %
-%%
+%% %% 2.81 / 14.10.2021
+% * Added contrast adjustment, when 16-bit is converted to 16-bit
+% * Added import of annotations from CSV files (Segmentation table->Annotations->Annotation list->Load
+% * Added conversion of annotations to the mask layer (Annotations->Annotation list->List of annotations->Convert selected annotations to Mask)
+% * Added save of models to mibCat categorical format (Menu->Models->Save model as)
+% * Added automatic closing of all windows in Fiji when stopping FijiConnect
+% * Added information about "Call4Help" sessions (Menu->Help->Call for help)
+% * Fixed a bug with generation of grids in the Stereology tool
+% * Fixed automatic feature based alignment, when the Selection is disabled
+% * Updated Bio-Formats to 6.7.0
+% * [DeepMIB] added counting of labels in model files (Options->Count labels)
+% * [DeepMIB] fixed bug with selection of 'Multi GPU' for prediction
 %
-%
-%% 2.80 / 01.06.2021
+%% 2.802 / 01.06.2021
 % * Added HDD mode to align datasets that can not be fit into memory (Menu->Dataset->Alignment tool->HDD)
 % * Added new preference dialog (Menu->File->Preferences)
 % * Added exclusion of Stretch and Shear peaks into the automatic alignment using image features
 % * Added re-ordering of annotations in the Annotation list via a popup menu
 % * Added precision edit box into the Annotation panel
 % * Added "Extra depth to show annotations" (Annotations->Annotation list->Settings)
-% * Added saving of models as 2D sequence MIB Matlab format (Menu->Models->Save model as->Matlab format 2D sequence (*.model))
-% * Added Mode filter (Menu->Image->Image filters...)
+% * Added saving of models as 2D sequence MIB MATLAB format (Menu->Models->Save model as->MATLAB format 2D sequence (*.model))
+% * Added Mode filter (Menu->Image->Image mibfilters...)
 % * Added "File and Directory operations" to batch processing
 % * Added plugin for converting images between different formats
 % (Menu->Plugins->File Processing->ImageConverter)
@@ -39,11 +49,11 @@
 % * [DeepMIB] Added options for export of prediction scores
 % * [DeepMIB] Added calculation of occurrence and Sørensen-Dice similarity for comparison of ground truth and generated models
 % * [DeepMIB] Added filenames and export to CSV to evaluate segmentation operation
-% * [DeepMIB] Added export of trained models to ONNX format (Matlab version of MIB)
+% * [DeepMIB] Added export of trained models to ONNX format (MATLAB version of MIB)
 % * Updated reading of NRRD files for MacOS (mibGetImages & mibModel.loadModel, nhdr_*.m nrrd_* files)
 % * Updated export statistics to annotations to keep settings during current session
 % * Updated Bio-Formats to 6.6.1
-% * Updated for Matlab R2021a
+% * Updated for MATLAB R2021a
 % * Fixed missing the "Add to" checkbox Ctrl+F operation 
 % * Fixed loading of AM files on virtual machines due to encoding
 % * Fixed preview behavior for image filters in 3D
@@ -95,7 +105,7 @@
 % * Added saving snapshots in PNG format
 % * Added measurements to restore shuffled datasets
 % * Updated resampling for batch processing mode
-% * Updated Bio-Formats to 6.4.0 (Requires Matlab R2017b or newer)
+% * Updated Bio-Formats to 6.4.0 (Requires MATLAB R2017b or newer)
 % * Swapped Log and Info buttons in the Path panel
 % * Tweaked names of plugins to include spaces between capital letters
 % * Optimized handling of Java classes
@@ -109,7 +119,7 @@
 %
 % * The deployed version of MIB comes with R2019b instead of R2017a
 % * Added the Batch mode for repetitive processing of images (Menu->File->Batch processing)
-% * Added visualization of models using Matlab Volume Viewer app (Menu->Models->Render model->Matlab volume viewer, R2019 or newer, Matlab version only)
+% * Added visualization of models using MATLAB Volume Viewer app (Menu->Models->Render model->MATLAB volume viewer, R2019 or newer, MATLAB version only)
 % * Added Drag & Drop materials to the segmentation tools (Segmentation panel->Drag and Drop materials, https://youtu.be/NGudNrxBbi0)
 % * Added alignment of color channels using landmark multi points (Menu->Dataset->Alignment->Algorithm:Color channels, multi points
 % * Added content-aware fill using coherence transport (Menu->Image->Tools for images->Content-aware fill), for R2019a/R2019b or newer
@@ -127,14 +137,14 @@
 % * Rewritten Image arithmetics to include mask, model, and selection layers (|Menu->Image->Tools for images->Image arithmetic...|)
 % * Updated use of xlswrite, for R2019a or newer writecell function will be used
 % * Updated data conversion from 32-bit to 8- and 16-bit; from 8-bit to 16-bit
-% * Updated Bio-Formats to 6.2.1 (Requires Matlab R2017b or newer)
+% * Updated Bio-Formats to 6.2.1 (Requires MATLAB R2017b or newer)
 % * [2.601] Bug fixes
 % * [2.601] Added export of annotations to CSV format
 %
 %
 %% 2.51 / 13.03.2019
 % * Added methods for automatic global black-and-white thresholding (|Menu->Tools->Semi-automatic segmentation->Global thresholding|)
-% * Added selection of materials for rendering of Matlab Isosurface models (|Menu->Models->Render model->Matlab isosurface|)
+% * Added selection of materials for rendering of MATLAB Isosurface models (|Menu->Models->Render model->MATLAB isosurface|)
 % * Added calculation of images with extended depth-of-field focus stacking
 % (|Menu->Image->Tools for images->Intensity projection->Focus stacking|)
 % * Added saving of HDF5 format in the virtual mode without loading of complete stack
@@ -162,7 +172,7 @@
 %% 2.50 / 17.12.2018
 % * Added hardware accelerated 3D volume rendering (Menu->File->Render
 % volume->MIB rendering). The volume rendering can be used also for making
-% snapshots and animations. Requires Matlab R2018b or newer!
+% snapshots and animations. Requires MATLAB R2018b or newer!
 % * Added automatic image alignment using detected features
 % * Added 20 distinct colors palette
 % * Added center point marker for the image axes (Toolbar -> center point button)
@@ -212,9 +222,9 @@
 % |Menu->File->Preferences->External dirs|, please remove IMARISPATH
 % variable from the system environmental variables
 % * Added calculation of 3D skeleton and morphological operations for 3D
-% objects: |Menu->Selection->Morphological 2D/3D operations|, (_only for Matlab R2018a and newer_)
-% * Added export of volumes and models for rendering to Matlab VolumeViewer
-% application (|Menu->File->Render volume->Matlab volume viewer| or |Menu->Models->Render model->Matlab volume viewer|, (_only the Matlab version of MIB, requires Matlab R2017a and newer_)
+% objects: |Menu->Selection->Morphological 2D/3D operations|, (_only for MATLAB R2018a and newer_)
+% * Added export of volumes and models for rendering to MATLAB VolumeViewer
+% application (|Menu->File->Render volume->MATLAB volume viewer| or |Menu->Models->Render model->MATLAB volume viewer|, (_only the MATLAB version of MIB, requires MATLAB R2017a and newer_)
 % * Added quantitation of objects in physical units (|Menu->Models->Model statistics...|)
 % * Added options to insert an empty slice into the dataset (|Menu->Dataset->Slice->Insert an empty slice|) and to insert
 % an existing slice into another position (|Menu->Dataset->Slice->Copy slice...|)
@@ -230,14 +240,14 @@
 % * Added possibility to do deep neural network denoising on GPUs with
 % small memory, use the |GPU block| parameter in |Image filters->DNN Denoise|
 % * Added the Simplify button to the Dataset Info window to allow remove most of metadata
-% * Added rendering with Imaris models generated in Matlab
-% (|Menu->Models->Render model->Matlab isosurface and export to Imaris|),
+% * Added rendering with Imaris models generated in MATLAB
+% (|Menu->Models->Render model->MATLAB isosurface and export to Imaris|),
 % require Imaris 8.
 % * Added rendering snapshots with white background (|Toolbar->Snapshot tool->white Bg|)
 % * Added rendering of annotations as scaled spots in Imaris
 % * Added Get Statistics for models with more than 255 materials
 % * Added calculation of Min/Max/Mean/Median intensity projection (Menu->Image->Tools for images->Intensity projection...)
-% * Added use of external BMxD filters [Matlab version only!] (Image filters panel->External: BMxD)
+% * Added use of external BMxD filters [MATLAB version only!] (Image filters panel->External: BMxD)
 % * Added Add Frame tool that can be used to generate a frame around
 % dataset with a distinct color or using various repetition methods (Menu->Dataset->Transform->Add frame)
 % * Added renaming of annotations (|Menu->Models->Annotations->Annotation list->RMB over the list of selected annotations->Rename selected annotations...|)
@@ -249,7 +259,7 @@
 %
 %% 2.211 / 21.12.2017
 % * Updated TripleAreaIntensity plugin
-% * Fix, the |contains| function replaced with ismember for compatibility with Matlab 2014b-2016a
+% * Fix, the |contains| function replaced with ismember for compatibility with MATLAB 2014b-2016a
 % * Fix of lost key press callbacks after modification of the segmentation table
 % * Fix of loading hdf5 datasets with time dimension
 % * Few other minor bug fixes
@@ -257,14 +267,14 @@
 %% 2.21 / 04.12.2017
 % * Added model with 4294967295 materials for tests
 % * Improved object picker for models with 65535 materials
-% * Fix compiling of certain function using the |-compatibleArrayDims| switch to be compatible with the new Matlab API
+% * Fix compiling of certain function using the |-compatibleArrayDims| switch to be compatible with the new MATLAB API
 % * Fix of 'Fix selection to material' switch for models with more than 255 materials
 % * Fix connection to Omero for the deployed version
 %
 %% 2.20 14.11.2017
 % * Added a new 3D Grid mode to the Graphcut tool; when used the fast interactive performance can be achieved even with very large datasets
 % * Added denoise of image using deep neural network (|Image Filters
-% Panel->Filter->DNN Denoise|), requires Matlab R2017b or newer and Neural Network Toolbox
+% Panel->Filter->DNN Denoise|), requires MATLAB R2017b or newer and Neural Network Toolbox
 % * Added export annotations to Imaris (|Menu->Models->Annotations->Export to Imaris as Spots|)
 % * Added possibility to do not calculate intensity profiles for measurements to make measurements faster
 % * Added buttons to magnify snapshots in x2, x4, and x8 times using the Snapshot tool
@@ -280,7 +290,7 @@
 % * Updated measure line/freehand length tool (|Menu->Tools->Measure|), now  after use of these tools the selection is not shown
 % * Fixed disabling of the selection mode after modification of measurements
 % * Fixed movement of measurements after their recalculation
-% * Fixed recalculation of voxels after import of images from Matlab
+% * Fixed recalculation of voxels after import of images from MATLAB
 % * Fixed resampling of a single slice RGB images
 % * Fixed incorrect reading of the AmiraMesh header for the fuse mode of the Chop tool
 % * [Programming] moved mibController.connImaris to mibModel.connImaris
@@ -295,7 +305,7 @@
 % window: Segmentation panel->Annotations->Annotation list->Right mouse
 % click over the table with annotations
 % * Added export of selected annotations to Amira as landmark points or to
-% Matlab: Segmentation panel->Annotations->Annotation list->Right mouse
+% MATLAB: Segmentation panel->Annotations->Annotation list->Right mouse
 % click over the table with annotations
 % * Added saving of annotations to Amira landmarks format (Segmentation panel->Annotations->Annotation list->Save)
 % * Added sorting of annotations in the Annotation list window:
@@ -331,7 +341,7 @@
 % * Added find and select material under the mouse cursor using the Ctrl+F shortcut
 % * Added pasting of selection to all layers (Menu->Selection->Selection to buffer->Paste to all slices (Ctrl+Shift+V)
 % * Added indication of material index under the mouse cursor to the |Pixel info| of the |Path panel|
-% * Added possibility to save models for MIB version 1 (File->Models->Save model as...->Matlab format for MIB ver. 1 (*.mat))
+% * Added possibility to save models for MIB version 1 (File->Models->Save model as...->MATLAB format for MIB ver. 1 (*.mat))
 % * Modified use of Ctrl+C/Ctrl+V, now the stored dataset can be pasted to
 % any other dataset in MIB assuming that the dataset have the same
 % width/height. As result |storedSelection| property of |mibImage| class has been
@@ -356,9 +366,9 @@
 %
 % * With release 2.0 MIB has been rewritten to utilize Controller-View-Model
 % architecture, which brings stability and ease of future development.
-% However, because of that, the system requirements for Matlab were increased
-% and MIB2 is only available for Matlab R2014b and older 
-% (due to continuous development of Matlab, the most recent release is always recommended)
+% However, because of that, the system requirements for MATLAB were increased
+% and MIB2 is only available for MATLAB R2014b and older 
+% (due to continuous development of MATLAB, the most recent release is always recommended)
 % * Added "Copy to clipboard" and "Open directory in the file explorer" for the right mouse button
 % click over the current path edit box of the path panel (ver. 2.002)
 % * Added adaptive black and white thresholding

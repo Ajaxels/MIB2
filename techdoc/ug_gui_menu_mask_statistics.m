@@ -94,7 +94,7 @@
 %   <td style="border: 0px">Crops the dataset based on detected 3D objects.
 %   It is possible to add margins during the crop and crop both Model and
 %   Mask layers. The results can be saved to a file or exported to
-%   Matlab<br><br>
+%   MATLAB<br><br>
 %   <img src="images/MenuMaskStatisticsCropObj.png"><br><br>
 %   <ul><b>Parameters</b>
 %   <li><b>Target:</b> where to crop the objects</li>
@@ -105,7 +105,7 @@
 %   <li><b>Single Mask object per dataset:</b> keep only a main object in the crop of the Mask, enabled only when the objects were identified from the mask layer</li>
 %   </ul>
 %   <br>
-%   <ul>The data is exported to Matlab as a structure
+%   <ul>The data is exported to MATLAB as a structure
 %   [Filename_IndexOfTheObject] with the following fields:
 %   <li><b>.img</b> - cropped image [1:height, 1:width, 1:colors, 1:stacks]</li>
 %   <li><b>.meta</b> - meta data for the cropped image [1:height, 1:width, 1:colors, 1:stacks]</li>
@@ -115,11 +115,11 @@
 %   <li><b>.Mask</b> - a matrix with the Mask layer [1:height, 1:width, 1:stacks] that corresponds to the cropped image</li>
 %   </ul>
 %   The exported data can be imported back to MIB using the
-%   <code>Menu->File->Import image from...->Matlab</code> and providing variables to
+%   <code>Menu->File->Import image from...->MATLAB</code> and providing variables to
 %   import, for example <em>Filename_IndexOfTheObject.img</em> and
 %   <em>Filename_IndexOfTheObject.meta</em>.<br>
 %   Or for the Model:
-%   Menu->Models->Import model from Matlab-> and providing variable with
+%   Menu->Models->Import model from MATLAB-> and providing variable with
 %   the model, for example <em>Filename_IndexOfTheObject.Model</em>.
 %   </td>
 % </tr>
@@ -155,7 +155,7 @@
 % objects may be added, removed or used for replacement of the |Selection|
 % layer.
 % * *17. The Export button* allows export of the statistic values to Excel or
-% Matlab.
+% MATLAB.
 %
 %
 %% Statistical properties of 3D objects
@@ -222,7 +222,7 @@
 % * *StdIntensity* - calculates standard deviation intensity of the image within 2D or 3D objects.
 % * *SumIntensity* - calculates sum of the image intensities within 2D or 3D objects.
 % * *Correlation* - calculates correlation between image intensities of the two selected color channels. See more in the help
-% of Matlab |corr2| function.
+% of MATLAB |corr2| function.
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 

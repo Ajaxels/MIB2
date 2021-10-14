@@ -1,12 +1,12 @@
-function fnOut = saveModel(obj, filename, options)
-% function fnOut = saveModel(obj, filename, options)
+function fnOut = saveModel(obj, filename, saveModelOptions)
+% function fnOut = saveModel(obj, filename, saveModelOptions)
 % save model to a file
 %
 % Parameters:
 % filename: [@em optional] a string with filename, when empty a dialog for
 % filename selection is shown; when the filename is provided its extension defines the output format, unless the
-% format is provided in the options structure
-% options: an optional structure with additional parameters
+% format is provided in the saveModelOptions structure
+% saveModelOptions: an optional structure with additional parameters
 % @li .Format - string with the output format, as in the Formats variable below, for example 'Matlab format (*.model)'
 % @li .FilenameGenerator - string, when ''Use original
 % filename'' -> use original filenames of the loaded datasets; ''Use
@@ -14,8 +14,8 @@ function fnOut = saveModel(obj, filename, options)
 % the first filename of the loaded dataset as template
 % @li .DestinationDirectory - string, with destination directory, if filename has no full path
 % @li .MaterialIndex - numeric, index of the material to save, when 0 save all materials; NaN - save currently selected material
-% @li .Saving3DPolicy - string, [TIF only] save images as 3D TIF file or as
-% a sequence of 2D files ('3D stack', '2D sequence')
+% @li .Saving3DPolicy - string, [TIF, mibCat only] save images as 3D file or as a sequence of 2D files ('3D stack', '2D sequence')
+% @li .FilenamePolicy - string, [mibCat only] policy for generation of filenames 
 % @li .showWaitbar - logical, show or not the waitbar
 % @li .silent  - logical, do not ask any questions and use default parameters
 %
@@ -35,7 +35,7 @@ function fnOut = saveModel(obj, filename, options)
 global mibPath;
 
 fnOut = [];
-if nargin < 3; options = struct(); end
+if nargin < 3; saveModelOptions = struct(); end
 if nargin < 2; filename = []; end
 
 Formats = {'*.model',  'Matlab format (*.model)'; ...
@@ -45,6 +45,7 @@ Formats = {'*.model',  'Matlab format (*.model)'; ...
     '*.h5',   'Hierarchical Data Format (*.h5)'; ...
     '*.model',  'Matlab format 2D sequence (*.model)'; ...
     '*.mat',   'Matlab format for MIB ver. 1 (*.mat)'; ...
+    '*.mibCat', 'Matlab categorical format (*.mibCat)'; ...
     '*.mod',  'Contours for IMOD (*.mod)'; ...
     '*.mrc',  'Volume for IMOD (*.mrc)'; ...
     '*.nrrd',  'NRRD for 3D Slicer (*.nrrd)'; ...
@@ -53,8 +54,8 @@ Formats = {'*.model',  'Matlab format (*.model)'; ...
     '*.xml',   'Hierarchical Data Format with XML header (*.xml)'; ...
     '*.*',  'All Files (*.*)'
     };
-if ~isfield(options, 'showWaitbar'); options.showWaitbar = true; end
-if ~isfield(options, 'silent'); options.silent = false; end
+if ~isfield(saveModelOptions, 'showWaitbar'); saveModelOptions.showWaitbar = true; end
+if ~isfield(saveModelOptions, 'silent'); saveModelOptions.silent = false; end
 
 if  obj.modelExist == 0 || obj.modelType == 128
     disp('Cancel: No segmentation model detected');
@@ -65,8 +66,8 @@ end
 if ~isempty(filename)
     [pathStr, fnameStr, ext] = fileparts(filename);
     if isempty(pathStr)
-        if isfield(options, 'DestinationDirectory')
-            filename = fullfile(options.DestinationDirectory, filename);
+        if isfield(saveModelOptions, 'DestinationDirectory')
+            filename = fullfile(saveModelOptions.DestinationDirectory, filename);
         else
             msgbox('Destination directory for saving models was not provided!', 'Error!', 'error', 'modal');
             return;
@@ -79,16 +80,16 @@ if isempty(filename)
     fnOut = obj.modelFilename;
     if isempty(fnOut)
         fnOut = obj.meta('Filename');
-        if isempty(strfind(fnOut, '/')) && isempty(strfind(fnOut, '\')) && isfield(options, 'DestinationDirectory') %#ok<STREMP>
-            fnOut = fullfile(options.DestinationDirectory, fnOut);
+        if isempty(strfind(fnOut, '/')) && isempty(strfind(fnOut, '\')) && isfield(saveModelOptions, 'DestinationDirectory') %#ok<STREMP>
+            fnOut = fullfile(saveModelOptions.DestinationDirectory, fnOut);
         end
         [path, fnOut] = fileparts(fnOut);
         fnOut = ['Labels_' fnOut '.model'];
         fnOut = fullfile(path, fnOut);
     end
     
-    if isempty(fnOut) && isfield(options, 'DestinationDirectory')
-        fnOut = fullfile(options.DestinationDirectory, 'model.model');
+    if isempty(fnOut) && isfield(saveModelOptions, 'DestinationDirectory')
+        fnOut = fullfile(saveModelOptions.DestinationDirectory, 'model.model');
     elseif isempty(fnOut)
         fnOut = [];
     end
@@ -120,20 +121,20 @@ if isempty(filename)
         warndlg(sprintf('!!! Warning !!!\n\nThe output format was not selected!'), 'Missing output format', 'modal');
         return;
     end
-    options.Format = Formats{FilterIndex, 2};
+    saveModelOptions.Format = Formats{FilterIndex, 2};
     fnOut = fullfile(pathStr, fn);
 else
     [pathStr, fnameStr, ext] = fileparts(filename);
     extFilter = ['*' ext];
     
-    if ~isfield(options, 'Format')  % detect output format
+    if ~isfield(saveModelOptions, 'Format')  % detect output format
         formatListPosition = find(ismember(Formats(1:end-1,1), extFilter));
         if isempty(formatListPosition); msgbox('The output format can''t be identified!', 'Error!', 'error', 'modal'); return; end
         formatListPosition = formatListPosition(1);
-        options.Format = Formats{formatListPosition, 2};
+        saveModelOptions.Format = Formats{formatListPosition, 2};
     else
-        if ismember(options.Format, Formats(:,2)) == 0
-            errMsg = sprintf('The provided output format "%s" is not valid\n\nUse one of these options:\n%s', options.Format);
+        if ismember(saveModelOptions.Format, Formats(:,2)) == 0
+            errMsg = sprintf('The provided output format "%s" is not valid\n\nUse one of these saveModelOptions:\n%s', saveModelOptions.Format);
             for i=1:size(Formats, 1)-1
                 errMsg = sprintf('%s%s\n', errMsg, Formats{i,2});
             end
@@ -145,11 +146,11 @@ else
     fnOut = filename;
 end
 
-if isfield(options, 'MaterialIndex')
-    if isnan(options.MaterialIndex)
+if isfield(saveModelOptions, 'MaterialIndex')
+    if isnan(saveModelOptions.MaterialIndex)
         selMaterial = obj.selectedMaterial - 2;
     else
-        selMaterial = options.MaterialIndex;
+        selMaterial = saveModelOptions.MaterialIndex;
     end
 else
     selMaterial = 0;    % save all materials
@@ -159,47 +160,103 @@ tic
 obj.modelVariable = strrep(obj.modelVariable, '-', '_');
 warning('off', 'MATLAB:handle_graphics:exceptions:SceneNode');
 
-if strcmp(options.Format, 'Matlab format (*.model)') || strcmp(options.Format, 'Matlab format for MIB ver. 1 (*.mat)')
-    if options.showWaitbar
+if strcmp(saveModelOptions.Format, 'Matlab format (*.model)') ...
+    || strcmp(saveModelOptions.Format, 'Matlab format for MIB ver. 1 (*.mat)') ...
+    || strcmp(saveModelOptions.Format, 'Matlab categorical format (*.mibCat)') 
+
+    if strcmp(saveModelOptions.Format, 'Matlab categorical format (*.mibCat)') && ~isfield(saveModelOptions, 'Saving3DPolicy')
+        prompts = {'Model saving policy:'; 'Filename policy (only for 2D):'};
+        defAns = {{'3D stack', '2D sequence', 1}; {'Use existing name', 'Use new provided name', 2}}; 
+        [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, 'Options');
+        if isempty(answer); return; end     
+        saveModelOptions.Saving3DPolicy = answer{1};
+        saveModelOptions.FilenamePolicy = answer{2};
+    end
+
+    if saveModelOptions.showWaitbar
         wb = waitbar(0, sprintf('%s\nPlease wait...', fnOut), 'Name', 'Saving the model', 'WindowStyle', 'modal');
         wb.Children.Title.Interpreter = 'none';
         drawnow;
     end
     
-    str1 = strcat(obj.modelVariable, ' = obj.getData(''model'', 4, NaN);');
-    eval(str1);
-    
-    if strcmp(options.Format, 'Matlab format (*.model)')     % models for MIB2
-        modelMaterialNames = obj.modelMaterialNames; %#ok<NASGU>
-        modelMaterialColors = obj.modelMaterialColors; %#ok<NASGU>
-        BoundingBox = obj.getBoundingBox(); %#ok<NASGU>
-        modelVariable = obj.modelVariable; %#ok<NASGU>    % name of a variable that has the dataset
-        modelType = obj.modelType;  %#ok<NASGU> % type of the model
-        
-        if obj.hLabels.getLabelsNumber() > 1  % save annotations
-            [labelText, labelValue, labelPosition] = obj.hLabels.getLabels(); %#ok<NASGU,ASGLU>
-            str1 = ['save ''' fnOut ''' ' obj.modelVariable ...
-                ' modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType labelText labelValue labelPosition -mat -v7.3'];
-        else    % save without annotations
-            str1 = ['save ''' fnOut ''' ' obj.modelVariable ...
-                ' modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType -mat -v7.3'];
-        end
-        eval(str1);
-        obj.modelFilename = fnOut;
-    else                    % models for MIB1
-        material_list = obj.modelMaterialNames; %#ok<NASGU>
-        color_list = obj.modelMaterialColors; %#ok<NASGU>
-        bounding_box = obj.getBoundingBox(); %#ok<NASGU>
-        model_var = obj.modelVariable;  %#ok<NASGU>    % name of a variable that has the dataset
-        if obj.hLabels.getLabelsNumber() > 1  % save annotations
-            [labelText, labelValue, labelPosition] = obj.hLabels.getLabels(); %#ok<NASGU,ASGLU>
-            str1 = ['save ''' fnOut ''' ' obj.modelVariable ' material_list color_list bounding_box model_var labelText labelPosition -mat -v7.3'];
-        else    % save without annotations
-            str1 = ['save ''' fnOut ''' ' obj.modelVariable ' material_list color_list bounding_box model_var -mat -v7.3'];
-        end
-        eval(str1);
+    switch saveModelOptions.Format
+        case 'Matlab format (*.model)'     % models for MIB2
+            str1 = strcat(obj.modelVariable, ' = obj.getData(''model'', 4, NaN);');
+            eval(str1);
+            modelMaterialNames = obj.modelMaterialNames; %#ok<NASGU>
+            modelMaterialColors = obj.modelMaterialColors; %#ok<NASGU>
+            BoundingBox = obj.getBoundingBox(); %#ok<NASGU>
+            modelVariable = obj.modelVariable; %#ok<NASGU>    % name of a variable that has the dataset
+            modelType = obj.modelType;  %#ok<NASGU> % type of the model
+            
+            if obj.hLabels.getLabelsNumber() > 1  % save annotations
+                [labelText, labelValue, labelPosition] = obj.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+                str1 = ['save ''' fnOut ''' ' obj.modelVariable ...
+                    ' modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType labelText labelValue labelPosition -mat -v7.3'];
+            else    % save without annotations
+                str1 = ['save ''' fnOut ''' ' obj.modelVariable ...
+                    ' modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType -mat -v7.3'];
+            end
+            eval(str1);
+            obj.modelFilename = fnOut;
+        case 'Matlab format for MIB ver. 1 (*.mat)'
+            str1 = strcat(obj.modelVariable, ' = obj.getData(''model'', 4, NaN);');
+            eval(str1);
+            material_list = obj.modelMaterialNames; %#ok<NASGU>
+            color_list = obj.modelMaterialColors; %#ok<NASGU>
+            bounding_box = obj.getBoundingBox(); %#ok<NASGU>
+            model_var = obj.modelVariable;  %#ok<NASGU>    % name of a variable that has the dataset
+            if obj.hLabels.getLabelsNumber() > 1  % save annotations
+                [labelText, labelValue, labelPosition] = obj.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+                str1 = ['save ''' fnOut ''' ' obj.modelVariable ' material_list color_list bounding_box model_var labelText labelPosition -mat -v7.3'];
+            else    % save without annotations
+                str1 = ['save ''' fnOut ''' ' obj.modelVariable ' material_list color_list bounding_box model_var -mat -v7.3'];
+            end
+            eval(str1);
+        case 'Matlab categorical format (*.mibCat)'
+            classNames = obj.modelMaterialNames;
+            classNames = [{'Exterior'}; classNames];    % add Exterior as material 0
+            imgVariable = 'imgOut';
+            options.dimOrder = 'yxczt';
+            options.modelType = obj.modelType;
+            options.modelMaterialColors = obj.modelMaterialColors;
+            if strcmp(obj.modelMaterialNames{1}, 'Exterior')    % correct material names for Exterior, Exterior case
+                options.modelMaterialNames = obj.modelMaterialNames;    
+            else
+                options.modelMaterialNames = classNames;
+            end
+            if ~strcmp(obj.modelMaterialNames{1}, 'Exterior')   % add a random color for the Exterior
+                options.modelMaterialColors = [rand(1,3); options.modelMaterialColors];     
+            end
+            
+            if strcmp(saveModelOptions.Saving3DPolicy, '3D stack')
+                str1 = strcat(obj.modelVariable, ' = obj.getData(''model'', 4, NaN);');
+                eval(str1);
+            
+                cmdString = sprintf('imgOut = categorical(%s, 0:numel(classNames)-1, classNames);', obj.modelVariable);    %#ok<NODEF> % convert to categorial
+                eval(cmdString);
+                save(fnOut, 'imgOut', 'imgVariable', 'options', '-mat', '-v7.3');
+            else
+                imgOutFull = obj.getData('model', 4, NaN); %#ok<NASGU>
+                [pathOut, fnOut] = fileparts(fnOut);
+                sliceNames = obj.meta('SliceName');
+                for z=1:obj.depth
+                    if strcmp(saveModelOptions.FilenamePolicy, 'Use existing name') && numel(sliceNames) > 1
+                        [~, fnOutLocal] = fileparts(sliceNames{z});
+                        fnOutLocal = ['Labels_' fnOutLocal '.mibCat'];
+                    else
+                        fnOutLocal = generateSequentialFilename(fnOut, z, obj.depth, '.mibCat');
+                    end
+                    fnOutLocal = fullfile(pathOut, fnOutLocal);
+                
+                    cmdString = sprintf('imgOut = categorical(imgOutFull(:,:,%d), 0:numel(classNames)-1, classNames);', z);    %#ok<NODEF> % convert to categorial
+                    eval(cmdString);
+                    save(fnOutLocal, 'imgOut', 'imgVariable', 'options', '-mat', '-v7.3');
+                    if saveModelOptions.showWaitbar; waitbar(z/obj.depth, wb); end
+                end
+            end
     end
-    if options.showWaitbar; delete(wb); end
+    if saveModelOptions.showWaitbar; delete(wb); end
 else
     [path, filename, ext] = fileparts(fnOut);
     ext = lower(ext);
@@ -209,7 +266,7 @@ else
     if obj.time > 1
         button = 'Save as series of 3D datasets';
         if ~ismember(ext, {'.xml', '.h5'})
-            if options.silent == 0
+            if saveModelOptions.silent == 0
                 button = questdlg(sprintf('!!! Warning !!!\nIt is not possible to save 4D dataset into a single file!\n\nHowever it is possible to save the currently shown Z-stack, or to make a series of files'), ...
                     'Save model', 'Save as series of 3D datasets', 'Save the currently shown Z-stack', 'Cancel', 'Save as series of 3D datasets');
                 if strcmp(button, 'Cancel'); return; end
@@ -225,10 +282,10 @@ else
     end
     
     showLocalWaitbar = 0;
-    if options.showWaitbar
+    if saveModelOptions.showWaitbar
         if t1 ~= t2
             showLocalWaitbar = 1;
-            wb = waitbar(0, sprintf('Saving %s\nPlease wait...', options.Format), 'Name', 'Saving images...', 'WindowStyle', 'modal');
+            wb = waitbar(0, sprintf('Saving %s\nPlease wait...', saveModelOptions.Format), 'Name', 'Saving images...', 'WindowStyle', 'modal');
             wb.Children.Title.Interpreter = 'none';
             drawnow;
             dT = t2-t1+1;
@@ -242,7 +299,7 @@ else
     
     if selMaterial > 0
         button = 'Proceed, set as 1';
-        if options.silent == 0
+        if saveModelOptions.silent == 0
             button = questdlg(sprintf('You are going to export only material No:%d (%s) !\nProceed?', ...
                 selMaterial, obj.modelMaterialNames{selMaterial}), ...
                 'Single material export', 'Proceed, set as 1', 'Proceed, set as 255', 'Cancel', 'Proceed, set as 1');
@@ -250,7 +307,7 @@ else
         end
         
         if strcmp(button, 'Proceed, set as 255')
-            if ~strcmp(options.Format, 'Isosurface as binary STL (*.stl)'); multCoefficient = 255; end    % do not do that for the STL model type
+            if ~strcmp(saveModelOptions.Format, 'Isosurface as binary STL (*.stl)'); multCoefficient = 255; end    % do not do that for the STL model type
         end
         color_list = obj.modelMaterialColors(selMaterial,:);
         modelMaterialNames = obj.modelMaterialNames(selMaterial);
@@ -278,13 +335,13 @@ else
             extraOptions = struct();
         end
         
-        if options.showWaitbar
+        if saveModelOptions.showWaitbar
             showWaitbar = ~showLocalWaitbar;
         else
             showWaitbar = 0;
         end % show or not waitbar in bitmap2amiraMesh
         
-        switch options.Format
+        switch saveModelOptions.Format
             case 'Amira mesh binary RLE compression SLOW (*.am)'     % Amira mesh binary RLE compression
                 bb = obj.getBoundingBox();
                 pixStr = obj.pixSize;
@@ -308,7 +365,7 @@ else
                 bitmap2amiraLabels(fullfile(path, fnOutLocal), model, 'ascii', pixStr, color_list, modelMaterialNames, 1, showWaitbar, extraOptions);
             case {'Hierarchical Data Format (*.h5)', 'Hierarchical Data Format with XML header (*.xml)'} % hdf5 format
                 if t==t1    % getting parameters for saving dataset
-                    if options.silent == 0
+                    if saveModelOptions.silent == 0
                         HDFoptions = mibSaveHDF5Dlg(obj);
                     else
                          HDFoptions.Format = 'matlab.hdf5';
@@ -373,7 +430,7 @@ else
                 end
             case 'Contours for IMOD (*.mod)'    % Contours for IMOD (*.mod)
                 if exist('savingOptions', 'var') == 0   % define parameters for the first time use
-                    if options.silent == 0
+                    if saveModelOptions.silent == 0
                         prompt = {'Take each Nth point in contours ( > 0):', 'show detected points in the selection layer'};
                         defAns = {'5', false};
                         answer = mibInputMultiDlg([], prompt, defAns, 'Export to IMOD');
@@ -405,7 +462,7 @@ else
                 end
             case 'Matlab format 2D sequence (*.model)'  % MIB Matlab format 2D sequence
                 useOriginalFilenames = false;
-                if options.showWaitbar && t1==t2
+                if saveModelOptions.showWaitbar && t1==t2
                     if isKey(obj.meta, 'SliceName') && numel(obj.meta('SliceName'))==size(model,3)
                         answer = questdlg('Would you like to use original filenames or sequential?', ...
                             'Save model as...', ...
@@ -428,7 +485,7 @@ else
                 modelMaterialNames = obj.modelMaterialNames; %#ok<NASGU>
                 modelMaterialColors = obj.modelMaterialColors; %#ok<NASGU>
                 BoundingBox = obj.getBoundingBox(); %#ok<NASGU>
-                modelVariable = obj.modelVariable; %#ok<NASGU>    % name of a variable that has the dataset
+                modelVariable = 'mibModel'; %#ok<NASGU> % name of a variable that has the dataset 
                 modelType = obj.modelType;  %#ok<NASGU> % type of the model
                 
                 zMax = size(model, 3);
@@ -453,19 +510,19 @@ else
                         fnOut = generateSequentialFilename(fullfile(path, fnLocal), z, zMax, extLocal);
                     end
                     
-                    if options.showWaitbar && t1==t2; waitbar(z/zMax, wb2, sprintf('%s\nPlease wait...', fnOut)); end
+                    if saveModelOptions.showWaitbar && t1==t2; waitbar(z/zMax, wb2, sprintf('%s\nPlease wait...', fnOut)); end
                     if includeAnnotations  % save with annotations
                         %[labelText, labelValue, labelPosition] = obj.hLabels.getLabels(z); %#ok<ASGLU>
-                        str1 = ['save ''' fnOut ''' ' obj.modelVariable ...
-                            ' modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType labelText labelValue labelPosition -mat -v7.3'];
+                        str1 = ['save ''' fnOut '''' ...
+                            ' mibModel modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType labelText labelValue labelPosition -mat -v7.3'];
                     else    % save without annotations
-                        str1 = ['save ''' fnOut ''' ' obj.modelVariable ...
-                            ' modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType -mat -v7.3'];
+                        str1 = ['save ''' fnOut '''' ...
+                            ' mibModel modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType -mat -v7.3'];
                     end
                     eval(str1);
                     obj.modelFilename = fnOut;
                 end
-                if options.showWaitbar && t1==t2; delete(wb2); end
+                if saveModelOptions.showWaitbar && t1==t2; delete(wb2); end
             case 'Volume for IMOD (*.mrc)'     % Volume for IMOD (*.mrc)
                 Options.volumeFilename = fullfile(path, fnOutLocal);
                 Options.pixSize = obj.pixSize;
@@ -479,7 +536,7 @@ else
             case 'Isosurface as binary STL (*.stl)'  % STL isosurface for Blinder (*.stl)
                 bounding_box = obj.getBoundingBox();  % get bounding box
                 if exist('savingOptions', 'var') == 0   % define parameters for the first time use
-                    if options.silent == 0
+                    if saveModelOptions.silent == 0
                         prompt = {'Reduce the volume down to, width pixels (no volume reduction when 0)?',...
                             'Smoothing 3d kernel, width (no smoothing when 0):',...
                             'Maximal number of faces (no limit when 0):'};
@@ -520,8 +577,8 @@ else
                 resolution(2) = obj.meta('YResolution');
                 if exist('savingOptions', 'var') == 0   % define parameters for the first time use
                     savingOptions = struct('Resolution', resolution, 'overwrite', 1, 'Saving3d', NaN, 'cmap', NaN);
-                    if isfield(options, 'Saving3DPolicy')
-                        if strcmp(options.Saving3DPolicy, '3D stack')
+                    if isfield(saveModelOptions, 'Saving3DPolicy')
+                        if strcmp(saveModelOptions.Saving3DPolicy, '3D stack')
                             savingOptions.Saving3d = 'multi';
                         else
                             savingOptions.Saving3d = 'sequence';

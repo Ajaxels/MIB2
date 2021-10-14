@@ -232,12 +232,14 @@ drawnow;    % set delay
     Item = jHelpMenu.getMenuComponent(2);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'image-sc.png')));
     Item = jHelpMenu.getMenuComponent(3);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'headset.png')));
+    Item = jHelpMenu.getMenuComponent(4);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'classhelp.png')));
-    Item = jHelpMenu.getMenuComponent(5);
+    Item = jHelpMenu.getMenuComponent(6);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'update.png')));
-    Item = jHelpMenu.getMenuComponent(7);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'copyright.png')));
     Item = jHelpMenu.getMenuComponent(8);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'copyright.png')));
+    Item = jHelpMenu.getMenuComponent(9);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'about.png')));
 
 % unselect Help entry

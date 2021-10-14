@@ -55,20 +55,21 @@ repositionSwitch = 1; % reposition the figure, when creating a new figure
 handles.indices = [];
 
 handles.labelsTable_cm = uicontextmenu('Parent',handles.mibAnnotationsGUI);
-m01 = uimenu(handles.labelsTable_cm, 'Label', 'Jump to annotation', 'Callback', {@tableContextMenu_cb, 'Jump'});
-m02 = uimenu(handles.labelsTable_cm, 'Label', 'Add annotation...', 'Callback', {@tableContextMenu_cb, 'Add'});
-m03 = uimenu(handles.labelsTable_cm, 'Label', 'Rename selected annotations...', 'Callback', {@tableContextMenu_cb, 'Rename'});
-m04 = uimenu(handles.labelsTable_cm, 'Label', 'Batch modify selected annotations...', 'Callback', {@tableContextMenu_cb, 'Modify'});
-m05 = uimenu(handles.labelsTable_cm, 'Label', 'Count selected annotations', 'Callback', {@tableContextMenu_cb, 'Count'});
-m06 = uimenu(handles.labelsTable_cm, 'Label', 'Copy selected annotations to clipboard', 'Callback', {@tableContextMenu_cb, 'Clipboard'}, 'Separator', 'on');
-m07 = uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations...', 'Callback', {@tableContextMenu_cb, 'Export'});
-m08 = uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations to Imaris', 'Callback', {@tableContextMenu_cb, 'Imaris'});
+uimenu(handles.labelsTable_cm, 'Label', 'Jump to annotation', 'Callback', {@tableContextMenu_cb, 'Jump'});
+uimenu(handles.labelsTable_cm, 'Label', 'Add annotation...', 'Callback', {@tableContextMenu_cb, 'Add'});
+uimenu(handles.labelsTable_cm, 'Label', 'Rename selected annotations...', 'Callback', {@tableContextMenu_cb, 'Rename'});
+uimenu(handles.labelsTable_cm, 'Label', 'Batch modify selected annotations...', 'Callback', {@tableContextMenu_cb, 'Modify'});
+uimenu(handles.labelsTable_cm, 'Label', 'Count selected annotations', 'Callback', {@tableContextMenu_cb, 'Count'});
+uimenu(handles.labelsTable_cm, 'Label', 'Copy selected annotations to clipboard', 'Callback', {@tableContextMenu_cb, 'Clipboard'}, 'Separator', 'on');
+uimenu(handles.labelsTable_cm, 'Label', 'Convert selected annotations to Mask...', 'Callback', {@tableContextMenu_cb, 'Mask'});
+uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations...', 'Callback', {@tableContextMenu_cb, 'Export'});
+uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations to Imaris', 'Callback', {@tableContextMenu_cb, 'Imaris'});
 m09 = uimenu(handles.labelsTable_cm, 'Label', 'Order', 'Separator','on');
-m09a = uimenu(handles.labelsTable_cm, 'Parent', m09, 'Label', 'Move to top  (Ctrl+Shift+Up)', 'Callback', {@tableContextMenu_cb, 'OrderTop'});
-m09b = uimenu(handles.labelsTable_cm, 'Parent', m09, 'Label', 'Move up (Ctrl+Up)', 'Callback', {@tableContextMenu_cb, 'OrderUp'});
-m09c = uimenu(handles.labelsTable_cm, 'Parent', m09, 'Label', 'Move down  (Ctrl+Down)', 'Callback', {@tableContextMenu_cb, 'OrderDown'});
-m09d = uimenu(handles.labelsTable_cm, 'Parent', m09, 'Label', 'Move to bottom (Ctrl+Shift+Down)', 'Callback', {@tableContextMenu_cb, 'OrderBottom'});
-m10 = uimenu(handles.labelsTable_cm, 'Label', 'Delete selected annotation(s)...', 'Separator','on', 'Callback', {@tableContextMenu_cb, 'Delete'});
+uimenu(handles.labelsTable_cm, 'Parent', m09, 'Label', 'Move to top  (Ctrl+Shift+Up)', 'Callback', {@tableContextMenu_cb, 'OrderTop'});
+uimenu(handles.labelsTable_cm, 'Parent', m09, 'Label', 'Move up (Ctrl+Up)', 'Callback', {@tableContextMenu_cb, 'OrderUp'});
+uimenu(handles.labelsTable_cm, 'Parent', m09, 'Label', 'Move down  (Ctrl+Down)', 'Callback', {@tableContextMenu_cb, 'OrderDown'});
+uimenu(handles.labelsTable_cm, 'Parent', m09, 'Label', 'Move to bottom (Ctrl+Shift+Down)', 'Callback', {@tableContextMenu_cb, 'OrderBottom'});
+uimenu(handles.labelsTable_cm, 'Label', 'Delete selected annotation(s)...', 'Separator','on', 'Callback', {@tableContextMenu_cb, 'Delete'});
 set(handles.annotationTable,'UIContextMenu',handles.labelsTable_cm);
 
 

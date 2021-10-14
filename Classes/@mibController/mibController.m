@@ -655,6 +655,18 @@ classdef mibController < handle
                 clear frame;
             end
             
+            % add callbacks for keys
+            obj.mibView.handles.mibGUI.WindowKeyPressFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowKeyPressFcn(eventdata));   % turn ON callback for the keys
+            obj.mibView.handles.mibGUI.WindowKeyReleaseFcn = (@(hObject, eventdata) obj.mibGUI_WindowKeyReleaseFcn(eventdata));   % turn ON callback for the keys
+            
+            if obj.mibModel.preferences.Tips.ShowTips == 1
+                try     % on MacOs this gives an error
+                    obj.startController('mibTipsController');
+                catch err
+                    obj.mibModel.preferences.Tips.ShowTips = 0;
+                end
+            end
+            
             % check for update
             currentDate = floor(now);
             if currentDate - obj.mibModel.preferences.System.Update.SinceLastCheck > obj.mibModel.preferences.System.Update.RecheckPeriod
@@ -686,13 +698,7 @@ classdef mibController < handle
                     end
                 end
             end
-            % add callbacks for keys
-            obj.mibView.handles.mibGUI.WindowKeyPressFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowKeyPressFcn(eventdata));   % turn ON callback for the keys
-            obj.mibView.handles.mibGUI.WindowKeyReleaseFcn = (@(hObject, eventdata) obj.mibGUI_WindowKeyReleaseFcn(eventdata));   % turn ON callback for the keys
             
-            if obj.mibModel.preferences.Tips.ShowTips == 1
-                obj.startController('mibTipsController');
-            end
         end
     end
 end

@@ -1,4 +1,4 @@
-function [img, logText] = mibDoImageFiltering2(img, BatchOpt)
+function [img, logText] = mibDoImageFiltering2(img, BatchOpt, cpuParallelLimit)
 % function [img, logText] = mibDoImageFiltering2(img, BatchOpt)
 % Filter the image, alternative version of mibDoImageFiltering with more
 % filters and BatchOpt compatible structure
@@ -6,6 +6,7 @@ function [img, logText] = mibDoImageFiltering2(img, BatchOpt)
 % Parameters:
 % img: -> a matrix [1:height, 1:width, 1:color, 1:layers]
 % BatchOpt: -> a structure with parameters
+% cpuParallelLimit -> max CPU number available for parallel processing
 %
 %
 % Return values:
@@ -23,6 +24,7 @@ function [img, logText] = mibDoImageFiltering2(img, BatchOpt)
 %
 
 logText = [];
+if nargin < 3; cpuParallelLimit = 0; end
 if nargin < 2; errordlg(sprintf('!!! Error !!!\n\nmibApplyImageFilter: the BatchOpt structure is required!'), 'Error'); return; end
 if nargin < 1; errordlg(sprintf('!!! Error !!!\n\nmibApplyImageFilter: the img is required!'), 'Error'); return; end
 
@@ -240,7 +242,7 @@ else    % perform 2D filters
     
     % define usage of parallel computing
     if BatchOpt.UseParallelComputing
-        parforArg = Inf;
+        parforArg = cpuParallelLimit;
     else
         parforArg = 0;
     end
@@ -687,7 +689,7 @@ else    % perform 2D filters
         case 'SaltAndPepper'
             logText = sprintf('%s, HSize:%s, Threshold:%d, NoiseType:%s', ....
                 logText, BatchOpt.HSize, BatchOpt.IntensityThreshold{1}, BatchOpt.NoiseType{1});
-            img = mibRemoveSaltAndPepperNoise(img, BatchOpt);
+            img = mibRemoveSaltAndPepperNoise(img, BatchOpt, cpuParallelLimit);
         case 'SlicClustering'
             % calculate number of superpixels
             dims = size(img);

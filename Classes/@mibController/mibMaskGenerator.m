@@ -106,6 +106,7 @@ for indexId = 1:numel(imgIn)
             Options.verbose = 0;
             Options2.bwthreshold = str2double(obj.mibView.handles.mibFrangiBWThreshold.String);
             Options2.sizefilter = str2double(obj.mibView.handles.mibFrangiBWSize.String);
+            Options2.cpuParallelLimit = obj.mibModel.cpuParallelLimit;
             
             if threeD == 1   % do Frangi filter in 3d
                 mask = mibGetFrangiMask(img, Options, Options2, '3d', orientation); %#ok<*AGROW>
@@ -126,6 +127,7 @@ for indexId = 1:numel(imgIn)
             Options.all_sw = all_sw;
             Options.orientation = orientation;
             Options.currentIndex = 1;
+            Options.cpuParallelLimit = obj.mibModel.cpuParallelLimit;
             se_size_txt = obj.mibView.handles.mibStrelSizeMaskEdit.String;
             semicolon = strfind(se_size_txt,';');
             if ~isempty(semicolon)  % when 2 values are provided take them
@@ -148,6 +150,7 @@ for indexId = 1:numel(imgIn)
             Options.all_sw = all_sw;
             Options.orientation = orientation;
             Options.currentIndex = 1;
+            Options.cpuParallelLimit = obj.mibModel.cpuParallelLimit;
             mask = mibGetMorphMask(img, Options);
     end
     

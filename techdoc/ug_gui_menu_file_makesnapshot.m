@@ -69,7 +69,7 @@
 % scale bar is not generated
 % * *Measurements* - add the displayed measurements to the snapshot.
 % Warning! The resulting image may have border artifacts, at least in
-% Matlab R2014b. The snapshot is done using the _export_fig_ function
+% MATLAB R2014b. The snapshot is done using the _export_fig_ function
 % written by <http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig Oliver Woodford and Yair Altman>
 % * *Options* - define visualization options for the measurements
 %

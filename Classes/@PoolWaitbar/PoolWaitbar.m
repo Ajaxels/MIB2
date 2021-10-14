@@ -6,7 +6,7 @@ classdef PoolWaitbar < handle
     %
     % Examples of use
     % pwb = PoolWaitbar(100, 'Example');
-    % parfor ii = 1:20
+    % parfor ii = 1:20  % parfor (ii=1:20, obj.mibModel.cpuParallelLimit)
     %     pwb.increment();
     % end
     % spmd
@@ -26,7 +26,7 @@ classdef PoolWaitbar < handle
     % A = 500;
     % a = zeros(n);
     % pwb = PoolWaitbar(n, sprintf('Please wait...'), wb);   % create PoolWaitbar using existing waitbar window
-    % parfor i = 1:n
+    % parfor i = 1:n    % parfor (i=1:n, obj.mibModel.cpuParallelLimit)
     %     a(i) = max(abs(eig(rand(A))));
     %     pwb.increment();
     % end
@@ -38,7 +38,7 @@ classdef PoolWaitbar < handle
     % pwb.setIncrement(10);  % set increment step to 10, whenever needed
     % pwb.updateText('New text');   % update text
     % % pwb.updateMaxNumberOfIterations(100);   % increase number of iterations to 100
-    % parfor i = 1:n
+    % parfor i = 1:n    % parfor (i=1:n, obj.mibModel.cpuParallelLimit)
     %       pwb.increment();  
     % end
     

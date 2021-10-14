@@ -75,12 +75,12 @@
 % * *Black on white* checkbox, if checked, detects black ridges on white background.
 %
 %% Morphological filters
-% Set of Matlab based morphological filters.
+% Set of MATLAB based morphological filters.
 % 
 % <<images\PanelsMaskGeneratorMorphFilters.png>>
 %
 % * *Extended-maxima transform* - based on |imextendedmax| function of
-% Matlab. Computes the extended-maxima transform, which is the regional maxima of the H-maxima transform. 
+% MATLAB. Computes the extended-maxima transform, which is the regional maxima of the H-maxima transform. 
 % Regional maxima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a lower value.
 %%
 % 
@@ -88,7 +88,7 @@
 % 
 %
 % * *Extended-minima transform* - based on |imextendedmin| function of
-% Matlab. Computes the extended-minima transform, which is the regional minima of the H-minima transform. Regional minima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a higher value.
+% MATLAB. Computes the extended-minima transform, which is the regional minima of the H-minima transform. Regional minima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a higher value.
 %%
 % 
 % <<images\PanelsMaskGeneratorMorphFiltersExtMinTrans.jpg>>
@@ -104,11 +104,11 @@
 % Regional minima are connected components of pixels with a constant intensity value (t) whose external boundary pixels all have a value greater than t. 
 % The resulting image is then thresholded using the provided |Threshold| value.
 %
-% * *Regional maxima* - based on |imregionalmax| function of Matlab. Returns the binary mask that identifies the locations of the regional 
+% * *Regional maxima* - based on |imregionalmax| function of MATLAB. Returns the binary mask that identifies the locations of the regional 
 % maxima in the image. In mask, pixels that are set to 1 identify regional
 % maxima; all other pixels are set to 0. Regional maxima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a lower value.
 %
-% * *Regional minima* - based on |imregionalmin| function of Matlab. The output binary mask has value 1 corresponding to the pixels of the image
+% * *Regional minima* - based on |imregionalmin| function of MATLAB. The output binary mask has value 1 corresponding to the pixels of the image
 % that belong to regional minima and 0 otherwise. Regional minima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a higher value. 
 %
 %

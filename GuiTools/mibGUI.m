@@ -2182,10 +2182,33 @@ end
 end
 
 function menuHelp_Callbacks(hObject, eventdata, handles, parameter)
+global mibPath;
+
 switch parameter
     case 'tip'
         handles.mibController.mibModel.preferences.Tips.ShowTips = 1;
         handles.mibController.startController('mibTipsController');
+    case 'call'
+        link = 'http://mib.helsinki.fi/web-update/call4help.json';
+        urlText = urlread(link, 'Timeout', 4);
+        call4help = jsondecode(urlText);
+        
+        fieldNames = fieldnames(call4help);
+        infoText = '';
+        for i=1:numel(fieldNames)
+            infoText = sprintf('%s%s: %s\n', infoText, fieldNames{i}, call4help.(fieldNames{i}));
+        end
+        
+        options.Title = infoText;
+        options.TitleLines = 10;
+        options.WindowWidth = 1.2;   
+        options.HelpUrl = call4help.Link;
+        options.msgBoxOnly = true;
+        options.okBtnText = 'To clipboard';
+        options.helpBtnText = 'Start the meeting';
+        answer = mibInputMultiDlg({mibPath}, [], [], 'MIB Call4Help', options);
+        clipboard('copy', call4help.Link);
+        
     case 'support'
         web('https://forum.image.sc/tags/mib', '-browser');
     case 'update'

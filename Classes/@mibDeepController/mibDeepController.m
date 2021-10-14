@@ -137,6 +137,10 @@ classdef mibDeepController < handle
         % colormap for 20 colors
         colormap255
         % colormap for 255 colors
+        sessionSettings
+        % structure for the session settings
+        % .countLabelsDir - directory with labels to count, used in count labels function
+        
     end
     
     events
@@ -419,6 +423,7 @@ classdef mibDeepController < handle
             obj.childControllers = {};    % initialize child controllers
             obj.childControllersIds = {};
             obj.gpuInfoFig = [];    % gpu info window
+            obj.sessionSettings = struct();
             
             % set of default material colors for models
             obj.modelMaterialColors = [166 67 33; 71 178 126; 79 107 171; 150 169 213; 26 51 111; 255 204 102; 230 25 75; 255 225 25; 0 130 200; 245 130 48; 145 30 180; 70 240 240; 240 50 230; 210 245 60; 250 190 190; 0 128 128; 230 190 255; 170 110 40; 255 250 200; 128 0 0; 170 255 195; 128 128 0; 255 215 180; 0 0 128; 128 128 128; 60 180 75]/255;
@@ -472,18 +477,9 @@ classdef mibDeepController < handle
             
             % update widgets from the BatchOpt structure
             obj.View = updateGUIFromBatchOpt_Shared(obj.View, obj.BatchOpt);
-            
-            % define workers for parallel pools
-            parPool = parcluster('local'); % If no pool, do not create new one.
-            if isdeployed
-                % according to license of parallel processing the compiled
-                % application should not have more workers than that on the
-                % workstation used to compile the application
-                obj.View.handles.PreprocessingParForWorkers.Limits = [0 min([8 parPool.NumWorkers])];  
-            else
-                obj.View.handles.PreprocessingParForWorkers.Limits = [0 parPool.NumWorkers];  
-            end
-            obj.View.handles.PreprocessingParForWorkers.Value = min([obj.View.handles.PreprocessingParForWorkers.Limits(2) parPool.NumWorkers]);
+
+            obj.View.handles.PreprocessingParForWorkers.Limits = [0 obj.mibModel.cpuParallelLimit];  
+            obj.View.handles.PreprocessingParForWorkers.Value = obj.mibModel.cpuParallelLimit;
             
             % generate colormaps
             obj.colormap6 = [166 67 33; 71 178 126; 79 107 171; 150 169 213; 26 51 111; 255 204 102 ]/255;
@@ -508,6 +504,7 @@ classdef mibDeepController < handle
                     gpuInfo = gpuDevice(deviceId);
                     gpuList{deviceId} = gpuInfo.Name; %#ok<AGROW>
                 end
+                if numel(gpuList) > 1; gpuList = gpuList'; end
                 if gpuDeviceCount > 1
                     gpuList{end} = 'Multi-GPU';
                 end
@@ -2634,7 +2631,7 @@ classdef mibDeepController < handle
             if obj.BatchOpt.UseParallelComputing
                 parforArg = obj.View.handles.PreprocessingParForWorkers.Value;    % Maximum number of workers running in parallel
             else
-                parforArg = 0;      % Maximum number of workers running in parallel
+                parforArg = 0;      % Maximum number of workers running in parallel, when 0 a single core used without parallel
             end
             
             % create local variables for parfor
@@ -4563,7 +4560,12 @@ classdef mibDeepController < handle
                     end
                     ExecutionEnvironment = 'cpu';
                 case 'Multi-GPU'
-                    ExecutionEnvironment = 'multi-gpu';
+                    uialert(obj.View.gui, ...
+                        sprintf('!!! Warning !!!\n\nMulti-GPU mode cannot be yet used for prediction. Please select a GPU from the list and restart prediction!'), ...
+                        'Not available', 'icon', 'warning');
+                    if obj.BatchOpt.showWaitbar; delete(obj.wb); end
+                    return;
+                    %ExecutionEnvironment = 'multi-gpu';
                 case 'Parallel'
                     ExecutionEnvironment = 'parallel';
                 otherwise
@@ -4861,7 +4863,12 @@ classdef mibDeepController < handle
                     end
                     ExecutionEnvironment = 'cpu';
                 case 'Multi-GPU'
-                    ExecutionEnvironment = 'multi-gpu';
+                    uialert(obj.View.gui, ...
+                        sprintf('!!! Warning !!!\n\nMulti-GPU mode cannot be yet used for prediction. Please select a GPU from the list and restart prediction!'), ...
+                        'Not available', 'icon', 'warning');
+                    if obj.BatchOpt.showWaitbar; delete(obj.wb); end
+                    return;
+                    %ExecutionEnvironment = 'multi-gpu';
                 case 'Parallel'
                     ExecutionEnvironment = 'parallel';
                 otherwise
@@ -5236,7 +5243,7 @@ classdef mibDeepController < handle
             predictionDir = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels');
             predictionList = dir(fullfile(predictionDir, '*.model'));
             
-            if isempty(truthList) || isempty(predictionList)
+            if isempty(truthList) && isempty(predictionList)
                 uialert(obj.View.gui, ...
                     sprintf('!!! Error !!!\n\nModels were not found in\n%s\n\n%s\n\nPlease update the Directory prediction and resulting images fields of the Directories and Preprocessing tab!', truthDir, predictionDir), ...
                     'Missing files');
@@ -5392,6 +5399,7 @@ classdef mibDeepController < handle
             answer = mibInputMultiDlg({mibPath}, prompts, defAns, 'Evaluation results', options);
             if isempty(answer); return; end
             
+            
             if ~strcmp(answer{5}, 'Do not calculate')
                 calcOccurrenceSwitch = 0;
                 calcSorensenSwitch = 0;
@@ -5409,6 +5417,7 @@ classdef mibDeepController < handle
                 % reset datastores
                 dsTruth.reset();
                 dsResults.reset();
+                
                 % make waitbar
                 pw = PoolWaitbar(numel(dsTruth.Files), sprintf('Starting evaluation\nit may take a while...'), [], TitleTest);
                 pw.setIncrement(10);
@@ -5423,9 +5432,9 @@ classdef mibDeepController < handle
                 if calcSorensenSwitch
                     similarity = zeros([numel(dsTruth.Files), numel(ssm.ClassMetrics.Properties.RowNames)]);     % allocate space
                 end
-
+                
                 parfor (fileId=1:numel(dsTruth.Files), parforArg)
-                %for fileId = 1:numel(dsTruth.Files)
+                    %for fileId = 1:numel(dsTruth.Files)
                     gtImg = readimage(dsTruth, fileId);
                     resImg = readimage(dsResults, fileId);
                     if calcSorensenSwitch
@@ -5436,7 +5445,6 @@ classdef mibDeepController < handle
                         catList = categories(gtImg(:));
                         catCounts = countcats(gtImg(:));
                         occurrenceGT{fileId}(ismember(classNames, catList)) = catCounts;
-                        
                         catList = categories(resImg(:));
                         catCounts = countcats(resImg(:));
                         occurrenceRes{fileId}(ismember(classNames, catList)) = catCounts;
@@ -5456,7 +5464,8 @@ classdef mibDeepController < handle
                     occurrenceRes = cell2mat(occurrenceRes);
                     
                     for classId = 1:numel(classNames)
-                        ssmStruct.ImageMetrics.(['GT_' ssm.ClassMetrics.Properties.RowNames{classId}]) = occurrenceGT(:,classId);
+                        %ssmStruct.ImageMetrics.(['GT_' ssm.ClassMetrics.Properties.RowNames{classId}]) = occurrenceGT(:,classId);
+                        ssmStruct.ImageMetrics.(['GT_' classNames{classId}]) = occurrenceGT(:,classId);
                     end
                     for classId = 1:numel(classNames)
                         ssmStruct.ImageMetrics.(['Model_' ssm.ClassMetrics.Properties.RowNames{classId}]) = occurrenceRes(:,classId);
@@ -5465,6 +5474,12 @@ classdef mibDeepController < handle
                 
                 pw.deletePoolWaitbar();
             end
+            
+            % make output directories
+            outputPath = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages');
+            if exist(outputPath, 'dir') == false; mkdir(outputPath); end
+            outputPath = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels');
+            if exist(outputPath, 'dir') == false; mkdir(outputPath); end
             
             if answer{1}    % export to Matlab
                 assignin('base', 'ssm', ssmStruct);
@@ -5480,7 +5495,6 @@ classdef mibDeepController < handle
                 clear excelHeader;
                 fn = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', 'EvaluationResults.xls');
                 if exist(fn, 'file') == 2; delete(fn); end
-                
                 excelHeader{1} = sprintf('Evaluation metrics for %s', obj.BatchOpt.NetworkFilename);
                 
                 try
@@ -5508,6 +5522,7 @@ classdef mibDeepController < handle
                 waitbar(0.8, wbar);
                 writecell(excelHeader(1), fn, 'FileType', 'spreadsheet', 'Sheet', 'NormalizedConfusionMatrix', 'Range', 'A1');
                 writetable(ssm.NormalizedConfusionMatrix, fn, 'FileType', 'spreadsheet', 'Sheet', 'NormalizedConfusionMatrix', 'WriteRowNames', true, 'Range', 'A3');
+                
                 waitbar(1, wbar);
                 fprintf('Evaluation results were saved to:\n%s\n', fn);
                 delete(wbar);
@@ -5540,6 +5555,7 @@ classdef mibDeepController < handle
                     fn = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', 'EvaluationNormalizedConfusionMatrix.csv');
                     if exist(fn, 'file') == 2; delete(fn); end
                     writetable(ssm.NormalizedConfusionMatrix, fn, 'FileType', 'text', 'WriteRowNames', true);
+                    
                 catch err
                     uialert(obj.View.gui, ...
                         sprintf('!!! Warning !!!\n\nThe destination CSV file can not be overwritten!\nIt may be open elsewhere...\n\n%s', fn), ...
@@ -5551,7 +5567,6 @@ classdef mibDeepController < handle
                 fprintf('Evaluation results were saved to:\n%s\n', fn);
                 delete(wbar);
             end
-            
         end
         
         function selectGPUDevice(obj)
@@ -5896,6 +5911,150 @@ classdef mibDeepController < handle
             waitbar(1, wbar);
             fprintf('The transfer learning finished:\n%s\n', outNetworkName);
             delete(wbar);
+        end
+        
+        function countLabels(obj)
+            % count occurrences of labels in model files
+            % callback for press of the "Count labels" in the Options panel
+            global mibPath;
+            
+            % define directory with label files
+            if ~isfield(obj.sessionSettings, 'countLabelsDir')
+                obj.sessionSettings.countLabelsDir = obj.BatchOpt.OriginalTrainingImagesDir;
+            end
+            selpath = uigetdir(obj.sessionSettings.countLabelsDir, 'Select folder with labels');
+            if selpath == 0; return; end
+            obj.sessionSettings.countLabelsDir = selpath;
+            % define extension of the label files
+            prompts = {'Label filenames extension:'; 'Number of classes including exterior, (for TIF and PNG or put largest possible value):'};
+            defAns = {{'model', 'mibCat', 'png', 'tif', 'tiff', 1}, num2str(obj.BatchOpt.T_NumberOfClasses{1})};
+            dlgTitle = 'Options';
+            dlgOptions.PromptLines = [1, 2];
+            [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, dlgOptions);
+            if isempty(answer); return; end 
+            labelExtension = answer{1};
+            numClasses = str2double(answer{2});
+            
+            % get list of files
+            labelFileList = dir(fullfile(obj.sessionSettings.countLabelsDir, lower(['*.' labelExtension])));
+            if numel(labelFileList) == 0
+                uialert(obj.View.gui, ...
+                    sprintf('!!! Error !!!\n\nDirectory:\n%s\ndoes not contain any files with "%s" extension', obj.sessionSettings.countLabelsDir, labelExtension), ...
+                    'Missing label files', 'icon', 'error');
+                return
+            end
+            
+            % generate class names
+            classNames = {};
+            if strcmp(labelExtension, 'model')
+                modelFn = fullfile(labelFileList(1).folder, labelFileList(1).name);
+                res = load(modelFn, '-mat', 'modelMaterialNames');
+                classNames = [{'Exterior'}; res.modelMaterialNames];
+            elseif strcmp(labelExtension, 'mibCat')
+                modelFn = fullfile(labelFileList(1).folder, labelFileList(1).name);
+                res = load(modelFn, '-mat', 'options');
+                classNames = res.options.modelMaterialNames;
+            else
+                for i=0:numClasses-1
+                    classNames = [classNames; {sprintf('Class%.3d', i)}]; %#ok<AGROW>
+                end
+            end
+            pixelLabelID = 0:numel(classNames)-1;
+            
+            % make datastores
+            try
+                fullPathFilenames = arrayfun(@(filename) fullfile(obj.sessionSettings.countLabelsDir, cell2mat(filename)), ...
+                    {labelFileList.name}, 'UniformOutput', false);  % generate full paths
+                switch labelExtension
+                    case 'model'
+                        dsLabels = pixelLabelDatastore(fullPathFilenames, classNames, pixelLabelID, ...
+                                    'FileExtensions', '.model', 'ReadFcn', @mibDeepController.readModel);
+                    case 'mibCat'
+                        %dsLabels = pixelLabelDatastore(fullPathFilenames, classNames, pixelLabelID, ...
+                        %    'FileExtensions', '.mibCat', 'ReadFcn', @mibDeepController.mibImgFileRead);
+                        dsLabels = imageDatastore(fullPathFilenames, ...
+                            'FileExtensions', '.mibCat', 'IncludeSubfolders', false, ...
+                            'ReadFcn', @mibDeepController.matlabCategoricalFileRead);
+                    otherwise
+                        dsLabels = pixelLabelDatastore(fullPathFilenames, classNames, pixelLabelID, ...
+                                    'FileExtensions', lower(['.' labelExtension]));
+                end
+            catch err
+                uialert(obj.View.gui, ...
+                    sprintf('!!! Error !!!\n\n%s\n\n%s\n\nCheck the ground truth directory:\n%s', err.identifier, err.message, obj.sessionSettings.countLabelsDir), ...
+                    'Wrong class name');
+                return;
+            end
+            
+            % generate output structure
+            % add list of files
+            [~, ImageMetrics.GroundTruthFilename] = arrayfun(@(fn) fileparts(cell2mat(fn)), dsLabels.Files, 'UniformOutput', false);
+            
+            % define usage of parallel computing
+            if obj.BatchOpt.UseParallelComputing
+                parforArg = obj.View.handles.PreprocessingParForWorkers.Value;    % Maximum number of workers running in parallel
+                TitleTest = 'Count labels (parallel)';
+            else
+                parforArg = 0;      % Maximum number of workers running in parallel
+                TitleTest = 'Count labels (single)';
+            end
+            % reset datastores
+            dsLabels.reset();
+            
+            % make waitbar
+            pw = PoolWaitbar(numel(dsLabels.Files), sprintf('Counting labels\nit may take a while...'), [], TitleTest);
+            pw.setIncrement(10);
+            occurrenceGT = cell([numel(dsLabels.Files), 1]);
+            
+            parfor (fileId=1:numel(dsLabels.Files), parforArg)
+            % for fileId = 1:numel(dsLabels.Files)
+                gtImg = readimage(dsLabels, fileId);
+                if iscell(gtImg(1)); gtImg = gtImg{1}; end
+                
+                catList = categories(gtImg(:));
+                catCounts = countcats(gtImg(:));
+                occurrenceGT{fileId}(ismember(classNames, catList)) = catCounts;
+                
+                if mod(fileId, 10) == 1; increment(pw); end     % update waitbar
+            end
+            occurrenceGT = cell2mat(occurrenceGT);
+            for classId = 1:numel(classNames)
+                ImageMetrics.(['GT_' classNames{classId}]) = occurrenceGT(:,classId);
+            end
+            % convert to table
+            tableOut = struct2table(ImageMetrics);
+            pw.deletePoolWaitbar();
+            
+            fn = fullfile(obj.sessionSettings.countLabelsDir, 'labelCounts.mat');
+            [filename, pathname, filterindex] = uiputfile( ...
+                {'*.mat','MAT-files (*.mat)';...
+                '*.xls', 'Microsoft Excel';...
+                '*.csv','Comma-separated values';...
+                '*.*',  'All Files (*.*)'}, 'Output filename', fn);
+            if filename == 0; return; end
+            fn = fullfile(pathname, filename);
+            
+            switch filterindex
+                case 1  % mat
+                    save(fn, 'tableOut', '-v7.3');
+                    fprintf('Label counts were were saved to:\n%s\n', fn);
+                case 2  % excel
+                    wbar = waitbar(0, sprintf('Saving to Excel\nPlease wait...'), 'Name', 'Export');
+                    clear excelHeader;
+                    if exist(fn, 'file') == 2; delete(fn); end
+                    excelHeader{1} = sprintf('Label counts for %s\\*.%s', obj.sessionSettings.countLabelsDir, labelExtension);
+                    writecell(excelHeader, fn, 'FileType', 'spreadsheet', 'Sheet', 'LabelCounts', 'Range', 'A1');
+                    writetable(tableOut, fn, 'FileType', 'spreadsheet', 'Sheet', 'LabelCounts', 'WriteRowNames', true, 'Range', 'A3');
+                    waitbar(1, wbar);
+                    fprintf('Label counts were were saved to:\n%s\n', fn);
+                    delete(wbar);
+                case 3  % csv
+                    wbar = waitbar(0, sprintf('Saving to CSV format\nPlease wait...'), 'Name', 'Export');
+                    if exist(fn, 'file') == 2; delete(fn); end
+                    writetable(tableOut, fn, 'FileType', 'text', 'WriteRowNames', true);
+                    fprintf('Label counts were were saved to:\n%s\n', fn);
+                    delete(wbar);
+            end
         end
         
         function ExploreActivations(obj)

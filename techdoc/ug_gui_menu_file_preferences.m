@@ -5,7 +5,7 @@
 % *Please note*, |MIB| stores its configuration parameters in a file that is automatically generated after closing of
 % |MIB|:
 %
-% * *for Windows* - _C:\Users\Username\Matlab\mib.mat_ or in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
+% * *for Windows* - _C:\Users\Username\MATLAB\mib.mat_ or in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
 % The TEMP directory can be found and accessed with |Windows->Start button->%TEMP%| command
 % * *for Linux* - _/home/username/Matlab_ or local TEMP directory
 % * *for MacOS* - _/Users/username/Matlab_ or local TEMP directory
@@ -141,8 +141,8 @@
 % <li><b>Replace with random color</b> replaces the selected color with a random one</li>
 % <li><b>Swap two colors</b> swaps two colors between each other</li>
 % <li><b>Delete color(s)</b> deletes the selected color from the colormap. Multiple colors could be selected using the Shift+mouse click combination</li>
-% <li><b>Import from Matlab</b> imports a colormap from the main Matlab workspace</li>
-% <li><b>Export to Matlab</b> exports the colormap to the main Matlab workspace</li>
+% <li><b>Import from MATLAB</b> imports a colormap from the main MATLAB workspace</li>
+% <li><b>Export to MATLAB</b> exports the colormap to the main MATLAB workspace</li>
 % <li><b>Load from a file</b> loads a colormap from a file. The colormap should be saved using the matlab format and <em>cmap</em> variable</li>
 % <li><b>Save to a file</b> saves the colormap to a file. The colormap is saved using the matlab format and <em>cmap</em> variable</li>
 % </ul>

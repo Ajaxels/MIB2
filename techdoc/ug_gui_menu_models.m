@@ -44,7 +44,7 @@
 % Alternatively it is possible to use the |Create| button in the <ug_panel_segm.html Segmentation Panel>.
 %
 %% Load model
-% Load model from the disk. By default |MIB| tries to read the models in the Matlab format (.model), but it is also
+% Load model from the disk. By default |MIB| tries to read the models in the MATLAB format (.model), but it is also
 % possible to specify other formats as well:
 %
 %%
@@ -63,8 +63,8 @@
 %
 % Alternatively it is possible to use the |Load| button in the <ug_panel_segm.html Segmentation Panel>.
 %
-%% Import model from Matlab
-% Imports model from the main Matlab workspace. Please provide a variable name from the main Matlab workspace with the model.
+%% Import model from MATLAB
+% Imports model from the main MATLAB workspace. Please provide a variable name from the main MATLAB workspace with the model.
 % The variable could be either a matrix with dimensions similar to those of
 % the loaded dataset |[1:height, 1:width, 1:no-slices]| of the |uint8|
 % class or a structure with the following fields:
@@ -81,14 +81,14 @@
 % Exports model from MIB to other programs:
 %%
 % 
-% * *Matlab*, export to the main Matlab workspace, as a structure (see above). The exported models may be later imported back to |im_browser| using the _Import model
+% * *MATLAB*, export to the main MATLAB workspace, as a structure (see above). The exported models may be later imported back to |im_browser| using the _Import model
 % from Matlab_ menu entry. 
 % * *Imaris as volume*, export model to Imaris (if it is available, please
 % see <im_browser_system_requirements.html#16 System Requirements
 % section> for details.
 % 
 %% Save model
-% Saves model to a file in the Matlab format. The file name is not asked, which means that the |MIB| will use:
+% Saves model to a file in the MATLAB format. The file name is not asked, which means that the |MIB| will use:
 %%
 % 
 % * Default template such as |Labels_NAME_OF_THE_DATASET.model|
@@ -102,8 +102,8 @@
 % 
 % * *.AM, Amira Mesh* - as Amira Mesh label field in RAW, RAW-ASCII and RLE
 % compressed formats. (*Note!* the RLE compression is very slow).
-% * *.MAT, Matlab format* - Matlab native data format for MIB version 1
-% * *.MODEL, Matlab format* - _[default]_, Matlab native data format for MIB version 2
+% * *.MAT, MATLAB format* - MATLAB native data format for MIB version 1
+% * *.MODEL, MATLAB format* - _[default]_, MATLAB native data format for MIB version 2
 % * *.MOD, IMOD format* - contours for IMOD 
 % * *.MRC, IMOD format* - volume for IMOD 
 % * *.NRRD, Nearly Raw Raster Data* - a data format compatible with <www.slicer.org 3D slicer>.
@@ -117,7 +117,7 @@
 %
 % <html><h3 style="color:#d45600;">MIB rendering</h3></html>
 %
-% Starting from MIB (version 2.5) and Matlab R2018b the materials can be
+% Starting from MIB (version 2.5) and MATLAB R2018b the materials can be
 % directly visualized in MIB using hardware accelerated volume rendering
 % engine. The datasets for visuzalization can be downsampled during the
 % export. It is possible to make snapshots and animations.
@@ -132,9 +132,9 @@
 % <a href="https://youtu.be/4CrfdOiZebk"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/J70V33f7bas</a>
 % </html>
 % 
-% <html><h3 style="color:#d45600;">Matlab isosurface</h3></html>
+% <html><h3 style="color:#d45600;">MATLAB isosurface</h3></html>
 %
-% MIB uses Matlab engine to generate isosurfaces
+% MIB uses MATLAB engine to generate isosurfaces
 % from the models and visualize those using a modification of the <http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m view3d> function 
 % written by Torsten Vogel. 
 % 
@@ -182,9 +182,9 @@
 % </html>
 %
 %
-% <html><h3 style="color:#d45600;">Matlab isosurface and export to Imaris</h3></html>
+% <html><h3 style="color:#d45600;">MATLAB isosurface and export to Imaris</h3></html>
 %
-% MIB uses Matlab engine to generate isosurfaces
+% MIB uses MATLAB engine to generate isosurfaces
 % from the models and export the resulting surfaces to Imaris for visualization. 
 %
 % <html>
@@ -194,10 +194,10 @@
 % </html>
 %
 %
-% <html><h3 style="color:#d45600;">Matlab volume viewer</h3></html>
+% <html><h3 style="color:#d45600;">MATLAB volume viewer</h3></html>
 %
-% *Matlab volume viewer*, render the model using Matlab volume viewer,
-% available only for the Matlab version of MIB and requires R2017b - R2019b or
+% *MATLAB volume viewer*, render the model using MATLAB volume viewer,
+% available only for the MATLAB version of MIB and requires R2017b - R2019b or
 % newer. For the release R2019b, the materials may be displayed together
 % with the volume, but there are not control for lightning, so it is not very convenient. 
 %

@@ -26,6 +26,7 @@ function varargout = mibInputMultiDlg(varargin)
 % .LastItemColumns - [optional] force the last entry to be on a single column, 1 or 0
 % .Focus - define index of the widget to get focused
 % .okBtnText -  text for the OK button
+% .helpBtnText -  text for the Help button
 % .HelpUrl - URL to the help page, when provided a Help button is displayed, press of the button opens the url in a browser
 % .msgBoxOnly - logical, to mimic message box without input fields
 %
@@ -143,13 +144,20 @@ if ~isfield(options, 'WindowStyle'); options.WindowStyle = 'modal'; end
 if ~isfield(options, 'Columns'); options.Columns = 1; end
 if ~isfield(options, 'Focus'); options.Focus = 1; end
 if ~isfield(options, 'LastItemColumns'); options.LastItemColumns = 0; end
-if isfield(options, 'okBtnText'); handles.okBtn.String = options.okBtnText; end
+if isfield(options, 'okBtnText')
+    handles.okBtn.String = options.okBtnText;
+    handles.okBtn.TooltipString = options.okBtnText;
+end
 if ~isfield(options, 'HelpUrl')
     handles.HelpUrl = []; 
 else
     handles.HelpUrl = options.HelpUrl;
 end
 if ~isempty(handles.HelpUrl); handles.Help.Visible = 'on'; end
+if isfield(options, 'helpBtnText')
+    handles.Help.String = options.helpBtnText; 
+    handles.Help.TooltipString = options.helpBtnText;
+end
 if ~isfield(options, 'msgBoxOnly'); options.msgBoxOnly = false; end
 
 if ~isfield(options, 'PromptLines')
@@ -383,7 +391,12 @@ if ~options.msgBoxOnly
 else
     % for message box disable OK button and rename Cancel to OK
     handles.okBtn.Visible = 'off';
-    handles.cancelBtn.String = 'OK';
+    if isfield(options, 'okBtnText')
+        handles.cancelBtn.String = options.okBtnText; 
+        handles.cancelBtn.TooltipString = options.okBtnText; 
+    else
+        handles.cancelBtn.String = 'OK';
+    end
 end
 
 % UIWAIT makes mibInputMultiDlg wait for user response (see UIRESUME)

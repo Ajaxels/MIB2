@@ -98,7 +98,7 @@ classdef mibStereologyController < handle
             % function generateGrid_Callback(obj)
             % generate grid over the image and put it into the Mask layer
             
-            if obj.mibModel.I{obj.mibModel.Id}.enbleSelection == 0
+            if obj.mibModel.preferences.System.EnableSelection == 0
                 errordlg(sprintf('!!! Error !!!\n\nSelection is disabled\nEnable it in the\nMenu->File->Preferences->Enable selection: yes'), 'Error');
                 return;
             end

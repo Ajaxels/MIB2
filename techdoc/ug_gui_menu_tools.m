@@ -22,7 +22,7 @@
 %
 % Measures the linear distance between two points. Press and hold left mouse
 % button to draw a line that connects two object. The result will be shown
-% in the pop-up and Matlab main window. Also the length of the measurement is copied to the system clipboard and can be pasted using the |Ctrl+V| key shortcut.
+% in the pop-up and MATLAB main window. Also the length of the measurement is copied to the system clipboard and can be pasted using the |Ctrl+V| key shortcut.
 % The linear measuring tool can also be called from the <ug_gui_toolbar.html toolbar>. The pixel sizes are
 % defined in the <ug_gui_menu_dataset.html Dataset parameters>.
 %
@@ -86,7 +86,7 @@
 % The stereology tool of MIB counts number of intersections between materials of the opened
 % model and the grid lines. The spacing between grid lines can be defined
 % in pixels or in the image units. The results of the stereology analysis
-% can be exported to Matlab or Microsoft Excel.
+% can be exported to MATLAB or Microsoft Excel.
 %
 % <html>
 % A brief demonstration is available in the following video:<br>
@@ -156,7 +156,7 @@
 % <td><b>Results:</b><br>
 % <ul>
 %   <li>A plot showing minimal, average and maximal width of the wound</li>
-%   <li>A sheet in Microsoft Excel format and a file in Matlab format with the wound width values</li>
+%   <li>A sheet in Microsoft Excel format and a file in MATLAB format with the wound width values</li>
 %   <li>A directory with snapshots of the detected wound</li>
 %   <li>A text file with time stamps of the original images used during
 %   stitching</li>

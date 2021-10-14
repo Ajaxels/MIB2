@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="2189107742" file="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702/MIB_Linux.prj" location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702" name="MIB_Linux" preferred-package-location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702/MIB_Linux/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="3966800545" file="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v281/MIB_Linux.prj" location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v281" name="MIB_Linux" preferred-package-location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v281/MIB_Linux/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}/MIB_Mac_resources/icon.icns</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
     </param.icons>
-    <param.version>2.702</param.version>
+    <param.version>2.81</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -120,27 +120,12 @@ ${LD_LIBRARY_PATH}:MR/v97/runtime/glnxa64:MR/v97/bin/glnxa64:MR/v97/sys/os/glnxa
       <file>${PROJECT_ROOT}/jars</file>
       <file>${PROJECT_ROOT}/techdoc</file>
     </fileset.package>
-    <fileset.depfun>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM3D/BM3D.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM3D/bm3d_thr.mexa64</file>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM3D/bm3d_wiener.mexa64</file>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM4D/Transforms.mat</file>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM4D/bm4d.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM4D/bm4d_thr_mex.mexa64</file>
-      <file>/home/ad/home/i/ibelev/Matlab/BMxD/BM4D/bm4d_wie_mex.mexa64</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/connectOmero.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/findOmero.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/getOmeroJars.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/helper/JavaImageToMatlab.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/loadOmero.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/omeroVersion.m</file>
-      <file>/home/ad/home/i/ibelev/Matlab/OMERO/unloadOmero.m</file>
-    </fileset.depfun>
+    <fileset.depfun />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="readme.txt" optional="true">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702/MIB_Linux/for_testing/readme.txt</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="MIB" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702/MIB_Linux/for_testing/MIB</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="splash.png" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702/MIB_Linux/for_testing/splash.png</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="run_MIB.sh" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v2702/MIB_Linux/for_testing/run_MIB.sh</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="MIB" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v281/MIB_Linux/for_testing/MIB</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="splash.png" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v281/MIB_Linux/for_testing/splash.png</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="readme.txt" optional="true">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v281/MIB_Linux/for_testing/readme.txt</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="run_MIB.sh" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v281/MIB_Linux/for_testing/run_MIB.sh</file>
     </build-deliverables>
     <workflow />
     <matlab>
@@ -193,7 +178,7 @@ ${LD_LIBRARY_PATH}:MR/v97/runtime/glnxa64:MR/v97/bin/glnxa64:MR/v97/sys/os/glnxa
       <vista>false</vista>
       <linux>true</linux>
       <solaris>false</solaris>
-      <osver>4.15.0-112-generic</osver>
+      <osver>5.4.0-80-generic</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>glnxa64</arch>

@@ -168,7 +168,7 @@ elseif strcmp(obj.mibView.handles.mouseWheelToolbarSw.State,'off')              
     curPt2 = (curPt-[midX, midY]) ./ [rngXhalf, rngYhalf];  % image shift in %%
     curPt  = [curPt; curPt];
     curPt2 = [-(1+curPt2).*[rngXhalf, rngYhalf];...
-        (1-curPt2).*[rngXhalf, rngYhalf]];           % new image half-sizes without zooming
+               (1-curPt2).*[rngXhalf, rngYhalf]];           % new image half-sizes without zooming
     
     r = C^(eventdata.VerticalScrollCount*eventdata.VerticalScrollAmount);
     newLimSpan = r * curPt2;

@@ -704,7 +704,7 @@ classdef mibSupervoxelClassifierController < handle
                         cs = 5; % context size
                         ms = 1; % membrane thickness
                         csHist = cs;
-                        fmTemp  = membraneFeatures(slicImg, cs, ms, csHist);
+                        fmTemp  = membraneFeatures(slicImg, cs, ms, csHist, obj.mibModel.cpuParallelLimit);
                         % fmTemp - feature matrix [h, w, feature_id]
                         noExtraFeatures = size(fmTemp,3);
                         
@@ -894,7 +894,7 @@ classdef mibSupervoxelClassifierController < handle
                     cs = 5; % context size
                     ms = 1; % membrane thickness
                     csHist = cs;
-                    fmTemp  = membraneFeatures(slicImg, cs, ms, csHist);
+                    fmTemp  = membraneFeatures(slicImg, cs, ms, csHist, obj.mibModel.cpuParallelLimit);
                     % fmTemp - feature matrix [h, w, feature_id]
                     noExtraFeatures = size(fmTemp,3);
                     

@@ -22,6 +22,7 @@ function [img, status] = mibDoAndiffFiltering(img, options)
 % - .end_no -> start index
 % - .Color -> color channel, when @b 0, do for all colors
 % - .showWaitbar -> [@em optional], when 1-default, show the wait bar, when 0 - do not show the waitbar
+% - .cpuParallelLimit -> max number of CPU available for parallel processing
 %
 % Return values:
 % img: -> output image
@@ -87,7 +88,7 @@ for roi=1:numel(img)
     for color=colorStart:colorEnd
         img2 = img{roi}(:,:,color,:);
         
-        parfor layer = options.start_no:options.end_no
+        parfor (layer = options.start_no:options.end_no, options.cpuParallelLimit)
             if useDiplib
                 % convert to diplib obj
                 currimg = dip_image(img2(:,:,1,layer));

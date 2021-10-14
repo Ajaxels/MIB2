@@ -354,12 +354,13 @@ Prefs.Tips.ShowTips = 1;
 Prefs.Tips.Files = [];
 
 % tips of a day settings
-tipFolder = fullfile(obj.mibPath, 'Resources', 'tips', '*.html');
-tipsFiles = dir(tipFolder);
-Prefs.Tips.Files = cell([numel(tipsFiles), 1]); % path to the tip files
-for i=1:numel(tipsFiles)
-    Prefs.Tips.Files{i} = fullfile(fullfile(obj.mibPath, 'Resources', 'tips'), tipsFiles(i).name);
-end
+% -> moved to getDefaultParameters, as those needs to be updated each MIB session
+% tipFolder = fullfile(obj.mibPath, 'Resources', 'tips', '*.html');
+% tipsFiles = dir(tipFolder);
+% Prefs.Tips.Files = cell([numel(tipsFiles), 1]); % path to the tip files
+% for i=1:numel(tipsFiles)
+%     Prefs.Tips.Files{i} = fullfile(fullfile(obj.mibPath, 'Resources', 'tips'), tipsFiles(i).name);
+% end
 
 %% ------------  SAVE TO MAT FILE   ------------
 % outputPath = fileparts(which('mib.m'));

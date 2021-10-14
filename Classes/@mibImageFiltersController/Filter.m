@@ -86,12 +86,12 @@ if ~isempty(img)
     
     switch BatchOptOut.ActionToResult{1}
         case 'Fitler image'
-            img = mibDoImageFiltering2(img, BatchOptOut);
+            img = mibDoImageFiltering2(img, BatchOptOut, obj.mibModel.cpuParallelLimit);
         case 'Filter and add'
-            imgOut = mibDoImageFiltering2(img, BatchOptOut);
+            imgOut = mibDoImageFiltering2(img, BatchOptOut, obj.mibModel.cpuParallelLimit);
             img = img + imgOut;
         case 'Filter and subtract'
-            imgOut = mibDoImageFiltering2(img, BatchOptOut);
+            imgOut = mibDoImageFiltering2(img, BatchOptOut, obj.mibModel.cpuParallelLimit);
             img = img - imgOut;
     end
     if size(img, 4)+size(img, 3) > 2; toc; end
@@ -168,12 +168,12 @@ for sourceLayerId = 1:numel(sourceLayersList)
 
             switch BatchOptOut.ActionToResult{1}
                 case 'Fitler image'
-                    [img{roi}, log_text] = mibDoImageFiltering2(img{roi}, BatchOptOut);
+                    [img{roi}, log_text] = mibDoImageFiltering2(img{roi}, BatchOptOut, obj.mibModel.cpuParallelLimit);
                 case 'Filter and add'
-                    [imgOut, log_text] = mibDoImageFiltering2(img{roi}, BatchOptOut);
+                    [imgOut, log_text] = mibDoImageFiltering2(img{roi}, BatchOptOut, obj.mibModel.cpuParallelLimit);
                     img{roi} = img{roi}+imgOut;
                 case 'Filter and subtract'
-                    [imgOut, log_text] = mibDoImageFiltering2(img{roi}, BatchOptOut);
+                    [imgOut, log_text] = mibDoImageFiltering2(img{roi}, BatchOptOut, obj.mibModel.cpuParallelLimit);
                     img{roi} = img{roi}-imgOut;
             end
             if ~strcmp(sourceLayersList{sourceLayerId}, 'image')

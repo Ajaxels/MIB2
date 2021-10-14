@@ -33,7 +33,7 @@
 %
 % <<images\MenuSelectionMorphOps.png>>
 %
-% Performs morphological operations for 2D and 3D objects of the |Selection| layer. See more in the description of Matlab |bwmorph|, |bwmorph3| and |bwskel|
+% Performs morphological operations for 2D and 3D objects of the |Selection| layer. See more in the description of MATLAB |bwmorph|, |bwmorph3| and |bwskel|
 % functions. The following operations are available:
 %
 % <html>

@@ -9,6 +9,7 @@ function AlignMedianSmoothTemplate(obj, parameters)
 % .useBatchMode - use the script in the batch mode
 % .backgroundColor - string that defines background color: 'black', 'white', 'mean' or a number with intensity
 % .imgWidthForAnalysis - width of the image used for analysis, the datasets are downsampled to this value
+% .cpuParallelLimit - max value of parallel workers to use for parallel processing
 
 % Copyright (C) 20.01.2020, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi
@@ -120,7 +121,7 @@ if loadShifts == 0
         end
         
         % do filtering
-        parfor worker = 1:currentPool.NumWorkers
+        parfor (worker = 1:currentPool.NumWorkers, parameters.cpuParallelLimit)
             fixImg{worker} = mibDoImageFiltering2(movImg{worker}, FilterOpt);
         end
         
@@ -147,7 +148,7 @@ if loadShifts == 0
     
     % define usage of parallel computing
     if obj.BatchOpt.UseParallelComputing
-        parforArg = Inf;    % Maximum number of workers running in parallel
+        parforArg = parameters.cpuParallelLimit;    % Maximum number of workers running in parallel
     else
         parforArg = 0;      % Maximum number of workers running in parallel
     end

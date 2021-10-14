@@ -4,7 +4,7 @@
 %
 %
 % The *Graph cut* segmentation is based on <http://vision.csd.uwo.ca/code/ Max-flow/min-cut algorithm>
-% written by Yuri Boykov and Vladimir Kolmogorov and implemented for Matlab by 
+% written by Yuri Boykov and Vladimir Kolmogorov and implemented for MATLAB by 
 % <http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow Michael Rubinstein>. 
 % The max-flow/min-cut algorithm is applied not
 % to individual pixels but to groups of pixels (superpixels (2D), or supervoxels(3D)) that may be generated either using
@@ -152,9 +152,9 @@
 % in segmentation of areas that are distant from the seeds, which is
 % considered as an artefact of the method.
 % * *Superpixels/Graph* press this button to initiate generation of superpixels and their final organization into a graph
-% * *Import* press to import superpixels and the generated graph from a disk or Matlab
+% * *Import* press to import superpixels and the generated graph from a disk or MATLAB
 % * *Export* press to export superpixels and the generated graph to a file,
-% Matlab, a new model or as Lines3D graph object (not recommended for many superpixels, see also here
+% MATLAB, a new model or as Lines3D graph object (not recommended for many superpixels, see also here
 % <https://youtu.be/xrsTVqD7kOQ https://youtu.be/xrsTVqD7kOQ>)
 % * *Preview superpixels* the generated superpixels may be previewed by pressing this button
 %
@@ -248,7 +248,7 @@
 %
 % * <http://vision.csd.uwo.ca/code/ *Max-flow/min-cut algorithm*> written by Yuri Boykov and Vladimir Kolmogorov (*_Please note that this algorithm is licensed only
 % for research purposes_*). 
-% * <http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow *Matlab
+% * <http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow *MATLAB
 % wrapper*> for maxflow is written by Michael Rubinstein.
 % * <http://ivrl.epfl.ch/research/superpixels *SLIC superpixels and supervoxels*> by Radhakrishna Achanta, 
 % Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk. 

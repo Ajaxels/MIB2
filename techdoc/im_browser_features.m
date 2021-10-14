@@ -2,8 +2,8 @@
 % Microscopy Image Browser is a high-performance software package for
 % advanced image processing, segmentation and visualization of
 % multidimentional (2D-4D) datasets. Microscopy Image Browser is written in
-% Matlab, but has a user friendly graphical interface that does not requre
-% knowledge of Matlab and can be used by anybody.
+% MATLAB, but has a user friendly graphical interface that does not requre
+% knowledge of MATLAB and can be used by anybody.
 %
 % Please find a list of main features below
 % 
@@ -11,7 +11,7 @@
 %% List of Key Features:
 %%
 % 
-% * Works as a Matlab program under Windows/Linux/MacOS Matlab, or as a standalone application (Windows 64bit)
+% * Works as a MATLAB program under Windows/Linux/MacOS MATLAB, or as a standalone application (Windows 64bit)
 % * Open source, no license/fee required
 % * Extendable with custom plugins (<tutor_programming.html tutorials>)
 % * Load/Import multiple image and video formats using standard and custom-made readers, <http://www.mathworks.com Bio-Formats (LOCI) reader>, 
@@ -24,9 +24,9 @@
 % * Semi-automatic/manual image segmentation with help of filters and interpolation in XY, XZ, or YZ planes
 % * Train and predict datasets using deep convolutional neural networks
 % * Quantification and statistics for 2D/3D objects
-% * Export of images or models to Matlab, <http://www.vsg3d.com/amira/overview Amira> , <http://bio3d.colorado.edu/imod/ IMOD>, <https://youtu.be/G6z0pM3xOIk STL>, TIF, <http://www.slicer.org/ NRRD for 3D Slicer>, <http://imagej.net/BigDataViewer Fiji BigDataViewer> formats
-% * Direct 3D visualization using Matlab isosurfaces and volume rendering, <http://fiji.sc/3D_Viewer Fiji 3D viewer>, and <http://www.bitplane.com/ Imaris>
-% * Filtering of images with core Matlab and custom functions
+% * Export of images or models to MATLAB, <http://www.vsg3d.com/amira/overview Amira> , <http://bio3d.colorado.edu/imod/ IMOD>, <https://youtu.be/G6z0pM3xOIk STL>, TIF, <http://www.slicer.org/ NRRD for 3D Slicer>, <http://imagej.net/BigDataViewer Fiji BigDataViewer> formats
+% * Direct 3D visualization using MATLAB isosurfaces and volume rendering, <http://fiji.sc/3D_Viewer Fiji 3D viewer>, and <http://www.bitplane.com/ Imaris>
+% * Filtering of images with core MATLAB and custom functions
 % * Log of performed actions 
 % * Customizable Undo option
 % * Customizable Keyboard shortcuts

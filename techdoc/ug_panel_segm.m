@@ -39,7 +39,7 @@ Model
 % Loads model from the disk. The following formats are accepted:
 %%
 % 
-% * Matlab (*.MAT), _default recommended format_
+% * MATLAB (*.MAT), _default recommended format_
 % * Amira Mesh binary (*.AM); for models saved in <http://www.vsg3d.com/amira/overview Amira> format
 % * Hierarchial Data Format (*.H5); for data exchange with <http://ilastik.org/ Ilastik>
 % * Medical Research Concil format (*.MRC);  for data exchange with <http://bio3d.colorado.edu/imod/ IMOD>
@@ -96,9 +96,9 @@ Model
 % <li><b>Material to Mask</b> copy the selected material to the Mask layer with the options similar to <b>Material to Selection</b> section</li>
 % <li><b>Mask to Material</b> copy the Mask layer to the selected material with the options similar to <b>Material to Selection</b> section</li>
 % <li><b>Show as volume (MIB)..</b> visualize the selected material using
-% MIB rendering, available for Matlab R2018b and newer</li>
-% <li><b>Show isosurface (Matlab)...</b> visualize the model or only the selected material (when <em>Show selected material only</em> is selected), as an isosurface. This functionality is powered by 
-% Matlab and <a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">view3d</a> function written by  Torsten Vogel. Use the <b>"r"</b> shortcut to rotate and <b>"z"</b> to zoom. 
+% MIB rendering, available for MATLAB R2018b and newer</li>
+% <li><b>Show isosurface (MATLAB)...</b> visualize the model or only the selected material (when <em>Show selected material only</em> is selected), as an isosurface. This functionality is powered by 
+% MATLAB and <a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">view3d</a> function written by  Torsten Vogel. Use the <b>"r"</b> shortcut to rotate and <b>"z"</b> to zoom. 
 % See more in the <a href="ug_gui_menu_models.html">Render model...</a>section</li>
 % <li><b>Show as volume (Fiji)...</b> visualization of the model or selected material (when <em>Show selected material only</em> is selected) using volume rendering with Fiji 3D viewer,
 % please refer to the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements Fiji</a> for details</li>

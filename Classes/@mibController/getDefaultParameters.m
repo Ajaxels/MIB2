@@ -58,6 +58,14 @@ if exist('mib_pars', 'var') && isfield(mib_pars, 'mibVersion')  %#ok<NODEF> % % 
     end
 end
 
+% update tips of a day settings
+tipFolder = fullfile(obj.mibPath, 'Resources', 'tips', '*.html');
+tipsFiles = dir(tipFolder);
+obj.mibModel.preferences.Tips.Files = cell([numel(tipsFiles), 1]); % path to the tip files
+for i=1:numel(tipsFiles)
+    obj.mibModel.preferences.Tips.Files{i} = fullfile(fullfile(obj.mibPath, 'Resources', 'tips'), tipsFiles(i).name);
+end
+
 if isdir(obj.mibModel.preferences.System.Dirs.LastPath) == 0 %#ok<ISDIR>
     obj.mibModel.preferences.System.Dirs.LastPath = start_path;
 end

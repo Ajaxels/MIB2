@@ -628,12 +628,12 @@ executed before or after this Agreement), this Agreement shall prevail.
 
 Program Offering Guide 
 
-Release 2021a
+Release 2021b
 
 About This Guide
 
 This Program Offering Guide is an integral part of the Documentation for
-Release 2021a.
+Release 2021b.
 
 * Part One describes each of the different License Offerings.
 
@@ -1600,6 +1600,6 @@ countries collectively.
 
 [fn6] Additional fees may apply.
 
-03/2021
+09/2021
 
 

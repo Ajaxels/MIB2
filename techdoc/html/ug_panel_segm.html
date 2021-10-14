@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Segmentation Panel</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-01"><meta name="DC.source" content="ug_panel_segm.m"><style type="text/css">
+      --><title>Segmentation Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-10-14"><meta name="DC.source" content="ug_panel_segm.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -85,7 +85,7 @@ available from here:<br>
 <a href="https://youtu.be/r3lpmWyvrJU"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/r3lpmWyvrJU</a>
 <br>
 Also see more about types of model on the <a href="ug_gui_menu_models.html">Menu->Models page</a>
-</p><h2 id="5">The Load button</h2><p>Loads model from the disk. The following formats are accepted:</p><div><ul><li>Matlab (*.MAT), <i>default recommended format</i></li><li>Amira Mesh binary (*.AM); for models saved in <a href="http://www.vsg3d.com/amira/overview">Amira</a> format</li><li>Hierarchial Data Format (*.H5); for data exchange with <a href="http://ilastik.org/">Ilastik</a></li><li>Medical Research Concil format (*.MRC);  for data exchange with <a href="http://bio3d.colorado.edu/imod/">IMOD</a></li><li>NRRD format (*.NRRD); for models saved in <a href="http://www.slicer.org/">3D slicer</a> format</li><li>TIF format (*.TIF);</li><li>Hierarchial Data Format with XML header (*.XML);</li><li>all standard file formats can be opened when selecting "All files(<b>.</b>)"</li></ul></div><p>Alternatively it is possible to use the <a href="ug_gui_menu_models.html"><tt>Menu-&gt;Models-&gt;Load model</tt></a> or directly drag-and-drop <tt>*.model</tt> file to the Image View panel.</p><h2 id="7">The +, -, and E buttons</h2><div><ul><li>the "*+*" button, press to add a new material to the model (<i>only for models with 63 and 255 materials</i>)</li><li>the "*-*" button, press to delete the selected material from the model (<i>only for models with 63 and 255 materials</i>)</li><li>the "*E*" button, press to find and select the next empty index in the model (<i>only for models with more than 255 materials</i>)</li></ul></div><h2 id="8">The Filled/Contour combo box</h2><p>This combo box modifies visualization of materials in the <a href="ug_panel_im_view.html">Image View</a> panel.</p><div><ul><li><b>Filled</b> - use to draw materials as the filled shapes (<i>faster</i>)</li><li><b>Contour</b> - use to draw only the contours of materials (<i>slower</i>)</li></ul></div><h2 id="9">The Segmentation table</h2><p>The Segmentation table displays the list of materials of the model.</p><p>
+</p><h2 id="5">The Load button</h2><p>Loads model from the disk. The following formats are accepted:</p><div><ul><li>MATLAB (*.MAT), <i>default recommended format</i></li><li>Amira Mesh binary (*.AM); for models saved in <a href="http://www.vsg3d.com/amira/overview">Amira</a> format</li><li>Hierarchial Data Format (*.H5); for data exchange with <a href="http://ilastik.org/">Ilastik</a></li><li>Medical Research Concil format (*.MRC);  for data exchange with <a href="http://bio3d.colorado.edu/imod/">IMOD</a></li><li>NRRD format (*.NRRD); for models saved in <a href="http://www.slicer.org/">3D slicer</a> format</li><li>TIF format (*.TIF);</li><li>Hierarchial Data Format with XML header (*.XML);</li><li>all standard file formats can be opened when selecting "All files(<b>.</b>)"</li></ul></div><p>Alternatively it is possible to use the <a href="ug_gui_menu_models.html"><tt>Menu-&gt;Models-&gt;Load model</tt></a> or directly drag-and-drop <tt>*.model</tt> file to the Image View panel.</p><h2 id="7">The +, -, and E buttons</h2><div><ul><li>the "*+*" button, press to add a new material to the model (<i>only for models with 63 and 255 materials</i>)</li><li>the "*-*" button, press to delete the selected material from the model (<i>only for models with 63 and 255 materials</i>)</li><li>the "*E*" button, press to find and select the next empty index in the model (<i>only for models with more than 255 materials</i>)</li></ul></div><h2 id="8">The Filled/Contour combo box</h2><p>This combo box modifies visualization of materials in the <a href="ug_panel_im_view.html">Image View</a> panel.</p><div><ul><li><b>Filled</b> - use to draw materials as the filled shapes (<i>faster</i>)</li><li><b>Contour</b> - use to draw only the contours of materials (<i>slower</i>)</li></ul></div><h2 id="9">The Segmentation table</h2><p>The Segmentation table displays the list of materials of the model.</p><p>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/_iwQI2DIDjk"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/_iwQI2DIDjk</a>
 <br><br>
@@ -113,9 +113,9 @@ The segmentation table has 3 columns:
 <li><b>Material to Mask</b> copy the selected material to the Mask layer with the options similar to <b>Material to Selection</b> section</li>
 <li><b>Mask to Material</b> copy the Mask layer to the selected material with the options similar to <b>Material to Selection</b> section</li>
 <li><b>Show as volume (MIB)..</b> visualize the selected material using
-MIB rendering, available for Matlab R2018b and newer</li>
-<li><b>Show isosurface (Matlab)...</b> visualize the model or only the selected material (when <em>Show selected material only</em> is selected), as an isosurface. This functionality is powered by
-Matlab and <a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">view3d</a> function written by  Torsten Vogel. Use the <b>"r"</b> shortcut to rotate and <b>"z"</b> to zoom.
+MIB rendering, available for MATLAB R2018b and newer</li>
+<li><b>Show isosurface (MATLAB)...</b> visualize the model or only the selected material (when <em>Show selected material only</em> is selected), as an isosurface. This functionality is powered by
+MATLAB and <a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">view3d</a> function written by  Torsten Vogel. Use the <b>"r"</b> shortcut to rotate and <b>"z"</b> to zoom.
 See more in the <a href="ug_gui_menu_models.html">Render model...</a>section</li>
 <li><b>Show as volume (Fiji)...</b> visualization of the model or selected material (when <em>Show selected material only</em> is selected) using volume rendering with Fiji 3D viewer,
 please refer to the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements Fiji</a> for details</li>
@@ -131,7 +131,7 @@ please refer to the <a href="im_browser_system_requirements.html">Microscopy Ima
 <li>select the second material in the Add to column</li>
 <li>Press the Alt+A or Ctrl+A shortcut</li>
 </ul>
-</p><h2 id="10">The Fix selection to material check box</h2><p>This check box ensures that all segmentation tools will be performed only for material selected in the table.</p><h2 id="11">The Masked area checkbox</h2><p>This check box ensures that all segmentation tools will be limited only within the masked areas of the image.</p><h2 id="12">The "D" checkbox, to select fast access tools</h2><p>This checkbox marks the favorite selection tools that are selected using the 'D' key shortcut. The chosen fast access tools are highlighted with orange background in the <tt>Selection type</tt> popup menu. Any tool can be selected as a favorite one.</p><h2 id="13">Segmentation tools combo box</h2><p>This  combo box hosts different tools for the segmentation. <a href="ug_panel_segm_tools.html">See more here</a>.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+</p><h2 id="10">The Fix selection to material check box</h2><p>This check box ensures that all segmentation tools will be performed only for material selected in the table.</p><h2 id="11">The Masked area checkbox</h2><p>This check box ensures that all segmentation tools will be limited only within the masked areas of the image.</p><h2 id="12">The "D" checkbox, to select fast access tools</h2><p>This checkbox marks the favorite selection tools that are selected using the 'D' key shortcut. The chosen fast access tools are highlighted with orange background in the <tt>Selection type</tt> popup menu. Any tool can be selected as a favorite one.</p><h2 id="13">Segmentation tools combo box</h2><p>This  combo box hosts different tools for the segmentation. <a href="ug_panel_segm_tools.html">See more here</a>.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Segmentation Panel
 % The segmentation panel is the main panel used for segmentation. It allows creating models, 
@@ -174,7 +174,7 @@ Model
 % Loads model from the disk. The following formats are accepted:
 %%
 % 
-% * Matlab (*.MAT), _default recommended format_
+% * MATLAB (*.MAT), _default recommended format_
 % * Amira Mesh binary (*.AM); for models saved in <http://www.vsg3d.com/amira/overview Amira> format
 % * Hierarchial Data Format (*.H5); for data exchange with <http://ilastik.org/ Ilastik>
 % * Medical Research Concil format (*.MRC);  for data exchange with <http://bio3d.colorado.edu/imod/ IMOD>
@@ -231,9 +231,9 @@ Model
 % <li><b>Material to Mask</b> copy the selected material to the Mask layer with the options similar to <b>Material to Selection</b> section</li>
 % <li><b>Mask to Material</b> copy the Mask layer to the selected material with the options similar to <b>Material to Selection</b> section</li>
 % <li><b>Show as volume (MIB)..</b> visualize the selected material using
-% MIB rendering, available for Matlab R2018b and newer</li>
-% <li><b>Show isosurface (Matlab)...</b> visualize the model or only the selected material (when <em>Show selected material only</em> is selected), as an isosurface. This functionality is powered by 
-% Matlab and <a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">view3d</a> function written by  Torsten Vogel. Use the <b>"r"</b> shortcut to rotate and <b>"z"</b> to zoom. 
+% MIB rendering, available for MATLAB R2018b and newer</li>
+% <li><b>Show isosurface (MATLAB)...</b> visualize the model or only the selected material (when <em>Show selected material only</em> is selected), as an isosurface. This functionality is powered by 
+% MATLAB and <a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">view3d</a> function written by  Torsten Vogel. Use the <b>"r"</b> shortcut to rotate and <b>"z"</b> to zoom. 
 % See more in the <a href="ug_gui_menu_models.html">Render model...</a>section</li>
 % <li><b>Show as volume (Fiji)...</b> visualization of the model or selected material (when <em>Show selected material only</em> is selected) using volume rendering with Fiji 3D viewer,
 % please refer to the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements Fiji</a> for details</li>

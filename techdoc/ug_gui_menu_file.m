@@ -10,7 +10,7 @@
 %% Import image from...
 % 
 % 
-% * *Matlab*  - import image from the main Matlab workspace into |im_browser|. It is possible to
+% * *MATLAB*  - import image from the main MATLAB workspace into |im_browser|. It is possible to
 % provide image description containers.Map together with the dataset, which
 % allows to maintain parameters of the dataset when using the |Export
 % image| command (see below). <https://youtu.be/zUJ1RUuTLVs [*brief demo*]>
@@ -69,10 +69,10 @@
 % Please refer to the <ug_gui_menu_file_rename_and_shuffle.html Rename and shuffle> section for details.
 %
 %% Export image to 
-% Export images to the main Matlab workspace or Imaris.
+% Export images to the main MATLAB workspace or Imaris.
 %
 % <html>
-% <b>- Matlab</b><br>
+% <b>- MATLAB</b><br>
 % In addition to the image
 % variable, another variable with parameters of the dataset (containers.Map class) is
 % automatically created. This |containers.Map| can be imported back to |MIB| later together 
@@ -95,7 +95,7 @@
 % * *PNG, Portable Network Graphics (*.png)* - saves images in the Portable Network Graphics format
 % * *TIF format, LZW compressed*, as a multilayered tif-file (|3D-Tif option|) or as a sequence of tif-files
 % (|Sequence of 2D files|). *Please note!* the TIF format uses 32-bit offsets, and
-% that, in practice, limits the maximal size of the TIF-files to 2Gb. Matlab
+% that, in practice, limits the maximal size of the TIF-files to 2Gb. MATLAB
 % can create TIF files larger than 2Gb but those can't be opened later
 % * *TIF format, non-compressed*, see above for details of saving datasets in the TIF format
 %
@@ -117,7 +117,7 @@
 % <html><h3 style="color:#d45600;">MIB rendering</h3></html>
 %
 %
-% Starting from MIB (version 2.5) and Matlab R2018b the volumes can be
+% Starting from MIB (version 2.5) and MATLAB R2018b the volumes can be
 % directly visualized in MIB using hardware accelerated volume rendering
 % engine. The datasets for visuzalization can be downsampled during the
 % export. It is possible to make snapshots and animations.
@@ -133,10 +133,10 @@
 % <a href="https://youtu.be/4CrfdOiZebk"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/J70V33f7bas</a>
 % </html>
 %
-% <html><h3 style="color:#d45600;">Matlab Volume Viewer</h3></html>
+% <html><h3 style="color:#d45600;">MATLAB Volume Viewer</h3></html>
 %
 %
-% When MIB is used with Matlab R2017a or newer it is possible to export the
+% When MIB is used with MATLAB R2017a or newer it is possible to export the
 % open dataset to Volume Viewer application. Please note that this feature
 % is not available for the compliled version of MIB
 %
@@ -185,7 +185,7 @@
 % *Please note*, |MIB| stores its configuration parameters in a file that is automatically generated after closing of
 % |MIB|:
 %
-% * *for Windows* - _C:\Users\Username\Matlab\mib.mat_ or in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
+% * *for Windows* - _C:\Users\Username\MATLAB\mib.mat_ or in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
 % The TEMP directory can be found and accessed with |Windows->Start button->%TEMP%| command
 % * *for Linux* - _/home/username/Matlab_ or local TEMP directory
 % * *for MacOS* - _/Users/username/Matlab_ or local TEMP directory

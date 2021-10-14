@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="148230112" file="/Volumes/VERBATIM/MIB2/MIB_deploy_v2702/MIB_Mac.prj" location="/Volumes/VERBATIM/MIB2/MIB_deploy_v2702" name="MIB_Mac" preferred-package-location="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="148230112" file="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac.prj" location="/Volumes/VERBATIM/MIB2/MIB2_deploy" name="MIB_Mac" preferred-package-location="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}/MIB_Mac_resources/icon.icns</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
     </param.icons>
-    <param.version>2.702</param.version>
+    <param.version>2.81</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -34,15 +34,15 @@ To configure path to Fiji and Omero server please add paths to those program in 
 
 Further instructions:
 http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
-    <param.target.install.notes>In the following directions, replace MR/v97 by the directory on the target machine where MATLAB is installed, or MR by the directory where the MATLAB Runtime is installed.
+    <param.target.install.notes>In the following directions, replace MR/v911 by the directory on the target machine where MATLAB is installed, or MR by the directory where the MATLAB Runtime is installed.
 
 If the environment variable DYLD_LIBRARY_PATH is undefined, set it to the following string:
 
-MR/v97/runtime/maci64:MR/v97/sys/os/maci64:MR/v97/bin/maci64
+MR/v911/runtime/maci64:MR/v911/sys/os/maci64:MR/v911/bin/maci64
 
 If it is defined, set it to the following:
 
-${DYLD_LIBRARY_PATH}:MR/v97/runtime/maci64:MR/v97/sys/os/maci64:MR/v97/bin/maci64</param.target.install.notes>
+${DYLD_LIBRARY_PATH}:MR/v911/runtime/maci64:MR/v911/sys/os/maci64:MR/v911/bin/maci64</param.target.install.notes>
     <param.intermediate>${PROJECT_ROOT}/MIB_Mac/for_testing</param.intermediate>
     <param.files.only>${PROJECT_ROOT}/MIB_Mac/for_redistribution_files_only</param.files.only>
     <param.output>${PROJECT_ROOT}/MIB_Mac/for_redistribution</param.output>
@@ -68,18 +68,7 @@ ${DYLD_LIBRARY_PATH}:MR/v97/runtime/maci64:MR/v97/sys/os/maci64:MR/v97/bin/maci6
 	 
  Input Arguments 
 	 -?  print help on how to use the application 
-	 input arguments 
- Description 
- 	 You are going to install MIB that has been compiled to stand-alone executables. By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to 
-- the terms of the disclaimer below, 
-- the Matlab Compiler Runtime (MCR) libraries license (http://mib.helsinki.fi/Matlab_MCR_license.txt) 
-- applicable parts of the MathWorks, Inc. Software License Agreement (http://mib.helsinki.fi/Matlab_license.txt)
-- as Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited
-
-The corresponding license files are also included into the MIB distribution under techdoc directory.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.</param.help.text>
+	 input arguments</param.help.text>
     <unset>
       <param.guid />
       <param.installpath.combo />
@@ -135,28 +124,22 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
       <file>/Volumes/VERBATIM/MIB2/OMERO/unloadOmero.m</file>
     </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="readme.txt" optional="true">/Volumes/VERBATIM/MIB2/MIB_deploy_v2702/MIB_Mac/for_testing/readme.txt</file>
-      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="run_MIB.sh" optional="false">/Volumes/VERBATIM/MIB2/MIB_deploy_v2702/MIB_Mac/for_testing/run_MIB.sh</file>
-      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="MIB.app" optional="false">/Volumes/VERBATIM/MIB2/MIB_deploy_v2702/MIB_Mac/for_testing/MIB.app</file>
-      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="splash.png" optional="false">/Volumes/VERBATIM/MIB2/MIB_deploy_v2702/MIB_Mac/for_testing/splash.png</file>
+      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="readme.txt" optional="true">/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_testing/readme.txt</file>
+      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="MIB.app" optional="false">/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_testing/MIB.app</file>
+      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="splash.png" optional="false">/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_testing/splash.png</file>
+      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="run_MIB.sh" optional="false">/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_testing/run_MIB.sh</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/Applications/MATLAB_R2019b.app</root>
+      <root>/Applications/MATLAB_R2021b.app</root>
       <toolboxes>
         <toolbox name="matlabcoder" />
-        <toolbox name="embeddedcoder" />
         <toolbox name="neuralnetwork" />
       </toolboxes>
       <toolbox>
         <matlabcoder>
           <enabled>true</enabled>
         </matlabcoder>
-      </toolbox>
-      <toolbox>
-        <embeddedcoder>
-          <enabled>true</enabled>
-        </embeddedcoder>
       </toolbox>
       <toolbox>
         <neuralnetwork>

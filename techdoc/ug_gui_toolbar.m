@@ -44,7 +44,7 @@
 % 
 % <<images/toolbar_save.jpg>>
 %
-% Saves model to a file in the Matlab format. The file name is not asked, which means that the |MIB| will use:
+% Saves model to a file in the MATLAB format. The file name is not asked, which means that the |MIB| will use:
 %%
 % 
 % * Default template such as |Labels_NAME_OF_THE_DATASET.model|
@@ -206,7 +206,7 @@
 % <<images/toolbar_parallel.jpg>>
 %
 % Starts matlab parallel processing routine. Requires the parallel
-% processing toolbox. It seems that it is not really needed, Matlab handles the paralling of processing automatically in many
+% processing toolbox. It seems that it is not really needed, MATLAB handles the paralling of processing automatically in many
 % cases.
 %
 %% Swap left and right mouse button

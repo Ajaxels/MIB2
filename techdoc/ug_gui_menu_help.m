@@ -10,6 +10,7 @@
 % * *Tip of the day*, display a window with tips on some specific topics of
 % MIB
 % * *Support*, if you have any questions, suggestions or bugs please let us know on <https://forum.image.sc/tags/mib image.sc> forum
+% * *Call for help*, click to get information about online support sessions
 % * *Class reference*, reference to classes and functions of Microscopy Image Browser
 % * *Check for Update*, check the available version of |MIB|
 % * *Licenses*, information about licenses

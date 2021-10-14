@@ -1317,7 +1317,7 @@ classdef mibGraphcutController  < handle
                         % create waitbar for parallel loops
                         pw = PoolWaitbar(numel(obj.graphcut(1).grid.bb), sprintf('Calculating graphs\nPlease wait...'), wb, 'Calculating...');
                         
-                        parfor graphId = 1:numel(obj.graphcut(1).grid.bb)
+                        parfor (graphId = 1:numel(obj.graphcut(1).grid.bb), obj.mibModel.cpuParallelLimit)
                             G = Graphcut(graphId);
                             G = mibGraphcutController.mibGraphcut_CalcSupervoxels(G, img{graphId}, parLoopOptions);
                             fNames = fieldnames(G);

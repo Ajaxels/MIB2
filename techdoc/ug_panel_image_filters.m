@@ -23,14 +23,14 @@
 %
 % *List of available filters:*
 %
-% * *Average*, (*2D*) Matlab Averaging filter, see more in the Matlab documentation for |fspecial|
+% * *Average*, (*2D*) MATLAB Averaging filter, see more in the MATLAB documentation for |fspecial|
 % and |imfilter|
-% * *Disk*, (*2D*) Matlab circular averaging filter (pillbox), see more in the Matlab documentation for |fspecial|
+% * *Disk*, (*2D*) MATLAB circular averaging filter (pillbox), see more in the MATLAB documentation for |fspecial|
 % and |imfilter|
 % * *DNN Denoise*, (*2D*) denoise images using deep neural network,
-% available for Matlab R2017b and newer, requires Neural Network Toolbox
+% available for MATLAB R2017b and newer, requires Neural Network Toolbox
 % and good GPU
-% * *Gaussian*, (*2D*) Matlab a rotationally symmetric Gaussian lowpass filter, see more in the Matlab documentation for |fspecial|
+% * *Gaussian*, (*2D*) MATLAB a rotationally symmetric Gaussian lowpass filter, see more in the MATLAB documentation for |fspecial|
 % and |imfilter|
 % * *Gaussian*, (*3D*) is based on <http://www.mathworks.com/matlabcentral/fileexchange/25397-imgaussian
 % Dirk-Jan Kroon implementation> and uses the fact that a Gaussian kernel can be 
@@ -40,22 +40,22 @@
 % likeliness of an image region to contain vessels or other image ridges , according to the method described by Frangi <http://www.dtic.upf.edu/~afrangi/articles/miccai1998.pdf 1998>, <http://www.tecn.upf.es/~afrangi/articles/tmi2001.pdf 2001>.
 % Implementation is based on <http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter
 % Hessian based Frangi Vesselness filter>, written by Marc Schrijver and Dirk-Jan Kroon.
-% * *Motion*, (*2D*) Matlab filter to approximate the linear motion of a camera, see more in the Matlab documentation for |fspecial|
+% * *Motion*, (*2D*) MATLAB filter to approximate the linear motion of a camera, see more in the MATLAB documentation for |fspecial|
 % and |imfilter|.
-% * *Median*, (*2D*) Matlab 2D median filter. Median filtering is a nonlinear operation often used in image processing to 
+% * *Median*, (*2D*) MATLAB 2D median filter. Median filtering is a nonlinear operation often used in image processing to 
 % reduce "salt and pepper" noise. The median filter is more effective than convolution when the goal is to simultaneously
-% reduce noise and preserve edges. See more in the Matlab documentation for |medfilt2|.
-% * *Median*, (*3D*) Matlab 3D median filter (_*Release 2017a and later*_). Median filtering is a nonlinear operation often used in image processing to 
+% reduce noise and preserve edges. See more in the MATLAB documentation for |medfilt2|.
+% * *Median*, (*3D*) MATLAB 3D median filter (_*Release 2017a and later*_). Median filtering is a nonlinear operation often used in image processing to 
 % reduce "salt and pepper" noise. The median filter is more effective than convolution when the goal is to simultaneously
-% reduce noise and preserve edges. See more in the Matlab documentation for
+% reduce noise and preserve edges. See more in the MATLAB documentation for
 % |medfilt3|. <https://youtu.be/7wZbjyVY5s4 A short youtube demo>
 % * *Perona Malik anisotropic diffusion*, (*2D*) - a filter written by
 % <http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff Peter Kovesi> to perform anisotropic diffusion of an 
 % image following Perona and Malik's algorithm. This process smoothes the regions while preserving, and enhancing the contrast 
 % at sharp intensity gradients.
-% * *Unsharp*, (*2D*) Matlab sharpens image using unsharp masking (|imsharpen| function, R2013a and above) or unsharpens contrast
+% * *Unsharp*, (*2D*) MATLAB sharpens image using unsharp masking (|imsharpen| function, R2013a and above) or unsharpens contrast
 % enhancement filter (|fspecial| and |imfilter|, R2012b and older).
-% * *Wiener*, (*2D*) Matlab 2D 2-D adaptive noise-removal filtering (|wiener2| function). |wiener2| lowpass-filters a grayscale image that 
+% * *Wiener*, (*2D*) MATLAB 2D 2-D adaptive noise-removal filtering (|wiener2| function). |wiener2| lowpass-filters a grayscale image that 
 % has been degraded by constant power additive noise. |wiener2| uses a pixel wise adaptive Wiener method based on statistics estimated from a local neighbourhood of each pixel.
 % * *External: BMxD*, (*2D/3D*) an optional filtering by block-matching and
 % 3D collaborative algorithm. The filters are not supplied with MIB and

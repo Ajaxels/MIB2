@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="1601618835" file="C:\Matlab\Scripts\MIB2\MIB_deploy_v280\MIB.prj" location="C:\Matlab\Scripts\MIB2\MIB_deploy_v280" name="MIB" preferred-package-location="C:\Matlab\Scripts\MIB2\MIB_deploy_v280\MIB\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="714228190" file="C:\Matlab\Scripts\MIB2\MIB_deploy_v281\MIB.prj" location="C:\Matlab\Scripts\MIB2\MIB_deploy_v281" name="MIB" preferred-package-location="C:\Matlab\Scripts\MIB2\MIB_deploy_v281\MIB\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}\MIB_resources\icon.ico</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}\MIB_resources\icon_24.png</file>
       <file>${PROJECT_ROOT}\MIB_resources\icon_16.png</file>
     </param.icons>
-    <param.version>2.802</param.version>
+    <param.version>2.81</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -123,16 +123,15 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
       <file>D:\Tools\Science\Fiji.app\scripts\Miji.m</file>
     </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}\MIB\for_testing" name="readme.txt" optional="true">C:\Matlab\Scripts\MIB2\MIB_deploy_v280\MIB\for_testing\readme.txt</file>
-      <file location="${PROJECT_ROOT}\MIB\for_testing" name="splash.png" optional="false">C:\Matlab\Scripts\MIB2\MIB_deploy_v280\MIB\for_testing\splash.png</file>
-      <file location="${PROJECT_ROOT}\MIB\for_testing" name="MIB.exe" optional="false">C:\Matlab\Scripts\MIB2\MIB_deploy_v280\MIB\for_testing\MIB.exe</file>
+      <file location="${PROJECT_ROOT}\MIB\for_testing" name="MIB.exe" optional="false">C:\Matlab\Scripts\MIB2\MIB_deploy_v281\MIB\for_testing\MIB.exe</file>
+      <file location="${PROJECT_ROOT}\MIB\for_testing" name="splash.png" optional="false">C:\Matlab\Scripts\MIB2\MIB_deploy_v281\MIB\for_testing\splash.png</file>
+      <file location="${PROJECT_ROOT}\MIB\for_testing" name="readme.txt" optional="true">C:\Matlab\Scripts\MIB2\MIB_deploy_v281\MIB\for_testing\readme.txt</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>D:\MATLAB\R2021a</root>
+      <root>D:\MATLAB\R2021b</root>
       <toolboxes>
         <toolbox name="matlabcoder" />
-        <toolbox name="embeddedcoder" />
         <toolbox name="gpucoder" />
         <toolbox name="neuralnetwork" />
       </toolboxes>
@@ -140,11 +139,6 @@ http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
         <matlabcoder>
           <enabled>true</enabled>
         </matlabcoder>
-      </toolbox>
-      <toolbox>
-        <embeddedcoder>
-          <enabled>true</enabled>
-        </embeddedcoder>
       </toolbox>
       <toolbox>
         <gpucoder>

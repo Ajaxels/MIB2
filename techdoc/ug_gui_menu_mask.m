@@ -20,19 +20,19 @@
 % Clears the mask, i.e. deletes the |Mask| layer from computer memory.
 %
 %% Load mask
-% Load mask from disk. The mask is saved in the Matlab format with the |*.mask|
+% Load mask from disk. The mask is saved in the MATLAB format with the |*.mask|
 % extension.
 %
 %% Import Mask from
-% Imports mask from the main Matlab workspace or from another dataset opened in MIB. 
+% Imports mask from the main MATLAB workspace or from another dataset opened in MIB. 
 % The mask should be a matrix with dimensions similar to those of the loaded dataset |[1:height, 1:width, 1:no-slices]| of the |uint8| class.
 %
 %% Export Mask to
-% Exports mask to the main Matlab workspace or to another dataset opened in MIB, the exported mask may be imported back 
+% Exports mask to the main MATLAB workspace or to another dataset opened in MIB, the exported mask may be imported back 
 % to |MIB| using _Import Mask from Matlab_ command.
 %
 %% Save mask as...
-% Saves mask to disk. The mask is saved in the Matlab format with |*.mask|
+% Saves mask to disk. The mask is saved in the MATLAB format with |*.mask|
 % extension and |Mask_| prefix.
 %
 %% Invert mask

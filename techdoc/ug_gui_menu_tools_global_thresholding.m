@@ -215,7 +215,7 @@
 %
 %% OTSU algorithm
 % 
-% * Matlab implementation of the Otsu algorithm
+% * MATLAB implementation of the Otsu algorithm
 % * The |t| value is calculated using |graythresh|
 %
 % *Reference*

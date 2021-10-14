@@ -7,7 +7,7 @@
 % PLUGIN_NAMEController, for example |mytestController.m|. So the full filename
 % may look like this:
 %
-% _c:\Matlab\Scripts\mib\Plugins\MyPlugings\myPlugin\myPluginController.m_
+% _c:\MATLAB\Scripts\mib\Plugins\MyPlugings\myPlugin\myPluginController.m_
 %
 % Please check the contents of |Plugins->Tutorials| for examples. See more in the
 % corresponding <http://mib.helsinki.fi/tutorials_programming.html tutorials> .

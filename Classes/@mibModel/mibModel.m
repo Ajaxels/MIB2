@@ -20,6 +20,8 @@ classdef mibModel < handle
         % variable for Undo history
         connImaris
         % a handle to Imaris connection
+        cpuParallelLimit
+        % max number of parallel workers available
         disableSegmentation
         % a switch 0/1 to disable segmentation tools while for example modifying ROIs
         displayedLutColors
@@ -216,7 +218,8 @@ classdef mibModel < handle
         transposeZ2T(obj)        % transpose Z to T dimension
         
         
-        function obj = mibModel()
+        function obj = mibModel(cpuParallelLimit)
+            obj.cpuParallelLimit = cpuParallelLimit;
             obj.reset();
         end
         

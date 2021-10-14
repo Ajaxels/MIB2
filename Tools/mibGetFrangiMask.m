@@ -14,6 +14,7 @@ function mask = mibGetFrangiMask(img, Options, Options2, type, orientation2d, la
 % Options2: -> a structure with extra parameters
 %  - .bwthreshold -> threshold for mask generation
 %  - .sizefilter -> size exclusion parameter
+%  - .cpuParallelLimit -> max number of CPU available for parallel  processing
 % type: -> ''2d'' or ''3d'' (''3d'' is not implemented)
 % orientation2d: -> defines the stack orientation for 2d filtering, @b 1 - zx, @b 2 - zy, or @b 4 - yx
 % layer_id: -> define a single slice from the dataset, when omitted filter the whole dataset
@@ -58,6 +59,7 @@ mask = zeros(size(img,1),size(img,2),size(img,4),'uint8');
 %                                % the greyvalues of the vessels by 4 till 6, default 500;
 %     Options.BlackWhite = 1;
 %     Options.verbose = 0;
+%     Options.cpuParallelLimit = 4;
 %
 %     [J,Scale,Vx,Vy,Vz] = FrangiFilter3D(squeeze(handles.Img{handles.Id}.I.img), Options);
 %     result = J;
@@ -85,7 +87,7 @@ if strcmp(type, '2d')
             end
         end
     elseif orientation2d == 1
-        parfor layer=start_id:end_id
+        parfor (layer=start_id:end_id, Options2.cpuParallelLimit)
             curr_img = double(squeeze(img(layer,:,:,:)));
             result = FrangiFilter2D(curr_img,Options);
             if bwthreshold ~= 0
@@ -98,7 +100,7 @@ if strcmp(type, '2d')
             end
         end
     elseif orientation2d == 2
-        parfor layer=start_id:end_id
+        parfor (layer=start_id:end_id, Options2.cpuParallelLimit)
             curr_img = double(squeeze(img(:,layer,:,:)));
             result = FrangiFilter2D(curr_img,Options);
             if bwthreshold ~= 0

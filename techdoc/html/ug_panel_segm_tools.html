@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Segmentation Tools</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-06-01"><meta name="DC.source" content="ug_panel_segm_tools.m"><style type="text/css">
+      --><title>Segmentation Tools</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-10-14"><meta name="DC.source" content="ug_panel_segm_tools.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -141,9 +141,9 @@ describe the 3D lines (see below).
 <b>Tools panel</b><br>
 <ul>
 <li><b>Load</b>, load 3D lines from a file in matlab-compatible lines3d format</li>
-<li><b>Save</b>, export to Matlab or save 3D lines to a file:
+<li><b>Save</b>, export to MATLAB or save 3D lines to a file:
   <ul>
-  <li><b>Matlab format, *.lines3d</b>, it is recommended to save the 3D lines in the matlab format!</li>
+  <li><b>MATLAB format, *.lines3d</b>, it is recommended to save the 3D lines in the matlab format!</li>
   <li><b>Amira Spatial graph, *.am</b>, Amira-compatible format in binary or ascii form</li>
   <li><b>Excel format, *.xls</b>, export Nodes and Edges tables to an Excel file</li>
   </ul>
@@ -163,7 +163,7 @@ Right mouse click starts a popup menu with various options:
 <li><b>Rename selected tree...</b>, rename selected in the table tree; tree name should be unique!</li>
 <li><b>Find tree by node...</b>, find a tree which has a node with provided index</li>
 <li><b>Visualize in 3D selected tree(s)</b>, plot the selected trees in 3D</li>
-<li><b>Save/export selected tree(s)</b>, export to Matlab or save to a file the selected trees, see the Tools panel below for the list of available file formats</li>
+<li><b>Save/export selected tree(s)</b>, export to MATLAB or save to a file the selected trees, see the Tools panel below for the list of available file formats</li>
 <li><b>Delete selected tree(s)</b>, delete selected tree from the table</li>
 </ul>
 <br><br>
@@ -218,7 +218,7 @@ The annotations can be removed by using <em>Ctrl + left mouse click</em> combina
 <br>
 <ul>
 <li>The <b>Annotation list</b> button starts a window with the list of existing
-annotations. It is possible to load and save annotations to the main Matlab
+annotations. It is possible to load and save annotations to the main MATLAB
 workspace or to a file (matlab and excel formats). See more below.</li>
 <li>The <b>Delete All</b> button removes all annotations
 <li><b>Precision</b> edit box - specify number of digits after decimal
@@ -254,18 +254,18 @@ value and the second parameter is label.
       <li><em><b>Rename selected annotations</em></b>, rename names of the selected annotations</li>
       <li><em><b>Batch modify selected annotations</em></b>, modify annotation values or coordinates using a provided expression</li>
       <li><em><b>Count selected annotations</em></b>, calculate occurance of each annotation in the list of selected annotations.
-          The results are displayed in the Matlab command window and
+          The results are displayed in the MATLAB command window and
           copied to the system clipboard
           <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a>
           </li>
       <li><em><b>Copy selected annotations to clipboard</em></b>, the selected annotations are copied to the system clipboard as a text string ready to be pasted to Excel</li>
-      <li><em><b>Export selected annotations</em></b>, export selected annotations in the Matlab format, landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>), PSI format for Amira and Excel</li>
+      <li><em><b>Export selected annotations</em></b>, export selected annotations in the MATLAB format, landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>), PSI format for Amira and Excel</li>
       <li><em><b>Export selected annotations to Imaris</em></b>, export selected annotations to Imaris (<em><b>Note!</em> please first export the dataset!</b>)</li>
       <li><em><b>Order</b></em>, subitems of the Order entry can be used to move annotations towards the top or the bottom of the list</li>
       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
   </ul>
-<li>The <b>Load</b> button, press to import annotations from the main Matlab workspace or load them from a file</li>
-<li>The <b>Save</b> button, press to export annotations to the main Matlab workspace or to save them as a file in Matlab, Comma-separated CSV format, Excel formats or as landmarks for Amira (
+<li>The <b>Load</b> button, press to import annotations from the main MATLAB workspace or load them from a file</li>
+<li>The <b>Save</b> button, press to export annotations to the main MATLAB workspace or to save them as a file in MATLAB, Comma-separated CSV format, Excel formats or as landmarks for Amira (
           <a href="https://youtu.be/wHr6nHpmVMo"><img style="vertical-align:middle;" src="images\youtube.png"></a> <em><b>Note!</em> only the coordinates are exported!</b>), or PSI format for Amira</li>
 <li>The <b>Precision</b> editbox, modify precision of the value field in the table and for the visualization in the Image View panel
 <li>The <b>Auto jump</b> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>
@@ -370,7 +370,7 @@ A brief demonstration is available in the following video:<br>
   <td>Action</td>
 </tr>
 <tr><td>Mouse click over an object</td><td>Control</td><td>Unchecked</td><td>Move the selected object in 2D</td></tr>
-<tr><td>Mouse click over an object</td><td>Control</td><td>Checked</td><td>Move the selected 3D object. <b>Note! Only for Matlab version 2017b and newer</b></td></tr>
+<tr><td>Mouse click over an object</td><td>Control</td><td>Checked</td><td>Move the selected 3D object. <b>Note! Only for MATLAB version 2017b and newer</b></td></tr>
 <tr><td>Mouse click</td><td>Shift</td><td>Unchecked</td><td>Move all objects on the shown slice, i.e. 2D movement</td></tr>
 <tr><td>Mouse click</td><td>Shift</td><td>Checked</td><td>Move all objects on all slices, i.e. 3D movement</td></tr>
 <tr><td>Left/Right/Up/Down buttons</td><td>-</td><td>Unchecked</td><td>Move all objects on the shown slice by the specified number of pixels, i.e. 2D movement</td></tr>
@@ -517,7 +517,7 @@ Works also in 3D.
 </td>
 </tr>
 </table>
-</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a> <tt><b>--&gt;</b></tt> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a> <tt><b>--&gt;</b></tt> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Segmentation Tools
 % This panel hosts different tools that are used for the image
@@ -607,9 +607,9 @@ Works also in 3D.
 % <b>Tools panel</b><br>
 % <ul>
 % <li><b>Load</b>, load 3D lines from a file in matlab-compatible lines3d format</li>
-% <li><b>Save</b>, export to Matlab or save 3D lines to a file:
+% <li><b>Save</b>, export to MATLAB or save 3D lines to a file:
 %   <ul>
-%   <li><b>Matlab format, *.lines3d</b>, it is recommended to save the 3D lines in the matlab format!</li>
+%   <li><b>MATLAB format, *.lines3d</b>, it is recommended to save the 3D lines in the matlab format!</li>
 %   <li><b>Amira Spatial graph, *.am</b>, Amira-compatible format in binary or ascii form</li>
 %   <li><b>Excel format, *.xls</b>, export Nodes and Edges tables to an Excel file</li>
 %   </ul>
@@ -629,7 +629,7 @@ Works also in 3D.
 % <li><b>Rename selected tree...</b>, rename selected in the table tree; tree name should be unique!</li>
 % <li><b>Find tree by node...</b>, find a tree which has a node with provided index</li>
 % <li><b>Visualize in 3D selected tree(s)</b>, plot the selected trees in 3D</li>
-% <li><b>Save/export selected tree(s)</b>, export to Matlab or save to a file the selected trees, see the Tools panel below for the list of available file formats</li>
+% <li><b>Save/export selected tree(s)</b>, export to MATLAB or save to a file the selected trees, see the Tools panel below for the list of available file formats</li>
 % <li><b>Delete selected tree(s)</b>, delete selected tree from the table</li>
 % </ul>
 % <br><br>
@@ -688,7 +688,7 @@ Works also in 3D.
 % <br>
 % <ul>
 % <li>The <b>Annotation list</b> button starts a window with the list of existing
-% annotations. It is possible to load and save annotations to the main Matlab
+% annotations. It is possible to load and save annotations to the main MATLAB
 % workspace or to a file (matlab and excel formats). See more below.</li>
 % <li>The <b>Delete All</b> button removes all annotations
 % <li><b>Precision</b> edit box - specify number of digits after decimal
@@ -726,18 +726,18 @@ Works also in 3D.
 %       <li><em><b>Rename selected annotations</em></b>, rename names of the selected annotations</li>
 %       <li><em><b>Batch modify selected annotations</em></b>, modify annotation values or coordinates using a provided expression</li>
 %       <li><em><b>Count selected annotations</em></b>, calculate occurance of each annotation in the list of selected annotations. 
-%           The results are displayed in the Matlab command window and
+%           The results are displayed in the MATLAB command window and
 %           copied to the system clipboard 
 %           <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a>
 %           </li>
 %       <li><em><b>Copy selected annotations to clipboard</em></b>, the selected annotations are copied to the system clipboard as a text string ready to be pasted to Excel</li>
-%       <li><em><b>Export selected annotations</em></b>, export selected annotations in the Matlab format, landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>), PSI format for Amira and Excel</li>
+%       <li><em><b>Export selected annotations</em></b>, export selected annotations in the MATLAB format, landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>), PSI format for Amira and Excel</li>
 %       <li><em><b>Export selected annotations to Imaris</em></b>, export selected annotations to Imaris (<em><b>Note!</em> please first export the dataset!</b>)</li>
 %       <li><em><b>Order</b></em>, subitems of the Order entry can be used to move annotations towards the top or the bottom of the list</li>
 %       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
 %   </ul>
-% <li>The <b>Load</b> button, press to import annotations from the main Matlab workspace or load them from a file</li>
-% <li>The <b>Save</b> button, press to export annotations to the main Matlab workspace or to save them as a file in Matlab, Comma-separated CSV format, Excel formats or as landmarks for Amira (
+% <li>The <b>Load</b> button, press to import annotations from the main MATLAB workspace or load them from a file</li>
+% <li>The <b>Save</b> button, press to export annotations to the main MATLAB workspace or to save them as a file in MATLAB, Comma-separated CSV format, Excel formats or as landmarks for Amira (
 %           <a href="https://youtu.be/wHr6nHpmVMo"><img style="vertical-align:middle;" src="images\youtube.png"></a> <em><b>Note!</em> only the coordinates are exported!</b>), or PSI format for Amira</li>
 % <li>The <b>Precision</b> editbox, modify precision of the value field in the table and for the visualization in the Image View panel
 % <li>The <b>Auto jump</b> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>
@@ -912,7 +912,7 @@ Works also in 3D.
 %   <td>Action</td>
 % </tr>
 % <tr><td>Mouse click over an object</td><td>Control</td><td>Unchecked</td><td>Move the selected object in 2D</td></tr>
-% <tr><td>Mouse click over an object</td><td>Control</td><td>Checked</td><td>Move the selected 3D object. <b>Note! Only for Matlab version 2017b and newer</b></td></tr>
+% <tr><td>Mouse click over an object</td><td>Control</td><td>Checked</td><td>Move the selected 3D object. <b>Note! Only for MATLAB version 2017b and newer</b></td></tr>
 % <tr><td>Mouse click</td><td>Shift</td><td>Unchecked</td><td>Move all objects on the shown slice, i.e. 2D movement</td></tr>
 % <tr><td>Mouse click</td><td>Shift</td><td>Checked</td><td>Move all objects on all slices, i.e. 3D movement</td></tr>
 % <tr><td>Left/Right/Up/Down buttons</td><td>-</td><td>Unchecked</td><td>Move all objects on the shown slice by the specified number of pixels, i.e. 2D movement</td></tr>

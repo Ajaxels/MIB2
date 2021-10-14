@@ -71,7 +71,7 @@
 % called tiles, rather than the entire image. Each tile's contrast is enhanced, so that the histogram of the output region 
 % approximately matches the histogram specified by the 'Distribution' parameter. The neighboring tiles are then combined using bilinear 
 % interpolation to eliminate artificially induced boundaries. The contrast, especially in homogeneous areas, can be limited to avoid amplifying 
-% any noise that might be present in the image. For details see documentation for Matlab function |adapthisteq|. 
+% any noise that might be present in the image. For details see documentation for MATLAB function |adapthisteq|. 
 % * *Normalize layers*, normalization of image intensities between the
 % slices.  A) calculates mean intensity and standard deviation (std) for the whole dataset;
 % B) calculates mean intensities and standard deviation for each image; C) shifts each image 
@@ -125,7 +125,7 @@
 % <td><img src="images\MenuImageToolsContentAwareFill.png"></td>
 % <td>
 % <h2><font color="#ef6c00">inpaintCoherent</font></h2>
-% <b><em>only for Matlab R2019a and newer</em></b><br>
+% <b><em>only for MATLAB R2019a and newer</em></b><br>
 % Restore specific image regions using coherence transport based image
 % inpainting. <br><br>
 % The areas for the content-aware fill can be specified using the Mask or
@@ -145,7 +145,7 @@
 % <td><img src="images\MenuImageToolsContentAwareFill2.png"></td>
 % <td>
 % <h2><font color="#ef6c00">inpaintExemplar</font></h2>
-% <b><em>only for Matlab R2019b and newer</em></b><br>
+% <b><em>only for MATLAB R2019b and newer</em></b><br>
 % Fill image regions using exemplar-based image inpainting<br><br>
 % The areas for the content-aware fill can be specified using the Mask or
 % Selection layers of MIB.<br><br>
@@ -206,7 +206,7 @@
 % <table>
 % <tr>
 % <td colspan = 2><h2><font color="orange">Image arithmetics</font></h2><br>
-% Use Matlab syntax to apply custom arithmetic expression to Image, Model, Mask or Selection layers, see more in<br>
+% Use MATLAB syntax to apply custom arithmetic expression to Image, Model, Mask or Selection layers, see more in<br>
 % a brief video and examples below.<br>
 % For MIB 2.60 and newer <a href="https://youtu.be/sDwvnJGLi8Q"><img
 % style="vertical-align:middle;" src="images\youtube2.png">

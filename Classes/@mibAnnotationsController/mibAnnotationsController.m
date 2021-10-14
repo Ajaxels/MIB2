@@ -135,6 +135,8 @@ classdef mibAnnotationsController < handle
         function loadBtn_Callback(obj)
             % function loadBtn_Callback(obj)
             % load annotation from a file or import from Matlab
+            global mibPath;
+            
             button =  questdlg(sprintf('Would you like to import annotations from a file or from the main Matlab workspace?'),'Import/Load annotations','Load from a file','Import from Matlab','Cancel','Load from a file');
             switch button
                 case 'Cancel'
@@ -179,33 +181,87 @@ classdef mibAnnotationsController < handle
                     end
                     obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(Labels.Text, Labels.Positions, Labels.Values);
                 case 'Load from a file'
-                    [filename, path] = mib_uigetfile(...
+                    [filename, path, indx] = mib_uigetfile(...
                         {'*.ann;',  'Matlab format (*.ann)'; ...
+                        '*.csv;',  'CSV format (*.csv)'; ...
                         '*.*',  'All Files (*.*)'}, ...
                         'Load annotations...', obj.mibModel.myPath);
                     if isequal(filename, 0); return; end % check for cancel
+                    fullFilename = fullfile(path, filename);
                     
                     obj.mibModel.mibDoBackup('labels', 0);
-                    res = load(fullfile(path, filename), '-mat');
-                    if isfield(res, 'labelsList')   % old format for saving annotations
-                        res.labelText = res.labelsList;
-                        res = rmfield(res, 'labelsList');
-                    end
-                    if isfield(res, 'labelValues')     % old variable for values of annotations
-                        res.labelValue = res.labelValues;
-                        res = rmfield(res, 'labelValues');
-                    end
-                    if isfield(res, 'labelPositions')     % old variable for values of annotations
-                        res.labelPosition = res.labelPositions;
-                        res = rmfield(res, 'labelPositions');
-                    end
-                    
-                    if ~isfield(res, 'labelValue')     % old variable for values of annotations
-                        res.labelValue = zeros([numel(res.labelText), 1]) + 1;
-                    end
-                    
-                    if size(res.labelPosition,2) == 3  % missing the t
-                        res.labelPosition(:, 4) = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1);
+                    switch indx
+                        case 1  % matlab, ann-file
+                            res = load(fullFilename, '-mat');
+                            if isfield(res, 'labelsList')   % old format for saving annotations
+                                res.labelText = res.labelsList;
+                                res = rmfield(res, 'labelsList');
+                            end
+                            if isfield(res, 'labelValues')     % old variable for values of annotations
+                                res.labelValue = res.labelValues;
+                                res = rmfield(res, 'labelValues');
+                            end
+                            if isfield(res, 'labelPositions')     % old variable for values of annotations
+                                res.labelPosition = res.labelPositions;
+                                res = rmfield(res, 'labelPositions');
+                            end
+                            
+                            if ~isfield(res, 'labelValue')     % old variable for values of annotations
+                                res.labelValue = zeros([numel(res.labelText), 1]) + 1;
+                            end
+                            
+                            if size(res.labelPosition,2) == 3  % missing the t
+                                res.labelPosition(:, 4) = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1);
+                            end
+                            
+                        case 2  % csv file
+                            opts = detectImportOptions(fullFilename);
+                            T = readtable(fullFilename, opts);
+                            varNames = T.Properties.VariableNames;
+                            varNames2 = ['do not import', sort(varNames)];
+                            
+                            prompts = {'Annotation name'; 'Annotation value'; 'Z coordinate (pixels)'; 'X coordinate (pixels)'; 'Y coordinate (pixels)'; 'T coordinate (pixels)'};
+                            defAns = {[varNames2, {1}], [varNames2, {1}], [varNames2, {1}], [varNames2, {1}], [varNames2, {1}], [varNames2, {1}]};
+                            dlgTitle = 'Import from CSV';
+                            options.PromptLines = [1, 1, 1, 1, 1, 1];   % number of lines for widget titles
+                            options.Title = 'Select column names in CSV file that to these fields';   % additional text at the top of the window
+                            options.TitleLines = 2;                   % [optional] make it twice tall, number of text lines for the title
+                            options.WindowWidth = 1.2;    % [optional] make window x1.2 times wider
+                            options.Columns = 1;    % [optional] define number of columns
+                            [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                            if isempty(answer); return; end
+                            
+                            % allocate space
+                            N = numel(T(:,1));  % number of entries in the input table
+                            res.labelText = repmat({'Label'}, [N,1]);
+                            res.labelValue = zeros([N, 1]);
+                            res.labelPosition = ones([N, 4]);
+                            
+                            if ~strcmp(answer{1}, 'do not import')  % import label names
+                                if isnumeric(T.(answer{1})(1))
+                                    res.labelText  = cellstr(string(T.(answer{1})));
+                                else
+                                    res.labelText  = T.(answer{1});
+                                end
+                            end
+                            if ~strcmp(answer{2}, 'do not import')  % import label values
+                                if isnumeric(T.(answer{2})(1))
+                                    res.labelValue  = T.(answer{2});
+                                else
+                                    res.labelValue  = cellstr(str2double(T.(answer{2})));
+                                end
+                            end
+                            for fieldId = 3:6   % z  x  y  t
+                                if ~strcmp(answer{fieldId}, 'do not import')  % import label values
+                                    if isnumeric(T.(answer{fieldId})(1))
+                                        res.labelPosition(:, fieldId-2) = T.(answer{fieldId});
+                                    else
+                                        res.labelPosition(:, fieldId-2) = cellstr(str2double(T.(answer{fieldId})));
+                                    end
+                                end
+                            end
+                        otherwise
+                            return
                     end
                     obj.mibModel.I{obj.mibModel.Id}.hLabels.replaceLabels(res.labelText, res.labelPosition, res.labelValue);
             end
@@ -391,6 +447,7 @@ classdef mibAnnotationsController < handle
             % ''Jump'' - jump to the selected annotation
             % ''Count'' - count annotations
             % ''Clipboard'' - copy selected annotations to the system clipboard
+            % ''Mask'' - copy selected annotations to the mask layer
             % ''Export'' - export/save annotations to matlab or to a file
             % ''Imaris'' - export annotations to Imaris
             %% ''OrderTop'', ''OrderUp'', ''OrderDown'', ''OrderBottom'' - change order of the annotation in the list
@@ -619,6 +676,67 @@ classdef mibAnnotationsController < handle
                     d = data(unique(obj.indices(:,1)), min(obj.indices(:,2)):max(obj.indices(:,2)));
                     cell2clip(d);    % copy to clipboard
                     fprintf('Annotations: %d rows were copied to the system clipboard\n', size(d, 2));
+                case 'Mask'
+                    if isempty(obj.indices); return; end
+                    
+                    prompts = {'Mode'; 'Spot size policy (fixed - all spots will have the same radius; scaled - not implemented)'; 'Spot radius in pixels or scale factor'};
+                    defAns = {{'2D spots', '3D spots', 1}; {'Fixed value', 'Scaled from Value', 1}; '1'};
+                    dlgTitle = 'Conversion to Mask';
+                    options.PromptLines = [1, 2, 1];  
+                    options.WindowWidth = 1.0;
+                    [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                    if isempty(answer); return; end 
+                    wb = waitbar(0, sprintf('Getting the annotations\nPlease wait'));
+                    
+                    if obj.mibModel.I{obj.mibModel.Id}.maskExist
+                        setDataOptions.blockModeSwitch = 0;
+                        obj.mibModel.mibDoBackup('mask', 1, setDataOptions);
+                    end
+                    obj.mibModel.I{obj.mibModel.Id}.clearMask();
+                    
+                    data = obj.View.handles.annotationTable.Data;
+                    d = data(unique(obj.indices(:,1)), 3:6);    % [z, x, y, t]
+                    d2 = ceil(str2double(d));
+                    % remove those that are out of bounds
+                    d2(d2(:,1)<1, :) = [];  % z
+                    d2(d2(:,1)>obj.mibModel.I{obj.mibModel.Id}.depth, :) = [];  % z
+                    d2(d2(:,2)<1, :) = [];  % x
+                    d2(d2(:,2)>obj.mibModel.I{obj.mibModel.Id}.width, :) = [];  % x
+                    d2(d2(:,3)<1, :) = [];  % y
+                    d2(d2(:,3)>obj.mibModel.I{obj.mibModel.Id}.height, :) = [];  % y
+                    d2(d2(:,4)<1, :) = [];  % t
+                    d2(d2(:,4)>obj.mibModel.I{obj.mibModel.Id}.time, :) = [];  % t
+                    
+                    %timeVec = unique(str2double(d(:,4)));   % get unique time points for the labels
+                    switch answer{2}
+                        case 'Fixed value'
+                            waitbar(0.05, wb, sprintf('Placing the seeds\nPlease wait'));
+                            for pntId = 1:size(d2, 1)
+                                getDataOpt.x = d2(pntId, 2);
+                                getDataOpt.y = d2(pntId, 3);
+                                getDataOpt.z = d2(pntId, 1);
+                                getDataOpt.t = d2(pntId, 4);
+                                obj.mibModel.I{obj.mibModel.Id}.setData('mask', 1, 4, NaN, getDataOpt);
+                            end
+                            waitbar(0.3, wb, sprintf('Growing the seeds\nPlease wait'));
+                            if str2double(answer{3}) > 1
+                                BatchOpt.TargetLayer = {'mask'};
+                                BatchOpt.DatasetType = {'4D, Dataset'};
+                                BatchOpt.DilateMode = {answer{1}(1:2)};     % 2D or 3D spots
+                                BatchOpt.StrelSize = answer{3};
+                                obj.mibModel.dilateImage(BatchOpt);
+                            end
+                            waitbar(1, wb, 'Done!');
+                            notify(obj.mibModel, 'plotImage');  % notify to plot the image
+                            delete(wb);
+                            
+                            if size(d,1) ~= size(d2,1)
+                                warndlg(sprintf('!!! Warning !!!\n%d annotations were out of image boundaries and were not rendered!', size(d,1)-size(d2,1)), 'Results');
+                            end
+                        case 'Scaled from Value'
+                            errordlg(sprintf('!!! Error !!!\n\nThese mode is not yet implemented'));
+                            return
+                    end
                 case 'Export'
                     if isempty(obj.indices); return; end
                     

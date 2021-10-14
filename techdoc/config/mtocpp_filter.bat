@@ -1,1 +1,1 @@
-@mtocpp %1 C:\Matlab\Scripts\MIB2\MIB2\techdoc\config\mtocpp.conf
+@mtocpp %1 C:\Matlab\Scripts\MIB2\MIB_deploy_v281\techdoc\config\mtocpp.conf

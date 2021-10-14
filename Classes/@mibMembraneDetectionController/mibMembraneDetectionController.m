@@ -320,10 +320,10 @@ classdef mibMembraneDetectionController < handle
                     % fm(:,:,91) -> normalized smoothed orig.image sigma=2 - smoothed orig.image sigma=50
                     % fm(:,:,92) -> original image
                     
-                    fm  = membraneFeatures(im, cs, ms, csHist);
+                    fm  = membraneFeatures(im, cs, ms, csHist, obj.mibModel.cpuParallelLimit);
                     
                     %         % test fm
-                    %         fm  = membraneFeatures(im, 15, 2, 15);
+                    %         fm  = membraneFeatures(im, 15, 2, 15, obj.mibModel.cpuParallelLimit);
                     %         fmout = zeros(size(fm),'uint8');
                     %         for i=1:size(fm,3)
                     %             fmout(:,:,i) = uint8(fm(:,:,i)/max(max(fm(:,:,i)))*255);
@@ -500,7 +500,7 @@ classdef mibMembraneDetectionController < handle
                     % fm(:,:,91) -> normalized smoothed orig.image sigma=2 - smoothed orig.image sigma=50
                     % fm(:,:,92) -> original image
                     
-                    fm  = membraneFeatures(im, cs, ms, csHist);
+                    fm  = membraneFeatures(im, cs, ms, csHist, obj.mibModel.cpuParallelLimit);
                     fm(isnan(fm)) = 0;
                     save(featuresFilename, 'fm', '-mat','-v7.3');
                 else

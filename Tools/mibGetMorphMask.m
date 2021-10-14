@@ -11,6 +11,7 @@ function mask = mibGetMorphMask(img, Options)
 %  - .all_sw -> indicates full stack or single layer
 %  - .orientation -> indicates dimension for 2d iterations, 1-for XZ, 2 - YZ, 4  -XY
 %  - .currentIndex -> index of the current slice
+%  - .cpuParallelLimit -> number of CPU available for parallel processing
 %
 % Return values:
 % mask: generated mask image [1:height,1:width,1:no_stacks], (0/1);
@@ -37,7 +38,7 @@ try
     if isempty(poolobj)
         noCores = 0; 
     else
-        noCores = poolobj.NumWorkers;
+        noCores = Options.cpuParallelLimit;
     end
 catch
     noCores = 0;
