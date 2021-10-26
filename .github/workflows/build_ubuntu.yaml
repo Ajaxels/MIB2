@@ -4,7 +4,7 @@ on:
   push:
     # not specifying any branches means triggering on all of them
   pull_request:
-    branches: [ master github-actions]
+    branches: [ master ]
 
 jobs:
   build:
@@ -18,5 +18,10 @@ jobs:
       uses: matlab-actions/setup-matlab@v1
 
     - name: Test MATLAB
+      # crashes here as the MATLAB Compiler is currently not supported with GitHub Actions...
       run: |
         mcc
+
+    # for more information about what is possible using GitHub Actions with MATLAB, see here:
+    # https://github.com/matlab-actions/overview
+    
