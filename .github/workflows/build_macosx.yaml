@@ -2,7 +2,7 @@ name: Build macOSX
 
 on:
   push:
-    branches: [ master ]
+    # not specifying any branches means triggering on all of them
   pull_request:
     branches: [ master ]
 
