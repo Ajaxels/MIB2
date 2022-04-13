@@ -22,7 +22,7 @@ function varargout = mibImageArithmeticGUI(varargin)
 
 % Edit the above text to modify the response to help mibImageArithmeticGUI
 
-% Last Modified by GUIDE v2.5 25-May-2020 17:42:58
+% Last Modified by GUIDE v2.5 08-Dec-2021 18:08:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -169,4 +169,25 @@ handles.Expression.Position(4) = handles.examplesText.Position(2) - handles.Expr
 
 handles.expressionText.Position(2) = handles.Expression.Position(2) + handles.Expression.Position(4) - 10;
 
+end
+
+
+% --- Executes on key press with focus on mibImageArithmeticGUI and none of its controls.
+function mibImageArithmeticGUI_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to mibImageArithmeticGUI (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+% call key press callback of MIB main window
+% alternative solution is in
+% mibMeasureToolController.mibMeasureToolController or 
+% mibImageFiltersGUI.mlapp->FigureKeyPress
+eventData = struct();
+if isempty(eventdata.Character); return; end    % when only modifiers are pressed do not trigger the shortcuts
+eventData.eventdata = eventdata;
+eventData = ToggleEventData(eventData);
+notify(handles.winController.mibModel, 'keyPressEvent', eventData);
 end

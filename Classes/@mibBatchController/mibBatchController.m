@@ -791,7 +791,10 @@ classdef mibBatchController < handle
                             curDirField = fieldNames{obj.selectedActionTableIndex};
                             switch class(obj.CurrentBatch.(curDirField))
                                 case 'cell'
-                                    0;
+                                    if strcmp(obj.CurrentBatch.(curDirField){1}, 'Inherit from dataset filename'); return; end
+                                    selpath = uigetdir(obj.CurrentBatch.(curDirField){1}, 'Update directory');
+                                    obj.CurrentBatch.(curDirField){2}(ismember(obj.CurrentBatch.(curDirField){2}, obj.CurrentBatch.(curDirField){1})) = {selpath};
+                                    obj.CurrentBatch.(curDirField)(1) = {selpath};
                                 case 'char'
                                     if ~isfolder(obj.CurrentBatch.(curDirField))
                                         selpath = uigetdir(obj.mibModel.myPath, 'Update directory');
@@ -800,9 +803,9 @@ classdef mibBatchController < handle
                                     end
                                     if selpath == 0; return; end
                                     obj.CurrentBatch.(curDirField) = selpath;
-                                    obj.updateSelectedActionTable(obj.CurrentBatch);
-                                    obj.displaySelectedActionTableItems();
                             end
+                            obj.updateSelectedActionTable(obj.CurrentBatch);
+                            obj.displaySelectedActionTableItems();
                             return;
                     end
                 case 'Remove directories'    % remove selected file or directory from the list

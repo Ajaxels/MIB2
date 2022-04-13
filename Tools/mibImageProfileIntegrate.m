@@ -1,5 +1,5 @@
-function [ProfileOut, profileLength] = mibImageProfileIntegrate(img, x1, y1, x2, y2, profileWidth, debug)
-% function [ProfileOut, profileLength] = mibImageProfileIntegrate(img, x1, y1, x2, y2, profileWidth, debug)
+function [ProfileOut, profileLength, samplePntsX, samplePntsY] = mibImageProfileIntegrate(img, x1, y1, x2, y2, profileWidth, debug)
+% function [ProfileOut, profileLength, samplePntsX, samplePntsY] = mibImageProfileIntegrate(img, x1, y1, x2, y2, profileWidth, debug)
 % calculate image intensity profile for line ROI
 % based on code by Damien in comments of
 % http://se.mathworks.com/matlabcentral/fileexchange/11568-extract-integrated-intensity-profiles-from-image
@@ -16,18 +16,20 @@ function [ProfileOut, profileLength] = mibImageProfileIntegrate(img, x1, y1, x2,
 % Return values:
 % ProfileOut: matrix with intensity profiles for all color channels [colChannel, 1:points]
 % profileLength: length of the intensity profile in pixels
+% samplePntsX: x coordinates of the X sample points as (widthIndex, Xcoordinate]
+% samplePntsY: y coordinates of the Y sample points as (widthIndex, Ycoordinate]
 
 % Copyright (C) 28.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
 % as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
+% of the License, or (at yourx option) any later version.
 %
 % Updates
 %
 
-if nargin < 7; debug = 0; end;
+if nargin < 7; debug = 0; end
 
 if debug
     figure(1)
@@ -37,15 +39,14 @@ if debug
     colormap('gray');
 end
 
-%linescan along the dots (x1,y1) and (x2,y2) 
-%width of the linsecan is the variable 'profileWidth', which is also the width of
-%the rectangle to be rotated
+% linescan along the dots (x1,y1) and (x2,y2) 
+% width of the linsecan is the variable 'profileWidth', which is also the width of
+% the rectangle to be rotated
 
-%get the length of the line, length of the rectangle
+% get the length of the line, length of the rectangle
 profileLength = sqrt((x2-x1).^2 + (y2-y1).^2);
 
-%calculate the rotation angle
-
+% calculate the rotation angle
 if y2 < y1
     rotationAngle = acos((x2-x1)/profileLength);
 elseif y2 > y1
@@ -107,7 +108,17 @@ for j = 0:profileWidth-1
     
     %quantification along the line
     for colCh = 1:size(img, 3)
-        Profile(colCh, :) = improfile(img(:, :, colCh), [xj1, xj2], [yj1, yj2]);
+        if colCh == 1
+            [cx, cy, Profile(colCh, :)] = improfile(img(:, :, colCh), [xj1, xj2], [yj1, yj2]);
+            if j == 0 % allocate space
+                samplePntsX = zeros([profileWidth, numel(cx)]);
+                samplePntsY = zeros([profileWidth, numel(cy)]);
+            end
+            samplePntsX(j+1, :) = cx;
+            samplePntsY(j+1, :) = cy;
+        else
+            Profile(colCh, :) = improfile(img(:, :, colCh), [xj1, xj2], [yj1, yj2]);
+        end
     end
     
     if j == 0

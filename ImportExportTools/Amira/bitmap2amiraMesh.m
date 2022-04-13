@@ -32,6 +32,7 @@ function result = bitmap2amiraMesh(filename, bitmap, img_info, options)
 % ver 1.03 - 17.09.2014, fix for saving parameters that are in structures
 % ver 1.04 - 04.06.2018 save TransformationMatrix with AmiraMesh
 % ver 1.05 - 22.01.2019 added saving of amira mesh files as 2D sequence
+% ver 1.06 - 28.01.2022 replaced multiple spaces with single space chars in BoundingBox
 
 result = 0;
 if nargin < 2
@@ -219,7 +220,8 @@ if isKey(img_info, 'ImageDescription')
         bb = str2num(curr_text(spaces(1):pos)); %#ok<ST2NM>
     end
 end
-fprintf(fid,'\tBoundingBox %s,\n', num2str(bb));
+%fprintf(fid,'\tBoundingBox %s,\n', num2str(bb));
+fprintf(fid,'\tBoundingBox %f %f %f %f %f %f,\n', bb(1), bb(2), bb(3), bb(4), bb(5), bb(6));
 fprintf(fid,'\tCoordType "uniform"');
 if isKey(img_info, 'TransformationMatrix')    % save transformation matrix
     fprintf(fid,'\tTransformationMatrix %s\n', num2str(img_info('TransformationMatrix')));

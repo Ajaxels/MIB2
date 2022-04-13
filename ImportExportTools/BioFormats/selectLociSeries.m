@@ -262,8 +262,13 @@ set(handles.sliceNumberSlider, 'SliderStep', [.1 .1]);
 
 omeMeta = handles.output2.getMetadataStore();
 indeces = unique(eventdata.Indices(:,1)');
-pixSizeX = double(omeMeta.getPixelsPhysicalSizeX(indeces(1)-1).value(ome.units.UNITS.MICROM));   % in um
-pixSizeY = double(omeMeta.getPixelsPhysicalSizeY(indeces(1)-1).value(ome.units.UNITS.MICROM));
+if ~isempty(omeMeta.getPixelsPhysicalSizeX(indeces(1)-1))
+    pixSizeX = double(omeMeta.getPixelsPhysicalSizeX(indeces(1)-1).value(ome.units.UNITS.MICROM));   % in um
+    pixSizeY = double(omeMeta.getPixelsPhysicalSizeY(indeces(1)-1).value(ome.units.UNITS.MICROM));
+else
+    pixSizeX = 1;
+    pixSizeY = 1;
+end
     
 handles.selectedSeriesText.String = sprintf('%s, pixsize, x/y = %f, %f um', ...
     num2str(indeces), pixSizeX, pixSizeY);

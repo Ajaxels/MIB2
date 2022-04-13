@@ -7,7 +7,7 @@ function BatchOpt = updateBatchOptCombineFields_Shared(BatchOpt, BatchOptInput)
 BatchOptInputFields = fieldnames(BatchOptInput);
 for i=1:numel(BatchOptInputFields)
     % check for popup menu, update only the first element, because the second element provides the list of options
-    if iscell(BatchOptInput.(BatchOptInputFields{i}))   
+    if iscell(BatchOptInput.(BatchOptInputFields{i}))
         if isempty(BatchOptInput.(BatchOptInputFields{i}))
             BatchOpt.(BatchOptInputFields{i})(1) = {''};
         else

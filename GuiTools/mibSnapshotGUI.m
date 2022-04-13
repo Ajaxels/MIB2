@@ -173,20 +173,15 @@ function mibSnapshotGUI_KeyPressFcn(hObject, eventdata, handles)
 %	Character: character interpretation of the key(s) that was pressed
 %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
 % handles    structure with handles and user data (see GUIDATA)
-% Check for "enter" or "escape"
-if strcmp(eventdata.Modifier, 'alt')
-    handles.bin2Btn.String = 'x2';
-    handles.bin4Btn.String = 'x4';
-    handles.bin8Btn.String = 'x8';
-end
 
-if isequal(hObject.CurrentKey, 'escape')
-    cancelBtn_Callback(handles.closelBtn, eventdata, handles);
-end    
-    
-if isequal(hObject.CurrentKey, 'return')
-    continueBtn_Callback(handles.snapshotBtn, eventdata, handles);
-end   
+% call key press callback of MIB main window
+% alternative solution is in mibMeasureToolController.mibMeasureToolController
+eventData = struct();
+if isempty(eventdata.Character); return; end    % when only modifiers are pressed do not trigger the shortcuts
+eventData.eventdata = eventdata;
+eventData = ToggleEventData(eventData);
+notify(handles.winController.mibModel, 'keyPressEvent', eventData);
+
 end
 
 

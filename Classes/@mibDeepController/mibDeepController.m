@@ -189,6 +189,17 @@ classdef mibDeepController < handle
                 data = inp.(f{1});
             end
         end
+
+        function data = tif3DFileRead(filename)
+            % data = tif3DFileRead(filename)
+            % custom reading function to load tif files with stack of images
+            % used in evaluate segmentation function
+            meta = imfinfo(filename);
+            data = zeros([meta(1).Height, meta(1).Width, numel(meta)], 'uint8');
+            for sliceId = 1:numel(meta)
+                data(:, :, sliceId) = imread(filename, 'Index', sliceId);
+            end
+        end
         
         function [outputLabeledImageBlock, scoreBlock] = segmentBlockedImage(block, net, generateScoreFiles, ExecutionEnvironment)
             % test function for utilization of bigimage for prediction
@@ -218,6 +229,9 @@ classdef mibDeepController < handle
     end
     
     methods
+        % declaration of functions in the external files, keep empty line in between for the doc generator
+        net = generateDeepLabV3Network(obj, imageSize, numClasses, targetNetwork) % generate DeepLab v3+ convolutional neural network for semantic image segmentation of 2D RGB images
+
         function obj = mibDeepController(mibModel, varargin)
             obj.mibModel = mibModel;    % assign model
             obj.mibController = varargin{1};
@@ -232,7 +246,7 @@ classdef mibDeepController < handle
             
             obj.BatchOpt.NetworkFilename = fullfile(obj.mibModel.myPath, 'myLovelyNetwork.mibDeep');
             obj.BatchOpt.Architecture = {'2D U-net'};
-            obj.BatchOpt.Architecture{2} = {'2D U-net', '2D SegNet', '3D U-net', '3D U-net Anisotropic'};
+            obj.BatchOpt.Architecture{2} = {'2D U-net', '2D SegNet', '2D DeepLabV3 Resnet18', '3D U-net', '3D U-net Anisotropic'};
             obj.BatchOpt.Mode = {'Train'};
             obj.BatchOpt.Mode{2} = {'Train', 'Predict'};
             obj.BatchOpt.T_ConvolutionPadding = {'same'};
@@ -261,9 +275,6 @@ classdef mibDeepController < handle
             obj.BatchOpt.T_augmentation = true;
             obj.BatchOpt.T_ExportTrainingPlots = true;
             obj.BatchOpt.T_SaveProgress = false;
-            obj.BatchOpt.P_OverlappingTiles = true;
-            obj.BatchOpt.P_ScoreFiles = {'Use AM format'};
-            obj.BatchOpt.P_ScoreFiles{2} = {'Do not generate', 'Use AM format', 'Use Matlab non-compressed format', 'Use Matlab compressed format'};
             obj.BatchOpt.UseParallelComputing = false;
             obj.BatchOpt.T_RandomGeneratorSeed{1} = obj.mibModel.preferences.Deep.RandomGeneratorSeed;  % random seed generator for training
             obj.BatchOpt.T_RandomGeneratorSeed{2} = [0 Inf];
@@ -312,6 +323,11 @@ classdef mibDeepController < handle
             obj.BatchOpt.RandomGeneratorSeed{3} = true;
             obj.BatchOpt.MaskAway = false;
             
+            obj.BatchOpt.P_OverlappingTiles = true;
+            obj.BatchOpt.P_ModelFiles = {'MIB Model format'};
+            obj.BatchOpt.P_ModelFiles{2} = {'MIB Model format', 'TIF compressed format', 'TIF uncompressed format'};
+            obj.BatchOpt.P_ScoreFiles = {'Use AM format'};
+            obj.BatchOpt.P_ScoreFiles{2} = {'Do not generate', 'Use AM format', 'Use Matlab non-compressed format', 'Use Matlab compressed format'};
             obj.BatchOpt.P_MiniBatchSize{1} = 1;
             obj.BatchOpt.P_MiniBatchSize{2} = [1 Inf];
             obj.BatchOpt.P_MiniBatchSize{3} = true;
@@ -350,8 +366,6 @@ classdef mibDeepController < handle
             obj.BatchOpt.mibBatchTooltip.T_augmentation = 'Augment images during training';
             obj.BatchOpt.mibBatchTooltip.T_ExportTrainingPlots = 'When ticked, export training scores to files, which are placed to Results\ScoreNetwork folder';
             obj.BatchOpt.mibBatchTooltip.T_SaveProgress = 'When ticked the network progress is saved to Results\ScoreNetwork folder';
-            obj.BatchOpt.mibBatchTooltip.P_OverlappingTiles = 'when enabled use overlapping tiles during prediction, it is slower but may give better results';
-            obj.BatchOpt.mibBatchTooltip.P_ScoreFiles = 'tweak generation of score files showing probability of each class';
             obj.BatchOpt.mibBatchTooltip.OriginalTrainingImagesDir = 'Specify directory with original images and models. The images and models should be placed under "Images" and "Labels" subfolders correspondingly';
             obj.BatchOpt.mibBatchTooltip.OriginalPredictionImagesDir = 'Specify directory with original images for prediction';
             obj.BatchOpt.mibBatchTooltip.ImageFilenameExtension = 'Filename extension of original images used for prediction';
@@ -373,6 +387,9 @@ classdef mibDeepController < handle
             obj.BatchOpt.mibBatchTooltip.ModelFilenameExtension = 'Extension for model filenames with labels, the files should be placed under "Labels" subfolder';
             obj.BatchOpt.mibBatchTooltip.MaskFilenameExtension = 'Extension for mask filenames, the files should be placed under "Masks" subfolder';
             obj.BatchOpt.mibBatchTooltip.P_MiniBatchSize = 'Number of patches processed simultaneously during prediction, increasing the MiniBatchSize value increases the efficiency, but it also takes up more GPU memory';
+            obj.BatchOpt.mibBatchTooltip.P_OverlappingTiles = 'when enabled use overlapping tiles during prediction, it is slower but may give better results';
+            obj.BatchOpt.mibBatchTooltip.P_ScoreFiles = 'tweak generation of score files showing probability of each class';
+            obj.BatchOpt.mibBatchTooltip.P_ModelFiles = 'define output type for generated model files during prediction';
             obj.BatchOpt.mibBatchTooltip.O_CustomTrainingProgressWindow = 'When checked the custom progress plot is displayed during training, instead of Matlab default plot';
             obj.BatchOpt.mibBatchTooltip.O_RefreshRateIter = 'Refresh rate of the training progress window in iterations. Decrease for more frequent refresh, increase to speed up training performance';
             obj.BatchOpt.mibBatchTooltip.O_NumberOfPoints = 'Number of points in the training plot. Decrease to improve training performance, increase to see more detailed plot';
@@ -413,8 +430,8 @@ classdef mibDeepController < handle
             if isfield(obj.mibModel.preferences.Deep, 'SegmentationLayerOpt')
                 obj.SegmentationLayerOpt = obj.mibModel.preferences.Deep.SegmentationLayerOpt;
             else
-                obj.SegmentationLayerOpt.focalLossLayer.Alpha = 2;
-                obj.SegmentationLayerOpt.focalLossLayer.Gamma = 0.25;
+                obj.SegmentationLayerOpt.focalLossLayer.Alpha = 0.25;
+                obj.SegmentationLayerOpt.focalLossLayer.Gamma = 2;
             end
             
             obj.TrainingProgress = struct;
@@ -486,7 +503,7 @@ classdef mibDeepController < handle
             obj.colormap20 = [230 25 75; 255 225 25; 0 130 200; 245 130 48; 145 30 180; 70 240 240; 240 50 230; 210 245 60; 250 190 190; 0 128 128; 230 190 255; 170 110 40; 255 250 200; 128 0 0; 170 255 195; 128 128 0; 255 215 180; 0 0 128; 128 128 128; 60 180 75]/255;
             obj.colormap255 = rand([255,3]);
             
-            if isdeployed; obj.View.handles.ExportNetworkToONNXButton.Enable = 'off'; end
+            %if isdeployed; obj.View.handles.ExportNetworkToONNXButton.Enable = 'off'; end
             
             obj.View.Figure.Figure.Visible = 'on';
             % obj.View.gui.WindowStyle = 'modal';     % make window modal
@@ -767,7 +784,11 @@ classdef mibDeepController < handle
             % callback for change of Architecture
             if nargin < 2; event.Source = obj.View.handles.Architecture; end
             obj.updateBatchOptFromGUI(event);
-            
+
+            obj.View.handles.T_EncoderDepth.Enable = 'on';
+            obj.View.handles.T_NumFirstEncoderFilters.Enable = 'on';
+            obj.View.handles.T_FilterSize.Enable = 'on';
+
             if obj.BatchOpt.Architecture{1}(1) == '3' % 3D nets
                 obj.View.handles.SingleModelTrainingFile.Value = 1;
                 event2.Source = obj.View.handles.SingleModelTrainingFile;
@@ -776,9 +797,17 @@ classdef mibDeepController < handle
                 obj.View.handles.SingleModelTrainingFile.Value = false;
                 obj.BatchOpt.SingleModelTrainingFile = false;
             else    % 2D nets
-                obj.View.handles.SingleModelTrainingFile.Enable = 'on';
-                if obj.View.handles.SingleModelTrainingFile.Value == false
-                    obj.View.handles.ModelFilenameExtension.Enable = 'on';
+                if strcmp(obj.BatchOpt.Architecture{1}(1:7),  '2D Deep')
+                    obj.View.handles.T_EncoderDepth.Enable = 'off';
+                    obj.View.handles.T_EncoderDepth.Value = 4;
+                    obj.BatchOpt.T_EncoderDepth{1} = 4;
+                    obj.View.handles.T_NumFirstEncoderFilters.Enable = 'off';
+                    obj.View.handles.T_FilterSize.Enable = 'off';
+                else
+                    obj.View.handles.SingleModelTrainingFile.Enable = 'on';
+                    if obj.View.handles.SingleModelTrainingFile.Value == false
+                        obj.View.handles.ModelFilenameExtension.Enable = 'on';
+                    end
                 end
             end
         end
@@ -886,12 +915,12 @@ classdef mibDeepController < handle
                             end
                             uialert(obj.View.gui, sprintf('!!! Warning !!!\n\nYou are loading an old config file with a smaller number of augmentation options.\nThe loaded settings were merged with the current ones!'), 'Merge augmentation settings', 'icon', 'warning');
                         else
-                            obj.AugOpt2D = res.AugOpt2DStruct;
+                            obj.AugOpt2D = mibConcatenateStructures(obj.AugOpt2D, res.AugOpt2DStruct);
                         end
-                        obj.TrainingOpt = res.TrainingOptStruct;
+                        obj.TrainingOpt = mibConcatenateStructures(obj.TrainingOpt, res.TrainingOptStruct);
                         if strcmp(obj.TrainingOpt.Plots, 'training-progress-Matlab'); obj.TrainingOpt.Plots = 'training-progress'; end
-                        obj.InputLayerOpt = res.InputLayerOpt;
-                        obj.AugOpt3D = res.AugOpt3DStruct;
+                        obj.InputLayerOpt = mibConcatenateStructures(obj.InputLayerOpt, res.InputLayerOpt);
+                        obj.AugOpt3D = mibConcatenateStructures(obj.AugOpt3D, res.AugOpt3DStruct);
                         
                         if ~isfield(obj.TrainingOpt, 'GradientDecayFactor')     % add new fields in MIB 2.71
                             obj.TrainingOpt.GradientDecayFactor = 0.9;
@@ -1055,30 +1084,6 @@ classdef mibDeepController < handle
                             'Padding', PaddingValue, 'Name', lgraph.Layers(layerId).Name);
                         lgraph = replaceLayer(lgraph, lgraph.Layers(layerId).Name, layer);
                         
-                        % update the input layer settings
-                        switch obj.InputLayerOpt.Normalization
-                            case 'zerocenter'
-                                inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization, ...
-                                    'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 1 numel(obj.InputLayerOpt.Mean)]));
-                            case 'zscore'
-                                inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization, ...
-                                    'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 numel(obj.InputLayerOpt.Mean)]),...
-                                    'StandardDeviation', reshape(obj.InputLayerOpt.StandardDeviation, [1 1 1 numel(obj.InputLayerOpt.StandardDeviation)]));
-                            case {'rescale-symmetric', 'rescale-zero-one'}
-                                inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization, ...
-                                    'Min', reshape(obj.InputLayerOpt.Min, [1 1 1 numel(obj.InputLayerOpt.Min)]), ...
-                                    'Max', reshape(obj.InputLayerOpt.Max, [1 1 1 numel(obj.InputLayerOpt.Max)]));
-                            case 'none'
-                                inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization);
-                            otherwise
-                                errordlg(sprintf('!!! Error !!!\n\nWrong normlization paramter (%s)!\n\nUse one of those:\n - zerocenter\n - zscore\n - rescale-symmetric\n - rescale-zero-one\n - none', obj.InputLayerOpt.Normalization), 'Wrong normalization');
-                                return;
-                        end
-                        lgraph = replaceLayer(lgraph, 'ImageInputLayer', inputLayer);
                         if strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'valid')
                             outputPatchSize = [];
                             %                             TrainingOptions = trainingOptions('adam', ...
@@ -1110,98 +1115,96 @@ classdef mibDeepController < handle
                             InputPatchSize, obj.BatchOpt.T_NumberOfClasses{1}, ...
                             'NumFirstEncoderFilters', obj.BatchOpt.T_NumFirstEncoderFilters{1}, 'FilterSize', obj.BatchOpt.T_FilterSize{1}, ...
                             'ConvolutionPadding', obj.BatchOpt.T_ConvolutionPadding{1}, 'EncoderDepth', obj.BatchOpt.T_EncoderDepth{1}); %#ok<*ST2NM>
-                        
-                        % update the input layer settings
-                        switch obj.InputLayerOpt.Normalization
-                            case 'zerocenter'
-                                inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization, ...
-                                    'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 1 numel(obj.InputLayerOpt.Mean)]));
-                            case 'zscore'
-                                inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization, ...
-                                    'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 numel(obj.InputLayerOpt.Mean)]),...
-                                    'StandardDeviation', reshape(obj.InputLayerOpt.StandardDeviation, [1 1 1 numel(obj.InputLayerOpt.StandardDeviation)]));
-                            case {'rescale-symmetric', 'rescale-zero-one'}
-                                inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization, ...
-                                    'Min', reshape(obj.InputLayerOpt.Min, [1 1 1 numel(obj.InputLayerOpt.Min)]), ...
-                                    'Max', reshape(obj.InputLayerOpt.Max, [1 1 1 numel(obj.InputLayerOpt.Max)]));
-                            case 'none'
-                                inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization);
-                            otherwise
-                                errordlg(sprintf('!!! Error !!!\n\nWrong normlization paramter (%s)!\n\nUse one of those:\n - zerocenter\n - zscore\n - rescale-symmetric\n - rescale-zero-one\n - none', obj.InputLayerOpt.Normalization), 'Wrong normalization');
-                                return;
-                        end
-                        lgraph = replaceLayer(lgraph, 'ImageInputLayer', inputLayer);
                     case '2D U-net'
                         [lgraph, outputPatchSize] = unetLayers(...
                             InputPatchSize([1 2 4]), obj.BatchOpt.T_NumberOfClasses{1}, ...
                             'NumFirstEncoderFilters', obj.BatchOpt.T_NumFirstEncoderFilters{1}, 'FilterSize', obj.BatchOpt.T_FilterSize{1}, ...
                             'ConvolutionPadding', obj.BatchOpt.T_ConvolutionPadding{1}, 'EncoderDepth', obj.BatchOpt.T_EncoderDepth{1}); %#ok<*ST2NM>
                         outputPatchSize = [outputPatchSize(1), outputPatchSize(2), 1, outputPatchSize(3)];  % reformat to [height, width, depth, color]
-                        
-                        % update the input layer settings
-                        switch obj.InputLayerOpt.Normalization
-                            case 'zerocenter'
-                                inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization, ...
-                                    'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 numel(obj.InputLayerOpt.Mean)]));
-                            case 'zscore'
-                                inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization, ...
-                                    'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 numel(obj.InputLayerOpt.Mean)]), ...
-                                    'StandardDeviation', reshape(obj.InputLayerOpt.StandardDeviation, [1 1 numel(obj.InputLayerOpt.StandardDeviation)]));
-                            case {'rescale-symmetric', 'rescale-zero-one'}
-                                inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization, ...
-                                    'Min', reshape(obj.InputLayerOpt.Min, [1 1 numel(obj.InputLayerOpt.Min)]), ...
-                                    'Max', reshape(obj.InputLayerOpt.Max, [1 1 numel(obj.InputLayerOpt.Max)]));
-                            case 'none'
-                                inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization);
-                            otherwise
-                                errordlg(sprintf('!!! Error !!!\n\nWrong normlization paramter (%s)!\n\nUse one of those:\n - zerocenter\n - zscore\n - rescale-symmetric\n - rescale-zero-one\n - none', obj.InputLayerOpt.Normalization), 'Wrong normalization');
-                                return;
-                        end
-                        lgraph = replaceLayer(lgraph, 'ImageInputLayer', inputLayer);
-                        
                     case '2D SegNet'
                         lgraph = segnetLayers(InputPatchSize([1 2 4]), obj.BatchOpt.T_NumberOfClasses{1}, obj.BatchOpt.T_EncoderDepth{1}, ...
                             'NumOutputChannels', obj.BatchOpt.T_NumFirstEncoderFilters{1}, ...
                             'FilterSize', obj.BatchOpt.T_FilterSize{1});
                         outputPatchSize = InputPatchSize;  % as [height, width, depth, color]
-                        
-                        % update the input layer settings
-                        switch obj.InputLayerOpt.Normalization
-                            case 'zerocenter'
-                                inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization, ...
-                                    'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 numel(obj.InputLayerOpt.Mean)]));
-                            case 'zscore'
-                                inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization, ...
-                                    'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 numel(obj.InputLayerOpt.Mean)]), ...
-                                    'StandardDeviation', reshape(obj.InputLayerOpt.StandardDeviation, [1 1 numel(obj.InputLayerOpt.StandardDeviation)]));
-                            case {'rescale-symmetric', 'rescale-zero-one'}
-                                inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization, ...
-                                    'Min', reshape(obj.InputLayerOpt.Min, [1 1 numel(obj.InputLayerOpt.Min)]), ...
-                                    'Max', reshape(obj.InputLayerOpt.Max, [1 1 numel(obj.InputLayerOpt.Max)]));
-                            case 'none'
-                                inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
-                                    'Normalization', obj.InputLayerOpt.Normalization);
+                    case '2D DeepLabV3 Resnet18' % DeepLabV3 semantic segmentation network based on Resnet18
+                        if InputPatchSize(4) ~= 3 || InputPatchSize(1) < 224 || InputPatchSize(2) < 224 || strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'valid')
+                            uialert(obj.View.gui, ...
+                                sprintf('!!! Error !!!\n\n"%s" network architecture requires:\n - input patch size of at least [224 224 3]\n- 3 color channels\n- "same" padding', obj.BatchOpt.Architecture{1}), ...
+                                'Wrong configuration!');
+                            delete(obj.wb);
+                            return;
                         end
-                        lgraph = replaceLayer(lgraph, 'inputImage', inputLayer);
-                        
+                        lgraph = obj.generateDeepLabV3Network(InputPatchSize([1 2 4]), obj.BatchOpt.T_NumberOfClasses{1}, 'resnet18');
+                        if isempty(lgraph); delete(obj.wb); return; end
+                        outputPatchSize = InputPatchSize([1 2 4]);
                 end     % end of switch obj.BatchOpt.Architecture{1}
             catch err
+                uialert(obj.View.gui, ...
+                    err.message, 'Network configuration error');
                 delete(obj.wb);
-                warndlg(err.message, 'Network configuration error');
                 return;
             end
             
+            % ---------------------------------------------------------
+            % update the input layer settings
+            switch obj.BatchOpt.Architecture{1}(1:2)
+                case '2D'
+                    % update the input layer settings
+                    switch obj.InputLayerOpt.Normalization
+                        case 'zerocenter'
+                            inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
+                                'Normalization', obj.InputLayerOpt.Normalization, ...
+                                'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 numel(obj.InputLayerOpt.Mean)]));
+                        case 'zscore'
+                            inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
+                                'Normalization', obj.InputLayerOpt.Normalization, ...
+                                'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 numel(obj.InputLayerOpt.Mean)]), ...
+                                'StandardDeviation', reshape(obj.InputLayerOpt.StandardDeviation, [1 1 numel(obj.InputLayerOpt.StandardDeviation)]));
+                        case {'rescale-symmetric', 'rescale-zero-one'}
+                            inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
+                                'Normalization', obj.InputLayerOpt.Normalization, ...
+                                'Min', reshape(obj.InputLayerOpt.Min, [1 1 numel(obj.InputLayerOpt.Min)]), ...
+                                'Max', reshape(obj.InputLayerOpt.Max, [1 1 numel(obj.InputLayerOpt.Max)]));
+                        case 'none'
+                            inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
+                                'Normalization', obj.InputLayerOpt.Normalization);
+                        otherwise
+                            errordlg(sprintf('!!! Error !!!\n\nWrong normlization paramter (%s)!\n\nUse one of those:\n - zerocenter\n - zscore\n - rescale-symmetric\n - rescale-zero-one\n - none', obj.InputLayerOpt.Normalization), 'Wrong normalization');
+                            return;
+                    end
+                    switch obj.BatchOpt.Architecture{1}
+                        case {'2D U-net', '2D DeepLabV3 Resnet18'}
+                            lgraph = replaceLayer(lgraph, 'ImageInputLayer', inputLayer);
+                        case '2D SegNet'
+                            lgraph = replaceLayer(lgraph, 'inputImage', inputLayer);
+                    end
+                case '3D'
+                    % update the input layer settings
+                    switch obj.InputLayerOpt.Normalization
+                        case 'zerocenter'
+                            inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
+                                'Normalization', obj.InputLayerOpt.Normalization, ...
+                                'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 1 numel(obj.InputLayerOpt.Mean)]));
+                        case 'zscore'
+                            inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
+                                'Normalization', obj.InputLayerOpt.Normalization, ...
+                                'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 numel(obj.InputLayerOpt.Mean)]),...
+                                'StandardDeviation', reshape(obj.InputLayerOpt.StandardDeviation, [1 1 1 numel(obj.InputLayerOpt.StandardDeviation)]));
+                        case {'rescale-symmetric', 'rescale-zero-one'}
+                            inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
+                                'Normalization', obj.InputLayerOpt.Normalization, ...
+                                'Min', reshape(obj.InputLayerOpt.Min, [1 1 1 numel(obj.InputLayerOpt.Min)]), ...
+                                'Max', reshape(obj.InputLayerOpt.Max, [1 1 1 numel(obj.InputLayerOpt.Max)]));
+                        case 'none'
+                            inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
+                                'Normalization', obj.InputLayerOpt.Normalization);
+                        otherwise
+                            errordlg(sprintf('!!! Error !!!\n\nWrong normlization paramter (%s)!\n\nUse one of those:\n - zerocenter\n - zscore\n - rescale-symmetric\n - rescale-zero-one\n - none', obj.InputLayerOpt.Normalization), 'Wrong normalization');
+                            return;
+                    end
+                    lgraph = replaceLayer(lgraph, 'ImageInputLayer', inputLayer);
+            end
+
             % redefine the activation layers
             if ~strcmp(obj.BatchOpt.T_ActivationLayer{1}, 'reluLayer')
                 ReLUIndices = zeros([numel(lgraph.Layers), 1]);
@@ -1250,7 +1253,7 @@ classdef mibDeepController < handle
                         switch obj.BatchOpt.Architecture{1}
                             case {'3D U-net', '3D U-net Anisotropic'}
                                 outputLayerName = 'Custom Dice Segmentation Layer 3D';
-                            case {'2D U-net', '2D SegNet'}
+                            case {'2D U-net', '2D SegNet', '2D DeepLabV3 Resnet18'}
                                 outputLayerName = 'Custom Dice Segmentation Layer 2D';
                         end
                         outputLayer = dicePixelCustomClassificationLayer(outputLayerName);
@@ -1271,7 +1274,7 @@ classdef mibDeepController < handle
                         eval(segLayerInitString);
                 end
                 switch obj.BatchOpt.Architecture{1}
-                    case {'3D U-net', '2D U-net'}
+                    case {'3D U-net', '2D U-net', '2D DeepLabV3 Resnet18'}
                         lgraph = replaceLayer(lgraph, 'Segmentation-Layer', outputLayer);
                     case '2D SegNet'
                         lgraph = replaceLayer(lgraph, 'pixelLabels', outputLayer);
@@ -1552,123 +1555,137 @@ classdef mibDeepController < handle
                                 return;
                             end
                             
-                            % find augmentations, based on probability
-                            if numAugFunc > 1   % calculate only for number of aug. filters > 1
-                                notOk = 1;
-                                while notOk
-                                    randVector = rand([2, numAugFunc]);
-                                    randVector(2,:) = obj.Aug2DFuncProbability;
-                                    [~, index] = min(randVector, [], 1);
-                                    augFuncIndeces = find(index == 1);
-                                    if numel(augFuncIndeces)>0; notOk = 0; end
-                                end
-                            else
-                                augFuncIndeces = 1;
-                            end
+%                             % find augmentations, based on probability
+%                             if numAugFunc > 1   % calculate only for number of aug. filters > 1
+%                                 notOk = 1;
+%                                 while notOk
+%                                     randVector = rand([2, numAugFunc]);
+%                                     randVector(2,:) = obj.Aug2DFuncProbability;
+%                                     [~, index] = min(randVector, [], 1);
+%                                     augFuncIndeces = find(index == 1);
+%                                     if numel(augFuncIndeces)>0; notOk = 0; end
+%                                 end
+%                             else
+%                                 augFuncIndeces = 1;
+%                             end
                             
-                            augList{id} = obj.Aug2DFuncNames(augFuncIndeces);
-                            out = patchIn.InputImage{id};
-                            respOut = patchIn.(fieldId){id};
-                            for augId = 1:numel(augList{id})
-                                switch augList{id}{augId}
-                                    case 'RandXReflection'
-                                        out = fliplr(out);
-                                        respOut = fliplr(respOut);
-                                    case 'RandYReflection'
-                                        out = flipud(out);
-                                        respOut = flipud(respOut);
-                                    case 'Rotation90'
-                                        if randi(2) == 1
-                                            out = rot90(out);
-                                            respOut = rot90(respOut);
-                                        else
-                                            out = rot90(out,3);
-                                            respOut = rot90(respOut,3);
-                                        end
-                                    case 'ReflectedRotation90'
-                                        out = rot90(fliplr(out));
-                                        respOut = rot90(fliplr(respOut));
-                                    case 'RandRotation'
-                                        augPars(id,augId) = obj.AugOpt2D.RandRotation(1) + (obj.AugOpt2D.RandRotation(2)-obj.AugOpt2D.RandRotation(1))*rand;
-                                        tform = randomAffine2d('Rotation', [augPars(id,augId) augPars(id,augId)]);
-                                        outputView = affineOutputView([size(out,1) size(out,2)], tform);
-                                        out = imwarp(out, tform, 'cubic', 'OutputView', outputView, 'FillValues', obj.AugOpt2D.FillValue);
-                                        respOut = imwarp(respOut, tform, 'nearest', 'OutputView', outputView);
-                                    case 'RandScale'
-                                        augPars(id,augId) = obj.AugOpt2D.RandScale(1) + (obj.AugOpt2D.RandScale(2)-obj.AugOpt2D.RandScale(1))*rand;
-                                        tform = randomAffine2d('Scale', [augPars(id,augId) augPars(id,augId)]);
-                                        outputView = affineOutputView([size(out,1) size(out,2)], tform);
-                                        out = imwarp(out, tform, 'cubic', 'OutputView', outputView, 'FillValues', obj.AugOpt2D.FillValue);
-                                        respOut = imwarp(respOut, tform, 'nearest', 'OutputView', outputView);
-                                    case 'RandXScale'
-                                        augPars(id,augId) = obj.AugOpt2D.RandXScale(1) + (obj.AugOpt2D.RandXScale(2)-obj.AugOpt2D.RandXScale(1))*rand;
-                                        T = [augPars(id,augId) 0 0; 0 1 0; 0 0 1];
-                                        tform = affine2d(T);
-                                        outputView = affineOutputView([size(out,1) size(out,2)], tform);
-                                        out = imwarp(out, tform, 'cubic', 'OutputView', outputView, 'FillValues', obj.AugOpt2D.FillValue);
-                                        respOut = imwarp(respOut, tform, 'nearest', 'OutputView', outputView);
-                                    case 'RandYScale'
-                                        augPars(id,augId) = obj.AugOpt2D.RandYScale(1) + (obj.AugOpt2D.RandYScale(2)-obj.AugOpt2D.RandYScale(1))*rand;
-                                        T = [1 0 0; 0 augPars(id,augId) 0; 0 0 1];
-                                        tform = affine2d(T);
-                                        outputView = affineOutputView([size(out,1) size(out,2)], tform);
-                                        out = imwarp(out, tform, 'cubic', 'OutputView', outputView, 'FillValues', obj.AugOpt2D.FillValue);
-                                        respOut = imwarp(respOut, tform, 'nearest', 'OutputView', outputView);
-                                    case 'RandXShear'
-                                        augPars(id,augId) = obj.AugOpt2D.RandXShear(1) + (obj.AugOpt2D.RandXShear(2)-obj.AugOpt2D.RandXShear(1))*rand;
-                                        tform = randomAffine2d('XShear', [augPars(id,augId) augPars(id,augId)]);
-                                        outputView = affineOutputView([size(out,1) size(out,2)], tform);
-                                        out = imwarp(out, tform, 'cubic', 'OutputView', outputView, 'FillValues', obj.AugOpt2D.FillValue);
-                                        respOut = imwarp(respOut, tform, 'nearest', 'OutputView', outputView);
-                                    case 'RandYShear'
-                                        augPars(id,augId) = obj.AugOpt2D.RandYShear(1) + (obj.AugOpt2D.RandYShear(2)-obj.AugOpt2D.RandYShear(1))*rand;
-                                        tform = randomAffine2d('YShear', [augPars(id,augId) augPars(id,augId)]);
-                                        outputView = affineOutputView([size(out,1) size(out,2)], tform);
-                                        out = imwarp(out, tform, 'cubic', 'OutputView', outputView, 'FillValues', obj.AugOpt2D.FillValue);
-                                        respOut = imwarp(respOut, tform, 'nearest', 'OutputView', outputView);
-                                    case 'GaussianNoise'
-                                        augPars(id,augId) = obj.AugOpt2D.GaussianNoise(1) + (obj.AugOpt2D.GaussianNoise(2)-obj.AugOpt2D.GaussianNoise(1))*rand;
-                                        out =  imnoise(out, 'gaussian', 0, augPars(id,augId));
-                                        %respOut = patchIn.(fieldId){id};
-                                    case 'PoissonNoise'
-                                        out =  imnoise(out, 'poisson');
-                                        %respOut = patchIn.(fieldId){id};
-                                    case 'HueJitter'
-                                        if size(out, 3) == 3
-                                            augPars(id,augId) = obj.AugOpt2D.HueJitter(1) + (obj.AugOpt2D.HueJitter(2)-obj.AugOpt2D.HueJitter(1))*rand;
-                                            out = jitterColorHSV(out, 'Hue', [augPars(id,augId) augPars(id,augId)]);
-                                            %else
-                                            %    out = out;
-                                        end
-                                        %respOut = patchIn.(fieldId){id};
-                                    case 'SaturationJitter'
-                                        if size(out, 3) == 3
-                                            augPars(id,augId) = obj.AugOpt2D.SaturationJitter(1) + (obj.AugOpt2D.SaturationJitter(2)-obj.AugOpt2D.SaturationJitter(1))*rand;
-                                            out = jitterColorHSV(out, 'Saturation', [augPars(id,augId) augPars(id,augId)]);
-                                            %else
-                                            %    out = patchIn.InputImage{id};
-                                        end
-                                        %respOut = patchIn.(fieldId){id};
-                                    case 'BrightnessJitter'
-                                        augPars(id,augId) = obj.AugOpt2D.BrightnessJitter(1) + (obj.AugOpt2D.BrightnessJitter(2)-obj.AugOpt2D.BrightnessJitter(1))*rand;
-                                        if size(out, 3) == 3
-                                            out = jitterColorHSV(out, 'Brightness', [augPars(id,augId) augPars(id,augId)]);
-                                        else
-                                            out = out + augPars(id,augId)*255;
-                                        end
-                                        %respOut = patchIn.(fieldId){id};
-                                    case 'ContrastJitter'
-                                        augPars(id,augId) = obj.AugOpt2D.ContrastJitter(1) + (obj.AugOpt2D.ContrastJitter(2)-obj.AugOpt2D.ContrastJitter(1))*rand;
-                                        if size(out, 3) == 3
-                                            out = jitterColorHSV(out, 'Contrast', [augPars(id,augId) augPars(id,augId)]);
-                                        else
-                                            out = out.*augPars(id,augId);
-                                        end
-                                        %respOut = patchIn.(fieldId){id};
-                                    case 'ImageBlur'
-                                        augPars(id,augId) = obj.AugOpt2D.ImageBlur(1) + (obj.AugOpt2D.ImageBlur(2)-obj.AugOpt2D.ImageBlur(1))*rand;
-                                        out =  imgaussfilt(out, augPars(id,augId));
-                                        %respOut = patchIn.(fieldId){id};
+                            % find augmentations, based on probability
+                            % the code above was always returning an
+                            % augmented patch despite the fact that the probability was too low
+                            randVector = rand([2, numAugFunc]);
+                            randVector(2,:) = obj.Aug2DFuncProbability;
+                            [~, index] = min(randVector, [], 1);
+                            augFuncIndeces = find(index == 1);
+                            
+                            if isempty(augFuncIndeces)
+                                out =  patchIn.InputImage{id};
+                                respOut = patchIn.(fieldId){id};
+                                augList{id} = {'Original'};
+                            else
+                                augList{id} = obj.Aug2DFuncNames(augFuncIndeces);
+                                out = patchIn.InputImage{id};
+                                respOut = patchIn.(fieldId){id};
+                                for augId = 1:numel(augList{id})
+                                    switch augList{id}{augId}
+                                        case 'RandXReflection'
+                                            out = fliplr(out);
+                                            respOut = fliplr(respOut);
+                                        case 'RandYReflection'
+                                            out = flipud(out);
+                                            respOut = flipud(respOut);
+                                        case 'Rotation90'
+                                            if randi(2) == 1
+                                                out = rot90(out);
+                                                respOut = rot90(respOut);
+                                            else
+                                                out = rot90(out,3);
+                                                respOut = rot90(respOut,3);
+                                            end
+                                        case 'ReflectedRotation90'
+                                            out = rot90(fliplr(out));
+                                            respOut = rot90(fliplr(respOut));
+                                        case 'RandRotation'
+                                            augPars(id,augId) = obj.AugOpt2D.RandRotation(1) + (obj.AugOpt2D.RandRotation(2)-obj.AugOpt2D.RandRotation(1))*rand;
+                                            tform = randomAffine2d('Rotation', [augPars(id,augId) augPars(id,augId)]);
+                                            outputView = affineOutputView([size(out,1) size(out,2)], tform);
+                                            out = imwarp(out, tform, 'cubic', 'OutputView', outputView, 'FillValues', obj.AugOpt2D.FillValue);
+                                            respOut = imwarp(respOut, tform, 'nearest', 'OutputView', outputView);
+                                        case 'RandScale'
+                                            augPars(id,augId) = obj.AugOpt2D.RandScale(1) + (obj.AugOpt2D.RandScale(2)-obj.AugOpt2D.RandScale(1))*rand;
+                                            tform = randomAffine2d('Scale', [augPars(id,augId) augPars(id,augId)]);
+                                            outputView = affineOutputView([size(out,1) size(out,2)], tform);
+                                            out = imwarp(out, tform, 'cubic', 'OutputView', outputView, 'FillValues', obj.AugOpt2D.FillValue);
+                                            respOut = imwarp(respOut, tform, 'nearest', 'OutputView', outputView);
+                                        case 'RandXScale'
+                                            augPars(id,augId) = obj.AugOpt2D.RandXScale(1) + (obj.AugOpt2D.RandXScale(2)-obj.AugOpt2D.RandXScale(1))*rand;
+                                            T = [augPars(id,augId) 0 0; 0 1 0; 0 0 1];
+                                            tform = affine2d(T);
+                                            outputView = affineOutputView([size(out,1) size(out,2)], tform);
+                                            out = imwarp(out, tform, 'cubic', 'OutputView', outputView, 'FillValues', obj.AugOpt2D.FillValue);
+                                            respOut = imwarp(respOut, tform, 'nearest', 'OutputView', outputView);
+                                        case 'RandYScale'
+                                            augPars(id,augId) = obj.AugOpt2D.RandYScale(1) + (obj.AugOpt2D.RandYScale(2)-obj.AugOpt2D.RandYScale(1))*rand;
+                                            T = [1 0 0; 0 augPars(id,augId) 0; 0 0 1];
+                                            tform = affine2d(T);
+                                            outputView = affineOutputView([size(out,1) size(out,2)], tform);
+                                            out = imwarp(out, tform, 'cubic', 'OutputView', outputView, 'FillValues', obj.AugOpt2D.FillValue);
+                                            respOut = imwarp(respOut, tform, 'nearest', 'OutputView', outputView);
+                                        case 'RandXShear'
+                                            augPars(id,augId) = obj.AugOpt2D.RandXShear(1) + (obj.AugOpt2D.RandXShear(2)-obj.AugOpt2D.RandXShear(1))*rand;
+                                            tform = randomAffine2d('XShear', [augPars(id,augId) augPars(id,augId)]);
+                                            outputView = affineOutputView([size(out,1) size(out,2)], tform);
+                                            out = imwarp(out, tform, 'cubic', 'OutputView', outputView, 'FillValues', obj.AugOpt2D.FillValue);
+                                            respOut = imwarp(respOut, tform, 'nearest', 'OutputView', outputView);
+                                        case 'RandYShear'
+                                            augPars(id,augId) = obj.AugOpt2D.RandYShear(1) + (obj.AugOpt2D.RandYShear(2)-obj.AugOpt2D.RandYShear(1))*rand;
+                                            tform = randomAffine2d('YShear', [augPars(id,augId) augPars(id,augId)]);
+                                            outputView = affineOutputView([size(out,1) size(out,2)], tform);
+                                            out = imwarp(out, tform, 'cubic', 'OutputView', outputView, 'FillValues', obj.AugOpt2D.FillValue);
+                                            respOut = imwarp(respOut, tform, 'nearest', 'OutputView', outputView);
+                                        case 'GaussianNoise'
+                                            augPars(id,augId) = obj.AugOpt2D.GaussianNoise(1) + (obj.AugOpt2D.GaussianNoise(2)-obj.AugOpt2D.GaussianNoise(1))*rand;
+                                            out =  imnoise(out, 'gaussian', 0, augPars(id,augId));
+                                            %respOut = patchIn.(fieldId){id};
+                                        case 'PoissonNoise'
+                                            out =  imnoise(out, 'poisson');
+                                            %respOut = patchIn.(fieldId){id};
+                                        case 'HueJitter'
+                                            if size(out, 3) == 3
+                                                augPars(id,augId) = obj.AugOpt2D.HueJitter(1) + (obj.AugOpt2D.HueJitter(2)-obj.AugOpt2D.HueJitter(1))*rand;
+                                                out = jitterColorHSV(out, 'Hue', [augPars(id,augId) augPars(id,augId)]);
+                                                %else
+                                                %    out = out;
+                                            end
+                                            %respOut = patchIn.(fieldId){id};
+                                        case 'SaturationJitter'
+                                            if size(out, 3) == 3
+                                                augPars(id,augId) = obj.AugOpt2D.SaturationJitter(1) + (obj.AugOpt2D.SaturationJitter(2)-obj.AugOpt2D.SaturationJitter(1))*rand;
+                                                out = jitterColorHSV(out, 'Saturation', [augPars(id,augId) augPars(id,augId)]);
+                                                %else
+                                                %    out = patchIn.InputImage{id};
+                                            end
+                                            %respOut = patchIn.(fieldId){id};
+                                        case 'BrightnessJitter'
+                                            augPars(id,augId) = obj.AugOpt2D.BrightnessJitter(1) + (obj.AugOpt2D.BrightnessJitter(2)-obj.AugOpt2D.BrightnessJitter(1))*rand;
+                                            if size(out, 3) == 3
+                                                out = jitterColorHSV(out, 'Brightness', [augPars(id,augId) augPars(id,augId)]);
+                                            else
+                                                out = out + augPars(id,augId)*255;
+                                            end
+                                            %respOut = patchIn.(fieldId){id};
+                                        case 'ContrastJitter'
+                                            augPars(id,augId) = obj.AugOpt2D.ContrastJitter(1) + (obj.AugOpt2D.ContrastJitter(2)-obj.AugOpt2D.ContrastJitter(1))*rand;
+                                            if size(out, 3) == 3
+                                                out = jitterColorHSV(out, 'Contrast', [augPars(id,augId) augPars(id,augId)]);
+                                            else
+                                                out = out.*augPars(id,augId);
+                                            end
+                                            %respOut = patchIn.(fieldId){id};
+                                        case 'ImageBlur'
+                                            augPars(id,augId) = obj.AugOpt2D.ImageBlur(1) + (obj.AugOpt2D.ImageBlur(2)-obj.AugOpt2D.ImageBlur(1))*rand;
+                                            out =  imgaussfilt(out, augPars(id,augId));
+                                            %respOut = patchIn.(fieldId){id};
+                                    end
                                 end
                             end
                         end
@@ -1967,8 +1984,8 @@ classdef mibDeepController < handle
             
             switch obj.BatchOpt.T_SegmentationLayer{1}
                 case 'focalLossLayer'
-                    prompts = {sprintf('Alpha, balancing parameter of the focal loss function\nThe Alpha value scales the loss function linearly, when decreasing Alpha, increase Gamma\npositive real number, [default=2]'); ...
-                        sprintf('Gamma, focusing parameter of the focal loss function\nIncreasing the value of Gamma increases the sensitivity of the network to misclassified observations\npositive real number [default=0.25]')};
+                    prompts = {sprintf('Alpha, balancing parameter of the focal loss function\nThe Alpha value scales the loss function linearly, when decreasing Alpha, increase Gamma\npositive real number, [default=0.25]'); ...
+                        sprintf('Gamma, focusing parameter of the focal loss function\nIncreasing the value of Gamma increases the sensitivity of the network to misclassified observations\npositive real number [default=2]')};
                     defAns = {num2str(obj.SegmentationLayerOpt.focalLossLayer.Alpha);...
                         num2str(obj.SegmentationLayerOpt.focalLossLayer.Gamma)};
                     options.PromptLines = [5 5];
@@ -2121,7 +2138,7 @@ classdef mibDeepController < handle
                 options.PromptLines = [2, 2, 2, 2, 2, 2, 3, ...
                                        2, 2, 2, 3, 3, 3, 2, ...
                                        3, 3, 3, 3, 3];   % [optional] number of lines for widget titles
-                options.Title = 'Each augmentation is defined with 2 or 3 values, the first value(s) define variation of the augmentation filter, while the last value specify probability of triggering the augmentation. The resulting augmented patch may be made from a cocktail of many augmentations'; 
+                options.Title = 'Each augmentation is defined with 2 or 3 values, the first value(s) define variation of the augmentation filter, while the last value specify probability of triggering the augmentation. The resulting augmented patch may be made from a cocktail of multiple augmentations'; 
                 options.TitleLines = 2;                   % [optional] make it twice tall, number of text lines for the title
                 options.WindowWidth = 3;    % [optional] make window x1.2 times wider
                 options.Columns = 3;    % [optional] define number of columns
@@ -2355,11 +2372,12 @@ classdef mibDeepController < handle
                 'LearnRateDropFactor, [piecewise only] factor for dropping the learning rate, should be between 0 and 1 [0.1]';...
                 'L2Regularization, factor for L2 regularization (weight decay) [0.0001]';...
                 'Momentum, [sgdm only] contribution of the parameter update step of the previous iteration to the current iteration of sgdm [0.9]';...
-                'Decay rate of gradient moving average [adam only], a non-negative scalar less than 1 [0.9]'
-                'Decay rate of squared gradient moving average for the Adam and RMSProp solvers [0.999 Adam, 0.9 PMSProp]'
+                'Decay rate of gradient moving average [adam only], a non-negative scalar less than 1 [0.9]'; ...
+                'Decay rate of squared gradient moving average for the Adam and RMSProp solvers [0.999 Adam, 0.9 PMSProp]'; ...
                 'ValidationFrequency, number of validations per Epoch [2]';...
-                'Patience of validation stopping of network training, the number of times that the loss on the validation set can be larger than or equal to the previously smallest loss before network training stops [Inf]'
-                'Plots, plots to display during network training'};
+                'Patience of validation stopping of network training, the number of times that the loss on the validation set can be larger than or equal to the previously smallest loss before network training stops [Inf]'; ...
+                'Plots, plots to display during network training';
+                'OutputNetwork, type of the returned network (R2021b)'};
             defAns = {{'adam', 'rmsprop', 'sgdm', find(ismember({'adam', 'rmsprop', 'sgdm'}, obj.TrainingOpt.solverName))};...
                 num2str(obj.TrainingOpt.MaxEpochs);...
                 {'once', 'never', 'every-epoch', find(ismember({'once', 'never', 'every-epoch'}, obj.TrainingOpt.Shuffle))};...
@@ -2373,11 +2391,12 @@ classdef mibDeepController < handle
                 num2str(obj.TrainingOpt.SquaredGradientDecayFactor);...
                 num2str(obj.TrainingOpt.ValidationFrequency);...
                 num2str(obj.TrainingOpt.ValidationPatience);...
-                {'training-progress', 'none', find(ismember({'training-progress', 'none'}, obj.TrainingOpt.Plots))} };
+                {'training-progress', 'none', find(ismember({'training-progress', 'none'}, obj.TrainingOpt.Plots))};...
+                {'last-iteration', 'best-validation-loss', find(ismember({'last-iteration', 'best-validation-loss'}, obj.TrainingOpt.OutputNetwork))} };
             dlgTitle = 'Training settings';
             options.WindowStyle = 'normal';
             options.PromptLines = [1, 2, 1, 6, 2, ...
-                2, 3, 2, 3, 2, 3, 2, 3, 1];   % [optional] number of lines for widget titles
+                2, 3, 2, 3, 2, 3, 2, 3, 1, 1];   % [optional] number of lines for widget titles
             %options.Title = 'My test Input dialog';   % [optional] additional text at the top of the window
             %options.TitleLines = 2;                   % [optional] make it twice tall, number of text lines for the title
             options.WindowWidth = 2.2;    % [optional] make window x1.2 times wider
@@ -2403,6 +2422,7 @@ classdef mibDeepController < handle
             obj.TrainingOpt.ValidationFrequency = str2double(answer{12});
             obj.TrainingOpt.ValidationPatience = str2double(answer{13});
             obj.TrainingOpt.Plots = answer{14};
+            obj.TrainingOpt.OutputNetwork = answer{15};
         end
         
         function Start(obj, event)
@@ -2414,6 +2434,12 @@ classdef mibDeepController < handle
                     obj.StartTraining();
                 case 'PredictButton'
                     if obj.View.handles.bigImageMode.Value
+                        if strcmp(obj.BatchOpt.Architecture{1}(1:2), '3D') || strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'valid') || ...
+                                obj.BatchOpt.P_OverlappingTiles == true
+                            uialert(obj.View.gui, ...
+                                sprintf('!!! Error !!!\n\nThe bigimage mode is an experimental mode!\n\nIt is implemented only for 2D networks with "same" padding; the mode is also not compatible with the overlapping tiles!'), 'Not implemented!');
+                            return;
+                        end
                         obj.StartPredictionBigImage2D();
                     else
                         if strcmp(obj.BatchOpt.Architecture{1}(1:2), '2D')
@@ -2772,6 +2798,15 @@ classdef mibDeepController < handle
                 end
             end
             
+            convertToRGB = 0;
+            if strcmp(obj.BatchOpt.Architecture{1}, '2D DeepLabV3 Resnet18')
+                mibImg = readimage(imgDS, 1);   % read image as [height, width, color, depth]
+                if size(mibImg,3) == 1 % grayscale image needs to be converted to RGB
+                    convertToRGB = 1;
+                end
+                reset(imgDS);
+            end
+
             parfor (imgId=1:NumFiles, parforArg)
                 %for imgId=1:NumFiles
                 % Define output directories
@@ -2791,6 +2826,10 @@ classdef mibDeepController < handle
                 end
                 
                 mibImg = readimage(imgDS, imgId);   % read image as [height, width, color, depth]
+                if convertToRGB % grayscale image needs to be converted to RGB
+                    mibImg = repmat(mibImg, [1, 1, 3, 1]);
+                end
+
                 [~, fnOut] = fileparts(imgDS.Files{imgId});    % get filename of the image
                 %                 if obj.BatchOpt.NormalizeImages
                 %                     fprintf('!!! Warning !!! Normalizing images!\n')
@@ -3534,6 +3573,8 @@ classdef mibDeepController < handle
             AugOpt3DStruct = obj.AugOpt3D;
             InputLayerOpt = obj.InputLayerOpt;
             TrainingOptStruct = obj.TrainingOpt;
+            ActivationLayerOpt = obj.ActivationLayerOpt;
+            SegmentationLayerOpt = obj.SegmentationLayerOpt;
             
             % generate config file; the config file is the same as *.mibDeep but without 'net' field
             [configPath, configFn] = fileparts(obj.BatchOpt.NetworkFilename);
@@ -3545,11 +3586,35 @@ classdef mibDeepController < handle
             try
                 [net, info] = trainNetwork(AugTrainDS, lgraph, TrainingOptions);
             catch err
-                errordlg(sprintf('!!! Error !!!\n\n%s', err.message), 'Train network error');
+                if strcmp(obj.BatchOpt.Architecture{1}, '2D DeepLabV3 Resnet18')
+                    errorMessage = sprintf('%s\n\n2D DeepLabV3 Resnet18 requires RGB images; grayscale images needs to be preprocessed!', err.message);
+                else
+                    errorMessage = err.message;
+                end
+                errordlg(sprintf('!!! Error !!!\n\n%s', errorMessage), 'Train network error');
                 if obj.BatchOpt.showWaitbar; if isvalid(obj.wb); delete(obj.wb); end; end
                 return;
             end
             
+            if obj.TrainingProgress.useCustomProgressPlot && isfield(info, 'OutputNetworkIteration') 
+                % add line at the selected iteration indicating the picked network
+                hold(obj.TrainingProgress.UILossAxes, 'on');
+                obj.TrainingProgress.hPlot(3) = plot(obj.TrainingProgress.UILossAxes, [info.OutputNetworkIteration, info.OutputNetworkIteration], obj.TrainingProgress.UILossAxes.YLim, '-');
+                obj.TrainingProgress.hPlot(3).Color = [0 .7 0];
+                obj.TrainingProgress.UILossAxes.Legend.String = {'Training'  'Validation'  sprintf('Picked iteration: %d', info.OutputNetworkIteration)};
+                % add last point to the plot
+                if obj.TrainingProgress.hPlot(1).XData(end) < numel(info.TrainingLoss)
+                    obj.TrainingProgress.hPlot(1).XData = [obj.TrainingProgress.hPlot(1).XData, numel(info.TrainingLoss)];
+                    obj.TrainingProgress.hPlot(1).YData = [obj.TrainingProgress.hPlot(1).YData, info.TrainingLoss(end)];
+                    if isfield(info, 'ValidationLoss')
+                        obj.TrainingProgress.hPlot(2).XData = [obj.TrainingProgress.hPlot(2).XData numel(info.ValidationLoss)];
+                        obj.TrainingProgress.hPlot(2).YData = [obj.TrainingProgress.hPlot(2).YData info.ValidationLoss(end)];
+                    end
+                end
+
+                hold(obj.TrainingProgress.UILossAxes, 'off');
+            end
+
             %save(fullfile(outputDir, ['Trained3DUNet-' modelDateTime '-Epoch-' num2str(options.MaxEpochs) '.net']), 'net');
             if obj.BatchOpt.showWaitbar;  if ~isvalid(obj.wb); return; end; waitbar(0.98, obj.wb, 'Saving network...'); end
             %[outputDir, netName, Ext] = fileparts(obj.BatchOpt.NetworkFilename);
@@ -3569,6 +3634,7 @@ classdef mibDeepController < handle
             end
             
             save(obj.BatchOpt.NetworkFilename, 'net', 'TrainingOptStruct', 'AugOpt2DStruct', 'AugOpt3DStruct', 'InputLayerOpt', ...
+                'ActivationLayerOpt', 'SegmentationLayerOpt', ...
                 'classNames', 'classColors', 'inputPatchSize', 'outputPatchSize', 'BatchOpt', '-mat', '-v7.3');
             
             if obj.BatchOpt.T_ExportTrainingPlots
@@ -3659,126 +3725,263 @@ classdef mibDeepController < handle
                 % interations
                 ValidationFrequencyInIterations = ceil(obj.TrainingProgress.iterPerEpoch / obj.TrainingOpt.ValidationFrequency);
                 
-                switch obj.TrainingOpt.solverName
-                    case 'adam'
-                        if ~isempty(valDS)
-                            TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
-                                'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
-                                'Shuffle', obj.TrainingOpt.Shuffle, ...
-                                'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
-                                'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
-                                'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
-                                'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
-                                'L2Regularization', obj.TrainingOpt.L2Regularization, ...
-                                'GradientDecayFactor', obj.TrainingOpt.GradientDecayFactor, ...
-                                'SquaredGradientDecayFactor', obj.TrainingOpt.SquaredGradientDecayFactor, ...
-                                'ValidationData', valDS, ...
-                                'ValidationFrequency', ValidationFrequencyInIterations, ...
-                                'ValidationPatience', obj.TrainingOpt.ValidationPatience, ...
-                                'Plots', PlotsSwitch, ...
-                                'Verbose', verboseSwitch, ...
-                                'ResetInputNormalization', ResetInputNormalization, ...
-                                'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1},...
-                                'OutputFcn', @obj.trainingProgressDisplay,...
-                                'CheckpointPath', CheckpointPath,...
-                                'ExecutionEnvironment', ExecutionEnvironment);
-                        else
-                            TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
-                                'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
-                                'Shuffle', obj.TrainingOpt.Shuffle, ...
-                                'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
-                                'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
-                                'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
-                                'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
-                                'L2Regularization', obj.TrainingOpt.L2Regularization, ...
-                                'GradientDecayFactor', obj.TrainingOpt.GradientDecayFactor, ...
-                                'SquaredGradientDecayFactor', obj.TrainingOpt.SquaredGradientDecayFactor, ...
-                                'Plots', PlotsSwitch, ...
-                                'Verbose', verboseSwitch, ...
-                                'ResetInputNormalization', ResetInputNormalization, ...
-                                'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1},...
-                                'OutputFcn', @obj.trainingProgressDisplay,...
-                                'CheckpointPath', CheckpointPath, ...
-                                'ExecutionEnvironment', ExecutionEnvironment);
-                        end
-                    case 'rmsprop'
-                        if ~isempty(valDS)
-                            TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
-                                'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
-                                'Shuffle', obj.TrainingOpt.Shuffle, ...
-                                'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
-                                'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
-                                'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
-                                'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
-                                'L2Regularization', obj.TrainingOpt.L2Regularization, ...
-                                'SquaredGradientDecayFactor', obj.TrainingOpt.SquaredGradientDecayFactor, ...
-                                'ValidationData', valDS, ...
-                                'ValidationFrequency', ValidationFrequencyInIterations, ...
-                                'ValidationPatience', obj.TrainingOpt.ValidationPatience, ...
-                                'Plots', PlotsSwitch, ...
-                                'Verbose', verboseSwitch, ...
-                                'ResetInputNormalization', ResetInputNormalization, ...
-                                'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1},...
-                                'OutputFcn', @obj.trainingProgressDisplay,...
-                                'CheckpointPath', CheckpointPath,...
-                                'ExecutionEnvironment', ExecutionEnvironment);
-                        else
-                            TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
-                                'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
-                                'Shuffle', obj.TrainingOpt.Shuffle, ...
-                                'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
-                                'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
-                                'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
-                                'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
-                                'L2Regularization', obj.TrainingOpt.L2Regularization, ...
-                                'SquaredGradientDecayFactor', obj.TrainingOpt.SquaredGradientDecayFactor, ...
-                                'Plots', PlotsSwitch, ...
-                                'Verbose', verboseSwitch, ...
-                                'ResetInputNormalization', ResetInputNormalization, ...
-                                'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1},...
-                                'OutputFcn', @obj.trainingProgressDisplay,...
-                                'CheckpointPath', CheckpointPath, ...
-                                'ExecutionEnvironment', ExecutionEnvironment);
-                        end
-                    case 'sgdm'
-                        if ~isempty(valDS)
-                            TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
-                                'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
-                                'Shuffle', obj.TrainingOpt.Shuffle, ...
-                                'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
-                                'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
-                                'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
-                                'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
-                                'L2Regularization', obj.TrainingOpt.L2Regularization, ...
-                                'Momentum', obj.TrainingOpt.Momentum, ...
-                                'Plots', PlotsSwitch, ...
-                                'ValidationData', valDS, ...
-                                'ValidationFrequency', ValidationFrequencyInIterations, ...
-                                'ValidationPatience', obj.TrainingOpt.ValidationPatience, ...
-                                'Verbose', verboseSwitch, ...
-                                'ResetInputNormalization', ResetInputNormalization, ...
-                                'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1}, ...
-                                'OutputFcn', @obj.trainingProgressDisplay,...
-                                'CheckpointPath', CheckpointPath,...
-                                'ExecutionEnvironment', ExecutionEnvironment);
-                        else
-                            TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
-                                'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
-                                'Shuffle', obj.TrainingOpt.Shuffle, ...
-                                'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
-                                'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
-                                'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
-                                'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
-                                'L2Regularization', obj.TrainingOpt.L2Regularization, ...
-                                'Momentum', obj.TrainingOpt.Momentum, ...
-                                'Plots', PlotsSwitch, ...
-                                'Verbose', verboseSwitch, ...
-                                'ResetInputNormalization', ResetInputNormalization, ...
-                                'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1}, ...
-                                'OutputFcn', @obj.trainingProgressDisplay,...
-                                'CheckpointPath', CheckpointPath, ...
-                                'ExecutionEnvironment', ExecutionEnvironment);
-                        end
+                if obj.mibController.matlabVersion < 9.11
+                    switch obj.TrainingOpt.solverName
+                        case 'adam'
+                            if ~isempty(valDS)
+                                TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
+                                    'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
+                                    'Shuffle', obj.TrainingOpt.Shuffle, ...
+                                    'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
+                                    'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
+                                    'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
+                                    'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
+                                    'L2Regularization', obj.TrainingOpt.L2Regularization, ...
+                                    'GradientDecayFactor', obj.TrainingOpt.GradientDecayFactor, ...
+                                    'SquaredGradientDecayFactor', obj.TrainingOpt.SquaredGradientDecayFactor, ...
+                                    'ValidationData', valDS, ...
+                                    'ValidationFrequency', ValidationFrequencyInIterations, ...
+                                    'ValidationPatience', obj.TrainingOpt.ValidationPatience, ...
+                                    'Plots', PlotsSwitch, ...
+                                    'Verbose', verboseSwitch, ...
+                                    'ResetInputNormalization', ResetInputNormalization, ...
+                                    'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1},...
+                                    'OutputFcn', @obj.trainingProgressDisplay,...
+                                    'CheckpointPath', CheckpointPath,...
+                                    'ExecutionEnvironment', ExecutionEnvironment);
+                            else
+                                TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
+                                    'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
+                                    'Shuffle', obj.TrainingOpt.Shuffle, ...
+                                    'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
+                                    'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
+                                    'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
+                                    'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
+                                    'L2Regularization', obj.TrainingOpt.L2Regularization, ...
+                                    'GradientDecayFactor', obj.TrainingOpt.GradientDecayFactor, ...
+                                    'SquaredGradientDecayFactor', obj.TrainingOpt.SquaredGradientDecayFactor, ...
+                                    'Plots', PlotsSwitch, ...
+                                    'Verbose', verboseSwitch, ...
+                                    'ResetInputNormalization', ResetInputNormalization, ...
+                                    'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1},...
+                                    'OutputFcn', @obj.trainingProgressDisplay,...
+                                    'CheckpointPath', CheckpointPath, ...
+                                    'ExecutionEnvironment', ExecutionEnvironment);
+                            end
+                        case 'rmsprop'
+                            if ~isempty(valDS)
+                                TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
+                                    'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
+                                    'Shuffle', obj.TrainingOpt.Shuffle, ...
+                                    'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
+                                    'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
+                                    'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
+                                    'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
+                                    'L2Regularization', obj.TrainingOpt.L2Regularization, ...
+                                    'SquaredGradientDecayFactor', obj.TrainingOpt.SquaredGradientDecayFactor, ...
+                                    'ValidationData', valDS, ...
+                                    'ValidationFrequency', ValidationFrequencyInIterations, ...
+                                    'ValidationPatience', obj.TrainingOpt.ValidationPatience, ...
+                                    'Plots', PlotsSwitch, ...
+                                    'Verbose', verboseSwitch, ...
+                                    'ResetInputNormalization', ResetInputNormalization, ...
+                                    'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1},...
+                                    'OutputFcn', @obj.trainingProgressDisplay,...
+                                    'CheckpointPath', CheckpointPath,...
+                                    'ExecutionEnvironment', ExecutionEnvironment);
+                            else
+                                TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
+                                    'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
+                                    'Shuffle', obj.TrainingOpt.Shuffle, ...
+                                    'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
+                                    'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
+                                    'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
+                                    'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
+                                    'L2Regularization', obj.TrainingOpt.L2Regularization, ...
+                                    'SquaredGradientDecayFactor', obj.TrainingOpt.SquaredGradientDecayFactor, ...
+                                    'Plots', PlotsSwitch, ...
+                                    'Verbose', verboseSwitch, ...
+                                    'ResetInputNormalization', ResetInputNormalization, ...
+                                    'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1},...
+                                    'OutputFcn', @obj.trainingProgressDisplay,...
+                                    'CheckpointPath', CheckpointPath, ...
+                                    'ExecutionEnvironment', ExecutionEnvironment);
+                            end
+                        case 'sgdm'
+                            if ~isempty(valDS)
+                                TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
+                                    'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
+                                    'Shuffle', obj.TrainingOpt.Shuffle, ...
+                                    'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
+                                    'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
+                                    'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
+                                    'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
+                                    'L2Regularization', obj.TrainingOpt.L2Regularization, ...
+                                    'Momentum', obj.TrainingOpt.Momentum, ...
+                                    'Plots', PlotsSwitch, ...
+                                    'ValidationData', valDS, ...
+                                    'ValidationFrequency', ValidationFrequencyInIterations, ...
+                                    'ValidationPatience', obj.TrainingOpt.ValidationPatience, ...
+                                    'Verbose', verboseSwitch, ...
+                                    'ResetInputNormalization', ResetInputNormalization, ...
+                                    'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1}, ...
+                                    'OutputFcn', @obj.trainingProgressDisplay,...
+                                    'CheckpointPath', CheckpointPath,...
+                                    'ExecutionEnvironment', ExecutionEnvironment);
+                            else
+                                TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
+                                    'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
+                                    'Shuffle', obj.TrainingOpt.Shuffle, ...
+                                    'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
+                                    'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
+                                    'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
+                                    'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
+                                    'L2Regularization', obj.TrainingOpt.L2Regularization, ...
+                                    'Momentum', obj.TrainingOpt.Momentum, ...
+                                    'Plots', PlotsSwitch, ...
+                                    'Verbose', verboseSwitch, ...
+                                    'ResetInputNormalization', ResetInputNormalization, ...
+                                    'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1}, ...
+                                    'OutputFcn', @obj.trainingProgressDisplay,...
+                                    'CheckpointPath', CheckpointPath, ...
+                                    'ExecutionEnvironment', ExecutionEnvironment);
+                            end
+                    end
+                else    % Matlab R2021b and newer
+                    if strcmp(obj.TrainingOpt.OutputNetwork, 'best-validation-loss') && isempty(valDS)
+                        selection = uiconfirm(obj.View.gui, ...
+                            sprintf('The current training options have OutputNetwork parameter set to "best-validation-loss" to return the network corresponding to the training iteration with the lowest validation loss.\n\nPlease hit Cancel and provide images for validation (Directories and preprocessing->Fraction of images for validation) and start training again.\n\nAlternatively press "Continue using last-iteration output" to return the network corresponding to the last training iteration.'), ...
+                            'Missing validation images',...
+                            'Options',{'Continue using last-iteration output', 'Cancel'}, ...
+                            'DefaultOption', 'Cancel', ...
+                            'Icon','warning');
+                        if strcmp(selection, 'Cancel'); delete(obj.wb); return; end
+                        obj.TrainingOpt.OutputNetwork = 'last-iteration';
+                    end
+                    switch obj.TrainingOpt.solverName
+                        case 'adam'
+                            if ~isempty(valDS)
+                                TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
+                                    'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
+                                    'Shuffle', obj.TrainingOpt.Shuffle, ...
+                                    'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
+                                    'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
+                                    'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
+                                    'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
+                                    'L2Regularization', obj.TrainingOpt.L2Regularization, ...
+                                    'GradientDecayFactor', obj.TrainingOpt.GradientDecayFactor, ...
+                                    'SquaredGradientDecayFactor', obj.TrainingOpt.SquaredGradientDecayFactor, ...
+                                    'ValidationData', valDS, ...
+                                    'ValidationFrequency', ValidationFrequencyInIterations, ...
+                                    'ValidationPatience', obj.TrainingOpt.ValidationPatience, ...
+                                    'Plots', PlotsSwitch, ...
+                                    'Verbose', verboseSwitch, ...
+                                    'ResetInputNormalization', ResetInputNormalization, ...
+                                    'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1},...
+                                    'OutputFcn', @obj.trainingProgressDisplay,...
+                                    'CheckpointPath', CheckpointPath,...
+                                    'ExecutionEnvironment', ExecutionEnvironment, ...
+                                    'OutputNetwork', obj.TrainingOpt.OutputNetwork);
+                            else
+                                TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
+                                    'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
+                                    'Shuffle', obj.TrainingOpt.Shuffle, ...
+                                    'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
+                                    'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
+                                    'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
+                                    'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
+                                    'L2Regularization', obj.TrainingOpt.L2Regularization, ...
+                                    'GradientDecayFactor', obj.TrainingOpt.GradientDecayFactor, ...
+                                    'SquaredGradientDecayFactor', obj.TrainingOpt.SquaredGradientDecayFactor, ...
+                                    'Plots', PlotsSwitch, ...
+                                    'Verbose', verboseSwitch, ...
+                                    'ResetInputNormalization', ResetInputNormalization, ...
+                                    'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1},...
+                                    'OutputFcn', @obj.trainingProgressDisplay,...
+                                    'CheckpointPath', CheckpointPath, ...
+                                    'ExecutionEnvironment', ExecutionEnvironment);
+                            end
+                        case 'rmsprop'
+                            if ~isempty(valDS)
+                                TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
+                                    'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
+                                    'Shuffle', obj.TrainingOpt.Shuffle, ...
+                                    'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
+                                    'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
+                                    'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
+                                    'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
+                                    'L2Regularization', obj.TrainingOpt.L2Regularization, ...
+                                    'SquaredGradientDecayFactor', obj.TrainingOpt.SquaredGradientDecayFactor, ...
+                                    'ValidationData', valDS, ...
+                                    'ValidationFrequency', ValidationFrequencyInIterations, ...
+                                    'ValidationPatience', obj.TrainingOpt.ValidationPatience, ...
+                                    'Plots', PlotsSwitch, ...
+                                    'Verbose', verboseSwitch, ...
+                                    'ResetInputNormalization', ResetInputNormalization, ...
+                                    'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1},...
+                                    'OutputFcn', @obj.trainingProgressDisplay,...
+                                    'CheckpointPath', CheckpointPath,...
+                                    'ExecutionEnvironment', ExecutionEnvironment, ...
+                                    'OutputNetwork', obj.TrainingOpt.OutputNetwork);
+                            else
+                                TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
+                                    'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
+                                    'Shuffle', obj.TrainingOpt.Shuffle, ...
+                                    'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
+                                    'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
+                                    'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
+                                    'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
+                                    'L2Regularization', obj.TrainingOpt.L2Regularization, ...
+                                    'SquaredGradientDecayFactor', obj.TrainingOpt.SquaredGradientDecayFactor, ...
+                                    'Plots', PlotsSwitch, ...
+                                    'Verbose', verboseSwitch, ...
+                                    'ResetInputNormalization', ResetInputNormalization, ...
+                                    'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1},...
+                                    'OutputFcn', @obj.trainingProgressDisplay,...
+                                    'CheckpointPath', CheckpointPath, ...
+                                    'ExecutionEnvironment', ExecutionEnvironment);
+                            end
+                        case 'sgdm'
+                            if ~isempty(valDS)
+                                TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
+                                    'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
+                                    'Shuffle', obj.TrainingOpt.Shuffle, ...
+                                    'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
+                                    'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
+                                    'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
+                                    'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
+                                    'L2Regularization', obj.TrainingOpt.L2Regularization, ...
+                                    'Momentum', obj.TrainingOpt.Momentum, ...
+                                    'Plots', PlotsSwitch, ...
+                                    'ValidationData', valDS, ...
+                                    'ValidationFrequency', ValidationFrequencyInIterations, ...
+                                    'ValidationPatience', obj.TrainingOpt.ValidationPatience, ...
+                                    'Verbose', verboseSwitch, ...
+                                    'ResetInputNormalization', ResetInputNormalization, ...
+                                    'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1}, ...
+                                    'OutputFcn', @obj.trainingProgressDisplay,...
+                                    'CheckpointPath', CheckpointPath,...
+                                    'ExecutionEnvironment', ExecutionEnvironment, ...
+                                    'OutputNetwork', obj.TrainingOpt.OutputNetwork);
+                            else
+                                TrainingOptions = trainingOptions(obj.TrainingOpt.solverName, ...
+                                    'MaxEpochs', obj.TrainingOpt.MaxEpochs, ...
+                                    'Shuffle', obj.TrainingOpt.Shuffle, ...
+                                    'InitialLearnRate', obj.TrainingOpt.InitialLearnRate, ...
+                                    'LearnRateSchedule', obj.TrainingOpt.LearnRateSchedule, ...
+                                    'LearnRateDropPeriod', obj.TrainingOpt.LearnRateDropPeriod, ...
+                                    'LearnRateDropFactor', obj.TrainingOpt.LearnRateDropFactor, ...
+                                    'L2Regularization', obj.TrainingOpt.L2Regularization, ...
+                                    'Momentum', obj.TrainingOpt.Momentum, ...
+                                    'Plots', PlotsSwitch, ...
+                                    'Verbose', verboseSwitch, ...
+                                    'ResetInputNormalization', ResetInputNormalization, ...
+                                    'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1}, ...
+                                    'OutputFcn', @obj.trainingProgressDisplay,...
+                                    'CheckpointPath', CheckpointPath, ...
+                                    'ExecutionEnvironment', ExecutionEnvironment);
+                            end
+                    end
                 end
             catch err
                 errordlg(sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), 'Wrong training options');
@@ -4095,20 +4298,31 @@ classdef mibDeepController < handle
                 obj.TrainingProgress.LearnRateSchedule.Position = [192 136 202 22];
                 obj.TrainingProgress.LearnRateSchedule.Text = sprintf('Learn rate schedule: %s', obj.TrainingOpt.LearnRateSchedule);
                 
+                zLinePos = 106;
+                if obj.mibController.matlabVersion >= 9.11
+                    obj.TrainingProgress.OutputNetwork = uilabel(obj.TrainingProgress.InformationPanel);
+                    obj.TrainingProgress.OutputNetwork.Position = [192 116 202 22];
+                    obj.TrainingProgress.OutputNetwork.Text = sprintf('Output network: %s', obj.TrainingOpt.OutputNetwork);
+                    zLinePos = 86;
+                end
+                
                 obj.TrainingProgress.InitialLearnRate = uilabel(obj.TrainingProgress.InformationPanel);
-                obj.TrainingProgress.InitialLearnRate.Position = [192 106 202 22];
+                obj.TrainingProgress.InitialLearnRate.Position = [192 zLinePos 202 22];
                 obj.TrainingProgress.InitialLearnRate.Text = sprintf('Initial learn rate: %f', obj.TrainingOpt.InitialLearnRate);
                 
+                zLinePos = zLinePos - 20;
                 obj.TrainingProgress.LearnRateDropPeriod = uilabel(obj.TrainingProgress.InformationPanel);
-                obj.TrainingProgress.LearnRateDropPeriod.Position = [192 86 202 22];
+                obj.TrainingProgress.LearnRateDropPeriod.Position = [192 zLinePos 202 22];
                 obj.TrainingProgress.LearnRateDropPeriod.Text = sprintf('LearnRate Drop Period: %d', obj.TrainingOpt.LearnRateDropPeriod);
                 
+                zLinePos = zLinePos - 20;
                 obj.TrainingProgress.ValidationPatience = uilabel(obj.TrainingProgress.InformationPanel);
-                obj.TrainingProgress.ValidationPatience.Position = [192 66 202 22];
+                obj.TrainingProgress.ValidationPatience.Position = [192 zLinePos 202 22];
                 obj.TrainingProgress.ValidationPatience.Text = sprintf('Validation patience: %d', obj.TrainingOpt.ValidationPatience);
                 
+                zLinePos = zLinePos - 20;
                 obj.TrainingProgress.ValidationFrequency = uilabel(obj.TrainingProgress.InformationPanel);
-                obj.TrainingProgress.ValidationFrequency.Position = [192 46 202 22];
+                obj.TrainingProgress.ValidationFrequency.Position = [192 zLinePos 202 22];
                 obj.TrainingProgress.ValidationFrequency.Text = sprintf('Validation frequency: %.1f /epoch', obj.TrainingOpt.ValidationFrequency);
                 
                 obj.TrainingProgress.StopTrainingButton = uibutton(obj.TrainingProgress.InputPatchPreviewPanel, 'push',...
@@ -4371,6 +4585,13 @@ classdef mibDeepController < handle
             
             while hasdata(imgDS)
                 vol = read(imgDS);  % [height, width, color] for 2D
+                % check for correct number of color channels
+                if strcmp(obj.BatchOpt.Architecture{1}, '2D DeepLabV3 Resnet18') && size(vol, 3) == 1 
+                    errordlg(sprintf('!!! Error !!!\n\nDeepLabV3 Resnet18 requires RGB images; grayscale images needs to be preprocessed!'), 'Prediction requires preprocessing');
+                    if obj.BatchOpt.showWaitbar; delete(pwb); end
+                    return;
+                end
+
                 vol = bigimage(vol, 'BlockSize', [inputPatchSize(1) inputPatchSize(2)]);    % convert to bigimage
                 
                 if strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'same')     % same
@@ -4396,25 +4617,33 @@ classdef mibDeepController < handle
                 outputLabels = outputLabels - 1;    % remove the first "exterior" class
                 
                 [~, fn] = fileparts(imgDS.Files{id});
-                filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', ['Labels_' fn '.model']);
-                
-                modelMaterialNames = classNames;
-                modelMaterialNames(1) = [];
-                modelMaterialColors = [modelMaterialColors; obj.modelMaterialColors]; %#ok<AGROW,PROP>
-                
-                %rawFn = ls(fullfile(projDir, ImageSource, '01_input_images', '*.am'));
-                %amHeader = getAmiraMeshHeader(fullfile(projDir, ImageSource, '01_input_images', rawFn));
-                %BoundingBox = amHeader(find(ismember({amHeader.Name}', 'BoundingBox'))).Value;
-                modelVariable = 'outputLabels';
-                modelType = 63;
-                if exist('BoundingBox','var') == 0
-                    save(filename, 'outputLabels', 'modelMaterialNames', 'modelMaterialColors', ...
-                        'modelVariable', 'modelType', '-mat', '-v7.3');
-                else
-                    save(filename, 'outputLabels', 'modelMaterialNames', 'modelMaterialColors', ...
-                        'BoundingBox', 'modelVariable', 'modelType', '-mat', '-v7.3');
+                % depending on the selected output type
+                switch obj.BatchOpt.P_ModelFiles{1}
+                    case 'MIB Model format'
+                        modelMaterialNames = classNames;
+                        modelMaterialNames(1) = [];
+                        modelMaterialColors = [modelMaterialColors; obj.modelMaterialColors]; %#ok<AGROW,PROP>
+                        filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', ['Labels_' fn '.model']);
+                        %rawFn = ls(fullfile(projDir, ImageSource, '01_input_images', '*.am'));
+                        %amHeader = getAmiraMeshHeader(fullfile(projDir, ImageSource, '01_input_images', rawFn));
+                        %BoundingBox = amHeader(find(ismember({amHeader.Name}', 'BoundingBox'))).Value;
+                        modelVariable = 'outputLabels';
+                        modelType = 63;
+                        if exist('BoundingBox','var') == 0
+                            save(filename, 'outputLabels', 'modelMaterialNames', 'modelMaterialColors', ...
+                                'modelVariable', 'modelType', '-mat', '-v7.3');
+                        else
+                            save(filename, 'outputLabels', 'modelMaterialNames', 'modelMaterialColors', ...
+                                'BoundingBox', 'modelVariable', 'modelType', '-mat', '-v7.3');
+                        end
+                    case 'TIF compressed format'
+                        filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', ['Labels_' fn '.tif']);
+                        imwrite(outputLabels, filename, 'tif', 'WriteMode', 'overwrite', 'Description', sprintf('DeepMIB segmentation: %s', obj.BatchOpt.Architecture{1}), 'Compression', 'lzw');
+                    case 'TIF uncompressed format'
+                        filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', ['Labels_' fn '.tif']);
+                        imwrite(outputLabels, filename, 'tif', 'WriteMode', 'overwrite', 'Description', sprintf('DeepMIB segmentation: %s', obj.BatchOpt.Architecture{1}), 'Compression', 'none');
                 end
-                
+
                 % save score map
                 if generateScoreFiles == 1
                     scoreImg = getFullLevel(scoreImg);  % convert bigimage to normal matrix
@@ -4576,6 +4805,14 @@ classdef mibDeepController < handle
             
             while hasdata(imgDS)
                 vol = read(imgDS);  % [height, width, color] for 2D
+                
+                % check for correct number of color channels
+                if strcmp(obj.BatchOpt.Architecture{1}, '2D DeepLabV3 Resnet18') && size(vol, 3) == 1 
+                    errordlg(sprintf('!!! Error !!!\n\nDeepLabV3 Resnet18 requires RGB images; grayscale images needs to be preprocessed!'), 'Prediction requires preprocessing');
+                    if obj.BatchOpt.showWaitbar; delete(pwb); end
+                    return;
+                end
+
                 volSize = size(vol, (1:2));
                 [height, width, color] = size(vol);
                 [~, fn] = fileparts(imgDS.Files{id});
@@ -4602,7 +4839,14 @@ classdef mibDeepController < handle
                             [outputLabels, ~, scoreImg] = semanticseg(squeeze(volPadded), net, ...
                                 'OutputType', 'uint8', 'ExecutionEnvironment', ExecutionEnvironment,...
                                 'MiniBatchSize', obj.BatchOpt.P_MiniBatchSize{1}');
-                            
+
+%                             tic
+%                             volPadded2 = repmat(volPadded, [1,1,1,8]);
+%                             [outputLabels, ~, scoreImg] = semanticseg(squeeze(volPadded2), net, ...
+%                                 'OutputType', 'uint8', 'ExecutionEnvironment', ExecutionEnvironment,...
+%                                 'MiniBatchSize', 8);
+%                             toc
+
                             % Remove the padding if needed
                             if sum(padSizePre)+sum(padSizePost)>0
                                 outputLabels = outputLabels(padSizePre(1)+1:end-padSizePost(1), ...
@@ -4617,7 +4861,11 @@ classdef mibDeepController < handle
                     else        % the section below is for obj.BatchOpt.P_OverlappingTiles == true
                         % pad the image to include extended areas due to
                         % the overlapping strategy
+                        if strcmp(obj.BatchOpt.Architecture{1}, '2D DeepLabV3 Resnet18')
+                            obj.BatchOpt.T_EncoderDepth{1} = 4;
+                        end
                         padShift = (obj.BatchOpt.T_FilterSize{1}-1)*obj.BatchOpt.T_EncoderDepth{1};
+                        
                         padSize  = repmat(padShift, [1 nDims]);
                         volPadded = padarray(vol, padSize, 0, 'both');
                         
@@ -4691,27 +4939,36 @@ classdef mibDeepController < handle
                     if generateScoreFiles == 1; scoreImg = scoreImg(1:volSize(1), 1:volSize(2), :); end
                 end
                 
-                % Save results
+                % Save generated model files
                 outputLabels = outputLabels - 1;    % remove the first "exterior" class
                 
+                % get filename template
                 [~, fn] = fileparts(imgDS.Files{id});
-                filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', ['Labels_' fn '.model']);
-                
-                modelMaterialNames = classNames;
-                modelMaterialNames(1) = [];
-                modelMaterialColors = [modelMaterialColors; obj.modelMaterialColors]; %#ok<AGROW,PROP>
-                
-                %rawFn = ls(fullfile(projDir, ImageSource, '01_input_images', '*.am'));
-                %amHeader = getAmiraMeshHeader(fullfile(projDir, ImageSource, '01_input_images', rawFn));
-                %BoundingBox = amHeader(find(ismember({amHeader.Name}', 'BoundingBox'))).Value;
-                modelVariable = 'outputLabels';
-                modelType = 63;
-                if exist('BoundingBox','var') == 0
-                    save(filename, 'outputLabels', 'modelMaterialNames', 'modelMaterialColors', ...
-                        'modelVariable', 'modelType', '-mat', '-v7.3');
-                else
-                    save(filename, 'outputLabels', 'modelMaterialNames', 'modelMaterialColors', ...
-                        'BoundingBox', 'modelVariable', 'modelType', '-mat', '-v7.3');
+                % depending on the selected output type
+                switch obj.BatchOpt.P_ModelFiles{1}
+                    case 'MIB Model format'
+                        modelMaterialNames = classNames;
+                        modelMaterialNames(1) = [];
+                        modelMaterialColors = [modelMaterialColors; obj.modelMaterialColors]; %#ok<AGROW,PROP>
+                        filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', ['Labels_' fn '.model']);
+                        %rawFn = ls(fullfile(projDir, ImageSource, '01_input_images', '*.am'));
+                        %amHeader = getAmiraMeshHeader(fullfile(projDir, ImageSource, '01_input_images', rawFn));
+                        %BoundingBox = amHeader(find(ismember({amHeader.Name}', 'BoundingBox'))).Value;
+                        modelVariable = 'outputLabels';
+                        modelType = 63;
+                        if exist('BoundingBox','var') == 0
+                            save(filename, 'outputLabels', 'modelMaterialNames', 'modelMaterialColors', ...
+                                'modelVariable', 'modelType', '-mat', '-v7.3');
+                        else
+                            save(filename, 'outputLabels', 'modelMaterialNames', 'modelMaterialColors', ...
+                                'BoundingBox', 'modelVariable', 'modelType', '-mat', '-v7.3');
+                        end
+                    case 'TIF compressed format'
+                        filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', ['Labels_' fn '.tif']);
+                        imwrite(outputLabels, filename, 'tif', 'WriteMode', 'overwrite', 'Description', sprintf('DeepMIB segmentation: %s', obj.BatchOpt.Architecture{1}), 'Compression', 'lzw');
+                    case 'TIF uncompressed format'
+                        filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', ['Labels_' fn '.tif']);
+                        imwrite(outputLabels, filename, 'tif', 'WriteMode', 'overwrite', 'Description', sprintf('DeepMIB segmentation: %s', obj.BatchOpt.Architecture{1}), 'Compression', 'none');
                 end
                 
                 % save score map
@@ -4985,9 +5242,13 @@ classdef mibDeepController < handle
                         for k = 1:outputPatchSize(3):depthPad-outputPatchSize(3)+1
                             for j = 1:outputPatchSize(2):widthPad-outputPatchSize(2)+1
                                 for i = 1:outputPatchSize(1):heightPad-outputPatchSize(1)+1
-                                    patch = volPadded( i:i+inputPatchSize(1)-1,...
-                                        j:j+inputPatchSize(2)-1,...
-                                        k:k+inputPatchSize(3)-1,:);
+                                    %try
+                                        patch = volPadded( i:i+inputPatchSize(1)-1,...
+                                            j:j+inputPatchSize(2)-1,...
+                                            k:k+inputPatchSize(3)-1,:);
+                                    %catch err
+                                    %    0
+                                    %end
                                     [patchSeg, ~, scoreBlock] = semanticseg(squeeze(patch), net, ...
                                         'OutputType', 'uint8', 'ExecutionEnvironment', ExecutionEnvironment, ...
                                         'MiniBatchSize', obj.BatchOpt.P_MiniBatchSize{1});
@@ -5119,28 +5380,44 @@ classdef mibDeepController < handle
                 
                 % Save results
                 outputLabels = outputLabels - 1;    % remove the first "exterior" class
-                
+                % get filename template
                 [~, fn] = fileparts(imgDS.Files{id});
-                filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', ['Labels_' fn '.model']);
-                
-                %modelMaterialNames = {classNames{2:end}}';
-                modelMaterialNames = classNames;
-                modelMaterialNames(1) = [];
-                modelMaterialColors = [modelMaterialColors; obj.modelMaterialColors]; %#ok<AGROW,PROP>
-                
-                %rawFn = ls(fullfile(projDir, ImageSource, '01_input_images', '*.am'));
-                %amHeader = getAmiraMeshHeader(fullfile(projDir, ImageSource, '01_input_images', rawFn));
-                %BoundingBox = amHeader(find(ismember({amHeader.Name}', 'BoundingBox'))).Value;
-                modelVariable = 'outputLabels';
-                modelType = 63;
-                if exist('BoundingBox','var') == 0
-                    save(filename, 'outputLabels', 'modelMaterialNames', 'modelMaterialColors', ...
-                        'modelVariable', 'modelType', '-mat', '-v7.3');
-                else
-                    save(filename, 'outputLabels', 'modelMaterialNames', 'modelMaterialColors', ...
-                        'BoundingBox', 'modelVariable', 'modelType', '-mat', '-v7.3');
+
+                % depending on the selected output type
+                switch obj.BatchOpt.P_ModelFiles{1}
+                    case 'MIB Model format'
+                        filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', ['Labels_' fn '.model']);
+
+                        %modelMaterialNames = {classNames{2:end}}';
+                        modelMaterialNames = classNames;
+                        modelMaterialNames(1) = [];
+                        modelMaterialColors = [modelMaterialColors; obj.modelMaterialColors]; %#ok<AGROW,PROP>
+
+                        %rawFn = ls(fullfile(projDir, ImageSource, '01_input_images', '*.am'));
+                        %amHeader = getAmiraMeshHeader(fullfile(projDir, ImageSource, '01_input_images', rawFn));
+                        %BoundingBox = amHeader(find(ismember({amHeader.Name}', 'BoundingBox'))).Value;
+                        modelVariable = 'outputLabels';
+                        modelType = 63;
+                        if exist('BoundingBox','var') == 0
+                            save(filename, 'outputLabels', 'modelMaterialNames', 'modelMaterialColors', ...
+                                'modelVariable', 'modelType', '-mat', '-v7.3');
+                        else
+                            save(filename, 'outputLabels', 'modelMaterialNames', 'modelMaterialColors', ...
+                                'BoundingBox', 'modelVariable', 'modelType', '-mat', '-v7.3');
+                        end
+                    case {'TIF compressed format', 'TIF uncompressed format'}
+                        if strcmp(obj.BatchOpt.P_ModelFiles{1}, 'TIF compressed format')
+                            tifCompression = 'lzw';
+                        else
+                            tifCompression = 'none';
+                        end
+                        filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', ['Labels_' fn '.tif']);
+                        imwrite(outputLabels(:,:,1), filename, 'tif', 'WriteMode', 'overwrite', 'Description', sprintf('DeepMIB segmentation: %s', obj.BatchOpt.Architecture{1}), 'Compression', tifCompression);
+                        for sliceId = 2:size(outputLabels, 3)
+                            imwrite(outputLabels(:,:,sliceId), filename, 'tif', 'WriteMode', 'append', 'Compression', tifCompression);
+                        end
                 end
-                
+
                 % save score map
                 if generateScoreFiles == 1
                     if generateScoreFilesFormat == 1    % 'Use AM format'
@@ -5199,7 +5476,13 @@ classdef mibDeepController < handle
             imgDir = fullfile(obj.BatchOpt.OriginalPredictionImagesDir, 'Images');
             imgList = dir(fullfile(imgDir, ['*.' lower(obj.BatchOpt.ImageFilenameExtension{1})]));
             modelDir = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels');
-            modelList = dir(fullfile(modelDir, '*.model'));
+            switch obj.BatchOpt.P_ModelFiles{1}
+                case 'MIB Model format'
+                    modelFileExtension = '*.model';
+                case {'TIF compressed format', 'TIF uncompressed format'}
+                    modelFileExtension = '*.tif';
+            end
+            modelList = dir(fullfile(modelDir, modelFileExtension));
             
             if isempty(imgList) || isempty(modelList)
                 errordlg(sprintf('!!! Error !!!\n\nFiles were not found in\n%s\n\n%s\n\nPlease update the Directory prediction and resulting images fields of the Directories and Preprocessing tab!', imgDir, modelDir), 'Missing files');
@@ -5213,7 +5496,7 @@ classdef mibDeepController < handle
             else
                 BatchOptIn1.Filenames = {arrayfun(@(filename) fullfile(imgDir, cell2mat(filename)), {imgList.name}, 'UniformOutput', false)};  % generate full paths
                 BatchOptIn2.DirectoryName = {modelDir};
-                BatchOptIn2.FilenameFilter = '*.model';
+                BatchOptIn2.FilenameFilter = modelFileExtension;
             end
             
             BatchOptIn1.UseBioFormats = obj.BatchOpt.Bioformats;
@@ -5241,7 +5524,13 @@ classdef mibDeepController < handle
             end
             
             predictionDir = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels');
-            predictionList = dir(fullfile(predictionDir, '*.model'));
+            switch obj.BatchOpt.P_ModelFiles{1}
+                case 'MIB Model format'
+                    modelFileExtension = '*.model';
+                case {'TIF compressed format', 'TIF uncompressed format'}
+                    modelFileExtension = '*.tif';
+            end
+            predictionList = dir(fullfile(predictionDir, modelFileExtension));
             
             if isempty(truthList) && isempty(predictionList)
                 uialert(obj.View.gui, ...
@@ -5295,9 +5584,27 @@ classdef mibDeepController < handle
             if isempty(metricsList); return; end
             
             % get class names
-            modelFn = fullfile(predictionList(1).folder, predictionList(1).name);
-            res = load(modelFn, '-mat', 'modelMaterialNames');
-            classNames = [{'Exterior'}; res.modelMaterialNames];    % add Exterior
+            switch obj.BatchOpt.P_ModelFiles{1}
+                case 'MIB Model format'
+                    modelFn = fullfile(predictionList(1).folder, predictionList(1).name);
+                    res = load(modelFn, '-mat', 'modelMaterialNames');
+                    classNames = [{'Exterior'}; res.modelMaterialNames];    % add Exterior
+                case {'TIF compressed format', 'TIF uncompressed format'}
+                    if preprocessedSwitch   % for tifs get the class names from the preprocessed file
+                        res = load(fullfile(truthDir, truthList(1).name), '-mat', 'options');
+                        classNames = res.options.modelMaterialNames;
+                    else % if it is not available, try to get from model file or generate fake names
+                        switch obj.BatchOpt.ModelFilenameExtension{1}
+                            case 'MODEL'
+                                res = load(fullfile(truthDir, truthList(1).name), '-mat', 'modelMaterialNames');
+                                classNames = [{'Exterior'}; res.modelMaterialNames];    % add Exterior
+                            otherwise
+                                % material names not present generate fake ones
+                                classNames = arrayfun(@(x) sprintf('Class%.2d', x), 1:obj.BatchOpt.T_NumberOfClasses{1}-1, 'UniformOutput', false);
+                                classNames = [{'Exterior'}; classNames'];
+                        end
+                    end
+            end
             pixelLabelID = 0:numel(classNames)-1;
             
             try
@@ -5323,15 +5630,27 @@ classdef mibDeepController < handle
             end
             
             fullPathFilenames = arrayfun(@(filename) fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', cell2mat(filename)), {predictionList.name}, 'UniformOutput', false);  % generate full paths
-            dsResults = pixelLabelDatastore(fullPathFilenames, classNames, pixelLabelID, ...
-                'FileExtensions', '.model', 'ReadFcn', @mibDeepController.readModel);
+            switch obj.BatchOpt.P_ModelFiles{1}
+                case 'MIB Model format'
+                    dsResults = pixelLabelDatastore(fullPathFilenames, classNames, pixelLabelID, ...
+                        'FileExtensions', '.model', 'ReadFcn', @mibDeepController.readModel);
+                case {'TIF compressed format', 'TIF uncompressed format'}
+                    if strcmp(obj.BatchOpt.Architecture{1}(1:2), '2D')
+                        dsResults = pixelLabelDatastore(fullPathFilenames, classNames, pixelLabelID, ...
+                                'FileExtensions', '.tif');
+                    else
+                        % for 3D tif have to use a separate reading function
+                        dsResults = pixelLabelDatastore(fullPathFilenames, classNames, pixelLabelID, ...
+                                'FileExtensions', '.tif', 'ReadFcn', @mibDeepController.tif3DFileRead);
+                    end
+            end
             
             tic
             pw = PoolWaitbar(2, sprintf('Starting evaluation\nit may take a while...'), [], 'Evaluate segmentation');
             try
                 ssm = evaluateSemanticSegmentation(dsResults, dsTruth, 'Metrics', metricsList);
             catch err
-                errordlg(sprintf('!!! Error !!!\n\n%s\n\n%s\n\nMost likely the class names in the GroundTruth do not match the class names of the model', err.identifier, err.message), 'Wrong class names');
+                errordlg(sprintf('!!! Error !!!\n\n%s\n\n%s\n\nMost likely the class names in the GroundTruth do not match the class names of the model\nor alternatively, the ground truth model is in a single .MODEL file (preprecess the dataset in this case)', err.identifier, err.message), 'Wrong class names');
             end
             pw.increment();
             
@@ -5682,43 +6001,67 @@ classdef mibDeepController < handle
             [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
             if isempty(answer); return; end
             
+            wb = waitbar(0, sprintf('Exporting to ONNX\nPlease wait...'));
+            
             % load the model
             Model = load(obj.BatchOpt.NetworkFilename, '-mat');
-            
-            try
-                switch answer{2}
-                    case 'Keep as it is'
-                        exportONNXNetwork(Model.net, outoutFilename, 'OpsetVersion', str2double(answer{1}));
-                    otherwise
-                        lgraph = layerGraph(Model.net);
+            waitbar(0.4, wb);
 
-                        % find index of the output layer
-                        outPutLayerName = lgraph.OutputNames;
-                        notFound = 1;
-                        layerId = numel(lgraph.Layers) + 1;
-                        while notFound
-                            layerId = layerId - 1;
-                            if strcmp(lgraph.Layers(layerId).Name, outPutLayerName) || layerId == 0
-                                notFound = 0;
-                            end
+            switch answer{2}
+                case 'Keep as it is'
+                    try
+                        exportONNXNetwork(Model.net, outoutFilename, 'OpsetVersion', str2double(answer{1}));
+                    catch err
+                        errordlg(sprintf('!!! Error !!!\n\n%s\n\n%s\n\nTrying again...', err.identifier, err.message), 'ONNX export');
+                        % when addSpkgBinPath is not patched a second attempt to export is needed
+                        % line 6: should be "if isempty(pathSet) && ~isdeployed"
+                        try
+                            exportONNXNetwork(Model.net, outoutFilename, 'OpsetVersion', str2double(answer{1}));
+                        catch err2
+                            delete(wb);
+                            errordlg(sprintf('!!! Error !!!\n\n%s\n\n%s', err2.identifier, err2.message), 'ONNX export');
                         end
-                        outLayer = lgraph.Layers(layerId);
-                        switch answer{2}
-                            case 'pixelClassificationLayer'
-                                outLayer = pixelClassificationLayer('Name', 'Segmentation-Layer', 'Classes', outLayer.Classes);
-                                lgraph = replaceLayer(lgraph, outPutLayerName{1}, outLayer);
-                            case 'dicePixelClassificationLayer'
-                                outLayer = dicePixelClassificationLayer('Name', 'Segmentation-Layer', 'Classes', outLayer.Classes);
-                                lgraph = replaceLayer(lgraph, outPutLayerName{1}, outLayer);
-                            case 'Remove the layer'
-                                lgraph = removeLayers(lgraph, outPutLayerName{1});
+                    end
+                otherwise
+                    lgraph = layerGraph(Model.net);
+
+                    % find index of the output layer
+                    outPutLayerName = lgraph.OutputNames;
+                    notFound = 1;
+                    layerId = numel(lgraph.Layers) + 1;
+                    while notFound
+                        layerId = layerId - 1;
+                        if strcmp(lgraph.Layers(layerId).Name, outPutLayerName) || layerId == 0
+                            notFound = 0;
                         end
+                    end
+                    outLayer = lgraph.Layers(layerId);
+                    switch answer{2}
+                        case 'pixelClassificationLayer'
+                            outLayer = pixelClassificationLayer('Name', 'Segmentation-Layer', 'Classes', outLayer.Classes);
+                            lgraph = replaceLayer(lgraph, outPutLayerName{1}, outLayer);
+                        case 'dicePixelClassificationLayer'
+                            outLayer = dicePixelClassificationLayer('Name', 'Segmentation-Layer', 'Classes', outLayer.Classes);
+                            lgraph = replaceLayer(lgraph, outPutLayerName{1}, outLayer);
+                        case 'Remove the layer'
+                            lgraph = removeLayers(lgraph, outPutLayerName{1});
+                    end
+                    try
                         exportONNXNetwork(lgraph, outoutFilename, 'OpsetVersion', str2double(answer{1}));
-                end
-            catch err
-                errordlg(sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), 'ONNX export');
-                return;
+                    catch err
+                        errordlg(sprintf('!!! Error !!!\n\n%s\n\n%s\n\nTrying again...', err.identifier, err.message), 'ONNX export');
+                        % when addSpkgBinPath is not patched a second attempt to export is needed
+                        % line 6: should be "if isempty(pathSet) && ~isdeployed"
+                        try
+                            exportONNXNetwork(lgraph, outoutFilename, 'OpsetVersion', str2double(answer{1}));
+                        catch err2
+                            detele(wb);
+                            errordlg(sprintf('!!! Error !!!\n\n%s\n\n%s', err2.identifier, err2.message), 'ONNX export');
+                        end
+                    end
             end
+            waitbar(1, wb);
+            delete(wb);
             uialert(obj.View.gui, sprintf('Export finished!\n%s', outoutFilename), 'Done!', 'Icon', 'success');
         end
         
@@ -5911,6 +6254,136 @@ classdef mibDeepController < handle
             waitbar(1, wbar);
             fprintf('The transfer learning finished:\n%s\n', outNetworkName);
             delete(wbar);
+        end
+
+        function importNetwork(obj)
+            % function importNetwork(obj)
+            % import an externally trained or designed network to be used
+            % with DeepMIB
+            %
+            % Example:
+            % % generate a network:
+            % net = deeplabv3plusLayers([512 512 3], 5, 'resnet18');
+            % % save network to a file
+            % save('myNewNetwork.mat', 'net', '-mat');
+            % % use Import opetation to load and adapt the network for use with DeepMIB
+            global mibPath;
+
+            selection = uiconfirm(obj.View.gui,...
+                sprintf('[BETA] The following operation is allowing to import a network designed or trained externally\nResult of the operation is generation of "mibCfg" and "mibDeep" files that can be used with DeepMIB\n\nBefore proceeding please make sure that the most closest architecture is selected in DeepMIB settings and all other relevant parameter (e.g. directories) are specified. Check <a href="http://mib.helsinki.fi/help/main2/ug_gui_menu_tools_deeplearning.html#6">Help</a> for details.\n\nSupported formats:\n-Matlab'),...
+                '[BETA] Import network', 'Options', {'Continue', 'Cancel'}, 'Icon', 'info', 'Interpreter', 'html');
+            if strcmp(selection, 'Cancel'); return; end
+        
+            fileFilters = {'*.mat;', 'Matlab format (*.mat)';
+                                                '*.*', 'All files (*.*)'};
+            [filenameIn, pathIn, selectedIndx] = mib_uigetfile(fileFilters, 'Select network file', obj.mibModel.myPath);
+            if filenameIn == 0; return; end
+            
+            switch fileFilters{selectedIndx, 2}
+                case 'Matlab format (*.mat)'
+                    import = load(fullfile(pathIn, filenameIn), '-mat');
+                    % generate list of available variables and allow selection
+                    fieldNames = fieldnames(import);
+                    if numel(fieldNames) > 1
+                        fieldNamesList = [];
+                        for i=1:numel(fieldNames)
+                            fieldNamesList = [fieldNamesList {sprintf('%s (%s)', fieldNames{i}, class(import.(fieldNames{i})))}];
+                        end
+
+                        prompts = {'Select the variable containing the network:'};
+                        defAns = {fieldNamesList, 1};
+                        dlgTitle = 'Import network';
+                        [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle);
+                        if isempty(answer); return; end
+                        
+                        wb = waitbar(0, sprintf('Importing the network\nPlease wait...'));
+                        net = import.(fieldNames{selIndex});
+                    else
+                        wb = waitbar(0, sprintf('Importing the network\nPlease wait...'));
+                        net = import.(fieldNames{1});
+                    end
+
+%                     wb = uiprogressdlg(obj.View.gui,...
+%                         'Message', sprintf('Importing the network\nPlease wait...'), ...
+%                         'Title', 'Importing network', ...
+%                         'Cancelable', 'on', ...
+%                         'Value',0);
+%                     if wb.CancelRequested; delete(wb); return; end
+                    
+                    % generate new filenames
+                    [~, outputNetworkName] = fileparts(filenameIn);
+                    networkFileName = fullfile(pathIn, [outputNetworkName '.mibDeep']);
+                    configFileName = fullfile(pathIn, [outputNetworkName '.mibCfg']);
+                    if isfile(networkFileName)
+                        selection = uiconfirm(obj.View.gui,...
+                            sprintf('!!! Warning !!!\n\n%s\n\nalready exist!\nDo you want to overwrite it?', networkFileName),...
+                            'Owerwrite existing network', 'Options', {'Overwrite', 'Cancel'} );
+                        if strcmp(selection, 'Cancel'); return; end
+                    end
+                    
+                    obj.View.handles.NetworkFilename.Value = networkFileName;
+
+                    inputPatchSize = str2num(obj.BatchOpt.T_InputPatchSize);     % as [height, width, depth, colors]
+                    % generate names for the classes
+                    classNames = cell([1, obj.BatchOpt.T_NumberOfClasses{1}]);
+                    classNames{1} = 'Exterior';
+                    for classId = 2:obj.BatchOpt.T_NumberOfClasses{1}
+                        classNames{classId} = sprintf('Class%.2d', classId-1);
+                    end
+                    waitbar(0.4, wb);
+
+                    outputPatchSize = [inputPatchSize([1 2 3]) numel(classNames)];
+                    prompts = {sprintf('Confirm output patch size\n(height width depth number_of_classes):')};
+                    defAns = {num2str(outputPatchSize)};
+                    dlgTitle = 'Import network';
+                    inputDlgOpt.PromptLines = 2;
+                    [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, inputDlgOpt);
+                    if isempty(answer); delete(wb); return; end
+                    outputPatchSize = str2num(answer{1});
+
+                    % generate colormaps
+                    obj.colormap6 = [166 67 33; 71 178 126; 79 107 171; 150 169 213; 26 51 111; 255 204 102 ]/255;
+                    obj.colormap20 = [230 25 75; 255 225 25; 0 130 200; 245 130 48; 145 30 180; 70 240 240; 240 50 230; 210 245 60; 250 190 190; 0 128 128; 230 190 255; 170 110 40; 255 250 200; 128 0 0; 170 255 195; 128 128 0; 255 215 180; 0 0 128; 128 128 128; 60 180 75]/255;
+                    obj.colormap255 = rand([255,3]);
+                    if numel(classNames) < 7
+                        classColors = obj.colormap6;
+                    elseif numel(classNames) < 21
+                        classColors = obj.colormap20;
+                    else
+                        classColors = obj.colormap255;
+                    end
+                    waitbar(0.5, wb);
+
+                    % update batch opt to take into account new parameters
+                    obj.BatchOpt.NetworkFilename = networkFileName;
+
+                    % save config file
+                    obj.saveConfig(configFileName)
+                    waitbar(0.6, wb);
+
+                    % define path to the parameters file with settings
+                    importedParameters = load(configFileName, '-mat');
+
+                    % update fields and generate fields for mibDeep file
+                    TrainingOptStruct = importedParameters.TrainingOptStruct;
+                    AugOpt2DStruct = importedParameters.AugOpt2DStruct;
+                    AugOpt3DStruct = importedParameters.AugOpt3DStruct;
+                    InputLayerOpt = importedParameters.InputLayerOpt;
+                    BatchOpt = importedParameters.BatchOpt;
+                    ActivationLayerOpt = importedParameters.ActivationLayerOpt;
+                    SegmentationLayerOpt = importedParameters.SegmentationLayerOpt;
+                    waitbar(0.7, wb);
+
+                    % save network
+                    save(networkFileName, 'net', 'TrainingOptStruct', 'AugOpt2DStruct', 'AugOpt3DStruct', 'InputLayerOpt', ...
+                        'ActivationLayerOpt', 'SegmentationLayerOpt', ...
+                        'classNames', 'classColors', 'inputPatchSize', 'outputPatchSize', 'BatchOpt', '-mat', '-v7.3');
+                    waitbar(1, wb);
+                    delete(wb);
+                case 'All files (*.*)'
+                    uialert(obj.View.gui, 'Please select correct file format for the network to import!', 'Wrong format');
+                    return;
+            end
         end
         
         function countLabels(obj)

@@ -63,7 +63,7 @@ if obj.showBrushCursor
 %     end
     
     % set brush cursor
-    theta = linspace(0,2*pi,16);
+    theta = linspace(0, 2*pi, 17);
     xv = cos(theta)*se_size(1) + x;
     yv = sin(theta)*se_size(2) + y;
     

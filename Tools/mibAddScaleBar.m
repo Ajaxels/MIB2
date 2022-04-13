@@ -12,6 +12,7 @@ function I = mibAddScaleBar(I, pixSize, scale, Options)
 %  .orientation - orientation of the snapshot: 1, 2, 4 (default)
 %  .scaleBarHeight - height of the scale bar in pixels, minimal height is 22 pixels, default = []
 %  .bgColor - background color, a single number from 0 (black) to 1 (while), default = 0
+%  .textSuffix - string, additional text that should be added after the scale text
 
 %| 
 % @b Examples:
@@ -28,6 +29,7 @@ function I = mibAddScaleBar(I, pixSize, scale, Options)
 % 13.11.2017, fix of wrong scale size when using the YZ, XZ orientations
 % 27.01.2018, updated to use insertImage function of Matlab
 % 20.02.2018, added background color and modified the syntax
+% 05.01.2022, added textSuffix parameter to options
 
 global DejaVuSansMono;
 
@@ -35,6 +37,7 @@ if nargin < 4; Options = struct(); end
 if ~isfield(Options, 'orientation'); Options.orientation = 4; end
 if ~isfield(Options, 'scaleBarHeight'); Options.scaleBarHeight = []; end
 if ~isfield(Options, 'bgColor'); Options.bgColor = 0; end
+if ~isfield(Options, 'textSuffix'); Options.textSuffix = ''; end
 scaleBarHeight = Options.scaleBarHeight;
 
 if Options.orientation == 4
@@ -68,6 +71,7 @@ if mag < 0
 else
     scaleBarText = sprintf('%d %s', roundStep, pixSize.units);
 end
+
 scaleBarLength = round(roundStep/pixelSize);
 
 ColorsNumber = size(I, 3);
@@ -76,10 +80,19 @@ max_int = double(intmax(class(I)));
 bgColor = round(Options.bgColor*max_int);  % background color
 fgColor = round((1-Options.bgColor)*max_int); % foreground color
 
-if scaleBarLength+shiftX*2+(numel(scaleBarText)*12*resizeFactor) > width
-    msgbox(sprintf('Image is too small to put the scale bar!\nSaving image without the scale bar...'),'Scale bar','warn');
-    return;
+if scaleBarLength+shiftX*2+(numel([scaleBarText Options.textSuffix])*12*resizeFactor) > width
+    if scaleBarLength+shiftX*2+(numel(scaleBarText)*12*resizeFactor) > width
+        msgbox(sprintf('Image is too small to put the scale bar!\nSaving image without the scale bar...'), 'Scale bar', 'warn');
+        return;
+    end
+else    % add scale with suffix
+    scaleBarText = [scaleBarText Options.textSuffix];
 end
+
+%if scaleBarLength+shiftX*2+(numel(scaleBarText)*12*resizeFactor) > width
+%    msgbox(sprintf('Image is too small to put the scale bar!\nSaving image without the scale bar...'), 'Scale bar', 'warn');
+%    return;
+%end
 
 scaleBarSectionHeight = 22;
 model = zeros(scaleBarSectionHeight, size(I,2), size(I,3), class(I))+bgColor;

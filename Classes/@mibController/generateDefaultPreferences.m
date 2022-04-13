@@ -69,7 +69,7 @@ BioFormats = {'nii','mov','pic','ics','ids','lei','stk','nd','nd2','sld','pict'.
     ,'jp2','lif','l2d','mnc','mrc','oib','oif','pgm','zvi','gel','ims','dm3','naf'...
     ,'seq','xdce','ipl','mrw','mng','nrrd','ome','amiramesh','labels','fli'...
     ,'arf','al3d','sdt','czi','c01','flex','ipw','raw','ipm','xv','lim','nef','apl','mtb'...
-    ,'tnb','obsep','cxd','vws','xys','xml','dm4'};
+    ,'tnb','obsep','cxd','vws','xys','xml','dm4','ndpi'};
 StdImgFormats = imformats;  % get readable image formats
 
 % add video formats
@@ -174,6 +174,9 @@ Prefs.ExternalDirs.bm3dInstallationPath = [];
 % BM4D
 % old: preferences.dirs.bm4dInstallationPath
 Prefs.ExternalDirs.bm4dInstallationPath = [];
+
+% DeepMIB network architectures
+Prefs.ExternalDirs.DeepMIBDir = tempdir;
 
 % Bioformats Memoizer
 % old: preferences.dirs.BioFormatsMemoizerMemoDir
@@ -291,6 +294,7 @@ Prefs.Deep.TrainingOpt.SquaredGradientDecayFactor = 0.9; % new in version 2.71
 Prefs.Deep.TrainingOpt.ValidationFrequency = 2;
 Prefs.Deep.TrainingOpt.ValidationPatience = Inf;   % new in version 2.71
 Prefs.Deep.TrainingOpt.Plots = 'training-progress';  
+Prefs.Deep.TrainingOpt.OutputNetwork = 'last-iteration';     % new in v 2.82, requires R2021b
 
 Prefs.Deep.InputLayerOpt.Normalization = 'none';
 Prefs.Deep.InputLayerOpt.Mean = [];
@@ -302,8 +306,8 @@ Prefs.Deep.ActivationLayerOpt.clippedReluLayer.Ceiling = 10;
 Prefs.Deep.ActivationLayerOpt.leakyReluLayer.Scale = 0.01;
 Prefs.Deep.ActivationLayerOpt.eluLayer.Alpha = 1;
 
-Prefs.Deep.SegmentationLayerOpt.focalLossLayer.Alpha = 2;
-Prefs.Deep.SegmentationLayerOpt.focalLossLayer.Gamma = 0.25;
+Prefs.Deep.SegmentationLayerOpt.focalLossLayer.Alpha = 0.25;
+Prefs.Deep.SegmentationLayerOpt.focalLossLayer.Gamma = 2;
 
 Prefs.Deep.AugOpt2D = struct();
 Prefs.Deep.AugOpt2D.Fraction = .9;

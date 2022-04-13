@@ -238,7 +238,7 @@ classdef mibImageFiltersController < handle
             end
             
             % some widgets (html and gridlayout) are not yet available in Matlab R2019b
-            if obj.MatlabR2019b
+            if obj.MatlabR2019b     % R2019b or newerer
                 guiName = 'mibImageFiltersGUI';
             else
                 guiName = 'mibImageFiltersR2019aGUI';

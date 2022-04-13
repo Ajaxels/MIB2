@@ -127,7 +127,7 @@ obj.selectedROI = -1;
 % allocate slices
 obj.slices{1} = [1, 1];
 obj.slices{2} = [1, 1];
-obj.slices{3} = 1;
+obj.slices{3} = 1:size(obj.img{1}, 3);
 obj.slices{4} = [1, 1];
 obj.slices{5} = [1 1];
 

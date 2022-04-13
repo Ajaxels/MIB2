@@ -53,10 +53,10 @@ function img = mibAddText2Img(img, textArray, positionList, options)
 
 global DejaVuSansMono;
 
-if nargin < 4
-    options = struct('color', [0.5 0.5 0.5], 'fontSize', 2, 'markerText', 'both');
-end
 if ~isfield(options, 'AnchorPoint'); options.AnchorPoint = 'LeftTop'; end
+if ~isfield(options, 'color'); options.color = [0.5 0.5 0.5]; end
+if ~isfield(options, 'fontSize'); options.fontSize = 2; end
+if ~isfield(options, 'markerText'); options.markerText = 'both'; end
 
 % when insertText is missing use the legacy function to add text to image
 if ~isempty(DejaVuSansMono)

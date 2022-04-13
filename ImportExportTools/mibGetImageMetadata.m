@@ -507,7 +507,13 @@ for fn_index = 1:no_files
             end
         end
         if isfield(files, 'level')
-            info = info(files(1).level);
+            if isfield(info, 'UnknownTags')
+                UnknownTags = info.UnknownTags;     % reserve unknown tags
+                info = info(files(1).level);
+                info.UnknownTags = UnknownTags; 
+            else
+                info = info(files(1).level);
+            end
             files(fn_index).level = files(1).level;
         end
         
@@ -573,28 +579,87 @@ for fn_index = 1:no_files
             
             if isKey(img_info, 'ImageDescription')
                 bbStart = strfind(img_info('ImageDescription'), 'BoundingBox');
-                if ~isempty(bbStart)
-                    brakePnt = strfind(img_info('ImageDescription'), '|');
+            else
+                bbStart = [];
+            end
+
+            if ~isempty(bbStart) % detect from BoundingBox in ImageDescription field 
+                brakePnt = strfind(img_info('ImageDescription'), '|');
+                if isempty(brakePnt)
+                    brakePnt = strfind(img_info('ImageDescription'), sprintf('\t'));
                     if isempty(brakePnt)
-                        brakePnt = strfind(img_info('ImageDescription'), sprintf('\t'));
-                        if isempty(brakePnt)
-                            brakePnt = strfind(img_info('ImageDescription'), sprintf('\n'));
+                        brakePnt = strfind(img_info('ImageDescription'), sprintf('\n'));
+                    end
+                end
+                if ~isempty(brakePnt)
+                    brakePnt = brakePnt(1);
+                    bbString = img_info('ImageDescription');
+                    bb_coord = str2num(bbString(bbStart+11:brakePnt-1)); %#ok<ST2NM>
+                    dx = bb_coord(2)-bb_coord(1);
+                    dy = bb_coord(4)-bb_coord(3);
+                    dz = bb_coord(6)-bb_coord(5);
+
+                    pixSize.x = dx/(max([files(fn_index).width 2])-1);  % tweek for saving single layered tifs for Amira
+                    pixSize.y = dy/(max([files(fn_index).height 2])-1);
+                    pixSize.z = dz/(max([files(fn_index).noLayers 2])-1);
+                    if pixSize.z == 0; pixSize.z = min([pixSize.x pixSize.y]); end
+                    pixSize.units = 'um';
+                end
+            elseif isfield(info, 'Software') && ...
+                    (strcmp(info(1).Software(1:min([18 numel(info(1).Software)])), 'Fibics AtlasEngine') || strcmp(info(1).Software(1:min([18 numel(info(1).Software)])), 'NPVE'))   % images generated as User grabs in Atlas engine
+                if isfield(info, 'UnknownTags')
+                    if isfield(files, 'level')
+                        scaleFactor = 2^(files(1).level-1);
+                    else
+                        scaleFactor = 1;
+                    end
+                    pixSizePos1 = strfind(info.UnknownTags.Value, '<Ux>');
+                    if ~isempty(pixSizePos1) % Fibics AtlasEngine
+                        pixSizePos2 = strfind(info.UnknownTags.Value, '</Ux>');
+                        pixSize.x = str2double(info.UnknownTags.Value(pixSizePos1+4:pixSizePos2-1)) * scaleFactor;
+                    else    % NPVE
+                        pixSizePos1 = strfind(info.UnknownTags.Value, '<FOV_X units')+18; % <FOV_X units="um">32.7667846679687</FOV_X>
+                        pixSizePos2 = strfind(info.UnknownTags.Value, '</FOV_X>')-1;
+                        xFOV = str2double(info.UnknownTags.Value(pixSizePos1:pixSizePos2));
+                        widthPos1 = strfind(info.UnknownTags.Value, '<Width>')+7;
+                        widthPos2 = strfind(info.UnknownTags.Value, '</Width>')-1;
+                        imageWidth = str2double(info.UnknownTags.Value(widthPos1:widthPos2));
+                        pixSize.x = xFOV/imageWidth * scaleFactor;
+                    end
+                    pixSizePos3 = strfind(info.UnknownTags.Value, 'FOV_X units="')+13;
+                    pixSize.units = info.UnknownTags.Value(pixSizePos3:pixSizePos3+1);
+                    pixSize.y = pixSize.x;
+                end
+            elseif isfield(info, 'UnknownTags') && isfield(info, 'SampleFormat') && isfield(info, 'PhotometricInterpretation') && isfield(info, 'ColorType') %  Zeiss SmartSEM
+                if (strcmp(info(1).ColorType, 'grayscale') && strcmp(info(1).PhotometricInterpretation, 'BlackIsZero')) || ...
+                    (strcmp(info(1).ColorType, 'indexed') && strcmp(info(1).PhotometricInterpretation, 'RGB Palette'))
+                        metaStr = info(1).UnknownTags.Value;
+                        pixSizePos = strfind(metaStr, 'Image Pixel Size');
+                        if ~isempty(pixSizePos)
+                            try
+                                if isfield(files, 'level')
+                                    scaleFactor = 2^(files(1).level-1);
+                                else
+                                    scaleFactor = 1;
+                                end
+
+                                lineBrkPos = strfind(metaStr(pixSizePos:pixSizePos+50), sprintf('\n')); %#ok<SPRINTFN>
+                                metaStr = metaStr(pixSizePos:pixSizePos+lineBrkPos(1)-3); % metaStr = 'Image Pixel Size = 1.149 nm'
+                                spacesPos = strfind(metaStr, ' ');
+                                pixSizeText = metaStr(spacesPos(end-1)+1:spacesPos(end)-1);
+                                pixSize.x = str2double(pixSizeText) * scaleFactor;
+                                pixSize.y = pixSize.x;
+                                pixSize.units = metaStr(spacesPos(end)+1:end);
+                            catch err
+                            
+                            end
                         end
-                    end
-                    if ~isempty(brakePnt)
-                        brakePnt = brakePnt(1);
-                        bbString = img_info('ImageDescription');
-                        bb_coord = str2num(bbString(bbStart+11:brakePnt-1)); %#ok<ST2NM>
-                        dx = bb_coord(2)-bb_coord(1);
-                        dy = bb_coord(4)-bb_coord(3);
-                        dz = bb_coord(6)-bb_coord(5);
-                        
-                        pixSize.x = dx/(max([files(fn_index).width 2])-1);  % tweek for saving single layered tifs for Amira
-                        pixSize.y = dy/(max([files(fn_index).height 2])-1);
-                        pixSize.z = dz/(max([files(fn_index).noLayers 2])-1);
-                        if pixSize.z == 0; pixSize.z = min([pixSize.x pixSize.y]); end
-                        pixSize.units = 'um';
-                    end
+                        % look for Pixel size can be seen under the "Image pixel size" field 
+
+                        % ColorType: 'grayscale' 			 / 'indexed'
+                        % PhotometricInterpretation: 'BlackIsZero' / PhotometricInterpretation: 'RGB Palette'
+                        % SampleFormat: 'Unsigned integer'
+                        % UnknownTags: [2×1 struct]
                 end
             end
         end
@@ -691,7 +756,7 @@ for fn_index = 1:no_files
                     filesTemp.dim_xyczt = zeros(numel(filesTemp.seriesIndex), 5);
                     filesTemp.seriesRealName = cell([numel(filesTemp.seriesIndex), 1]);
                     for i=1:numel(filesTemp.seriesIndex)
-                        filesTemp.hDataset.setSeries(i - 1);
+                        filesTemp.hDataset.setSeries(filesTemp.seriesIndex(i) - 1);
                         filesTemp.dim_xyczt(i, 1) = filesTemp.hDataset.getSizeX();
                         filesTemp.dim_xyczt(i, 2) = filesTemp.hDataset.getSizeY();
                         filesTemp.dim_xyczt(i, 3) = filesTemp.hDataset.getSizeC();    % number of color layers

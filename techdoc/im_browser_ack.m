@@ -64,6 +64,8 @@
 % a function to draw boundaries of labeled regions in an image, written by Peter Kovesi
 % Centre for Exploration Targeting, School of Earth and Environment, The
 % University of Western Australia, 2013.
+% * <https://se.mathworks.com/matlabcentral/fileexchange/38703-custom-ginput
+% *Custom GINPUT*>, written by Jiro Doke, MathWorks 2016
 % * <https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m
 % *DRIFTY_SHIFTY_DELUXE*>, written by Joshua D. Sugar, Sandia National
 % Laboratories, Livermore, CA (2014); part of code from this function was adopted in mibCalcShifts.m

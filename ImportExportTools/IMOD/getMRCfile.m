@@ -44,7 +44,7 @@ if abs(value) > 999999  % change to Big-endian ordering
     fclose(fid);
     fid = fopen(filename, 'r', 'ieee-be');
     value=fread(filename,1,'int32'); 
-end;
+end
 
 header.Width = value;
 header.Height = fread(fid, 1, 'int32');
@@ -103,14 +103,15 @@ header.RMS = fread(fid, 1, 'int32');  %  rms deviation of map from mean density
 header.NLABL = fread(fid, 1, 'int32');  %  number of labels being used
 for i=1:header.NLABL
     header.labels(i,1:80)=fread(fid,80,'*char')';
-end;
+end
 
 fseek(fid, 1024, -1);
-[img, counter] = fread(fid, header.Width*header.Height*header.Thickness,header.type);
+[img, counter] = fread(fid, header.Width*header.Height*header.Thickness, header.type);
+%[img, counter] = fread(fid, header.Width*header.Height*header.Thickness, '*int8');
 fclose(fid);
 if counter ~= header.Width*header.Height*header.Thickness
     error('File is not complete!');
-end;
+end
 img2 =  reshape(img, [header.Width header.Height header.Thickness]);
 
 if strcmp(header.type, '*int16')

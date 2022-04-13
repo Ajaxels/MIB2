@@ -252,6 +252,7 @@ if strcmp(BatchOpt.Mode{1}, '3D, Stack') || strcmp(BatchOpt.Mode{1}, '4D, Datase
                 selection2(model ~= 1) = 0;
             end
             selection(indeces(1,1):indeces(1,2),indeces(2,1):indeces(2,2),indeces(3,1):indeces(3,2)) = selection2;
+            %getDataOptions = rmfield(getDataOptions, {'x','y','z'});
         else
             selection = zeros(size(img),'uint8') + 1;  % generate new selection
             if BatchOpt.Adaptive
@@ -272,7 +273,9 @@ if strcmp(BatchOpt.Mode{1}, '3D, Stack') || strcmp(BatchOpt.Mode{1}, '4D, Datase
                 selection = selection & model;
             end
         end
-        obj.mibModel.setData3D(BatchOpt.Target{1}, {selection}, t, 4, NaN, getDataOptions);
+        setDataOptions = struct();
+        setDataOptions.id = getDataOptions.id;
+        obj.mibModel.setData3D(BatchOpt.Target{1}, {selection}, t, 4, NaN, setDataOptions);
         if BatchOpt.showWaitbar; waitbar(t/(t2-t1), wb); end
     end
     if BatchOpt.showWaitbar; delete(wb); end

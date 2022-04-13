@@ -34,7 +34,7 @@ function mib()
 % Please follow instructions on Microscopy Image Browser web page:
 % http://mib.helsinki.fi
 
-% Copyright (C) 2010-2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% Copyright (C) 2010-2022 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
@@ -85,7 +85,7 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'Tools', 'Supervoxels'));
 end
 
-mibVersion = 'ver. 2.81 / 14.10.2021';  % ATTENTION! it is important to have the version number between "ver." and "/"
+mibVersion = 'ver. 2.82 / 12.04.2022';  % ATTENTION! it is important to have the version number between "ver." and "/"
 
 % define max number of parallel workers for deployed versions
 % define workers for parallel pools

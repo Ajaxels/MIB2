@@ -71,6 +71,16 @@
 % - Create SegNet layers for semantic segmentation
 % (<a href="https://se.mathworks.com/help/vision/ref/segnetlayers.html">link</a>)
 % </li>
+% <li><b>2D DeepLabV3 Resnet18</b>, an efficient DeepLab v3+ convolutional neural network for semantic image segmentation
+% initialized with Resnet18 as a base network. Suitable for large variety of segmentation tasks.
+% The input images should have RGB color channels, thus, the grayscale
+% images needs to be preprocessed.
+% <br>
+% <b>Reference:</b><br>
+% -  Chen, L., Y. Zhu, G. Papandreou, F. Schroff, and H. Adam. "Encoder-Decoder 
+% with Atrous Separable Convolution for Semantic Image Segmentation." 
+% Computer Vision — ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="https://arxiv.org/abs/1802.02611">link</a>)<br>
+% </li>
 % <li><b>3D U-net</b>, a variation of U-net, suitable for for semantic
 % segmentation of volumetric images.<br>
 % <b>References:</b><br>

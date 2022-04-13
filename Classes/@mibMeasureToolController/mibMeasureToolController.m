@@ -60,8 +60,15 @@ classdef mibMeasureToolController < handle
             guiName = 'mibMeasureToolGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
+            % add callback for keyboard press
+            % an alternative solution is to notify mibModel as in mibStatisticsGUI.mibStatisticsGUI_KeyPressFcn
+            % eventData = struct();
+            % eventData.eventdata = eventdata;
+            % eventData = ToggleEventData(eventData);
+            % notify(handles.winController.mibModel, 'keyPressEvent', eventData);
+            obj.View.gui.WindowKeyPressFcn = (@(hObject, eventdata, handles) obj.mibController.mibGUI_WindowKeyPressFcn(eventdata));   % turn ON callback for the keys
+
             obj.indices = [];
-            
             obj.updateWidgets();
             
             % add listner to obj.mibModel and call controller function as a callback
@@ -110,6 +117,14 @@ classdef mibMeasureToolController < handle
             pixString = sprintf('%f / %f / %f', pixSize.x, pixSize.y, pixSize.z);
             obj.View.handles.voxelSizeTxt.String = pixString;
             obj.updateTable();
+
+            % update session settings
+            if ~isfield(obj.mibModel.sessionSettings, 'measureTool')
+                obj.mibModel.sessionSettings.measureTool.integrationWidth = '5';
+                obj.mibModel.sessionSettings.measureTool.noPointsEdit = '5';
+            end
+            obj.View.handles.integrationWidth.String = obj.mibModel.sessionSettings.measureTool.integrationWidth;
+            obj.View.handles.noPointsEdit.String = obj.mibModel.sessionSettings.measureTool.noPointsEdit;
         end
         
         function nRows = updateTable(obj)
@@ -157,6 +172,7 @@ classdef mibMeasureToolController < handle
             typeString = obj.View.handles.measureTypePopup.String;
             finetuneCheck = obj.View.handles.finetuneCheck.Value;
             integrateCheck = obj.View.handles.integrateCheck.Value;
+            integrationWidth = str2double(obj.View.handles.integrationWidth.String);
             noPoints = str2double(obj.View.handles.noPointsEdit.String);
             calcIntensity = obj.View.handles.calcIntensityCheck.Value;
             
@@ -171,10 +187,12 @@ classdef mibMeasureToolController < handle
                 case 'Circle (R)'
                     obj.mibModel.I{obj.mibModel.Id}.hMeasure.CircleFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity);
                 case 'Distance (freehand)'
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFreeFun(obj.mibController, colCh, finetuneCheck, calcIntensity);
+                    freehandOptions.fixNumberPoints = obj.View.handles.fixNumberPoints.Value;
+                    freehandOptions.noPointsEdit  = obj.View.handles.noPointsEdit.String;
+                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFreeFun(obj.mibController, colCh, finetuneCheck, calcIntensity, freehandOptions);
                 case 'Distance (linear)'
                     if integrateCheck
-                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj.mibController, [], colCh, finetuneCheck, noPoints, calcIntensity);
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj.mibController, [], colCh, finetuneCheck, integrationWidth, calcIntensity);
                     else
                         obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj.mibController, [], colCh, finetuneCheck, [], calcIntensity);
                     end
@@ -189,7 +207,7 @@ classdef mibMeasureToolController < handle
             drawnow;            
             eventdata.Indices = [noRows, 2];   % store current indices, because they will be removed in obj.updateTable;
             obj.measureTable_CellSelectionCallback(eventdata);
-            
+
             %notify(obj.mibModel, 'plotImage');
             %obj.mibController.plotImage();
         end
@@ -361,6 +379,7 @@ classdef mibMeasureToolController < handle
             % @li 'Modify' - modify the selected measurement
             % @li 'Duplicate' - duplicate the selected measurement
             % @li 'Plot' - plot the intensity profile 
+            % @li 'Kymograph' - generate kymograph
             % @li 'Delete' - delete the selected measurement
             
             
@@ -506,6 +525,55 @@ classdef mibMeasureToolController < handle
                     title('Intensity profiles');
                     xlabel('Point number');
                     ylabel('Intensity');
+                case 'Kymograph'
+                    answer = questdlg('Save kymograph(s) to a file or preview in MIB (use preview only for a single measurement selected)?','Kymograph export','Save to file','Preview','Cancel','Save to file');
+                    if strcmp(answer, 'Cancel'); return; end
+                    if strcmp(answer, 'Save to file')
+                        % select output directory and the template filename
+                        [path, templateFn] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
+                        fn_out = fullfile(path, [templateFn '_measure_.tif']);
+                        Filters = {'*.tif',   'TIF image (*.tif)'; ...
+                                   '*.tif',   'TIF image with scale bar (*.tif)'; ...
+                                   '*.mat',   'MATLAB format (*.mat)'; ...
+                                   '*.csv',   'Comma-separated value (*.csv)'};
+                        [chemOptions.fnTemplate, chemOptions.outputDir, FilterIndex] = uiputfile(Filters, 'Save kymograph, set template', fn_out);
+                        if chemOptions.fnTemplate == 0; return; end
+                        chemOptions.outputFormat = Filters{FilterIndex}(end-2:end); % 'tif, csv, mat'
+                        chemOptions.fnTemplate = chemOptions.fnTemplate(1:end-4);   % trim away the extension
+                        if FilterIndex == 2
+                            chemOptions.addScale = true;   % add scale bar to the images
+                        else
+                            chemOptions.addScale = false;
+                        end
+                    else
+                        chemOptions.outputFormat = 'preview';
+                    end
+    
+                    wb = waitbar(0, sprintf('Generating kymographs\nPlease wait...'), 'Name', 'Kymograph');
+                    % update measurement
+                    colCh = obj.View.handles.imageColChPopup.Value - 1;
+                    integrateCheck = obj.View.handles.integrateCheck.Value;
+                    widthProfile = [];
+                    if integrateCheck
+                        widthProfile = str2double(obj.View.handles.noPointsEdit.String);
+                    end
+                    chemOptions.widthProfile = widthProfile;
+                     
+                    noOfMeasurements = size(obj.indices, 1);
+                    for i=1:noOfMeasurements
+                        n = obj.indices(i,1);
+                        if ~strcmp(chemOptions.outputFormat, 'preview')
+                            chemOptions.outputFilename = fullfile(chemOptions.outputDir, sprintf('%s%.3d.%s', chemOptions.fnTemplate, n, chemOptions.outputFormat));
+                        end
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.generateKymograph(obj.mibController, n, colCh, chemOptions);
+                        waitbar(i/noOfMeasurements);
+                    end
+                    
+                    eventdata.Indices = obj.indices;   % store current indices, because they will be removed in obj.updateTable;
+                    obj.updateTable();
+                    drawnow;
+                    obj.measureTable_CellSelectionCallback(eventdata);
+                    delete(wb);
                 case 'Delete'
                     obj.mibModel.mibDoBackup('measurements', 0);
                     rowId = obj.indices(:,1);

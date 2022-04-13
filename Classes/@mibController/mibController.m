@@ -97,6 +97,9 @@ classdef mibController < handle
                 case 'showModel'
                     obj.mibView.handles.mibModelShowCheck.Value = 1;
                     obj.mibModelShowCheck_Callback();
+                case 'keyPressEvent'
+                    % evnt.Parameter.eventdata provides presesed key info
+                    obj.mibGUI_WindowKeyPressFcn(evnt.Parameter.eventdata);
             end
         end
     end
@@ -177,7 +180,7 @@ classdef mibController < handle
         
         mibAddMaterialBtn_Callback(obj, BatchOptIn)        % callback to the obj.mibView.handles.mibAddMaterialBtn, add material to the model
         
-        mibAnisotropicDiffusion(obj, filter_type)        % Filter image with Anisotropic diffusion filters
+        mibAnisotropicDiffusion(obj, filter_type, cpuParallelLimit)       % Filter image with Anisotropic diffusion filters
         
         mibAnnMarkerEdit_Callback(obj)      % callback for selection of annotation marker type
         
@@ -566,7 +569,9 @@ classdef mibController < handle
             % update parameters for mibImages
             for i=1:obj.mibModel.maxId
                 obj.mibModel.I{i}.modelMaterialColors = obj.mibModel.preferences.Colors.ModelMaterialColors;
-                obj.mibModel.I{i}.lutColors = obj.mibModel.preferences.Colors.LUTColors;
+                if obj.mibModel.I{i}.colors < size(obj.mibModel.preferences.Colors.LUTColors, 1)
+                    obj.mibModel.I{i}.lutColors = obj.mibModel.preferences.Colors.LUTColors;
+                end
                 if obj.mibModel.preferences.System.EnableSelection ~= obj.mibModel.I{i}.enableSelection
                     obj.mibModel.I{i}.clearContents([], [], obj.mibModel.preferences.System.EnableSelection);
                 end
@@ -607,6 +612,7 @@ classdef mibController < handle
             obj.listener{6} = addlistener(obj.mibModel, 'showMask', @(src,evnt) mibController.Listner2_Callback(obj,src,evnt));
             obj.listener{7} = addlistener(obj.mibModel, 'showModel', @(src,evnt) mibController.Listner2_Callback(obj,src,evnt));
             obj.listener{8} = addlistener(obj.mibModel, 'newDatasetLite', @(src,evnt) mibController.Listner2_Callback(obj, src, evnt));
+            obj.listener{9} = addlistener(obj.mibModel, 'keyPressEvent', @(src,evnt) mibController.Listner2_Callback(obj, src, evnt));
             
             % update version specific elements
             if verLessThan('matlab', '9') % obj.matlabVersion < 9

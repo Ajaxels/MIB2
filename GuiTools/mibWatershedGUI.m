@@ -17,7 +17,7 @@ function varargout = mibWatershedGUI(varargin)
 
 % Edit the above text to modify the response to help mibWatershedGUI
 
-% Last Modified by GUIDE v2.5 06-Nov-2017 20:45:28
+% Last Modified by GUIDE v2.5 09-Dec-2021 00:35:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -161,4 +161,25 @@ end
 % --- Executes on button press in importBtn.
 function importBtn_Callback(hObject, eventdata, handles)
 handles.winController.importBtn_Callback();
+end
+
+
+% --- Executes on key press with focus on mibWatershedGUI and none of its controls.
+function mibWatershedGUI_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to mibWatershedGUI (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+% call key press callback of MIB main window
+% alternative solution is in
+% mibMeasureToolController.mibMeasureToolController or 
+% mibImageFiltersGUI.mlapp->FigureKeyPress
+eventData = struct();
+if isempty(eventdata.Character); return; end    % when only modifiers are pressed do not trigger the shortcuts
+eventData.eventdata = eventdata;
+eventData = ToggleEventData(eventData);
+notify(handles.winController.mibModel, 'keyPressEvent', eventData);
 end

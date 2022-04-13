@@ -55,7 +55,7 @@ classdef volrenAnimationController < handle
                 obj.extraController = [];
             end
             
-            obj.mibModel = mibModel;    % assign model
+            obj.mibModel = mibModel(1);    % assign model
             guiName = 'volrenAnimationGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             

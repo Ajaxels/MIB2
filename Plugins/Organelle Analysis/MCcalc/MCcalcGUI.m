@@ -134,13 +134,13 @@ end
 % --- Executes on button press in exportResultsFilename.
 function exportResultsFilename_Callback(hObject, eventdata, handles)
 formatText = {'*.xlsx', 'Microscoft Excel (*.xlsx)';...
-              '*.mat', 'Matlab format (*.mat)';};
+              '*.mat',  'Matlab format (*.mat)'};
 fn_out = handles.filenameEdit.String;
 [FileName, PathName, FilterIndex] = ...
     uiputfile(formatText, 'Select filename', fn_out);
 if isequal(FileName, 0) || isequal(PathName, 0); return; end
-
 fn_out = fullfile(PathName, FileName);
+
 handles.filenameEdit.String = fn_out;
 handles.filenameEdit.TooltipString = fn_out;
 end

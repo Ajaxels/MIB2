@@ -59,7 +59,8 @@
 %   <td>select pixels in the image based on specified method specified in the <a href="ug_panel_segm.html">Segmentation Panel</a></td>
 % </tr>
 % <tr>
-%   <td><kbd>right-click</kbd>+<kbd>drag</kbd></td>
+%   <td><kbd>right-click</kbd>+<kbd>drag</kbd><br>
+%	    <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>right-click</kbd>+<kbd>drag</kbd><br></td>
 %   <td>turns on the pan mode to move the image left/right and up/down</td>
 % </tr>
 % <tr>

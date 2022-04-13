@@ -248,7 +248,7 @@ for fn_index = 1:no_files
                     I = bsxfun(@times, I, reshape(img_info('MaxSampleValue'), 1, 1, []));
                 end
             end
-            img(1:maxY,1:maxX,1:maxC,layer_id) = I(1:maxY,1:maxX,1:maxC);
+            img(1:maxY,1:maxX,1:size(I,3),layer_id) = I(1:maxY,1:maxX,1:size(I,3));
             layer_id = layer_id + 1;
             if options.waitbar && mod(layer_id, ceil(maxZ/20))==0
                 waitbar(layer_id/maxZ,wb);

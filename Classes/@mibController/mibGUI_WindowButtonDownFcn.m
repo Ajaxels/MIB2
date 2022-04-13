@@ -24,25 +24,46 @@ xy = obj.mibView.handles.mibImageAxes.CurrentPoint;
 seltype = obj.mibView.gui.SelectionType;
 modifier = obj.mibView.gui.CurrentModifier;
 
-% this code is here to fix a drawing screen panning problem that appeared between
-% R2018b and R2019b, the right click in the pen settings was replaced with
-% the "shift" key modifier
-if ~isempty(modifier)
-    %fprintf('seltype: %s mod: %s\n', seltype, modifier{1})
-    if strcmp(modifier{1}, 'shift')
-        seltype = 'alt';
-        modifier = {};
-    end
-end
-
-% swap left and right mouse buttons check
+% define operation depending on the state of obj.mibView.handles.toolbarSwapMouse.State
 if strcmp(obj.mibView.handles.toolbarSwapMouse.State, 'on')
-    if strcmp(seltype, 'normal')
-        seltype = 'extend';
-    elseif strcmp(seltype, 'alt') && isempty(modifier)
-        seltype = 'normal';
-    elseif strcmp(seltype, 'extend') && isempty(modifier)
-        seltype = 'normal';
+    switch seltype
+        case 'normal'   % LMB
+            operation = 'interact';
+        case 'alt'  % RMB, Ctrl+LMB
+            if isempty(modifier)
+                operation = 'pan';
+            else
+                operation = 'interact';
+            end
+        case 'extend'   % Shift+RMB, Shift+LMB, MMB, LMB+RMB
+            operation = 'interact';
+            if ~isempty(modifier) && sum(ismember(modifier, {'shift', 'alt'})) == 2
+                % a tweak for the drawing pan
+                % the panning mode is enabled when Shift+Alt are used
+                operation = 'pan';
+            end
+        case 'open'     % double click
+            return
+        otherwise
+            return
+    end
+else
+    switch seltype
+        case 'normal'   % LMB
+            operation = 'pan';
+        case 'alt'  % RMB, Ctrl+LMB
+            operation = 'interact';
+        case 'extend'   % Shift+RMB, Shift+LMB, MMB, LMB+RMB
+            operation = 'interact';
+            if ~isempty(modifier) && sum(ismember(modifier, {'shift', 'alt'})) == 2
+                % a tweak for the drawing pan
+                % the panning mode is enabled when Shift+Alt are used
+                operation = 'pan';
+            end
+        case 'open'     % double click
+            return
+        otherwise 
+            return
     end
 end
 
@@ -64,8 +85,7 @@ if x2>separatingPanelPos(1) && x2<separatingPanelPos(1)+separatingPanelPos(3) &&
     return;
 end
 
-
-if strcmp(seltype, 'normal') %& strcmp(modifier,'alt')
+if strcmp(operation, 'pan') %& strcmp(modifier,'alt')
     %%     % Start the pan mode
     obj.mibView.gui.WindowKeyPressFcn = [];  % turn off callback for the keys during the panning
     if obj.mibView.centerSpotHandle.enable
@@ -142,10 +162,11 @@ if strcmp(seltype, 'normal') %& strcmp(modifier,'alt')
     
     setptr(obj.mibView.gui, 'closedhand');  % undocumented matlab http://undocumentedmatlab.com/blog/undocumented-mouse-pointer-functions/
     obj.mibView.gui.WindowButtonUpFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowButtonUpFcn());
-elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, or both mouse buttons
+elseif strcmp(operation, 'interact')
     %% Start segmentation mode
     %y = round(xy(1,2));
     %x = round(xy(1,1));
+
     if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 0 && ~ismember(tool, {'Annotations', '3D lines'})
         return; 
     end    % no selection layer
@@ -291,7 +312,5 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
     obj.plotImage();
     obj.mibView.gui.WindowButtonMotionFcn = (@(hObject, eventdata, handles) obj.mibGUI_WinMouseMotionFcn());   % moved from plotImage
     obj.mibView.gui.WindowButtonUpFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowButtonUpFcn());
-elseif strcmp(seltype, 'open')     % double click
-    %disp('open')
 end
 end

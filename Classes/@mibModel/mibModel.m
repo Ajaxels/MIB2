@@ -75,6 +75,8 @@ classdef mibModel < handle
         % change of a slice number using the slider
         changeTime
         % change of a time point using the slider
+        keyPressEvent
+        % event triggered by a child widget to call for key press callback of MIB
         newDataset
         % loaded or imported a new dataset
         newDatasetLite
@@ -219,6 +221,7 @@ classdef mibModel < handle
         
         
         function obj = mibModel(cpuParallelLimit)
+            if nargin < 1; cpuParallelLimit = 1; end
             obj.cpuParallelLimit = cpuParallelLimit;
             obj.reset();
         end

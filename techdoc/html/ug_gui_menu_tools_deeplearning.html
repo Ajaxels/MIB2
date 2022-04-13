@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Deep MIB - segmentation using Deep Learning</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-10-14"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning.m"><style type="text/css">
+      --><title>Deep MIB - segmentation using Deep Learning</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-12"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -122,6 +122,16 @@ Encoder-Decoder Architecture for Image Segmentation." arXiv. Preprint arXiv:
 1511.0051, 2015 (<a href="https://arxiv.org/abs/1511.00561">link</a>)<br>
 - Create SegNet layers for semantic segmentation
 (<a href="https://se.mathworks.com/help/vision/ref/segnetlayers.html">link</a>)
+</li>
+<li><b>2D DeepLabV3 Resnet18</b>, an efficient DeepLab v3+ convolutional neural network for semantic image segmentation
+initialized with Resnet18 as a base network. Suitable for large variety of segmentation tasks.
+The input images should have RGB color channels, thus, the grayscale
+images needs to be preprocessed.
+<br>
+<b>Reference:</b><br>
+-  Chen, L., Y. Zhu, G. Papandreou, F. Schroff, and H. Adam. "Encoder-Decoder
+with Atrous Separable Convolution for Semantic Image Segmentation."
+Computer Vision — ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="https://arxiv.org/abs/1802.02611">link</a>)<br>
 </li>
 <li><b>3D U-net</b>, a variation of U-net, suitable for for semantic
 segmentation of volumetric images.<br>
@@ -715,6 +725,16 @@ ONNX format. Please note that some of networks can't be converted yet.
 % 1511.0051, 2015 (<a href="https://arxiv.org/abs/1511.00561">link</a>)<br>
 % - Create SegNet layers for semantic segmentation
 % (<a href="https://se.mathworks.com/help/vision/ref/segnetlayers.html">link</a>)
+% </li>
+% <li><b>2D DeepLabV3 Resnet18</b>, an efficient DeepLab v3+ convolutional neural network for semantic image segmentation
+% initialized with Resnet18 as a base network. Suitable for large variety of segmentation tasks.
+% The input images should have RGB color channels, thus, the grayscale
+% images needs to be preprocessed.
+% <br>
+% <b>Reference:</b><br>
+% -  Chen, L., Y. Zhu, G. Papandreou, F. Schroff, and H. Adam. "Encoder-Decoder 
+% with Atrous Separable Convolution for Semantic Image Segmentation." 
+% Computer Vision — ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="https://arxiv.org/abs/1802.02611">link</a>)<br>
 % </li>
 % <li><b>3D U-net</b>, a variation of U-net, suitable for for semantic
 % segmentation of volumetric images.<br>

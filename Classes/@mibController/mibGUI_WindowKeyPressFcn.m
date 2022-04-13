@@ -29,7 +29,7 @@ function mibGUI_WindowKeyPressFcn(obj, hObject, eventdata)
 if nargin < 2; return; end
 
 if nargin < 3   % this when returning from fine-tuning of ROIs via the Escape key
-    char=hObject.Character;
+    char = lower(hObject.Key);
     modifier = hObject.Modifier;
 else
     % return when editing the edit, list boxes

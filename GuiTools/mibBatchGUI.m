@@ -22,7 +22,7 @@ function varargout = mibBatchGUI(varargin)
 
 % Edit the above text to modify the response to help mibBatchGUI
 
-% Last Modified by GUIDE v2.5 10-Sep-2019 15:47:45
+% Last Modified by GUIDE v2.5 08-Dec-2021 17:35:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -253,4 +253,24 @@ end
 % --- Executes on button press in listenMIB.
 function listenMIB_Callback(hObject, eventdata, handles)
 handles.winController.listenMIB_Callback();
+end
+
+
+% --- Executes on key press with focus on mibBatchGUI and none of its controls.
+function mibBatchGUI_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to mibBatchGUI (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+% call key press callback of MIB main window
+% alternative solution is in mibMeasureToolController.mibMeasureToolController
+eventData = struct();
+if isempty(eventdata.Character); return; end    % when only modifiers are pressed do not trigger the shortcuts
+eventData.eventdata = eventdata;
+eventData = ToggleEventData(eventData);
+notify(handles.winController.mibModel, 'keyPressEvent', eventData);
+
 end

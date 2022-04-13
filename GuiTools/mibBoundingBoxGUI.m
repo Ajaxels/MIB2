@@ -134,6 +134,14 @@ if isequal(get(hObject,'CurrentKey'),'escape')
     cancelBtn_Callback(hObject, eventdata, handles);
 elseif isequal(get(hObject,'CurrentKey'),'return')
     %okBtn_Callback(hObject, eventdata, handles);
+else
+    % call key press callback of MIB main window
+    % alternative solution is in mibMeasureToolController.mibMeasureToolController
+    eventData = struct();
+    if isempty(eventdata.Character); return; end    % when only modifiers are pressed do not trigger the shortcuts
+    eventData.eventdata = eventdata;
+    eventData = ToggleEventData(eventData);
+    notify(handles.winController.mibModel, 'keyPressEvent', eventData);
 end    
 end
 

@@ -136,6 +136,8 @@ classdef Lines3D < matlab.mixin.Copyable
         % strel element for making nodes
         noTrees = 0;
         % number of trees of the graph
+        treeLengths
+        % total length of each tree, numeric array
     end
     
     methods
@@ -204,6 +206,7 @@ classdef Lines3D < matlab.mixin.Copyable
             
             obj.G = [];   %  a cell array with labels
             obj.noTrees = 0;    % number of trees
+            obj.treeLengths = [];   % total length of trees
             obj.activeNodeId = [];    % active node
             obj.extraEdgeFields = [];
             obj.extraEdgeFieldsNumeric = [];
@@ -278,14 +281,17 @@ classdef Lines3D < matlab.mixin.Copyable
                     Graph.Nodes.TreeName(ids) = repmat({sprintf('Tree %.5d', treeId)}, [numel(ids), 1]);    % add tree names to nodes
                 end
             end
+
             % Add node names
             if ~ismember('NodeName', nodeFields)
                 Graph.Nodes.NodeName = repmat({'Node'}, [size(Graph.Nodes.PointsXYZ, 1), 1]);    % add tree names to nodes
             end
+
             % Add Radius
             if ~ismember('Radius', nodeFields)
                 Graph.Nodes.Radius = ones([size(Graph.Nodes.PointsXYZ,1), 1]);    % add tree names to nodes
             end
+
             % adding additional fields
             obj.extraNodeFields = nodeFields(~ismember(nodeFields, {'PointsXYZ', 'TreeName', 'NodeName','Radius'}))';
             obj.extraNodeFieldsNumeric = zeros([numel(obj.extraNodeFields), 1]);
@@ -294,6 +300,7 @@ classdef Lines3D < matlab.mixin.Copyable
                     obj.extraNodeFieldsNumeric(fieldId) = isnumeric(Graph.Nodes.(obj.extraNodeFields{fieldId})(1));
                 end
             end
+
             % add pixSize structure
             if ~isfield(Graph.Nodes.Properties.UserData, 'pixSize')
                 Graph.Nodes.Properties.UserData.pixSize = struct();
@@ -308,6 +315,7 @@ classdef Lines3D < matlab.mixin.Copyable
             if isempty(Graph.Nodes.Properties.VariableUnits)
                 Graph.Nodes.Properties.VariableUnits = repmat(cellstr(''), [numel(Graph.Nodes.Properties.VariableNames), 1]);
             end
+
             for varNameId = 1:numel(Graph.Nodes.Properties.VariableNames)
                 if isempty(Graph.Nodes.Properties.VariableUnits{varNameId})
                     switch Graph.Nodes.Properties.VariableNames{varNameId}
@@ -341,9 +349,11 @@ classdef Lines3D < matlab.mixin.Copyable
                 Graph.Edges.Edges = ...
                     [Graph.Nodes.PointsXYZ(Graph.Edges.EndNodes(:,1),:) Graph.Nodes.PointsXYZ(Graph.Edges.EndNodes(:,2),:)];
             end
+
             if ~ismember('Weight', edgeFields)
                 Graph.Edges.Weight = ones([size(Graph.Edges.EndNodes, 1), 1]);
             end
+
             if ~ismember('Length', edgeFields)
                 Graph = obj.calculateLengthOfNodes(Graph);
                 edgeFields = [edgeFields, 'Length'];
@@ -370,8 +380,7 @@ classdef Lines3D < matlab.mixin.Copyable
             % Graph: a graph object
             % options: [@em optional] - an optional structure with
             % additional parameters
-            %   .nodeId - id if nodes that include edges that should be
-            %   recalculated
+            %   .nodeId - ids of nodes that include edges that should be recalculated
             %
             % Return values:
             % Graph: the graph object with added/modified Length field
@@ -390,6 +399,10 @@ classdef Lines3D < matlab.mixin.Copyable
                         (Graph.Edges.Edges(edgeId,2)-Graph.Edges.Edges(edgeId,5))^2 + ...
                         (Graph.Edges.Edges(edgeId,3)-Graph.Edges.Edges(edgeId,6))^2);
                 end
+
+                % get tree name of the node
+                treeName = Graph.Nodes.TreeName{options.nodeId(1)};
+                
             elseif isfield(options, 'edgeId') % calculate length only for specified edges
                 % transpose to horizontal vector
                 if size(options.edgeId,1) > size(options.edgeId,2); options.edgeId = options.edgeId'; end

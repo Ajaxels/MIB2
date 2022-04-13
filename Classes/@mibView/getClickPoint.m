@@ -49,7 +49,9 @@ obj.gui.HandleVisibility = 'callback';
 
 set(0, 'CurrentFigure', obj.gui);
 obj.gui.CurrentAxes = obj.handles.mibImageAxes;
-[xClick, yClick] = my_ginput(nTimes);
+%[xClick, yClick] = my_ginput(nTimes);
+[xClick, yClick] = ginputc(nTimes);  % [x, y, button, ax] = ginputc(varargin)(nTimes);
+
 % turn off visibility of callbacks
 obj.gui.HandleVisibility = 'off';
 
@@ -57,7 +59,7 @@ obj.gui.HandleVisibility = 'off';
 obj.gui.WindowButtonDownFcn = (@(hObject, eventdata, handles) obj.mibController.mibGUI_WindowButtonDownFcn());
 obj.gui.WindowKeyPressFcn = (@(hObject, eventdata, handles) obj.mibController.mibGUI_WindowKeyPressFcn(hObject, eventdata));
 
-[xData,yData,zData] = obj.mibModel.convertMouseToDataCoordinates(xClick, yClick, 'shown', permuteSw);
+[xData, yData, zData] = obj.mibModel.convertMouseToDataCoordinates(xClick, yClick, 'shown', permuteSw);
 
 % % testing the output
 % str1 = sprintf('%dx%d -> %dx%d x%f axX=%.3f %.3f\n', handles.Img{handles.Id}.I.width, handles.Img{handles.Id}.I.height, size(handles.Img{handles.Id}.I.Ishown,2), size(handles.Img{handles.Id}.I.Ishown,1), handles.Img{handles.Id}.I.magFactor, handles.Img{handles.Id}.I.axesX(1),handles.Img{handles.Id}.I.axesX(2));

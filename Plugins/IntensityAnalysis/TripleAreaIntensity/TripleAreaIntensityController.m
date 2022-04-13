@@ -489,29 +489,29 @@ classdef TripleAreaIntensityController < handle
                     end
                     
                     % generate slice number for excel
-                    s(rowId, 2) = {num2str(sliceId)};
+                    s(rowId, 2) = {sliceId};
                     
                     % generate intensity 1 for excel
-                    s(rowId, 3) = {num2str(Intensity1(objId))};
+                    s(rowId, 3) = {Intensity1(objId)};
                     
                     % generate intensity 2 for excel
-                    s(rowId, 4) = {num2str(Intensity2(objId))};
+                    s(rowId, 4) = {Intensity2(objId)};
                     if background_Check
                         % save background
                         if CC1.NumObjects == BG_CC.NumObjects
-                            s(rowId, 5) = {num2str(Background(objId))};
+                            s(rowId, 5) = {Background(objId)};
                         elseif objId==1     % save averaged background once
-                            s(rowId, 5) = {num2str(Background(1))};
+                            s(rowId, 5) = {Background(1)};
                         end
                     end
                     if calculateRatioCheck
                         % generate ratio, intensity2/intensity1
-                        s(rowId, 6) = {num2str(Intensity1(objId)/Intensity2(objId))};
+                        s(rowId, 6) = {Intensity1(objId)/Intensity2(objId)};
                     end
                     
                     if additionalThresholdingCheck
                         % report intensities of additional thresholding
-                        s(rowId, 7) = {num2str(IntensityA(objId))};
+                        s(rowId, 7) = {IntensityA(objId)};
                     end
                     
                     obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(TripleArea.MaterialName1, [sliceId, round(X1(objId,:))], Intensity1(objId));

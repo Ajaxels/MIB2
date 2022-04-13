@@ -117,7 +117,13 @@
 % * *Preview intenity (only for Distance, linear)* - instantly shows an
 % intensity profile while placing the measurements
 % * *Integrate (only for Distance, linear)* - allows to use integration of
-% several points for calculation of intensity profile
+% several points for calculation of intensity profile, the number if points
+% used with the integration can be specified using the *Width* editbox.
+% * *fixed number of points (freehand mode only)*, use this checkbox to keep number of points
+% fixed, meaning that there will be no dialog offering reduction of the
+% points after placing of the measurement
+% * *Number of points (freehand and polyline modes):*, define number of
+% points to place in one of these modes.
 % 
 %
 %% Plot panel
@@ -152,6 +158,11 @@
 % intensity profiles for the selected measurements, in case if the pixel
 % size or selection of color channels was changed
 % * *Duplicate measurement*, select to duplicate the measurement;
+% * *Generate kymograph*, use this option to generate a kymograph, which
+% is an image of a depth projection through the stack under the profile
+% (only available for linear, polyline and freehand measurements). The
+% resulting kymograph may be previewed on a screen or saved in TIF, Matlab,
+% or CSV formats.
 % * *Plot intensity profile*, select to plot profile of intensities in a
 % new figure.
 % * *Delete measurement*, select to remove measurement from the list

@@ -161,13 +161,18 @@ function mibMorphOpsGUI_KeyPressFcn(hObject, eventdata, handles)
 %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
 % handles    structure with handles and user data (see GUIDATA)
 % Check for "enter" or "escape"
-if isequal(get(hObject,'CurrentKey'),'escape')
-    cancelBtn_Callback(handles.cancelBtn, eventdata, handles);
-end    
-    
-if isequal(get(hObject,'CurrentKey'),'return')
-    continueBtn_Callback(handles.continueBtn, eventdata, handles)
-end   
+
+
+% call key press callback of MIB main window
+% alternative solution is in
+% mibMeasureToolController.mibMeasureToolController or 
+% mibImageFiltersGUI.mlapp->FigureKeyPress
+eventData = struct();
+if isempty(eventdata.Character); return; end    % when only modifiers are pressed do not trigger the shortcuts
+eventData.eventdata = eventdata;
+eventData = ToggleEventData(eventData);
+notify(handles.winController.mibModel, 'keyPressEvent', eventData);
+
 end
 
 % --- Executes on button press in continueBtn.

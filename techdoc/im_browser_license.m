@@ -120,6 +120,13 @@
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
+% <td style="font-weight: bold">Custom GINPUT</td>
+% <td>Jiro Doke, MathWorks
+% <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/38703-custom-ginput">via MATLAB Exchange</a></td>
+% <td>ModifiedBSD,<br>2016</td>
+% <td>2.82-</td>
+% </tr>
+% <tr style="">
 %   <td style="font-weight: bold">Cell migration in scratch wound assays</td>
 %   <td>Constantino Carlos Reyes-Aldasoro, City, University of London</td>
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays">via MATLAB Exchange</a></td>

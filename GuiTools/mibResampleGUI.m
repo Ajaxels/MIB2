@@ -163,3 +163,22 @@ handles.ResamplingMethodModels.String = methodsModel;
 
 handles.winController.updateBatchOptFromGUI(hObject);
 end
+
+
+% --- Executes on key press with focus on mibResampleGUI and none of its controls.
+function mibResampleGUI_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to mibResampleGUI (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+% call key press callback of MIB main window
+% alternative solution is in mibMeasureToolController.mibMeasureToolController
+eventData = struct();
+if isempty(eventdata.Character); return; end    % when only modifiers are pressed do not trigger the shortcuts
+eventData.eventdata = eventdata;
+eventData = ToggleEventData(eventData);
+notify(handles.winController.mibModel, 'keyPressEvent', eventData);
+end

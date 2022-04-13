@@ -70,6 +70,7 @@ uimenu(handles.measureTable_cm, 'Label', 'Jump to measurement...', 'Callback', {
 uimenu(handles.measureTable_cm, 'Label', 'Modify measurement...', 'Callback', {@measureTable_cm, 'Modify'});
 uimenu(handles.measureTable_cm, 'Label', 'Recalculate selected measurements...', 'Callback', {@measureTable_cm, 'Recalculate'});
 uimenu(handles.measureTable_cm, 'Label', 'Duplicate measurement...', 'Callback', {@measureTable_cm, 'Duplicate'});
+uimenu(handles.measureTable_cm, 'Label', 'Generate kymograph (line, polyline, freehand)...', 'Callback', {@measureTable_cm, 'Kymograph'}, 'Separator','on');
 uimenu(handles.measureTable_cm, 'Label', 'Plot intensity profile...', 'Callback', {@measureTable_cm, 'Plot'});
 uimenu(handles.measureTable_cm, 'Label', 'Delete measurement...', 'Callback', {@measureTable_cm, 'Delete'},'Separator','on');
 handles.measureTable.UIContextMenu = handles.measureTable_cm;
@@ -203,6 +204,7 @@ handles.interpolationModePopup.Enable = 'off';
 handles.integrateCheck.Enable = 'off';
 handles.integrateCheck.Value = 0;
 handles.previewIntensityCheck.Enable = 'off';
+handles.fixNumberPoints.Enable = 'off';
 
 switch typeString{handles.measureTypePopup.Value}
     case 'Distance (linear)'
@@ -213,6 +215,8 @@ switch typeString{handles.measureTypePopup.Value}
         handles.interpolationModePopup.Enable = 'on';
     case 'Distance (freehand)'        
         handles.interpolationModePopup.Enable = 'on';
+        handles.noPointsEdit.Enable = 'on';
+        handles.fixNumberPoints.Enable = 'on';
 end
 integrateCheck_Callback(hObject, eventdata, handles);
 end
@@ -255,15 +259,27 @@ end
 function integrateCheck_Callback(hObject, eventdata, handles)
 val = handles.integrateCheck.Value;
 if val == 1
-    handles.text2.String = 'Width, px:';
-    handles.text2.TooltipString = 'define width for image intensity profile integration';
-    handles.noPointsEdit.Enable = 'on';
+    handles.integrationWidth.Enable = 'on';
 else
-    handles.text2.String = 'Number of points:';
-    handles.text2.TooltipString = 'define number of points for polyline';
-    if ~strcmp(handles.measureTypePopup.String{handles.measureTypePopup.Value}, 'Distance (polyline)')
-        handles.noPointsEdit.Enable = 'off';
-    end
+    handles.integrationWidth.Enable = 'off';
 end
+end
+
+function checkEditbox_Callback(hObject, eventdata, handles)
+% hObject    handle to integrationWidth (see GCBO)-3
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of integrationWidth as text
+%        str2double(get(hObject,'String')) returns contents of integrationWidth as a double
+
+switch hObject.Tag
+    case 'integrationWidth'
+        result = editbox_Callback(hObject, 'pint', handles.winController.mibModel.sessionSettings.measureTool.(hObject.Tag), [1,NaN]);
+    case 'noPointsEdit'
+        result = editbox_Callback(hObject, 'pint', handles.winController.mibModel.sessionSettings.measureTool.(hObject.Tag), [2,NaN]);
+end
+if result == 0; return; end
+handles.winController.mibModel.sessionSettings.measureTool.(hObject.Tag) = hObject.String;
 
 end

@@ -22,7 +22,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 16-Sep-2020 17:44:15
+% Last Modified by GUIDE v2.5 26-Mar-2022 18:12:11
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -573,7 +573,11 @@ function toolbarParProcBtn_ClickedCallback(hObject, eventdata, handles)
 if verLessThan('matlab', '8.4') % handles.mibController.matlabVersion < 8.4
     cores = matlabpool('size'); %#ok<DPOOL>
     if cores == 0
-        matlabpool(feature('numCores')); %#ok<DPOOL>
+        if isdeployed
+            matlabpool(min([handles.mibController.mibModel.cpuParallelLimit, feature('numCores')])); %#ok<DPOOL>
+        else
+            matlabpool(feature('numCores')); %#ok<DPOOL>
+        end
         handles.toolbarParProcBtn.Selected = 'on';
     else
         matlabpool close; %#ok<DPOOL>
@@ -584,7 +588,11 @@ if verLessThan('matlab', '8.4') % handles.mibController.matlabVersion < 8.4
 else
     poolobj = gcp('nocreate'); % If no pool, do not create new one.
     if isempty(poolobj)
-        parpool(feature('numCores'));
+        if isdeployed
+            parpool(min([handles.mibController.mibModel.cpuParallelLimit, feature('numCores')]));
+        else
+            parpool(feature('numCores'));
+        end
         handles.toolbarParProcBtn.State = 'on';
     else
         poolobj.delete();
@@ -1958,7 +1966,15 @@ switch hObject.Tag
     case 'menuModelsType65535'
         modelType = 65535;
     case 'menuModelsType4294967295'
-        modelType = 4294967295;        
+        modelType = 4294967295;
+    case 'menuModelsTypeIndexed2D_4'
+        modelType = 2.4;
+    case 'menuModelsTypeIndexed2D_8'
+        modelType = 2.8;
+    case 'menuModelsTypeIndexed3D_6'
+        modelType = 3.6;
+    case 'menuModelsTypeIndexed3D_26'
+        modelType = 3.26;
 end
 handles.mibController.mibModel.convertModel(modelType);
 end

@@ -30,7 +30,7 @@ function varargout = mibStereologyGUI(varargin)
 % Updates
 %
 
-% Last Modified by GUIDE v2.5 10-Feb-2017 21:18:44
+% Last Modified by GUIDE v2.5 09-Dec-2021 00:30:07
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -105,4 +105,26 @@ end
 % --- Executes on button press in doStereologyBtn.
 function doStereologyBtn_Callback(hObject, eventdata, handles)
 handles.winController.doStereologyBtn_Callback();
+end
+
+
+% --- Executes on key press with focus on mibStereologyGUI and none of its controls.
+function mibStereologyGUI_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to mibStereologyGUI (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+% call key press callback of MIB main window
+% alternative solution is in
+% mibMeasureToolController.mibMeasureToolController or 
+% mibImageFiltersGUI.mlapp->FigureKeyPress
+eventData = struct();
+if isempty(eventdata.Character); return; end    % when only modifiers are pressed do not trigger the shortcuts
+eventData.eventdata = eventdata;
+eventData = ToggleEventData(eventData);
+notify(handles.winController.mibModel, 'keyPressEvent', eventData);
+
 end

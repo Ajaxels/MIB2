@@ -173,7 +173,6 @@ classdef MCcalcController < handle
             end
             
             if obj.View.handles.saveResultsCheck.Value
-                % check filename
                 if exist(outFn, 'file') == 2
                     strText = sprintf('!!! Warning !!!\n\nThe file:\n%s \nis already exist!\n\nOverwrite?', outFn);
                     button = questdlg(strText, 'File exist!','Overwrite', 'Cancel', 'Cancel');
@@ -276,7 +275,7 @@ classdef MCcalcController < handle
                         CC.NumObjects = numel(CC.PixelIdxList);
                         fprintf('Removing %d small objects (smaller than 20 pixels), time point: %d, slice number: %d', numel(smallObjIndices), t, z);
                     end
-                    STATS = regionprops(CC, 'BoundingBox', 'Centroid');     % get bounding box for objects for cropping [x1, y1, width, height]
+                    STATS = regionprops(CC, 'BoundingBox', 'Centroid', 'Area', 'Eccentricity');     % get bounding box for objects for cropping [x1, y1, width, height]
                     
                     if generateSelectionSw
                         selection = zeros(size(M1), 'uint8');    % allocate space for selection layer
@@ -305,8 +304,18 @@ classdef MCcalcController < handle
                         M1c = M1c(y1:y2, x1:x2);         % crop image around the current main object
                         D2 = bwdist(M1c, 'euclidean');   % calculate the distance map
                         M2c = M2(y1:y2, x1:x2);          % crop the secondary material
+                        if material1_Index == material2_Index % remove main object when detecting of contacts between objects of the same material
+                            M2c(M1c==1) = 0;
+                        end
                         D2(~M2c) = Inf;                  % replace all pixels of the distance map that do not belong to the secondary objects with Infinity value
                         
+                        % calculate mean average thickness
+                        Dn = bwdist(~M1c);    % calculate distance transformation
+                        UltErosionCrop = imregionalmax(Dn, 8);  % find ultimate erosion points
+                        mainMinThicknessUnits = mean(Dn(UltErosionCrop>0)*2*pixSize); % obtain average min thickness value
+                        mainAreaUnits = STATS(objIndex).Area*pixSize*pixSize; % obtain area of the main object
+                        mainEccentricity = STATS(objIndex).Eccentricity; % obtain Eccentricity value for the objects
+
                         cWidth = size(M1c, 2);    % width of the cropped image
                         cHeight = size(M1c, 1);   % height of the cropped image
                         
@@ -406,7 +415,7 @@ classdef MCcalcController < handle
                         N(nanVec, :) = [];
                         B(nanVec, :) = [];
                         
-                        %         % test of boundaries tracing
+%                                 % test of boundaries tracing
 %                         figure(102);
 %                         clf;
 %                         imshow(M1c,[]);
@@ -479,20 +488,20 @@ classdef MCcalcController < handle
                         
                         
                         %                         % test ray vectors
-                        %                         figure(102)
-                        %                         clf;
-                        %                         D3 = D2;
-                        %                         D3(M1c == 1) = 0;
-                        %                         D3(~M2c) = 0;
-                        %                         imshow(D3,[0, 200]);
-                        %                         hold on;
-                        %                         %%imshow(255-D2,[]);
-                        %                         hPl = plot(B(:, 2), B(:, 1), 'r.', 'LineWidth', 1);
-                        %                         hPl.MarkerSize = 10;
-                        %                         plot([Bx1 Bx2]', [By1 By2]'); % x-vector, y-vector
-                        %                         ax = gca;
-                        %                         ax.XTick = [];
-                        %                         ax.YTick = [];
+%                                                 figure(102)
+%                                                 clf;
+%                                                 D3 = D2;
+%                                                 D3(M1c == 1) = 0;
+%                                                 D3(~M2c) = 0;
+%                                                 imshow(D3,[0, 200]);
+%                                                 hold on;
+%                                                 %%imshow(255-D2,[]);
+%                                                 hPl = plot(B(:, 2), B(:, 1), 'r.', 'LineWidth', 1);
+%                                                 hPl.MarkerSize = 10;
+%                                                 plot([Bx1 Bx2]', [By1 By2]'); % x-vector, y-vector
+%                                                 ax = gca;
+%                                                 ax.XTick = [];
+%                                                 ax.YTick = [];
                         
                         % loop via each point of the mitochondria boundary
                         % to detect the closest point where the ray hits ER
@@ -758,7 +767,10 @@ classdef MCcalcController < handle
                         MCcalcExport(objId).raySourcePosY = raySourcePosY;
                         MCcalcExport(objId).mainPerimeterWithoutBorder = mainTotalPerimeter-mainPerimeterBorder;
                         MCcalcExport(objId).mainPerimeterBorder = mainPerimeterBorder;
-                        MCcalcExport(objId).mainPerimeterNoPixels = size(B,1);   % number of pixels in the boundary of the main object
+                        MCcalcExport(objId).mainPerimeterNoPixels = size(B,1);   % Total number of points from where the rays were generated, excluding clipped areas at edges of the image
+                        MCcalcExport(objId).mainMinThicknessUnits = mainMinThicknessUnits;   % average min thickness of the main object
+                        MCcalcExport(objId).mainAreaUnits = mainAreaUnits; % Area of the main object in units
+                        MCcalcExport(objId).mainEccentricity = mainEccentricity; % Eccentricity of the main object
                         MCcalcExport(objId).secondaryHitsNoPixels = size(rayDestinationPosX,1);   % number of pixels found on the secondary object
                         if MCcalcExport(1).contactCutOff > 0
                             MCcalcExport(objId).cutOffContactX = cutOffContactX;     % X coordinate of a contact
@@ -766,7 +778,6 @@ classdef MCcalcController < handle
                             MCcalcExport(objId).contactLength = contactLength;       % length of contacts
                             MCcalcExport(objId).contactMeanDistance = contactMeanDistance;       % mean distance of contacts
                         end
-                        
                         
                         % calculate distribution of distances
                         edges = pixSize*histBinningEdit:pixSize*histBinningEdit:probingRangeInUnits;
@@ -853,9 +864,9 @@ classdef MCcalcController < handle
                             %cla(ax2);
                             
                             bar(ax2, MCcalcExport(objId).DistributionCenters, MCcalcExport(objId).DistributionMinDistNorm);
-                            title(ax2, sprintf('Minimal distances (scaled to %s perimeter)', cell2mat(MCcalcExport(1).mainMaterial)));
-                            xlabel(ax2, sprintf('Distance from %s, in %s', cell2mat(MCcalcExport(1).mainMaterial), units));
-                            ylabel(ax2, sprintf('Occurrence / %s perimeter',cell2mat(MCcalcExport(1).mainMaterial)));
+                            title(ax2, sprintf('Minimal distances (norm. to number of generated rays, %d)', MCcalcExport(objId).mainPerimeterNoPixels));
+                            xlabel(ax2, sprintf('Distance from %s, in %s, step=%f', cell2mat(MCcalcExport(1).mainMaterial), units, pixSize*histBinningEdit));
+                            ylabel(ax2, 'Occurrence / number rays');
                             if saveImages
                                 try
                                     print(fh{figId}, fullfile(outDir, sprintf('ObjId_%04i.png', objId)), '-dpng', outputResolution); % '-r200'
@@ -912,8 +923,8 @@ classdef MCcalcController < handle
             
             figure(1024)
             plot(MCcalcExport(1).DistributionCenters, MCcalcExport(1).DistributionMinDistNormAv);
-            xlabel('Distance');
-            ylabel('Distribution, norm');
+            xlabel(sprintf('Distance from %s, in %s, step=%f', cell2mat(MCcalcExport(1).mainMaterial), units, pixSize*histBinningEdit));
+            ylabel(sprintf('Occurrence/number of rays, averaged for all %s', cell2mat(MCcalcExport(1).mainMaterial)));
             title(sprintf('Averaged results for all points (N=%d)', numel(MCcalcExport)));
             grid;
             
@@ -951,13 +962,16 @@ classdef MCcalcController < handle
             % MCcalcExport(objId).mainPerimeterWithoutBorder - length of the detected main object perimeter, excluding clipped areas at edges of the image
             % MCcalcExport(objId).mainPerimeterBorder - length of the object that is touching the border of the image
             % MCcalcExport(objId).mainPerimeterNoPixels - total number of points from where the rays were generated, excluding clipped areas at edges of the image
+            % MCcalcExport(objId).mainMinThicknessUnits - average min thickness of the main object
+            % MCcalcExport(objId).mainAreaUnits - area of the main object in units
+            % MCcalcExport(objId).mainEccentricity - eccentricity of the main object
             % MCcalcExport(objId).secondaryHitsNoPixels - Total number of points where the rays hit the secondary objects
             % MCcalcExport(objId).DistributionMinDist - distribution of minimal distances
             % MCcalcExport(objId).DistributionMinDistNorm - distribution normalized to MCcalcExport(objId).mainPerimeterNoPixels
             % MCcalcExport(objId).cutOffContactX - an array with X-coordinates of the detected contacts
             % MCcalcExport(objId).cutOffContactY - an array with Y-coordinates of the detected contacts
             % MCcalcExport(objId).contactLength - an array with X-coordinates of the detected contacts
-            % MCcalcExport(objId).contactMeanDistance - an array with Y-coordinates of the detected contacts
+            % MCcalcExport(objId).contactMeanDistance - an array with average distance at the contact between the organelles of interest
             
             % MCcalcExport(1).DistributionCenters - position of the X centers for the distribution
             % MCcalcExport(1).DistributionMinDistNormAv - averaged normalized distribution for each MCcalcExport(1).DistributionCenters
@@ -979,6 +993,7 @@ classdef MCcalcController < handle
             s(5,1) = {['Model filename: ' obj.mibModel.I{obj.mibModel.Id}.modelFilename]};
             s(8,1) = {'ObjId'}; s(8,2) = {'Time'}; s(8,3) = {'Z, index'}; s(8,4) = {'X, px'}; s(8,5) = {'Y, px'}; s(8,6) = {sprintf('PerimeterWithoutBorder, %s', MCcalcExport(1).units)};
             s(8,7) = {sprintf('BorderPerimeter, %s', MCcalcExport(1).units)}; s(8,8) = {'NoPixelsOfPerimeterWithoutBorder'}; s(8,9) = {'NoOfHitPixels'};
+            s(8,10) = {sprintf('MinThickness, %s', MCcalcExport(1).units)}; s(8,11) = {sprintf('Area, %s', MCcalcExport(1).units)};   s(8,12) = {'Eccentricity, 0-circle'}; 
             
             shiftY = 8;
             shiftX = 10;
@@ -992,6 +1007,9 @@ classdef MCcalcController < handle
                 s(shiftY+objId, 7) = num2cell(MCcalcExport(objId).mainPerimeterBorder);
                 s(shiftY+objId, 8) = num2cell(MCcalcExport(objId).mainPerimeterNoPixels);
                 s(shiftY+objId, 9) = num2cell(MCcalcExport(objId).secondaryHitsNoPixels);
+                s(shiftY+objId, 10) = num2cell(MCcalcExport(objId).mainMinThicknessUnits);
+                s(shiftY+objId, 11) = num2cell(MCcalcExport(objId).mainAreaUnits);
+                s(shiftY+objId, 12) = num2cell(MCcalcExport(objId).mainEccentricity);
                 
                 %     shiftX = shiftX + 1;
                 %     if objId==1     % plot DistributionCenters only once, because they are the same for all objects
@@ -1029,7 +1047,7 @@ classdef MCcalcController < handle
             shiftX = 2;
             % plot DistributionCenters only once, because they are the same for all objects
             s(shiftY+1, shiftX) = {['Distance, ' MCcalcExport(1).units]};
-            s(shiftY+1, shiftX+1) = {['Averaged, ' MCcalcExport(1).units]};
+            s(shiftY+1, shiftX+1) = {'Averaged'};
             maxNo = numel(MCcalcExport(1).DistributionCenters);
             s(shiftY+2:shiftY+1+maxNo, shiftX) = num2cell(cat(1, MCcalcExport(1).DistributionCenters));
             s(shiftY+2:shiftY+1+maxNo, shiftX+1) = num2cell(cat(1, MCcalcExport(1).DistributionMinDistNormAv));

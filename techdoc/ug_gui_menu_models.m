@@ -24,6 +24,16 @@
 % be different. <https://youtu.be/r3lpmWyvrJU Click here to see a short demonstration>
 % * *4294967295 materials*, allows to have up to 4294967295 materials in
 % the model, requires twice more memory than 65535.
+% * *Indexed objects->2D objects conn4*, detect all 2D objects (connectivity 4) in all materials of the current model and generate a new model, where each object has an unique index
+% * *Indexed objects->2D objects conn8*, detect all 2D objects (connectivity 8) in all materials of the current model and generate a new model, where each object has an unique index
+% * *Indexed objects->3D objects conn6*, detect all 3D objects (connectivity 6) in all materials of the current model and generate a new model, where each object has an unique index
+% * *Indexed objects->3D objects conn26*, detect all 3D objects (connectivity 26) in all materials of the current model and generate a new model, where each object has an unique index
+%
+% An example of conversion of a standard model into the model with indexed
+% objects:
+%
+% <<images\menuModelsConvertIndexedObjects.png>>
+% 
 % 
 % 
 % *Work with models with more than 255 materials*

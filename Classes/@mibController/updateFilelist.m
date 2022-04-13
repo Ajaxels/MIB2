@@ -28,28 +28,34 @@ end
 fileList = dir(mypath);  % use mibDir to get sorted filenames: r01 R02 r03
 fnames = {fileList.name};
 
-dirs = fnames([fileList.isdir]);  % generate list of directories
-fileList = fnames(~[fileList.isdir]);     % generate structure with files
-[~, ~, fileList_ext] = cellfun(@fileparts, fileList, 'UniformOutput', false);   % get extensions
-
-if strcmp(extention,'all known')
-    if verLessThan('matlab', '8.1') % obj.matlabVersion < 8.1    % strjoin appeared only in R2013a (8.1)
-        extentions(2:end-1) = cellfun(@(x) sprintf('%s|',x),extentions(2:end-1),'UniformOutput', false);
-        extensions = cell2mat(extentions(2:end)');
-    else
-        extensions = strjoin(extentions(2:end)','|');
-    end
-    files = fileList(~cellfun(@isempty, regexpi(fileList_ext, extensions)))';
+if isempty(fnames)
+    % fix of a rare case, when dir returns an empty structure
+    fnames = {'[.]', '[..]'};
 else
-    files = fileList(~cellfun(@isempty, regexpi(fileList_ext, extention)))';
+    dirs = fnames([fileList.isdir]);  % generate list of directories
+    fileList = fnames(~[fileList.isdir]);     % generate structure with files
+    [~, ~, fileList_ext] = cellfun(@fileparts, fileList, 'UniformOutput', false);   % get extensions
+    
+    if strcmp(extention,'all known')
+        if verLessThan('matlab', '8.1') % obj.matlabVersion < 8.1    % strjoin appeared only in R2013a (8.1)
+            extentions(2:end-1) = cellfun(@(x) sprintf('%s|',x),extentions(2:end-1),'UniformOutput', false);
+            extensions = cell2mat(extentions(2:end)');
+        else
+            extensions = strjoin(extentions(2:end)','|');
+        end
+        files = fileList(~cellfun(@isempty, regexpi(fileList_ext, extensions)))';
+    else
+        files = fileList(~cellfun(@isempty, regexpi(fileList_ext, extention)))';
+    end
+    fnames = files;
+    %fnames = sort(files);
+    
+    if ~isempty(dirs)
+        dirs = strcat(repmat({'['}, 1, length(dirs)), dirs, repmat({']'}, 1, length(dirs)));
+        fnames = {dirs{:}, fnames{:}}; %#ok<CCAT>
+    end
 end
-fnames = files;
-%fnames = sort(files);
 
-if ~isempty(dirs)
-    dirs = strcat(repmat({'['}, 1, length(dirs)), dirs, repmat({']'}, 1, length(dirs)));
-    fnames = {dirs{:}, fnames{:}}; %#ok<CCAT>
-end
 if isnan(filename(1))
     obj.mibView.handles.mibFilesListbox.String = fnames;
     obj.mibView.handles.mibFilesListbox.Value = 1;

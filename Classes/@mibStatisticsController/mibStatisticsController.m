@@ -370,6 +370,7 @@ classdef mibStatisticsController < handle
             if numel(slices{3}) == 1
                 colorChannelSelection = slices{3};
                 obj.View.handles.ColorChannel1.Value = colorChannelSelection;
+                obj.BatchOpt.ColorChannel1(1) = obj.BatchOpt.ColorChannel1{2}(colorChannelSelection);
             else
                 obj.View.handles.ColorChannel1.Value = slices{3}(1);
             end

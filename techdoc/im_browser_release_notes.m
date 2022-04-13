@@ -5,6 +5,38 @@
 %
 %
 %
+%% %% 2.82 / 12.04.2022
+%
+% * Added generation of kymographs to Measure tool
+% * Added indexing of objects in a model to generate a new model, where
+% each object has own index (Menu->Models->Convert type->Indexed objects)
+% * Added main window keypress callbacks to Statistics, Measure tools,
+% Image adjustments, Dataset Info, Log, Batch processing, Make movie, Snapshot, Crop, Resample,
+% Bounding box, Image filters, Image arithmetics, MorphOps, Image MorphOps, Graphcut,
+% Stereology, Object separation, Global black-and-white thresholding, Watershed segmentation,
+% Supervoxel classifier, Membrane detection; when these tools are in focus,
+% the key shortcuts of the main window are triggered
+% * Added reading of pixel size from Zeiss SmartSEM and Atlas TIF files
+% * Added automatic extration of metadata from Zeiss Atlas and SmartSEM TIF files (Menu->Plugins->File processing->Image converter: TIF->XML)
+% * Added "Selected files in Directory contents" option into "Load and combine images" option of the Batch processing tool
+% * Added 'ndpi' format to the list of BioFormats extensions
+% * Added new options for faster placing measurements (Menu->Tools->Measure length->Measure tool)
+% * Added Esc key shortcut to stop placing measurements
+% * Added Shift+Alt+RMB key shortcut to pan the image
+% * Fixed loading of the selected series from a container file using BioFormats
+% * Fixed starting of Fiji volume viewer directly from MIB
+% * Fixed usage of Shift+LMB operations
+% * Fixed of delete operation of a single tree in 3D lines
+% * Fixed resize in batch processing mode, when z-value was kept fixed with the percentageXY option
+% * Bug fixes
+% * [DeepMIB] Added 2D DeepLabV3-Resnet18 architecture for semantic segmentation
+% * [DeepMIB] Added selection of the output format as MIB Model or TIF
+% * [DeepMIB] Added possibility to return the trained network with the best validation loss (Training settings, required R2021b or newer)
+% * [DeepMIB] Added indicator of the iteration with the selected network and rendering of training and validation final loss values that were missing on the progress training plot 
+% * [DeepMIB] Fixed probability of generation of an augmented patch
+% * [MCcalc] Added calculation of areas and average min thickness for the main objects
+% * [MCcalc] Added calculation contacts between objects of the same material
+%
 %% %% 2.81 / 14.10.2021
 % * Added contrast adjustment, when 16-bit is converted to 16-bit
 % * Added import of annotations from CSV files (Segmentation table->Annotations->Annotation list->Load

@@ -100,12 +100,13 @@ if exist(filename,'file') && options.t == 1  % for overwrite
     delete(fileNameDelete);
 end
 
+if isempty(options.ChunkSize)   % do not chunk the data
+    options.ChunkSize = [options.height, options.width, 1, options.depth, 1];
+end
+
 % create dataset
 if options.t == 1
     if options.showWaitbar; waitbar(.05,wb,sprintf('%s\nCreate file container...',filename)); end
-    if isempty(options.ChunkSize)   % do not chunk the data
-        options.ChunkSize = [options.height, options.width, 1, options.depth, 1];
-    end
     h5create(filename, options.DatasetName, [options.height, options.width, options.colors, options.depth, options.time], ...
             'Datatype', options.DatasetClass, 'Deflate', options.Deflate, ...
             'ChunkSize', [options.ChunkSize(1) options.ChunkSize(2) 1 options.ChunkSize(3) 1]);

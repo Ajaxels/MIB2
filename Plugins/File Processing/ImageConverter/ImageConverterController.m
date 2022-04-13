@@ -31,7 +31,7 @@ classdef ImageConverterController < handle
     % of the License, or (at your option) any later version.
 	%
 	% Updates
-	%     
+	% 12.01.2022, added extraction of metadata from Zeiss Atlas Fibics and Zeiss SmartSEM TIFs
     
     properties
         mibModel
@@ -90,11 +90,11 @@ classdef ImageConverterController < handle
             obj.BatchOpt.InputDirectory = obj.mibModel.myPath;
             obj.BatchOpt.OutputDirectory = fullfile(obj.mibModel.myPath, 'FileConvert');
             registry = imformats();
-            obj.BatchOpt.InputImageFormatExtension = {'png'};
+            obj.BatchOpt.InputImageFormatExtension = {'tif'};
             obj.BatchOpt.InputImageFormatExtension{2} = [registry.ext];
             obj.BatchOpt.IncludeSubfolders = false;
             obj.BatchOpt.OutputImageFormatExtension = {'tif'};
-            obj.BatchOpt.OutputImageFormatExtension{2} = {'png', 'jpg', 'jpeg', 'tif', 'tiff'};
+            obj.BatchOpt.OutputImageFormatExtension{2} = {'png', 'jpg', 'jpeg', 'tif', 'tiff', 'xml'};
             obj.BatchOpt.DiscardColormap = false;
             obj.BatchOpt.Prefix = '';
             obj.BatchOpt.Suffix = '';
@@ -166,8 +166,15 @@ classdef ImageConverterController < handle
 %               end
 %             end
 
-            obj.View.handles.infoText.Text = sprintf('This tool convert image files from one format to another');
-            
+            infoText = ['Use the tool to convert image files from one format to another<br>' ...
+                '<b>TIF->XML</b> convertion is only implemented for Zeiss Atlas Fibics TIF files<br>' ...
+                'to make sure that the XML files are generated at the same location as images:<br>' ...
+                '<ul style="font-family: Sans-serif; font-size: 9pt;">' ...
+                '<li><em>Incude subfolders</em> is selected</li>' ...
+                '<li><em>Output directory</em> is directing to the parent folder of the one selected as the <em>Input directory</em></li>' ...
+                '<li>add prefix or suffix</li>' ...
+                '</ul>'];
+            obj.View.handles.infoText.HTMLSource = sprintf('<p style="font-family: Sans-serif; font-size: 9pt;">%s</p>', infoText);
 			obj.updateWidgets();
 			% update widgets from the BatchOpt structure
             obj.View = updateGUIFromBatchOpt_Shared(obj.View, obj.BatchOpt);
@@ -235,7 +242,6 @@ classdef ImageConverterController < handle
         function selectDirectory(obj, event)
             % function selectDirectory(obj, event)
             % select input/output directory 
-        
             switch event.Source.Tag
                 case 'SelectInputDirectory'
                     selpath = uigetdir(obj.BatchOpt.InputDirectory, 'Select input directory');
@@ -258,41 +264,95 @@ classdef ImageConverterController < handle
                     event2.Source = obj.View.handles.OutputDirectory;
                     obj.updateBatchOptFromGUI(event2);
             end
-        
+            
+            % the two following commands are fix of sending the DeepMIB
+            % window behind main MIB window
+            drawnow;
+            figure(obj.View.gui);
         end
         
         % ------------------------------------------------------------------
         % % Additional functions and callbacks
         function Convert(obj)
             % start main calculation of the plugin
+            if strcmp(obj.BatchOpt.OutputImageFormatExtension{1}, 'xml')
+                selection = uiconfirm(obj.View.gui, ...
+                    sprintf('!!! Warning !!!\n\nThis mode is only implemented for extraction of metadata from Zeiss Atlas Fibics TIF files to XML documents!'), ...
+                    'Warning!', 'Icon', 'warning');
+                if strcmp(selection, 'Cancel'); return; end
+                
+                % parallel processing is not available as the function
+                % always works with the same temp file
+                obj.BatchOpt.ParallelProcessing = false;
+                obj.View.handles.ParallelProcessing.Value = false;
+            end
+            
             t1 = tic;
-            if obj.BatchOpt.showWaitbar; wb = waitbar(0, sprintf('Making data store\nPlease wait...'), 'Name', 'Image converter'); end
+            wb = [];
+            if obj.BatchOpt.showWaitbar
+                wb = PoolWaitbar(1, sprintf('Making data store\nPlease wait...'), [], 'Image converter');
+            end
             
             if exist(obj.BatchOpt.OutputDirectory, 'dir') == 0
                 mkdir(obj.BatchOpt.OutputDirectory);
             end
             
-            if strcmp(obj.BatchOpt.InputImageFormatExtension{1}, 'png') && obj.BatchOpt.DiscardColormap
-                imgDS = imageDatastore(obj.BatchOpt.InputDirectory, ...
-                    'FileExtensions', lower(['.' obj.BatchOpt.InputImageFormatExtension{1}]), ...
-                    'IncludeSubfolders', obj.BatchOpt.IncludeSubfolders, ...
-                    'ReadFcn', @(fn)ImageConverterController.getPNGwithoutColormap(fn));
-            else
-                imgDS = imageDatastore(obj.BatchOpt.InputDirectory, ...
-                    'FileExtensions', lower(['.' obj.BatchOpt.InputImageFormatExtension{1}]), ...
-                    'IncludeSubfolders', obj.BatchOpt.IncludeSubfolders);
+            try
+                if strcmp(obj.BatchOpt.OutputImageFormatExtension{1}, 'xml')
+                    % use datastore instead of imageDatastore as we are
+                    % interested to process only metadata and reading of
+                    % the whole image is not needed
+                    imgDS = datastore(obj.BatchOpt.InputDirectory, ...
+                        'FileExtensions', lower(['.' obj.BatchOpt.InputImageFormatExtension{1}]), ...
+                        'Type', 'file', ...
+                        'IncludeSubfolders', obj.BatchOpt.IncludeSubfolders, ...
+                        'ReadFcn', @readMetaDataFromFibicsTIFs);
+                else
+                    if strcmp(obj.BatchOpt.InputImageFormatExtension{1}, 'png') && obj.BatchOpt.DiscardColormap
+                        imgDS = imageDatastore(obj.BatchOpt.InputDirectory, ...
+                            'FileExtensions', lower(['.' obj.BatchOpt.InputImageFormatExtension{1}]), ...
+                            'IncludeSubfolders', obj.BatchOpt.IncludeSubfolders, ...
+                            'ReadFcn', @(fn)ImageConverterController.getPNGwithoutColormap(fn));
+                    else
+                        imgDS = imageDatastore(obj.BatchOpt.InputDirectory, ...
+                            'FileExtensions', lower(['.' obj.BatchOpt.InputImageFormatExtension{1}]), ...
+                            'IncludeSubfolders', obj.BatchOpt.IncludeSubfolders);
+                    end
+                end
+            catch err
+                if obj.BatchOpt.showWaitbar; delete(wb); end
+                warndlg(err.message, 'Directory selection error');
+                return;
             end
             
-            if obj.BatchOpt.showWaitbar; waitbar(0.1, wb, sprintf('Processing\nPlease wait...')); end
-            try
-                writeall(imgDS, obj.BatchOpt.OutputDirectory, ...
-                    'OutputFormat', obj.BatchOpt.OutputImageFormatExtension{1},...
-                    'FilenamePrefix', obj.BatchOpt.Prefix, 'FilenameSuffix', obj.BatchOpt.Suffix, ...
-                    'UseParallel', obj.BatchOpt.ParallelProcessing);
-            catch err
-                errordlg(sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), 'Missing files');
-                if obj.BatchOpt.showWaitbar; delete(wb); end
-                return;
+            if obj.BatchOpt.showWaitbar
+                noFiles = numel(imgDS.Files);
+                wb.updateText(sprintf('Processing %d files\nPlease wait...', noFiles));
+                wb.increaseMaxNumberOfIterations(noFiles);
+            end
+
+            if strcmp(obj.BatchOpt.OutputImageFormatExtension{1}, 'xml')
+                try 
+                    writeall(imgDS, obj.BatchOpt.OutputDirectory, ...
+                        'FilenamePrefix', obj.BatchOpt.Prefix, 'FilenameSuffix', obj.BatchOpt.Suffix, ...
+                        'UseParallel', obj.BatchOpt.ParallelProcessing, ...
+                        'WriteFcn', @(data, writeInfo, outputType)extractToXMLMetaFromFibicsTIFs(data, writeInfo, outputType, wb));
+                catch err
+                    if obj.BatchOpt.showWaitbar; delete(wb); end
+                    warndlg(sprintf('%s, \n\nHINT: add filename prefix of suffix and try again', err.message), 'Directory selection error');
+                    return;
+                end
+            else
+                try
+                    writeall(imgDS, obj.BatchOpt.OutputDirectory, ...
+                        'OutputFormat', obj.BatchOpt.OutputImageFormatExtension{1},...
+                        'FilenamePrefix', obj.BatchOpt.Prefix, 'FilenameSuffix', obj.BatchOpt.Suffix, ...
+                        'UseParallel', obj.BatchOpt.ParallelProcessing);
+                catch err
+                    errordlg(sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), 'Missing files');
+                    if obj.BatchOpt.showWaitbar; delete(wb); end
+                    return;
+                end
             end
             if obj.BatchOpt.showWaitbar; delete(wb); end
             

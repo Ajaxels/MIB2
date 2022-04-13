@@ -144,5 +144,5 @@ for k = kIndex
     vol(:, m, l) = img;
     m = m + 1; % next line
   end
-  l = l + 1; %next slice
+  l = l + 1; % next slice
 end

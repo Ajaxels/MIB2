@@ -56,7 +56,7 @@ BatchOpt.Mode{2} = {'Combine datasets', 'Load each N-th dataset', ...
         'Insert into open dataset', 'Combine files as color channels', 'Add as new color channel', ...
         'Add each N-th dataset as new color channel', 'Series-by-series'};
 BatchOpt.DirectoryName = {'Current MIB path'};   % specify the target directory
-BatchOpt.DirectoryName{2} = {'Current MIB path', 'Inherit from Directory/File loop', obj.mibModel.myPath};  % this option forces the directories to be provided from the Dir/File loops
+BatchOpt.DirectoryName{2} = {'Current MIB path', 'Selected files in Directory Contents', 'Inherit from Directory/File loop', obj.mibModel.myPath};  % this option forces the directories to be provided from the Dir/File loops
 filter = obj.mibView.handles.mibFileFilterPopup.String{obj.mibView.handles.mibFileFilterPopup.Value};
 if strcmp(filter, 'all known')
     BatchOpt.FilenameFilter = '*.*';
@@ -106,13 +106,28 @@ if nargin == 3  % batch mode
         % combine fields from input and default structures
         BatchOpt = updateBatchOptCombineFields_Shared(BatchOpt, BatchOptIn);
     end
-    if strcmp(BatchOpt.DirectoryName{1}, 'Current MIB path'); BatchOpt.DirectoryName{1} = obj.mibModel.myPath; end
+    if strcmp(BatchOpt.DirectoryName{1}, 'Current MIB path')
+        BatchOpt.DirectoryName{1} = obj.mibModel.myPath; 
+    end
     if ~isfield(BatchOptIn, 'Filenames')
-        filename = dir(fullfile(BatchOpt.DirectoryName{1}, BatchOpt.FilenameFilter));   % get list of files
-        filename2 = arrayfun(@(filename) fullfile(BatchOpt.DirectoryName{1}, filename.name), filename, 'UniformOutput', false);  % generate full paths
-        notDirsIndices = arrayfun(@(filename2) ~isdir(cell2mat(filename2)), filename2);     % get indices of not directories
-        BatchOpt.Filenames = filename2(notDirsIndices);     % generate full path file names
-        %filename = {filename(notDirsIndices).name}';
+        if ~strcmp(BatchOpt.DirectoryName{1}, 'Selected files in Directory Contents')
+            filename = dir(fullfile(BatchOpt.DirectoryName{1}, BatchOpt.FilenameFilter));   % get list of files
+            filename2 = arrayfun(@(filename) fullfile(BatchOpt.DirectoryName{1}, filename.name), filename, 'UniformOutput', false);  % generate full paths
+            notDirsIndices = arrayfun(@(filename2) ~isdir(cell2mat(filename2)), filename2);     % get indices of not directories
+            BatchOpt.Filenames = filename2(notDirsIndices);     % generate full path file names
+            %filename = {filename(notDirsIndices).name}';
+        else
+            selectedIndices = obj.mibView.handles.mibFilesListbox.Value;
+            % remove accidentally selected top two rows
+            selectedIndices(selectedIndices==1) = [];   
+            selectedIndices(selectedIndices==2) = [];
+            if isempty(selectedIndices)
+                errordlg(sprintf('!!! Error !!!\n\nPlease select files in the Directory contents panel and try again!'), 'No files selected!');
+                return;
+            end
+            filename = obj.mibView.handles.mibFilesListbox.String(selectedIndices);
+            BatchOpt.Filenames = arrayfun(@(filename) fullfile(obj.mibModel.myPath, filename), filename, 'UniformOutput', true);  % generate full paths
+        end
     else
         BatchOpt.Filenames = BatchOptIn.Filenames{1};   % convert from cell with cell array to cell array
         if ischar(BatchOpt.Filenames); BatchOpt.Filenames = {BatchOpt.Filenames}; end
@@ -187,7 +202,9 @@ switch BatchOpt.Mode{1}
         if ~isempty(BatchOpt.BioFormatsIndices)
             options.BioFormatsIndices = str2num(BatchOpt.BioFormatsIndices);
         else
-            options.BioFormatsIndices = BatchOpt.BioFormatsIndices;
+            if batchModeSwitch == 1    % batch mode is used
+                options.BioFormatsIndices = BatchOpt.BioFormatsIndices;
+            end
         end
         
         if ~strcmp(BatchOpt.Mode{1}, 'Combine files as color channels') 

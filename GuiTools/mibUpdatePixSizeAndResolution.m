@@ -66,7 +66,7 @@ if bb_info_exist > 0   % use information from the BoundingBox parameter for pixe
     pixSize.units = 'um';
     resolution = mibCalculateResolution(pixSize);
 else
-    if ~isKey(img_info,'XResolution')
+    if ~isKey(img_info,'XResolution') || nargin == 2
         resolution = mibCalculateResolution(pixSize);
     else
         if ischar(img_info('XResolution'))  % this may come from ome.tiff when loading with bio-formats, but in practice it is not resolution, but pixel size

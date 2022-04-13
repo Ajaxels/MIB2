@@ -245,6 +245,7 @@ classdef mibPreferencesAppController < handle
                 obj.View.handles.bm3dInstallationPath.Value = char(obj.preferences.ExternalDirs.bm3dInstallationPath);
                 obj.View.handles.bm4dInstallationPath.Value = char(obj.preferences.ExternalDirs.bm4dInstallationPath);
                 obj.View.handles.BioFormatsMemoizerMemoDir.Value = char(obj.preferences.ExternalDirs.BioFormatsMemoizerMemoDir);
+                obj.View.handles.DeepMIBDir.Value = char(obj.preferences.ExternalDirs.DeepMIBDir);
                 obj.renderedPanels(4) = 1; 
             end
 
@@ -1103,6 +1104,8 @@ classdef mibPreferencesAppController < handle
                     field_name = 'bm4dInstallationPath';
                 case 'MemoizerDirSelectBtn'
                     field_name = 'BioFormatsMemoizerMemoDir';
+                case 'DeepMIBDirSelectBtn'
+                    field_name = 'DeepMIBDir';
             end
             
             folder_name = uigetdir(obj.preferences.ExternalDirs.(field_name), 'Select directory');

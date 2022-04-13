@@ -151,3 +151,23 @@ global mibPath;
 web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_tools_random_forest.html'), '-helpbrowser');
 end
 
+
+% --- Executes on key press with focus on mibMembraneDetectionGUI and none of its controls.
+function mibMembraneDetectionGUI_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to mibMembraneDetectionGUI (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+% call key press callback of MIB main window
+% alternative solution is in
+% mibMeasureToolController.mibMeasureToolController or 
+% mibImageFiltersGUI.mlapp->FigureKeyPress
+eventData = struct();
+if isempty(eventdata.Character); return; end    % when only modifiers are pressed do not trigger the shortcuts
+eventData.eventdata = eventdata;
+eventData = ToggleEventData(eventData);
+notify(handles.winController.mibModel, 'keyPressEvent', eventData);
+end

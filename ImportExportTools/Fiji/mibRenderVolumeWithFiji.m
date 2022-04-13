@@ -46,11 +46,14 @@ end
 
 %% Make sure Java3D is installed
 % If not, try to install it
-
-if ~IsJava3DInstalled(true)
-     msgbox(sprintf('Java3D is not installed'),...
-        'Java error!','error');
-    return;
+try
+    if ~IsJava3DInstalled(true)
+         msgbox(sprintf('Java3D is not installed'),...
+            'Java error!','error');
+        return;
+    end
+catch err
+    % skip, the new version seems to work fine without this check
 end
 
 prompt = {'Reduce the volume down to, max width pixels [no volume reduction when 0]?',...
