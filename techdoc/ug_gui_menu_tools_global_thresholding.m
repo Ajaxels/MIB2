@@ -16,6 +16,8 @@
 % 
 %% CONCAVITY algorithm
 % 
+% [dtls][smry] *Details of CONCAVITY algorithm* [/smry]
+%
 % * If the image does not have distinct objects and background, the MINIMUM and INTERMODES 
 % algorithms are not suitable.
 % * A good threshold may be found at the shoulder of the histogram.
@@ -33,8 +35,13 @@
 % *Acknowledgements* 
 % Based on the <https://github.com/carandraug/histthresh HistThresh Toolbox> by Antti Niemist&ouml;, Tampere University of Technology, Finland
 %
+% [/dtls]
+% [br8]
+%
 %% ENTROPY algorithm
 % 
+% [dtls][smry] *Details of ENTROPY algorithm* [/smry]
+%
 % * One of several maximum entropy algorithms
 % * Divides the histogram of the image into two probability distributions, one representing the
 % objects and one representing the background
@@ -57,8 +64,13 @@
 % *Acknowledgements* 
 % Based on the <https://github.com/carandraug/histthresh HistThresh Toolbox> by Antti Niemist&ouml;, Tampere University of Technology, Finland
 %
+% [/dtls]
+% [br8]
+%
 %% INTERMEANS ITER algorithm
 % 
+% [dtls][smry] *Details of INTERMEANS ITER algorithm* [/smry]
+%
 % * An iterative algorithm that gives similar results as the OTSU algorithm
 % * Computationally less intensive than OTSU
 % * The algorithm starts with an initial guess for |t|
@@ -80,9 +92,14 @@
 % Based on the <https://github.com/carandraug/histthresh HistThresh Toolbox> by Antti Niemist&ouml;, Tampere University of Technology, Finland
 %
 %
+% [/dtls]
+% [br8]
+%
 %
 %% INTERMODES algorithm
 % 
+% [dtls][smry] *Details of INTERMODES algorithm* [/smry]
+%
 % * An alternative to MINIMUM
 % * Assumes a bimodal histogram
 % * Find the two peaks (local maxima) |yj| and |yk|
@@ -98,8 +115,13 @@
 % *Acknowledgements* 
 % Based on the <https://github.com/carandraug/histthresh HistThresh Toolbox> by Antti Niemist&ouml;, Tampere University of Technology, Finland
 %
+% [/dtls]
+% [br8]
+%
 %% MEAN algorithm
 % 
+% [dtls][smry] *Details of MEAN algorithm* [/smry]
+%
 % * Similar to the MEDIAN algorithm
 % * Instead of median, set |t| such that it is the integer part of the mean of all pixel values
 % * With the partial sum notation, |t = Bn/An|
@@ -108,10 +130,13 @@
 % *Acknowledgements* 
 % Based on the <https://github.com/carandraug/histthresh HistThresh Toolbox> by Antti Niemist&ouml;, Tampere University of Technology, Finland
 %
-%
+% [/dtls]
+% [br8]
 %
 %% MEDIAN and PERCENTILE algorithms
 % 
+% [dtls][smry] *Details of MEDIAN and PERCENTILE algorithm* [/smry]
+%
 % * Assumes that the percentage of object pixels is known
 % * Set |t| to the highest gray-level which maps at least |(100 - p)%| of the pixels into the object category
 % * Not suitable if the object area is not know
@@ -126,9 +151,13 @@
 % *Acknowledgements* 
 % Based on the <https://github.com/carandraug/histthresh HistThresh Toolbox> by Antti Niemist&ouml;, Tampere University of Technology, Finland
 %
+% [/dtls]
+% [br8]
 %
 %% MINERROR algorithm
 % 
+% [dtls][smry] *Details of MINERROR algorithm* [/smry]
+%
 % * Similar to the OTSU algorithm
 % * Views the histogram as an estimate of the probability density function of the mixture
 % population (objects and background)
@@ -151,9 +180,13 @@
 % *Acknowledgements* 
 % Based on the <https://github.com/carandraug/histthresh HistThresh Toolbox> by Antti Niemist&ouml;, Tampere University of Technology, Finland
 %
+% [/dtls]
+% [br8]
 %
 %% MINERROR ITER algorithm
 % 
+% [dtls][smry] *Details of MINERROR ITER algorithm* [/smry]
+%
 % * The iterative version of the MINERROR algorithm is computationally less intensive
 % * Find initial value for |t| using MEAN
 % * The integer part of the larger solution provides a new value |t|:
@@ -176,9 +209,13 @@
 % *Acknowledgements* 
 % Based on the <https://github.com/carandraug/histthresh HistThresh Toolbox> by Antti Niemist&ouml;, Tampere University of Technology, Finland
 %
+% [/dtls]
+% [br8]
 %
 %% MINIMUM algorithm
 % 
+% [dtls][smry] *Details of MINIMUM algorithm* [/smry]
+%
 % * Assumes a bimodal histogram
 % * The histogram needs to be smoothed (using the three-point mean filter) iteratively until the
 % histogram has only two local maxima
@@ -193,9 +230,13 @@
 % *Acknowledgements* 
 % Based on the <https://github.com/carandraug/histthresh HistThresh Toolbox> by Antti Niemist&ouml;, Tampere University of Technology, Finland
 %
+% [/dtls]
+% [br8]
 %
 %% MOMENTS algorithm
 % 
+% [dtls][smry] *Details of MOMENTS algorithm* [/smry]
+%
 % * Choose |t| such that the binary image has the same ?rst three moments as the gray-level image
 % * his is achieved by setting |t| such that |At/An| is the value of the fraction nearest to |x0|, where
 %
@@ -212,9 +253,13 @@
 % *Acknowledgements* 
 % Based on the <https://github.com/carandraug/histthresh HistThresh Toolbox> by Antti Niemist&ouml;, Tampere University of Technology, Finland
 %
+% [/dtls]
+% [br8]
 %
 %% OTSU algorithm
 % 
+% [dtls][smry] *Details of OTSU algorithm* [/smry]
+%
 % * MATLAB implementation of the Otsu algorithm
 % * The |t| value is calculated using |graythresh|
 %
@@ -222,6 +267,8 @@
 %
 % * Otsu, N., "A Threshold Selection Method from Gray-Level Histograms," IEEE Transactions on Systems, Man, and Cybernetics, Vol. 9, No. 1, 1979, pp. 62-66.
 %
+% [/dtls]
+% [br8]
 %
 %% Programming tips
 % This function is compatible with the batch scripting.
@@ -232,6 +279,8 @@
 % * use mibController.startController function, where the 3rd input is the
 % defined structure with parameters
 %
+%
+% [dtls][smry] *Example of usage* [/smry]
 %
 % For example,
 % 
@@ -245,4 +294,48 @@
 %   BatchOpt.Orientation = 4;      % [optional], dataset orientation
 %   obj.startController('mibHistThresController', [], BatchOpt);  % start the thresholding
 %
+%
+% [/dtls]
+% [br8]
+%
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools*>
+%
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

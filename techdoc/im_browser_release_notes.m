@@ -5,7 +5,42 @@
 %
 %
 %
-%% %% 2.82 / 12.04.2022
+%% 2.83 / 19.06.2022 (blockedImage and 2D patch-wise)
+%
+% [dtls][smry] *2.83 / 19.06.2022 (blockedImage and 2D patch-wise)* [/smry]
+% 
+% * Added generation of image 2D and 3D patches around annotation labels ([class.code]Annotation list->Crop out patches around selected annotations[/class])
+% * Added possibility to load part of the dataset for TIF files ([class.code]right click over selected filenames->Load part of the dataset (AM and TIF)[/class])
+% * Added Info field to measurements to supplement them with additional information ([class.code]Menu->Tools->Measure length->Measure tool[/class])
+% * Added generation of pyramidal TIF files and batch processing of BioFormat files ([class.code]Menu->Plugins->File processing->Image converter[/class])
+% * Added the "show prompt" option to the Annotations tool ([class.code]Segmentation panel->Annotations->show prompt[/class])
+% * Added [InheritLastDIR] tag to inherit directory name from DIR LOOP when saving images using the Protocol organizer ([class.code]Menu->File->Batch processing->DIRECTORY LOOP START[/class])
+% * Added "end" tag to the crop operation for the Protocol organizer ([class.code]Menu->File->Batch processing->Crop dataset[/class])
+% * Added Drag-and-drop model files to the Segmentation table to load them
+% * Correction of pixel size for pyramidal formats when levels are not multiplied by factor of 2
+% * Fixed loading of partial AM files, when step was set to 1
+% * Fixed loading of TIF files with YCbCr color space
+% * Updated Bio-Formats to 6.10.0 
+% * [DeepMIB] Rearranged Architecture into Workflow and Architecture parameters ([class.code]DeepMIB->Network panel[/class])
+% * [DeepMIB] Optimized to work without preprocessing of images
+% * [DeepMIB] Added blockedImage mode and set it as default processing engine ([class.code]DeepMIB->Predict->Prediction engine[/class])
+% * [DeepMIB] Added dynamic masking for the blockedImage processing mode ([class.code]DeepMIB->Predict->Dynamic masking[/class])
+% * [DeepMIB] Added 2D Patch-wise mode to process images in patches ([class.code]DeepMIB->Network->Workflow->2D Patch-wise[/class])
+% * [DeepMIB] Added Resnet18, Resnet50, Resnet101, Xception networks for the patch-wise mode
+% * [DeepMIB] Added alternative arrangement of files for 2D Patch-wise mode where each class is stored in its own directory
+% * [DeepMIB] Added "Load models" to the Options tab to skip loading of images when they are already preloaded ([class.code]DeepMIB->Predict->Load models[/class])
+% * [DeepMIB] Added possibility to specify frequency of saving checkpoint networks (R2022a or newer), ([class.code]DeepMIB->Train->Save checkpoint networks[/class])
+% * [DeepMIB] Added percentage parameter to the overlapping tiles mode ([class.code]DeepMIB->Predict->Overlapping tiles->%%[/class])
+% * [DeepMIB] Added possibility to select a single augmentation to preview ([class.code]DeepMIB->Train->Augmentations->Preview[/class])
+% * [DeepMIB] Added new 3D augmentations reaching 18 operations ([class.code]DeepMIB->Train->Augmentations->3D[/class])
+% * [DeepMIB] Added DeepLabV3-Resnet50 to 2D semantic segmentation (MATLAB MIB only)
+% * [DeepMIB] Fixed preview of some patches and contrast stretch in Activation Explorer
+%
+% [/dtls]
+%
+%% 2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)
+%
+% [dtls][smry] *2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)* [/smry]
 %
 % * Added generation of kymographs to Measure tool
 % * Added indexing of objects in a model to generate a new model, where
@@ -17,7 +52,7 @@
 % Supervoxel classifier, Membrane detection; when these tools are in focus,
 % the key shortcuts of the main window are triggered
 % * Added reading of pixel size from Zeiss SmartSEM and Atlas TIF files
-% * Added automatic extration of metadata from Zeiss Atlas and SmartSEM TIF files (Menu->Plugins->File processing->Image converter: TIF->XML)
+% * Added automatic extraction of metadata from Zeiss Atlas and SmartSEM TIF files (Menu->Plugins->File processing->Image converter: TIF->XML)
 % * Added "Selected files in Directory contents" option into "Load and combine images" option of the Batch processing tool
 % * Added 'ndpi' format to the list of BioFormats extensions
 % * Added new options for faster placing measurements (Menu->Tools->Measure length->Measure tool)
@@ -37,7 +72,12 @@
 % * [MCcalc] Added calculation of areas and average min thickness for the main objects
 % * [MCcalc] Added calculation contacts between objects of the same material
 %
-%% %% 2.81 / 14.10.2021
+% [/dtls]
+%
+%% 2.81 / 14.10.2021
+%
+% [dtls][smry] *2.81 / 14.10.2021* [/smry]
+%
 % * Added contrast adjustment, when 16-bit is converted to 16-bit
 % * Added import of annotations from CSV files (Segmentation table->Annotations->Annotation list->Load
 % * Added conversion of annotations to the mask layer (Annotations->Annotation list->List of annotations->Convert selected annotations to Mask)
@@ -50,7 +90,12 @@
 % * [DeepMIB] added counting of labels in model files (Options->Count labels)
 % * [DeepMIB] fixed bug with selection of 'Multi GPU' for prediction
 %
+% [/dtls]
+%
 %% 2.802 / 01.06.2021
+%
+% [dtls][smry] *2.802 / 01.06.2021* [/smry]
+%
 % * Added HDD mode to align datasets that can not be fit into memory (Menu->Dataset->Alignment tool->HDD)
 % * Added new preference dialog (Menu->File->Preferences)
 % * Added exclusion of Stretch and Shear peaks into the automatic alignment using image features
@@ -97,7 +142,11 @@
 % * [DeepMIB] Updated training progress plot and added configuration parameters
 % * [DeepMIB] Improved performance of image preprocessing for AmiraMesh
 %
+% [/dtls]
+%
 %% 2.70 / 18.05.2020
+%
+% [dtls][smry] *2.70 / 18.05.2020* [/smry]
 % 
 % * Added Deep MIB for training and prediction of datasets using
 % deep convolutional networks
@@ -107,21 +156,33 @@
 % tool
 % * Fixed issues with importing of chopped cropped datasets
 %
+% [/dtls]
+%
 %% 2.66 / 25.04.2020
+%
+% [dtls][smry] *2.66 / 25.04.2020* [/smry]
 %
 % * Added direct conversion from Mask to Model layer (Segmentation
 % panel->Material table->right click->Mask to Material)
 % * Added drag-and-drop for opening of *.model files by dragging them from
 % elsewhere to the Image View panel
 %
+% [/dtls]
+%
 %% 2.651 / 25.04.2020
+%
+% [dtls][smry] *2.651 / 25.04.2020* [/smry]
 %
 % * Added smoothing of multiple materials of models via batch processing
 % * Fixed definition of the starting point for the Membrane ClickTracker tool
 % * Fixed setData method for specific materials of the model
 %
+% [/dtls]
+%
 %% 2.65 / 23.03.2020
 % 
+% [dtls][smry] *2.65 / 23.03.2020* [/smry]
+%
 % * Added Drag and drop files into the Image View panel 
 % * Added dialog with 30 new image filters (Menu->Image->Image filters...)
 % * Added dataset alignment using AMST: Align to Median Smoothed Template (Menu->Dataset->Alignment)
@@ -146,8 +207,11 @@
 % * Plugins: Spacial Control Points to generate a set of random points over the masked area (Menu->Plugins->Plasmodesmata->SpatialControlPoints)
 % * Plugins: Cell Wall Thickness to calculate thickness of cell walls (Menu->Plugins->Plasmodesmata->Cell wall thickness)
 %
+% [/dtls]
 %
 %% 2.601 / 04.11.2019
+%
+% [dtls][smry] *2.601 / 04.11.2019* [/smry]
 %
 % * The deployed version of MIB comes with R2019b instead of R2017a
 % * Added the Batch mode for repetitive processing of images (Menu->File->Batch processing)
@@ -173,8 +237,12 @@
 % * [2.601] Bug fixes
 % * [2.601] Added export of annotations to CSV format
 %
+% [/dtls]
 %
 %% 2.51 / 13.03.2019
+%
+% [dtls][smry] *2.51 / 13.03.2019* [/smry]
+%
 % * Added methods for automatic global black-and-white thresholding (|Menu->Tools->Semi-automatic segmentation->Global thresholding|)
 % * Added selection of materials for rendering of MATLAB Isosurface models (|Menu->Models->Render model->MATLAB isosurface|)
 % * Added calculation of images with extended depth-of-field focus stacking
@@ -196,12 +264,22 @@
 % * Fixed pixel size when combining 2D images with different dimensions
 % * Fixed adding icons to buttons when MIB is installed in network path that starts from  "//"
 %
+% [/dtls]
+%
 %% 2.501 / 21.12.2018
+%
+% [dtls][smry] *2.501 / 21.12.2018* [/smry]
+%
 % * Added swap slices option (Menu->Dataset->Slice->Swap slices)
 % * Fixed rendering of combined image in the split color channel mode with Lut enabled in Snapshot and Make movie tools
 % * Fixed Copy Slice for the Insert mode
 %
+% [/dtls]
+%
 %% 2.50 / 17.12.2018
+%
+% [dtls][smry] *2.50 / 17.12.2018* [/smry]
+%
 % * Added hardware accelerated 3D volume rendering (Menu->File->Render
 % volume->MIB rendering). The volume rendering can be used also for making
 % snapshots and animations. Requires MATLAB R2018b or newer!
@@ -232,7 +310,12 @@
 % * Fixed of cropping of the selection layer for models with more than 63 materials
 % * Fixed alignment for models with more than 63 materials
 %
+% [/dtls]
+%
 %% 2.40 / 31.08.2018
+%
+% [dtls][smry] *2.40 / 31.08.2018* [/smry]
+%
 % * Added virtual mode for datasets that are compatible with the BioFormats
 % library or in HDF5 format
 % * Added shift of annotations when inserting a slice
@@ -243,7 +326,12 @@
 % * Updated BioFormats to 5.9.1
 % * Bug fixes
 %
+% [/dtls]
+%
 %% 2.302 / 18.05.2018 (03.07.2018)
+%
+% [dtls][smry] *2.302 / 18.05.2018 (03.07.2018)* [/smry]
+%
 % * Added Lines3D class for 3D measurements and generation of 3D skeletons and graphs 
 % * Added the Image arithmetics dialog (|Menu->Image->Tools for images->Image arithmetics...|)
 % * Added the Rename and Shuffle tool (|Menu->File->Rename and Shuffle|) to
@@ -267,7 +355,12 @@
 % * [2.302] Fixed export of 3D lines to Amira Mesh format
 % * [2.302] Fixed recalculation of pixels into the physical units when initializing 3D lines programically
 %
+% [/dtls]
+%
 %% 2.22 / 16.03.2018
+%
+% [dtls][smry] *2.22 / 16.03.2018* [/smry]
+%
 % * Added value field for the annotations, thus each annotation can be weighted based on its value
 % * Added possibility to do deep neural network denoising on GPUs with
 % small memory, use the |GPU block| parameter in |Image filters->DNN Denoise|
@@ -289,21 +382,36 @@
 % * Fix callback when selecting color channels in the Selection panel
 % * Fix of opening of AmiraMesh files with extended headers
 %
+% [/dtls]
+%
 %% 2.211 / 21.12.2017
+%
+% [dtls][smry] *2.211 / 21.12.2017* [/smry]
+%
 % * Updated TripleAreaIntensity plugin
 % * Fix, the |contains| function replaced with ismember for compatibility with MATLAB 2014b-2016a
 % * Fix of lost key press callbacks after modification of the segmentation table
 % * Fix of loading hdf5 datasets with time dimension
 % * Few other minor bug fixes
 % 
+% [/dtls]
+%
 %% 2.21 / 04.12.2017
+%
+% [dtls][smry] *2.21 / 04.12.2017* [/smry]
+%
 % * Added model with 4294967295 materials for tests
 % * Improved object picker for models with 65535 materials
 % * Fix compiling of certain function using the |-compatibleArrayDims| switch to be compatible with the new MATLAB API
 % * Fix of 'Fix selection to material' switch for models with more than 255 materials
 % * Fix connection to Omero for the deployed version
 %
-%% 2.20 14.11.2017
+% [/dtls]
+%
+%% 2.20 / 14.11.2017
+%
+% [dtls][smry] *2.20 / 14.11.2017* [/smry]
+%
 % * Added a new 3D Grid mode to the Graphcut tool; when used the fast interactive performance can be achieved even with very large datasets
 % * Added denoise of image using deep neural network (|Image Filters
 % Panel->Filter->DNN Denoise|), requires MATLAB R2017b or newer and Neural Network Toolbox
@@ -328,7 +436,11 @@
 % * [Programming] moved mibController.connImaris to mibModel.connImaris
 % * [Programming] updated syntax of mibImage.clearMask
 %
-%% 2.12 18.09.2017
+% [/dtls]
+%
+%% 2.12 / 18.09.2017
+%
+% [dtls][smry] *2.12 / 18.09.2017* [/smry]
 %
 % * Added a new tool to detect a frame around images (Menu->Image->Tools
 % for images->Select image frame...)
@@ -360,7 +472,11 @@
 % * Fixed import of annotations that are in a wrong orientation
 % * Fixed export of TIF images in the sequential mode
 %
-%% 2.1 01.06.2017
+% [/dtls]
+%
+%% 2.10 / 01.06.2017
+%
+% [dtls][smry] *2.10 / 01.06.2017* [/smry]
 %
 % * Added materials with 65535 maximal number of materials
 % * Added export to Excel for non-PC platforms via <https://se.mathworks.com/matlabcentral/fileexchange/38591-xlwrite--generate-xls-x--files-without-excel-on-mac-linux-win xlwrite: Generate XLS(X) files without Excel on Mac/Linux/Win>
@@ -382,7 +498,11 @@
 % * Fixed singleton running of MIB, now it is possible to have several
 % instances of MIB run in parallel
 %
-%% 2.01 11.04.2017
+% [/dtls]
+%
+%% 2.01 / 11.04.2017
+%
+% [dtls][smry] *2.01 / 11.04.2017* [/smry]
 %
 % * Added selection of the model type to Menu->Models->Type and removed it
 % from the Preferences dialog
@@ -394,7 +514,11 @@
 % * Added calculation of annotation labels occurrence in the Stereology tool
 % * Moved mibView.disableSegmentation to mibModel.disableSegmentation
 %
-%% 2.000 20.03.2017 Official Release, 2.002 (02.04.2017)
+% [/dtls]
+%
+%% 2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)
+%
+% [dtls][smry] *2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)* [/smry]
 %
 % * With release 2.0 MIB has been rewritten to utilize Controller-View-Model
 % architecture, which brings stability and ease of future development.
@@ -409,4 +533,57 @@
 % * Renamed Area to Volume for the Get Statistics tool for 3D objects (ver. 2.002)
 % * Big fixes (ver. 2.001, 2.002)
 %
+% [/dtls]
+%
 % *Back to* <im_browser_product_page.html *Index*>
+%
+%
+% [cssClasses]
+% .dropdown { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	border-radius: 0.2em; 
+% 	background-color: #fff; 
+% 	background-color: #e0f5ff; 
+% 	background-color: #e8f5e8; 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

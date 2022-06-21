@@ -357,6 +357,13 @@
 %   <td>2.22-</td>
 % </tr>
 % <tr style="">
+%   <td style="font-weight: bold">Prettify MATLAB html</td>
+%   <td>Harry Dymond, University of Bristol</td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">via MATLAB Exchange</a></td>
+%   <td>ModifiedBSD,<br>2020</td>
+%   <td>2.83-</td>
+% </tr>
+% <tr style="">
 %   <td style="font-weight: bold">Projects:MATLABSlicerExampleModule, to read NRRD format</td>
 %   <td>John Melonakos</td>
 %   <td><a href="http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule">web link</a></td>

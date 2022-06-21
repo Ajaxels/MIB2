@@ -1,13 +1,12 @@
 
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head>
+<!DOCTYPE html>
+<html lang="en"><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser Release Notes</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-12"><meta name="DC.source" content="im_browser_release_notes.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>Microscopy Image Browser Release Notes</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="im_browser_release_notes.m"><style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -36,13 +35,13 @@ ol li ol li { list-style-type:lower-alpha; }
 ol li ul { padding-top:7px; }
 ol li ul li { list-style:square; }
 
-.content { font-size:1.2em; line-height:140%; padding: 20px; }
+.content { font-size:1.2em; line-height:160%; padding: 20px; }
 
-pre, code { font-size:12px; }
-tt { font-size: 1.2em; }
-pre { margin:0px 0px 20px; }
+pre { font-size:12px; }
+code { font-size: 1.15em; }
+pre { margin:0px 0px 15px; overflow-x:auto; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
-pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 15px; color:#4c4c4c; }
 pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
@@ -66,8 +65,989 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
+.dropdown {   font-family: monospace; 	border: 1px solid #aaa; 	border-radius: 0.2em; 	background-color: #fff; 	background-color: #e0f5ff; 	background-color: #e8f5e8; 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.h3 { color: #E65100; font-size: 12px; font-weight: bold; }
+.code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
-  </style></head><body><div class="content"><h1>Microscopy Image Browser Release Notes</h1><!--introduction--><p><a href="im_browser_product_page.html">Back to Index</a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">%% 2.82 / 12.04.2022</a></li><li><a href="#2">%% 2.81 / 14.10.2021</a></li><li><a href="#3">2.802 / 01.06.2021</a></li><li><a href="#4">2.70 / 18.05.2020</a></li><li><a href="#5">2.66 / 25.04.2020</a></li><li><a href="#6">2.651 / 25.04.2020</a></li><li><a href="#7">2.65 / 23.03.2020</a></li><li><a href="#8">2.601 / 04.11.2019</a></li><li><a href="#9">2.51 / 13.03.2019</a></li><li><a href="#10">2.501 / 21.12.2018</a></li><li><a href="#11">2.50 / 17.12.2018</a></li><li><a href="#12">2.40 / 31.08.2018</a></li><li><a href="#13">2.302 / 18.05.2018 (03.07.2018)</a></li><li><a href="#14">2.22 / 16.03.2018</a></li><li><a href="#15">2.211 / 21.12.2017</a></li><li><a href="#16">2.21 / 04.12.2017</a></li><li><a href="#17">2.20 14.11.2017</a></li><li><a href="#18">2.12 18.09.2017</a></li><li><a href="#19">2.1 01.06.2017</a></li><li><a href="#20">2.01 11.04.2017</a></li><li><a href="#21">2.000 20.03.2017 Official Release, 2.002 (02.04.2017)</a></li></ul></div><h2 id="1">%% 2.82 / 12.04.2022</h2><div><ul><li>Added generation of kymographs to Measure tool</li><li>Added indexing of objects in a model to generate a new model, where each object has own index (Menu-&gt;Models-&gt;Convert type-&gt;Indexed objects)</li><li>Added main window keypress callbacks to Statistics, Measure tools, Image adjustments, Dataset Info, Log, Batch processing, Make movie, Snapshot, Crop, Resample, Bounding box, Image filters, Image arithmetics, MorphOps, Image MorphOps, Graphcut, Stereology, Object separation, Global black-and-white thresholding, Watershed segmentation, Supervoxel classifier, Membrane detection; when these tools are in focus, the key shortcuts of the main window are triggered</li><li>Added reading of pixel size from Zeiss SmartSEM and Atlas TIF files</li><li>Added automatic extration of metadata from Zeiss Atlas and SmartSEM TIF files (Menu-&gt;Plugins-&gt;File processing-&gt;Image converter: TIF-&gt;XML)</li><li>Added "Selected files in Directory contents" option into "Load and combine images" option of the Batch processing tool</li><li>Added 'ndpi' format to the list of BioFormats extensions</li><li>Added new options for faster placing measurements (Menu-&gt;Tools-&gt;Measure length-&gt;Measure tool)</li><li>Added Esc key shortcut to stop placing measurements</li><li>Added Shift+Alt+RMB key shortcut to pan the image</li><li>Fixed loading of the selected series from a container file using BioFormats</li><li>Fixed starting of Fiji volume viewer directly from MIB</li><li>Fixed usage of Shift+LMB operations</li><li>Fixed of delete operation of a single tree in 3D lines</li><li>Fixed resize in batch processing mode, when z-value was kept fixed with the percentageXY option</li><li>Bug fixes</li><li>[DeepMIB] Added 2D DeepLabV3-Resnet18 architecture for semantic segmentation</li><li>[DeepMIB] Added selection of the output format as MIB Model or TIF</li><li>[DeepMIB] Added possibility to return the trained network with the best validation loss (Training settings, required R2021b or newer)</li><li>[DeepMIB] Added indicator of the iteration with the selected network and rendering of training and validation final loss values that were missing on the progress training plot</li><li>[DeepMIB] Fixed probability of generation of an augmented patch</li><li>[MCcalc] Added calculation of areas and average min thickness for the main objects</li><li>[MCcalc] Added calculation contacts between objects of the same material</li></ul></div><h2 id="2">%% 2.81 / 14.10.2021</h2><div><ul><li>Added contrast adjustment, when 16-bit is converted to 16-bit</li><li>Added import of annotations from CSV files (Segmentation table-&gt;Annotations-&gt;Annotation list-&gt;Load</li><li>Added conversion of annotations to the mask layer (Annotations-&gt;Annotation list-&gt;List of annotations-&gt;Convert selected annotations to Mask)</li><li>Added save of models to mibCat categorical format (Menu-&gt;Models-&gt;Save model as)</li><li>Added automatic closing of all windows in Fiji when stopping FijiConnect</li><li>Added information about "Call4Help" sessions (Menu-&gt;Help-&gt;Call for help)</li><li>Fixed a bug with generation of grids in the Stereology tool</li><li>Fixed automatic feature based alignment, when the Selection is disabled</li><li>Updated Bio-Formats to 6.7.0</li><li>[DeepMIB] added counting of labels in model files (Options-&gt;Count labels)</li><li>[DeepMIB] fixed bug with selection of 'Multi GPU' for prediction</li></ul></div><h2 id="3">2.802 / 01.06.2021</h2><div><ul><li>Added HDD mode to align datasets that can not be fit into memory (Menu-&gt;Dataset-&gt;Alignment tool-&gt;HDD)</li><li>Added new preference dialog (Menu-&gt;File-&gt;Preferences)</li><li>Added exclusion of Stretch and Shear peaks into the automatic alignment using image features</li><li>Added re-ordering of annotations in the Annotation list via a popup menu</li><li>Added precision edit box into the Annotation panel</li><li>Added "Extra depth to show annotations" (Annotations-&gt;Annotation list-&gt;Settings)</li><li>Added saving of models as 2D sequence MIB MATLAB format (Menu-&gt;Models-&gt;Save model as-&gt;MATLAB format 2D sequence (*.model))</li><li>Added Mode filter (Menu-&gt;Image-&gt;Image mibfilters...)</li><li>Added "File and Directory operations" to batch processing</li><li>Added plugin for converting images between different formats (Menu-&gt;Plugins-&gt;File Processing-&gt;ImageConverter)</li><li>Added <a href="http://mib.helsinki.fi/tutorials_tools.html">plugin</a> detection of contacts in 2D images (Menu-&gt;Plugins-&gt;Organelle analysis-&gt;MCcalc)</li><li>Added shift of color channels in X and Y (Menu-&gt;Image-&gt;Color channels-&gt;Shift channel)</li><li>Added check for a new version for MIB compiled for Linux</li><li>[DeepMIB] Added selection of GPU/CPU/Multi-GPU</li><li>[DeepMIB] Added GPU Info window (Network panel-&gt;?)</li><li>[DeepMIB] Added possibility for training and prediction without preprocessing</li><li>[DeepMIB] Added parallel pre-processing</li><li>[DeepMIB] Added compatibility with models in TIF and PNG formats</li><li>[DeepMIB] Added masking</li><li>[DeepMIB] Added 19 2D augmentation operations with individual configuration settings</li><li>[DeepMIB] Added configurable preview of augmentation patches (Train tab-&gt;Augmentation-&gt;Preview and -&gt;Settings)</li><li>[DeepMIB] Added configurable (Options tab-&gt;Custom training plot) preview of augmented patches during training</li><li>[DeepMIB] Added possibility to select various activation layers</li><li>[DeepMIB] Added Transfer Learning to update models to different number of classes (Prediction tab-&gt;Evaluate segmentation)</li><li>[DeepMIB] Added setting of mini-batch size for prediction</li><li>[DeepMIB] Added options for export of prediction scores</li><li>[DeepMIB] Added calculation of occurrence and S&oslash;rensen-Dice similarity for comparison of ground truth and generated models</li><li>[DeepMIB] Added filenames and export to CSV to evaluate segmentation operation</li><li>[DeepMIB] Added export of trained models to ONNX format (MATLAB version of MIB)</li><li>Updated reading of NRRD files for MacOS (mibGetImages &amp; mibModel.loadModel, nhdr_*.m nrrd_* files)</li><li>Updated export statistics to annotations to keep settings during current session</li><li>Updated Bio-Formats to 6.6.1</li><li>Updated for MATLAB R2021a</li><li>Fixed missing the "Add to" checkbox Ctrl+F operation</li><li>Fixed loading of AM files on virtual machines due to encoding</li><li>Fixed preview behavior for image filters in 3D</li><li>Fixed 3d backup operation when number of 3D dataset == 0</li><li>Fixed vertical flip of MRC datasets</li><li>Replaced quantile function with a custom code</li><li>Bug fixes for interpolation, crop</li><li>[DeepMIB] Fixed loading of config on various OS</li><li>[DeepMIB] Updated training progress plot and added configuration parameters</li><li>[DeepMIB] Improved performance of image preprocessing for AmiraMesh</li></ul></div><h2 id="4">2.70 / 18.05.2020</h2><div><ul><li>Added Deep MIB for training and prediction of datasets using deep convolutional networks</li><li>Added 2D Elastic Distortion filter (Menu-&gt;Image-&gt;Image Filters)</li><li>Added resizing of the Image Arithmetics window</li><li>Added selection of a seed for random generator for Rename and Shuffle tool</li><li>Fixed issues with importing of chopped cropped datasets</li></ul></div><h2 id="5">2.66 / 25.04.2020</h2><div><ul><li>Added direct conversion from Mask to Model layer (Segmentation panel-&gt;Material table-&gt;right click-&gt;Mask to Material)</li><li>Added drag-and-drop for opening of *.model files by dragging them from elsewhere to the Image View panel</li></ul></div><h2 id="6">2.651 / 25.04.2020</h2><div><ul><li>Added smoothing of multiple materials of models via batch processing</li><li>Fixed definition of the starting point for the Membrane ClickTracker tool</li><li>Fixed setData method for specific materials of the model</li></ul></div><h2 id="7">2.65 / 23.03.2020</h2><div><ul><li>Added Drag and drop files into the Image View panel</li><li>Added dialog with 30 new image filters (Menu-&gt;Image-&gt;Image filters...)</li><li>Added dataset alignment using AMST: Align to Median Smoothed Template (Menu-&gt;Dataset-&gt;Alignment)</li><li>Added wound healing assay (Menu-&gt;Tools-&gt;Wound healing assay)</li><li>Added transformation of Z to C (Menu-&gt;Dataset-&gt;Transform...)</li><li>Added additional options to the batch processing: file loop/combine files -&gt; current MIB directory; selection/removal of multiple directories in the Directrory loops</li><li>Added backup of the full mibImage class</li><li>Added full backup for dataset transform, resize, crop operations</li><li>Added squeezing of material indices for models with more than 255 materials (Segmentation panel-&gt;Squeeze button)</li><li>Added a new key shortcut ('n') to increase index of the active material by 1 for the models with more than 255 materials</li><li>Added saving snapshots in PNG format</li><li>Added measurements to restore shuffled datasets</li><li>Updated resampling for batch processing mode</li><li>Updated Bio-Formats to 6.4.0 (Requires MATLAB R2017b or newer)</li><li>Swapped Log and Info buttons in the Path panel</li><li>Tweaked names of plugins to include spaces between capital letters</li><li>Optimized handling of Java classes</li><li>Plugins: Surface Area 3D - a plugin for analysis of 3D surfaces and contacts (Menu-&gt;Plugins-&gt;Organelle analysis-&gt;Surface area3D)</li><li>Plugins: Spacial Control Points to generate a set of random points over the masked area (Menu-&gt;Plugins-&gt;Plasmodesmata-&gt;SpatialControlPoints)</li><li>Plugins: Cell Wall Thickness to calculate thickness of cell walls (Menu-&gt;Plugins-&gt;Plasmodesmata-&gt;Cell wall thickness)</li></ul></div><h2 id="8">2.601 / 04.11.2019</h2><div><ul><li>The deployed version of MIB comes with R2019b instead of R2017a</li><li>Added the Batch mode for repetitive processing of images (Menu-&gt;File-&gt;Batch processing)</li><li>Added visualization of models using MATLAB Volume Viewer app (Menu-&gt;Models-&gt;Render model-&gt;MATLAB volume viewer, R2019 or newer, MATLAB version only)</li><li>Added Drag &amp; Drop materials to the segmentation tools (Segmentation panel-&gt;Drag and Drop materials, <a href="https://youtu.be/NGudNrxBbi0">https://youtu.be/NGudNrxBbi0</a>)</li><li>Added alignment of color channels using landmark multi points (Menu-&gt;Dataset-&gt;Alignment-&gt;Algorithm:Color channels, multi points</li><li>Added content-aware fill using coherence transport (Menu-&gt;Image-&gt;Tools for images-&gt;Content-aware fill), for R2019a/R2019b or newer</li><li>Added debris removal tool to automatically or menually remove debris from volumetric datasets (Menu-&gt;Image-&gt;Tools for images-&gt;Debris removal)</li><li>Added use of Oriented FAST and rotated BRIEF (ORB) points for automatic alignment (R2019 or newer)</li><li>Added optional correction for instant jumps during running average correction of the drift alignment algorithm</li><li>Added possibility to add material name and object id during export of quantitation results from the Statistics Dialog to the annotation layer</li><li>Added export of results from the Statistics Dialog to comma-separated values</li><li>Added copy to the system clipboard the columns from the the Statistics Dialog (right mouse click over the table and select Copy column(s) to clipboard)</li><li>Added batch modification of values and coordinates for the annotations</li><li>Added 4D options to "Material to Selection" and "Material to Mask" options for the context menu of the Segmentation table</li><li>Added calculation of quantile for automatic contrast stretching (View settings-&gt;Display-&gt;Right click over the min/max buttons)</li><li>Added "Ctrl+e" key shortcut to toggle between current and previous image container</li><li>Added export of graphs from the graphcut workflow to 3D Lines for visualization</li><li>Rewritten Image arithmetics to include mask, model, and selection layers (<tt>Menu-&gt;Image-&gt;Tools for images-&gt;Image arithmetic...</tt>)</li><li>Updated use of xlswrite, for R2019a or newer writecell function will be used</li><li>Updated data conversion from 32-bit to 8- and 16-bit; from 8-bit to 16-bit</li><li>Updated Bio-Formats to 6.2.1 (Requires MATLAB R2017b or newer)</li><li>[2.601] Bug fixes</li><li>[2.601] Added export of annotations to CSV format</li></ul></div><h2 id="9">2.51 / 13.03.2019</h2><div><ul><li>Added methods for automatic global black-and-white thresholding (<tt>Menu-&gt;Tools-&gt;Semi-automatic segmentation-&gt;Global thresholding</tt>)</li><li>Added selection of materials for rendering of MATLAB Isosurface models (<tt>Menu-&gt;Models-&gt;Render model-&gt;MATLAB isosurface</tt>)</li><li>Added calculation of images with extended depth-of-field focus stacking (<tt>Menu-&gt;Image-&gt;Tools for images-&gt;Intensity projection-&gt;Focus stacking</tt>)</li><li>Added saving of HDF5 format in the virtual mode without loading of complete stack</li><li>Added saving of AmiraMesh files as a sequence 2D sections (<tt>Menu-&gt;File-&gt;Save image as-&gt;Amira Mesh binary file sequence</tt>)</li><li>Added an option to display an orthoslice during visualization of 3D lines</li><li>Added tip of the day window (<tt>Menu-&gt;Help-&gt;Tip of the day</tt>)</li><li>Added H-maxima and H-minima transforms to Mask generators (<tt>Mask generators panel-&gt;Morphological filters</tt>)</li><li>Added <tt>Single Mask object per dataset</tt> option when cropping objects from the Get Statistics dialog</li><li>Added export of the supervoxels from Graphcut to a model</li><li>Improved performance when several materials are removed from the model</li><li>Improved the Image arithmetics dialog (<tt>Menu-&gt;Image-&gt;Tools for images-&gt;Image arithmetic...</tt>)</li><li>Updated BioFormats reader to use Memoizer class, this should hopefully fix Java memory leaks; temporary directory can be specified in <tt>Menu-&gt;File-&gt;Preferences-&gt;External dirs</tt></li><li>Updated sorting of the Get Statistics dialog</li><li>Fixed initialization of 3D hardware rendering of models</li><li>Fixed pixel size when combining 2D images with different dimensions</li><li>Fixed adding icons to buttons when MIB is installed in network path that starts from  "//"</li></ul></div><h2 id="10">2.501 / 21.12.2018</h2><div><ul><li>Added swap slices option (Menu-&gt;Dataset-&gt;Slice-&gt;Swap slices)</li><li>Fixed rendering of combined image in the split color channel mode with Lut enabled in Snapshot and Make movie tools</li><li>Fixed Copy Slice for the Insert mode</li></ul></div><h2 id="11">2.50 / 17.12.2018</h2><div><ul><li>Added hardware accelerated 3D volume rendering (Menu-&gt;File-&gt;Render volume-&gt;MIB rendering). The volume rendering can be used also for making snapshots and animations. Requires MATLAB R2018b or newer!</li><li>Added automatic image alignment using detected features</li><li>Added 20 distinct colors palette</li><li>Added center point marker for the image axes (Toolbar -&gt; center point button)</li><li>Added shuffling of annotations to the randomizer tool (Menu-&gt;File-&gt;Rename and shuffle)</li><li>Added delete multiple materials from the model at once (the '-' button in the Segmentation panel)</li><li>Added split color channel mode for videos (Menu-&gt;File-&gt;Make movie)</li><li>Added possibility to change default filters for images (Directory contents panel-&gt;Filter combobox-&gt;Right mouse click)</li><li>Added contrast normalization for all layers</li><li>Added fuse of annotations during fusing of cropped models (Menu-&gt;File-&gt;Chopped images-&gt;Import-&gt;Fuse)</li><li>Added auto removal of spaces in material names when exporting models to Amira</li><li>Added loading of masks that are smaller or larger than the depth of the dataset</li><li>Added alternative way to specify a frame around the dataset (Menu-&gt;Dataset-&gt;Transform-&gt;Add frame)</li><li>Improved Lasso mode in the segmentation tools</li><li>Updated Bio-Formats to version 5.9.2</li><li>Fixed some compatibility issues with R2018b</li><li>Fixed a bug in the object separator tool</li><li>Fixed instructions how to calibrate dataset using the scale bar tool</li><li>Fixed update of the current color channel after conversion to grayscale</li><li>Fixed conversion from multicolors to grayscale</li><li>Fixed insert of a new datasets into the open dataset</li><li>Fixed a bug of non working scroll wheel after aligning two datasets</li><li>Fixed combine files as color channels mode</li><li>Fixed missing values for annotations when imported from matlab workspace together with the model</li><li>Fixed computation of statistics for the models with 255 materials</li><li>Fixed of cropping of the selection layer for models with more than 63 materials</li><li>Fixed alignment for models with more than 63 materials</li></ul></div><h2 id="12">2.40 / 31.08.2018</h2><div><ul><li>Added virtual mode for datasets that are compatible with the BioFormats library or in HDF5 format</li><li>Added shift of annotations when inserting a slice</li><li>Added shift of annotations when deleting a slice or a frame</li><li>Added Segment All function to the graphcut image segmentation in the grid mode to enable segmentation of all subvolumes</li><li>Improved performance when showing multiple 3D lines</li><li>Updated BioFormats to 5.9.1</li><li>Bug fixes</li></ul></div><h2 id="13">2.302 / 18.05.2018 (03.07.2018)</h2><div><ul><li>Added Lines3D class for 3D measurements and generation of 3D skeletons and graphs</li><li>Added the Image arithmetics dialog (<tt>Menu-&gt;Image-&gt;Tools for images-&gt;Image arithmetics...</tt>)</li><li>Added the Rename and Shuffle tool (<tt>Menu-&gt;File-&gt;Rename and Shuffle</tt>) to shuffle images for blind modeling and restore the models back to the original sets of images</li><li>Added alignment using multi-point landmarks (<tt>Menu-&gt;Dataset-&gt;Alignment</tt>)</li><li>Added modification of Imaris path from MIB preferences: <tt>Menu-&gt;File-&gt;Preferences-&gt;External dirs</tt>, please remove IMARISPATH variable from the system environmental variables</li><li>Added calculation of 3D skeleton and morphological operations for 3D objects: <tt>Menu-&gt;Selection-&gt;Morphological 2D/3D operations</tt>, (<i>only for MATLAB R2018a and newer</i>)</li><li>Added export of volumes and models for rendering to MATLAB VolumeViewer application (<tt>Menu-&gt;File-&gt;Render volume-&gt;MATLAB volume viewer</tt> or <tt>Menu-&gt;Models-&gt;Render model-&gt;MATLAB volume viewer</tt>, (<i>only the MATLAB version of MIB, requires MATLAB R2017a and newer</i>)</li><li>Added quantitation of objects in physical units (<tt>Menu-&gt;Models-&gt;Model statistics...</tt>)</li><li>Added options to insert an empty slice into the dataset (<tt>Menu-&gt;Dataset-&gt;Slice-&gt;Insert an empty slice</tt>) and to insert an existing slice into another position (<tt>Menu-&gt;Dataset-&gt;Slice-&gt;Copy slice...</tt>)</li><li>Added recentering the view after click for the Membrane ClickTracker tool</li><li>Added export of TransformationMatrix with AmiraMesh files</li><li>Fix of cropping objects to files from the Get Statistics tool</li><li>[2.301] Added filter for filenames to the Shuffle and rename tool</li><li>[2.302] Fixed export of 3D lines to Amira Mesh format</li><li>[2.302] Fixed recalculation of pixels into the physical units when initializing 3D lines programically</li></ul></div><h2 id="14">2.22 / 16.03.2018</h2><div><ul><li>Added value field for the annotations, thus each annotation can be weighted based on its value</li><li>Added possibility to do deep neural network denoising on GPUs with small memory, use the <tt>GPU block</tt> parameter in <tt>Image filters-&gt;DNN Denoise</tt></li><li>Added the Simplify button to the Dataset Info window to allow remove most of metadata</li><li>Added rendering with Imaris models generated in MATLAB (<tt>Menu-&gt;Models-&gt;Render model-&gt;MATLAB isosurface and export to Imaris</tt>), require Imaris 8.</li><li>Added rendering snapshots with white background (<tt>Toolbar-&gt;Snapshot tool-&gt;white Bg</tt>)</li><li>Added rendering of annotations as scaled spots in Imaris</li><li>Added Get Statistics for models with more than 255 materials</li><li>Added calculation of Min/Max/Mean/Median intensity projection (Menu-&gt;Image-&gt;Tools for images-&gt;Intensity projection...)</li><li>Added use of external BMxD filters [MATLAB version only!] (Image filters panel-&gt;External: BMxD)</li><li>Added Add Frame tool that can be used to generate a frame around dataset with a distinct color or using various repetition methods (Menu-&gt;Dataset-&gt;Transform-&gt;Add frame)</li><li>Added renaming of annotations (<tt>Menu-&gt;Models-&gt;Annotations-&gt;Annotation list-&gt;RMB over the list of selected annotations-&gt;Rename selected annotations...</tt>)</li><li>Improved movie rendering performance for the ROI mode</li><li>Updated the Image Filter panel</li><li>Fix of error when opening Images-&gt;MorphOps-&gt;Morph Closing</li><li>Fix callback when selecting color channels in the Selection panel</li><li>Fix of opening of AmiraMesh files with extended headers</li></ul></div><h2 id="15">2.211 / 21.12.2017</h2><div><ul><li>Updated TripleAreaIntensity plugin</li><li>Fix, the <tt>contains</tt> function replaced with ismember for compatibility with MATLAB 2014b-2016a</li><li>Fix of lost key press callbacks after modification of the segmentation table</li><li>Fix of loading hdf5 datasets with time dimension</li><li>Few other minor bug fixes</li></ul></div><h2 id="16">2.21 / 04.12.2017</h2><div><ul><li>Added model with 4294967295 materials for tests</li><li>Improved object picker for models with 65535 materials</li><li>Fix compiling of certain function using the <tt>-compatibleArrayDims</tt> switch to be compatible with the new MATLAB API</li><li>Fix of 'Fix selection to material' switch for models with more than 255 materials</li><li>Fix connection to Omero for the deployed version</li></ul></div><h2 id="17">2.20 14.11.2017</h2><div><ul><li>Added a new 3D Grid mode to the Graphcut tool; when used the fast interactive performance can be achieved even with very large datasets</li><li>Added denoise of image using deep neural network (<tt>Image Filters Panel-&gt;Filter-&gt;DNN Denoise</tt>), requires MATLAB R2017b or newer and Neural Network Toolbox</li><li>Added export annotations to Imaris (<tt>Menu-&gt;Models-&gt;Annotations-&gt;Export to Imaris as Spots</tt>)</li><li>Added possibility to do not calculate intensity profiles for measurements to make measurements faster</li><li>Added buttons to magnify snapshots in x2, x4, and x8 times using the Snapshot tool</li><li>Added reading of material names and colors when opening AmiraMesh models</li><li>Added insert of a dataset as a new time point: (<tt>RMB over the file name -&gt; Insert into the open dataset</tt>)</li><li>Added utilization of the block mode for calculation of object properties for the 3D objects in the XY orientation</li><li>Rearranged the Graphcut, Watershed and Object separation tools to separate functions under <tt>Menu-&gt;Tools</tt></li><li>Updated the Crop tool, the interactive mode allows to modify the selection of the area for cropping before accepting it</li><li>Updated calculation of curve lengths in the Get Statistics dialog, now the points are smoothed with average filter of 3</li><li>Updated connection to Imaris</li><li>Updated BioFormats to 5.7.1</li><li>Updated <tt>inputdlg</tt> to customizable <tt>mibInputMultiDlg</tt> function</li><li>Updated measure line/freehand length tool (<tt>Menu-&gt;Tools-&gt;Measure</tt>), now  after use of these tools the selection is not shown</li><li>Fixed disabling of the selection mode after modification of measurements</li><li>Fixed movement of measurements after their recalculation</li><li>Fixed recalculation of voxels after import of images from MATLAB</li><li>Fixed resampling of a single slice RGB images</li><li>Fixed incorrect reading of the AmiraMesh header for the fuse mode of the Chop tool</li><li>[Programming] moved mibController.connImaris to mibModel.connImaris</li><li>[Programming] updated syntax of mibImage.clearMask</li></ul></div><h2 id="18">2.12 18.09.2017</h2><div><ul><li>Added a new tool to detect a frame around images (Menu-&gt;Image-&gt;Tools for images-&gt;Select image frame...)</li><li>Added the auto-update mode for the graphcut segmentation</li><li>Added possibility to count annotations in the <tt>List of annotations</tt> window: Segmentation panel-&gt;Annotations-&gt;Annotation list-&gt;Right mouse click over the table with annotations</li><li>Added export of selected annotations to Amira as landmark points or to MATLAB: Segmentation panel-&gt;Annotations-&gt;Annotation list-&gt;Right mouse click over the table with annotations</li><li>Added saving of annotations to Amira landmarks format (Segmentation panel-&gt;Annotations-&gt;Annotation list-&gt;Save)</li><li>Added sorting of annotations in the Annotation list window: Segmentation panel-&gt;Annotations-&gt;Annotation list-&gt;Sort table</li><li>Added possibility to remove branches during morphological thinning: Menu-&gt;Selection-&gt;Morphological 2D/3D opetations-&gt;Thin</li><li>Added clipping with Mask for image dilation</li><li>Added shift of annotations during resampling</li><li>[Programming] Added material names parameter to call of mibImage.createModel function</li><li>Improved performance when selecting objects in the Get Statistics window in the the Add and Replace modes</li><li>Improved resizing of the Log List window</li><li>Improved update of the graphcut window when switching datasets</li><li>Modified use of the 'E' key shortcut, now it toggles between two recently selected materials</li><li>Fixed reading of metadata for MRC files</li><li>Fixed loading of models when only the z-dimension is mismatched</li><li>Fixed use of the block mode, when options .x, .y, .z are present in mibModel.getDataXD/mibModel.setDataXD functions</li><li>Fixed erode and dilate for elongated kernels</li><li>Fixed backup before interpolation for the YZ and XZ orientations</li><li>Fixed access to the Class Reference documentation (Menu-&gt;Help-&gt;Class Reference)</li><li>Fixed import of annotations that are in a wrong orientation</li><li>Fixed export of TIF images in the sequential mode</li></ul></div><h2 id="19">2.1 01.06.2017</h2><div><ul><li>Added materials with 65535 maximal number of materials</li><li>Added export to Excel for non-PC platforms via <a href="https://se.mathworks.com/matlabcentral/fileexchange/38591-xlwrite--generate-xls-x--files-without-excel-on-mac-linux-win">xlwrite: Generate XLS(X) files without Excel on Mac/Linux/Win</a></li><li>Added automatic mode for interpolation of images shown in the Image View panel. When magnification is 100% or higher MIB is using the nearest method, otherwise bicubic</li><li>Added Median3D filter to the Image Filters panel (R2017a and newer)</li><li>Added to the Statistics dialog generation of new models, where each object has its own index</li><li>Added running average correction to the Alignment tool</li><li>Added find and select material under the mouse cursor using the Ctrl+F shortcut</li><li>Added pasting of selection to all layers (Menu-&gt;Selection-&gt;Selection to buffer-&gt;Paste to all slices (Ctrl+Shift+V)</li><li>Added indication of material index under the mouse cursor to the <tt>Pixel info</tt> of the <tt>Path panel</tt></li><li>Added possibility to save models for MIB version 1 (File-&gt;Models-&gt;Save model as...-&gt;MATLAB format for MIB ver. 1 (*.mat))</li><li>Modified use of Ctrl+C/Ctrl+V, now the stored dataset can be pasted to any other dataset in MIB assuming that the dataset have the same width/height. As result <tt>storedSelection</tt> property of <tt>mibImage</tt> class has been moved to <tt>mibModel</tt> class</li><li>Fixed export of models and masks to another MIB dataset for the compiled version</li><li>Fixed singleton running of MIB, now it is possible to have several instances of MIB run in parallel</li></ul></div><h2 id="20">2.01 11.04.2017</h2><div><ul><li>Added selection of the model type to Menu-&gt;Models-&gt;Type and removed it from the Preferences dialog</li><li>Added 'Recalculate selected measurements' function to the Measure tool to recalculate distances and image intensities</li><li>Added possibility to exclude black or white intensities when using the contrast normalizaton of Z-stacks (Menu-&gt;Image-&gt;Contrast-&gt;Normalize layers-&gt;Z stack)</li><li>Added imresize3 function to resample datasets with R2017a (40-50% faster)</li><li>Added calculation of annotation labels occurrence in the Stereology tool</li><li>Moved mibView.disableSegmentation to mibModel.disableSegmentation</li></ul></div><h2 id="21">2.000 20.03.2017 Official Release, 2.002 (02.04.2017)</h2><div><ul><li>With release 2.0 MIB has been rewritten to utilize Controller-View-Model architecture, which brings stability and ease of future development. However, because of that, the system requirements for MATLAB were increased and MIB2 is only available for MATLAB R2014b and older (due to continuous development of MATLAB, the most recent release is always recommended)</li><li>Added "Copy to clipboard" and "Open directory in the file explorer" for the right mouse button click over the current path edit box of the path panel (ver. 2.002)</li><li>Added adaptive black and white thresholding</li><li>Many other improvements</li><li>Added offset shift for the rechop mode (ver. 2.001)</li><li>Renamed Area to Volume for the Get Statistics tool for 3D objects (ver. 2.002)</li><li>Big fixes (ver. 2.001, 2.002)</li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+#tooltiptext {
+  visibility: hidden;
+  padding: 5px 10px;
+  font-size: 75%;
+  line-height:110%;
+  text-align: center;
+  background-color: black;
+  color: #ddd;
+  border-radius: 6px;
+  position: fixed;
+  bottom: 11px;
+  right: 62px;
+  z-index: 2;
+}
+#tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+.tooltip:hover #tooltiptext {
+  visibility: visible;
+}
+#return-link {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    overflow: visible;
+    font-size:120%;
+    background: rgba(0, 0, 0, 0.75);
+    border-style: solid;
+    border-width: 3pt;
+    border-color: #202020;
+    border-radius: 4px;
+    cursor: pointer;
+    }
+#return-link > p { padding:3px; margin:0; color:#C0C0C0;}
+.MATLAB-Help {
+width: 100%;
+margin-bottom: 12px;
+border: 1px solid #ccc;
+border-right: none;
+border-bottom: none;
+font-size: 96%;
+line-height: 1.4;
+table-layout: fixed;
+overflow:hidden;}
+
+.MATLAB-Help > thead > tr > th {
+padding: 6px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+background: #F2F2F2;
+color: #000;
+font-weight: bold;
+text-align: left;
+vertical-align: middle;}
+
+.MATLAB-Help td{padding: 5px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+vertical-align: middle;}
+
+.language-matlab { line-height:135% }
+
+.collapse-link {float:right; line-height:200%; padding-left:10px; margin:0}
+
+
+details > summary,
+.details-div {
+  padding: 8px 20px;
+  border-style: solid;
+  border-width: 1.2pt;
+  border-color: #E0E0E0;
+}
+details > summary {
+  border-radius:6px 6px 0 0;
+  background-color: #F2F2F2;
+  cursor: pointer;
+}
+.details-div {
+  border-top-style: none;
+  border-radius: 0 0 6px 6px;
+}
+.image-fit-svg,
+.image-fit {
+    max-width:  95%;
+    max-height: 100%;
+    margin:     auto;
+}
+.image-fit-svg{ padding:0px; max-width:500px; }
+details > img.image-fit-svg{ padding: 0px 0px 10px; }
+@media (max-width: 580px) {
+  .image-fit-svg { max-width: 95%; }
+}
+.pretty-link  { color:#001188 !important; }
+</style>
+<style id="dark-theme">
+    h2, h3       { color: #B0B0B0; }
+    html body    { background-color: #101010; color: #B0B0B0; }
+    .pretty-link { color: #C46313 !important; }
+    a, a:visited { color: #C46313 }
+    a:hover      { color: orange; }
+    details > summary,
+    .details-div      { border-color:     #505050; }
+    details > summary { background-color: #202020; }
+    pre.codeinput     { border-width: 1.2pt; border-color:#001B33; background:#001129; color:#F0F0F0; }
+    pre.codeoutput    { color:#A5A5A5; }
+    span.keyword      { color:#FF9D00; }
+    span.comment      { color:#808080; }
+    span.string       { color:#3AD900; }
+    span.untermstring { color:#FFEE80; }
+    span.syscmd       { color:#CCCCCC; }
+    .MATLAB-Help, .MATLAB-Help > thead > tr > th, .MATLAB-Help td { border-color:#505050; }
+    .MATLAB-Help > thead > tr > th { background: #202020; color: #B0B0B0; }
+    .summary-sub-heading { color:#909090; }
+    .show-if-light    { display:none }
+</style>
+<style id="hide-dark">
+     .show-if-dark { display:none }
+</style>
+
+<style id="anchor-offsets">
+    h2::before, a[id]::before{
+    content: "";
+    display: block;
+    height: 100px;
+    margin: -100px 0 0;
+    visibility: hidden;
+    width:10%;
+    z-index: -1;
+}
+</style>
+
+<script>
+          var returnElem = null;
+          var skipCheck  = false;
+
+          function hide_back_link()
+          {
+              returnButton.style.display = "none";
+              try{
+                 window.removeEventListener("scroll", update_back_position, true);
+                 window.removeEventListener("resize", update_back_position, true);
+                 parent.window.removeEventListener("scroll", update_back_position, true);
+                 parent.window.removeEventListener("resize", update_back_position, true);}
+              catch(e){}
+          }
+
+          function get_offset(element)
+          {
+              if (!element.getClientRects().length){ return { top: 0, left: 0 }; }
+              var rect = element.getBoundingClientRect();
+              var win  = element.ownerDocument.defaultView;
+              return ( {top:  rect.top  + win.pageYOffset,
+                        left: rect.left + win.pageXOffset} );
+          }
+
+          function jump_to()
+          {
+              var clickedElem = event.target;
+              var clickedID   = clickedElem.closest("span");
+              if (clickedID){
+                clickedID = clickedID.getAttribute("id");
+                if (clickedID.localeCompare("jump-close")===0) { return };}
+              clickedID = clickedElem.closest("div").getAttribute("id");
+              if (clickedID && clickedID.localeCompare("return-link")===0)
+              {
+                  if (returnElem)
+                  {
+                      event.preventDefault();
+                      hide_back_link();
+                      returnElem.scrollIntoView();
+                      if (contentDiv.getAttribute("data-isHelpBrowser")){
+                         contentDiv.scrollTop = contentDiv.scrollTop-100; }
+                      if (contentDiv.getAttribute("data-isMATLABCentral")){
+                         parent.window.scrollBy(0,-100)}
+                      returnElem = null;
+                  }
+              }
+              else
+              {
+                  var href = clickedElem.closest("a").getAttribute("href");
+                  if ( href && href[0] == "#" )
+                  {
+                     var target = document.getElementById(href.substring(1));
+                     var enclosingBox = target;
+                     while ( enclosingBox )
+                     {
+                        prevBox      = enclosingBox;
+                        enclosingBox = enclosingBox.closest("details");
+                        if ( enclosingBox===prevBox ){
+                           enclosingBox = enclosingBox.parentElement
+                           if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
+                        if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
+                     }
+                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                        event.preventDefault();
+                        target.scrollIntoView(); }
+                     var nextElem = target.nextElementSibling;
+                     var nextNode = target.nextSibling;
+                     while ( nextNode && nextNode.nodeType==Node.TEXT_NODE && nextNode.data.trim().length == 0 ){
+                        nextNode = nextNode.nextSibling;}
+                     if ( nextElem && nextElem===nextNode && nextElem.localName.localeCompare("details")===0 && !nextElem.open){
+                        open_details(nextElem.id);}
+                  }
+                  else { return }
+                  if (!contentDiv.getAttribute("data-isHelpBrowser"))
+                  {
+                      update_back_position();
+                      returnButton.style.display = "block";
+                      var linkTop   = clickedElem.offsetTop;
+                      var targetTop = target.offsetTop;
+                      if (targetTop>linkTop){
+                          document.getElementById("down").style.display = "none";
+                          document.getElementById("up").style.display   = "inline"; }
+                      else{
+                          document.getElementById("up").style.display   = "none";
+                          document.getElementById("down").style.display = "inline"; }
+                      returnElem = clickedElem;
+                  }
+              }
+          }
+
+          function open_details(detailsID)
+          {
+              var details  = document.getElementById(detailsID);
+              skipCheck    = true;
+              state_check(details.id);
+              details.open = true;
+          }
+
+          function update_back_position()
+          {
+              try
+              {
+                  window.addEventListener("scroll", update_back_position, true);
+                  window.addEventListener("resize", update_back_position, true);
+                  var scrollPos;
+                  if (in_iFrame())
+                  {
+                      parent.window.addEventListener("scroll", update_back_position, true);
+                      parent.window.addEventListener("resize", update_back_position, true);
+                      var iFrame         = window.frameElement;
+                      var frameOffset    = get_offset(iFrame);
+                      var documentBottom = parent.window.innerHeight  + parent.window.scrollY;
+                      var extHeight      = Math.round(frameOffset.top + iFrame.getBoundingClientRect().height - documentBottom);
+                      if (extHeight<0) { extHeight = 0; }
+                      returnButton.style.bottom = (10+extHeight) + "px";
+                      document.getElementById("tooltiptext").style.bottom = (11+extHeight) + "px";
+                      scrollPos = contentDiv.scrollTop - 25 + iFrame.getBoundingClientRect().height - extHeight;
+                  }
+                  else{
+                      scrollPos = window.scrollY + window.innerHeight - 25;}
+                  if (returnElem.offsetTop>scrollPos){
+                      document.getElementById("down").style.display = "inline";
+                      document.getElementById("up").style.display   = "none";   }
+                  else{
+                      document.getElementById("down").style.display = "none";
+                      document.getElementById("up").style.display   = "inline"; }
+              }
+              catch(e){}
+          }
+          function set_theme(themePref)
+          {
+            var themeSwitch     = document.getElementById("ToggleTheme");
+            var themeSwitchText = "switch to";
+            var switchToText    = null;
+            if (!themePref){ themePref = get_theme_pref(); }
+            if (themePref.localeCompare("light")===0){
+                document.getElementById("dark-theme").sheet.disabled = true;
+                document.getElementById("hide-dark").sheet.disabled  = false;
+                switchToText = " dark theme";}
+            else{
+                document.getElementById("dark-theme").sheet.disabled = false;
+                document.getElementById("hide-dark").sheet.disabled  = true;
+                switchToText = " light theme";}
+            themeSwitch.innerHTML = themeSwitchText + switchToText;
+            set_theme_pref(themePref);
+          }
+
+          function toggle_theme()
+          {
+            if (document.getElementById("dark-theme").sheet.disabled) { set_theme("dark");  }
+            else                                                      { set_theme("light"); }
+          }
+
+          function set_theme_pref(themePref)
+          {
+              var d = new Date();
+              d.setTime(d.getTime() + (2*365*24*60*60*1000));
+              var expires = "expires="+ d.toUTCString();
+              document.cookie = "themepref=" + themePref + ";" + expires + "path=/";
+              localStorage.setItem("PRETTY_THEME", themePref);
+          }
+
+          function get_theme_pref() {
+              var name = "themepref=";
+              var decodedCookie = decodeURIComponent(document.cookie);
+              var ca = decodedCookie.split(';');
+              for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                  c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                  return c.substring(name.length, c.length);
+                }
+              }
+              var docTheme = localStorage.getItem("PRETTY_THEME");
+              if (docTheme) { return docTheme }
+              else          { return "light"  }
+          }
+
+          function toggle_details(section)
+          {
+            var link;
+            var subSection;
+            var details;
+            var linkText;
+            var i;
+            var openState  = true;
+            var border     = "6px 6px 0 0;"
+            if (section===0)
+            {
+              link = document.getElementById("Toggle"+section.toString());
+              if (link.innerHTML.localeCompare("collapse all on page")===0){
+                  openState = false;
+                  border    = "6px;"
+                  linkText  = "expand all";}
+              else{
+                  linkText   = "collapse all";}
+              link.innerHTML = linkText + " on page";
+              for (i = 0; i < allDetails.length; i++){
+                 allDetails[i].open = openState;
+                 allDetails[i].children[0].setAttribute( 'style', "border-radius:"+border );
+                 link = document.getElementById("Toggle"+allDetails[i].id.split(".", 1));
+                 if (allDetails[i].id.charAt(0).localeCompare("0") && link){link.innerHTML = linkText;}}
+            }
+            else
+            {
+               link = document.getElementById("Toggle"+section.toString());
+               subSection = 1;
+               if (link.innerHTML.localeCompare("collapse all")===0){
+                  openState      = false;
+                  border         = "6px;"
+                  link.innerHTML = "expand all";}
+               else{
+                  link.innerHTML = "collapse all";}
+               details = document.getElementById(section.toString()+"."+subSection.toString());
+               while (details){
+                    details.open = openState;
+                    details.children[0].setAttribute( 'style', "border-radius:"+border );
+                    subSection++;
+                    details = document.getElementById(section.toString()+"."+subSection.toString());}
+               var allCollapsed = true;
+               var allExpanded  = true;
+               for (i = 0; i < allDetails.length; i++){
+                   check_if_open(allDetails[i]);}
+               link = document.getElementById("Toggle0");
+               if (allExpanded) {link.innerHTML = "collapse all on page";}
+               if (allCollapsed){link.innerHTML = "expand all on page";}
+            }
+            function check_if_open(details)
+            {
+                if (details.open){allCollapsed = false;}
+                else             {allExpanded  = false;}
+            }
+          }
+
+          function state_check(detailsID)
+          {
+              // first deal with just the section
+              if (event.detail){document.activeElement.blur();}
+              var clickedElem   = event.target;
+              if (!skipCheck && clickedElem.localName.localeCompare("summary"))
+              { 
+                if (!(clickedElem.closest("summary"))) { return };
+              };
+              var details       = document.getElementById(detailsID);
+              if ( !skipCheck ) {
+                  var parentID  = clickedElem.closest("details").id;
+                  if (details.id.localeCompare(parentID)) { return };}
+              skipCheck         = false;
+              var clickedStatus = details.open;
+              var section       = detailsID.split(".", 1);
+              var subSection    = 1;
+              var allCollapsed  = true;
+              var allExpanded   = true;
+              var link          = document.getElementById("Toggle"+section);
+              if (clickedStatus) { details.children[0].setAttribute( 'style', "border-radius:6px;" ); }
+              else               { details.children[0].setAttribute( 'style', "border-radius:6px 6px 0 0;" ); }
+              if (link)
+              {
+                  details = document.getElementById(section+"."+subSection.toString());
+                  while (details){
+                    check_if_open(details);
+                    subSection++;
+                    details = document.getElementById(section+"."+subSection.toString());}
+                  if (allExpanded) {link.innerHTML = "collapse all";}
+                  if (allCollapsed){link.innerHTML = "expand all";}
+              }
+              // then the whole page
+              allCollapsed   = true;
+              allExpanded    = true;
+              for (var i = 0; i < allDetails.length; i++){
+                  check_if_open(allDetails[i]);}
+              link = document.getElementById("Toggle0");
+              if (allExpanded) {link.innerHTML = "collapse all on page";}
+              if (allCollapsed){link.innerHTML = "expand all on page";}
+
+              function check_if_open(details)
+              {
+                  var openStatus
+                  if (detailsID.localeCompare( details.id )===0 ){openStatus = !clickedStatus;}
+                  else                                           {openStatus = details.open;}
+                  if (openStatus){allCollapsed = false;}
+                  else           {allExpanded  = false;}
+              }
+          }
+
+          function in_iFrame ()
+          {
+               try {
+                   return window.self !== window.top;
+               } catch (e) {
+                   return true;
+               }
+          }
+</script>
+</head><body>
+<div class="content">
+<div id="return-link" style="display:none;" class="tooltip">
+<p onclick="jump_to()">
+    <span onclick="jump_to()"><span id="up">&#8679;</span><span id="down">&#8681;</span>
+    <span onclick="hide_back_link()" style="padding:2px; font-size:120%;" id="jump-close"><b onclick="hide_back_link()">&times;</b></span></span>
+</p>
+<div id="tooltiptext">click to return
+<br>(click <b>&times;</b> to hide)</div>
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Microscopy Image Browser Release Notes</h1><!--introduction-->
+<p><a href="im_browser_product_page.html">Back to Index</a></p><!--/introduction-->
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
+<div><ul><li><a href="#1">2.83 / 19.06.2022 (blockedImage and 2D patch-wise)</a></li>
+<li><a href="#2">2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)</a></li>
+<li><a href="#3">2.81 / 14.10.2021</a></li>
+<li><a href="#4">2.802 / 01.06.2021</a></li>
+<li><a href="#5">2.70 / 18.05.2020</a></li>
+<li><a href="#6">2.66 / 25.04.2020</a></li>
+<li><a href="#7">2.651 / 25.04.2020</a></li>
+<li><a href="#8">2.65 / 23.03.2020</a></li>
+<li><a href="#9">2.601 / 04.11.2019</a></li>
+<li><a href="#10">2.51 / 13.03.2019</a></li>
+<li><a href="#11">2.501 / 21.12.2018</a></li>
+<li><a href="#12">2.50 / 17.12.2018</a></li>
+<li><a href="#13">2.40 / 31.08.2018</a></li>
+<li><a href="#14">2.302 / 18.05.2018 (03.07.2018)</a></li>
+<li><a href="#15">2.22 / 16.03.2018</a></li>
+<li><a href="#16">2.211 / 21.12.2017</a></li>
+<li><a href="#17">2.21 / 04.12.2017</a></li>
+<li><a href="#18">2.20 / 14.11.2017</a></li>
+<li><a href="#19">2.12 / 18.09.2017</a></li>
+<li><a href="#20">2.10 / 01.06.2017</a></li>
+<li><a href="#21">2.01 / 11.04.2017</a></li>
+<li><a href="#22">2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)</a></li></ul></div>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="1">2.83 / 19.06.2022 (blockedImage and 2D patch-wise)</h2>
+<details open onclick="state_check('1.1')" id="1.1"><summary> <b>2.83 / 19.06.2022 (blockedImage and 2D patch-wise)</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added generation of image 2D and 3D patches around annotation labels (<span class="code">Annotation list-&gt;Crop out patches around selected annotations</span>)</li>
+<li>Added possibility to load part of the dataset for TIF files (<span class="code">right click over selected filenames-&gt;Load part of the dataset (AM and TIF)</span>)</li>
+<li>Added Info field to measurements to supplement them with additional information (<span class="code">Menu-&gt;Tools-&gt;Measure length-&gt;Measure tool</span>)</li>
+<li>Added generation of pyramidal TIF files and batch processing of BioFormat files (<span class="code">Menu-&gt;Plugins-&gt;File processing-&gt;Image converter</span>)</li>
+<li>Added the "show prompt" option to the Annotations tool (<span class="code">Segmentation panel-&gt;Annotations-&gt;show prompt</span>)</li>
+<li>Added [InheritLastDIR] tag to inherit directory name from DIR LOOP when saving images using the Protocol organizer (<span class="code">Menu-&gt;File-&gt;Batch processing-&gt;DIRECTORY LOOP START</span>)</li>
+<li>Added "end" tag to the crop operation for the Protocol organizer (<span class="code">Menu-&gt;File-&gt;Batch processing-&gt;Crop dataset</span>)</li>
+<li>Added Drag-and-drop model files to the Segmentation table to load them</li>
+<li>Correction of pixel size for pyramidal formats when levels are not multiplied by factor of 2</li>
+<li>Fixed loading of partial AM files, when step was set to 1</li>
+<li>Fixed loading of TIF files with YCbCr color space</li>
+<li>Updated Bio-Formats to 6.10.0</li>
+<li>[DeepMIB] Rearranged Architecture into Workflow and Architecture parameters (<span class="code">DeepMIB-&gt;Network panel</span>)</li>
+<li>[DeepMIB] Optimized to work without preprocessing of images</li>
+<li>[DeepMIB] Added blockedImage mode and set it as default processing engine (<span class="code">DeepMIB-&gt;Predict-&gt;Prediction engine</span>)</li>
+<li>[DeepMIB] Added dynamic masking for the blockedImage processing mode (<span class="code">DeepMIB-&gt;Predict-&gt;Dynamic masking</span>)</li>
+<li>[DeepMIB] Added 2D Patch-wise mode to process images in patches (<span class="code">DeepMIB-&gt;Network-&gt;Workflow-&gt;2D Patch-wise</span>)</li>
+<li>[DeepMIB] Added Resnet18, Resnet50, Resnet101, Xception networks for the patch-wise mode</li>
+<li>[DeepMIB] Added alternative arrangement of files for 2D Patch-wise mode where each class is stored in its own directory</li>
+<li>[DeepMIB] Added "Load models" to the Options tab to skip loading of images when they are already preloaded (<span class="code">DeepMIB-&gt;Predict-&gt;Load models</span>)</li>
+<li>[DeepMIB] Added possibility to specify frequency of saving checkpoint networks (R2022a or newer), (<span class="code">DeepMIB-&gt;Train-&gt;Save checkpoint networks</span>)</li>
+<li>[DeepMIB] Added percentage parameter to the overlapping tiles mode (<span class="code">DeepMIB-&gt;Predict-&gt;Overlapping tiles-&gt;%%</span>)</li>
+<li>[DeepMIB] Added possibility to select a single augmentation to preview (<span class="code">DeepMIB-&gt;Train-&gt;Augmentations-&gt;Preview</span>)</li>
+<li>[DeepMIB] Added new 3D augmentations reaching 18 operations (<span class="code">DeepMIB-&gt;Train-&gt;Augmentations-&gt;3D</span>)</li>
+<li>[DeepMIB] Added DeepLabV3-Resnet50 to 2D semantic segmentation (MATLAB MIB only)</li>
+<li>[DeepMIB] Fixed preview of some patches and contrast stretch in Activation Explorer</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="2">2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)</h2>
+<details open onclick="state_check('2.1')" id="2.1"><summary> <b>2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added generation of kymographs to Measure tool</li>
+<li>Added indexing of objects in a model to generate a new model, where each object has own index (Menu-&gt;Models-&gt;Convert type-&gt;Indexed objects)</li>
+<li>Added main window keypress callbacks to Statistics, Measure tools, Image adjustments, Dataset Info, Log, Batch processing, Make movie, Snapshot, Crop, Resample, Bounding box, Image filters, Image arithmetics, MorphOps, Image MorphOps, Graphcut, Stereology, Object separation, Global black-and-white thresholding, Watershed segmentation, Supervoxel classifier, Membrane detection; when these tools are in focus, the key shortcuts of the main window are triggered</li>
+<li>Added reading of pixel size from Zeiss SmartSEM and Atlas TIF files</li>
+<li>Added automatic extraction of metadata from Zeiss Atlas and SmartSEM TIF files (Menu-&gt;Plugins-&gt;File processing-&gt;Image converter: TIF-&gt;XML)</li>
+<li>Added "Selected files in Directory contents" option into "Load and combine images" option of the Batch processing tool</li>
+<li>Added 'ndpi' format to the list of BioFormats extensions</li>
+<li>Added new options for faster placing measurements (Menu-&gt;Tools-&gt;Measure length-&gt;Measure tool)</li>
+<li>Added Esc key shortcut to stop placing measurements</li>
+<li>Added Shift+Alt+RMB key shortcut to pan the image</li>
+<li>Fixed loading of the selected series from a container file using BioFormats</li>
+<li>Fixed starting of Fiji volume viewer directly from MIB</li>
+<li>Fixed usage of Shift+LMB operations</li>
+<li>Fixed of delete operation of a single tree in 3D lines</li>
+<li>Fixed resize in batch processing mode, when z-value was kept fixed with the percentageXY option</li>
+<li>Bug fixes</li>
+<li>[DeepMIB] Added 2D DeepLabV3-Resnet18 architecture for semantic segmentation</li>
+<li>[DeepMIB] Added selection of the output format as MIB Model or TIF</li>
+<li>[DeepMIB] Added possibility to return the trained network with the best validation loss (Training settings, required R2021b or newer)</li>
+<li>[DeepMIB] Added indicator of the iteration with the selected network and rendering of training and validation final loss values that were missing on the progress training plot</li>
+<li>[DeepMIB] Fixed probability of generation of an augmented patch</li>
+<li>[MCcalc] Added calculation of areas and average min thickness for the main objects</li>
+<li>[MCcalc] Added calculation contacts between objects of the same material</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="3">2.81 / 14.10.2021</h2>
+<details open onclick="state_check('3.1')" id="3.1"><summary> <b>2.81 / 14.10.2021</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added contrast adjustment, when 16-bit is converted to 16-bit</li>
+<li>Added import of annotations from CSV files (Segmentation table-&gt;Annotations-&gt;Annotation list-&gt;Load</li>
+<li>Added conversion of annotations to the mask layer (Annotations-&gt;Annotation list-&gt;List of annotations-&gt;Convert selected annotations to Mask)</li>
+<li>Added save of models to mibCat categorical format (Menu-&gt;Models-&gt;Save model as)</li>
+<li>Added automatic closing of all windows in Fiji when stopping FijiConnect</li>
+<li>Added information about "Call4Help" sessions (Menu-&gt;Help-&gt;Call for help)</li>
+<li>Fixed a bug with generation of grids in the Stereology tool</li>
+<li>Fixed automatic feature based alignment, when the Selection is disabled</li>
+<li>Updated Bio-Formats to 6.7.0</li>
+<li>[DeepMIB] added counting of labels in model files (Options-&gt;Count labels)</li>
+<li>[DeepMIB] fixed bug with selection of 'Multi GPU' for prediction</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="4">2.802 / 01.06.2021</h2>
+<details open onclick="state_check('4.1')" id="4.1"><summary> <b>2.802 / 01.06.2021</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added HDD mode to align datasets that can not be fit into memory (Menu-&gt;Dataset-&gt;Alignment tool-&gt;HDD)</li>
+<li>Added new preference dialog (Menu-&gt;File-&gt;Preferences)</li>
+<li>Added exclusion of Stretch and Shear peaks into the automatic alignment using image features</li>
+<li>Added re-ordering of annotations in the Annotation list via a popup menu</li>
+<li>Added precision edit box into the Annotation panel</li>
+<li>Added "Extra depth to show annotations" (Annotations-&gt;Annotation list-&gt;Settings)</li>
+<li>Added saving of models as 2D sequence MIB MATLAB format (Menu-&gt;Models-&gt;Save model as-&gt;MATLAB format 2D sequence (*.model))</li>
+<li>Added Mode filter (Menu-&gt;Image-&gt;Image mibfilters...)</li>
+<li>Added "File and Directory operations" to batch processing</li>
+<li>Added plugin for converting images between different formats (Menu-&gt;Plugins-&gt;File Processing-&gt;ImageConverter)</li>
+<li>Added <a href="http://mib.helsinki.fi/tutorials_tools.html">plugin</a> detection of contacts in 2D images (Menu-&gt;Plugins-&gt;Organelle analysis-&gt;MCcalc)</li>
+<li>Added shift of color channels in X and Y (Menu-&gt;Image-&gt;Color channels-&gt;Shift channel)</li>
+<li>Added check for a new version for MIB compiled for Linux</li>
+<li>[DeepMIB] Added selection of GPU/CPU/Multi-GPU</li>
+<li>[DeepMIB] Added GPU Info window (Network panel-&gt;?)</li>
+<li>[DeepMIB] Added possibility for training and prediction without preprocessing</li>
+<li>[DeepMIB] Added parallel pre-processing</li>
+<li>[DeepMIB] Added compatibility with models in TIF and PNG formats</li>
+<li>[DeepMIB] Added masking</li>
+<li>[DeepMIB] Added 19 2D augmentation operations with individual configuration settings</li>
+<li>[DeepMIB] Added configurable preview of augmentation patches (Train tab-&gt;Augmentation-&gt;Preview and -&gt;Settings)</li>
+<li>[DeepMIB] Added configurable (Options tab-&gt;Custom training plot) preview of augmented patches during training</li>
+<li>[DeepMIB] Added possibility to select various activation layers</li>
+<li>[DeepMIB] Added Transfer Learning to update models to different number of classes (Prediction tab-&gt;Evaluate segmentation)</li>
+<li>[DeepMIB] Added setting of mini-batch size for prediction</li>
+<li>[DeepMIB] Added options for export of prediction scores</li>
+<li>[DeepMIB] Added calculation of occurrence and S&oslash;rensen-Dice similarity for comparison of ground truth and generated models</li>
+<li>[DeepMIB] Added filenames and export to CSV to evaluate segmentation operation</li>
+<li>[DeepMIB] Added export of trained models to ONNX format (MATLAB version of MIB)</li>
+<li>Updated reading of NRRD files for MacOS (mibGetImages &amp; mibModel.loadModel, nhdr_*.m nrrd_* files)</li>
+<li>Updated export statistics to annotations to keep settings during current session</li>
+<li>Updated Bio-Formats to 6.6.1</li>
+<li>Updated for MATLAB R2021a</li>
+<li>Fixed missing the "Add to" checkbox Ctrl+F operation</li>
+<li>Fixed loading of AM files on virtual machines due to encoding</li>
+<li>Fixed preview behavior for image filters in 3D</li>
+<li>Fixed 3d backup operation when number of 3D dataset == 0</li>
+<li>Fixed vertical flip of MRC datasets</li>
+<li>Replaced quantile function with a custom code</li>
+<li>Bug fixes for interpolation, crop</li>
+<li>[DeepMIB] Fixed loading of config on various OS</li>
+<li>[DeepMIB] Updated training progress plot and added configuration parameters</li>
+<li>[DeepMIB] Improved performance of image preprocessing for AmiraMesh</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(5)" class="collapse-link"><a href="javascript:void(0);" id="Toggle5">collapse all</a></p><h2 id="5">2.70 / 18.05.2020</h2>
+<details open onclick="state_check('5.1')" id="5.1"><summary> <b>2.70 / 18.05.2020</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added Deep MIB for training and prediction of datasets using deep convolutional networks</li>
+<li>Added 2D Elastic Distortion filter (Menu-&gt;Image-&gt;Image Filters)</li>
+<li>Added resizing of the Image Arithmetics window</li>
+<li>Added selection of a seed for random generator for Rename and Shuffle tool</li>
+<li>Fixed issues with importing of chopped cropped datasets</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(6)" class="collapse-link"><a href="javascript:void(0);" id="Toggle6">collapse all</a></p><h2 id="6">2.66 / 25.04.2020</h2>
+<details open onclick="state_check('6.1')" id="6.1"><summary> <b>2.66 / 25.04.2020</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added direct conversion from Mask to Model layer (Segmentation panel-&gt;Material table-&gt;right click-&gt;Mask to Material)</li>
+<li>Added drag-and-drop for opening of *.model files by dragging them from elsewhere to the Image View panel</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(7)" class="collapse-link"><a href="javascript:void(0);" id="Toggle7">collapse all</a></p><h2 id="7">2.651 / 25.04.2020</h2>
+<details open onclick="state_check('7.1')" id="7.1"><summary> <b>2.651 / 25.04.2020</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added smoothing of multiple materials of models via batch processing</li>
+<li>Fixed definition of the starting point for the Membrane ClickTracker tool</li>
+<li>Fixed setData method for specific materials of the model</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(8)" class="collapse-link"><a href="javascript:void(0);" id="Toggle8">collapse all</a></p><h2 id="8">2.65 / 23.03.2020</h2>
+<details open onclick="state_check('8.1')" id="8.1"><summary> <b>2.65 / 23.03.2020</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added Drag and drop files into the Image View panel</li>
+<li>Added dialog with 30 new image filters (Menu-&gt;Image-&gt;Image filters...)</li>
+<li>Added dataset alignment using AMST: Align to Median Smoothed Template (Menu-&gt;Dataset-&gt;Alignment)</li>
+<li>Added wound healing assay (Menu-&gt;Tools-&gt;Wound healing assay)</li>
+<li>Added transformation of Z to C (Menu-&gt;Dataset-&gt;Transform...)</li>
+<li>Added additional options to the batch processing: file loop/combine files -&gt; current MIB directory; selection/removal of multiple directories in the Directrory loops</li>
+<li>Added backup of the full mibImage class</li>
+<li>Added full backup for dataset transform, resize, crop operations</li>
+<li>Added squeezing of material indices for models with more than 255 materials (Segmentation panel-&gt;Squeeze button)</li>
+<li>Added a new key shortcut ('n') to increase index of the active material by 1 for the models with more than 255 materials</li>
+<li>Added saving snapshots in PNG format</li>
+<li>Added measurements to restore shuffled datasets</li>
+<li>Updated resampling for batch processing mode</li>
+<li>Updated Bio-Formats to 6.4.0 (Requires MATLAB R2017b or newer)</li>
+<li>Swapped Log and Info buttons in the Path panel</li>
+<li>Tweaked names of plugins to include spaces between capital letters</li>
+<li>Optimized handling of Java classes</li>
+<li>Plugins: Surface Area 3D - a plugin for analysis of 3D surfaces and contacts (Menu-&gt;Plugins-&gt;Organelle analysis-&gt;Surface area3D)</li>
+<li>Plugins: Spacial Control Points to generate a set of random points over the masked area (Menu-&gt;Plugins-&gt;Plasmodesmata-&gt;SpatialControlPoints)</li>
+<li>Plugins: Cell Wall Thickness to calculate thickness of cell walls (Menu-&gt;Plugins-&gt;Plasmodesmata-&gt;Cell wall thickness)</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(9)" class="collapse-link"><a href="javascript:void(0);" id="Toggle9">collapse all</a></p><h2 id="9">2.601 / 04.11.2019</h2>
+<details open onclick="state_check('9.1')" id="9.1"><summary> <b>2.601 / 04.11.2019</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>The deployed version of MIB comes with R2019b instead of R2017a</li>
+<li>Added the Batch mode for repetitive processing of images (Menu-&gt;File-&gt;Batch processing)</li>
+<li>Added visualization of models using MATLAB Volume Viewer app (Menu-&gt;Models-&gt;Render model-&gt;MATLAB volume viewer, R2019 or newer, MATLAB version only)</li>
+<li>Added Drag &amp; Drop materials to the segmentation tools (Segmentation panel-&gt;Drag and Drop materials, <a href="https://youtu.be/NGudNrxBbi0">https://youtu.be/NGudNrxBbi0</a>)</li>
+<li>Added alignment of color channels using landmark multi points (Menu-&gt;Dataset-&gt;Alignment-&gt;Algorithm:Color channels, multi points</li>
+<li>Added content-aware fill using coherence transport (Menu-&gt;Image-&gt;Tools for images-&gt;Content-aware fill), for R2019a/R2019b or newer</li>
+<li>Added debris removal tool to automatically or menually remove debris from volumetric datasets (Menu-&gt;Image-&gt;Tools for images-&gt;Debris removal)</li>
+<li>Added use of Oriented FAST and rotated BRIEF (ORB) points for automatic alignment (R2019 or newer)</li>
+<li>Added optional correction for instant jumps during running average correction of the drift alignment algorithm</li>
+<li>Added possibility to add material name and object id during export of quantitation results from the Statistics Dialog to the annotation layer</li>
+<li>Added export of results from the Statistics Dialog to comma-separated values</li>
+<li>Added copy to the system clipboard the columns from the the Statistics Dialog (right mouse click over the table and select Copy column(s) to clipboard)</li>
+<li>Added batch modification of values and coordinates for the annotations</li>
+<li>Added 4D options to "Material to Selection" and "Material to Mask" options for the context menu of the Segmentation table</li>
+<li>Added calculation of quantile for automatic contrast stretching (View settings-&gt;Display-&gt;Right click over the min/max buttons)</li>
+<li>Added "Ctrl+e" key shortcut to toggle between current and previous image container</li>
+<li>Added export of graphs from the graphcut workflow to 3D Lines for visualization</li>
+<li>Rewritten Image arithmetics to include mask, model, and selection layers (<code>Menu-&gt;Image-&gt;Tools for images-&gt;Image arithmetic...</code>)</li>
+<li>Updated use of xlswrite, for R2019a or newer writecell function will be used</li>
+<li>Updated data conversion from 32-bit to 8- and 16-bit; from 8-bit to 16-bit</li>
+<li>Updated Bio-Formats to 6.2.1 (Requires MATLAB R2017b or newer)</li>
+<li>[2.601] Bug fixes</li>
+<li>[2.601] Added export of annotations to CSV format</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(10)" class="collapse-link"><a href="javascript:void(0);" id="Toggle10">collapse all</a></p><h2 id="10">2.51 / 13.03.2019</h2>
+<details open onclick="state_check('10.1')" id="10.1"><summary> <b>2.51 / 13.03.2019</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added methods for automatic global black-and-white thresholding (<code>Menu-&gt;Tools-&gt;Semi-automatic segmentation-&gt;Global thresholding</code>)</li>
+<li>Added selection of materials for rendering of MATLAB Isosurface models (<code>Menu-&gt;Models-&gt;Render model-&gt;MATLAB isosurface</code>)</li>
+<li>Added calculation of images with extended depth-of-field focus stacking (<code>Menu-&gt;Image-&gt;Tools for images-&gt;Intensity projection-&gt;Focus stacking</code>)</li>
+<li>Added saving of HDF5 format in the virtual mode without loading of complete stack</li>
+<li>Added saving of AmiraMesh files as a sequence 2D sections (<code>Menu-&gt;File-&gt;Save image as-&gt;Amira Mesh binary file sequence</code>)</li>
+<li>Added an option to display an orthoslice during visualization of 3D lines</li>
+<li>Added tip of the day window (<code>Menu-&gt;Help-&gt;Tip of the day</code>)</li>
+<li>Added H-maxima and H-minima transforms to Mask generators (<code>Mask generators panel-&gt;Morphological filters</code>)</li>
+<li>Added <code>Single Mask object per dataset</code> option when cropping objects from the Get Statistics dialog</li>
+<li>Added export of the supervoxels from Graphcut to a model</li>
+<li>Improved performance when several materials are removed from the model</li>
+<li>Improved the Image arithmetics dialog (<code>Menu-&gt;Image-&gt;Tools for images-&gt;Image arithmetic...</code>)</li>
+<li>Updated BioFormats reader to use Memoizer class, this should hopefully fix Java memory leaks; temporary directory can be specified in <code>Menu-&gt;File-&gt;Preferences-&gt;External dirs</code></li>
+<li>Updated sorting of the Get Statistics dialog</li>
+<li>Fixed initialization of 3D hardware rendering of models</li>
+<li>Fixed pixel size when combining 2D images with different dimensions</li>
+<li>Fixed adding icons to buttons when MIB is installed in network path that starts from  "//"</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(11)" class="collapse-link"><a href="javascript:void(0);" id="Toggle11">collapse all</a></p><h2 id="11">2.501 / 21.12.2018</h2>
+<details open onclick="state_check('11.1')" id="11.1"><summary> <b>2.501 / 21.12.2018</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added swap slices option (Menu-&gt;Dataset-&gt;Slice-&gt;Swap slices)</li>
+<li>Fixed rendering of combined image in the split color channel mode with Lut enabled in Snapshot and Make movie tools</li>
+<li>Fixed Copy Slice for the Insert mode</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(12)" class="collapse-link"><a href="javascript:void(0);" id="Toggle12">collapse all</a></p><h2 id="12">2.50 / 17.12.2018</h2>
+<details open onclick="state_check('12.1')" id="12.1"><summary> <b>2.50 / 17.12.2018</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added hardware accelerated 3D volume rendering (Menu-&gt;File-&gt;Render volume-&gt;MIB rendering). The volume rendering can be used also for making snapshots and animations. Requires MATLAB R2018b or newer!</li>
+<li>Added automatic image alignment using detected features</li>
+<li>Added 20 distinct colors palette</li>
+<li>Added center point marker for the image axes (Toolbar -&gt; center point button)</li>
+<li>Added shuffling of annotations to the randomizer tool (Menu-&gt;File-&gt;Rename and shuffle)</li>
+<li>Added delete multiple materials from the model at once (the '-' button in the Segmentation panel)</li>
+<li>Added split color channel mode for videos (Menu-&gt;File-&gt;Make movie)</li>
+<li>Added possibility to change default filters for images (Directory contents panel-&gt;Filter combobox-&gt;Right mouse click)</li>
+<li>Added contrast normalization for all layers</li>
+<li>Added fuse of annotations during fusing of cropped models (Menu-&gt;File-&gt;Chopped images-&gt;Import-&gt;Fuse)</li>
+<li>Added auto removal of spaces in material names when exporting models to Amira</li>
+<li>Added loading of masks that are smaller or larger than the depth of the dataset</li>
+<li>Added alternative way to specify a frame around the dataset (Menu-&gt;Dataset-&gt;Transform-&gt;Add frame)</li>
+<li>Improved Lasso mode in the segmentation tools</li>
+<li>Updated Bio-Formats to version 5.9.2</li>
+<li>Fixed some compatibility issues with R2018b</li>
+<li>Fixed a bug in the object separator tool</li>
+<li>Fixed instructions how to calibrate dataset using the scale bar tool</li>
+<li>Fixed update of the current color channel after conversion to grayscale</li>
+<li>Fixed conversion from multicolors to grayscale</li>
+<li>Fixed insert of a new datasets into the open dataset</li>
+<li>Fixed a bug of non working scroll wheel after aligning two datasets</li>
+<li>Fixed combine files as color channels mode</li>
+<li>Fixed missing values for annotations when imported from matlab workspace together with the model</li>
+<li>Fixed computation of statistics for the models with 255 materials</li>
+<li>Fixed of cropping of the selection layer for models with more than 63 materials</li>
+<li>Fixed alignment for models with more than 63 materials</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(13)" class="collapse-link"><a href="javascript:void(0);" id="Toggle13">collapse all</a></p><h2 id="13">2.40 / 31.08.2018</h2>
+<details open onclick="state_check('13.1')" id="13.1"><summary> <b>2.40 / 31.08.2018</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added virtual mode for datasets that are compatible with the BioFormats library or in HDF5 format</li>
+<li>Added shift of annotations when inserting a slice</li>
+<li>Added shift of annotations when deleting a slice or a frame</li>
+<li>Added Segment All function to the graphcut image segmentation in the grid mode to enable segmentation of all subvolumes</li>
+<li>Improved performance when showing multiple 3D lines</li>
+<li>Updated BioFormats to 5.9.1</li>
+<li>Bug fixes</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(14)" class="collapse-link"><a href="javascript:void(0);" id="Toggle14">collapse all</a></p><h2 id="14">2.302 / 18.05.2018 (03.07.2018)</h2>
+<details open onclick="state_check('14.1')" id="14.1"><summary> <b>2.302 / 18.05.2018 (03.07.2018)</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added Lines3D class for 3D measurements and generation of 3D skeletons and graphs</li>
+<li>Added the Image arithmetics dialog (<code>Menu-&gt;Image-&gt;Tools for images-&gt;Image arithmetics...</code>)</li>
+<li>Added the Rename and Shuffle tool (<code>Menu-&gt;File-&gt;Rename and Shuffle</code>) to shuffle images for blind modeling and restore the models back to the original sets of images</li>
+<li>Added alignment using multi-point landmarks (<code>Menu-&gt;Dataset-&gt;Alignment</code>)</li>
+<li>Added modification of Imaris path from MIB preferences: <code>Menu-&gt;File-&gt;Preferences-&gt;External dirs</code>, please remove IMARISPATH variable from the system environmental variables</li>
+<li>Added calculation of 3D skeleton and morphological operations for 3D objects: <code>Menu-&gt;Selection-&gt;Morphological 2D/3D operations</code>, (<i>only for MATLAB R2018a and newer</i>)</li>
+<li>Added export of volumes and models for rendering to MATLAB VolumeViewer application (<code>Menu-&gt;File-&gt;Render volume-&gt;MATLAB volume viewer</code> or <code>Menu-&gt;Models-&gt;Render model-&gt;MATLAB volume viewer</code>, (<i>only the MATLAB version of MIB, requires MATLAB R2017a and newer</i>)</li>
+<li>Added quantitation of objects in physical units (<code>Menu-&gt;Models-&gt;Model statistics...</code>)</li>
+<li>Added options to insert an empty slice into the dataset (<code>Menu-&gt;Dataset-&gt;Slice-&gt;Insert an empty slice</code>) and to insert an existing slice into another position (<code>Menu-&gt;Dataset-&gt;Slice-&gt;Copy slice...</code>)</li>
+<li>Added recentering the view after click for the Membrane ClickTracker tool</li>
+<li>Added export of TransformationMatrix with AmiraMesh files</li>
+<li>Fix of cropping objects to files from the Get Statistics tool</li>
+<li>[2.301] Added filter for filenames to the Shuffle and rename tool</li>
+<li>[2.302] Fixed export of 3D lines to Amira Mesh format</li>
+<li>[2.302] Fixed recalculation of pixels into the physical units when initializing 3D lines programically</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(15)" class="collapse-link"><a href="javascript:void(0);" id="Toggle15">collapse all</a></p><h2 id="15">2.22 / 16.03.2018</h2>
+<details open onclick="state_check('15.1')" id="15.1"><summary> <b>2.22 / 16.03.2018</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added value field for the annotations, thus each annotation can be weighted based on its value</li>
+<li>Added possibility to do deep neural network denoising on GPUs with small memory, use the <code>GPU block</code> parameter in <code>Image filters-&gt;DNN Denoise</code></li>
+<li>Added the Simplify button to the Dataset Info window to allow remove most of metadata</li>
+<li>Added rendering with Imaris models generated in MATLAB (<code>Menu-&gt;Models-&gt;Render model-&gt;MATLAB isosurface and export to Imaris</code>), require Imaris 8.</li>
+<li>Added rendering snapshots with white background (<code>Toolbar-&gt;Snapshot tool-&gt;white Bg</code>)</li>
+<li>Added rendering of annotations as scaled spots in Imaris</li>
+<li>Added Get Statistics for models with more than 255 materials</li>
+<li>Added calculation of Min/Max/Mean/Median intensity projection (Menu-&gt;Image-&gt;Tools for images-&gt;Intensity projection...)</li>
+<li>Added use of external BMxD filters [MATLAB version only!] (Image filters panel-&gt;External: BMxD)</li>
+<li>Added Add Frame tool that can be used to generate a frame around dataset with a distinct color or using various repetition methods (Menu-&gt;Dataset-&gt;Transform-&gt;Add frame)</li>
+<li>Added renaming of annotations (<code>Menu-&gt;Models-&gt;Annotations-&gt;Annotation list-&gt;RMB over the list of selected annotations-&gt;Rename selected annotations...</code>)</li>
+<li>Improved movie rendering performance for the ROI mode</li>
+<li>Updated the Image Filter panel</li>
+<li>Fix of error when opening Images-&gt;MorphOps-&gt;Morph Closing</li>
+<li>Fix callback when selecting color channels in the Selection panel</li>
+<li>Fix of opening of AmiraMesh files with extended headers</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(16)" class="collapse-link"><a href="javascript:void(0);" id="Toggle16">collapse all</a></p><h2 id="16">2.211 / 21.12.2017</h2>
+<details open onclick="state_check('16.1')" id="16.1"><summary> <b>2.211 / 21.12.2017</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Updated TripleAreaIntensity plugin</li>
+<li>Fix, the <code>contains</code> function replaced with ismember for compatibility with MATLAB 2014b-2016a</li>
+<li>Fix of lost key press callbacks after modification of the segmentation table</li>
+<li>Fix of loading hdf5 datasets with time dimension</li>
+<li>Few other minor bug fixes</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(17)" class="collapse-link"><a href="javascript:void(0);" id="Toggle17">collapse all</a></p><h2 id="17">2.21 / 04.12.2017</h2>
+<details open onclick="state_check('17.1')" id="17.1"><summary> <b>2.21 / 04.12.2017</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added model with 4294967295 materials for tests</li>
+<li>Improved object picker for models with 65535 materials</li>
+<li>Fix compiling of certain function using the <code>-compatibleArrayDims</code> switch to be compatible with the new MATLAB API</li>
+<li>Fix of 'Fix selection to material' switch for models with more than 255 materials</li>
+<li>Fix connection to Omero for the deployed version</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(18)" class="collapse-link"><a href="javascript:void(0);" id="Toggle18">collapse all</a></p><h2 id="18">2.20 / 14.11.2017</h2>
+<details open onclick="state_check('18.1')" id="18.1"><summary> <b>2.20 / 14.11.2017</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added a new 3D Grid mode to the Graphcut tool; when used the fast interactive performance can be achieved even with very large datasets</li>
+<li>Added denoise of image using deep neural network (<code>Image Filters Panel-&gt;Filter-&gt;DNN Denoise</code>), requires MATLAB R2017b or newer and Neural Network Toolbox</li>
+<li>Added export annotations to Imaris (<code>Menu-&gt;Models-&gt;Annotations-&gt;Export to Imaris as Spots</code>)</li>
+<li>Added possibility to do not calculate intensity profiles for measurements to make measurements faster</li>
+<li>Added buttons to magnify snapshots in x2, x4, and x8 times using the Snapshot tool</li>
+<li>Added reading of material names and colors when opening AmiraMesh models</li>
+<li>Added insert of a dataset as a new time point: (<code>RMB over the file name -&gt; Insert into the open dataset</code>)</li>
+<li>Added utilization of the block mode for calculation of object properties for the 3D objects in the XY orientation</li>
+<li>Rearranged the Graphcut, Watershed and Object separation tools to separate functions under <code>Menu-&gt;Tools</code></li>
+<li>Updated the Crop tool, the interactive mode allows to modify the selection of the area for cropping before accepting it</li>
+<li>Updated calculation of curve lengths in the Get Statistics dialog, now the points are smoothed with average filter of 3</li>
+<li>Updated connection to Imaris</li>
+<li>Updated BioFormats to 5.7.1</li>
+<li>Updated <code>inputdlg</code> to customizable <code>mibInputMultiDlg</code> function</li>
+<li>Updated measure line/freehand length tool (<code>Menu-&gt;Tools-&gt;Measure</code>), now  after use of these tools the selection is not shown</li>
+<li>Fixed disabling of the selection mode after modification of measurements</li>
+<li>Fixed movement of measurements after their recalculation</li>
+<li>Fixed recalculation of voxels after import of images from MATLAB</li>
+<li>Fixed resampling of a single slice RGB images</li>
+<li>Fixed incorrect reading of the AmiraMesh header for the fuse mode of the Chop tool</li>
+<li>[Programming] moved mibController.connImaris to mibModel.connImaris</li>
+<li>[Programming] updated syntax of mibImage.clearMask</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(19)" class="collapse-link"><a href="javascript:void(0);" id="Toggle19">collapse all</a></p><h2 id="19">2.12 / 18.09.2017</h2>
+<details open onclick="state_check('19.1')" id="19.1"><summary> <b>2.12 / 18.09.2017</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added a new tool to detect a frame around images (Menu-&gt;Image-&gt;Tools for images-&gt;Select image frame...)</li>
+<li>Added the auto-update mode for the graphcut segmentation</li>
+<li>Added possibility to count annotations in the <code>List of annotations</code> window: Segmentation panel-&gt;Annotations-&gt;Annotation list-&gt;Right mouse click over the table with annotations</li>
+<li>Added export of selected annotations to Amira as landmark points or to MATLAB: Segmentation panel-&gt;Annotations-&gt;Annotation list-&gt;Right mouse click over the table with annotations</li>
+<li>Added saving of annotations to Amira landmarks format (Segmentation panel-&gt;Annotations-&gt;Annotation list-&gt;Save)</li>
+<li>Added sorting of annotations in the Annotation list window: Segmentation panel-&gt;Annotations-&gt;Annotation list-&gt;Sort table</li>
+<li>Added possibility to remove branches during morphological thinning: Menu-&gt;Selection-&gt;Morphological 2D/3D opetations-&gt;Thin</li>
+<li>Added clipping with Mask for image dilation</li>
+<li>Added shift of annotations during resampling</li>
+<li>[Programming] Added material names parameter to call of mibImage.createModel function</li>
+<li>Improved performance when selecting objects in the Get Statistics window in the the Add and Replace modes</li>
+<li>Improved resizing of the Log List window</li>
+<li>Improved update of the graphcut window when switching datasets</li>
+<li>Modified use of the 'E' key shortcut, now it toggles between two recently selected materials</li>
+<li>Fixed reading of metadata for MRC files</li>
+<li>Fixed loading of models when only the z-dimension is mismatched</li>
+<li>Fixed use of the block mode, when options .x, .y, .z are present in mibModel.getDataXD/mibModel.setDataXD functions</li>
+<li>Fixed erode and dilate for elongated kernels</li>
+<li>Fixed backup before interpolation for the YZ and XZ orientations</li>
+<li>Fixed access to the Class Reference documentation (Menu-&gt;Help-&gt;Class Reference)</li>
+<li>Fixed import of annotations that are in a wrong orientation</li>
+<li>Fixed export of TIF images in the sequential mode</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(20)" class="collapse-link"><a href="javascript:void(0);" id="Toggle20">collapse all</a></p><h2 id="20">2.10 / 01.06.2017</h2>
+<details open onclick="state_check('20.1')" id="20.1"><summary> <b>2.10 / 01.06.2017</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added materials with 65535 maximal number of materials</li>
+<li>Added export to Excel for non-PC platforms via <a href="https://se.mathworks.com/matlabcentral/fileexchange/38591-xlwrite--generate-xls-x--files-without-excel-on-mac-linux-win">xlwrite: Generate XLS(X) files without Excel on Mac/Linux/Win</a></li>
+<li>Added automatic mode for interpolation of images shown in the Image View panel. When magnification is 100% or higher MIB is using the nearest method, otherwise bicubic</li>
+<li>Added Median3D filter to the Image Filters panel (R2017a and newer)</li>
+<li>Added to the Statistics dialog generation of new models, where each object has its own index</li>
+<li>Added running average correction to the Alignment tool</li>
+<li>Added find and select material under the mouse cursor using the Ctrl+F shortcut</li>
+<li>Added pasting of selection to all layers (Menu-&gt;Selection-&gt;Selection to buffer-&gt;Paste to all slices (Ctrl+Shift+V)</li>
+<li>Added indication of material index under the mouse cursor to the <code>Pixel info</code> of the <code>Path panel</code></li>
+<li>Added possibility to save models for MIB version 1 (File-&gt;Models-&gt;Save model as...-&gt;MATLAB format for MIB ver. 1 (*.mat))</li>
+<li>Modified use of Ctrl+C/Ctrl+V, now the stored dataset can be pasted to any other dataset in MIB assuming that the dataset have the same width/height. As result <code>storedSelection</code> property of <code>mibImage</code> class has been moved to <code>mibModel</code> class</li>
+<li>Fixed export of models and masks to another MIB dataset for the compiled version</li>
+<li>Fixed singleton running of MIB, now it is possible to have several instances of MIB run in parallel</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(21)" class="collapse-link"><a href="javascript:void(0);" id="Toggle21">collapse all</a></p><h2 id="21">2.01 / 11.04.2017</h2>
+<details open onclick="state_check('21.1')" id="21.1"><summary> <b>2.01 / 11.04.2017</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>Added selection of the model type to Menu-&gt;Models-&gt;Type and removed it from the Preferences dialog</li>
+<li>Added 'Recalculate selected measurements' function to the Measure tool to recalculate distances and image intensities</li>
+<li>Added possibility to exclude black or white intensities when using the contrast normalizaton of Z-stacks (Menu-&gt;Image-&gt;Contrast-&gt;Normalize layers-&gt;Z stack)</li>
+<li>Added imresize3 function to resample datasets with R2017a (40-50% faster)</li>
+<li>Added calculation of annotation labels occurrence in the Stereology tool</li>
+<li>Moved mibView.disableSegmentation to mibModel.disableSegmentation</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(22)" class="collapse-link"><a href="javascript:void(0);" id="Toggle22">collapse all</a></p><h2 id="22">2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)</h2>
+<details open onclick="state_check('22.1')" id="22.1"><summary> <b>2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li>With release 2.0 MIB has been rewritten to utilize Controller-View-Model architecture, which brings stability and ease of future development. However, because of that, the system requirements for MATLAB were increased and MIB2 is only available for MATLAB R2014b and older (due to continuous development of MATLAB, the most recent release is always recommended)</li>
+<li>Added "Copy to clipboard" and "Open directory in the file explorer" for the right mouse button click over the current path edit box of the path panel (ver. 2.002)</li>
+<li>Added adaptive black and white thresholding</li>
+<li>Many other improvements</li>
+<li>Added offset shift for the rechop mode (ver. 2.001)</li>
+<li>Renamed Area to Volume for the Get Statistics tool for 3D objects (ver. 2.002)</li>
+<li>Big fixes (ver. 2.001, 2.002)</li></ul></div>
+</div>
+</details>
+<br>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p>
+<p></p>
+<p>
+<script>
+  var allDetails = document.getElementsByTagName('details');
+  toggle_details(0);
+</script>
+</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Microscopy Image Browser Release Notes
 % 
@@ -76,7 +1056,44 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 %
 %
 %
-%% %% 2.82 / 12.04.2022
+%% 2.83 / 19.06.2022 (blockedImage and 2D patch-wise)
+%
+% [dtls]<summary> *2.83 / 19.06.2022 (blockedImage and 2D patch-wise)* </summary>
+<div class="details-div">
+% 
+% * Added generation of image 2D and 3D patches around annotation labels ([class.code]Annotation list->Crop out patches around selected annotations[/class])
+% * Added possibility to load part of the dataset for TIF files ([class.code]right click over selected filenames->Load part of the dataset (AM and TIF)[/class])
+% * Added Info field to measurements to supplement them with additional information ([class.code]Menu->Tools->Measure length->Measure tool[/class])
+% * Added generation of pyramidal TIF files and batch processing of BioFormat files ([class.code]Menu->Plugins->File processing->Image converter[/class])
+% * Added the "show prompt" option to the Annotations tool ([class.code]Segmentation panel->Annotations->show prompt[/class])
+% * Added [InheritLastDIR] tag to inherit directory name from DIR LOOP when saving images using the Protocol organizer ([class.code]Menu->File->Batch processing->DIRECTORY LOOP START[/class])
+% * Added "end" tag to the crop operation for the Protocol organizer ([class.code]Menu->File->Batch processing->Crop dataset[/class])
+% * Added Drag-and-drop model files to the Segmentation table to load them
+% * Correction of pixel size for pyramidal formats when levels are not multiplied by factor of 2
+% * Fixed loading of partial AM files, when step was set to 1
+% * Fixed loading of TIF files with YCbCr color space
+% * Updated Bio-Formats to 6.10.0 
+% * [DeepMIB] Rearranged Architecture into Workflow and Architecture parameters ([class.code]DeepMIB->Network panel[/class])
+% * [DeepMIB] Optimized to work without preprocessing of images
+% * [DeepMIB] Added blockedImage mode and set it as default processing engine ([class.code]DeepMIB->Predict->Prediction engine[/class])
+% * [DeepMIB] Added dynamic masking for the blockedImage processing mode ([class.code]DeepMIB->Predict->Dynamic masking[/class])
+% * [DeepMIB] Added 2D Patch-wise mode to process images in patches ([class.code]DeepMIB->Network->Workflow->2D Patch-wise[/class])
+% * [DeepMIB] Added Resnet18, Resnet50, Resnet101, Xception networks for the patch-wise mode
+% * [DeepMIB] Added alternative arrangement of files for 2D Patch-wise mode where each class is stored in its own directory
+% * [DeepMIB] Added "Load models" to the Options tab to skip loading of images when they are already preloaded ([class.code]DeepMIB->Predict->Load models[/class])
+% * [DeepMIB] Added possibility to specify frequency of saving checkpoint networks (R2022a or newer), ([class.code]DeepMIB->Train->Save checkpoint networks[/class])
+% * [DeepMIB] Added percentage parameter to the overlapping tiles mode ([class.code]DeepMIB->Predict->Overlapping tiles->%%[/class])
+% * [DeepMIB] Added possibility to select a single augmentation to preview ([class.code]DeepMIB->Train->Augmentations->Preview[/class])
+% * [DeepMIB] Added new 3D augmentations reaching 18 operations ([class.code]DeepMIB->Train->Augmentations->3D[/class])
+% * [DeepMIB] Added DeepLabV3-Resnet50 to 2D semantic segmentation (MATLAB MIB only)
+% * [DeepMIB] Fixed preview of some patches and contrast stretch in Activation Explorer
+%
+% [/dtls]
+%
+%% 2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)
+%
+% [dtls]<summary> *2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)* </summary>
+<div class="details-div">
 %
 % * Added generation of kymographs to Measure tool
 % * Added indexing of objects in a model to generate a new model, where
@@ -88,7 +1105,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % Supervoxel classifier, Membrane detection; when these tools are in focus,
 % the key shortcuts of the main window are triggered
 % * Added reading of pixel size from Zeiss SmartSEM and Atlas TIF files
-% * Added automatic extration of metadata from Zeiss Atlas and SmartSEM TIF files (Menu->Plugins->File processing->Image converter: TIF->XML)
+% * Added automatic extraction of metadata from Zeiss Atlas and SmartSEM TIF files (Menu->Plugins->File processing->Image converter: TIF->XML)
 % * Added "Selected files in Directory contents" option into "Load and combine images" option of the Batch processing tool
 % * Added 'ndpi' format to the list of BioFormats extensions
 % * Added new options for faster placing measurements (Menu->Tools->Measure length->Measure tool)
@@ -108,7 +1125,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * [MCcalc] Added calculation of areas and average min thickness for the main objects
 % * [MCcalc] Added calculation contacts between objects of the same material
 %
-%% %% 2.81 / 14.10.2021
+% [/dtls]
+%
+%% 2.81 / 14.10.2021
+%
+% [dtls]<summary> *2.81 / 14.10.2021* </summary>
+<div class="details-div">
+%
 % * Added contrast adjustment, when 16-bit is converted to 16-bit
 % * Added import of annotations from CSV files (Segmentation table->Annotations->Annotation list->Load
 % * Added conversion of annotations to the mask layer (Annotations->Annotation list->List of annotations->Convert selected annotations to Mask)
@@ -121,7 +1144,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * [DeepMIB] added counting of labels in model files (Options->Count labels)
 % * [DeepMIB] fixed bug with selection of 'Multi GPU' for prediction
 %
+% [/dtls]
+%
 %% 2.802 / 01.06.2021
+%
+% [dtls]<summary> *2.802 / 01.06.2021* </summary>
+<div class="details-div">
+%
 % * Added HDD mode to align datasets that can not be fit into memory (Menu->Dataset->Alignment tool->HDD)
 % * Added new preference dialog (Menu->File->Preferences)
 % * Added exclusion of Stretch and Shear peaks into the automatic alignment using image features
@@ -150,7 +1179,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * [DeepMIB] Added Transfer Learning to update models to different number of classes (Prediction tab->Evaluate segmentation)
 % * [DeepMIB] Added setting of mini-batch size for prediction
 % * [DeepMIB] Added options for export of prediction scores
-% * [DeepMIB] Added calculation of occurrence and Sørensen-Dice similarity for comparison of ground truth and generated models
+% * [DeepMIB] Added calculation of occurrence and SÃ¸rensen-Dice similarity for comparison of ground truth and generated models
 % * [DeepMIB] Added filenames and export to CSV to evaluate segmentation operation
 % * [DeepMIB] Added export of trained models to ONNX format (MATLAB version of MIB)
 % * Updated reading of NRRD files for MacOS (mibGetImages & mibModel.loadModel, nhdr_*.m nrrd_* files)
@@ -168,7 +1197,12 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * [DeepMIB] Updated training progress plot and added configuration parameters
 % * [DeepMIB] Improved performance of image preprocessing for AmiraMesh
 %
+% [/dtls]
+%
 %% 2.70 / 18.05.2020
+%
+% [dtls]<summary> *2.70 / 18.05.2020* </summary>
+<div class="details-div">
 % 
 % * Added Deep MIB for training and prediction of datasets using
 % deep convolutional networks
@@ -178,21 +1212,36 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % tool
 % * Fixed issues with importing of chopped cropped datasets
 %
+% [/dtls]
+%
 %% 2.66 / 25.04.2020
+%
+% [dtls]<summary> *2.66 / 25.04.2020* </summary>
+<div class="details-div">
 %
 % * Added direct conversion from Mask to Model layer (Segmentation
 % panel->Material table->right click->Mask to Material)
 % * Added drag-and-drop for opening of *.model files by dragging them from
 % elsewhere to the Image View panel
 %
+% [/dtls]
+%
 %% 2.651 / 25.04.2020
+%
+% [dtls]<summary> *2.651 / 25.04.2020* </summary>
+<div class="details-div">
 %
 % * Added smoothing of multiple materials of models via batch processing
 % * Fixed definition of the starting point for the Membrane ClickTracker tool
 % * Fixed setData method for specific materials of the model
 %
+% [/dtls]
+%
 %% 2.65 / 23.03.2020
 % 
+% [dtls]<summary> *2.65 / 23.03.2020* </summary>
+<div class="details-div">
+%
 % * Added Drag and drop files into the Image View panel 
 % * Added dialog with 30 new image filters (Menu->Image->Image filters...)
 % * Added dataset alignment using AMST: Align to Median Smoothed Template (Menu->Dataset->Alignment)
@@ -217,8 +1266,12 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * Plugins: Spacial Control Points to generate a set of random points over the masked area (Menu->Plugins->Plasmodesmata->SpatialControlPoints)
 % * Plugins: Cell Wall Thickness to calculate thickness of cell walls (Menu->Plugins->Plasmodesmata->Cell wall thickness)
 %
+% [/dtls]
 %
 %% 2.601 / 04.11.2019
+%
+% [dtls]<summary> *2.601 / 04.11.2019* </summary>
+<div class="details-div">
 %
 % * The deployed version of MIB comes with R2019b instead of R2017a
 % * Added the Batch mode for repetitive processing of images (Menu->File->Batch processing)
@@ -244,8 +1297,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * [2.601] Bug fixes
 % * [2.601] Added export of annotations to CSV format
 %
+% [/dtls]
 %
 %% 2.51 / 13.03.2019
+%
+% [dtls]<summary> *2.51 / 13.03.2019* </summary>
+<div class="details-div">
+%
 % * Added methods for automatic global black-and-white thresholding (|Menu->Tools->Semi-automatic segmentation->Global thresholding|)
 % * Added selection of materials for rendering of MATLAB Isosurface models (|Menu->Models->Render model->MATLAB isosurface|)
 % * Added calculation of images with extended depth-of-field focus stacking
@@ -267,12 +1325,24 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * Fixed pixel size when combining 2D images with different dimensions
 % * Fixed adding icons to buttons when MIB is installed in network path that starts from  "//"
 %
+% [/dtls]
+%
 %% 2.501 / 21.12.2018
+%
+% [dtls]<summary> *2.501 / 21.12.2018* </summary>
+<div class="details-div">
+%
 % * Added swap slices option (Menu->Dataset->Slice->Swap slices)
 % * Fixed rendering of combined image in the split color channel mode with Lut enabled in Snapshot and Make movie tools
 % * Fixed Copy Slice for the Insert mode
 %
+% [/dtls]
+%
 %% 2.50 / 17.12.2018
+%
+% [dtls]<summary> *2.50 / 17.12.2018* </summary>
+<div class="details-div">
+%
 % * Added hardware accelerated 3D volume rendering (Menu->File->Render
 % volume->MIB rendering). The volume rendering can be used also for making
 % snapshots and animations. Requires MATLAB R2018b or newer!
@@ -303,7 +1373,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * Fixed of cropping of the selection layer for models with more than 63 materials
 % * Fixed alignment for models with more than 63 materials
 %
+% [/dtls]
+%
 %% 2.40 / 31.08.2018
+%
+% [dtls]<summary> *2.40 / 31.08.2018* </summary>
+<div class="details-div">
+%
 % * Added virtual mode for datasets that are compatible with the BioFormats
 % library or in HDF5 format
 % * Added shift of annotations when inserting a slice
@@ -314,7 +1390,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * Updated BioFormats to 5.9.1
 % * Bug fixes
 %
+% [/dtls]
+%
 %% 2.302 / 18.05.2018 (03.07.2018)
+%
+% [dtls]<summary> *2.302 / 18.05.2018 (03.07.2018)* </summary>
+<div class="details-div">
+%
 % * Added Lines3D class for 3D measurements and generation of 3D skeletons and graphs 
 % * Added the Image arithmetics dialog (|Menu->Image->Tools for images->Image arithmetics...|)
 % * Added the Rename and Shuffle tool (|Menu->File->Rename and Shuffle|) to
@@ -338,7 +1420,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * [2.302] Fixed export of 3D lines to Amira Mesh format
 % * [2.302] Fixed recalculation of pixels into the physical units when initializing 3D lines programically
 %
+% [/dtls]
+%
 %% 2.22 / 16.03.2018
+%
+% [dtls]<summary> *2.22 / 16.03.2018* </summary>
+<div class="details-div">
+%
 % * Added value field for the annotations, thus each annotation can be weighted based on its value
 % * Added possibility to do deep neural network denoising on GPUs with
 % small memory, use the |GPU block| parameter in |Image filters->DNN Denoise|
@@ -360,21 +1448,39 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * Fix callback when selecting color channels in the Selection panel
 % * Fix of opening of AmiraMesh files with extended headers
 %
+% [/dtls]
+%
 %% 2.211 / 21.12.2017
+%
+% [dtls]<summary> *2.211 / 21.12.2017* </summary>
+<div class="details-div">
+%
 % * Updated TripleAreaIntensity plugin
 % * Fix, the |contains| function replaced with ismember for compatibility with MATLAB 2014b-2016a
 % * Fix of lost key press callbacks after modification of the segmentation table
 % * Fix of loading hdf5 datasets with time dimension
 % * Few other minor bug fixes
 % 
+% [/dtls]
+%
 %% 2.21 / 04.12.2017
+%
+% [dtls]<summary> *2.21 / 04.12.2017* </summary>
+<div class="details-div">
+%
 % * Added model with 4294967295 materials for tests
 % * Improved object picker for models with 65535 materials
 % * Fix compiling of certain function using the |-compatibleArrayDims| switch to be compatible with the new MATLAB API
 % * Fix of 'Fix selection to material' switch for models with more than 255 materials
 % * Fix connection to Omero for the deployed version
 %
-%% 2.20 14.11.2017
+% [/dtls]
+%
+%% 2.20 / 14.11.2017
+%
+% [dtls]<summary> *2.20 / 14.11.2017* </summary>
+<div class="details-div">
+%
 % * Added a new 3D Grid mode to the Graphcut tool; when used the fast interactive performance can be achieved even with very large datasets
 % * Added denoise of image using deep neural network (|Image Filters
 % Panel->Filter->DNN Denoise|), requires MATLAB R2017b or newer and Neural Network Toolbox
@@ -399,7 +1505,12 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * [Programming] moved mibController.connImaris to mibModel.connImaris
 % * [Programming] updated syntax of mibImage.clearMask
 %
-%% 2.12 18.09.2017
+% [/dtls]
+%
+%% 2.12 / 18.09.2017
+%
+% [dtls]<summary> *2.12 / 18.09.2017* </summary>
+<div class="details-div">
 %
 % * Added a new tool to detect a frame around images (Menu->Image->Tools
 % for images->Select image frame...)
@@ -431,7 +1542,12 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * Fixed import of annotations that are in a wrong orientation
 % * Fixed export of TIF images in the sequential mode
 %
-%% 2.1 01.06.2017
+% [/dtls]
+%
+%% 2.10 / 01.06.2017
+%
+% [dtls]<summary> *2.10 / 01.06.2017* </summary>
+<div class="details-div">
 %
 % * Added materials with 65535 maximal number of materials
 % * Added export to Excel for non-PC platforms via <https://se.mathworks.com/matlabcentral/fileexchange/38591-xlwriteREPLACE_WITH_DASH_DASHgenerate-xls-xREPLACE_WITH_DASH_DASHfiles-without-excel-on-mac-linux-win xlwrite: Generate XLS(X) files without Excel on Mac/Linux/Win>
@@ -453,7 +1569,12 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * Fixed singleton running of MIB, now it is possible to have several
 % instances of MIB run in parallel
 %
-%% 2.01 11.04.2017
+% [/dtls]
+%
+%% 2.01 / 11.04.2017
+%
+% [dtls]<summary> *2.01 / 11.04.2017* </summary>
+<div class="details-div">
 %
 % * Added selection of the model type to Menu->Models->Type and removed it
 % from the Preferences dialog
@@ -465,7 +1586,12 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * Added calculation of annotation labels occurrence in the Stereology tool
 % * Moved mibView.disableSegmentation to mibModel.disableSegmentation
 %
-%% 2.000 20.03.2017 Official Release, 2.002 (02.04.2017)
+% [/dtls]
+%
+%% 2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)
+%
+% [dtls]<summary> *2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)* </summary>
+<div class="details-div">
 %
 % * With release 2.0 MIB has been rewritten to utilize Controller-View-Model
 % architecture, which brings stability and ease of future development.
@@ -480,7 +1606,92 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * Renamed Area to Volume for the Get Statistics tool for 3D objects (ver. 2.002)
 % * Big fixes (ver. 2.001, 2.002)
 %
+% [/dtls]
+%
 % *Back to* <im_browser_product_page.html *Index*>
-
+%
+%
+% [cssClasses]
+% .dropdown { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	border-radius: 0.2em; 
+% 	background-color: #fff; 
+% 	background-color: #e0f5ff; 
+% 	background-color: #e8f5e8; 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html lang="en">
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>
 ##### SOURCE END #####
---></body></html>
+--><script>
+var allDetails   = document.getElementsByTagName('details');
+var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
+var returnButton = document.getElementById("return-link");
+document.getElementById("iFrameBuf").style.display = "none";
+if(in_iFrame())
+{
+   try{
+      var footerNav = parent.document.getElementsByClassName("footernav");
+      var tabPane   = parent.document.getElementsByClassName("tab-pane");}
+   catch(err) { var footerNav = []; var tabPane = [];};
+   if(!(footerNav.length) || tabPane.length)
+   {
+      contentDiv.style.overflowY = "scroll";
+      contentDiv.style.overflowX = "hidden";
+      contentDiv.style.position  = "absolute";
+      contentDiv.style.width     = "95%";
+      contentDiv.style.top       = 0;
+      contentDiv.style.bottom    = 0;
+      if (tabPane.length){
+         contentDiv.setAttribute("data-isMATLABCentral","1");
+         returnButton.style.right = "40px";
+         document.getElementById("tooltiptext").style.right = "92px"; }
+      document.getElementById("iFrameBuf").style.display = "block";
+   }
+   else { contentDiv.setAttribute("data-isHelpBrowser","1"); }
+}
+if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
+   document.getElementById("anchor-offsets").sheet.disabled = true; }
+var jumpLinks = document.getElementsByTagName("a");
+for (var i = 0; i < jumpLinks.length; i++){
+  href = jumpLinks[i].getAttribute("href");
+  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
+</script></body></html>

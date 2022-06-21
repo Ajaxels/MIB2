@@ -5,22 +5,23 @@
 % <html>
 % <table style="width: 550px; text-align: center; border-width: 0px;" cellspacing=2px cellpadding=2px>
 % <tr style="font-weight: normal;">
-%   <td><img src="images/im_browser_splash_sm2.jpg"></td>
+%   <td width=260px><img src="images/im_browser_splash_sm2.jpg"></td>
 %   <td><b>Microscopy Image Browser</b><br>
 %   <em>image segmentation and beyond</em><br><br>
 %   Microscopy Image Browser is a GUI tool that is written under MATLAB environment and can be used for 
-%   segmentation of multidimentional datasets obtained by light or electron microscopy.<br>
+%   segmentation of multidimentional datasets obtained by light or electron microscopy<br>
 %   <br><br><b>Powered by MATLAB, <a href="https://www.mathworks.com/">The MathWorks, Inc.</a></b>
 % </td>
 % </tr>
 % </table>
+% <br>
 % </html>
 %
 %%
 % 
 % <html>
 % <table style="width: 550px; text-align: center; border-width: 0px;" cellspacing=2px cellpadding=2px bgcolor='white'>
-% <tr style="font-weight: bold;background: #ff6600;">
+% <tr style="font-weight: bold;background: #FFB74D;">
 %   <td>General</td>
 %   <td>User Guide</td>
 %   <td>Tutorials</td>
@@ -58,12 +59,12 @@
 % 
 % API class reference can be accessed from the |MIB->Menu->Help->Class reference|
 %
-% Also see the <http://mib.helsinki.fi Microscopy Image Browser home page:  http://mib.helsinki.fi > 
+% Also see the <http://mib.helsinki.fi Microscopy Image Browser home page> 
 %
 %%
 % 
 % <html>
-% Developed during 2010-2021 by<br>
+% Developed during 2010-2022 by<br>
 % Core developer:<br>
 % <a href="http://www.biocenter.helsinki.fi/~ibelev/">Ilya Belevich</a><br>
 % Developers:<br>
@@ -78,3 +79,4 @@
 %
 %
 % *Back to* <im_browser_product_page.html *Index*>
+% [themesEnabled]

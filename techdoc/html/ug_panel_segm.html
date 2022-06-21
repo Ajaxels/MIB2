@@ -1,13 +1,12 @@
 
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head>
+<!DOCTYPE html>
+<html lang="en"><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Segmentation Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-12"><meta name="DC.source" content="ug_panel_segm.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>Segmentation Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="ug_panel_segm.m"><style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -36,13 +35,13 @@ ol li ol li { list-style-type:lower-alpha; }
 ol li ul { padding-top:7px; }
 ol li ul li { list-style:square; }
 
-.content { font-size:1.2em; line-height:140%; padding: 20px; }
+.content { font-size:1.2em; line-height:160%; padding: 20px; }
 
-pre, code { font-size:12px; }
-tt { font-size: 1.2em; }
-pre { margin:0px 0px 20px; }
+pre { font-size:12px; }
+code { font-size: 1.15em; }
+pre { margin:0px 0px 15px; overflow-x:auto; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
-pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 15px; color:#4c4c4c; }
 pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
@@ -66,29 +65,529 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
+.kbd {     font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
-  </style></head><body><div class="content"><h1>Segmentation Panel</h1><!--introduction--><p>The segmentation panel is the main panel used for segmentation. It allows creating models, modifying materials and selecting different segmentation tools.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">What are the Models</a></li><li><a href="#4">The Create button</a></li><li><a href="#5">The Load button</a></li><li><a href="#7">The +, -, and E buttons</a></li><li><a href="#8">The Filled/Contour combo box</a></li><li><a href="#9">The Segmentation table</a></li><li><a href="#10">The Fix selection to material check box</a></li><li><a href="#11">The Masked area checkbox</a></li><li><a href="#12">The "D" checkbox, to select fast access tools</a></li><li><a href="#13">Segmentation tools combo box</a></li></ul></div><p><img vspace="5" hspace="5" src="images\PanelsSegmentation.png" alt=""> </p><h2 id="2">What are the Models</h2><p><tt>Model</tt> is a matrix with dimensions equal to those of the opened <tt>Image</tt> dataset: <i>i.e.</i>  [ <tt>1:imageHeight, 1:imageWidth, 1:imageThickness</tt> ]. The <tt>Model</tt> consists of Materials, each element of the <tt>Model</tt> matrix can belong only to a single material or to an exterior. So it is not possible to have several materials above the same pixel of the <tt>Image</tt> overlapping each other. Each material in the <tt>Model</tt> matrix is encrypted with own index:</p><pre class="codeinput">Model = [1 1 0 0; 1 1 0 0; 0 0 2 2; 0 0 2 2];
+#tooltiptext {
+  visibility: hidden;
+  padding: 5px 10px;
+  font-size: 75%;
+  line-height:110%;
+  text-align: center;
+  background-color: black;
+  color: #ddd;
+  border-radius: 6px;
+  position: fixed;
+  bottom: 11px;
+  right: 62px;
+  z-index: 2;
+}
+#tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+.tooltip:hover #tooltiptext {
+  visibility: visible;
+}
+#return-link {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    overflow: visible;
+    font-size:120%;
+    background: rgba(0, 0, 0, 0.75);
+    border-style: solid;
+    border-width: 3pt;
+    border-color: #202020;
+    border-radius: 4px;
+    cursor: pointer;
+    }
+#return-link > p { padding:3px; margin:0; color:#C0C0C0;}
+.MATLAB-Help {
+width: 100%;
+margin-bottom: 12px;
+border: 1px solid #ccc;
+border-right: none;
+border-bottom: none;
+font-size: 96%;
+line-height: 1.4;
+table-layout: fixed;
+overflow:hidden;}
+
+.MATLAB-Help > thead > tr > th {
+padding: 6px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+background: #F2F2F2;
+color: #000;
+font-weight: bold;
+text-align: left;
+vertical-align: middle;}
+
+.MATLAB-Help td{padding: 5px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+vertical-align: middle;}
+
+.language-matlab { line-height:135% }
+
+.collapse-link {float:right; line-height:200%; padding-left:10px; margin:0}
+
+
+details > summary,
+.details-div {
+  padding: 8px 20px;
+  border-style: solid;
+  border-width: 1.2pt;
+  border-color: #E0E0E0;
+}
+details > summary {
+  border-radius:6px 6px 0 0;
+  background-color: #F2F2F2;
+  cursor: pointer;
+}
+.details-div {
+  border-top-style: none;
+  border-radius: 0 0 6px 6px;
+}
+.image-fit-svg,
+.image-fit {
+    max-width:  95%;
+    max-height: 100%;
+    margin:     auto;
+}
+.image-fit-svg{ padding:0px; max-width:500px; }
+details > img.image-fit-svg{ padding: 0px 0px 10px; }
+@media (max-width: 580px) {
+  .image-fit-svg { max-width: 95%; }
+}
+.pretty-link  { color:#001188 !important; }
+</style>
+<style id="dark-theme">
+    h2, h3       { color: #B0B0B0; }
+    html body    { background-color: #101010; color: #B0B0B0; }
+    .pretty-link { color: #C46313 !important; }
+    a, a:visited { color: #C46313 }
+    a:hover      { color: orange; }
+    details > summary,
+    .details-div      { border-color:     #505050; }
+    details > summary { background-color: #202020; }
+    pre.codeinput     { border-width: 1.2pt; border-color:#001B33; background:#001129; color:#F0F0F0; }
+    pre.codeoutput    { color:#A5A5A5; }
+    span.keyword      { color:#FF9D00; }
+    span.comment      { color:#808080; }
+    span.string       { color:#3AD900; }
+    span.untermstring { color:#FFEE80; }
+    span.syscmd       { color:#CCCCCC; }
+    .MATLAB-Help, .MATLAB-Help > thead > tr > th, .MATLAB-Help td { border-color:#505050; }
+    .MATLAB-Help > thead > tr > th { background: #202020; color: #B0B0B0; }
+    .summary-sub-heading { color:#909090; }
+    .show-if-light    { display:none }
+</style>
+<style id="hide-dark">
+     .show-if-dark { display:none }
+</style>
+
+<style id="anchor-offsets">
+    h2::before, a[id]::before{
+    content: "";
+    display: block;
+    height: 100px;
+    margin: -100px 0 0;
+    visibility: hidden;
+    width:10%;
+    z-index: -1;
+}
+</style>
+
+<script>
+          var returnElem = null;
+          var skipCheck  = false;
+
+          function hide_back_link()
+          {
+              returnButton.style.display = "none";
+              try{
+                 window.removeEventListener("scroll", update_back_position, true);
+                 window.removeEventListener("resize", update_back_position, true);
+                 parent.window.removeEventListener("scroll", update_back_position, true);
+                 parent.window.removeEventListener("resize", update_back_position, true);}
+              catch(e){}
+          }
+
+          function get_offset(element)
+          {
+              if (!element.getClientRects().length){ return { top: 0, left: 0 }; }
+              var rect = element.getBoundingClientRect();
+              var win  = element.ownerDocument.defaultView;
+              return ( {top:  rect.top  + win.pageYOffset,
+                        left: rect.left + win.pageXOffset} );
+          }
+
+          function jump_to()
+          {
+              var clickedElem = event.target;
+              var clickedID   = clickedElem.closest("span");
+              if (clickedID){
+                clickedID = clickedID.getAttribute("id");
+                if (clickedID.localeCompare("jump-close")===0) { return };}
+              clickedID = clickedElem.closest("div").getAttribute("id");
+              if (clickedID && clickedID.localeCompare("return-link")===0)
+              {
+                  if (returnElem)
+                  {
+                      event.preventDefault();
+                      hide_back_link();
+                      returnElem.scrollIntoView();
+                      if (contentDiv.getAttribute("data-isHelpBrowser")){
+                         contentDiv.scrollTop = contentDiv.scrollTop-100; }
+                      if (contentDiv.getAttribute("data-isMATLABCentral")){
+                         parent.window.scrollBy(0,-100)}
+                      returnElem = null;
+                  }
+              }
+              else
+              {
+                  var href = clickedElem.closest("a").getAttribute("href");
+                  if ( href && href[0] == "#" )
+                  {
+                     var target = document.getElementById(href.substring(1));
+                     var enclosingBox = target;
+                     while ( enclosingBox )
+                     {
+                        prevBox      = enclosingBox;
+                        enclosingBox = enclosingBox.closest("details");
+                        if ( enclosingBox===prevBox ){
+                           enclosingBox = enclosingBox.parentElement
+                           if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
+                        if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
+                     }
+                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                        event.preventDefault();
+                        target.scrollIntoView(); }
+                     var nextElem = target.nextElementSibling;
+                     var nextNode = target.nextSibling;
+                     while ( nextNode && nextNode.nodeType==Node.TEXT_NODE && nextNode.data.trim().length == 0 ){
+                        nextNode = nextNode.nextSibling;}
+                     if ( nextElem && nextElem===nextNode && nextElem.localName.localeCompare("details")===0 && !nextElem.open){
+                        open_details(nextElem.id);}
+                  }
+                  else { return }
+                  if (!contentDiv.getAttribute("data-isHelpBrowser"))
+                  {
+                      update_back_position();
+                      returnButton.style.display = "block";
+                      var linkTop   = clickedElem.offsetTop;
+                      var targetTop = target.offsetTop;
+                      if (targetTop>linkTop){
+                          document.getElementById("down").style.display = "none";
+                          document.getElementById("up").style.display   = "inline"; }
+                      else{
+                          document.getElementById("up").style.display   = "none";
+                          document.getElementById("down").style.display = "inline"; }
+                      returnElem = clickedElem;
+                  }
+              }
+          }
+
+          function open_details(detailsID)
+          {
+              var details  = document.getElementById(detailsID);
+              skipCheck    = true;
+              state_check(details.id);
+              details.open = true;
+          }
+
+          function update_back_position()
+          {
+              try
+              {
+                  window.addEventListener("scroll", update_back_position, true);
+                  window.addEventListener("resize", update_back_position, true);
+                  var scrollPos;
+                  if (in_iFrame())
+                  {
+                      parent.window.addEventListener("scroll", update_back_position, true);
+                      parent.window.addEventListener("resize", update_back_position, true);
+                      var iFrame         = window.frameElement;
+                      var frameOffset    = get_offset(iFrame);
+                      var documentBottom = parent.window.innerHeight  + parent.window.scrollY;
+                      var extHeight      = Math.round(frameOffset.top + iFrame.getBoundingClientRect().height - documentBottom);
+                      if (extHeight<0) { extHeight = 0; }
+                      returnButton.style.bottom = (10+extHeight) + "px";
+                      document.getElementById("tooltiptext").style.bottom = (11+extHeight) + "px";
+                      scrollPos = contentDiv.scrollTop - 25 + iFrame.getBoundingClientRect().height - extHeight;
+                  }
+                  else{
+                      scrollPos = window.scrollY + window.innerHeight - 25;}
+                  if (returnElem.offsetTop>scrollPos){
+                      document.getElementById("down").style.display = "inline";
+                      document.getElementById("up").style.display   = "none";   }
+                  else{
+                      document.getElementById("down").style.display = "none";
+                      document.getElementById("up").style.display   = "inline"; }
+              }
+              catch(e){}
+          }
+          function set_theme(themePref)
+          {
+            var themeSwitch     = document.getElementById("ToggleTheme");
+            var themeSwitchText = "switch to";
+            var switchToText    = null;
+            if (!themePref){ themePref = get_theme_pref(); }
+            if (themePref.localeCompare("light")===0){
+                document.getElementById("dark-theme").sheet.disabled = true;
+                document.getElementById("hide-dark").sheet.disabled  = false;
+                switchToText = " dark theme";}
+            else{
+                document.getElementById("dark-theme").sheet.disabled = false;
+                document.getElementById("hide-dark").sheet.disabled  = true;
+                switchToText = " light theme";}
+            themeSwitch.innerHTML = themeSwitchText + switchToText;
+            set_theme_pref(themePref);
+          }
+
+          function toggle_theme()
+          {
+            if (document.getElementById("dark-theme").sheet.disabled) { set_theme("dark");  }
+            else                                                      { set_theme("light"); }
+          }
+
+          function set_theme_pref(themePref)
+          {
+              var d = new Date();
+              d.setTime(d.getTime() + (2*365*24*60*60*1000));
+              var expires = "expires="+ d.toUTCString();
+              document.cookie = "themepref=" + themePref + ";" + expires + "path=/";
+              localStorage.setItem("PRETTY_THEME", themePref);
+          }
+
+          function get_theme_pref() {
+              var name = "themepref=";
+              var decodedCookie = decodeURIComponent(document.cookie);
+              var ca = decodedCookie.split(';');
+              for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                  c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                  return c.substring(name.length, c.length);
+                }
+              }
+              var docTheme = localStorage.getItem("PRETTY_THEME");
+              if (docTheme) { return docTheme }
+              else          { return "light"  }
+          }
+
+          function toggle_details(section)
+          {
+            var link;
+            var subSection;
+            var details;
+            var linkText;
+            var i;
+            var openState  = true;
+            var border     = "6px 6px 0 0;"
+            if (section===0)
+            {
+              link = document.getElementById("Toggle"+section.toString());
+              if (link.innerHTML.localeCompare("collapse all on page")===0){
+                  openState = false;
+                  border    = "6px;"
+                  linkText  = "expand all";}
+              else{
+                  linkText   = "collapse all";}
+              link.innerHTML = linkText + " on page";
+              for (i = 0; i < allDetails.length; i++){
+                 allDetails[i].open = openState;
+                 allDetails[i].children[0].setAttribute( 'style', "border-radius:"+border );
+                 link = document.getElementById("Toggle"+allDetails[i].id.split(".", 1));
+                 if (allDetails[i].id.charAt(0).localeCompare("0") && link){link.innerHTML = linkText;}}
+            }
+            else
+            {
+               link = document.getElementById("Toggle"+section.toString());
+               subSection = 1;
+               if (link.innerHTML.localeCompare("collapse all")===0){
+                  openState      = false;
+                  border         = "6px;"
+                  link.innerHTML = "expand all";}
+               else{
+                  link.innerHTML = "collapse all";}
+               details = document.getElementById(section.toString()+"."+subSection.toString());
+               while (details){
+                    details.open = openState;
+                    details.children[0].setAttribute( 'style', "border-radius:"+border );
+                    subSection++;
+                    details = document.getElementById(section.toString()+"."+subSection.toString());}
+               var allCollapsed = true;
+               var allExpanded  = true;
+               for (i = 0; i < allDetails.length; i++){
+                   check_if_open(allDetails[i]);}
+               link = document.getElementById("Toggle0");
+               if (allExpanded) {link.innerHTML = "collapse all on page";}
+               if (allCollapsed){link.innerHTML = "expand all on page";}
+            }
+            function check_if_open(details)
+            {
+                if (details.open){allCollapsed = false;}
+                else             {allExpanded  = false;}
+            }
+          }
+
+          function state_check(detailsID)
+          {
+              // first deal with just the section
+              if (event.detail){document.activeElement.blur();}
+              var clickedElem   = event.target;
+              if (!skipCheck && clickedElem.localName.localeCompare("summary"))
+              { 
+                if (!(clickedElem.closest("summary"))) { return };
+              };
+              var details       = document.getElementById(detailsID);
+              if ( !skipCheck ) {
+                  var parentID  = clickedElem.closest("details").id;
+                  if (details.id.localeCompare(parentID)) { return };}
+              skipCheck         = false;
+              var clickedStatus = details.open;
+              var section       = detailsID.split(".", 1);
+              var subSection    = 1;
+              var allCollapsed  = true;
+              var allExpanded   = true;
+              var link          = document.getElementById("Toggle"+section);
+              if (clickedStatus) { details.children[0].setAttribute( 'style', "border-radius:6px;" ); }
+              else               { details.children[0].setAttribute( 'style', "border-radius:6px 6px 0 0;" ); }
+              if (link)
+              {
+                  details = document.getElementById(section+"."+subSection.toString());
+                  while (details){
+                    check_if_open(details);
+                    subSection++;
+                    details = document.getElementById(section+"."+subSection.toString());}
+                  if (allExpanded) {link.innerHTML = "collapse all";}
+                  if (allCollapsed){link.innerHTML = "expand all";}
+              }
+              // then the whole page
+              allCollapsed   = true;
+              allExpanded    = true;
+              for (var i = 0; i < allDetails.length; i++){
+                  check_if_open(allDetails[i]);}
+              link = document.getElementById("Toggle0");
+              if (allExpanded) {link.innerHTML = "collapse all on page";}
+              if (allCollapsed){link.innerHTML = "expand all on page";}
+
+              function check_if_open(details)
+              {
+                  var openStatus
+                  if (detailsID.localeCompare( details.id )===0 ){openStatus = !clickedStatus;}
+                  else                                           {openStatus = details.open;}
+                  if (openStatus){allCollapsed = false;}
+                  else           {allExpanded  = false;}
+              }
+          }
+
+          function in_iFrame ()
+          {
+               try {
+                   return window.self !== window.top;
+               } catch (e) {
+                   return true;
+               }
+          }
+</script>
+</head><body>
+<div class="content">
+<div id="return-link" style="display:none;" class="tooltip">
+<p onclick="jump_to()">
+    <span onclick="jump_to()"><span id="up">&#8679;</span><span id="down">&#8681;</span>
+    <span onclick="hide_back_link()" style="padding:2px; font-size:120%;" id="jump-close"><b onclick="hide_back_link()">&times;</b></span></span>
+</p>
+<div id="tooltiptext">click to return
+<br>(click <b>&times;</b> to hide)</div>
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Segmentation Panel</h1><!--introduction-->
+<p>The segmentation panel is the main panel used for segmentation. It allows creating models, modifying materials and selecting different segmentation tools.</p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction-->
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
+<div><ul><li><a href="#2">What are the Models</a></li>
+<li><a href="#4">The Create button</a></li>
+<li><a href="#5">The Load button</a></li>
+<li><a href="#7">The +, -, and E buttons</a></li>
+<li><a href="#8">The Filled/Contour combo box</a></li>
+<li><a href="#9">The Segmentation table</a></li>
+<li><a href="#10">The <span class="kbd">[&#10003;] <b>Fix selection to material</b></span> checkbox</a></li>
+<li><a href="#11">The <span class="kbd">[&#10003;] <b>Masked area</b></span> checkbox</a></li>
+<li><a href="#12">The <span class="kbd">[&#10003;] <b>"D"</b></span> checkbox, to select fast access tools</a></li>
+<li><a href="#13">Segmentation tools combo box</a></li></ul></div>
+<p><img class="image-fit" src="images\PanelsSegmentation.png" alt=""> </p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="2">What are the Models</h2>
+<p><code>Model</code> is a matrix with dimensions equal to those of the opened <code>Image</code> dataset: <i>i.e.</i>  [ <code>1:imageHeight, 1:imageWidth, 1:imageThickness</code> ]. The <code>Model</code> consists of Materials, each element of the <code>Model</code> matrix can belong only to a single material or to an exterior. So it is not possible to have several materials above the same pixel of the <code>Image</code> overlapping each other. Each material in the <code>Model</code> matrix is encrypted with own index</p>
+<details open onclick="state_check('1.1')" id="1.1"><summary> <b>Example of a model 4x4 pixels</b> </summary>
+<div class="details-div">
+<p></p>
+<pre class="codeinput">Model = [1 1 0 0; 1 1 0 0; 0 0 2 2; 0 0 2 2];
 Model
-</pre><pre class="codeoutput">
+</pre>
+<pre class="codeoutput">
 Model =
 
      1     1     0     0
      1     1     0     0
      0     0     2     2
-     0     0     2     2
-
-</pre><p>In this example, the shown matrix represents a Model with 2 materials encrypted with <b>1</b> (the upper left corner) and <b>2</b> (the lower right corner) for the <tt>Image</tt> of 4x4 pixels.</p><h2 id="4">The Create button</h2><p>Starts a new model. The existing <tt>Model</tt> layer will be removed.</p><p><img vspace="5" hspace="5" src="images\PanelsSegmentation_Create.png" alt=""> </p><p>
+     0     0     2     2</pre>
+<p>In this example, the shown matrix represents a Model with 2 materials encrypted with <b>1</b> (the upper left corner) and <b>2</b> (the lower right corner) for the <code>Image</code> of 4x4 pixels.</p>
+</div>
+</details>
+<br><h2 id="4">The Create button</h2>
+<p>Starts a new model. The existing <code>Model</code> layer will be removed.</p>
+<p><img class="image-fit" src="images\PanelsSegmentation_Create.png" alt=""> </p>
+<p>
 Whenever is possible is is recommended to use models with 63
-materials.<br>
+materials.
+<br>
 A short introduction about materials with more than 255 materials is
-available from here:<br>
-<a href="https://youtu.be/r3lpmWyvrJU"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/r3lpmWyvrJU</a>
+available from here:
+<br>
+<a href="https://youtu.be/r3lpmWyvrJU"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/r3lpmWyvrJU</a>
+
 <br>
 Also see more about types of model on the <a href="ug_gui_menu_models.html">Menu->Models page</a>
-</p><h2 id="5">The Load button</h2><p>Loads model from the disk. The following formats are accepted:</p><div><ul><li>MATLAB (*.MAT), <i>default recommended format</i></li><li>Amira Mesh binary (*.AM); for models saved in <a href="http://www.vsg3d.com/amira/overview">Amira</a> format</li><li>Hierarchial Data Format (*.H5); for data exchange with <a href="http://ilastik.org/">Ilastik</a></li><li>Medical Research Concil format (*.MRC);  for data exchange with <a href="http://bio3d.colorado.edu/imod/">IMOD</a></li><li>NRRD format (*.NRRD); for models saved in <a href="http://www.slicer.org/">3D slicer</a> format</li><li>TIF format (*.TIF);</li><li>Hierarchial Data Format with XML header (*.XML);</li><li>all standard file formats can be opened when selecting "All files(<b>.</b>)"</li></ul></div><p>Alternatively it is possible to use the <a href="ug_gui_menu_models.html"><tt>Menu-&gt;Models-&gt;Load model</tt></a> or directly drag-and-drop <tt>*.model</tt> file to the Image View panel.</p><h2 id="7">The +, -, and E buttons</h2><div><ul><li>the "*+*" button, press to add a new material to the model (<i>only for models with 63 and 255 materials</i>)</li><li>the "*-*" button, press to delete the selected material from the model (<i>only for models with 63 and 255 materials</i>)</li><li>the "*E*" button, press to find and select the next empty index in the model (<i>only for models with more than 255 materials</i>)</li></ul></div><h2 id="8">The Filled/Contour combo box</h2><p>This combo box modifies visualization of materials in the <a href="ug_panel_im_view.html">Image View</a> panel.</p><div><ul><li><b>Filled</b> - use to draw materials as the filled shapes (<i>faster</i>)</li><li><b>Contour</b> - use to draw only the contours of materials (<i>slower</i>)</li></ul></div><h2 id="9">The Segmentation table</h2><p>The Segmentation table displays the list of materials of the model.</p><p>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/_iwQI2DIDjk"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/_iwQI2DIDjk</a>
-<br><br>
+</p><h2 id="5">The Load button</h2>
+<p>Loads model from the disk. The following formats are accepted:</p>
+<div><ul><li>MATLAB (<span class="code">*.MAT</span>), <i>default recommended format</i></li>
+<li>Amira Mesh binary (<span class="code">*.AM</span>); for models saved in <a href="http://www.vsg3d.com/amira/overview">Amira</a> format</li>
+<li>Hierarchial Data Format (<span class="code">*.H5</span>); for data exchange with <a href="http://ilastik.org/">Ilastik</a></li>
+<li>Medical Research Concil format (<span class="code">*.MRC</span>);  for data exchange with <a href="http://bio3d.colorado.edu/imod/">IMOD</a></li>
+<li>NRRD format (<span class="code">*.NRRD</span>); for models saved in <a href="http://www.slicer.org/">3D slicer</a> format</li>
+<li>TIF format (<span class="code">*.TIF</span>);</li>
+<li>Hierarchial Data Format with XML header (<span class="code">*.XML</span>);</li>
+<li>all standard file formats can be opened when selecting <span class="code">All files(<b>.</b>)</span></li></ul></div>
+<p>Alternatively it is possible to use the <a href="ug_gui_menu_models.html"><code>Menu-&gt;Models-&gt;Load model</code></a> or directly drag-and-drop <span class="code">*.model</span> file to the <b>Image View</b> panel or the <b>Segmentation</b> table.</p><h2 id="7">The +, -, and E buttons</h2>
+<div><ul><li>the <b><span class="kbd">+</span></b> button, press to add a new material to the model (<i>only for models with 63 and 255 materials</i>)</li>
+<li>the <b><span class="kbd">-</span></b> button, press to delete the selected material from the model (<i>only for models with 63 and 255 materials</i>)</li>
+<li>the <b><span class="kbd">E</span></b> button, press to find and select the next empty index in the model (<i>only for models with more than 255 materials</i>)</li></ul></div><h2 id="8">The Filled/Contour combo box</h2>
+<p>This combo box modifies visualization of materials in the <a href="ug_panel_im_view.html">Image View</a> panel.</p>
+<div><ul><li><b>Filled</b> - use to draw materials as the filled shapes (<i>faster</i>)</li></ul></div>
+<p><img class="image-fit" src="images\PanelsSegmentation_filled.png" alt=""> </p>
+<div><ul><li><b>Contour</b> - use to draw only the contours of materials (<i>slower</i>)</li></ul></div>
+<p><img class="image-fit" src="images\PanelsSegmentation_contour.png" alt=""> </p><h2 id="9">The Segmentation table</h2>
+<p>The Segmentation table displays the list of materials of the model.</p>
+A brief demonstration is available in the following video:
+<br>
+<a href="https://youtu.be/_iwQI2DIDjk"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/_iwQI2DIDjk</a>
+
+<br>
+<br>
 The segmentation table has 3 columns:
 <ul>
 <li>Column <b>"C"</b> shows the colors for each material. The mouse click on the first column starts a dialog for color selection</li>
@@ -121,17 +620,32 @@ See more in the <a href="ug_gui_menu_models.html">Render model...</a>section</li
 please refer to the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements Fiji</a> for details</li>
 <li><b>Unlink material from Add to</b> when unlinked, the Add to column is not changing its status during selection of Materials</li>
 </ul>
-<li>Column <b>"Add to"</b> defines destination material for the Selection layer during the <em>Add</em> and <em>Replace</em> actions. By default, this field is linked to the selected material, but it is unlinked when the
-<em>Fix selection to material</em> checkbox is selected or the <em>Unlink material from Add to</em> option is enabled</li>
+<li>Column <b>"Add to"</b> defines destination material for the Selection layer during the <em>Add</em> and <em>Replace</em> actions.
+By default, this field is linked to the selected material, but it is unlinked when the
+<span class="kbd">[&#10003;] <b>Fix selection to material</b></span> checkbox is selected or the <em>Unlink material from Add to</em> option is enabled</li>
 </ul>
-</p><p>The <tt>Ctrl+A</tt> and <tt>Alt+A</tt> <a href="ug_gui_shortcuts.html">shortcuts</a> can be used to highlight selected in the Segmentation table material. The <b>Ctrl+A</b> shortcut selects objects only on the shown slice, while <b>Alt+A</b> does that for the whole dataset. The selection is sensitive to the <tt>Fix selection to material</tt> and the <tt>Masked area</tt> switches.</p><p>
-<ul> To select a combination of the Mask and any other layer:
+<p>The <span class="kbd">Ctrl+A</span> and <span class="kbd">Alt+A</span> <a href="ug_gui_shortcuts.html">shortcuts</a> can be used to highlight selected in the Segmentation table material. The <span class="kbd">Ctrl+A</span> shortcut selects objects only on the shown slice, while <span class="kbd">Alt+A</span> does that for the whole dataset. The selection is sensitive to the <code>Fix selection to material</code> and the <code>Masked area</code> switches.</p>
+<b>To select a combination of the Mask and any other layer:</b>
+<ul>
 <li>select the Mask entry in the table</li>
-<li>check the Fix selection to material checkbox</li>
+<li>check the <span class="kbd">[&#10003;] <b>Fix selection to material </b></span> checkbox</li>
 <li>select the second material in the Add to column</li>
 <li>Press the Alt+A or Ctrl+A shortcut</li>
 </ul>
-</p><h2 id="10">The Fix selection to material check box</h2><p>This check box ensures that all segmentation tools will be performed only for material selected in the table.</p><h2 id="11">The Masked area checkbox</h2><p>This check box ensures that all segmentation tools will be limited only within the masked areas of the image.</p><h2 id="12">The "D" checkbox, to select fast access tools</h2><p>This checkbox marks the favorite selection tools that are selected using the 'D' key shortcut. The chosen fast access tools are highlighted with orange background in the <tt>Selection type</tt> popup menu. Any tool can be selected as a favorite one.</p><h2 id="13">Segmentation tools combo box</h2><p>This  combo box hosts different tools for the segmentation. <a href="ug_panel_segm_tools.html">See more here</a>.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+<h2 id="10">The <span class="kbd">[&#10003;] <b>Fix selection to material</b></span> checkbox</h2>
+<p>This check box ensures that all segmentation tools will be performed only for material selected in the table.</p><h2 id="11">The <span class="kbd">[&#10003;] <b>Masked area</b></span> checkbox</h2>
+<p>This check box ensures that all segmentation tools will be limited only within the masked areas of the image.</p><h2 id="12">The <span class="kbd">[&#10003;] <b>"D"</b></span> checkbox, to select fast access tools</h2>
+<p>This checkbox marks the favorite selection tools that are selected using the <b><span class="kbd">D</span></b> key shortcut. The chosen fast access tools are highlighted with orange background in the <code>Selection type</code> popup menu. Any tool can be selected as a favorite one.</p><h2 id="13">Segmentation tools combo box</h2>
+<p>This  combo box hosts different tools for the segmentation. <a href="ug_panel_segm_tools.html">See more here</a>.</p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a> </p>
+<p>
+<script>
+  var allDetails = document.getElementsByTagName('details');
+  toggle_details(0);
+</script>
+</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Segmentation Panel
 % The segmentation panel is the main panel used for segmentation. It allows creating models, 
@@ -147,12 +661,18 @@ please refer to the <a href="im_browser_system_requirements.html">Microscopy Ima
 % |Model| is a matrix with dimensions equal to those of the opened |Image| dataset: _i.e._  [ |1:imageHeight,
 % 1:imageWidth, 1:imageThickness| ]. The |Model| consists of Materials, each element of the |Model| matrix can belong only to
 % a single material or to an exterior. So it is not possible to have several materials above the same pixel of the |Image| overlapping each other.
-% Each material in the |Model| matrix is encrypted with own index:
+% Each material in the |Model| matrix is encrypted with own index
+% 
+% [dtls]<summary> *Example of a model 4x4 pixels* </summary>
+<div class="details-div">
 Model = [1 1 0 0; 1 1 0 0; 0 0 2 2; 0 0 2 2];
 Model
 %%
+%
 % In this example, the shown matrix represents a Model with 2 materials
 % encrypted with *1* (the upper left corner) and *2* (the lower right corner) for the |Image| of 4x4 pixels.
+%
+% [/dtls]
 %
 %% The Create button
 % Starts a new model. The existing |Model| layer will be removed.
@@ -160,7 +680,7 @@ Model
 % 
 % <<images\PanelsSegmentation_Create.png>>
 % 
-% <html>
+% <html lang="en">
 % Whenever is possible is is recommended to use models with 63
 % materials.<br>
 % A short introduction about materials with more than 255 materials is
@@ -174,36 +694,43 @@ Model
 % Loads model from the disk. The following formats are accepted:
 %%
 % 
-% * MATLAB (*.MAT), _default recommended format_
-% * Amira Mesh binary (*.AM); for models saved in <http://www.vsg3d.com/amira/overview Amira> format
-% * Hierarchial Data Format (*.H5); for data exchange with <http://ilastik.org/ Ilastik>
-% * Medical Research Concil format (*.MRC);  for data exchange with <http://bio3d.colorado.edu/imod/ IMOD>
-% * NRRD format (*.NRRD); for models saved in <http://www.slicer.org/ 3D slicer> format
-% * TIF format (*.TIF); 
-% * Hierarchial Data Format with XML header (*.XML); 
-% * all standard file formats can be opened when selecting "All files(*.*)"
+% * MATLAB ([class.code]*.MAT[/class]), _default recommended format_
+% * Amira Mesh binary ([class.code]*.AM[/class]); for models saved in <http://www.vsg3d.com/amira/overview Amira> format
+% * Hierarchial Data Format ([class.code]*.H5[/class]); for data exchange with <http://ilastik.org/ Ilastik>
+% * Medical Research Concil format ([class.code]*.MRC[/class]);  for data exchange with <http://bio3d.colorado.edu/imod/ IMOD>
+% * NRRD format ([class.code]*.NRRD[/class]); for models saved in <http://www.slicer.org/ 3D slicer> format
+% * TIF format ([class.code]*.TIF[/class]); 
+% * Hierarchial Data Format with XML header ([class.code]*.XML[/class]); 
+% * all standard file formats can be opened when selecting [class.code]All files(*.*)[/class]
 % 
-% Alternatively it is possible to use the <ug_gui_menu_models.html |Menu->Models->Load model|> or directly drag-and-drop |*.model| file to the Image View panel.
+% Alternatively it is possible to use the <ug_gui_menu_models.html |Menu->Models->Load model|> or 
+% directly drag-and-drop [class.code]*.model[/class] file to the *Image View* panel or the *Segmentation* table.
 %
 %% The +, -, and E buttons
 %
-% * the "*+*" button, press to add a new material to the model (_only for models with 63 and 255 materials_)
-% * the "*-*" button, press to delete the selected material from the model (_only for models with 63 and 255 materials_)
-% * the "*E*" button, press to find and select the next empty index in the model (_only for models with more than 255 materials_)
+% * the *[class.kbd]+[/class]* button, press to add a new material to the model (_only for models with 63 and 255 materials_)
+% * the *[class.kbd]-[/class]* button, press to delete the selected material from the model (_only for models with 63 and 255 materials_)
+% * the *[class.kbd]E[/class]* button, press to find and select the next empty index in the model (_only for models with more than 255 materials_)
 %
 %% The Filled/Contour combo box
 % This combo box modifies visualization of materials in the <ug_panel_im_view.html Image View> panel.  
 % 
 % 
 % * *Filled* - use to draw materials as the filled shapes (_faster_)
+%
+% <<images\PanelsSegmentation_filled.png>>
+%
 % * *Contour* - use to draw only the contours of materials (_slower_)
+% 
+% <<images\PanelsSegmentation_contour.png>>
+% 
 % 
 %
 %% The Segmentation table
 % The Segmentation table displays the list of materials of the model. 
 %
 % 
-% <html>
+% <html lang="en">
 % A brief demonstration is available in the following video:<br>
 % <a href="https://youtu.be/_iwQI2DIDjk"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/_iwQI2DIDjk</a>
 % <br><br>
@@ -239,36 +766,38 @@ Model
 % please refer to the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements Fiji</a> for details</li>
 % <li><b>Unlink material from Add to</b> when unlinked, the Add to column is not changing its status during selection of Materials</li>
 % </ul>
-% <li>Column <b>"Add to"</b> defines destination material for the Selection layer during the <em>Add</em> and <em>Replace</em> actions. By default, this field is linked to the selected material, but it is unlinked when the 
-% <em>Fix selection to material</em> checkbox is selected or the <em>Unlink material from Add to</em> option is enabled</li>
+% <li>Column <b>"Add to"</b> defines destination material for the Selection layer during the <em>Add</em> and <em>Replace</em> actions. 
+% By default, this field is linked to the selected material, but it is unlinked when the 
+% <span class="kbd">[&#10003;] <b>Fix selection to material</b></span> checkbox is selected or the <em>Unlink material from Add to</em> option is enabled</li>
 % </ul>
 % </html>
 %
-% The |Ctrl+A| and |Alt+A| <ug_gui_shortcuts.html shortcuts> can be used to highlight selected in the Segmentation table material. 
-% The *Ctrl+A* shortcut selects objects only on the shown slice, while *Alt+A* does that for
+% The [class.kbd]Ctrl+A[/class] and [class.kbd]Alt+A[/class] <ug_gui_shortcuts.html shortcuts> can be used to highlight selected in the Segmentation table material. 
+% The [class.kbd]Ctrl+A[/class] shortcut selects objects only on the shown slice, while [class.kbd]Alt+A[/class] does that for
 % the whole dataset. The selection is sensitive to the |Fix selection to material|  
 % and the |Masked area| switches.
 % 
-% <html>
-% <ul> To select a combination of the Mask and any other layer:
+% <html lang="en">
+% <b>To select a combination of the Mask and any other layer:</b>
+% <ul> 
 % <li>select the Mask entry in the table</li>
-% <li>check the Fix selection to material checkbox</li>
+% <li>check the <span class="kbd">[&#10003;] <b>Fix selection to material </b></span> checkbox</li>
 % <li>select the second material in the Add to column</li>
 % <li>Press the Alt+A or Ctrl+A shortcut</li>
 % </ul>
 % </html>
 %
-%% The Fix selection to material check box
+%% The [class.kbd][&#10003;] *Fix selection to material*[/class] checkbox
 % This check box ensures that all segmentation tools will be performed only
 % for material selected in the table.
 %
-%% The Masked area checkbox
+%% The [class.kbd][&#10003;] *Masked area*[/class] checkbox
 % This check box ensures that all segmentation tools will be limited only
 % within the masked areas of the image.
 %
 %
-%% The "D" checkbox, to select fast access tools 
-% This checkbox marks the favorite selection tools that are selected using the 'D' key shortcut. 
+%% The [class.kbd][&#10003;] *"D"*[/class] checkbox, to select fast access tools 
+% This checkbox marks the favorite selection tools that are selected using the *[class.kbd]D[/class]* key shortcut. 
 % The chosen fast access tools are highlighted
 % with orange background in the |Selection type| popup menu. Any tool can
 % be selected as a favorite one.
@@ -280,5 +809,71 @@ Model
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+% [cssClasses]
+% .kbd { 
+%     font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html lang="en">
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>
 ##### SOURCE END #####
---></body></html>
+--><script>
+var allDetails   = document.getElementsByTagName('details');
+var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
+var returnButton = document.getElementById("return-link");
+document.getElementById("iFrameBuf").style.display = "none";
+if(in_iFrame())
+{
+   try{
+      var footerNav = parent.document.getElementsByClassName("footernav");
+      var tabPane   = parent.document.getElementsByClassName("tab-pane");}
+   catch(err) { var footerNav = []; var tabPane = [];};
+   if(!(footerNav.length) || tabPane.length)
+   {
+      contentDiv.style.overflowY = "scroll";
+      contentDiv.style.overflowX = "hidden";
+      contentDiv.style.position  = "absolute";
+      contentDiv.style.width     = "95%";
+      contentDiv.style.top       = 0;
+      contentDiv.style.bottom    = 0;
+      if (tabPane.length){
+         contentDiv.setAttribute("data-isMATLABCentral","1");
+         returnButton.style.right = "40px";
+         document.getElementById("tooltiptext").style.right = "92px"; }
+      document.getElementById("iFrameBuf").style.display = "block";
+   }
+   else { contentDiv.setAttribute("data-isHelpBrowser","1"); }
+}
+if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
+   document.getElementById("anchor-offsets").sheet.disabled = true; }
+var jumpLinks = document.getElementsByTagName("a");
+for (var i = 0; i < jumpLinks.length; i++){
+  href = jumpLinks[i].getAttribute("href");
+  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
+</script></body></html>

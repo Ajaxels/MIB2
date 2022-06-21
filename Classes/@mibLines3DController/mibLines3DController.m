@@ -144,8 +144,9 @@ classdef mibLines3DController < handle
         function updateWidgets(obj)
             % function updateWidgets(obj)
             % update widgets and tables
-            [noTrees, nodeByTree] = obj.mibModel.I{obj.mibModel.Id}.hLines3D.updateNumberOfTrees();
-            if obj.mibModel.I{obj.mibModel.Id}.hLines3D.noTrees > 0
+            [obj.mibModel.I{obj.mibModel.Id}.hLines3D.noTrees, nodeByTree] = obj.mibModel.I{obj.mibModel.Id}.hLines3D.updateNumberOfTrees();
+            noTrees = obj.mibModel.I{obj.mibModel.Id}.hLines3D.noTrees;
+            if noTrees > 0
                 w1 = obj.jTreeTable.getColumnModel.getColumn(0).getWidth;
                 w2 = obj.jTreeTable.getColumnModel.getColumn(1).getWidth;
                 N = histcounts(nodeByTree, 0.5:noTrees+.5);
@@ -1157,6 +1158,7 @@ classdef mibLines3DController < handle
             
             switch parameter
                 case 'Jump'     % jump to the highlighted node
+                    if nodeId == 0; return; end
                     if isempty(nodeId)
                         rowId = obj.indicesNodes(1);
                         rowText = obj.View.handles.nodesViewTable.Data(rowId,:);

@@ -1,0 +1,1368 @@
+
+<!DOCTYPE html>
+<html lang="en"><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Deep MIB - Train tab</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_train.m"><style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:160%; padding: 20px; }
+
+pre { font-size:12px; }
+code { font-size: 1.15em; }
+pre { margin:0px 0px 15px; overflow-x:auto; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 15px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+.dropdown {   font-family: monospace; 	border: 1px solid #aaa; 	border-radius: 0.2em; 	background-color: #e0f5ff; 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.h3 { color: #E65100; font-size: 12px; font-weight: bold; }
+.code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
+
+#tooltiptext {
+  visibility: hidden;
+  padding: 5px 10px;
+  font-size: 75%;
+  line-height:110%;
+  text-align: center;
+  background-color: black;
+  color: #ddd;
+  border-radius: 6px;
+  position: fixed;
+  bottom: 11px;
+  right: 62px;
+  z-index: 2;
+}
+#tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+.tooltip:hover #tooltiptext {
+  visibility: visible;
+}
+#return-link {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    overflow: visible;
+    font-size:120%;
+    background: rgba(0, 0, 0, 0.75);
+    border-style: solid;
+    border-width: 3pt;
+    border-color: #202020;
+    border-radius: 4px;
+    cursor: pointer;
+    }
+#return-link > p { padding:3px; margin:0; color:#C0C0C0;}
+.MATLAB-Help {
+width: 100%;
+margin-bottom: 12px;
+border: 1px solid #ccc;
+border-right: none;
+border-bottom: none;
+font-size: 96%;
+line-height: 1.4;
+table-layout: fixed;
+overflow:hidden;}
+
+.MATLAB-Help > thead > tr > th {
+padding: 6px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+background: #F2F2F2;
+color: #000;
+font-weight: bold;
+text-align: left;
+vertical-align: middle;}
+
+.MATLAB-Help td{padding: 5px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+vertical-align: middle;}
+
+.language-matlab { line-height:135% }
+
+.collapse-link {float:right; line-height:200%; padding-left:10px; margin:0}
+
+
+details > summary,
+.details-div {
+  padding: 8px 20px;
+  border-style: solid;
+  border-width: 1.2pt;
+  border-color: #E0E0E0;
+}
+details > summary {
+  border-radius:6px 6px 0 0;
+  background-color: #F2F2F2;
+  cursor: pointer;
+}
+.details-div {
+  border-top-style: none;
+  border-radius: 0 0 6px 6px;
+}
+.image-fit-svg,
+.image-fit {
+    max-width:  95%;
+    max-height: 100%;
+    margin:     auto;
+}
+.image-fit-svg{ padding:0px; max-width:500px; }
+details > img.image-fit-svg{ padding: 0px 0px 10px; }
+@media (max-width: 580px) {
+  .image-fit-svg { max-width: 95%; }
+}
+.pretty-link  { color:#001188 !important; }
+</style>
+<style id="dark-theme">
+    h2, h3       { color: #B0B0B0; }
+    html body    { background-color: #101010; color: #B0B0B0; }
+    .pretty-link { color: #C46313 !important; }
+    a, a:visited { color: #C46313 }
+    a:hover      { color: orange; }
+    details > summary,
+    .details-div      { border-color:     #505050; }
+    details > summary { background-color: #202020; }
+    pre.codeinput     { border-width: 1.2pt; border-color:#001B33; background:#001129; color:#F0F0F0; }
+    pre.codeoutput    { color:#A5A5A5; }
+    span.keyword      { color:#FF9D00; }
+    span.comment      { color:#808080; }
+    span.string       { color:#3AD900; }
+    span.untermstring { color:#FFEE80; }
+    span.syscmd       { color:#CCCCCC; }
+    .MATLAB-Help, .MATLAB-Help > thead > tr > th, .MATLAB-Help td { border-color:#505050; }
+    .MATLAB-Help > thead > tr > th { background: #202020; color: #B0B0B0; }
+    .summary-sub-heading { color:#909090; }
+    .show-if-light    { display:none }
+</style>
+<style id="hide-dark">
+     .show-if-dark { display:none }
+</style>
+
+<style id="anchor-offsets">
+    h2::before, a[id]::before{
+    content: "";
+    display: block;
+    height: 100px;
+    margin: -100px 0 0;
+    visibility: hidden;
+    width:10%;
+    z-index: -1;
+}
+</style>
+
+<script>
+          var returnElem = null;
+          var skipCheck  = false;
+
+          function hide_back_link()
+          {
+              returnButton.style.display = "none";
+              try{
+                 window.removeEventListener("scroll", update_back_position, true);
+                 window.removeEventListener("resize", update_back_position, true);
+                 parent.window.removeEventListener("scroll", update_back_position, true);
+                 parent.window.removeEventListener("resize", update_back_position, true);}
+              catch(e){}
+          }
+
+          function get_offset(element)
+          {
+              if (!element.getClientRects().length){ return { top: 0, left: 0 }; }
+              var rect = element.getBoundingClientRect();
+              var win  = element.ownerDocument.defaultView;
+              return ( {top:  rect.top  + win.pageYOffset,
+                        left: rect.left + win.pageXOffset} );
+          }
+
+          function jump_to()
+          {
+              var clickedElem = event.target;
+              var clickedID   = clickedElem.closest("span");
+              if (clickedID){
+                clickedID = clickedID.getAttribute("id");
+                if (clickedID.localeCompare("jump-close")===0) { return };}
+              clickedID = clickedElem.closest("div").getAttribute("id");
+              if (clickedID && clickedID.localeCompare("return-link")===0)
+              {
+                  if (returnElem)
+                  {
+                      event.preventDefault();
+                      hide_back_link();
+                      returnElem.scrollIntoView();
+                      if (contentDiv.getAttribute("data-isHelpBrowser")){
+                         contentDiv.scrollTop = contentDiv.scrollTop-100; }
+                      if (contentDiv.getAttribute("data-isMATLABCentral")){
+                         parent.window.scrollBy(0,-100)}
+                      returnElem = null;
+                  }
+              }
+              else
+              {
+                  var href = clickedElem.closest("a").getAttribute("href");
+                  if ( href && href[0] == "#" )
+                  {
+                     var target = document.getElementById(href.substring(1));
+                     var enclosingBox = target;
+                     while ( enclosingBox )
+                     {
+                        prevBox      = enclosingBox;
+                        enclosingBox = enclosingBox.closest("details");
+                        if ( enclosingBox===prevBox ){
+                           enclosingBox = enclosingBox.parentElement
+                           if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
+                        if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
+                     }
+                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                        event.preventDefault();
+                        target.scrollIntoView(); }
+                     var nextElem = target.nextElementSibling;
+                     var nextNode = target.nextSibling;
+                     while ( nextNode && nextNode.nodeType==Node.TEXT_NODE && nextNode.data.trim().length == 0 ){
+                        nextNode = nextNode.nextSibling;}
+                     if ( nextElem && nextElem===nextNode && nextElem.localName.localeCompare("details")===0 && !nextElem.open){
+                        open_details(nextElem.id);}
+                  }
+                  else { return }
+                  if (!contentDiv.getAttribute("data-isHelpBrowser"))
+                  {
+                      update_back_position();
+                      returnButton.style.display = "block";
+                      var linkTop   = clickedElem.offsetTop;
+                      var targetTop = target.offsetTop;
+                      if (targetTop>linkTop){
+                          document.getElementById("down").style.display = "none";
+                          document.getElementById("up").style.display   = "inline"; }
+                      else{
+                          document.getElementById("up").style.display   = "none";
+                          document.getElementById("down").style.display = "inline"; }
+                      returnElem = clickedElem;
+                  }
+              }
+          }
+
+          function open_details(detailsID)
+          {
+              var details  = document.getElementById(detailsID);
+              skipCheck    = true;
+              state_check(details.id);
+              details.open = true;
+          }
+
+          function update_back_position()
+          {
+              try
+              {
+                  window.addEventListener("scroll", update_back_position, true);
+                  window.addEventListener("resize", update_back_position, true);
+                  var scrollPos;
+                  if (in_iFrame())
+                  {
+                      parent.window.addEventListener("scroll", update_back_position, true);
+                      parent.window.addEventListener("resize", update_back_position, true);
+                      var iFrame         = window.frameElement;
+                      var frameOffset    = get_offset(iFrame);
+                      var documentBottom = parent.window.innerHeight  + parent.window.scrollY;
+                      var extHeight      = Math.round(frameOffset.top + iFrame.getBoundingClientRect().height - documentBottom);
+                      if (extHeight<0) { extHeight = 0; }
+                      returnButton.style.bottom = (10+extHeight) + "px";
+                      document.getElementById("tooltiptext").style.bottom = (11+extHeight) + "px";
+                      scrollPos = contentDiv.scrollTop - 25 + iFrame.getBoundingClientRect().height - extHeight;
+                  }
+                  else{
+                      scrollPos = window.scrollY + window.innerHeight - 25;}
+                  if (returnElem.offsetTop>scrollPos){
+                      document.getElementById("down").style.display = "inline";
+                      document.getElementById("up").style.display   = "none";   }
+                  else{
+                      document.getElementById("down").style.display = "none";
+                      document.getElementById("up").style.display   = "inline"; }
+              }
+              catch(e){}
+          }
+          function set_theme(themePref)
+          {
+            var themeSwitch     = document.getElementById("ToggleTheme");
+            var themeSwitchText = "switch to";
+            var switchToText    = null;
+            if (!themePref){ themePref = get_theme_pref(); }
+            if (themePref.localeCompare("light")===0){
+                document.getElementById("dark-theme").sheet.disabled = true;
+                document.getElementById("hide-dark").sheet.disabled  = false;
+                switchToText = " dark theme";}
+            else{
+                document.getElementById("dark-theme").sheet.disabled = false;
+                document.getElementById("hide-dark").sheet.disabled  = true;
+                switchToText = " light theme";}
+            themeSwitch.innerHTML = themeSwitchText + switchToText;
+            set_theme_pref(themePref);
+          }
+
+          function toggle_theme()
+          {
+            if (document.getElementById("dark-theme").sheet.disabled) { set_theme("dark");  }
+            else                                                      { set_theme("light"); }
+          }
+
+          function set_theme_pref(themePref)
+          {
+              var d = new Date();
+              d.setTime(d.getTime() + (2*365*24*60*60*1000));
+              var expires = "expires="+ d.toUTCString();
+              document.cookie = "themepref=" + themePref + ";" + expires + "path=/";
+              localStorage.setItem("PRETTY_THEME", themePref);
+          }
+
+          function get_theme_pref() {
+              var name = "themepref=";
+              var decodedCookie = decodeURIComponent(document.cookie);
+              var ca = decodedCookie.split(';');
+              for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                  c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                  return c.substring(name.length, c.length);
+                }
+              }
+              var docTheme = localStorage.getItem("PRETTY_THEME");
+              if (docTheme) { return docTheme }
+              else          { return "light"  }
+          }
+
+          function toggle_details(section)
+          {
+            var link;
+            var subSection;
+            var details;
+            var linkText;
+            var i;
+            var openState  = true;
+            var border     = "6px 6px 0 0;"
+            if (section===0)
+            {
+              link = document.getElementById("Toggle"+section.toString());
+              if (link.innerHTML.localeCompare("collapse all on page")===0){
+                  openState = false;
+                  border    = "6px;"
+                  linkText  = "expand all";}
+              else{
+                  linkText   = "collapse all";}
+              link.innerHTML = linkText + " on page";
+              for (i = 0; i < allDetails.length; i++){
+                 allDetails[i].open = openState;
+                 allDetails[i].children[0].setAttribute( 'style', "border-radius:"+border );
+                 link = document.getElementById("Toggle"+allDetails[i].id.split(".", 1));
+                 if (allDetails[i].id.charAt(0).localeCompare("0") && link){link.innerHTML = linkText;}}
+            }
+            else
+            {
+               link = document.getElementById("Toggle"+section.toString());
+               subSection = 1;
+               if (link.innerHTML.localeCompare("collapse all")===0){
+                  openState      = false;
+                  border         = "6px;"
+                  link.innerHTML = "expand all";}
+               else{
+                  link.innerHTML = "collapse all";}
+               details = document.getElementById(section.toString()+"."+subSection.toString());
+               while (details){
+                    details.open = openState;
+                    details.children[0].setAttribute( 'style', "border-radius:"+border );
+                    subSection++;
+                    details = document.getElementById(section.toString()+"."+subSection.toString());}
+               var allCollapsed = true;
+               var allExpanded  = true;
+               for (i = 0; i < allDetails.length; i++){
+                   check_if_open(allDetails[i]);}
+               link = document.getElementById("Toggle0");
+               if (allExpanded) {link.innerHTML = "collapse all on page";}
+               if (allCollapsed){link.innerHTML = "expand all on page";}
+            }
+            function check_if_open(details)
+            {
+                if (details.open){allCollapsed = false;}
+                else             {allExpanded  = false;}
+            }
+          }
+
+          function state_check(detailsID)
+          {
+              // first deal with just the section
+              if (event.detail){document.activeElement.blur();}
+              var clickedElem   = event.target;
+              if (!skipCheck && clickedElem.localName.localeCompare("summary"))
+              { 
+                if (!(clickedElem.closest("summary"))) { return };
+              };
+              var details       = document.getElementById(detailsID);
+              if ( !skipCheck ) {
+                  var parentID  = clickedElem.closest("details").id;
+                  if (details.id.localeCompare(parentID)) { return };}
+              skipCheck         = false;
+              var clickedStatus = details.open;
+              var section       = detailsID.split(".", 1);
+              var subSection    = 1;
+              var allCollapsed  = true;
+              var allExpanded   = true;
+              var link          = document.getElementById("Toggle"+section);
+              if (clickedStatus) { details.children[0].setAttribute( 'style', "border-radius:6px;" ); }
+              else               { details.children[0].setAttribute( 'style', "border-radius:6px 6px 0 0;" ); }
+              if (link)
+              {
+                  details = document.getElementById(section+"."+subSection.toString());
+                  while (details){
+                    check_if_open(details);
+                    subSection++;
+                    details = document.getElementById(section+"."+subSection.toString());}
+                  if (allExpanded) {link.innerHTML = "collapse all";}
+                  if (allCollapsed){link.innerHTML = "expand all";}
+              }
+              // then the whole page
+              allCollapsed   = true;
+              allExpanded    = true;
+              for (var i = 0; i < allDetails.length; i++){
+                  check_if_open(allDetails[i]);}
+              link = document.getElementById("Toggle0");
+              if (allExpanded) {link.innerHTML = "collapse all on page";}
+              if (allCollapsed){link.innerHTML = "expand all on page";}
+
+              function check_if_open(details)
+              {
+                  var openStatus
+                  if (detailsID.localeCompare( details.id )===0 ){openStatus = !clickedStatus;}
+                  else                                           {openStatus = details.open;}
+                  if (openStatus){allCollapsed = false;}
+                  else           {allExpanded  = false;}
+              }
+          }
+
+          function in_iFrame ()
+          {
+               try {
+                   return window.self !== window.top;
+               } catch (e) {
+                   return true;
+               }
+          }
+</script>
+</head><body>
+<div class="content">
+<div id="return-link" style="display:none;" class="tooltip">
+<p onclick="jump_to()">
+    <span onclick="jump_to()"><span id="up">&#8679;</span><span id="down">&#8681;</span>
+    <span onclick="hide_back_link()" style="padding:2px; font-size:120%;" id="jump-close"><b onclick="hide_back_link()">&times;</b></span></span>
+</p>
+<div id="tooltiptext">click to return
+<br>(click <b>&times;</b> to hide)</div>
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Deep MIB - Train tab</h1><!--introduction-->
+<p>This tab contains settings for generating deep convolutional network and training.</p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a></p><!--/introduction-->
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
+<div><ul><li><a href="#1">Train tab</a></li>
+<li><a href="#2">Network design</a></li>
+<li><a href="#3">Augmentation design</a></li>
+<li><a href="#4">Training process design</a></li>
+<li><a href="#5">Start the training process</a></li></ul></div><h2 id="1">Train tab</h2>
+<p><img class="image-fit" src="images\DeepLearningTrain.png" alt=""> </p>
+<p>
+Before starting the training process it is important to check and adapt
+the default settings to needs of the specific project.
+<br>
+As the starting point make sure the name of the output network is selected using
+the <span class="kbd">Network filename</span> button of the <b>Network
+panel</b>.
+</p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="2">Network design</h2>
+<p>The <b>Network design</b> section is used to set the network configuration settings. Please check the following list to understand details of available configuration options.</p>
+<p><img class="image-fit" src="images\DeepLearningTrain_networkdesign.png" alt=""> </p>
+<details open onclick="state_check('1.1')" id="1.1"><summary> <b>Widgets of the Network design section</b> </summary>
+<div class="details-div">
+<p></p>
+<ul>
+<li><span class="dropdown">Input patch size...</span>, this is an important field that has to be defined
+based on available memory of GPU, desired size of image area that network can see at once, dimensions of the training dataset and
+number of color channels.
+<br>
+The input patch size defines dimensions of a single image block that will be
+directed into the network for training. The dimensions are always
+defined with 4 numbers representing <em>height, width, depth, colors</em> of the
+image patch (for example, type "572 572 1 2" to specify a 2D patch of
+572x572 pixels, 1 z-slice and 2 color channels).
+<br>
+The patches are taken randomly from the volume/image and number of those
+patches can be specified in the <span class="dropdown">Patches per
+image...</span> editbox.
+</li>
+<li><span class="dropdown">Padding &#9660;</span> defines type of the convolution padding, depending on
+the selected padding the <em>Input patch size</em> may have to be
+adjusted; use the <span class="kbd">Check network</span> button to make
+sure that the input patch size is correctly matching the selected padding.
+<ul>
+<li><b><em>same</em></b> - zero padding is applied to the inputs to convolution
+layers such that the output and input feature maps are the same size</li>
+<li><b><em>valid</em></b> - zero padding is not applied to the inputs to
+convolution layers. The convolution layer returns only values of the convolution
+that are computed without zero padding. The output feature map is smaller
+than the input feature map. <b><em>Valid</em></b> padding in general produces results with less edge artefacts,
+but the overlap prediction mode for <b><em>Same</em></b> padding is capable to also minimize the artefacts.</li>
+</ul>
+</li>
+<li><span class="dropdown">Number of classes...</span> - number of materials of the model <b>including Exterior</b>, specified as a positive number</li>
+<li><span class="dropdown">Encoder depth...</span> - number of encoding and decoding layers of the
+network. U-Net is composed of an encoder subnetwork and a corresponding decoder subnetwork.
+The depth of these networks determines the number of times the input image is
+downsampled or upsampled during processing. The encoder network downsamples
+the input image by a factor of 2^D, where D is the value of EncoderDepth.
+The decoder network upsamples the encoder network output by a factor of 2^D.
+<br>
+The <span class="dropdown">Downsampling factor...</span> editbox in the
+<em><b>Beta version</em></b> can be used to tweak the downsampling factor
+to increase the input patch size so that network sees a larger area.</li>
+<li><span class="dropdown">Filters...</span> - number of output channels for the
+first encoder stage, <em>i.e.</em> number of convolitional filters used to process the input image patch during the first stage.
+In each subsequent encoder stage, the number of output channels doubles.
+The unetLayers function sets the number of output channels in each decoder
+stage to match the number in the corresponding encoder stage</li>
+<li><span class="dropdown">Filter size...</span> - convolutional layer filter size; typical values are <span class="code">3</span>,
+<span class="code">5</span>, <span class="code">7</span></li>
+<li>The <span class="kbd">Input layer</span> button - press to specify
+settings for normalization of images during training. </li>
+<li><span class="kbd">[&#10003;] <b>use ImageNet weights</b></span> (<b><em>only for MATLAB version of MIB</em></b>),
+when checked the networks of the 2D patch-wise workflow are initialized
+using pretrained weights from training on more than a million images from the <a href="http://www.image-net.org">ImageNet database</a>
+This requires that supporting packages for the corresponding networks are installed and allows to boost the training process significantly</li>
+<li><span class="dropdown">Activation layer &#9660;</span> - specifies type of the activation layers of
+the network. When the layer may have additional options, the settings
+button <img class="image-fit" src="images\DeepLearningTrainSettingsBtn.png"> on the right-hand side becomes available.
+</li>
+</ul>
+<details open onclick="state_check('1.2')" id="1.2"><summary> <b>List of available activation layers</b> </summary>
+<div class="details-div">
+<p></p>
+<ul>
+<li><em>reluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.relulayer.html">
+Rectified Linear Unit (ReLU) layer</a>, it is a default activation layer of the networks,
+however it can be replaced with any of other layer below</li>
+<li><em>leakyReluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.leakyrelulayer.html">
+Leaky Rectified Linear Unit layer</a> performs a threshold operation,
+where any input value less than zero is multiplied by a fixed scalar</li>
+<li><em>clippedReluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.clippedrelulayer.html">
+Clipped Rectified Linear Unit (ReLU) layer</a> performs a threshold
+operation, where any input value less than zero is set to zero and any value above the
+clipping ceiling is set to that clipping ceiling</li>
+<li><em>eluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.elulayer.html">
+Exponential linear unit (ELU) layer</a> performs the identity operation on positive inputs and an
+exponential nonlinearity on negative inputs</li>
+<li><em>tanhLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.tanhlayer.html">
+Hyperbolic tangent (tanh) layer</a> applies the tanh function on the layer inputs</li>
+</ul>
+
+</div>
+</details>
+<br>
+<ul>
+<li><span class="dropdown">Segmentation layer &#9660;</span> - specifies the output layer of the
+network; depending on selection the settings button <img class="image-fit" src="images\DeepLearningTrainSettingsBtn.png"> on the right-hand side
+becomes available to bring access to additional parameters.
+</li>
+</ul>
+<details open onclick="state_check('1.3')" id="1.3"><summary> <b>List of available segmentation layers</b> </summary>
+<div class="details-div">
+<p></p>
+<ul>
+<li><em>pixelClassificationLayer</em> - semantic segmentation with the
+<a href="https://se.mathworks.com/help/vision/ref/nnet.cnn.layer.pixelclassificationlayer.html">crossentropyex loss function</a></li>
+<li><em>focalLossLayer</em> - semantic segmentation using
+<a href="https://se.mathworks.com/help/vision/ref/nnet.cnn.layer.focallosslayer.html">focal loss</a>
+to deal with imbalance between foreground and background classes.
+To compensate for class imbalance, the focal loss function multiplies the cross entropy
+function with a modulating factor that increases the sensitivity of the network to misclassified observations
+</li>
+<li><em>dicePixelClassificationLayer</em> - semantic segmentation using
+<a href="https://se.mathworks.com/help/vision/ref/nnet.cnn.layer.dicepixelclassificationlayer.html">
+generalized Dice loss</a> to alleviate the problem of class imbalance in semantic segmentation problems.
+Generalized Dice loss controls the contribution that each class makes to the loss
+by weighting classes by the inverse size of the expected region</li>
+<li><em>dicePixelCustomClassificationLayer</em> - a modification of the dice loss,
+with better control for rare classes</li>
+</ul>
+
+</div>
+</details>
+<br>
+<ul>
+<li><span class="kbd">Check network</span> - press to preview and check the network.
+The standalone version of MIB shows only limited information about the
+network and does not check it.
+</li>
+</ul>
+<details open onclick="state_check('1.4')" id="1.4"><summary> <b>Snapshots of the network check window for the MATLAB and standalone versions of MIB</b> </summary>
+<div class="details-div">
+<p></p>
+<p><img class="image-fit" src="images\DeepLearning_OrganizationDiagram.jpg" alt=""> </p>
+</div>
+</details>
+<br>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="3">Augmentation design</h2>
+<p>Augmentation of the training sets is an easy way to extend the training base by applying variouos image processing filters to the input image patches. Depending on the selected 2D or 3D network architecture a different sets of augmentation filters are available (17 for 2D and 18 for 3D).
+<br></p>
+<p><img class="image-fit" src="images\DeepLearningTrain_augdesign.png" alt=""> </p>
+<p>These operations are configurable using the 2D and 3D settings buttons on the right-hand side from the <span class="kbd">[&#10003;] <b>augmentation</b></span> checkbox
+<br> It is possible to specify percentage of image patches that are going to be augmented and each augmentation can be fine tuned by providing its probability and its variation. Note that an image patch may be subjected to multiple augmentation filters at the same time, depending on their probability factor.</p>
+<details open onclick="state_check('2.1')" id="2.1"><summary> <b>Widgets of the Augmentation design section</b> </summary>
+<div class="details-div">
+<p></p>
+<ul>
+<li><span class="kbd">[&#10003;] <b>Augmentation</b></span> - augment
+data during training. When this checkbox is checked the input image patches are
+additionally filtered with number of defined filters. The exact
+augmentation options are available upon hitting the <span
+class="kbd"><b>2D</b></span> and <span class="kbd">3D</span> buttons</li>
+<li><span class="kbd">2D</span> - press to specify augmentation settings
+for 2D networks. There are 17 augmentation operations and it is possible
+to specify fraction of images patches that have to be
+augmented and set variation and probability for each augmentation filter to be triggered
+</li>
+</ul>
+<details open onclick="state_check('2.2')" id="2.2"><summary> <b>Details of 2D augmentations</b> </summary>
+<div class="details-div">
+<p></p>
+<p>The augmentations are specified with 2 or 3 values, where the last value defines probability of each particular augmentation to be triggered.
+<br> When the augmentation is defined with 2 values, the first value specifies whether it is <b>on</b> (==1) or <b>off</b> (==0), alternatively, the first two values define the variation range and a random number is picked between these numbers and will be used as the parameter for the filter.
+<br> Each specific augmentation may be turned off either by setting its probability (the last value) to 0 or by setting its variation range to be as shown in the <span class="code">off=[x,x,x]</span> text in the description above the editbox
+<br> The augmentation settings can be reset to their default values by hitting <b>2D:</b> <span class="kbd">Reset</span> in the <i><b>Options tab</b></i>
+<br> or disabled by hitting  <b>2D:</b> <span class="kbd">Disable</span></p>
+<p><img class="image-fit" src="images\DeepLearning_2DAug_settings.jpg" alt=""> </p>
+</div>
+</details>
+<br>
+<ul>
+<li><span class="kbd"><b>3D</b></span> - press to specify augmentation settings
+for 3D networks. There are 18 augmentation operations and it is possible
+to specify fraction of images patches that have to be
+augmented and set variation and probability for each augmentation filter to be triggered
+</li>
+</ul>
+<details open onclick="state_check('2.3')" id="2.3"><summary> <b>Details of 3D augmentations</b> </summary>
+<div class="details-div">
+<p></p>
+<p>The augmentations are specified with 2 or 3 values, where the last value defines probability of each particular augmentation to be triggered.
+<br> When the augmentation is defined with 2 values, the first value specifies whether it is <b>on</b> (==1) or <b>off</b> (==0), alternatively, the first two values define the variation range and a random number is picked between these numbers and will be used as the parameter for the filter.
+<br> Each specific augmentation may be turned off either by setting its probability (the last value) to 0 or by setting its variation range to be as shown in the <span class="code">off=[x,x,x]</span> text in the description above the editbox
+<br> The augmentation settings can be reset to their default values by hitting <b>3D:</b> <span class="kbd">Reset</span> in the <i><b>Options tab</b></i>
+<br> or disabled by hitting  <b>3D:</b> <span class="kbd">Disable</span></p>
+<p><img class="image-fit" src="images\DeepLearning_3DAug_settings.jpg" alt=""> </p>
+</div>
+</details>
+<br>
+<ul>
+<li><span class="kbd"><b>Preview</b></span> is used to preview input image patches that are
+generated using augmentor. It is useful for evaluation of augmenter
+operations and understanding performance.
+<br>
+Number of patches to show and tweaking of various additional settings are possible by pressing the
+Settings button <img class="image-fit" src="images\DeepLearningTrainSettingsBtn.png">
+on the right-hand side of the <span class="kbd">Preview</span> button.
+<br>
+It is possible to select preview of all selected augmentations or pick
+one. In the latter case, the probability parameter is ignored and all
+patches are shown augmented.
+</li>
+<li><img class="image-fit" src="images\DeepLearningTrainSettingsBtn.png"> - hit to open a
+dialog to specify settings to preview the selected augmentations</li>
+</ul>
+<details open onclick="state_check('2.4')" id="2.4"><summary> <b>Snapshots with Preview and Settings</b> </summary>
+<div class="details-div">
+<p></p>
+<p>Example of augmentations generated by press of the <span class="kbd">Preview</span> button</p>
+<p><img class="image-fit" src="images\DeepLearning_input_patches_gallery.jpg" alt=""> </p>
+<p>Snapshot of settings to preview the selected augmentation operations:</p>
+<p><img class="image-fit" src="images\DeepLearning_input_patches_gallery_settings.png" alt=""> </p>
+</div>
+</details>
+<br>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="4">Training process design</h2>
+<p>In this section a user can specify details on of the training process that is started upon press of the <span class="kbd">Train</span> button.</p>
+<p><img class="image-fit" src="images\DeepLearningTrain_traindesign.png" alt=""> </p>
+<details open onclick="state_check('3.1')" id="3.1"><summary> <b>Widgets of the Training process design section</b> </summary>
+<div class="details-div">
+<p></p>
+<ul>
+<li><span class="dropdown">Patches per image...</span> - specify number of image patches that will be taken
+from each an image or a 3D dataset at each epoch. According to our experience, the best strategy is to take
+1 patch per image and train network for larger number of epochs. When taking a single patch per image
+it is important to set <em>Training settings (Training button)->Shuffling->every-epoch</em>).
+However, fill free to use any sensible number</li>
+<li><span class="dropdown">Mini Batch Size...</span> - number of patches processed at the same time by the network.
+More patches speed up the process, but it is important to understand that the
+resulting loss is averaged for the whole mini-batch. Max number of mini batches is limited by available GPU memory</li>
+<li><span class="dropdown">Random seed...</span> set a seed for a random number generator used during initialization of training.
+We recommend to use a fixed value for reproducibility, otherwise use <span class="code">0</span> for random initialization each time
+the network training is started
+</li>
+<li><span class="kbd">Training</span> - define multiple parameters used for training, for details please refer to
+<a
+href="https://se.mathworks.com/help/deeplearning/ref/trainingoptions.html">trainingOptions</a>
+function
+<br>
+<br>
+<b>Tip, <em>setting the Plots switch to "none" in the training settings may
+speed up the training time by up to 25%</em></b>
+<br>
+</li>
+<li><span class="kbd">[&#10003;] <b>Save checkpoint networks</b></span> when ticked DeepMIB
+saves the training progress in checkpoint files after each epoch to
+<span class="code">3_Results\ScoreNetwork</span> directory.
+<br>
+It will be possible to choose any of those networks and continue training from that checkpoint. If the checkpoint networks
+are present, a choosing dialog is displayed upon press of the <span
+class="kbd">Train</span> button.
+<br>
+In R2022a or newer it is possible to specify frequency of saving the checkpoint files.
+</li>
+<li><span class="kbd">[&#10003;] <b>Export training plots</b></span> when ticked accuracy and loss scores are
+saved to <span class="code">3_Results\ScoreNetwork</span> directory. DeepMIB uses the
+network filename as a template and generates a file in MATLAB format
+(*.score) and several files in CSV format
+</li>
+</ul>
+
+</div>
+</details>
+<br><h2 id="5">Start the training process</h2>
+<p>
+
+<br>
+To start training press the <span class="kbd">Train</span> button highlighted under the
+panel. If a network file already exists under the provided <span class="dropdown">Network filename...</span>
+it is possible to continue training from that point
+(a dialog with possible options appears upon restart of training). After
+starting of the training process a config file (with *.mibCfg) is created
+in the same directory. The config file can be loaded from <em><b>Options
+tab->Config files-></b></em><span class="kbd">Load</span>
+
+<br>
+<br>
+Upon training a plot with the loss function is shown; the idea of the
+training is to minimize the loss function as much as possible. The blue
+curve displays the loss function calculated for the train set, while the
+red curve for the validation set. The accuracy of the prediction for both
+train and validation sets is displayed using the linear gauge widgets at
+the left bottom corner of the window.
+<br>
+<br>
+It is possible to stop training at any moment by pressing the <span class="kbd">Stop</span> or
+<span class="kbd">Emergency brake</span> buttons. When the <span class="kbd">Emergency brake</span> button
+is pressed DeepMIB will stop the training as fast as possible, which may lead to
+not finalized network in situations when the batch normalization layer is
+used.
+
+<br>
+<br>
+Please note that by default DeepMIB is using a custom progress plot. If you want to use
+the progress plot provided with MATLAB (available only in MATLAB version
+of MIB), navigate to <b><em>Options tab->Custom training plot->Custom
+training progress window: uncheck</em></b>
+<br>
+The plot can be completely disabled to improve performance:
+<em><b>Train tab->Training->Plots, plots to display during network
+training->none</em></b>
+
+<br>
+<br>
+The right bottom corner of the window displays used input image and model
+patches. Display of those decreases training performace, but the frequency
+of the patch updates can be modified in <b><em>Options tab->Custom training
+plot->Preview image patches and Fraction of images for preview</em></b>. When
+fraction of image for preview is 1, all image patches are shown. If the value
+is 0.01 only 1% of patches is displayed.
+<br>
+<img class="image-fit" src="images\DeepLearning_TrainingProcess.jpg">
+<br>
+After the training, the network and config files with all paramters are generated in location specified in the
+<span class="dropdown">Network filename...</span> editbox of the <em>Network</em> panel.
+</p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a></p>
+<p></p>
+<p>
+<script>
+  var allDetails = document.getElementsByTagName('details');
+  toggle_details(0);
+</script>
+</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p id="iFrameBuf">&nbsp;</p></div><!--
+##### SOURCE BEGIN #####
+%% Deep MIB - Train tab
+% This tab contains settings for generating deep convolutional network and training.
+% 
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools.html *Tools Menu*>
+% 
+%
+%% Train tab
+% 
+% <<images\DeepLearningTrain.png>>
+%
+%
+% <html lang="en">
+% Before starting the training process it is important to check and adapt
+% the default settings to needs of the specific project.
+<br>
+% As the starting point make sure the name of the output network is selected using 
+% the <span class="kbd">Network filename</span> button of the <b>Network
+% panel</b>.
+% </html>
+%
+%% Network design
+%
+% The *Network design* section is used to set the network configuration
+% settings. Please check the following list to understand details of available 
+% configuration options.
+%
+% <<images\DeepLearningTrain_networkdesign.png>>
+%
+% [dtls]<summary> *Widgets of the Network design section* </summary>
+<div class="details-div">
+%
+% <html lang="en">
+% <ul>
+% <li><span class="dropdown">Input patch size...</span>, this is an important field that has to be defined 
+% based on available memory of GPU, desired size of image area that network can see at once, dimensions of the training dataset and 
+% number of color channels.
+<br>
+% The input patch size defines dimensions of a single image block that will be
+% directed into the network for training. The dimensions are always
+% defined with 4 numbers representing <em>height, width, depth, colors</em> of the
+% image patch (for example, type "572 572 1 2" to specify a 2D patch of
+% 572x572 pixels, 1 z-slice and 2 color channels).
+<br>
+% The patches are taken randomly from the volume/image and number of those
+% patches can be specified in the <span class="dropdown">Patches per
+% image...</span> editbox.
+% </li>
+% <li><span class="dropdown">Padding &#9660;</span> defines type of the convolution padding, depending on
+% the selected padding the <em>Input patch size</em> may have to be
+% adjusted; use the <span class="kbd">Check network</span> button to make
+% sure that the input patch size is correctly matching the selected padding.
+% <ul>
+% <li><b><em>same</em></b> - zero padding is applied to the inputs to convolution 
+% layers such that the output and input feature maps are the same size</li>
+% <li><b><em>valid</em></b> - zero padding is not applied to the inputs to 
+% convolution layers. The convolution layer returns only values of the convolution 
+% that are computed without zero padding. The output feature map is smaller 
+% than the input feature map. <b><em>Valid</em></b> padding in general produces results with less edge artefacts, 
+% but the overlap prediction mode for <b><em>Same</em></b> padding is capable to also minimize the artefacts.</li>
+% </ul>
+% </li>
+% <li><span class="dropdown">Number of classes...</span> - number of materials of the model <b>including Exterior</b>, specified as a positive number</li>
+% <li><span class="dropdown">Encoder depth...</span> - number of encoding and decoding layers of the
+% network. U-Net is composed of an encoder subnetwork and a corresponding decoder subnetwork. 
+% The depth of these networks determines the number of times the input image is 
+% downsampled or upsampled during processing. The encoder network downsamples 
+% the input image by a factor of 2^D, where D is the value of EncoderDepth. 
+% The decoder network upsamples the encoder network output by a factor of 2^D.
+<br>
+% The <span class="dropdown">Downsampling factor...</span> editbox in the
+% <em><b>Beta version</em></b> can be used to tweak the downsampling factor
+% to increase the input patch size so that network sees a larger area.</li>
+% <li><span class="dropdown">Filters...</span> - number of output channels for the
+% first encoder stage, <em>i.e.</em> number of convolitional filters used to process the input image patch during the first stage.
+% In each subsequent encoder stage, the number of output channels doubles. 
+% The unetLayers function sets the number of output channels in each decoder 
+% stage to match the number in the corresponding encoder stage</li>
+% <li><span class="dropdown">Filter size...</span> - convolutional layer filter size; typical values are <span class="code">3</span>, 
+% <span class="code">5</span>, <span class="code">7</span></li>
+% <li>The <span class="kbd">Input layer</span> button - press to specify
+% settings for normalization of images during training. </li>
+% <li><span class="kbd">[&#10003;] <b>use ImageNet weights</b></span> (<b><em>only for MATLAB version of MIB</em></b>), 
+% when checked the networks of the 2D patch-wise workflow are initialized
+% using pretrained weights from training on more than a million images from the <a href="http://www.image-net.org">ImageNet database</a>
+% This requires that supporting packages for the corresponding networks are installed and allows to boost the training process significantly</li>
+% <li><span class="dropdown">Activation layer &#9660;</span> - specifies type of the activation layers of
+% the network. When the layer may have additional options, the settings
+% button <img src="images\DeepLearningTrainSettingsBtn.png"> on the right-hand side becomes available.
+% </li>
+% </ul>
+% </html>
+% 
+% [dtls]<summary> *List of available activation layers* </summary>
+<div class="details-div">
+%
+% <html lang="en">
+% <ul>
+% <li><em>reluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.relulayer.html">
+% Rectified Linear Unit (ReLU) layer</a>, it is a default activation layer of the networks, 
+% however it can be replaced with any of other layer below</li>
+% <li><em>leakyReluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.leakyrelulayer.html">
+% Leaky Rectified Linear Unit layer</a> performs a threshold operation, 
+% where any input value less than zero is multiplied by a fixed scalar</li>
+% <li><em>clippedReluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.clippedrelulayer.html">
+% Clipped Rectified Linear Unit (ReLU) layer</a> performs a threshold 
+% operation, where any input value less than zero is set to zero and any value above the 
+% clipping ceiling is set to that clipping ceiling</li>
+% <li><em>eluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.elulayer.html">
+% Exponential linear unit (ELU) layer</a> performs the identity operation on positive inputs and an 
+% exponential nonlinearity on negative inputs</li>
+% <li><em>tanhLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.tanhlayer.html">
+% Hyperbolic tangent (tanh) layer</a> applies the tanh function on the layer inputs</li>
+% </ul>
+% </html>
+%
+% [/dtls]
+%
+% <html lang="en">
+% <ul>
+% <li><span class="dropdown">Segmentation layer &#9660;</span> - specifies the output layer of the
+% network; depending on selection the settings button <img src="images\DeepLearningTrainSettingsBtn.png"> on the right-hand side
+% becomes available to bring access to additional parameters.
+% </li>
+% </ul>
+% </html>
+% 
+% [dtls]<summary> *List of available segmentation layers* </summary>
+<div class="details-div">
+%
+% <html lang="en">
+% <ul>
+% <li><em>pixelClassificationLayer</em> - semantic segmentation with the 
+% <a href="https://se.mathworks.com/help/vision/ref/nnet.cnn.layer.pixelclassificationlayer.html">crossentropyex loss function</a></li>
+% <li><em>focalLossLayer</em> - semantic segmentation using 
+% <a href="https://se.mathworks.com/help/vision/ref/nnet.cnn.layer.focallosslayer.html">focal loss</a>
+% to deal with imbalance between foreground and background classes. 
+% To compensate for class imbalance, the focal loss function multiplies the cross entropy 
+% function with a modulating factor that increases the sensitivity of the network to misclassified observations
+% </li>
+% <li><em>dicePixelClassificationLayer</em> - semantic segmentation using 
+% <a href="https://se.mathworks.com/help/vision/ref/nnet.cnn.layer.dicepixelclassificationlayer.html">
+% generalized Dice loss</a> to alleviate the problem of class imbalance in semantic segmentation problems. 
+% Generalized Dice loss controls the contribution that each class makes to the loss 
+% by weighting classes by the inverse size of the expected region</li>
+% <li><em>dicePixelCustomClassificationLayer</em> - a modification of the dice loss, 
+% with better control for rare classes</li>
+% </ul>
+% </html>
+% 
+% [/dtls]
+%
+% <html lang="en">
+% <ul>
+% <li><span class="kbd">Check network</span> - press to preview and check the network.
+% The standalone version of MIB shows only limited information about the
+% network and does not check it.
+% </li>
+% </ul>
+% </html>
+%
+% [dtls]<summary> *Snapshots of the network check window for the MATLAB and standalone versions of MIB* </summary>
+<div class="details-div">
+%
+% <<images\DeepLearning_OrganizationDiagram.jpg>>
+% 
+%
+% [/dtls]
+%
+% [/dtls]
+%
+%% Augmentation design
+% 
+% Augmentation of the training sets is an easy way to extend the training
+% base by applying variouos image processing filters to the input image
+% patches. Depending on the selected 2D or 3D network architecture
+% a different sets of augmentation filters are available (17 for 2D and 18 for 3D).
+<br>
+%
+% <<images\DeepLearningTrain_augdesign.png>>
+% 
+% These operations are configurable
+% using the 2D and 3D settings buttons on the right-hand side from the
+% [class.kbd][&#10003;] *augmentation*[/class] checkbox
+<br>
+% It is possible to specify percentage of image patches that are going to
+% be augmented and each augmentation can be fine tuned by providing its
+% probability and its variation. Note that an image patch may be subjected
+% to multiple augmentation filters at the same time, depending on their
+% probability factor.
+%
+% [dtls]<summary> *Widgets of the Augmentation design section* </summary>
+<div class="details-div">
+%
+% <html lang="en">
+% <ul>
+% <li><span class="kbd">[&#10003;] <b>Augmentation</b></span> - augment
+% data during training. When this checkbox is checked the input image patches are
+% additionally filtered with number of defined filters. The exact
+% augmentation options are available upon hitting the <span
+% class="kbd"><b>2D</b></span> and <span class="kbd">3D</span> buttons</li>
+% <li><span class="kbd">2D</span> - press to specify augmentation settings
+% for 2D networks. There are 17 augmentation operations and it is possible
+% to specify fraction of images patches that have to be
+% augmented and set variation and probability for each augmentation filter to be triggered
+% </li>
+% </ul>
+% </html>
+% 
+% [dtls]<summary> *Details of 2D augmentations* </summary>
+<div class="details-div">
+%
+% The augmentations are specified with 2 or 3 values, where the last
+% value defines probability of each particular augmentation to be
+% triggered.
+<br>
+% When the augmentation is defined with 2 values, the first value specifies whether it is *on* (==1) or *off* (==0), 
+% alternatively, the first two values define the variation range and a random
+% number is picked between these numbers and will be used as the parameter for
+% the filter.
+<br>
+% Each specific augmentation may be turned off either by setting its probability (the last value) to 0 
+% or by setting its variation range to be as shown in the
+% [class.code]off=[x,x,x][/class] text in the description above the
+% editbox
+<br>
+% The augmentation settings can be reset to their default values by
+% hitting *2D:* [class.kbd]Reset[/class] in the _*Options tab*_
+<br>
+% or disabled by hitting  *2D:* [class.kbd]Disable[/class] 
+% 
+% <<images\DeepLearning_2DAug_settings.jpg>>
+%
+% [/dtls]
+%
+%
+% <html lang="en">
+% <ul>
+% <li><span class="kbd"><b>3D</b></span> - press to specify augmentation settings
+% for 3D networks. There are 18 augmentation operations and it is possible
+% to specify fraction of images patches that have to be
+% augmented and set variation and probability for each augmentation filter to be triggered
+% </li>
+% </ul>
+% </html>
+% 
+% [dtls]<summary> *Details of 3D augmentations* </summary>
+<div class="details-div">
+%
+% The augmentations are specified with 2 or 3 values, where the last
+% value defines probability of each particular augmentation to be
+% triggered.
+<br>
+% When the augmentation is defined with 2 values, the first value specifies whether it is *on* (==1) or *off* (==0), 
+% alternatively, the first two values define the variation range and a random
+% number is picked between these numbers and will be used as the parameter for
+% the filter.
+<br>
+% Each specific augmentation may be turned off either by setting its probability (the last value) to 0 
+% or by setting its variation range to be as shown in the
+% [class.code]off=[x,x,x][/class] text in the description above the
+% editbox
+<br>
+% The augmentation settings can be reset to their default values by
+% hitting *3D:* [class.kbd]Reset[/class] in the _*Options tab*_
+<br>
+% or disabled by hitting  *3D:* [class.kbd]Disable[/class] 
+% 
+% <<images\DeepLearning_3DAug_settings.jpg>>
+%
+% [/dtls]
+%
+% <html lang="en">
+% <ul>
+% <li><span class="kbd"><b>Preview</b></span> is used to preview input image patches that are
+% generated using augmentor. It is useful for evaluation of augmenter
+% operations and understanding performance.
+<br>
+% Number of patches to show and tweaking of various additional settings are possible by pressing the
+% Settings button <img src="images\DeepLearningTrainSettingsBtn.png"> 
+% on the right-hand side of the <span class="kbd">Preview</span> button.
+<br>
+% It is possible to select preview of all selected augmentations or pick
+% one. In the latter case, the probability parameter is ignored and all
+% patches are shown augmented.
+% </li>
+% <li><img src="images\DeepLearningTrainSettingsBtn.png"> - hit to open a
+% dialog to specify settings to preview the selected augmentations</li>
+% </ul>
+% </html>
+%
+% [dtls]<summary> *Snapshots with Preview and Settings* </summary>
+<div class="details-div">
+% 
+% Example of augmentations generated by press of the
+% [class.kbd]Preview[/class] button
+%
+% <<images\DeepLearning_input_patches_gallery.jpg>>
+%
+% Snapshot of settings to preview the selected augmentation operations:
+%
+% <<images\DeepLearning_input_patches_gallery_settings.png>>
+%
+% [/dtls]
+%
+% [/dtls]
+%
+%% Training process design
+%
+% In this section a user can specify details on of the training process
+% that is started upon press of the [class.kbd]Train[/class] button.
+% 
+% <<images\DeepLearningTrain_traindesign.png>>
+% 
+% [dtls]<summary> *Widgets of the Training process design section* </summary>
+<div class="details-div">
+%
+% <html lang="en">
+% <ul>
+% <li><span class="dropdown">Patches per image...</span> - specify number of image patches that will be taken 
+% from each an image or a 3D dataset at each epoch. According to our experience, the best strategy is to take
+% 1 patch per image and train network for larger number of epochs. When taking a single patch per image
+% it is important to set <em>Training settings (Training button)->Shuffling->every-epoch</em>). 
+% However, fill free to use any sensible number</li>
+% <li><span class="dropdown">Mini Batch Size...</span> - number of patches processed at the same time by the network. 
+% More patches speed up the process, but it is important to understand that the 
+% resulting loss is averaged for the whole mini-batch. Max number of mini batches is limited by available GPU memory</li>
+% <li><span class="dropdown">Random seed...</span> set a seed for a random number generator used during initialization of training. 
+% We recommend to use a fixed value for reproducibility, otherwise use <span class="code">0</span> for random initialization each time
+% the network training is started
+% </li>
+% <li><span class="kbd">Training</span> - define multiple parameters used for training, for details please refer to 
+% <a
+% href="https://se.mathworks.com/help/deeplearning/ref/trainingoptions.html">trainingOptions</a>
+% function
+<br>
+<br>
+% <b>Tip, <em>setting the Plots switch to "none" in the training settings may
+% speed up the training time by up to 25%</em></b>
+<br>
+% </li>
+% <li><span class="kbd">[&#10003;] <b>Save checkpoint networks</b></span> when ticked DeepMIB  
+% saves the training progress in checkpoint files after each epoch to
+% <span class="code">3_Results\ScoreNetwork</span> directory.
+<br>
+% It will be possible to choose any of those networks and continue training from that checkpoint. If the checkpoint networks
+% are present, a choosing dialog is displayed upon press of the <span
+% class="kbd">Train</span> button.
+<br>
+% In R2022a or newer it is possible to specify frequency of saving the checkpoint files.
+% </li>
+% <li><span class="kbd">[&#10003;] <b>Export training plots</b></span> when ticked accuracy and loss scores are
+% saved to <span class="code">3_Results\ScoreNetwork</span> directory. DeepMIB uses the
+% network filename as a template and generates a file in MATLAB format
+% (*.score) and several files in CSV format
+% </li>
+% </ul> 
+% </html>
+%
+% [/dtls]
+%
+%% Start the training process
+%
+% <html lang="en">
+% 
+<br>
+% To start training press the <span class="kbd">Train</span> button highlighted under the
+% panel. If a network file already exists under the provided <span class="dropdown">Network filename...</span>
+% it is possible to continue training from that point 
+% (a dialog with possible options appears upon restart of training). After
+% starting of the training process a config file (with *.mibCfg) is created
+% in the same directory. The config file can be loaded from <em><b>Options
+% tab->Config files-></b></em><span class="kbd">Load</span>
+% 
+<br>
+<br>
+% Upon training a plot with the loss function is shown; the idea of the
+% training is to minimize the loss function as much as possible. The blue
+% curve displays the loss function calculated for the train set, while the
+% red curve for the validation set. The accuracy of the prediction for both
+% train and validation sets is displayed using the linear gauge widgets at
+% the left bottom corner of the window.
+<br>
+<br>
+% It is possible to stop training at any moment by pressing the <span class="kbd">Stop</span> or
+% <span class="kbd">Emergency brake</span> buttons. When the <span class="kbd">Emergency brake</span> button
+% is pressed DeepMIB will stop the training as fast as possible, which may lead to
+% not finalized network in situations when the batch normalization layer is
+% used.
+% 
+<br>
+<br>
+% Please note that by default DeepMIB is using a custom progress plot. If you want to use 
+% the progress plot provided with MATLAB (available only in MATLAB version
+% of MIB), navigate to <b><em>Options tab->Custom training plot->Custom
+% training progress window: uncheck</em></b>
+<br>
+% The plot can be completely disabled to improve performance: 
+% <em><b>Train tab->Training->Plots, plots to display during network
+% training->none</em></b>
+% 
+<br>
+<br>
+% The right bottom corner of the window displays used input image and model
+% patches. Display of those decreases training performace, but the frequency
+% of the patch updates can be modified in <b><em>Options tab->Custom training
+% plot->Preview image patches and Fraction of images for preview</em></b>. When
+% fraction of image for preview is 1, all image patches are shown. If the value
+% is 0.01 only 1% of patches is displayed.
+<br>
+% <img src="images\DeepLearning_TrainingProcess.jpg">
+<br>
+% After the training, the network and config files with all paramters are generated in location specified in the
+% <span class="dropdown">Network filename...</span> editbox of the <em>Network</em> panel.
+% </html>
+%
+% 
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools.html *Tools Menu*>
+%
+% [cssClasses]
+% .dropdown { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	border-radius: 0.2em; 
+% 	background-color: #e0f5ff; 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html lang="en">
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>
+##### SOURCE END #####
+--><script>
+var allDetails   = document.getElementsByTagName('details');
+var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
+var returnButton = document.getElementById("return-link");
+document.getElementById("iFrameBuf").style.display = "none";
+if(in_iFrame())
+{
+   try{
+      var footerNav = parent.document.getElementsByClassName("footernav");
+      var tabPane   = parent.document.getElementsByClassName("tab-pane");}
+   catch(err) { var footerNav = []; var tabPane = [];};
+   if(!(footerNav.length) || tabPane.length)
+   {
+      contentDiv.style.overflowY = "scroll";
+      contentDiv.style.overflowX = "hidden";
+      contentDiv.style.position  = "absolute";
+      contentDiv.style.width     = "95%";
+      contentDiv.style.top       = 0;
+      contentDiv.style.bottom    = 0;
+      if (tabPane.length){
+         contentDiv.setAttribute("data-isMATLABCentral","1");
+         returnButton.style.right = "40px";
+         document.getElementById("tooltiptext").style.right = "92px"; }
+      document.getElementById("iFrameBuf").style.display = "block";
+   }
+   else { contentDiv.setAttribute("data-isHelpBrowser","1"); }
+}
+if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
+   document.getElementById("anchor-offsets").sheet.disabled = true; }
+var jumpLinks = document.getElementsByTagName("a");
+for (var i = 0; i < jumpLinks.length; i++){
+  href = jumpLinks[i].getAttribute("href");
+  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
+</script></body></html>

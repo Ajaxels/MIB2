@@ -11,7 +11,10 @@ for i=1:numel(BatchOptInputFields)
         if isempty(BatchOptInput.(BatchOptInputFields{i}))
             BatchOpt.(BatchOptInputFields{i})(1) = {''};
         else
-            BatchOpt.(BatchOptInputFields{i})(1) = BatchOptInput.(BatchOptInputFields{i})(1);
+            for indexId = 1:numel(BatchOptInput.(BatchOptInputFields{i}))
+                BatchOpt.(BatchOptInputFields{i})(indexId) = BatchOptInput.(BatchOptInputFields{i})(indexId);
+            end
+            % BatchOpt.(BatchOptInputFields{i})(1) = BatchOptInput.(BatchOptInputFields{i})(1);
         end
     else
         BatchOpt.(BatchOptInputFields{i}) = BatchOptInput.(BatchOptInputFields{i});

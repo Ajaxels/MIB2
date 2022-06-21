@@ -210,7 +210,7 @@ switch BatchOpt.Mode{1}
         if ~strcmp(BatchOpt.Mode{1}, 'Combine files as color channels') 
             [img, img_info, pixSize] = mibLoadImages(BatchOpt.Filenames, options);
             if isempty(img)
-                errordlg(sprintf('!!! Error !!!\n\nIt is not possible to load the dataset...\nDimensions mismatch or not an image?'), 'Wrong file', 'modal');
+                errordlg(sprintf('!!! Error !!!\n\nIt is not possible to load the dataset...\nDimensions mismatch or not an image or cancelled?'), 'Wrong file', 'modal');
                 notify(obj.mibModel, 'stopProtocol');
                 return;
             end

@@ -29,8 +29,12 @@
 % organization can be selected in <ug_gui_menu_file_preferences.html the
 % Preferences dialog> (|Menu->File->Preferences|).
 %
+% [dtls][smry] *Image example* [/smry]
 % 
 % <<images\DataLayers.jpg>>
+%
+% [/dtls]
+% [br8]
 %
 %% Image layer 
 %
@@ -49,15 +53,15 @@
 % defined to store final results of the segmentation. So any mistake done during the segmentation does not affect the existing
 % model and can be potentially fixed using one of the following methods:
 % 
-% # Undone the recent actions using the |Ctrl+Z| shortcut, or the Undo button
+% # Undone the recent actions using the [class.kbd]Ctrl[/class]+[class.kbd]Z[/class] shortcut, or the Undo button
 % in the <ug_gui_toolbar.html toolbar>
 % # Manually fixed using the brush tool in the eraser mode: use the brush
-% with the |Control| key pressed (see more in the <ug_panel_segm_tools.html description of the Brush tool>)
-% # The |Selection| layer may be cleared completely using the |C| shortcut
-% (Use the |Shift+C| shortcut to clear selection for the whole dataset).
+% with the [class.kbd]Control[/class] key pressed (see more in the <ug_panel_segm_tools.html description of the Brush tool>)
+% # The |Selection| layer may be cleared completely using the [class.kbd]C[/class] shortcut
+% (Use the [class.kbd]&#8679; Shift[/class]+[class.kbd]C[/class] shortcut to clear selection for the whole dataset).
 %
 % When selection is good enough to be accepeted it should be transferred to
-% the |Model| layer (using the |A/R| |Shift+A/R| shortcuts).
+% the |Model| layer (using the [class.kbd]A[/class]/[class.kbd]R[/class] or [class.kbd]&#8679; Shift[/class]+[class.kbd]A[/class]/[class.kbd]R[/class] shortcuts).
 %
 %% Model layer
 % The |Model| layer contains the final results of the segmentation. It may
@@ -75,3 +79,42 @@
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 %
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

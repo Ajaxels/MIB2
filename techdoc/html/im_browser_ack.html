@@ -1,13 +1,12 @@
 
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head>
+<!DOCTYPE html>
+<html lang="en"><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Acknowledgements</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-12"><meta name="DC.source" content="im_browser_ack.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>Acknowledgements</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="im_browser_ack.m"><style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -36,13 +35,13 @@ ol li ol li { list-style-type:lower-alpha; }
 ol li ul { padding-top:7px; }
 ol li ul li { list-style:square; }
 
-.content { font-size:1.2em; line-height:140%; padding: 20px; }
+.content { font-size:1.2em; line-height:160%; padding: 20px; }
 
-pre, code { font-size:12px; }
-tt { font-size: 1.2em; }
-pre { margin:0px 0px 20px; }
+pre { font-size:12px; }
+code { font-size: 1.15em; }
+pre { margin:0px 0px 15px; overflow-x:auto; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
-pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 15px; color:#4c4c4c; }
 pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
@@ -67,40 +66,583 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Acknowledgements</h1><!--introduction--><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><p>
+#tooltiptext {
+  visibility: hidden;
+  padding: 5px 10px;
+  font-size: 75%;
+  line-height:110%;
+  text-align: center;
+  background-color: black;
+  color: #ddd;
+  border-radius: 6px;
+  position: fixed;
+  bottom: 11px;
+  right: 62px;
+  z-index: 2;
+}
+#tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+.tooltip:hover #tooltiptext {
+  visibility: visible;
+}
+#return-link {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    overflow: visible;
+    font-size:120%;
+    background: rgba(0, 0, 0, 0.75);
+    border-style: solid;
+    border-width: 3pt;
+    border-color: #202020;
+    border-radius: 4px;
+    cursor: pointer;
+    }
+#return-link > p { padding:3px; margin:0; color:#C0C0C0;}
+.MATLAB-Help {
+width: 100%;
+margin-bottom: 12px;
+border: 1px solid #ccc;
+border-right: none;
+border-bottom: none;
+font-size: 96%;
+line-height: 1.4;
+table-layout: fixed;
+overflow:hidden;}
+
+.MATLAB-Help > thead > tr > th {
+padding: 6px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+background: #F2F2F2;
+color: #000;
+font-weight: bold;
+text-align: left;
+vertical-align: middle;}
+
+.MATLAB-Help td{padding: 5px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+vertical-align: middle;}
+
+.language-matlab { line-height:135% }
+
+.collapse-link {float:right; line-height:200%; padding-left:10px; margin:0}
+
+
+details > summary,
+.details-div {
+  padding: 8px 20px;
+  border-style: solid;
+  border-width: 1.2pt;
+  border-color: #E0E0E0;
+}
+details > summary {
+  border-radius:6px 6px 0 0;
+  background-color: #F2F2F2;
+  cursor: pointer;
+}
+.details-div {
+  border-top-style: none;
+  border-radius: 0 0 6px 6px;
+}
+.image-fit-svg,
+.image-fit {
+    max-width:  95%;
+    max-height: 100%;
+    margin:     auto;
+}
+.image-fit-svg{ padding:0px; max-width:500px; }
+details > img.image-fit-svg{ padding: 0px 0px 10px; }
+@media (max-width: 580px) {
+  .image-fit-svg { max-width: 95%; }
+}
+.pretty-link  { color:#001188 !important; }
+</style>
+<style id="dark-theme">
+    h2, h3       { color: #B0B0B0; }
+    html body    { background-color: #101010; color: #B0B0B0; }
+    .pretty-link { color: #C46313 !important; }
+    a, a:visited { color: #C46313 }
+    a:hover      { color: orange; }
+    details > summary,
+    .details-div      { border-color:     #505050; }
+    details > summary { background-color: #202020; }
+    pre.codeinput     { border-width: 1.2pt; border-color:#001B33; background:#001129; color:#F0F0F0; }
+    pre.codeoutput    { color:#A5A5A5; }
+    span.keyword      { color:#FF9D00; }
+    span.comment      { color:#808080; }
+    span.string       { color:#3AD900; }
+    span.untermstring { color:#FFEE80; }
+    span.syscmd       { color:#CCCCCC; }
+    .MATLAB-Help, .MATLAB-Help > thead > tr > th, .MATLAB-Help td { border-color:#505050; }
+    .MATLAB-Help > thead > tr > th { background: #202020; color: #B0B0B0; }
+    .summary-sub-heading { color:#909090; }
+    .show-if-light    { display:none }
+</style>
+<style id="hide-dark">
+     .show-if-dark { display:none }
+</style>
+
+<style id="anchor-offsets">
+    h2::before, a[id]::before{
+    content: "";
+    display: block;
+    height: 100px;
+    margin: -100px 0 0;
+    visibility: hidden;
+    width:10%;
+    z-index: -1;
+}
+</style>
+
+<script>
+          var returnElem = null;
+          var skipCheck  = false;
+
+          function hide_back_link()
+          {
+              returnButton.style.display = "none";
+              try{
+                 window.removeEventListener("scroll", update_back_position, true);
+                 window.removeEventListener("resize", update_back_position, true);
+                 parent.window.removeEventListener("scroll", update_back_position, true);
+                 parent.window.removeEventListener("resize", update_back_position, true);}
+              catch(e){}
+          }
+
+          function get_offset(element)
+          {
+              if (!element.getClientRects().length){ return { top: 0, left: 0 }; }
+              var rect = element.getBoundingClientRect();
+              var win  = element.ownerDocument.defaultView;
+              return ( {top:  rect.top  + win.pageYOffset,
+                        left: rect.left + win.pageXOffset} );
+          }
+
+          function jump_to()
+          {
+              var clickedElem = event.target;
+              var clickedID   = clickedElem.closest("span");
+              if (clickedID){
+                clickedID = clickedID.getAttribute("id");
+                if (clickedID.localeCompare("jump-close")===0) { return };}
+              clickedID = clickedElem.closest("div").getAttribute("id");
+              if (clickedID && clickedID.localeCompare("return-link")===0)
+              {
+                  if (returnElem)
+                  {
+                      event.preventDefault();
+                      hide_back_link();
+                      returnElem.scrollIntoView();
+                      if (contentDiv.getAttribute("data-isHelpBrowser")){
+                         contentDiv.scrollTop = contentDiv.scrollTop-100; }
+                      if (contentDiv.getAttribute("data-isMATLABCentral")){
+                         parent.window.scrollBy(0,-100)}
+                      returnElem = null;
+                  }
+              }
+              else
+              {
+                  var href = clickedElem.closest("a").getAttribute("href");
+                  if ( href && href[0] == "#" )
+                  {
+                     var target = document.getElementById(href.substring(1));
+                     var enclosingBox = target;
+                     while ( enclosingBox )
+                     {
+                        prevBox      = enclosingBox;
+                        enclosingBox = enclosingBox.closest("details");
+                        if ( enclosingBox===prevBox ){
+                           enclosingBox = enclosingBox.parentElement
+                           if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
+                        if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
+                     }
+                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                        event.preventDefault();
+                        target.scrollIntoView(); }
+                     var nextElem = target.nextElementSibling;
+                     var nextNode = target.nextSibling;
+                     while ( nextNode && nextNode.nodeType==Node.TEXT_NODE && nextNode.data.trim().length == 0 ){
+                        nextNode = nextNode.nextSibling;}
+                     if ( nextElem && nextElem===nextNode && nextElem.localName.localeCompare("details")===0 && !nextElem.open){
+                        open_details(nextElem.id);}
+                  }
+                  else { return }
+                  if (!contentDiv.getAttribute("data-isHelpBrowser"))
+                  {
+                      update_back_position();
+                      returnButton.style.display = "block";
+                      var linkTop   = clickedElem.offsetTop;
+                      var targetTop = target.offsetTop;
+                      if (targetTop>linkTop){
+                          document.getElementById("down").style.display = "none";
+                          document.getElementById("up").style.display   = "inline"; }
+                      else{
+                          document.getElementById("up").style.display   = "none";
+                          document.getElementById("down").style.display = "inline"; }
+                      returnElem = clickedElem;
+                  }
+              }
+          }
+
+          function open_details(detailsID)
+          {
+              var details  = document.getElementById(detailsID);
+              skipCheck    = true;
+              state_check(details.id);
+              details.open = true;
+          }
+
+          function update_back_position()
+          {
+              try
+              {
+                  window.addEventListener("scroll", update_back_position, true);
+                  window.addEventListener("resize", update_back_position, true);
+                  var scrollPos;
+                  if (in_iFrame())
+                  {
+                      parent.window.addEventListener("scroll", update_back_position, true);
+                      parent.window.addEventListener("resize", update_back_position, true);
+                      var iFrame         = window.frameElement;
+                      var frameOffset    = get_offset(iFrame);
+                      var documentBottom = parent.window.innerHeight  + parent.window.scrollY;
+                      var extHeight      = Math.round(frameOffset.top + iFrame.getBoundingClientRect().height - documentBottom);
+                      if (extHeight<0) { extHeight = 0; }
+                      returnButton.style.bottom = (10+extHeight) + "px";
+                      document.getElementById("tooltiptext").style.bottom = (11+extHeight) + "px";
+                      scrollPos = contentDiv.scrollTop - 25 + iFrame.getBoundingClientRect().height - extHeight;
+                  }
+                  else{
+                      scrollPos = window.scrollY + window.innerHeight - 25;}
+                  if (returnElem.offsetTop>scrollPos){
+                      document.getElementById("down").style.display = "inline";
+                      document.getElementById("up").style.display   = "none";   }
+                  else{
+                      document.getElementById("down").style.display = "none";
+                      document.getElementById("up").style.display   = "inline"; }
+              }
+              catch(e){}
+          }
+          function set_theme(themePref)
+          {
+            var themeSwitch     = document.getElementById("ToggleTheme");
+            var themeSwitchText = "switch to";
+            var switchToText    = null;
+            if (!themePref){ themePref = get_theme_pref(); }
+            if (themePref.localeCompare("light")===0){
+                document.getElementById("dark-theme").sheet.disabled = true;
+                document.getElementById("hide-dark").sheet.disabled  = false;
+                switchToText = " dark theme";}
+            else{
+                document.getElementById("dark-theme").sheet.disabled = false;
+                document.getElementById("hide-dark").sheet.disabled  = true;
+                switchToText = " light theme";}
+            themeSwitch.innerHTML = themeSwitchText + switchToText;
+            set_theme_pref(themePref);
+          }
+
+          function toggle_theme()
+          {
+            if (document.getElementById("dark-theme").sheet.disabled) { set_theme("dark");  }
+            else                                                      { set_theme("light"); }
+          }
+
+          function set_theme_pref(themePref)
+          {
+              var d = new Date();
+              d.setTime(d.getTime() + (2*365*24*60*60*1000));
+              var expires = "expires="+ d.toUTCString();
+              document.cookie = "themepref=" + themePref + ";" + expires + "path=/";
+              localStorage.setItem("PRETTY_THEME", themePref);
+          }
+
+          function get_theme_pref() {
+              var name = "themepref=";
+              var decodedCookie = decodeURIComponent(document.cookie);
+              var ca = decodedCookie.split(';');
+              for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                  c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                  return c.substring(name.length, c.length);
+                }
+              }
+              var docTheme = localStorage.getItem("PRETTY_THEME");
+              if (docTheme) { return docTheme }
+              else          { return "light"  }
+          }
+
+          function toggle_details(section)
+          {
+            var link;
+            var subSection;
+            var details;
+            var linkText;
+            var i;
+            var openState  = true;
+            var border     = "6px 6px 0 0;"
+            if (section===0)
+            {
+              link = document.getElementById("Toggle"+section.toString());
+              if (link.innerHTML.localeCompare("collapse all on page")===0){
+                  openState = false;
+                  border    = "6px;"
+                  linkText  = "expand all";}
+              else{
+                  linkText   = "collapse all";}
+              link.innerHTML = linkText + " on page";
+              for (i = 0; i < allDetails.length; i++){
+                 allDetails[i].open = openState;
+                 allDetails[i].children[0].setAttribute( 'style', "border-radius:"+border );
+                 link = document.getElementById("Toggle"+allDetails[i].id.split(".", 1));
+                 if (allDetails[i].id.charAt(0).localeCompare("0") && link){link.innerHTML = linkText;}}
+            }
+            else
+            {
+               link = document.getElementById("Toggle"+section.toString());
+               subSection = 1;
+               if (link.innerHTML.localeCompare("collapse all")===0){
+                  openState      = false;
+                  border         = "6px;"
+                  link.innerHTML = "expand all";}
+               else{
+                  link.innerHTML = "collapse all";}
+               details = document.getElementById(section.toString()+"."+subSection.toString());
+               while (details){
+                    details.open = openState;
+                    details.children[0].setAttribute( 'style', "border-radius:"+border );
+                    subSection++;
+                    details = document.getElementById(section.toString()+"."+subSection.toString());}
+               var allCollapsed = true;
+               var allExpanded  = true;
+               for (i = 0; i < allDetails.length; i++){
+                   check_if_open(allDetails[i]);}
+               link = document.getElementById("Toggle0");
+               if (allExpanded) {link.innerHTML = "collapse all on page";}
+               if (allCollapsed){link.innerHTML = "expand all on page";}
+            }
+            function check_if_open(details)
+            {
+                if (details.open){allCollapsed = false;}
+                else             {allExpanded  = false;}
+            }
+          }
+
+          function state_check(detailsID)
+          {
+              // first deal with just the section
+              if (event.detail){document.activeElement.blur();}
+              var clickedElem   = event.target;
+              if (!skipCheck && clickedElem.localName.localeCompare("summary"))
+              { 
+                if (!(clickedElem.closest("summary"))) { return };
+              };
+              var details       = document.getElementById(detailsID);
+              if ( !skipCheck ) {
+                  var parentID  = clickedElem.closest("details").id;
+                  if (details.id.localeCompare(parentID)) { return };}
+              skipCheck         = false;
+              var clickedStatus = details.open;
+              var section       = detailsID.split(".", 1);
+              var subSection    = 1;
+              var allCollapsed  = true;
+              var allExpanded   = true;
+              var link          = document.getElementById("Toggle"+section);
+              if (clickedStatus) { details.children[0].setAttribute( 'style', "border-radius:6px;" ); }
+              else               { details.children[0].setAttribute( 'style', "border-radius:6px 6px 0 0;" ); }
+              if (link)
+              {
+                  details = document.getElementById(section+"."+subSection.toString());
+                  while (details){
+                    check_if_open(details);
+                    subSection++;
+                    details = document.getElementById(section+"."+subSection.toString());}
+                  if (allExpanded) {link.innerHTML = "collapse all";}
+                  if (allCollapsed){link.innerHTML = "expand all";}
+              }
+              // then the whole page
+              allCollapsed   = true;
+              allExpanded    = true;
+              for (var i = 0; i < allDetails.length; i++){
+                  check_if_open(allDetails[i]);}
+              link = document.getElementById("Toggle0");
+              if (allExpanded) {link.innerHTML = "collapse all on page";}
+              if (allCollapsed){link.innerHTML = "expand all on page";}
+
+              function check_if_open(details)
+              {
+                  var openStatus
+                  if (detailsID.localeCompare( details.id )===0 ){openStatus = !clickedStatus;}
+                  else                                           {openStatus = details.open;}
+                  if (openStatus){allCollapsed = false;}
+                  else           {allExpanded  = false;}
+              }
+          }
+
+          function in_iFrame ()
+          {
+               try {
+                   return window.self !== window.top;
+               } catch (e) {
+                   return true;
+               }
+          }
+</script>
+</head><body>
+<div class="content">
+<div id="return-link" style="display:none;" class="tooltip">
+<p onclick="jump_to()">
+    <span onclick="jump_to()"><span id="up">&#8679;</span><span id="down">&#8681;</span>
+    <span onclick="hide_back_link()" style="padding:2px; font-size:120%;" id="jump-close"><b onclick="hide_back_link()">&times;</b></span></span>
+</p>
+<div id="tooltiptext">click to return
+<br>(click <b>&times;</b> to hide)</div>
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Acknowledgements</h1><!--introduction-->
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p>
+<p>
 <b>Powered by MATLAB, <a href="https://www.mathworks.com/">The MathWorks,
-Inc.</a></b><br><br>
-Developed during 2010-2021 by<br>
-Core developer:<br>
-<a href="http://www.biocenter.helsinki.fi/~ibelev/">Ilya Belevich</a><br>
-Developers:<br>
+Inc.</a></b>
+<br>
+<br>
+Developed during 2010-2021 by
+<br>
+Core developer:
+<br>
+<a href="http://www.biocenter.helsinki.fi/~ibelev/">Ilya Belevich</a>
+<br>
+Developers:
+<br>
 Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija
-Jokitalo<br><br>
-<i><a href="http:\\www.biocenter.helsinki.fi/bi/em">Electron Microscopy Unit</a><br>
-Institute of Biotechnology<br>
-PO Box 56 (Viikinkaari 9)<br>
-00014, University of Helsinki<br>
+Jokitalo
+<br>
+<br>
+<i><a href="http:\\www.biocenter.helsinki.fi/bi/em">Electron Microscopy Unit</a>
+<br>
+Institute of Biotechnology
+<br>
+PO Box 56 (Viikinkaari 9)
+<br>
+00014, University of Helsinki
+<br>
 Finland</i>
-</p><p><b>Special thanks come to</b></p><div><ul><li><b>Radhakrishna Achanta</b>, Ecole Polytechnique Federale de Lausanne (EPFL) for the mex code for SLIC supervoxels and superpixels</li><li><b>Tom Boissonnet</b> (EMBL) and <b>Elena Bertseva</b> (University of Copenhagen) for extensive testing</li><li><b>John Heumann</b>, The Boulder Laboratory For 3-D Electron Microscopy of Cells for help with Mattomo</li><li><b>Konstantin Kogan</b>, University of Helsinki for assistance with Mac OS</li><li><b>David Legland</b>, INRA, France for modification of the <a href="http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-">Region Adjacency Graph (imRAG)</a> function for detection of indices between watershed regions and help with few other functions</li><li><b>Henrik P Sahlin Pettersen</b>, Norwegian University of Science and Technology/St. Olavs hospital, Trondheim for extensive testing of DeepMIB.</li></ul></div><p>Microscopy Image Browser team would like to acknowledge the <a href="http://www.mathworks.se/matlabcentral/">User Community of MATLAB-Central</a> and the authors whose code was used during MIB development. Microscopy Image Browser adapts partially or completely codes from the following sources:</p><!--/introduction--><div><ul><li>Inspired by <a href="http://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer"><b>IMAGEVIEWER</b></a> by Jiro Doke, MathWorks 2010</li><li>Documentation done with <a href="http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools"><b>MTOC++ - Doxygen filter for MATLAB and tools</b></a> written by Martin Drohmann (Universitat Munster) and Daniel Wirtz (Universitat Stuttgart), 2011-2013</li><li><a href="http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching"><b>Accurate Fast Marching function</b></a> by Dirk-Jan Kroon, University of Twente, 2011 is utilized in the Membrane Click Tracker tool</li><li><a href="http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff"><b>ANISODIFF</b></a> function written by Peter Kovesi, 2000-2002</li><li><a href="http://www.loci.wisc.edu/software/bio-formats"><b>BIO-FORMATS</b></a> by Melissa Linkert, Curtis Rueden et al. 2002-2013</li><li><a href="http://www.cs.tut.fi/~foi/GCF-BM3D/"><b>BMxD external filters</b></a> by Kostadin Dabov et al., Tampere University of Technology, Finland 2007-2014 can be used with MIB, when separately installed on the system</li><li><a href="http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio"><b>BWDISTSC</b></a> for 3D Euclidean distance transform for variable data aspect ratio written by Yuriy Mishchenko, Toros University, 2007-2013</li><li><a href="https://se.mathworks.com/matlabcentral/fileexchange/53511-drag-drop-functionality-for-java-gui-components"><b>Drag &amp; Drop functionality for JAVA GUI components</b></a> written by Maarten van der Seijs, Delft University of Technology, the Netherlands, 2015</li><li><a href="https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays"><b>CELL MIGRATION IN SCRATCH WOUND ASSAYS</b></a> by Constantino Carlos Reyes-Aldasoro, City, University of London was used for the wound healing assay tool</li><li><a href="http://www.peterkovesi.com/projects/segmentation/"><b>DRAWREGIONBOUNDARIES</b></a> a function to draw boundaries of labeled regions in an image, written by Peter Kovesi Centre for Exploration Targeting, School of Earth and Environment, The University of Western Australia, 2013.</li><li><a href="https://se.mathworks.com/matlabcentral/fileexchange/38703-custom-ginput"><b>Custom GINPUT</b></a>, written by Jiro Doke, MathWorks 2016</li><li><a href="https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m"><b>DRIFTY_SHIFTY_DELUXE</b></a>, written by Joshua D. Sugar, Sandia National Laboratories, Livermore, CA (2014); part of code from this function was adopted in mibCalcShifts.m</li><li><b>Elastic Distortion filter</b> is based on <a href="https://se.mathworks.com/matlabcentral/fileexchange/66663-elastic-distortion-transformation-on-an-image"><b>Elastic Distortion Transformation on an image</b></a> by David Franco, Catholic University of Parana</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig"><b>EXPORT_FIG</b></a> function to add measurements to snapshots is written by Oliver Woodford and Yair Altman</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/41666-fast-3d-2d-region-growing--mex-"><b>Fast 3D/2D Region Growing (MEX)</b></a> by Christian Wuerslin, Stanford University, 2013-2015.</li><li><b>Fiji Connect</b> is using <a href="http://bigwww.epfl.ch/sage/soft/mij/"><b>MIJ</b></a>, a Java package for bi-directional communication and data exchange from MATLAB to ImageJ/Fiji, developed by Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin, 2012</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/14317-findjobj-find-java-handles-of-matlab-graphic-objects"><b>FINDJOBJ</b></a> - find java handles of MATLAB graphic objects by Yair Altman, 2007-2013</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter"><b>FRANGI filter</b></a> by Marc Schrijver and Dirk-Jan Kroon, University of Twente 2001-2009</li><li><a href="https://se.mathworks.com/matlabcentral/fileexchange/55115-extended-depth-of-field"><b>FSTACK</b></a> extended depth-of-field image from focus sequence using noise-robust selective all-in-focus algorithm by Said Pertuz, Universitat Rovira i Virgili, Tarragona, Spain 2013</li><li><a href="https://github.com/carandraug/histthresh"><b>HistThresh toolbox</b></a> by Antti Niemist&ouml;, Tampere University of Technology, Finland is used for most of the global histogram-based thresholding methods</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox"><b>Image Edge Enhancing Coherence Filter</b></a> Dirk-Jan Kroon, Pascal Getreuer University of Twente.</li><li><a href="http://www.scs2.net/next/index.php?id=110"><b>IceImarisConnector</b></a> written by Aaron C. Ponti, ETH Zurich is used for connection to Imaris</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility"><b>Image Measurement Utility</b></a> written by Jan Neggers, Eindhoven Univeristy of Technology was used as a basis for the Measure Tool and re-written roiRegion class</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard"><b>IMCLIPBOARD</b></a> function by  Jiro Doke, MathWorks, 2010 is used in the snapshot tool and import from system clipboard</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/25397-imgaussian"><b>IMGAUSSIAN</b></a> by Dirk-Jan Kroon, University of Twente, implementation 2009 is used in the 3D Gaussian filter</li><li><a href="https://github.com/mattools/matGeom/"><b>MATGEOM</b></a>, a MATLAB geometry toolbox for 2D/3D geometric computing is written David Legland, INRA, France, 2013 is used in some functions</li><li><a href="http://bio3d.colorado.edu/PEET/index.html"><b>MATTOMO</b></a> is a part of PEET (Particle Estimation for Electron Tomography) package, developed at Boulder Laboratory for 3-D Electron Microscopy of Cells was used for export of models to IMOD format</li><li><a href="http://pub.ist.ac.at/~vnk/software.html"><b>MAXFLOW/MINCUT algorithm, v.2.22</b></a> written by Yuri Boykov, University of Western Ontario and Vladimir Kolmogorov, Microsoft research, Cambridge.</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow"><b>MAXFLOW/MINCUT MATLAB wrapper</b></a> is written by Michael Rubinstein, Google</li><li><a href="https://se.mathworks.com/matlabcentral/fileexchange/8472-num2clip-copy-numerical-arrays-to-clipboard"><b>NUM2CLIP</b></a> function by Grigor Browning, 2005 is used to copy column items to the system clipboard</li><li><b>NRRD</b>, Nearly Raw Raster Data format is implemented using <a href="http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule"><b>Projects:MATLABSlicerExampleModule</b></a> written by John Melonakos for NRRD reading using <a href="http://teem.sourceforge.net/TEEM">http://teem.sourceforge.net/TEEM</a>; and a custom function for reading metadata based on <a href="http://www.mathworks.com/matlabcentral/fileexchange/34653-nrrd-format-file-reader"><b>NRRD Format File Reader</b></a> written by Jeff Mather, 2012</li><li><a href="https://se.mathworks.com/matlabcentral/fileexchange/66645-nrrd-nhdr-reader-and-writer"><b>NRRD NHDR reader and writer</b></a> functions by Gaetan Rensonnet, 2018 is used to read NRRD format files on MacOS</li><li><a href="http://www.openmicroscopy.org/site/products/omero/downloads"><b>OMERO MATLAB bindings</b></a> (included into the compiled version, but should be downloaded separetly for the MATLAB version) are used for connection to OMERO servers</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser"><b>P_JSON</b></a>, highly portable JSON parser function is written by Nedialko, 2009</li><li><a href="https://se.mathworks.com/matlabcentral/fileexchange/24330-patch-normals"><b>PATCHNORMALS</b></a> by Dirk-Jan Kroon, University of Twente, implementation 2009 is used for calculation of normals during export of surfaces to Imaris</li><li><a href="https://se.mathworks.com/matlabcentral/answers/465911-parfor-waitbar-how-to-do-this-more-cleanly"><b>POOLWAITBAR</b></a> class is based on the code submitted by Edric Ellis</li><li><b>Random Forest Classifier</b> is based on <a href="http://www.kaynig.de/demos.html">Verena Kaynig</a> implementation with utilization of <a href="https://code.google.com/p/randomforest-matlab/"><b>randomforest-matlab</b></a> by Abhishek Jaiantilal</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-"><b>Region Adjacency Graph (RAG)</b></a> function is written by David Legland, INRA, France, 2013</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/47578-regionprops3"><b>REGIONPROPS3</b></a> function is written by Chaoyuan Yeh, University of Southern California, 2014</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/26940-render-rgb-text-over-rgb-or-grayscale-image"><b>RENDERTEXT</b></a> function by Davide Di Gloria, Universita di Genova, 2010 is utilized for addition of text to image</li><li>Rendering with Fiji is based on <a href="http://www.mathworks.com/matlabcentral/fileexchange/32344-hardware-accelerated-3d-viewer-for-matlab"><b>Hardware accelerated 3D viewer for MATLAB</b></a> written by Jean-Yves Tinevez, Institut Pasteur, 2011</li><li>Rendering with MATLAB is using <a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m"><b>VIEW3D</b></a> function written by  Torsten Vogel, 1999</li><li><a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html"><b>SLIC (Simple Linear Iterative Clustering)</b></a> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland, 2015 was utilized for the superpixels mode of the Brush tool and for the Graphcut segmentation.</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/20922-stlwrite-filename--varargin-"><b>STLWRITE</b></a> by Sven Holcombe, University of Michigan 2008-2015 for saving models using the STL format</li><li><a href="https://se.mathworks.com/matlabcentral/fileexchange/32555-uigetfile_n_dir-select-multiple-files-and-directories"><b>UIGETFILE_N_DIR</b></a> by Tiago / Peugas was used for selection of multiple directories</li><li><a href="http://se.mathworks.com/matlabcentral/fileexchange/21993-viewer3d"><b>VIEWER3D</b></a> by Dirk-Jan Kroon, Focal Machine Vision en Optical Systems was used as a basis for the volume rendering of datasets</li><li><a href="https://se.mathworks.com/matlabcentral/fileexchange/45134-violin-plot"><b>Violin plot</b></a> by Holger Hoffmann, 2015 used for visualization of results in some analysis functions</li><li><a href="https://se.mathworks.com/matlabcentral/fileexchange/38591-xlwrite--generate-xls-x--files-without-excel-on-mac-linux-win"><b>XLWRITE: Generate XLS(X) files without Excel on Mac/Linux/Win</b></a> by Alec de Zegher, NV Bekaert SA 2013</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/27236-improved-xlswrite-m"><b>XLSWRITE mod</b></a> by Barry Dillon, AON Insurance Brokers 2010</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/28518-xml2struct"><b>XML2STRUCT</b></a> and <a href="http://www.mathworks.com/matlabcentral/fileexchange/28639-struct2xml"><b>STRUCT2XML</b></a> by Wouter Falkena, Delft University of Technology, 2010</li></ul></div><p>Color palettes are generated with help of</p><div><ul><li><a href="http://jfly.iam.u-tokyo.ac.jp/color/">Yasuyo G. Ichihara, Masataka Okabe, Koichi Iga, Yosuke Tanaka, Kohei Musha, Kei Ito. Color Universal Design - The selection of four easily distinguishahle colors for all color vision types. Proc Spie 6807 (2008)</a></li><li><a href="http://colorbrewer2.org/">Cynthia Brewer, Mark Harrower, Ben Sheesley, Andy Woodruff, David Heyman. ColorBrewer 2.0</a></li><li><a href="https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/">Sasha Trubetskoy, List of 20 Simple, Distinct Colors</a></li></ul></div><p>Some icons used in MIB were provided by Icons8.com (<a href="https://icons8.com">&lt;https://icons8.com</a>&gt;), <a href="https://icons8.com/license/">license information</a></p><p><b>OLDER SCRIPTS</b></p><div><ul><li><a href="http://www.diplib.org/"><b>DIPLIB</b></a> is a platform independent scientific image processing library written in C developed by Quantitative Imaging Group at the Faculty of Applied Sciences, Delft University of Technology. When installed, Microscopy Image Browser can use several additional methods for anisotropic diffusion filtering available from DipLib (used in MIB 0.x and 1.x).</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/12275-extrema-m-extrema2-m"><b>EXTREMA functions</b></a> by Carlos Adrian Vargas Aguilera, Universidad de Guadalajara, 2006-2007 (used in MIB 0.x and 1.x)</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/24925-fastrobust-template-matching"><b>Fast/Robust Template Matching</b></a> (2009-2011) by Dirk-Jan Kroon, University of Twente was used for alignment of datasets (used in MIB 0.x and 1.x-1.22). <b>Image Edge Enhancing Coherence Filter</b>&gt; by Dirk-Jan Kroon &amp; Pascal Getreuer, University of Twente, 2009 (used in MIB 0.x and 1.x).</li><li><a href="http://www.mathworks.com/matlabcentral/fileexchange/8303-local-normalization"><b>Local normalization</b></a> by Guanglei Xiong at Tsinghua University, Beijing, China, 2005 (used in MIB 0.x and 1.x).</li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+</p>
+<p><b>Special thanks come to</b></p>
+<div><ul><li><b>Radhakrishna Achanta</b>, Ecole Polytechnique Federale de Lausanne (EPFL) for the mex code for SLIC supervoxels and superpixels</li>
+<li><b>Tom Boissonnet</b> (EMBL) and <b>Elena Bertseva</b> (University of Copenhagen) for extensive testing</li>
+<li><b>John Heumann</b>, The Boulder Laboratory For 3-D Electron Microscopy of Cells for help with Mattomo</li>
+<li><b>Konstantin Kogan</b>, University of Helsinki for assistance with Mac OS</li>
+<li><b>David Legland</b>, INRA, France for modification of the <a href="http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-">Region Adjacency Graph (imRAG)</a> function for detection of indices between watershed regions and help with few other functions</li>
+<li><b>Henrik P Sahlin Pettersen</b>, Norwegian University of Science and Technology/St. Olavs hospital, Trondheim for extensive testing of DeepMIB.</li></ul></div>
+<p>Microscopy Image Browser team would like to acknowledge the <a href="http://www.mathworks.se/matlabcentral/">User Community of MATLAB-Central</a> and the authors whose code was used during MIB development. Microscopy Image Browser adapts partially or completely codes from the following sources:</p><!--/introduction-->
+<div><ul><li>Inspired by <a href="http://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer"><b>IMAGEVIEWER</b></a> by Jiro Doke, MathWorks 2010</li>
+<li>API documentation of classes was done using <a href="http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools"><b>MTOC++ - Doxygen filter for MATLAB and tools</b></a> written by Martin Drohmann (Universitat Munster) and Daniel Wirtz (Universitat Stuttgart), 2011-2013</li>
+<li><a href="http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching"><b>Accurate Fast Marching function</b></a> by Dirk-Jan Kroon, University of Twente, 2011 is utilized in the Membrane Click Tracker tool</li>
+<li><a href="http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff"><b>ANISODIFF</b></a> function written by Peter Kovesi, 2000-2002 is used for anisotropic diffusion filtering of images</li>
+<li><a href="http://www.loci.wisc.edu/software/bio-formats"><b>BIO-FORMATS</b></a> by Melissa Linkert, Curtis Rueden et al. 2002-2013  is utilized for reading of proprietary microscopy image formats using the <a href="code&gt;Bio</code">code&gt;Bio&lt;/code</a> checkbox</li>
+<li><a href="http://www.cs.tut.fi/~foi/GCF-BM3D/"><b>BMxD external filters</b></a> by Kostadin Dabov et al., Tampere University of Technology, Finland 2007-2014 can be used with MIB, when separately installed on the system to filter the images</li>
+<li><a href="http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio"><b>BWDISTSC</b></a> for 3D Euclidean distance transform for variable data aspect ratio written by Yuriy Mishchenko (Toros University, 2007-2013) is used for separation of anisotropic objects in 3D</li>
+<li><a href="https://se.mathworks.com/matlabcentral/fileexchange/38703-custom-ginput"><b>Custom GINPUT</b></a>, written by Jiro Doke (MathWorks 2016) to get coordinates of a clicked point</li>
+<li><a href="https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays">CELL MIGRATION IN SCRATCH WOUND ASSAYS*</a> by Constantino Carlos Reyes-Aldasoro, City, University of London was used for the wound healing assay tool</li>
+<li><a href="https://se.mathworks.com/matlabcentral/fileexchange/53511-drag-drop-functionality-for-java-gui-components"><b>Drag &amp; Drop functionality for JAVA GUI components</b></a> written by Maarten van der Seijs (Delft University of Technology, the Netherlands, 2015)</li>
+<li><a href="http://www.peterkovesi.com/projects/segmentation/"><b>DRAWREGIONBOUNDARIES</b></a> a function to draw boundaries of labeled regions in an image when working with brush, written by Peter Kovesi (Centre for Exploration Targeting, School of Earth and Environment, The University of Western Australia, 2013)</li>
+<li><a href="https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m"><b>DRIFTY_SHIFTY_DELUXE</b></a>, written by Joshua D. Sugar (Sandia National Laboratories, Livermore, CA 2014); part of code from this function was adopted in mibCalcShifts.m</li>
+<li><b>Elastic Distortion filter</b> is based on <a href="https://se.mathworks.com/matlabcentral/fileexchange/66663-elastic-distortion-transformation-on-an-image"><b>Elastic Distortion Transformation on an image</b></a> by David Franco (Catholic University of Parana)</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig"><b>EXPORT_FIG</b></a> function to add measurements to snapshots is written by Oliver Woodford and Yair Altman</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/41666-fast-3d-2d-region-growing--mex-"><b>Fast 3D/2D Region Growing (MEX)</b></a> by Christian Wuerslin (Stanford University, 2013-2015)  is used for the region growing tool</li>
+<li><b>Fiji Connect</b> is using <a href="http://bigwww.epfl.ch/sage/soft/mij/"><b>MIJ</b></a>, a Java package for bi-directional communication and data exchange from MATLAB to ImageJ/Fiji, developed by Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin, 2012</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/14317-findjobj-find-java-handles-of-matlab-graphic-objects"><b>FINDJOBJ</b></a> - find java handles of MATLAB graphic objects by Yair Altman, 2007-2013</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter"><b>FRANGI filter</b></a> by Marc Schrijver and Dirk-Jan Kroon (University of Twente 2001-2009)</li>
+<li><a href="https://se.mathworks.com/matlabcentral/fileexchange/55115-extended-depth-of-field"><b>FSTACK</b></a> extended depth-of-field image from focus sequence using noise-robust selective all-in-focus algorithm by Said Pertuz (Universitat Rovira i Virgili, Tarragona, Spain 2013) is used in the intensity projection tool</li>
+<li><a href="https://github.com/carandraug/histthresh"><b>HistThresh toolbox</b></a> by Antti Niemist&ouml; (Tampere University of Technology, Finland) is used for most of the global histogram-based thresholding methods</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox"><b>Image Edge Enhancing Coherence Filter</b></a> Dirk-Jan Kroon, Pascal Getreuer (University of Twente)</li>
+<li><a href="http://www.scs2.net/next/index.php?id=110"><b>IceImarisConnector</b></a> written by Aaron C. Ponti (ETH Zurich) is used for connection to Imaris</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility"><b>Image Measurement Utility</b></a> written by Jan Neggers, (Eindhoven Univeristy of Technology) is used as a basis for the Measure Tool and re-written roiRegion class</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard"><b>IMCLIPBOARD</b></a> function by  Jiro Doke, MathWorks, 2010 is used in the snapshot tool and import from system clipboard</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/25397-imgaussian"><b>IMGAUSSIAN</b></a> by Dirk-Jan Kroon (University of Twente), implementation 2009 is used in the 3D Gaussian filter</li>
+<li><a href="https://github.com/mattools/matGeom/"><b>MATGEOM</b></a>, a MATLAB geometry toolbox for 2D/3D geometric computing is written David Legland (INRA, France, 2013) is used in some functions</li>
+<li><a href="http://bio3d.colorado.edu/PEET/index.html"><b>MATTOMO</b></a> is a part of PEET (Particle Estimation for Electron Tomography) package, developed at Boulder Laboratory for 3-D Electron Microscopy of Cells is used for export of models to IMOD format</li>
+<li><a href="http://pub.ist.ac.at/~vnk/software.html"><b>MAXFLOW/MINCUT algorithm, v.2.22</b></a> written by Yuri Boykov (University of Western Ontario) and Vladimir Kolmogorov (Microsoft research, Cambridge) is used in the Graphcut tool</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow"><b>MAXFLOW/MINCUT MATLAB wrapper</b></a> is written by Michael Rubinstein (Google) is used in the Graphcut tool</li>
+<li><a href="https://se.mathworks.com/matlabcentral/fileexchange/8472-num2clip-copy-numerical-arrays-to-clipboard"><b>NUM2CLIP</b></a> function by Grigor Browning, 2005 is used to copy column items to the system clipboard</li>
+<li><b>NRRD</b>, Nearly Raw Raster Data format is implemented using <a href="http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule"><b>Projects:MATLABSlicerExampleModule</b></a> written by John Melonakos for NRRD reading using <a href="http://teem.sourceforge.net/TEEM">http://teem.sourceforge.net/TEEM</a>; and a custom function for reading metadata based on <a href="http://www.mathworks.com/matlabcentral/fileexchange/34653-nrrd-format-file-reader"><b>NRRD Format File Reader</b></a> written by Jeff Mather, 2012</li>
+<li><a href="https://se.mathworks.com/matlabcentral/fileexchange/66645-nrrd-nhdr-reader-and-writer"><b>NRRD NHDR reader and writer</b></a> functions by Gaetan Rensonnet, 2018 is used to read NRRD format files on MacOS</li>
+<li><a href="http://www.openmicroscopy.org/site/products/omero/downloads"><b>OMERO MATLAB bindings</b></a> (included into the compiled version, but should be downloaded separetly for the MATLAB version) are used for connection to OMERO servers</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser"><b>P_JSON</b></a>, highly portable JSON parser function is written by Nedialko, 2009 is used for work woth HDF5 files</li>
+<li><a href="https://se.mathworks.com/matlabcentral/fileexchange/24330-patch-normals"><b>PATCHNORMALS</b></a> by Dirk-Jan Kroon (University of Twente) implementation 2009 is used for calculation of normals during export of surfaces to Imaris</li>
+<li><a href="https://se.mathworks.com/matlabcentral/answers/465911-parfor-waitbar-how-to-do-this-more-cleanly"><b>POOLWAITBAR</b></a> class is based on the code submitted by Edric Ellis</li>
+<li><a href="https://se.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html"><b>Prettify MATLAB html</b></a> by Harry Dymond, University of Bristol was used to prettify MIB documentation</li>
+<li><b>Random Forest Classifier</b> is based on <a href="http://www.kaynig.de/demos.html">Verena Kaynig</a> implementation with utilization of <a href="https://code.google.com/p/randomforest-matlab/"><b>randomforest-matlab</b></a> by Abhishek Jaiantilal</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-"><b>Region Adjacency Graph (RAG)</b></a> function is written by David Legland (INRA, France, 2013) is used in the Graphcut tool</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/47578-regionprops3"><b>REGIONPROPS3</b></a> function is written by Chaoyuan Yeh (University of Southern California, 2014) is used for quantitation some object properties in 3D</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/26940-render-rgb-text-over-rgb-or-grayscale-image"><b>RENDERTEXT</b></a> function by Davide Di Gloria (Universita di Genova, 2010) is utilized for addition of text to image</li>
+<li>Rendering with Fiji is based on <a href="http://www.mathworks.com/matlabcentral/fileexchange/32344-hardware-accelerated-3d-viewer-for-matlab"><b>Hardware accelerated 3D viewer for MATLAB</b></a> written by Jean-Yves Tinevez (Institut Pasteur, 2011)</li>
+<li>Rendering with MATLAB is using <a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m"><b>VIEW3D</b></a> function written by Torsten Vogel, 1999</li>
+<li><a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html"><b>SLIC (Simple Linear Iterative Clustering)</b></a> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland, 2015 was utilized for the superpixels mode of the Brush tool and for the Graphcut segmentation.</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/20922-stlwrite-filename--varargin-"><b>STLWRITE</b></a> by Sven Holcombe (University of Michigan 2008-2015) for saving models using the STL format</li>
+<li><a href="https://se.mathworks.com/matlabcentral/fileexchange/32555-uigetfile_n_dir-select-multiple-files-and-directories"><b>UIGETFILE_N_DIR</b></a> by Tiago / Peugas is used for selection of multiple directories</li>
+<li><a href="http://se.mathworks.com/matlabcentral/fileexchange/21993-viewer3d"><b>VIEWER3D</b></a> by Dirk-Jan Kroon (Focal Machine Vision en Optical Systems) is used as a basis for the volume rendering of datasets</li>
+<li><a href="https://se.mathworks.com/matlabcentral/fileexchange/45134-violin-plot"><b>Violin plot</b></a> by Holger Hoffmann, 2015 used for visualization of results in some analysis functions</li>
+<li><a href="https://se.mathworks.com/matlabcentral/fileexchange/38591-xlwrite--generate-xls-x--files-without-excel-on-mac-linux-win"><b>XLWRITE: Generate XLS(X) files without Excel on Mac/Linux/Win</b></a> by Alec de Zegher (NV Bekaert SA 2013)</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/27236-improved-xlswrite-m"><b>XLSWRITE mod</b></a> by Barry Dillon (AON Insurance Brokers 2010)</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/28518-xml2struct"><b>XML2STRUCT</b></a> and <a href="http://www.mathworks.com/matlabcentral/fileexchange/28639-struct2xml"><b>STRUCT2XML</b></a> by Wouter Falkena (Delft University of Technology, 2010)</li></ul></div>
+<p>Color palettes are generated with help of</p>
+<div><ul><li><a href="http://jfly.iam.u-tokyo.ac.jp/color/">Yasuyo G. Ichihara, Masataka Okabe, Koichi Iga, Yosuke Tanaka, Kohei Musha, Kei Ito. Color Universal Design - The selection of four easily distinguishahle colors for all color vision types. Proc Spie 6807 (2008)</a></li>
+<li><a href="http://colorbrewer2.org/">Cynthia Brewer, Mark Harrower, Ben Sheesley, Andy Woodruff, David Heyman. ColorBrewer 2.0</a></li>
+<li><a href="https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/">Sasha Trubetskoy, List of 20 Simple, Distinct Colors</a></li></ul></div>
+<p>Some icons used in MIB were provided by Icons8.com (<a href="https://icons8.com">&lt;https://icons8.com</a>&gt;), <a href="https://icons8.com/license/">license information</a></p>
+<p><b>OLDER SCRIPTS</b></p>
+<div><ul><li><a href="http://www.diplib.org/"><b>DIPLIB</b></a> is a platform independent scientific image processing library written in C developed by Quantitative Imaging Group at the Faculty of Applied Sciences, Delft University of Technology. When installed, Microscopy Image Browser can use several additional methods for anisotropic diffusion filtering available from DipLib (used in MIB 0.x and 1.x).</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/12275-extrema-m-extrema2-m"><b>EXTREMA functions</b></a> by Carlos Adrian Vargas Aguilera, Universidad de Guadalajara, 2006-2007 (used in MIB 0.x and 1.x)</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/24925-fastrobust-template-matching"><b>Fast/Robust Template Matching</b></a> (2009-2011) by Dirk-Jan Kroon, University of Twente was used for alignment of datasets (used in MIB 0.x and 1.x-1.22). <b>Image Edge Enhancing Coherence Filter</b>&gt; by Dirk-Jan Kroon &amp; Pascal Getreuer, University of Twente, 2009 (used in MIB 0.x and 1.x).</li>
+<li><a href="http://www.mathworks.com/matlabcentral/fileexchange/8303-local-normalization"><b>Local normalization</b></a> by Guanglei Xiong at Tsinghua University, Beijing, China, 2005 (used in MIB 0.x and 1.x).</li></ul></div>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Acknowledgements
 %
 % *Back to* <im_browser_product_page.html *Index*>
 %
 %
-% <html>
+% <html lang="en">
 % <b>Powered by MATLAB, <a href="https://www.mathworks.com/">The MathWorks,
-% Inc.</a></b><br><br>
-% Developed during 2010-2021 by<br>
-% Core developer:<br>
-% <a href="http://www.biocenter.helsinki.fi/~ibelev/">Ilya Belevich</a><br>
-% Developers:<br>
+% Inc.</a></b>
+<br>
+<br>
+% Developed during 2010-2021 by
+<br>
+% Core developer:
+<br>
+% <a href="http://www.biocenter.helsinki.fi/~ibelev/">Ilya Belevich</a>
+<br>
+% Developers:
+<br>
 % Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija
-% Jokitalo<br><br>
-% <i><a href="http:\\www.biocenter.helsinki.fi/bi/em">Electron Microscopy Unit</a><br>
-% Institute of Biotechnology<br>
-% PO Box 56 (Viikinkaari 9)<br>
-% 00014, University of Helsinki<br>
+% Jokitalo
+<br>
+<br>
+% <i><a href="http:\\www.biocenter.helsinki.fi/bi/em">Electron Microscopy Unit</a>
+<br>
+% Institute of Biotechnology
+<br>
+% PO Box 56 (Viikinkaari 9)
+<br>
+% 00014, University of Helsinki
+<br>
 % Finland</i>
 % </html>
 %
@@ -128,120 +670,57 @@ Finland</i>
 %
 %%
 % 
-% * Inspired by <http://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer *IMAGEVIEWER*>
-% by Jiro Doke, MathWorks 2010
-% * Documentation done with <http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools *MTOC++ - Doxygen filter for MATLAB and tools*>
-% written by Martin Drohmann (Universitat Munster) and Daniel Wirtz (Universitat Stuttgart), 2011-2013
-% * <http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching
-% *Accurate Fast Marching function*> by Dirk-Jan Kroon, University of Twente, 2011 is utilized in the Membrane Click Tracker tool
-% * <http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff *ANISODIFF*> function written by Peter Kovesi, 2000-2002
-% * <http://www.loci.wisc.edu/software/bio-formats *BIO-FORMATS*> by Melissa Linkert, Curtis Rueden et al. 2002-2013
-% * <http://www.cs.tut.fi/~foi/GCF-BM3D/ *BMxD external filters*> by Kostadin Dabov
-% et al., Tampere University of Technology, Finland 2007-2014 can be used with MIB, when separately installed on the system
-% * <http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio
-% *BWDISTSC*> for 3D Euclidean distance transform for variable data aspect ratio written by Yuriy Mishchenko, Toros University, 2007-2013
-% * <https://se.mathworks.com/matlabcentral/fileexchange/53511-drag-drop-functionality-for-java-gui-components *Drag & Drop functionality for JAVA GUI components*> written by Maarten
-% van der Seijs, Delft University of Technology, the Netherlands, 2015
-% * <https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays
-% *CELL MIGRATION IN SCRATCH WOUND ASSAYS*> by Constantino Carlos
-% Reyes-Aldasoro, City, University of London was used for the wound healing assay tool
-% * <http://www.peterkovesi.com/projects/segmentation/ *DRAWREGIONBOUNDARIES*>
-% a function to draw boundaries of labeled regions in an image, written by Peter Kovesi
-% Centre for Exploration Targeting, School of Earth and Environment, The
-% University of Western Australia, 2013.
-% * <https://se.mathworks.com/matlabcentral/fileexchange/38703-custom-ginput
-% *Custom GINPUT*>, written by Jiro Doke, MathWorks 2016
-% * <https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m
-% *DRIFTY_SHIFTY_DELUXE*>, written by Joshua D. Sugar, Sandia National
-% Laboratories, Livermore, CA (2014); part of code from this function was adopted in mibCalcShifts.m
-% * *Elastic Distortion filter* is based on <https://se.mathworks.com/matlabcentral/fileexchange/66663-elastic-distortion-transformation-on-an-image
-% *Elastic Distortion Transformation on an image*> by David Franco, Catholic
-% University of Parana
-% * <http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig
-% *EXPORT_FIG*> function to add measurements to snapshots is written by Oliver Woodford and Yair Altman 
-% * <http://www.mathworks.com/matlabcentral/fileexchange/41666-fast-3d-2d-region-growingREPLACE_WITH_DASH_DASHmex-
-% *Fast 3D/2D Region Growing (MEX)*> by Christian Wuerslin, Stanford
-% University, 2013-2015.
-% * *Fiji Connect* is using <http://bigwww.epfl.ch/sage/soft/mij/ *MIJ*>, a Java package for bi-directional communication and data exchange from MATLAB to ImageJ/Fiji,
-% developed by Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin, 2012
-% * <http://www.mathworks.com/matlabcentral/fileexchange/14317-findjobj-find-java-handles-of-matlab-graphic-objects 
-% *FINDJOBJ*> - find java handles of MATLAB graphic objects by Yair Altman, 2007-2013
-% * <http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter 
-% *FRANGI filter*> by Marc Schrijver and Dirk-Jan Kroon, University of Twente 2001-2009
-% * <https://se.mathworks.com/matlabcentral/fileexchange/55115-extended-depth-of-field *FSTACK*> extended depth-of-field image from focus sequence using noise-robust selective all-in-focus algorithm by Said Pertuz, Universitat
-% Rovira i Virgili, Tarragona, Spain 2013
-% * <https://github.com/carandraug/histthresh *HistThresh toolbox*> by Antti Niemist&ouml;, Tampere University of Technology, Finland is used for most of the global histogram-based thresholding methods
-% * <http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox *Image Edge Enhancing Coherence Filter*> Dirk-Jan Kroon, Pascal Getreuer University of Twente. 
-% * <http://www.scs2.net/next/index.php?id=110 *IceImarisConnector*> written by Aaron C. Ponti, ETH Zurich is used for connection
-% to Imaris
-% * <http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility *Image Measurement Utility*> written by Jan Neggers, 
-% Eindhoven Univeristy of Technology was used as a basis for the Measure
-% Tool and re-written roiRegion class
-% * <http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard *IMCLIPBOARD*> function
-% by  Jiro Doke, MathWorks, 2010 is used in the snapshot tool and import from system clipboard
-% * <http://www.mathworks.com/matlabcentral/fileexchange/25397-imgaussian *IMGAUSSIAN*> 
-% by Dirk-Jan Kroon, University of Twente, implementation 2009 is used in the 3D Gaussian filter
-% * <https://github.com/mattools/matGeom/ *MATGEOM*>, a MATLAB geometry toolbox for 2D/3D geometric computing is written David Legland, INRA, France, 2013 is used in some functions
-% * <http://bio3d.colorado.edu/PEET/index.html *MATTOMO*> is a part of PEET 
-% (Particle Estimation for Electron Tomography) package, developed at Boulder Laboratory for 3-D Electron Microscopy of Cells
-% was used for export of models to IMOD format
-% * <http://pub.ist.ac.at/~vnk/software.html *MAXFLOW/MINCUT algorithm, v.2.22*> written by Yuri Boykov, University of Western Ontario and Vladimir Kolmogorov, Microsoft research, Cambridge. 
-% * <http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow
-% *MAXFLOW/MINCUT MATLAB wrapper*> is written by Michael Rubinstein, Google
-% * <https://se.mathworks.com/matlabcentral/fileexchange/8472-num2clip-copy-numerical-arrays-to-clipboard *NUM2CLIP*> function
-% by Grigor Browning, 2005 is used to copy column items to the system clipboard
-% * *NRRD*, Nearly Raw Raster Data format is implemented using  
-% <http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule
-% *Projects:MATLABSlicerExampleModule*> written by John Melonakos for NRRD
-% reading using <http://teem.sourceforge.net/TEEM>; and a custom function for reading metadata based on
-% <http://www.mathworks.com/matlabcentral/fileexchange/34653-nrrd-format-file-reader
-% *NRRD Format File Reader*> written by Jeff Mather, 2012
-% * <https://se.mathworks.com/matlabcentral/fileexchange/66645-nrrd-nhdr-reader-and-writer *NRRD NHDR reader and writer*> 
-% functions by Gaetan Rensonnet, 2018 is used to read NRRD format files on MacOS
-% * <http://www.openmicroscopy.org/site/products/omero/downloads *OMERO MATLAB bindings*> (included into the compiled version, but should be downloaded separetly for the MATLAB version) are used for
-% connection to OMERO servers
-% * <http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser
-% *P_JSON*>, highly portable JSON parser function is written by Nedialko, 2009
-% * <https://se.mathworks.com/matlabcentral/fileexchange/24330-patch-normals *PATCHNORMALS*> 
-% by Dirk-Jan Kroon, University of Twente, implementation 2009 is used for
-% calculation of normals during export of surfaces to Imaris
-% * <https://se.mathworks.com/matlabcentral/answers/465911-parfor-waitbar-how-to-do-this-more-cleanly
-% *POOLWAITBAR*> class is based on the code submitted by Edric Ellis
+% * Inspired by <http://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer *IMAGEVIEWER*> by Jiro Doke, MathWorks 2010
+% * API documentation of classes was done using <http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools *MTOC++ - Doxygen filter for MATLAB and tools*> written by Martin Drohmann (Universitat Munster) and Daniel Wirtz (Universitat Stuttgart), 2011-2013
+% * <http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching *Accurate Fast Marching function*> by Dirk-Jan Kroon, University of Twente, 2011 is utilized in the Membrane Click Tracker tool
+% * <http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff *ANISODIFF*> function written by Peter Kovesi, 2000-2002 is used for anisotropic diffusion filtering of images 
+% * <http://www.loci.wisc.edu/software/bio-formats *BIO-FORMATS*> by Melissa Linkert, Curtis Rueden et al. 2002-2013  is utilized for reading of proprietary microscopy image formats using the <code>Bio</code> checkbox
+% * <http://www.cs.tut.fi/~foi/GCF-BM3D/ *BMxD external filters*> by Kostadin Dabov et al., Tampere University of Technology, Finland 2007-2014 can be used with MIB, when separately installed on the system to filter the images
+% * <http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio *BWDISTSC*> for 3D Euclidean distance transform for variable data aspect ratio written by Yuriy Mishchenko (Toros University, 2007-2013) is used for separation of anisotropic objects in 3D
+% * <https://se.mathworks.com/matlabcentral/fileexchange/38703-custom-ginput *Custom GINPUT*>, written by Jiro Doke (MathWorks 2016) to get coordinates of a clicked point
+% * <https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays CELL MIGRATION IN SCRATCH WOUND ASSAYS*> by Constantino Carlos Reyes-Aldasoro, City, University of London was used for the wound healing assay tool
+% * <https://se.mathworks.com/matlabcentral/fileexchange/53511-drag-drop-functionality-for-java-gui-components *Drag & Drop functionality for JAVA GUI components*> written by Maarten van der Seijs (Delft University of Technology, the Netherlands, 2015)
+% * <http://www.peterkovesi.com/projects/segmentation/ *DRAWREGIONBOUNDARIES*> a function to draw boundaries of labeled regions in an image when working with brush, written by Peter Kovesi (Centre for Exploration Targeting, School of Earth and Environment, The University of Western Australia, 2013)
+% * <https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m *DRIFTY_SHIFTY_DELUXE*>, written by Joshua D. Sugar (Sandia National Laboratories, Livermore, CA 2014); part of code from this function was adopted in mibCalcShifts.m
+% * *Elastic Distortion filter* is based on <https://se.mathworks.com/matlabcentral/fileexchange/66663-elastic-distortion-transformation-on-an-image *Elastic Distortion Transformation on an image*> by David Franco (Catholic University of Parana)
+% * <http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig *EXPORT_FIG*> function to add measurements to snapshots is written by Oliver Woodford and Yair Altman 
+% * <http://www.mathworks.com/matlabcentral/fileexchange/41666-fast-3d-2d-region-growingREPLACE_WITH_DASH_DASHmex- *Fast 3D/2D Region Growing (MEX)*> by Christian Wuerslin (Stanford University, 2013-2015)  is used for the region growing tool
+% * *Fiji Connect* is using <http://bigwww.epfl.ch/sage/soft/mij/ *MIJ*>, a Java package for bi-directional communication and data exchange from MATLAB to ImageJ/Fiji, developed by Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin, 2012
+% * <http://www.mathworks.com/matlabcentral/fileexchange/14317-findjobj-find-java-handles-of-matlab-graphic-objects *FINDJOBJ*> - find java handles of MATLAB graphic objects by Yair Altman, 2007-2013
+% * <http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter *FRANGI filter*> by Marc Schrijver and Dirk-Jan Kroon (University of Twente 2001-2009)
+% * <https://se.mathworks.com/matlabcentral/fileexchange/55115-extended-depth-of-field *FSTACK*> extended depth-of-field image from focus sequence using noise-robust selective all-in-focus algorithm by Said Pertuz (Universitat Rovira i Virgili, Tarragona, Spain 2013) is used in the intensity projection tool
+% * <https://github.com/carandraug/histthresh *HistThresh toolbox*> by Antti Niemist&ouml; (Tampere University of Technology, Finland) is used for most of the global histogram-based thresholding methods
+% * <http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox *Image Edge Enhancing Coherence Filter*> Dirk-Jan Kroon, Pascal Getreuer (University of Twente)
+% * <http://www.scs2.net/next/index.php?id=110 *IceImarisConnector*> written by Aaron C. Ponti (ETH Zurich) is used for connection to Imaris
+% * <http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility *Image Measurement Utility*> written by Jan Neggers, (Eindhoven Univeristy of Technology) is used as a basis for the Measure Tool and re-written roiRegion class
+% * <http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard *IMCLIPBOARD*> function by  Jiro Doke, MathWorks, 2010 is used in the snapshot tool and import from system clipboard
+% * <http://www.mathworks.com/matlabcentral/fileexchange/25397-imgaussian *IMGAUSSIAN*> by Dirk-Jan Kroon (University of Twente), implementation 2009 is used in the 3D Gaussian filter
+% * <https://github.com/mattools/matGeom/ *MATGEOM*>, a MATLAB geometry toolbox for 2D/3D geometric computing is written David Legland (INRA, France, 2013) is used in some functions
+% * <http://bio3d.colorado.edu/PEET/index.html *MATTOMO*> is a part of PEET (Particle Estimation for Electron Tomography) package, developed at Boulder Laboratory for 3-D Electron Microscopy of Cells is used for export of models to IMOD format
+% * <http://pub.ist.ac.at/~vnk/software.html *MAXFLOW/MINCUT algorithm, v.2.22*> written by Yuri Boykov (University of Western Ontario) and Vladimir Kolmogorov (Microsoft research, Cambridge) is used in the Graphcut tool 
+% * <http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow *MAXFLOW/MINCUT MATLAB wrapper*> is written by Michael Rubinstein (Google) is used in the Graphcut tool
+% * <https://se.mathworks.com/matlabcentral/fileexchange/8472-num2clip-copy-numerical-arrays-to-clipboard *NUM2CLIP*> function by Grigor Browning, 2005 is used to copy column items to the system clipboard
+% * *NRRD*, Nearly Raw Raster Data format is implemented using <http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule *Projects:MATLABSlicerExampleModule*> written by John Melonakos for NRRD reading using <http://teem.sourceforge.net/TEEM>; and a custom function for reading metadata based on <http://www.mathworks.com/matlabcentral/fileexchange/34653-nrrd-format-file-reader *NRRD Format File Reader*> written by Jeff Mather, 2012
+% * <https://se.mathworks.com/matlabcentral/fileexchange/66645-nrrd-nhdr-reader-and-writer *NRRD NHDR reader and writer*> functions by Gaetan Rensonnet, 2018 is used to read NRRD format files on MacOS
+% * <http://www.openmicroscopy.org/site/products/omero/downloads *OMERO MATLAB bindings*> (included into the compiled version, but should be downloaded separetly for the MATLAB version) are used for connection to OMERO servers
+% * <http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser *P_JSON*>, highly portable JSON parser function is written by Nedialko, 2009 is used for work woth HDF5 files
+% * <https://se.mathworks.com/matlabcentral/fileexchange/24330-patch-normals *PATCHNORMALS*> by Dirk-Jan Kroon (University of Twente) implementation 2009 is used for calculation of normals during export of surfaces to Imaris
+% * <https://se.mathworks.com/matlabcentral/answers/465911-parfor-waitbar-how-to-do-this-more-cleanly *POOLWAITBAR*> class is based on the code submitted by Edric Ellis
+% * <https://se.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html *Prettify MATLAB html*> by Harry Dymond, University of Bristol was used to prettify MIB documentation
 % * *Random Forest Classifier* is based on <http://www.kaynig.de/demos.html Verena Kaynig> implementation with utilization of <https://code.google.com/p/randomforest-matlab/ *randomforest-matlab*> by Abhishek Jaiantilal
-% * <http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graphREPLACE_WITH_DASH_DASHrag- *Region Adjacency Graph (RAG)*> function is written by David Legland,
-% INRA, France, 2013
-% * <http://www.mathworks.com/matlabcentral/fileexchange/47578-regionprops3
-% *REGIONPROPS3*> function is written by Chaoyuan Yeh, University of Southern
-% California, 2014
-% * <http://www.mathworks.com/matlabcentral/fileexchange/26940-render-rgb-text-over-rgb-or-grayscale-image 
-% *RENDERTEXT*> function by Davide Di Gloria, Universita di Genova, 2010 is utilized for addition of text to image
-% * Rendering with Fiji is based on
-% <http://www.mathworks.com/matlabcentral/fileexchange/32344-hardware-accelerated-3d-viewer-for-matlab
-% *Hardware accelerated 3D viewer for MATLAB*> written by Jean-Yves Tinevez, Institut Pasteur, 2011  
-% * Rendering with MATLAB is using <http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m *VIEW3D*> function
-% written by  Torsten Vogel, 1999  
-% * <http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html 
-% *SLIC (Simple Linear Iterative Clustering)*> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, 
-% Pascal Fua, and Sabine S?sstrunk, Ecole Polytechnique Federale de
-% Lausanne (EPFL), Switzerland, 2015 was utilized for the superpixels mode of the Brush tool and for the Graphcut segmentation.
-% * <http://www.mathworks.com/matlabcentral/fileexchange/20922-stlwrite-filenameREPLACE_WITH_DASH_DASHvarargin-
-% *STLWRITE*> by Sven Holcombe, University of Michigan 2008-2015 for saving models
-% using the STL format
-% * <https://se.mathworks.com/matlabcentral/fileexchange/32555-uigetfile_n_dir-select-multiple-files-and-directories 
-% *UIGETFILE_N_DIR*> by Tiago / Peugas was used for selection of multiple directories
-% * <http://se.mathworks.com/matlabcentral/fileexchange/21993-viewer3d 
-% *VIEWER3D*> by Dirk-Jan Kroon, Focal Machine Vision en Optical Systems
-% was used as a basis for the volume rendering of datasets
-% * <https://se.mathworks.com/matlabcentral/fileexchange/45134-violin-plot 
-% *Violin plot*> by Holger Hoffmann, 2015 used for visualization of results
-% in some analysis functions
-% * <https://se.mathworks.com/matlabcentral/fileexchange/38591-xlwriteREPLACE_WITH_DASH_DASHgenerate-xls-xREPLACE_WITH_DASH_DASHfiles-without-excel-on-mac-linux-win 
-% *XLWRITE: Generate XLS(X) files without Excel on Mac/Linux/Win*> by Alec
-% de Zegher, NV Bekaert SA 2013
-% * <http://www.mathworks.com/matlabcentral/fileexchange/27236-improved-xlswrite-m 
-% *XLSWRITE mod*> by Barry Dillon, AON Insurance Brokers 2010
-% * <http://www.mathworks.com/matlabcentral/fileexchange/28518-xml2struct 
-% *XML2STRUCT*> and <http://www.mathworks.com/matlabcentral/fileexchange/28639-struct2xml *STRUCT2XML*> by Wouter Falkena, Delft University of Technology, 2010
+% * <http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graphREPLACE_WITH_DASH_DASHrag- *Region Adjacency Graph (RAG)*> function is written by David Legland (INRA, France, 2013) is used in the Graphcut tool
+% * <http://www.mathworks.com/matlabcentral/fileexchange/47578-regionprops3 *REGIONPROPS3*> function is written by Chaoyuan Yeh (University of Southern California, 2014) is used for quantitation some object properties in 3D
+% * <http://www.mathworks.com/matlabcentral/fileexchange/26940-render-rgb-text-over-rgb-or-grayscale-image *RENDERTEXT*> function by Davide Di Gloria (Universita di Genova, 2010) is utilized for addition of text to image
+% * Rendering with Fiji is based on <http://www.mathworks.com/matlabcentral/fileexchange/32344-hardware-accelerated-3d-viewer-for-matlab *Hardware accelerated 3D viewer for MATLAB*> written by Jean-Yves Tinevez (Institut Pasteur, 2011)
+% * Rendering with MATLAB is using <http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m *VIEW3D*> function written by Torsten Vogel, 1999  
+% * <http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html *SLIC (Simple Linear Iterative Clustering)*> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland, 2015 was utilized for the superpixels mode of the Brush tool and for the Graphcut segmentation.
+% * <http://www.mathworks.com/matlabcentral/fileexchange/20922-stlwrite-filenameREPLACE_WITH_DASH_DASHvarargin- *STLWRITE*> by Sven Holcombe (University of Michigan 2008-2015) for saving models using the STL format
+% * <https://se.mathworks.com/matlabcentral/fileexchange/32555-uigetfile_n_dir-select-multiple-files-and-directories *UIGETFILE_N_DIR*> by Tiago / Peugas is used for selection of multiple directories
+% * <http://se.mathworks.com/matlabcentral/fileexchange/21993-viewer3d *VIEWER3D*> by Dirk-Jan Kroon (Focal Machine Vision en Optical Systems) is used as a basis for the volume rendering of datasets
+% * <https://se.mathworks.com/matlabcentral/fileexchange/45134-violin-plot *Violin plot*> by Holger Hoffmann, 2015 used for visualization of results in some analysis functions
+% * <https://se.mathworks.com/matlabcentral/fileexchange/38591-xlwriteREPLACE_WITH_DASH_DASHgenerate-xls-xREPLACE_WITH_DASH_DASHfiles-without-excel-on-mac-linux-win *XLWRITE: Generate XLS(X) files without Excel on Mac/Linux/Win*> by Alec de Zegher (NV Bekaert SA 2013)
+% * <http://www.mathworks.com/matlabcentral/fileexchange/27236-improved-xlswrite-m *XLSWRITE mod*> by Barry Dillon (AON Insurance Brokers 2010)
+% * <http://www.mathworks.com/matlabcentral/fileexchange/28518-xml2struct *XML2STRUCT*> and <http://www.mathworks.com/matlabcentral/fileexchange/28639-struct2xml *STRUCT2XML*> by Wouter Falkena (Delft University of Technology, 2010)
 % 
 %
 % Color palettes are generated with help of
@@ -282,4 +761,37 @@ Finland</i>
 
 
 ##### SOURCE END #####
---></body></html>
+--><script>
+var allDetails   = document.getElementsByTagName('details');
+var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
+var returnButton = document.getElementById("return-link");
+document.getElementById("iFrameBuf").style.display = "none";
+if(in_iFrame())
+{
+   try{
+      var footerNav = parent.document.getElementsByClassName("footernav");
+      var tabPane   = parent.document.getElementsByClassName("tab-pane");}
+   catch(err) { var footerNav = []; var tabPane = [];};
+   if(!(footerNav.length) || tabPane.length)
+   {
+      contentDiv.style.overflowY = "scroll";
+      contentDiv.style.overflowX = "hidden";
+      contentDiv.style.position  = "absolute";
+      contentDiv.style.width     = "95%";
+      contentDiv.style.top       = 0;
+      contentDiv.style.bottom    = 0;
+      if (tabPane.length){
+         contentDiv.setAttribute("data-isMATLABCentral","1");
+         returnButton.style.right = "40px";
+         document.getElementById("tooltiptext").style.right = "92px"; }
+      document.getElementById("iFrameBuf").style.display = "block";
+   }
+   else { contentDiv.setAttribute("data-isHelpBrowser","1"); }
+}
+if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
+   document.getElementById("anchor-offsets").sheet.disabled = true; }
+var jumpLinks = document.getElementsByTagName("a");
+for (var i = 0; i < jumpLinks.length; i++){
+  href = jumpLinks[i].getAttribute("href");
+  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
+</script></body></html>

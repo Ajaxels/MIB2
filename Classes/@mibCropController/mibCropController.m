@@ -80,10 +80,10 @@ classdef mibCropController  < handle
             obj.BatchOpt.mibBatchSectionName = 'Menu -> Dataset';
             obj.BatchOpt.mibBatchActionName = 'Crop dataset';
             % tooltips that will accompany the BatchOpt
-            obj.BatchOpt.mibBatchTooltip.Width = sprintf('[Manual mode only]\nRange of points for the cropping in X\nFor example, "100:200"');
-            obj.BatchOpt.mibBatchTooltip.Height = sprintf('[Manual mode only]\nRange of points for the cropping in Y\nFor example, "100:200"');
-            obj.BatchOpt.mibBatchTooltip.Depth = sprintf('[Manual mode only]\nRange of points for the cropping in Z\nFor example, "100:200"');
-            obj.BatchOpt.mibBatchTooltip.Time = sprintf('[Manual mode only]\nRange of points for the cropping in T\nFor example, "10:20"');
+            obj.BatchOpt.mibBatchTooltip.Width = sprintf('[Manual mode only]\nRange of points for the cropping in X\nFor example, "100:200", "1:end"');
+            obj.BatchOpt.mibBatchTooltip.Height = sprintf('[Manual mode only]\nRange of points for the cropping in Y\nFor example, "100:200", "1:end"');
+            obj.BatchOpt.mibBatchTooltip.Depth = sprintf('[Manual mode only]\nRange of points for the cropping in Z\nFor example, "100:200", "1:end"');
+            obj.BatchOpt.mibBatchTooltip.Time = sprintf('[Manual mode only]\nRange of points for the cropping in T\nFor example, "10:20", "1:end"');
             obj.BatchOpt.mibBatchTooltip.Interactive = sprintf('The batch mode is not compatible with this mode');
             obj.BatchOpt.mibBatchTooltip.ROI = sprintf('Use ROI for the cropping');
             obj.BatchOpt.mibBatchTooltip.Manual = sprintf('Width, Height, Depth, Time fields to crop the image');
@@ -124,6 +124,21 @@ classdef mibCropController  < handle
                     notify(obj.mibModel, 'stopProtocol');
                     return;
                 end
+                
+                % correct end in obj.BatchOpt.Depth / obj.BatchOpt.Width / obj.BatchOpt.Height
+                if ~isempty(strfind(obj.BatchOpt.Depth, 'end'))
+                    obj.BatchOpt.Depth = strrep(obj.BatchOpt.Depth, 'end', num2str(obj.mibModel.I{obj.mibModel.Id}.depth));
+                end
+                if ~isempty(strfind(obj.BatchOpt.Height, 'end'))
+                    obj.BatchOpt.Height = strrep(obj.BatchOpt.Height, 'end', num2str(obj.mibModel.I{obj.mibModel.Id}.height));
+                end
+                if ~isempty(strfind(obj.BatchOpt.Width, 'end'))
+                    obj.BatchOpt.Width = strrep(obj.BatchOpt.Width, 'end', num2str(obj.mibModel.I{obj.mibModel.Id}.width));
+                end
+                if ~isempty(strfind(obj.BatchOpt.Time, 'end'))
+                    obj.BatchOpt.Time = strrep(obj.BatchOpt.Time, 'end', num2str(obj.mibModel.I{obj.mibModel.Id}.time));
+                end
+                    
                 obj.cropBtn_Callback();
                 return;
             end

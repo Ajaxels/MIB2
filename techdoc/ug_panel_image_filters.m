@@ -16,12 +16,16 @@
 % src="images\youtube2.png"></a>
 % </html>
 %
+% *Image filters were heavily updated and it is recommended to use new
+% filters dialog available upon press of the [class.kbd]New filters[/class] button[br]
+% or from [class.code] <ug_gui_menu_image_filters.html Menu->Image->Image filters> [/class]*
+%
 %% Image Filter combo box.
 % Allows selection of a filter from a list of 2D and 3D image filters. Depending on the filter type some additional parameters
 % should be specified in the |HSize|, |Sigma|, |lambda|, |Type|, |Angle|, |Iter| edit boxes.
 %
 %
-% *List of available filters:*
+% [dtls][smry] *List of available filters:* [/smry]
 %
 % * *Average*, (*2D*) MATLAB Averaging filter, see more in the MATLAB documentation for |fspecial|
 % and |imfilter|
@@ -66,6 +70,7 @@
 % And M. Maggioni, V. Katkovnik, K. Egiazarian, A. Foi, "A Nonlocal Transform-Domain Filter for Volumetric Data Denoising and
 % Reconstruction", IEEE Trans. Image Process., vol. 22, no. 1, pp. 119-133, January 2013.  doi:10.1109/TIP.2012.2210725 
 %
+% [/dtls]
 %
 % *Note!* If |HSize| is specified with a single number then
 % the size of the 3D Kernel is calculated based on pixel size of the dataset <ug_gui_menu_dataset.html
@@ -97,7 +102,41 @@
 % these edit boxes may be disabled.
 %
 %% The Filter button
-% Press this button to start the filtering.
+% Press this button to start the filtering process.
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
+%
+% [cssClasses]
+% .kbd { 
+%     font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.2em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

@@ -21,6 +21,7 @@ classdef mibMeasure < matlab.mixin.Copyable
         %      .Data.n  - index, double
         %      .Data.type   - type, string: 'LinDistance',
         %      .Data.value  - value, double
+        %      .Data.info   - info, free text
         %      .Data.X      - X-coordinates of points
         %      .Data.Y      - Y-coordinates of points
         %      .Data.Z      - Z-coordinates of points
@@ -65,7 +66,8 @@ classdef mibMeasure < matlab.mixin.Copyable
         % - 'Distance (linear)'
         % - 'Distance (polyline)'
         % - 'Point'
-        
+        fixZ
+        % a switch that fixes Z and T values when the measurements are recalculated
     end
     
     events
@@ -217,9 +219,9 @@ classdef mibMeasure < matlab.mixin.Copyable
                         h1 = plot(axes, X, Y, 'o');
                         ht = text(X, Y, ['  ' obj.Data(indices(i)).value], 'Parent', axes);
                         h  = h1;
-                        marker = marker(1);
-                        color = color(1);
-                        linestyle = linestyle(1);
+                        %marker = marker(1);
+                        %color = color(1);
+                        %linestyle = linestyle(1);
                     case 'Caliper'
                         h1 = plot(axes, X(1:2), Y(1:2), '-xw', X(1:2), Y(1:2), ':+k');
                         h2 = plot(axes, X(3:4), Y(3:4), '-xw', X(3:4), Y(3:4), ':+k');
@@ -263,18 +265,26 @@ classdef mibMeasure < matlab.mixin.Copyable
                         h  = [h1; h2];
                         ht = text(spl.x(end), spl.y(end), [' ' value], 'Parent', axes);
                         
-                        set(h2, 'Marker', 'none')
-                        set(h2, {'LineStyle'}, linestyle)
-                        set(h2, {'Color'}, color)
-                        set(h2, 'LineWidth', linewidth)
+                        set(h2, 'Marker', 'none');
+                        set(h2, {'LineStyle'}, linestyle);
+                        set(h2, {'Color'}, color);
+                        set(h2, 'LineWidth', linewidth);
                 end
                 
-                set(h1, {'Marker'}, marker)
-                set(h1, 'MarkerSize', markersize)
-                set(h1, {'MarkerEdgeColor'}, color)
-                set(h1, {'LineStyle'}, linestyle)
-                set(h1, {'Color'}, color)
-                set(h1, 'LineWidth', linewidth)
+                if strcmp(cell2mat(obj.Data(indices(i)).type), 'Point')
+                    set(h1, {'MarkerEdgeColor'}, color(1));
+                    set(h1, {'Color'}, color(1));
+                    set(h1, {'Marker'}, marker(1));
+                    set(h1, {'LineStyle'}, linestyle(1));
+                else
+                    set(h1, {'MarkerEdgeColor'}, color);
+                    set(h1, {'Color'}, color);
+                    set(h1, {'Marker'}, marker);
+                    set(h1, {'LineStyle'}, linestyle);
+                end
+
+                set(h1, 'MarkerSize', markersize);
+                                set(h1, 'LineWidth', linewidth);
                 
                 if strcmp(cell2mat(obj.Data(indices(i)).type), 'Distance (polyline)')
                     set(h1, 'LineStyle', 'none');
@@ -284,9 +294,9 @@ classdef mibMeasure < matlab.mixin.Copyable
                 set(ht, 'BackgroundColor', textcolorbg);
                 set(ht, 'FontSize', fontsize);
                 
-                if O.showMarkers == 0; set(h, 'marker', 'none'); end;
-                if O.showLines == 0; set(h, 'LineStyle', 'none'); end;
-                if O.showText == 0; set(ht, 'Visible', 'off'); end;
+                if O.showMarkers == 0; set(h, 'marker', 'none'); end
+                if O.showLines == 0; set(h, 'LineStyle', 'none'); end
+                if O.showText == 0; set(ht, 'Visible', 'off'); end
                 
                 set(ht, 'tag', 'measurements');
                 set(h, 'tag', 'measurements');
@@ -309,6 +319,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             
             obj.setDefaultOptions();   %  set Options to default state
             obj.clearData();  % clear Data structure
+            obj.fixZ = false; % allow change of Z and T when editing measurements, it should be true when the measurements are recalculated
         end
         
         function clearData(obj)
@@ -337,6 +348,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             obj.Data.intensity = [];
             obj.Data.profile = [];
             obj.Data.integrateWidth = [];
+            obj.Data.info = [];
             
             obj.roi.pos = [];
             obj.roi.type = [];
@@ -854,6 +866,7 @@ classdef mibMeasure < matlab.mixin.Copyable
                 % get Z-value
                 z = obj.hImg.getCurrentSliceNumber();
                 timePoint = obj.hImg.getCurrentTimePoint();
+                info = ''; % info text
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -867,11 +880,15 @@ classdef mibMeasure < matlab.mixin.Copyable
                     position(:,1) = tempData.X;
                     position(:,2) = tempData.Y;
                 end
-                % get Z-value
-                %z = tempData.Z;
-                z = mibController.mibModel.I{mibController.mibModel.Id}.getCurrentSliceNumber();
+                % update Z-value
+                if obj.fixZ
+                    z = tempData.Z;
+                else
+                    z = mibController.mibModel.I{mibController.mibModel.Id}.getCurrentSliceNumber();
+                end
                 tempData.Z = z;
                 timePoint = tempData.T;
+                info = tempData.info;
             end
             
             % detect Cancel due to press of the Escape button
@@ -954,6 +971,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             newData.spline    = [];
             newData.circ      = [];
             newData.intensity = intensity;
+            newData.info = info;
             newData.profile   = [ti ; profile];
             newData.integrateWidth = [];
             
@@ -1055,6 +1073,7 @@ classdef mibMeasure < matlab.mixin.Copyable
                 % get Z-value
                 z = obj.hImg.getCurrentSliceNumber();
                 timePoint = obj.hImg.getCurrentTimePoint();
+                info = ''; % info text
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -1088,11 +1107,15 @@ classdef mibMeasure < matlab.mixin.Copyable
                     position(:,1) = tempData.X;
                     position(:,2) = tempData.Y;
                 end
-                % get Z-value
-                %z = tempData.Z;
-                z = mibController.mibModel.I{mibController.mibModel.Id}.getCurrentSliceNumber();
+                % update Z-value
+                if obj.fixZ
+                    z = tempData.Z;
+                else
+                    z = mibController.mibModel.I{mibController.mibModel.Id}.getCurrentSliceNumber();
+                end
                 tempData.Z = z;
                 timePoint = tempData.T;
+                info = tempData.info;
             end
             
             % detect Cancel due to press of the Escape button
@@ -1197,6 +1220,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             newData.spline    = [];
             newData.circ      = [];
             newData.intensity = intensity;
+            newData.info = info;
             ti = linspace(0, Caliper, size(profile, 2));
             newData.profile   = [ti ; profile];
             newData.integrateWidth = [];
@@ -1267,6 +1291,7 @@ classdef mibMeasure < matlab.mixin.Copyable
                 % get Z-value
                 z = obj.hImg.getCurrentSliceNumber();
                 timePoint = obj.hImg.getCurrentTimePoint();
+                info = ''; % info text
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -1285,11 +1310,15 @@ classdef mibMeasure < matlab.mixin.Copyable
                 else
                     position = obj.drawROI(mibController, 'imellipse', P, 1);
                 end
-                % get Z-value
-                %z = tempData.Z;
-                z = mibController.mibModel.I{mibController.mibModel.Id}.getCurrentSliceNumber();
+                % update Z-value
+                if obj.fixZ
+                    z = tempData.Z;
+                else
+                    z = mibController.mibModel.I{mibController.mibModel.Id}.getCurrentSliceNumber();
+                end
                 tempData.Z = z;
                 timePoint = tempData.T;
+                info = tempData.info;
             end
             
             % detect Cancel due to press of the Escape button
@@ -1353,6 +1382,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             newData.spline    = [];
             newData.circ      = circ;
             newData.intensity = intensity;
+            newData.info = info;
             newData.profile   = [ti ; profile];
             newData.integrateWidth = [];
             
@@ -1448,6 +1478,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             newData.spline = spl;
             newData.circ = [];
             newData.intensity = [];
+            newData.info = '';
             newData.profile = [];
             newData.integrateWidth = [];
             
@@ -1513,19 +1544,18 @@ classdef mibMeasure < matlab.mixin.Copyable
                     if isempty(x1)
                         delete(h);
                         mibController.mibView.handles.mibImageAxes.NextPlot = 'replace';
-                        mibController.mibView.gui.WindowScrollWheelFcn = (@(hObject, eventdata, handles) obj.mibGUI_ScrollWheelFcn(eventdata));   % restore scroll callback
+                        mibController.mibView.gui.WindowScrollWheelFcn = (@(hObject, eventdata, handles) mibController.mibGUI_ScrollWheelFcn(eventdata));   % restore scroll callback
                         return;
                     end
-                   x(k) = x1;
-                   y(k) = y1;
-                   u(k) = u1;
-                   v(k) = v1;
-                   h(:,k) = plot(mibController.mibView.handles.mibImageAxes,...
+                    x(k) = x1;
+                    y(k) = y1;
+                    u(k) = u1;
+                    v(k) = v1;
+                    h(:,k) = plot(mibController.mibView.handles.mibImageAxes,...
                         u(k), v(k), 'r+', u(k), v(k), 'bo');
                 end
                 delete(h);
-                mibController.mibView.gui.WindowScrollWheelFcn = (@(hObject, eventdata, handles) obj.mibGUI_ScrollWheelFcn(eventdata));   % restore scroll callback
-
+                mibController.mibView.gui.WindowScrollWheelFcn = (@(hObject, eventdata, handles) mibController.mibGUI_ScrollWheelFcn(eventdata));   % restore scroll callback
                 mibController.mibView.handles.mibImageAxes.NextPlot = 'replace';
                 if finetuneCheck
                     pos = [x ; y ].';
@@ -1537,6 +1567,7 @@ classdef mibMeasure < matlab.mixin.Copyable
                 % get Z-value
                 z = obj.hImg.getCurrentSliceNumber();
                 timePoint = obj.hImg.getCurrentTimePoint();
+                info = ''; % info text
             elseif options.calcKymograph
                 xVec = round(obj.Data(index).X);
                 yVec = round(obj.Data(index).Y);
@@ -1647,11 +1678,15 @@ classdef mibMeasure < matlab.mixin.Copyable
                     position(:,1) = tempData.spline.x;
                     position(:,2) = tempData.spline.y;
                 end
-                % get Z-value
-                %z = tempData.Z;
-                z = mibController.mibModel.I{mibController.mibModel.Id}.getCurrentSliceNumber();
+                % update Z-value
+                if obj.fixZ
+                    z = tempData.Z;
+                else
+                    z = mibController.mibModel.I{mibController.mibModel.Id}.getCurrentSliceNumber();
+                end
                 tempData.Z = z;
                 timePoint = tempData.T;
+                info = tempData.info;
             end
             
             % detect Cancel due to press of the Escape button
@@ -1743,6 +1778,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             newData.spline = spl;
             newData.circ = [];
             newData.intensity = intensity;
+            newData.info = info;
             ti = linspace(0, L, size(profile, 2));
             newData.profile = [ti ; profile];
             newData.integrateWidth = [];
@@ -1791,6 +1827,7 @@ classdef mibMeasure < matlab.mixin.Copyable
                 % get Z-value
                 z = obj.hImg.getCurrentSliceNumber();
                 timePoint = obj.hImg.getCurrentTimePoint();
+                info = ''; % info text
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -1804,11 +1841,15 @@ classdef mibMeasure < matlab.mixin.Copyable
                     position(:, 1) = tempData.X;
                     position(:, 2) = tempData.Y;
                 end
-                % get Z-value
-                %z = tempData.Z;
-                z = mibController.mibModel.I{mibController.mibModel.Id}.getCurrentSliceNumber();
+                % update Z-value
+                if obj.fixZ
+                    z = tempData.Z;
+                else
+                    z = mibController.mibModel.I{mibController.mibModel.Id}.getCurrentSliceNumber();
+                end
                 tempData.Z = z;
                 timePoint = tempData.T;
+                info = tempData.info;
             end
             
             % detect Cancel due to press of the Escape button
@@ -1855,6 +1896,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             newData.spline = [];
             newData.circ = [];
             newData.intensity = intensity;
+            newData.info = info;
             newData.profile = [repmat(1, [1, size(profile,1)]); profile'];
             newData.integrateWidth = [];
             
@@ -1930,6 +1972,7 @@ classdef mibMeasure < matlab.mixin.Copyable
                 % get Z-value
                 z = obj.hImg.getCurrentSliceNumber();
                 timePoint = obj.hImg.getCurrentTimePoint();
+                info = ''; % info text
             elseif options.calcKymograph
                 xVec = round(obj.Data(index).X);
                 yVec = round(obj.Data(index).Y);
@@ -2057,7 +2100,6 @@ classdef mibMeasure < matlab.mixin.Copyable
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
-                
                 if finetuneCheck
                     mibController.plotImage();
                     pos(:,1) = tempData.X;
@@ -2067,11 +2109,15 @@ classdef mibMeasure < matlab.mixin.Copyable
                     position(:,1) = tempData.X;
                     position(:,2) = tempData.Y;
                 end
-                % get Z-value
-                %z = tempData.Z;
-                z = mibController.mibModel.I{mibController.mibModel.Id}.getCurrentSliceNumber();
-                tempData.Z = z;
+                % update Z-value
+                if obj.fixZ
+                    z = tempData.Z;
+                else
+                    z = mibController.mibModel.I{mibController.mibModel.Id}.getCurrentSliceNumber();
+                end
+
                 timePoint = tempData.T;
+                info = tempData.info;
             end
             
             % detect Cancel due to press of the Escape button
@@ -2181,6 +2227,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             newData.spline = [];
             newData.circ = [];
             newData.intensity = intensity;
+            newData.info = info;
             if calcIntensity
                 if isempty(integrateWidth)
                     ti = linspace(0, Distance, Ni);

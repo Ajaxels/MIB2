@@ -35,22 +35,27 @@ defaultAnnotationText = obj.mibModel.getImageProperty('defaultAnnotationText');
 defaultAnnotationValue = obj.mibModel.getImageProperty('defaultAnnotationValue');
 obj.mibModel.mibDoBackup('labels', 0);
 if isempty(modifier) || strcmp(modifier, 'shift')  % add annotation
-    title = 'Add annotation';
-    if obj.mibModel.mibAnnValueEccentricCheck == 1
-        defAns = {defaultAnnotationValue, defaultAnnotationText};
-        prompts = {'Annotation value:'; 'Annotation text:'};
+    if obj.mibView.handles.mibAnnPromptCheck.Value
+        title = 'Add annotation';
+        if obj.mibModel.mibAnnValueEccentricCheck == 1
+            defAns = {defaultAnnotationValue, defaultAnnotationText};
+            prompts = {'Annotation value:'; 'Annotation text:'};
+        else
+            defAns = {defaultAnnotationText, defaultAnnotationValue};
+            prompts = {'Annotation text:'; 'Annotation value:'};
+        end
+        answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
+        if isempty(answer); return; end
+        if obj.mibModel.mibAnnValueEccentricCheck == 1
+            labelText = answer(2);
+            labelValue = str2double(answer{1});
+        else
+            labelText = answer(1);
+            labelValue = str2double(answer{2});
+        end
     else
-        defAns = {defaultAnnotationText, defaultAnnotationValue};
-        prompts = {'Annotation text:'; 'Annotation value:'};
-    end
-    answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
-    if isempty(answer); return; end
-    if obj.mibModel.mibAnnValueEccentricCheck == 1
-        labelText = answer(2);
-        labelValue = str2double(answer{1});
-    else
-        labelText = answer(1);
-        labelValue = str2double(answer{2});
+        labelText = {defaultAnnotationText};
+        labelValue = defaultAnnotationValue;
     end
     
     obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(labelText, [z, x, y, t], labelValue);

@@ -1,5 +1,4 @@
 %% Microscopy Image Browser Getting Started
-% Getting Started
 %
 % *Back to* <im_browser_product_page.html *Index*>
 %% Brief description
@@ -20,20 +19,23 @@
 % of collected and not properly processed data is much higher than the amount of produced results. 
 %
 % With development of Microscopy Image Browser (MIB) we address this problem 
-% and present a free, open-source software package, which can be used for image 
+% and present a open-source software package, which can be used for image 
 % processing, analysis, segmentation and visualization of multidimensional datasets. 
+% The program is designed to work in both MATLAB environment and as stand-alone instance. 
 %
-% The program is designed to work in both MATLAB environment and as stand-alone instance. In the latter case it is required to install 
-% MATLAB Compiler Runtime (MCR), which is freely available from <http://www.mathworks.com MathWorks>. 
-% 
-% *_Please note,_* that in the compiled version may not have all features available.
+% *Please note* that the compiled version of MIB is limited to academic research and may not have all
+% features available in the MATLAB version.
+%
 %% Starting the program
 % 
 % Please follow the steps described in the <im_browser_installation.html Installation section> to install the program. 
 %
-% Start Microscopy Image Browser with |MIB| command in the main 
-% MATLAB window and refer to the following sections for details of
-% functioning; especially *User Guide* section.
+% Start Microscopy Image Browser by typing
+% [class.codeinput]>> mib[/class]
+% command in the main MATLAB window and refer to the following sections for details of
+% functioning; especially the *User Guide* section.
+% [br20]
+%
 %
 %% Links
 %
@@ -44,6 +46,5 @@
 % * <im_browser_user_guide.html User Guide>
 % * <im_browser_ack.html Acknowledgements>
 % * <im_browser_troubleshooting.html Troubleshooting>
-%
 %
 % *Back to* <im_browser_product_page.html *Index*>

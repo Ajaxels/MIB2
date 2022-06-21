@@ -40,7 +40,7 @@
 % <table>
 % <table style="width: 800px; text-align: left; border: 0px" cellspacing=2px cellpadding=2px >
 % <tr>
-%   <td><img src="images\image_filters_average.jpg"></td>
+%   <td style="width: 300px"><img src="images\image_filters_average.jpg"></td>
 %   <td><b>Average filter</b><br>
 %        average image signal using a rectanlular filter; the filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">average</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
 %   </td>
@@ -163,7 +163,7 @@
 % <table>
 % <table style="width: 800px; text-align: left; " cellspacing=2px cellpadding=2px >
 % <tr>
-%   <td><img src="images\image_filters_ani_diff.jpg"></td>
+%   <td style="width: 300px"><img src="images\image_filters_ani_diff.jpg"></td>
 %   <td><b>Anisotropic diffusion filter</b><br>
 %        Edge preserving anisotropic diffusion filtering of images with Perona-Malik algorithm<br>The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imdiffusefilt.html" target="_blank">imdiffusefilt</a>
 %   </td>
@@ -219,7 +219,7 @@
 % <table>
 % <table style="width: 800px; text-align: left; " cellspacing=2px cellpadding=2px >
 % <tr>
-%   <td><img src="images\image_filters_addnoise.jpg"></td>
+%   <td style="width: 300px"><img src="images\image_filters_addnoise.jpg"></td>
 %   <td><b>Add noise filter</b><br>
 %        Add noise to image<br>The filtering is done with <a
 %        href="https://www.mathworks.com/help/images/ref/imnoise.html"
@@ -277,6 +277,9 @@
 % </tr>
 % </table>
 % </html>
+%
+% [br8]
+%
 %% Image binarization
 % The image binarization filters process the image and generate bitmap mask
 % that can be assigned to the selection or mask layers of MIB (use the |DestinationLayer| dropdown to specify it)
@@ -285,7 +288,7 @@
 % <table>
 % <table style="width: 800px; text-align: left; " cellspacing=2px cellpadding=2px >
 % <tr>
-%   <td><img src="images\image_filters_edge.jpg"></td>
+%   <td style="width: 300px"><img src="images\image_filters_edge.jpg"></td>
 %   <td><b>Edge filter</b><br>
 %        Find edges in intensity image;<br>the filtering is done with <a href="https://www.mathworks.com/help/images/ref/edge.html" target="_blank">edge</a>
 %        <br><br>
@@ -305,3 +308,42 @@
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_image.html *Image*>
 %
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

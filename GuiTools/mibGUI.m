@@ -22,7 +22,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 26-Mar-2022 18:12:11
+% Last Modified by GUIDE v2.5 05-Jun-2022 14:44:18
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -104,7 +104,7 @@ end
 % adding context menu for filesListbox
 handles.mibFilesListbox_cm = uicontextmenu('Parent',handles.mibGUI);
 uimenu(handles.mibFilesListbox_cm, 'Label', 'Combine selected datasets...', 'Callback', {@mibFilesListbox_cm_Callback, 'Combine datasets'});
-uimenu(handles.mibFilesListbox_cm, 'Label', 'Load part of the dataset (*.am only)...', 'Callback', {@mibFilesListbox_cm_Callback, 'Load part of dataset'});
+uimenu(handles.mibFilesListbox_cm, 'Label', 'Load part of the dataset (AM and TIF)...', 'Callback', {@mibFilesListbox_cm_Callback, 'Load part of dataset'});
 uimenu(handles.mibFilesListbox_cm, 'Label', 'Load each N-th dataset...', 'Callback', {@mibFilesListbox_cm_Callback, 'Load each N-th dataset'});
 uimenu(handles.mibFilesListbox_cm, 'Label', 'Insert into the open dataset...', 'Callback', {@mibFilesListbox_cm_Callback, 'Insert into open dataset'});
 uimenu(handles.mibFilesListbox_cm, 'Label', 'Combine files as color channels...', 'Separator', 'on', 'Callback', {@mibFilesListbox_cm_Callback, 'Combine files as color channels'});
@@ -2203,7 +2203,11 @@ global mibPath;
 switch parameter
     case 'tip'
         handles.mibController.mibModel.preferences.Tips.ShowTips = 1;
-        handles.mibController.startController('mibTipsController');
+        if verLessThan('matlab','9.12')
+            handles.mibController.startController('mibTipsController');
+        else
+            handles.mibController.startController('mibTipsAppController');
+        end
     case 'call'
         link = 'http://mib.helsinki.fi/web-update/call4help.json';
         urlText = urlread(link, 'Timeout', 4);

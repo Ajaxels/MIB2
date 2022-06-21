@@ -3,17 +3,24 @@
 % advanced image processing, segmentation and visualization of
 % multidimentional (2D-4D) datasets. Microscopy Image Browser is written in
 % MATLAB, but has a user friendly graphical interface that does not requre
-% knowledge of MATLAB and can be used by anybody.
+% knowledge of MATLAB and can be used by a general audience without knowledge of programming.
 %
 % Please find a list of main features below
 % 
 % *Back to* <im_browser_product_page.html *Index*>
+%
+%% List of all features
+%
+% Please check <http://mib.helsinki.fi/features_all.html the list of all features page> for more detailed description and video examples
+%
+%
 %% List of Key Features:
 %%
 % 
-% * Works as a MATLAB program under Windows/Linux/MacOS MATLAB, or as a standalone application (Windows 64bit)
-% * Open source, no license/fee required
-% * Extendable with custom plugins (<tutor_programming.html tutorials>)
+% * Works as a MATLAB program under Windows/Linux/MacOS MATLAB, or as a standalone application (Windows 64bit/MacOS/Linux)
+% * Open source licensed under <im_browser_license.html#2 GPLv2 license> 
+% * Compiled version is <im_browser_license.html#3 licensed for academic research> 
+% * Extendable with custom plugins (<http://mib.helsinki.fi/tutorials_programming.html tutorials>)
 % * Load/Import multiple image and video formats using standard and custom-made readers, <http://www.mathworks.com Bio-Formats (LOCI) reader>, 
 % <http://www.openmicroscopy.org/site OMERO server>, and direct import from
 % <http://fiji.sc/Fiji Fiji> and <http://www.bitplane.com Imaris>
@@ -31,11 +38,6 @@
 % * Customizable Undo option
 % * Customizable Keyboard shortcuts
 % * Colorblind friendly default color modeling scheme
-%
-%% List of all features
-%
-% Please check <http://mib.helsinki.fi/features_all.html the list of all features page> for more detailed description and video examples
-%
 %
 %% Scheme of Microscopy Image Browser
 %

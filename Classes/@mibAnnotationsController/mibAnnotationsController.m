@@ -37,6 +37,12 @@ classdef mibAnnotationsController < handle
         % operation
         batchModifyExpressionFactor
         % factor to modify value
+        childControllers
+        % list of opened subcontrollers
+        childControllersIds
+        % a cell array with names of initialized child controllers
+        BatchOpt
+        % BatchOpt structure
     end
     
     events
@@ -51,6 +57,21 @@ classdef mibAnnotationsController < handle
                 case {'updatedAnnotations', 'updateGuiWidgets'}
                     obj.updateWidgets();
             end
+        end
+
+        function purgeControllers(obj, src, evnt)
+            % function purgeControllers(obj, src, evnt)
+            % find index of the child controller and purge it
+            %
+            
+            id = obj.findChildId(class(src));
+            
+            % delete the child controller
+            delete(obj.childControllers{id});
+            
+            % clear the handle
+            obj.childControllers(id) = [];
+            obj.childControllersIds(id) = [];
         end
     end
     
@@ -80,6 +101,27 @@ classdef mibAnnotationsController < handle
             
             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
             obj.listener{2} = addlistener(obj.mibModel, 'updatedAnnotations', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));   % listen for updated annotations
+
+            obj.BatchOpt.CropObjectsTo = {'Amira Mesh binary (*.am)'};                       % additionally crop detected objects to files or export to matlab
+            obj.BatchOpt.CropObjectsTo{2} = {'Do not crop', 'Crop to Matlab', ...
+                'Amira Mesh binary (*.am)','MRC format for IMOD (*.mrc)','NRRD Data Format (*.nrrd)',...
+                'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)'};
+            obj.BatchOpt.CropObjectsMarginXY = '256';     % width of the image patch
+            obj.BatchOpt.CropObjectsMarginZ = '256';     % height of the image patch
+            obj.BatchOpt.CropObjectsDepth = '1';     % depth of the image patch
+            obj.BatchOpt.Generate3DPatches = false;     % generate 3D patches
+            obj.BatchOpt.CropObjectsIncludeModel = {'Do not include'};
+            obj.BatchOpt.CropObjectsIncludeModel{2} = {'Do not include', 'Crop to Matlab', 'Matlab format (*.model)', ...
+                    'Amira Mesh binary (*.am)', 'MRC format for IMOD (*.mrc)', 'NRRD Data Format (*.nrrd)', ...
+                    'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)}'};
+            obj.BatchOpt.CropObjectsIncludeModelMaterialIndex = 'NaN';  % index of the material for cropping the models, or NaN to crop all materials
+            obj.BatchOpt.CropObjectsIncludeMask = {'Do not include'};
+            obj.BatchOpt.CropObjectsIncludeMask{2} = {'Do not include', 'Crop to Matlab', 'Matlab format (*.mask)', ...
+                    'Amira Mesh binary (*.am)', 'MRC format for IMOD (*.mrc)', 'NRRD Data Format (*.nrrd)', ...
+                    'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)'};
+            obj.BatchOpt.CropObjectsOutputName = 'CropOut';     % name of the variable template or directory for the object crop
+            obj.BatchOpt.SingleMaskObjectPerDataset = false;    % check to remove all other objects that may apper within the clipping box of the main detected object
+            obj.BatchOpt.showWaitbar = true;
         end
         
         function closeWindow(obj)
@@ -527,7 +569,6 @@ classdef mibAnnotationsController < handle
                     notify(obj.mibModel, 'plotImage');  % notify to plot the image
                 case 'Modify'   % batch modify selected annotations
                     if isempty(obj.indices); return; end
-                    
                     operations = {'Add', 'Subtract', 'Multiply', 'Divide', 'Round', 'Floor', 'Ceil'};
                     inputDlgOptions.Title = sprintf('Select dedired operation modify selected values using the provided factor:');
                     inputDlgOptions.TitleLines = 2;
@@ -720,11 +761,11 @@ classdef mibAnnotationsController < handle
                             end
                             waitbar(0.3, wb, sprintf('Growing the seeds\nPlease wait'));
                             if str2double(answer{3}) > 1
-                                BatchOpt.TargetLayer = {'mask'};
-                                BatchOpt.DatasetType = {'4D, Dataset'};
-                                BatchOpt.DilateMode = {answer{1}(1:2)};     % 2D or 3D spots
-                                BatchOpt.StrelSize = answer{3};
-                                obj.mibModel.dilateImage(BatchOpt);
+                                BatchOptDilate.TargetLayer = {'mask'};
+                                BatchOptDilate.DatasetType = {'4D, Dataset'};
+                                BatchOptDilate.DilateMode = {answer{1}(1:2)};     % 2D or 3D spots
+                                BatchOptDilate.StrelSize = answer{3};
+                                obj.mibModel.dilateImage(BatchOptDilate);
                             end
                             waitbar(1, wb, 'Done!');
                             notify(obj.mibModel, 'plotImage');  % notify to plot the image
@@ -737,14 +778,18 @@ classdef mibAnnotationsController < handle
                             errordlg(sprintf('!!! Error !!!\n\nThese mode is not yet implemented'));
                             return
                     end
+                    notify(obj.mibModel, 'showMask');
                 case 'Export'
                     if isempty(obj.indices); return; end
-                    
                     labelText = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelText(obj.indices(:,1));
                     labelValue = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelValue(obj.indices(:,1));
                     labelPosition = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelPosition(obj.indices(:,1), :);
                     obj.saveAnnotationsToFile(labelText, labelPosition, labelValue);
-
+                case 'CropPatches' % crop patches from image around selected annotations
+                    if isempty(obj.indices); return; end
+                    labelPosition = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelPosition(obj.indices(:,1), :);     % [z, x, y, t];
+                    BatchModeSwitch = false;
+                    obj.startController('mibCropObjectsController', obj, BatchModeSwitch, labelPosition);
                 case 'Imaris' % export annotations to Imaris
                     if isempty(obj.indices); return; end
                     data = obj.View.handles.annotationTable.Data;
@@ -844,6 +889,49 @@ classdef mibAnnotationsController < handle
             obj.updateWidgets();
         end
         
+        function startController(obj, controllerName, varargin)
+            % function startController(obj, controllerName, varargin)
+            % start a child controller using provided name, see more in see more in mibController.startController
+            %
+            % Parameters:
+            % controllerName: a string with name of a child controller, for example, 'mibImageAdjController'
+            % varargin: additional optional controllers or parameters
+            %
+            
+            id = obj.findChildId(controllerName);        % define/find index for this child controller window
+            if ~isempty(id); return; end   % return if controller is already opened
+            
+            % assign id and populate obj.childControllersIds for a new controller
+            id = numel(obj.childControllersIds) + 1;
+            obj.childControllersIds{id} = controllerName;
+            
+            fh = str2func(controllerName);               %  Construct function handle from character vector
+            if nargin > 2
+                obj.childControllers{id} = fh(obj.mibModel, varargin{1:numel(varargin)});    % initialize child controller with additional parameters
+            else
+                obj.childControllers{id} = fh(obj.mibModel);    % initialize child controller
+            end
+            % add listener to the closeEvent of the child controller
+            addlistener(obj.childControllers{id}, 'closeEvent', @(src,evnt) mibAnnotationsController.purgeControllers(obj, src, evnt));   % static
+        end
+
+        function id = findChildId(obj, childName)
+            % function id = findChildId(childName)
+            % find id of a child controller, see more in mibController.findChildId
+            %
+            % Parameters:
+            % childName: name of a child controller
+            %
+            % Return values:
+            % id: index of the requested child controller or empty if it is not open
+            %
+            if ismember(childName, obj.childControllersIds) == 0    % not in the list of controllers
+                id = [];
+            else                % already in the list
+                id = find(ismember(obj.childControllersIds, childName)==1);
+            end
+        end
+
         function settingsBtn_Callback(obj)
             % function settingsBtn_Callback(obj)
             % define additional settings for the annotations

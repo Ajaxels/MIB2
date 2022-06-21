@@ -26,6 +26,8 @@ classdef mibController < handle
         % path to MIB installation directory
         DragNDrop
         % drag and drop handle for dropping the files to the file listbox
+        DragNDropModel
+        % drag and drop handle for dropping the files to the file listbox
         brushSizeNumbers
         % matrix with the font for changing of brush size
         childControllers
@@ -218,7 +220,9 @@ classdef mibController < handle
         
         mibDoUndo(obj, newIndex)        % Undo the recent changes with Ctrl+Z shortcut
         
-        mibDragAndDropFiles(obj, DragNDrop, event)  % drag and drop files to mibFilesListbox
+        mibDragAndDropFiles(obj, DragNDrop, event)  % drag and drop files to Image View panel
+
+        mibDragAndDropModelFiles(obj, DragNDrop, event)  % drag and drop model files to segmentation table
         
         mibEraserEdit_Callback(obj)        % increase size of the eraser tool with the provided in obj.mibView.handles.mibEraserEdit
         
@@ -645,12 +649,16 @@ classdef mibController < handle
             % into the View panel of MIB
             obj.mibView.handles.jmibViewPanel = findjobj(obj.mibView.handles.mibViewPanel);
             obj.DragNDrop = mibDragNDropControl(obj.mibView.handles.jmibViewPanel);
+            obj.DragNDropModel = mibDragNDropControl(obj.mibView.handles.mibSegmentationTable.UserData.jScroll);
             if obj.DragNDrop.initStatus
                 obj.DragNDrop.DropFileFcn = @obj.mibDragAndDropFiles;
+                obj.DragNDropModel.DropFileFcn = @obj.mibDragAndDropModelFiles;
                 fprintf('Drag and drop of files to the Image View panel: ENABLED\n');
             else
                 delete(obj.DragNDrop);  % delete class and make property empty
+                delete(obj.DragNDropModel)
                 obj.DragNDrop = [];
+                obj.DragNDropModel = [];
                 fprintf('Drag and drop of files to the Image View panel: DISABLED\n');
             end
             
@@ -667,7 +675,11 @@ classdef mibController < handle
             
             if obj.mibModel.preferences.Tips.ShowTips == 1
                 try     % on MacOs this gives an error
-                    obj.startController('mibTipsController');
+                    if verLessThan('matlab','9.12')
+                        obj.startController('mibTipsController');
+                    else
+                        obj.startController('mibTipsAppController');
+                    end
                 catch err
                     obj.mibModel.preferences.Tips.ShowTips = 0;
                 end

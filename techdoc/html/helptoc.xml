@@ -15,14 +15,9 @@
         <!-- matlabroot/toolbox/matlab/icons -->
         <!-- A Getting Started Guide usually comes first -->
         <tocitem target="im_browser_getting_started.html" image="HelpIcon.GETTING_STARTED">Microscopy Image Browser
-            <tocitem target="im_browser_features.html">Features
-            </tocitem>
-            <tocitem target="im_browser_getting_started.html">Getting started
-            </tocitem>
-            <tocitem target="im_browser_installation.html">Installation
-            </tocitem>    
-            <tocitem target="im_browser_system_requirements.html">System Requirements
-            </tocitem>
+            <tocitem target="im_browser_features.html">Features</tocitem>
+            <tocitem target="im_browser_installation.html">Installation</tocitem>    
+            <tocitem target="im_browser_system_requirements.html">System Requirements</tocitem>
         </tocitem>
      <!-- User Guide comes next -->
         <tocitem target="im_browser_user_guide.html" 
@@ -69,7 +64,13 @@
                 <tocitem target="ug_gui_menu_selection.html">Selection</tocitem>
                 <tocitem target="ug_gui_menu_tools.html">Tools
                     <tocitem target="ug_gui_menu_tools_measure.html">Measure tool</tocitem>
-					<tocitem target="ug_gui_menu_tools_deeplearning.html">Deep learning segmentation</tocitem>
+					<tocitem target="ug_gui_menu_tools_deeplearning.html">Deep learning segmentation
+						<tocitem target="ug_gui_menu_tools_deeplearning_network.html">Network panel</tocitem>
+						<tocitem target="ug_gui_menu_tools_deeplearning_dirs.html">Directories and preprocessing panel</tocitem>
+						<tocitem target="ug_gui_menu_tools_deeplearning_train.html">Train panel</tocitem>
+						<tocitem target="ug_gui_menu_tools_deeplearning_predict.html">Predict panel</tocitem>
+						<tocitem target="ug_gui_menu_tools_deeplearning_options.html">Options panel</tocitem>
+					</tocitem>
 					<tocitem target="ug_gui_menu_tools_random_forest.html">Classifier->Membrane detection</tocitem>
 					<tocitem target="ug_gui_menu_tools_random_forest_superpixels.html">Classifier->Superpixels classification</tocitem>
 					<tocitem target="ug_gui_menu_tools_global_thresholding.html">Semi-automatic segmentation->Global thresholding</tocitem>

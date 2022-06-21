@@ -24,7 +24,7 @@
 % 
 % <<images\menuFileRandomizeDlg.png>>
 % 
-% *Requirements*
+% [dtls][smry] *Prerequisites* [/smry]
 % 
 % * Files taken at each condition should be placed to a separate folder
 % * Images in each folder should have the same width/height
@@ -32,8 +32,8 @@
 % stacking
 % * [MODELS/MASKS/ANNOTATIONS] when shuffling also models, masks, annotation only a single model/mask/annotation file per directory is allowed
 % * [MODELS] all model files should contain same materials
-% * 
 % 
+% [/dtls]
 %
 % To start the process, copy images that belong to different conditions into
 % separate directories. For example, place images taken for the control condition to the |Control| folder.
@@ -41,10 +41,11 @@
 % There are may be multiple conditions processed at the same
 % time. The only requirement is to have separate conditions in its own directory. 
 % 
+% [dtls][smry] *Description of widgets and parameters* [/smry]
 % 
-% * *Add directory...*, use this button to populate the list of input
+% * [class.kbd]Add folder...[/class], use this button to populate the list of input
 % directories containing images taken under different conditions
-% * *Remove directory...*, remove selected directory from the input list
+% * [class.kbd]Remove folder...[/class], remove selected directory from the input list
 % * *Include model*, when model is already present for the input images, it
 % can also be randomized according to the shuffled image files. *Note!* It
 % is important that each folder contains only a single file in the
@@ -65,8 +66,9 @@
 % directories the images should be shuffled. Each subdirectory will be
 % named as |Subset_001|, |Subset_002|, |Subset_003|, _etc_ and placed under
 % the output directory
-% * *Rename and shuffle* press to start shuffling of the files
+% * [class.kbd]Rename and shuffle[/class] press to start shuffling of the files
 %
+% [/dtls]
 %
 %% Restore...
 % Restore the shuffled models and masks such that they correspond to the
@@ -75,14 +77,15 @@
 %
 % <<images\menuFileRandomizeRestoreDlg.png>>
 % 
-% *Requirements*
+% [dtls][smry] *Prerequisites* [/smry]
 % 
 % * Images in each folder should have the same width/height
 % * [MODELS/MASKS/ANNOTATIONS] only a single model/mask/annotation file per directory is allowed
-% 
+%
+% [/dtls]
 %
 % To start the process it is required to select the project file by
-% pressing the '...' button and selection a project file that was stored
+% pressing the [class.kbd]...[/class] button and selection a project file that was stored
 % under the directory, where the images were originally shuffled. The
 % project file has |*.mibShuffle| extension.
 %
@@ -95,7 +98,7 @@
 % When the masks or annotation are also present in the directories with the shuffled
 % image files, they can also be restored to the destination directories.
 %
-% Press the *Restore shuffled* button to start the process. As result, 
+% Press the [class.kbd]Restore shuffled[/class] button to start the process. As result, 
 % new '_Labels_RestoreRand_YYMMDD.model_' and
 % '_Mask_RestoreRand_YYMMDD.mask_' files will be created at each of the
 % descination directories. The 'YYMMDD' string denotes a date when the
@@ -104,3 +107,42 @@
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_file.html *File Menu*>
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

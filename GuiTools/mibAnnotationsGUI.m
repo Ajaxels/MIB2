@@ -62,6 +62,7 @@ uimenu(handles.labelsTable_cm, 'Label', 'Batch modify selected annotations...', 
 uimenu(handles.labelsTable_cm, 'Label', 'Count selected annotations', 'Callback', {@tableContextMenu_cb, 'Count'});
 uimenu(handles.labelsTable_cm, 'Label', 'Copy selected annotations to clipboard', 'Callback', {@tableContextMenu_cb, 'Clipboard'}, 'Separator', 'on');
 uimenu(handles.labelsTable_cm, 'Label', 'Convert selected annotations to Mask...', 'Callback', {@tableContextMenu_cb, 'Mask'});
+uimenu(handles.labelsTable_cm, 'Label', 'Crop out patches around selected annotation...', 'Callback', {@tableContextMenu_cb, 'CropPatches'});
 uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations...', 'Callback', {@tableContextMenu_cb, 'Export'});
 uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations to Imaris', 'Callback', {@tableContextMenu_cb, 'Imaris'});
 m09 = uimenu(handles.labelsTable_cm, 'Label', 'Order', 'Separator','on');

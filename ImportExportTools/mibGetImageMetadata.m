@@ -31,6 +31,12 @@ function [img_info, files, pixSize] = mibGetImageMetadata(filenames, options)
 % - .imgClass -> class of the image
 % - .dim_xyczt -> dimensions for hdf5_image and Bioformats
 % - .BioFormatsMemoizerMemoDir -> path to directory containing BioFormats Memoizer memo file, only for BioFormats reader
+% - .level -> level of the image pyramid to load or an inden within TIF container
+% - .xMin -> optional for loading of a region within the image, min X coordinate of the region to load
+% - .xMax -> optional for loading of a region within the image, max X coordinate of the region to load
+% - .yMin -> optional for loading of a region within the image, min Y coordinate of the region to load
+% - .yMax -> optional for loading of a region within the image, max Y coordinate of the region to load
+% - .xyStep -> optional for loading of a region within the image, XY step, pixels between are skipped
 % pixSize: a structure with voxel dimensions (.x, .y, .z, .units, .t, .tunits)
 
 % Copyright (C) 06.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
@@ -41,7 +47,7 @@ function [img_info, files, pixSize] = mibGetImageMetadata(filenames, options)
 % of the License, or (at your option) any later version.
 %
 % Updates
-%
+% 14.04.2022, IB, added loading of subregions from TIF files
 
 global mibPath;
 global Font;
@@ -493,16 +499,22 @@ for fn_index = 1:no_files
         files(fn_index).object_type = 'image';
         info = imfinfo(files(fn_index).filename);
         if fn_index == 1    % extra check for tif files with pyramids
-            if numel(info) > 1 && strcmp(ext(2:end), 'tif')
-                if info(1).Width ~= info(2).Width
-                    resText = 'W:H ';
-                    for ii=1:numel(info)
-                        resText = sprintf('%s%dx%d; ', resText, info(ii).Width, info(ii).Height);
+            if numel(info) > 1 && (strcmpi(ext(2:end), 'tif') || strcmpi(ext(2:end), 'tiff'))
+                if info(1).Width ~= info(2).Width 
+                    if ~isfield(options, 'BioFormatsIndices') || isempty(options.BioFormatsIndices)
+                        resText = 'W:H ';
+                        for ii=1:numel(info)
+                            resText = sprintf('%s%dx%d; ', resText, info(ii).Width, info(ii).Height);
+                        end
+                        prompt = sprintf('This is pyramidal TIF that has %d sub-images [%s]\nPlease choose the one to take (enter "1" to get image in the original size):', numel(info), resText);
+                        answer = mibInputDlg({options.mibPath}, prompt, 'Select image', '1');
+                        if isempty(answer); if options.waitbar==1; delete(wb); end; return; end
+                        files(fn_index).level = str2double(answer);
+                        files(fn_index).levelMagScale = info(1).Width/info(files(fn_index).level).Width; % store magnification scaling factor as layers in the pyramid may not be x2 smaller each time
+                    else
+                        files(fn_index).level = options.BioFormatsIndices;
+                        files(fn_index).levelMagScale = info(1).Width/info(files(fn_index).level).Width; % store magnification scaling factor as layers in the pyramid may not be x2 smaller each time
                     end
-                    prompt = sprintf('This is pyramidal TIF that has %d sub-images [%s]\nPlease choose the one to take (enter "1" to get image in the original size):', numel(info),resText);
-                    answer = mibInputDlg({options.mibPath}, prompt, 'Select image', '1');
-                    if isempty(answer); if options.waitbar==1; delete(wb); end; return; end
-                    files(fn_index).level = str2double(answer);
                 end
             end
         end
@@ -515,6 +527,7 @@ for fn_index = 1:no_files
                 info = info(files(1).level);
             end
             files(fn_index).level = files(1).level;
+            files(fn_index).levelMagScale = files(1).levelMagScale;
         end
         
         fields = sort(fieldnames(info));
@@ -561,7 +574,7 @@ for fn_index = 1:no_files
             end
         end
         
-        if strcmp(info(1).ColorType, 'truecolor')
+        if ismember(info(1).ColorType, {'truecolor', 'YCbCr'})
             files(fn_index).color = 3;
         else
             files(fn_index).color = 1;
@@ -608,7 +621,9 @@ for fn_index = 1:no_files
             elseif isfield(info, 'Software') && ...
                     (strcmp(info(1).Software(1:min([18 numel(info(1).Software)])), 'Fibics AtlasEngine') || strcmp(info(1).Software(1:min([18 numel(info(1).Software)])), 'NPVE'))   % images generated as User grabs in Atlas engine
                 if isfield(info, 'UnknownTags')
-                    if isfield(files, 'level')
+                    if isfield(files, 'levelMagScale')
+                        scaleFactor = files(1).levelMagScale;
+                    elseif isfield(files, 'level')
                         scaleFactor = 2^(files(1).level-1);
                     else
                         scaleFactor = 1;
@@ -637,7 +652,9 @@ for fn_index = 1:no_files
                         pixSizePos = strfind(metaStr, 'Image Pixel Size');
                         if ~isempty(pixSizePos)
                             try
-                                if isfield(files, 'level')
+                                if isfield(files, 'levelMagScale')
+                                    scaleFactor = files(1).levelMagScale;
+                                elseif isfield(files, 'level')
                                     scaleFactor = 2^(files(1).level-1);
                                 else
                                     scaleFactor = 1;
@@ -663,7 +680,6 @@ for fn_index = 1:no_files
                 end
             end
         end
-        
     elseif strfind('recmrcstpreali', ext(2:end)) > 0 & options.mibBioformatsCheck == 0         %#ok<AND2> % MRC format
         files(fn_index).filename = cell2mat(filenames(fn_index));
         files(fn_index).object_type = 'mrc_image';
@@ -1040,6 +1056,40 @@ for fn_index = 1:no_files
     
     if options.waitbar==1 && mod(layer_id, ceil(no_files/20))==0
         waitbar(fn_index/no_files,wb);
+    end
+end
+
+% deal with loading of the custom sections
+if options.customSections && strcmpi(ext(2:end), 'tif')
+    prompts = {'X min:'; 'X max:'; 'Y min:'; 'Y max'; 'XY step (defines number of pixels to skip):'; 'Load each Nth file:'};
+    defAns = {'1', num2str(max([files.width])), '1', max([files.height]), '1', '1'};
+    dlgTitle = 'Define region to load';
+    options.Title = 'Provide image range to load';   % additional text at the top of the window
+    answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+    if isempty(answer); img_info = containers.Map; return; end
+
+    xMin = str2double(answer{1});
+    xMax = str2double(answer{2});
+    yMin = str2double(answer{3});
+    yMax = str2double(answer{4});
+    xyStep = str2double(answer{5});
+    fileLoadStep = str2double(answer{6});
+    
+    if fileLoadStep > 1 % decrease number of files to load
+        files = files(1:fileLoadStep:numel(files));
+    end
+    if xyStep > 1 % correct xy pixel size
+        pixSize.x = pixSize.x * xyStep;
+        pixSize.y = pixSize.y * xyStep;
+    end
+    for i=1:numel(files) % add additional fields and correct height/width
+        files(i).xMin = xMin;
+        files(i).xMax = xMax;
+        files(i).yMin = yMin;
+        files(i).yMax = yMax;
+        files(i).xyStep = xyStep;
+        files(i).height = ceil((yMax-yMin+1)/xyStep);
+        files(i).width = ceil((xMax-xMin+1)/xyStep);
     end
 end
 

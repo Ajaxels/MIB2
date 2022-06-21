@@ -10,7 +10,7 @@
 %% Import image from...
 % 
 % 
-% * *MATLAB*  - import image from the main MATLAB workspace into |im_browser|. It is possible to
+% * *MATLAB*  - import image from the main MATLAB workspace into |MIB|. It is possible to
 % provide image description containers.Map together with the dataset, which
 % allows to maintain parameters of the dataset when using the |Export
 % image| command (see below). <https://youtu.be/zUJ1RUuTLVs [*brief demo*]>
@@ -85,8 +85,10 @@
 % </html>
 %
 %% Save image as
-% Save the open dataset to a disk. The following image formats are implemented:
+% Save the open dataset to a disk. 
 % 
+% [dtls][smry] *The following image formats are implemented* [/smry]
+%
 % * *AM, Amira Mesh* - as Amira Mesh binary format
 % * *JPEG, Joint Photographic Experts Group* - a method for saving lossy compressed RGB datasets
 % * *HDF5, Hierarchical Data Format* - saves images in the Hierarchical Data Format, version 5
@@ -98,6 +100,8 @@
 % that, in practice, limits the maximal size of the TIF-files to 2Gb. MATLAB
 % can create TIF files larger than 2Gb but those can't be opened later
 % * *TIF format, non-compressed*, see above for details of saving datasets in the TIF format
+%
+% [/dtls]
 %
 %% Make movie
 % Save dataset as a movie file. All objects that are shown in the image view window will be captured. *Note!* If the image width is too small the scale bar is not rendered.
@@ -183,12 +187,57 @@
 % <ug_gui_menu_file_preferences.html *See more...*>
 %
 % *Please note*, |MIB| stores its configuration parameters in a file that is automatically generated after closing of
-% |MIB|:
+% |MIB|
+% 
+% [dtls][smry] *Location of the configuration file* [/smry]
 %
-% * *for Windows* - _C:\Users\Username\MATLAB\mib.mat_ or in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
+% * *for Windows* - [class.code]C:\Users\Username\MATLAB\mib.mat[/class] or in the Windows TEMP directory ([class.code]C:\Users\User-name\AppData\Local\Temp\[/class]). 
 % The TEMP directory can be found and accessed with |Windows->Start button->%TEMP%| command
-% * *for Linux* - _/home/username/Matlab_ or local TEMP directory
-% * *for MacOS* - _/Users/username/Matlab_ or local TEMP directory
+% * *for Linux* - [class.code]/home/username/Matlab[/class] or local TEMP directory
+% * *for MacOS* - [class.code]/Users/username/Matlab[/class] or local TEMP directory
+%
+% [/dtls]
+% [br8]
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>
+
 

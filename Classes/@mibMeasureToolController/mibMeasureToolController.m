@@ -136,7 +136,6 @@ classdef mibMeasureToolController < handle
             % Return values:
             % nRows: number of Rows in the table
             
-            
             numberOfLabels = obj.mibModel.I{obj.mibModel.Id}.hMeasure.getNumberOfMeasurements();
             filterString = obj.View.handles.filterPopup.String;
             filterText = filterString{obj.View.handles.filterPopup.Value};
@@ -152,8 +151,9 @@ classdef mibMeasureToolController < handle
                 data(:,1) = {obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(indeces).n}';
                 data(:,2) = [obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(indeces).type]';
                 data(:,3) = {obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(indeces).value}';
-                data(:,4) = {obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(indeces).Z}';
-                data(:,5) = {obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(indeces).T}';
+                data(:,4) = {obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(indeces).info}';
+                data(:,5) = {obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(indeces).Z}';
+                data(:,6) = {obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(indeces).T}';
                 obj.View.handles.measureTable.Data = data;
             else
                 data = cell([3,1]);
@@ -205,8 +205,13 @@ classdef mibMeasureToolController < handle
             obj.View.handles.addBtn.BackgroundColor = 'g';
             noRows = obj.updateTable();
             drawnow;            
+
             eventdata.Indices = [noRows, 2];   % store current indices, because they will be removed in obj.updateTable;
             obj.measureTable_CellSelectionCallback(eventdata);
+
+            userData = obj.View.handles.measureTable.UserData;
+            jTable = userData.jTable;   % jTable is initializaed in the beginning of mibGUI.m
+            jTable.changeSelection(noRows-1, 1, false, false);    % automatically calls mibSegmentationTable_CellSelectionCallback
 
             %notify(obj.mibModel, 'plotImage');
             %obj.mibController.plotImage();
@@ -321,7 +326,8 @@ classdef mibMeasureToolController < handle
             % Parameters:
             % eventdata:  structure with the following fields (see UITABLE)
             %	Indices - row and column indices of the cell(s) currently selecteds
-            
+            % noJumpSwitch: a logical switch that blocks jump to measurement
+
             if nargin == 2
                 obj.indices = eventdata.Indices;
             end
@@ -363,7 +369,7 @@ classdef mibMeasureToolController < handle
             obj.View.handles.profileAxes.NextPlot = 'replace';
             
             % jump to the selected measurement
-            if obj.View.handles.autoJumpCheck.Value
+            if obj.View.handles.autoJumpCheck.Value && size(obj.indices,1) == 1
                 obj.measureTable_cm('Jump');
             end
             figure(obj.View.gui);
@@ -375,6 +381,7 @@ classdef mibMeasureToolController < handle
             %
             % Parameters:
             % parameter: a string with the selected entry:
+            % @li 'ModifyInfo' - update info text
             % @li 'Jump' - jump to the selected measurement
             % @li 'Modify' - modify the selected measurement
             % @li 'Duplicate' - duplicate the selected measurement
@@ -382,6 +389,7 @@ classdef mibMeasureToolController < handle
             % @li 'Kymograph' - generate kymograph
             % @li 'Delete' - delete the selected measurement
             
+            global mibPath;
             
             data = obj.View.handles.measureTable.Data;
             if isempty(data{1,1}); return; end
@@ -391,6 +399,21 @@ classdef mibMeasureToolController < handle
             n = data{rowId,1};
             
             switch parameter
+                case 'ModifyInfo'
+                    rowIds = obj.indices(:,1);
+                    prompts = {'Update info field:'};
+                    defAns = {obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(data{rowIds(1),1}).info};
+                    dlgTitle = 'Info field';
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle);
+                    if isempty(answer); return; end
+                    for i=1:numel(rowIds)
+                        n = data{rowIds(i),1};
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(n).info = answer{1};
+                    end
+                    eventdata.Indices = obj.indices;   % store current indices, because they will be removed in obj.updateTable;
+                    obj.updateTable();
+                    drawnow;
+                    obj.measureTable_CellSelectionCallback(eventdata);
                 case 'Jump'
                     if size(obj.indices,1) > 1
                         errordlg('Please select a single cell and try again!','Wrong selection','modal');
@@ -460,6 +483,11 @@ classdef mibMeasureToolController < handle
                     obj.updateTable();
                     drawnow;
                     obj.measureTable_CellSelectionCallback(eventdata);
+
+                    userData = obj.View.handles.measureTable.UserData;
+                    jTable = userData.jTable;   % jTable is initializaed in the beginning of mibGUI.m
+                    jTable.changeSelection(obj.indices(1)-1, 1, false, false);    % automatically calls mibSegmentationTable_CellSelectionCallback
+
                 case 'Recalculate'
                     obj.mibModel.mibDoBackup('measurements', 0);
                     wb = waitbar(0, sprintf('Recalculating the measurements\nPlease wait...'), 'Name', 'Recalculating');
@@ -473,11 +501,13 @@ classdef mibMeasureToolController < handle
                     finetuneCheck = 0;
                     noOfMeasurements = size(obj.indices, 1);
                     calcIntensity = obj.View.handles.calcIntensityCheck.Value;
+                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.fixZ = true;  % do not update Z and T values when recalculating measurements
                     for i=1:noOfMeasurements
                         n = obj.indices(i,1);
                         obj.mibModel.I{obj.mibModel.Id}.hMeasure.editMeasurements(obj.mibController, n, colCh, widthProfile, finetuneCheck, calcIntensity);
                         waitbar(i/noOfMeasurements);
                     end
+                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.fixZ = false;
                     eventdata.Indices = obj.indices;   % store current indices, because they will be removed in obj.updateTable;
                     obj.updateTable();
                     drawnow;
@@ -657,7 +687,12 @@ classdef mibMeasureToolController < handle
                     answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
                     if isempty(answer); return; end
                     obj.mibModel.mibDoBackup('measurements', 0);
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data = evalin('base',answer{1});
+                    dataIn = evalin('base',answer{1});
+                    % add a field introduced in 2.83
+                    if ~isfield(dataIn, 'info')
+                        [dataIn.info] = deal('');
+                    end
+                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data = dataIn;
                 case 'Load from a file'
                     [filename, path] = mib_uigetfile(...
                         {'*.measure;',  'Matlab format (*.measure)'; ...
@@ -670,7 +705,10 @@ classdef mibMeasureToolController < handle
                     if ~isfield(res.Data, 'T')  % loading old measurements before 4D datasets
                         [res.Data.T] = deal(1);
                     end
-                    
+                    % add a field introduced in 2.83
+                    if ~isfield(res.Data, 'info')
+                        [res.Data.info] = deal('');
+                    end
                     obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data = res.Data;
             end
             obj.updateTable();
@@ -687,18 +725,18 @@ classdef mibMeasureToolController < handle
             % save measurements to a file or export to Matlab
             global mibPath;
             
-            if numel(obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data) < 1; return; end;
+            if numel(obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data) < 1; return; end
             
             button =  questdlg(sprintf('Would you like to save measurements to a file or export to the main Matlab workspace?'), ...
                 'Export/Save measurements', 'Save to a file', 'Export to Matlab', 'Cancel', 'Save to a file');
-            if strcmp(button, 'Cancel'); return; end;
+            if strcmp(button, 'Cancel'); return; end
             
             if strcmp(button, 'Export to Matlab')
                 title = 'Input variable to export';
                 def = 'mibMeasurements';
                 prompt = {'A variable for the measurements structure:'};
                 answer = mibInputDlg({mibPath}, prompt,title,def);
-                if size(answer) == 0; return; end;
+                if size(answer) == 0; return; end
                 
                 assignin('base', answer{1}, obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data);
                 fprintf('MIB: export measurements ("%s") to Matlab -> done!\n', answer{1});
@@ -735,7 +773,7 @@ classdef mibMeasureToolController < handle
                 % Sheet 1
                 s = {sprintf('Measurements for %s', obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));};
                 
-                s(3,1:9) = {'N', 'Type', 'Length', 'intensity', 'Integration width', '[tcoords]', '[zcoords]', '[xcoords]', '[ycoords]'};
+                s(3,1:10) = {'N', 'Type', 'Length', 'Info', 'intensity', 'Integration width', '[tcoords]', '[zcoords]', '[xcoords]', '[ycoords]'};
                 roiId = 4;
                 
                 shift = 1;
@@ -769,15 +807,16 @@ classdef mibMeasureToolController < handle
                     s{roiId+shift, 1} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).n;
                     s{roiId+shift, 2} = cell2mat(obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).type);
                     s{roiId+shift, 3} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).value;
+                    s{roiId+shift, 4} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).info;
                     for j=1:numel(obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).intensity)
-                        s{roiId+shift+j-1, 4} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).intensity(j);
+                        s{roiId+shift+j-1, 5} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).intensity(j);
                     end
-                    s{roiId+shift, 5} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).integrateWidth;
+                    s{roiId+shift, 6} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).integrateWidth;
                     
-                    s{roiId+shift, 6} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).T;
-                    s{roiId+shift, 7} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).Z;
-                    s{roiId+shift, 8} = xstr;
-                    s{roiId+shift, 9} = ystr;
+                    s{roiId+shift, 7} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).T;
+                    s{roiId+shift, 8} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).Z;
+                    s{roiId+shift, 9} = xstr;
+                    s{roiId+shift, 10} = ystr;
                     
                     shift = shift + numel(obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).intensity);
                 end

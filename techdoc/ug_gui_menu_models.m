@@ -10,8 +10,10 @@
 % 
 % <<images\menuModel.png>>
 % 
-%% Type of the model
-% Display type of the current model:
+%% Convert type
+% Convert model to a different type; the current type of the model is checked in the menu.
+%
+% [dtls][smry] *Types of models in MIB* [/smry]
 %
 % * *63 materials*, [_default_], allows to store Models, Selection and Mask layers in a single memory container, 
 %   reduces memory requirements and improves performance, but limits the
@@ -29,14 +31,15 @@
 % * *Indexed objects->3D objects conn6*, detect all 3D objects (connectivity 6) in all materials of the current model and generate a new model, where each object has an unique index
 % * *Indexed objects->3D objects conn26*, detect all 3D objects (connectivity 26) in all materials of the current model and generate a new model, where each object has an unique index
 %
-% An example of conversion of a standard model into the model with indexed
-% objects:
+% [/dtls]
+%
+% [dtls][smry] *An example of standard model conversion into the model with indexed objects* [/smry]
 %
 % <<images\menuModelsConvertIndexedObjects.png>>
 % 
+% [/dtls]
 % 
-% 
-% *Work with models with more than 255 materials*
+% [dtls][smry] *How to work with models having more than 255 materials*[/smry]
 %
 % Materials should be named with numbers that represent the index of the
 % current working material. For example, in the image below the current
@@ -47,17 +50,22 @@
 % Selection of material for work can be done either by the right mouse
 % click over the segmentation table and seletion of the |Rename...| entry in
 % the menu; or by moving the mouse over the desired object in the Image
-% View panel and press the |Ctrl + F| shortcut.
+% View panel and press the [class.kbd]Ctrl[/class] + [class.kbd]F[/class] shortcut.
+%
+% [/dtls]
+% [br8]
 %
 %% New model
-% Allocates space for a new model. Use this entry when you want to start a new model or to delete the existing one.
-% Alternatively it is possible to use the |Create| button in the <ug_panel_segm.html Segmentation Panel>.
+% Allocate space for a new model. Use this menu entry when you want to start a new model or to delete the existing one.
+% Alternatively it is possible to use the [class.kbd]Create[/class] button in the <ug_panel_segm.html Segmentation Panel>.
+% [br8]
 %
 %% Load model
 % Load model from the disk. By default |MIB| tries to read the models in the MATLAB format (.model), but it is also
-% possible to specify other formats as well:
+% possible to specify other formats as well
+% [br8]
 %
-%%
+% [dtls][smry] *List of compatible model types* [/smry]
 % 
 % * *.AM, Amira Mesh* - as Amira Mesh label field for models saved in <http://www.vsg3d.com/amira/overview Amira> format
 % * *.NRRD, Nearly Raw Raster Data* - a data format compatible with <www.slicer.org 3D slicer>.
@@ -69,46 +77,65 @@
 % * *.TIF, TIF format*
 % 
 % *Note!* almost any standard image format can be loaded as a model, please
-% choose _All files (_*.*)_ filter in the Open model dialog.
+% choose [class.code]All files (*.*)[/class] filter in the Open model dialog.
 %
-% Alternatively it is possible to use the |Load| button in the <ug_panel_segm.html Segmentation Panel>.
+% [/dtls]
+%
+% Alternatively it is possible to use the [class.kbd]Load[/class] button in the <ug_panel_segm.html Segmentation Panel>.
+% [br8]
 %
 %% Import model from MATLAB
+%
 % Imports model from the main MATLAB workspace. Please provide a variable name from the main MATLAB workspace with the model.
 % The variable could be either a matrix with dimensions similar to those of
-% the loaded dataset |[1:height, 1:width, 1:no-slices]| of the |uint8|
-% class or a structure with the following fields:
-% 
-% * *.model* - the field |model| is a matrix with dimensions similar to those of the loaded dataset |[1:height,
-% 1:width, 1:depth, 1:time]| of the |uint8| class
+% the loaded dataset [class.code][1:height, 1:width, 1:no-slices][/class]
+% of the [class.code]uint8[/class] class or a structure with fields
+% specified below.
+%
+% [dtls][smry] *Fields of MIB model structure* [/smry]
+%
+% * *.model* - the field |model| is a matrix with dimensions similar to those of the loaded dataset [class.code][1:height,
+% 1:width, 1:depth, 1:time][/class] of the [class.code]uint8[/class] class
 % * *.modelMaterialNames* - [_optional_] the field |materials| a cell array with names of the materials used in the model
 % * *.modelMaterialColors* - [_optional_] a matrix with colors (0-1) for the materials of the model, [1:materialIndex, Red Green Blue]
 % * *.labelText* - [_optional_] a cell array containing labels for the annotations
-% * *.labelPosition* - [_optional_] a matrix containing positions for the annotations [1:annotationIndex, x y z]
+% * *.labelPosition* - [_optional_] a matrix containing positions for the
+% annotations [class.code][1:annotationIndex, x y z][/class]
 %
+% [/dtls]
+% [br8]
 %
 %% Export model to...
-% Exports model from MIB to other programs:
-%%
+% Exports model from MIB to other programs. 
+%
+% [dtls][smry] *List of options to export the models* [/smry]
 % 
-% * *MATLAB*, export to the main MATLAB workspace, as a structure (see above). The exported models may be later imported back to |im_browser| using the _Import model
-% from Matlab_ menu entry. 
+% * *MATLAB*, export to the main MATLAB workspace, as a structure (see above). The exported models may be later imported back to |MIB| using the _Import model
+% from Matlab_ menu entry
 % * *Imaris as volume*, export model to Imaris (if it is available, please
 % see <im_browser_system_requirements.html#16 System Requirements
-% section> for details.
+% section> for details
+%
+% [/dtls]
+% [br8]
 % 
 %% Save model
-% Saves model to a file in the MATLAB format. The file name is not asked, which means that the |MIB| will use:
-%%
+% Saves model to a file in the MATLAB format; the file name is not asked
+%
+% [dtls][smry] *Model filename considerations, when using Save model* [/smry]
 % 
 % * Default template such as |Labels_NAME_OF_THE_DATASET.model|
 % * the name that was provided from the _Save model as..._ entry
 % * the name that was obtained during the _Load model_ action.
 % The models can be saved also using the corresponding _Save model_ button in <ug_gui_toolbar.html Toolbar>
 %
+% [/dtls]
+% [br8]
+%
 %% Save model as...
-% Saves model in a number of formats:
-%%
+% Provide filename and file format and save the model to a file
+%
+% [dtls][smry] *List of model formats available for saving* [/smry]
 % 
 % * *.AM, Amira Mesh* - as Amira Mesh label field in RAW, RAW-ASCII and RLE
 % compressed formats. (*Note!* the RLE compression is very slow).
@@ -121,11 +148,14 @@
 % programs such as Blender.
 % * *.TIF, TIF format*
 %
+% [/dtls]
+% [br8]
+%
 %% Render model...
 % The segmented models can be rendered directly from MIB using one of the
 % following methods:
 %
-% <html><h3 style="color:#d45600;">MIB rendering</h3></html>
+% [dtls][smry] *MIB rendering* [/smry]
 %
 % Starting from MIB (version 2.5) and MATLAB R2018b the materials can be
 % directly visualized in MIB using hardware accelerated volume rendering
@@ -142,14 +172,14 @@
 % <a href="https://youtu.be/4CrfdOiZebk"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/J70V33f7bas</a>
 % </html>
 % 
-% <html><h3 style="color:#d45600;">MATLAB isosurface</h3></html>
+% [/dtls]
+%
+% [dtls][smry] *MATLAB isosurface*[/smry]
 %
 % MIB uses MATLAB engine to generate isosurfaces
 % from the models and visualize those using a modification of the <http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m view3d> function 
 % written by Torsten Vogel. 
 % 
-%
-%%
 % 
 % <html>
 % <table style="width: 600px; text-align: left; margin-left: 60pt" cellspacing=2px cellpadding=2px >
@@ -191,8 +221,9 @@
 % <br>
 % </html>
 %
+% [/dtls]
 %
-% <html><h3 style="color:#d45600;">MATLAB isosurface and export to Imaris</h3></html>
+% [dtls][smry] *MATLAB isosurface and export to Imaris* [/smry]
 %
 % MIB uses MATLAB engine to generate isosurfaces
 % from the models and export the resulting surfaces to Imaris for visualization. 
@@ -203,8 +234,9 @@
 % <br>
 % </html>
 %
+% [/dtls]
 %
-% <html><h3 style="color:#d45600;">MATLAB volume viewer</h3></html>
+% [dtls][smry] *MATLAB volume viewer* [/smry]
 %
 % *MATLAB volume viewer*, render the model using MATLAB volume viewer,
 % available only for the MATLAB version of MIB and requires R2017b - R2019b or
@@ -223,9 +255,9 @@
 %
 % <<images\MenuModelsRenderMatlabVolumeViewer.jpg>>
 % 
+% [/dtls]
 %
-%
-% <html><h3 style="color:#d45600;">Fiji volume</h3></html>
+% [dtls][smry] *Fiji volume* [/smry]
 %
 % MIB can use |Fiji 3D viewer| for visualization of the model as
 % a volume (<http://mib.helsinki.fi/tutorials/VisualizationOverview.html click here for details>. (requires Fiji to be installed,
@@ -240,8 +272,9 @@
 % 
 % <<images\MenuModelsRenderFiji.jpg>>
 % 
+% [/dtls]
 %
-% <html><h3 style="color:#d45600;">Imaris surface</h3></html>
+% [dtls][smry] *Imaris surface* [/smry]
 %
 % *Imaris surface*, render the model in Imaris; requires Imaris and ImarisXT to be installed,
 % <im_browser_system_requirements.html see here>
@@ -258,6 +291,9 @@
 % 
 % The rendered material is specified in the Material list of the
 % <ug_panel_segm.html Segmentation Panel>. 
+%
+% [/dtls]
+% [br8]
 %
 %% Annotations...
 % Use this menu to modify the |Annotations| layer
@@ -283,3 +319,42 @@
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

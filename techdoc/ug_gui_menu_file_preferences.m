@@ -2,13 +2,6 @@
 % This dialog provides access to preferences of Microscopy Image Browser. Allows to modify colors of the |Selection|, |Model| and |Mask|
 % layers, default behaviour of the mouse wheel and keys, settings of Undo... 
 %
-% *Please note*, |MIB| stores its configuration parameters in a file that is automatically generated after closing of
-% |MIB|:
-%
-% * *for Windows* - _C:\Users\Username\MATLAB\mib.mat_ or in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
-% The TEMP directory can be found and accessed with |Windows->Start button->%TEMP%| command
-% * *for Linux* - _/home/username/Matlab_ or local TEMP directory
-% * *for MacOS* - _/Users/username/Matlab_ or local TEMP directory
 % 
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_file.html *File Menu*>
@@ -16,28 +9,45 @@
 % 
 % <<images\MenuFilePreferences.png>>
 % 
+% *Please note*, |MIB| stores its configuration parameters in a file that is automatically generated after closing of
+% |MIB|
+%
+% [dtls][smry] *Locations where configuration files are stored* [/smry]
+%
+% * *for Windows* - [class.code]C:\Users\Username\MATLAB\mib.mat[/class] or in the Windows TEMP directory ([class.code]C:\Users\User-name\AppData\Local\Temp\[/class]). 
+% The TEMP directory can be found and accessed with |Windows->Start button->%TEMP%| command
+% * *for Linux* - [class.code]/home/username/Matlab[/class] or local TEMP directory
+% * *for MacOS* - [class.code]/Users/username/Matlab[/class] or local TEMP directory
+%
+% [/dtls]
+% [br8]
+%
 %% User Interface Tweaks
 %
-% # *Mouse Wheel* - allows to choose between two possible actions done with the mouse wheel. When |Zoom| is selected,
+% * [class.kbd]Mouse Wheel[/class] - allows to choose between two possible actions done with the mouse wheel. When |Zoom| is selected,
 % rotation of the mouse wheel will result in zoom in/out action; when |scroll| is selected rotation of the mouse wheel will result in
-% change of the shown slices. *Note!* the mouse wheel may be used together with |Shift| button to scroll more than one slice
+% change of the shown slices. *Note!* the mouse wheel may be used together with [class.kbd]Shift[/class] button to scroll more than one slice
 % at the time, see more in <ug_panel_im_view.html Image View Panel/Extra parameters for the slider>
-% # *Left Mouse Button*. Allows to select action for press of the left mouse button. When |pan| is selected the press and
+%
+% * [class.kbd]Left Mouse Button[/class], allows to select action for press of the left mouse button. When |pan| is selected the press and
 % hold of the left mouse button will result in moving of the shown image to left-right and up/down directions. When |select| is
 % selected the left mouse button can be used for making selections. *Note!* The left and right mouse buttons are mirrored, |i.e.| if
 % one action (|pan| or |select|) is selected for the left mouse button, the right mouse button implements the second
 % available action.
-% # *Image Resize Method*. Modifies a way how image is resized during on screen zoom in/zoom out action. Use 'nearest' to see
+%
+% * *Image Resize Method*. Modifies a way how image is resized during on screen zoom in/zoom out action. Use 'nearest' to see
 % unmodified pixels and 'bicubic' for smooth appearance. *Note!* the |nearest| option gives the fastest and |bicubic| the
 % slowest performance. It is also possible to toggle the this from a
 % dedicated button in <ug_gui_toolbar.html the MIB toolbar>.
-% # *Disable Selection*. When |Selection| is disabled it is not possible to use the |Selection| layer for segmentation. In
+%
+% * *Disable Selection*. When |Selection| is disabled it is not possible to use the |Selection| layer for segmentation. In
 % this situation memory requirements are lower.
-% # *Select Font* - this button starts a standard font selection dialog
-% # *Font size edit box* - modifies default font size for all text panels
-% # *Font size for dir contents* - modifies the font size for the list of
+%
+% * *Select Font* - this button starts a standard font selection dialog
+% * *Font size edit box* - modifies default font size for all text panels
+% * *Font size for dir contents* - modifies the font size for the list of
 % files in the <ug_panel_dir.html Directory Contents panel>.
-% # *Shortcuts* - shortcuts for keys may be customized using the *Define shortcuts for keys* dialog that
+% * *Shortcuts* - shortcuts for keys may be customized using the *Define shortcuts for keys* dialog that
 % is started with this button. The list of default shortcuts is available
 % from <ug_gui_shortcuts.html *the Key & mouse shortcuts page*>.
 %
@@ -48,7 +58,7 @@
 % 
 % <<images\MenuFilePreferencesShortcuts.png>>
 % 
-% # *GUI Scaling* - starts an input dialog that allows to tweak scaling of
+% * *GUI Scaling* - starts an input dialog that allows to tweak scaling of
 % varipous user interface widgets. This may be required when working with
 % MIB on MacOS or Linux. *Operating system scaling factor* - this number is
 % needed when the text size is increased on the operating system 
@@ -66,11 +76,11 @@
 % <a href="https://youtu.be/PrY3Eo02gU8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PrY3Eo02gU8</a>
 % </html>
 %
-% # *Enable* - enable/disable undo. When the memory is limited it may be recommended to set the |Enable| undo setting to the |no| state.
-% # *History Steps* - maximal number of history steps to keep in memory. *Note!* requires restart of Microscopy Image Browser
+% * *Enable* - enable/disable undo. When the memory is limited it may be recommended to set the |Enable| undo setting to the |no| state.
+% * *History Steps* - maximal number of history steps to keep in memory. *Note!* requires restart of Microscopy Image Browser
 % to apply this modification.
-% # *3D History* - number of 3D datasets that can be stored. When memory is limited it is recommended to set this value to |0|. *Note!* requires restart of Microscopy Image Browser
-% to apply this modification.
+% * *3D History* - number of 3D datasets that can be stored. When memory is limited it is recommended to set this value to |0|. 
+% *Note!* requires restart of Microscopy Image Browser to apply this modification.
 %
 % *External dirs*, starts a dialog to specify installation directories for
 % Fiji, Imaris, Omero and BMxD filters.  Please refer to the <im_browser_system_requirements.html System Requirements> pages for details.
@@ -109,7 +119,7 @@
 %
 % Modification of default colors of the |Annotations|, |Selection|, |Mask|, |Model| layers and defining color look-up table (LUT). 
 % The upper table shows the list of predefined colors for Materials of the |Model| layer. The lower table shows LUT for
-% colors of the color channels to use with the LUT mode (<ug_panel_view_settings.html View Settings Panel->LUT checkbox>)
+% colors of the color channels to use with the LUT mode (<ug_panel_view_settings.html View Settings Panel->[&#10003;] LUT checkbox>)
 %
 % <html>
 % A brief demonstration is available in the following video:<br>
@@ -158,9 +168,8 @@
 % of colors| comboboxes. The Default color palette was selected so that
 % each color appears as a distinctive shade to color-blind users. 
 %
-% *Description of palettes:*
 %
-%
+% [dtls][smry] *Description of palettes* [/smry]
 % 
 % <<images\MenuFilePreferencesColorBrewer.jpg>>
 % 
@@ -173,6 +182,47 @@
 % Andy Woodruff, David Heyman. ColorBrewer 2.0>
 % * <https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/ Sasha Trubetskoy, List of 20 Simple, Distinct Colors>
 %
+% [/dtls]
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_file.html *File Menu*>
+%
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

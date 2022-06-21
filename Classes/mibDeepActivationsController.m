@@ -109,11 +109,12 @@ classdef mibDeepActivationsController < handle
             
             % init the image store
             if strcmp(obj.mibDeep.BatchOpt.PreprocessingMode{1}, 'Preprocessing is not required') || strcmp(obj.mibDeep.BatchOpt.PreprocessingMode{1}, 'Split files for training/validation')
+                trainingSwitch = false;     % use prediction directory to see activations
                 fnExtention = lower(['.' obj.mibDeep.BatchOpt.ImageFilenameExtension{1}]);
                 obj.imgDS = imageDatastore(fullfile(obj.mibDeep.BatchOpt.OriginalPredictionImagesDir, 'Images'), ...
                         'FileExtensions', fnExtention, ...
                         'IncludeSubfolders', false, ...
-                        'ReadFcn', @(fn)obj.mibDeep.loadImages(fn, fnExtention));
+                        'ReadFcn', @(fn)obj.mibDeep.loadImages(fn, fnExtention, trainingSwitch));
             else
                 obj.imgDS = imageDatastore(fullfile(obj.mibDeep.BatchOpt.ResultingImagesDir, 'PredictionImages'), ...
                     'FileExtensions', '.mibImg', 'ReadFcn', @mibDeepController.mibImgFileRead);
@@ -248,7 +249,7 @@ classdef mibDeepActivationsController < handle
             % following function
             obj.View = updateGUIFromBatchOpt_Shared(obj.View, obj.BatchOpt);    %
             
-            if strcmp(obj.net.BatchOpt.Architecture{1}(1:2), '2D')
+            if strcmp(obj.net.BatchOpt.Workflow{1}(1:2), '2D')
                 obj.View.Figure.z1.Enable = 'off';
                 obj.View.Figure.patchZ.Enable = 'off';
                 if ~isempty(obj.imageActivation)
@@ -322,7 +323,7 @@ classdef mibDeepActivationsController < handle
             obj.View.Figure.x1.Value = obj.BatchOpt.x1{1};
             obj.View.Figure.y1.Value = obj.BatchOpt.y1{1};
             
-            if strcmp(obj.net.BatchOpt.Architecture{1}(1:2), '2D')
+            if strcmp(obj.net.BatchOpt.Workflow{1}(1:2), '2D')
                 if ndims(obj.imageOriginal) == 4
                     errordlg(sprintf('!!! Error !!!\n\nImage dimensions and the network type mismatch!\n\nNetwork: %s\nImage size: %d x %d x %d x %d', obj.net.BatchOpt.Architecture{1},...
                         size(obj.imageOriginal,1), size(obj.imageOriginal,2), size(obj.imageOriginal,3), size(obj.imageOriginal,4)),...
@@ -370,10 +371,22 @@ classdef mibDeepActivationsController < handle
             % callback for change of x1, y1, z1 coordinates to shift the
             % patch
             
+            % make true to generate snapshots of all patche
+            generateSnapshots = false; 
+            if generateSnapshots
+                silentMode = true;
+                for i = 1:numel(obj.BatchOpt.NetworkLayerName{2})
+                    obj.BatchOpt.NetworkLayerName(1) = obj.BatchOpt.NetworkLayerName{2}(i);
+                    obj.getActivations();
+                    obj.makeCollage(silentMode);
+                end
+                return;
+            end
+
             switch event.Source.Tag
                 case 'z1'      % change slice number
                     obj.updatePreviewImage();   % 3D preview for the cropped area cached
-                    if strcmp(obj.net.BatchOpt.Architecture{1}(1:2), '3D')
+                    if strcmp(obj.net.BatchOpt.Workflow{1}(1:2), '3D')
                         value = obj.BatchOpt.z1{1} + obj.deltaZ;
                         value = max([1 value]);
                         value = min([value obj.View.Figure.patchZ.Limits(2)]);
@@ -391,7 +404,7 @@ classdef mibDeepActivationsController < handle
             % from the selected image area generate activations
             wb = waitbar(0, 'Please wait...');
             
-            switch obj.net.BatchOpt.Architecture{1}(1:2)
+            switch obj.net.BatchOpt.Workflow{1}(1:2)
                 case '3D'
                     blockDepth = obj.net.inputPatchSize(3);
                     maxZ = size(obj.imageOriginal, 4);
@@ -446,7 +459,7 @@ classdef mibDeepActivationsController < handle
             % function showActivations(obj)
             % show activations for the current image
             
-            switch obj.net.BatchOpt.Architecture{1}(1:2)
+            switch obj.net.BatchOpt.Workflow{1}(1:2)
                 case '3D'
                     imgToPrev = squeeze(obj.imageActivation(:, :, obj.BatchOpt.patchZ{1}, round(obj.BatchOpt.filterId{1})));
                     minVal = min(imgToPrev(:));
@@ -464,7 +477,7 @@ classdef mibDeepActivationsController < handle
             obj.View.Figure.MaxLabelValue.Text = num2str(maxVal);
             newWidth = size(obj.View.Figure.ImageOriginal.ImageSource, 2);
             newHeight = size(obj.View.Figure.ImageOriginal.ImageSource, 1);
-            imgToPrev = padarray(imgToPrev, [floor(newWidth-size(imgToPrev,1))/2 floor(newHeight-size(imgToPrev,2))/2], 0, 'both');
+            imgToPrev = padarray(imgToPrev, [floor((newWidth-size(imgToPrev,1))/2) floor((newHeight-size(imgToPrev,2))/2)], 0, 'both');
             obj.View.Figure.ImageActivation.ImageSource = imgToPrev;
         end
         
@@ -487,46 +500,79 @@ classdef mibDeepActivationsController < handle
             obj.getNewImage();
         end
         
-        function makeCollage(obj)
-            % function makeCollage(obj)
+        function makeCollage(obj, silentMode)
+            % function makeCollage(obj, layerIndex)
             % make collage image from activations
+            %
+            % Parameters:
+            % silentMode: logical ask or not for FigName and resize, see
+            % "generateSnapshots = false;" in the ShiftImage function
+            
+            if nargin < 2; silentMode = []; end
+
             global mibPath;
-            
-            noFilters = size(obj.imageActivation, ndims(obj.imageActivation));
+
+            if ndims(obj.imageActivation) == 2
+                noFilters = 1;
+            else
+                noFilters = size(obj.imageActivation, ndims(obj.imageActivation));
+            end
             sz = size(obj.imageActivation); 
-            figId = find(ismember(obj.View.Figure.NetworkLayerName.Items, obj.View.Figure.NetworkLayerName.Value)==1); % fig id matches number of the layer
+
+            if isempty(silentMode)
+                figId = find(ismember(obj.View.Figure.NetworkLayerName.Items, obj.View.Figure.NetworkLayerName.Value)==1); % fig id matches number of the layer
+                
+                dlgTitle = 'Collage options';
+                options.Title = sprintf('Select number of tiles for collage\nThe current layer has %d filters each %d x %d pixels', noFilters, sz(2), sz(1)); 
+                prompts = {'Figure Id'; 'Number of X tiles:'; 'Number of Y tiles:'; 'Resize, width:'};
+                defAns = {num2str(figId); num2str(ceil(sqrt(noFilters))); num2str(floor(sqrt(noFilters))); num2str(sz(2))};
+                options.WindowStyle = 'normal';       
+                options.PromptLines = [1, 1, 1, 1];   
+                options.TitleLines = 2;               
+                options.WindowWidth = 1.2;    
+                answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                if isempty(answer); return; end
             
-            dlgTitle = 'Collage options';
-            options.Title = sprintf('Select number of tiles for collage\nThe current layer has %d filters each %d x %d pixels', noFilters, sz(2), sz(1)); 
-            prompts = {'Figure Id'; 'Number of X tiles:'; 'Number of Y tiles:'; 'Resize, width:'};
-            defAns = {num2str(figId); num2str(ceil(sqrt(noFilters))); num2str(floor(sqrt(noFilters))); num2str(sz(2))};
-            options.WindowStyle = 'normal';       
-            options.PromptLines = [1, 1, 1, 1];   
-            options.TitleLines = 2;               
-            options.WindowWidth = 1.2;    
-            answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
-            if isempty(answer); return; end
+                figId = str2double(answer{1});
+                noCols = str2double(answer{2});
+                noRows = str2double(answer{3});
+                width = str2double(answer{4});
+            else
+                figId = 101;
+                width = size(obj.imageActivation, 1);
+                noCols = ceil(sqrt(noFilters));
+                noRows = ceil(sqrt(noFilters));
+            end
             
-            figId = str2double(answer{1});
-            noCols = str2double(answer{2});
-            noRows = str2double(answer{3});
-            width = str2double(answer{4});
-            
-            switch obj.net.BatchOpt.Architecture{1}(1:2)
+            switch obj.net.BatchOpt.Workflow{1}(1:2)
                 case '2D'
-                    img = reshape(obj.imageActivation,[sz(1) sz(2) 1 sz(3)]);
-                    I = imtile(imresize(uint8(mat2gray(img)*255), [width, width]), 'GridSize', [noRows, noCols]);
+                    if ndims(obj.imageActivation) == 2
+                        img = obj.imageActivation;
+                    else
+                        img = reshape(obj.imageActivation,[sz(1) sz(2) 1 sz(3)]);
+                    end
+                    for i=1:size(img,4)
+                        img(:,:,i) = mat2gray(img(:,:,i))*255;
+                    end
+                    I = imtile(imresize(uint8(img), [width, width]), 'GridSize', [noRows, noCols]);
                 case '3D'
                     img = squeeze(obj.imageActivation(:,:,obj.BatchOpt.patchZ{1},:));
                     img = permute(img, [1 2 4 3]);
                     I = imtile(imresize(uint8(mat2gray(img)*255), [width, width]), 'GridSize', [noRows, noCols]);
             end
-            hFig = figure(figId);
-            image(I);
-            colormap(gray(256));
-            ax = gca;
-            ax.DataAspectRatio = [1 1 1];
-            hFig.Name = obj.View.Figure.NetworkLayerName.Value;
+
+            if isempty(silentMode)
+                hFig = figure(figId);
+                image(I);
+                colormap(gray(256));
+                ax = gca;
+                ax.DataAspectRatio = [1 1 1];
+                hFig.Name = obj.View.Figure.NetworkLayerName.Value;
+            else
+                % save to a file
+                fn = sprintf('d:\\cnn_layers\\%.4d_%s.jpg', find(ismember(obj.BatchOpt.NetworkLayerName{2}, obj.BatchOpt.NetworkLayerName{1})), obj.BatchOpt.NetworkLayerName{1});
+                imwrite(I, fn, 'jpg', 'Quality', 95);
+            end
         end
     end
 end

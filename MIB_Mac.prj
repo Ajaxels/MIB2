@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="773751384" file="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac.prj" location="/Volumes/VERBATIM/MIB2/MIB2_deploy" name="MIB_Mac" preferred-package-location="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="640977823" file="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac.prj" location="/Volumes/VERBATIM/MIB2/MIB2_deploy" name="MIB_Mac" preferred-package-location="/Volumes/VERBATIM/MIB2/MIB2_deploy/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}/MIB_Mac_resources/icon.icns</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
     </param.icons>
-    <param.version>2.82</param.version>
+    <param.version>2.83</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -110,6 +110,7 @@ ${DYLD_LIBRARY_PATH}:MR/v911/runtime/maci64:MR/v911/sys/os/maci64:MR/v911/bin/ma
       <file>${PROJECT_ROOT}/Plugins</file>
       <file>${PROJECT_ROOT}/Resources</file>
       <file>${PROJECT_ROOT}/jars</file>
+      <file>${PROJECT_ROOT}/licenses</file>
       <file>${PROJECT_ROOT}/techdoc</file>
     </fileset.package>
     <fileset.depfun>
@@ -508,6 +509,7 @@ ${DYLD_LIBRARY_PATH}:MR/v911/runtime/maci64:MR/v911/sys/os/maci64:MR/v911/bin/ma
       <file>/Users/ibelev/Documents/MATLAB/SupportPackages/R2021b/toolbox/nnet/supportpackages/onnx/shufflenet-9.onnx</file>
       <file>/Users/ibelev/Documents/MATLAB/SupportPackages/R2021b/toolbox/nnet/supportpackages/onnx/thirdpartylicenses/onnx-license.txt</file>
       <file>${PROJECT_ROOT}/mib.m</file>
+      <file>${PROJECT_ROOT}/techdoc/prettify_MATLAB_html.m</file>
       <file>/Volumes/VERBATIM/MIB2/OMERO/connectOmero.m</file>
       <file>/Volumes/VERBATIM/MIB2/OMERO/findOmero.m</file>
       <file>/Volumes/VERBATIM/MIB2/OMERO/getOmeroJars.m</file>

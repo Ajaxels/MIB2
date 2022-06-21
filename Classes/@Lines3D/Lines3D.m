@@ -546,7 +546,8 @@ classdef Lines3D < matlab.mixin.Copyable
             end
             
             obj.G = rmnode(obj.G, nodeIDs);
-            
+            obj.noTrees = obj.noTrees - 1;
+
             % find index of a new active tree
             if ~isempty(activeTreeName)
                 obj.activeNodeId = find(ismember(obj.G.Nodes.TreeName, activeTreeName), 1, 'last');
@@ -648,7 +649,7 @@ classdef Lines3D < matlab.mixin.Copyable
             if nargin < 5; newTreeSwitch = 0; end
             if isempty(obj.activeNodeId); newTreeSwitch = 1; end
             
-            if isempty(obj.G)
+            if isempty(obj.G) || isempty(obj.G.Nodes)
                 newTreeSwitch = 1;
                 numNodes = 0;
                 %NodeTable = table({[]},{[]},{[]},{[]}, 'VariableNames',{'PointsXYZ','TreeName','NodeName','Radius'});

@@ -1,13 +1,12 @@
 
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head>
+<!DOCTYPE html>
+<html lang="en"><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Image Menu</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-12"><meta name="DC.source" content="ug_gui_menu_image.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>Image Menu</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="ug_gui_menu_image.m"><style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -36,13 +35,13 @@ ol li ol li { list-style-type:lower-alpha; }
 ol li ul { padding-top:7px; }
 ol li ul li { list-style:square; }
 
-.content { font-size:1.2em; line-height:140%; padding: 20px; }
+.content { font-size:1.2em; line-height:160%; padding: 20px; }
 
-pre, code { font-size:12px; }
-tt { font-size: 1.2em; }
-pre { margin:0px 0px 20px; }
+pre { font-size:12px; }
+code { font-size: 1.15em; }
+pre { margin:0px 0px 15px; overflow-x:auto; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
-pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 15px; color:#4c4c4c; }
 pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
@@ -66,9 +65,498 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
+.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.h3 { color: #E65100; font-size: 12px; font-weight: bold; }
+.code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
-  </style></head><body><div class="content"><h1>Image Menu</h1><!--introduction--><p>Image processing functions</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">Mode</a></li><li><a href="#3">Adjust Display/Image</a></li><li><a href="#4">Color Channels</a></li><li><a href="#5">Contrast</a></li><li><a href="#7">Invert image</a></li><li><a href="#8">Image filter</a></li><li><a href="#9">Tools for images --&gt; Content-aware fill</a></li><li><a href="#10">Tools for images --&gt; Debris removal</a></li><li><a href="#11">Tools for images --&gt; Image arithmetics</a></li><li><a href="#12">Tools for images --&gt; Intensity projection</a></li><li><a href="#13">Morphological operations</a></li><li><a href="#14">Intensity profile</a></li></ul></div><p><img vspace="5" hspace="5" src="images\menuImage.png" alt=""> </p><h2 id="2">Mode</h2><p>Allows to change mode of the shown dataset, the following options are available:</p><div><ul><li><b>Grayscale</b>, converts image to grayscale by removing any color information</li><li><b>RGB Color</b>, converts image to the RGB color space</li><li><b>HSV Color</b>, converts image to the HSV (hue, saturation, value) color space</li><li><b>Indexed</b>, converts image to the indexed colors (<tt>not implemented for True Color images</tt>)</li><li><b>8 bit</b>, convert dataset to the 8 bit format, the image intensities are scaled to preserve the adjusted from the <tt>View Settings Panel-&gt;Display dialog</tt></li><li><b>16 bit</b>, convert dataset to the 16 bit format, the image intensities are scaled to preserve contrast of the original dataset</li><li><b>32 bit</b>, convert dataset to the 32 bit format, the image intensities are scaled to preserve contrast of the original dataset</li></ul></div><h2 id="3">Adjust Display/Image</h2><p>Starts a dialog to adjust display settings or resample image intensities. See more in the <a href="ug_panel_adjustments.html">Adjust display window section</a></p><h2 id="4">Color Channels</h2><p>Perform some actions with color channels of the image</p><p>
-A brief demonstration is available in the following videos:<br>
+#tooltiptext {
+  visibility: hidden;
+  padding: 5px 10px;
+  font-size: 75%;
+  line-height:110%;
+  text-align: center;
+  background-color: black;
+  color: #ddd;
+  border-radius: 6px;
+  position: fixed;
+  bottom: 11px;
+  right: 62px;
+  z-index: 2;
+}
+#tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+.tooltip:hover #tooltiptext {
+  visibility: visible;
+}
+#return-link {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    overflow: visible;
+    font-size:120%;
+    background: rgba(0, 0, 0, 0.75);
+    border-style: solid;
+    border-width: 3pt;
+    border-color: #202020;
+    border-radius: 4px;
+    cursor: pointer;
+    }
+#return-link > p { padding:3px; margin:0; color:#C0C0C0;}
+.MATLAB-Help {
+width: 100%;
+margin-bottom: 12px;
+border: 1px solid #ccc;
+border-right: none;
+border-bottom: none;
+font-size: 96%;
+line-height: 1.4;
+table-layout: fixed;
+overflow:hidden;}
+
+.MATLAB-Help > thead > tr > th {
+padding: 6px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+background: #F2F2F2;
+color: #000;
+font-weight: bold;
+text-align: left;
+vertical-align: middle;}
+
+.MATLAB-Help td{padding: 5px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+vertical-align: middle;}
+
+.language-matlab { line-height:135% }
+
+.collapse-link {float:right; line-height:200%; padding-left:10px; margin:0}
+
+
+details > summary,
+.details-div {
+  padding: 8px 20px;
+  border-style: solid;
+  border-width: 1.2pt;
+  border-color: #E0E0E0;
+}
+details > summary {
+  border-radius:6px 6px 0 0;
+  background-color: #F2F2F2;
+  cursor: pointer;
+}
+.details-div {
+  border-top-style: none;
+  border-radius: 0 0 6px 6px;
+}
+.image-fit-svg,
+.image-fit {
+    max-width:  95%;
+    max-height: 100%;
+    margin:     auto;
+}
+.image-fit-svg{ padding:0px; max-width:500px; }
+details > img.image-fit-svg{ padding: 0px 0px 10px; }
+@media (max-width: 580px) {
+  .image-fit-svg { max-width: 95%; }
+}
+.pretty-link  { color:#001188 !important; }
+</style>
+<style id="dark-theme">
+    h2, h3       { color: #B0B0B0; }
+    html body    { background-color: #101010; color: #B0B0B0; }
+    .pretty-link { color: #C46313 !important; }
+    a, a:visited { color: #C46313 }
+    a:hover      { color: orange; }
+    details > summary,
+    .details-div      { border-color:     #505050; }
+    details > summary { background-color: #202020; }
+    pre.codeinput     { border-width: 1.2pt; border-color:#001B33; background:#001129; color:#F0F0F0; }
+    pre.codeoutput    { color:#A5A5A5; }
+    span.keyword      { color:#FF9D00; }
+    span.comment      { color:#808080; }
+    span.string       { color:#3AD900; }
+    span.untermstring { color:#FFEE80; }
+    span.syscmd       { color:#CCCCCC; }
+    .MATLAB-Help, .MATLAB-Help > thead > tr > th, .MATLAB-Help td { border-color:#505050; }
+    .MATLAB-Help > thead > tr > th { background: #202020; color: #B0B0B0; }
+    .summary-sub-heading { color:#909090; }
+    .show-if-light    { display:none }
+</style>
+<style id="hide-dark">
+     .show-if-dark { display:none }
+</style>
+
+<style id="anchor-offsets">
+    h2::before, a[id]::before{
+    content: "";
+    display: block;
+    height: 100px;
+    margin: -100px 0 0;
+    visibility: hidden;
+    width:10%;
+    z-index: -1;
+}
+</style>
+
+<script>
+          var returnElem = null;
+          var skipCheck  = false;
+
+          function hide_back_link()
+          {
+              returnButton.style.display = "none";
+              try{
+                 window.removeEventListener("scroll", update_back_position, true);
+                 window.removeEventListener("resize", update_back_position, true);
+                 parent.window.removeEventListener("scroll", update_back_position, true);
+                 parent.window.removeEventListener("resize", update_back_position, true);}
+              catch(e){}
+          }
+
+          function get_offset(element)
+          {
+              if (!element.getClientRects().length){ return { top: 0, left: 0 }; }
+              var rect = element.getBoundingClientRect();
+              var win  = element.ownerDocument.defaultView;
+              return ( {top:  rect.top  + win.pageYOffset,
+                        left: rect.left + win.pageXOffset} );
+          }
+
+          function jump_to()
+          {
+              var clickedElem = event.target;
+              var clickedID   = clickedElem.closest("span");
+              if (clickedID){
+                clickedID = clickedID.getAttribute("id");
+                if (clickedID.localeCompare("jump-close")===0) { return };}
+              clickedID = clickedElem.closest("div").getAttribute("id");
+              if (clickedID && clickedID.localeCompare("return-link")===0)
+              {
+                  if (returnElem)
+                  {
+                      event.preventDefault();
+                      hide_back_link();
+                      returnElem.scrollIntoView();
+                      if (contentDiv.getAttribute("data-isHelpBrowser")){
+                         contentDiv.scrollTop = contentDiv.scrollTop-100; }
+                      if (contentDiv.getAttribute("data-isMATLABCentral")){
+                         parent.window.scrollBy(0,-100)}
+                      returnElem = null;
+                  }
+              }
+              else
+              {
+                  var href = clickedElem.closest("a").getAttribute("href");
+                  if ( href && href[0] == "#" )
+                  {
+                     var target = document.getElementById(href.substring(1));
+                     var enclosingBox = target;
+                     while ( enclosingBox )
+                     {
+                        prevBox      = enclosingBox;
+                        enclosingBox = enclosingBox.closest("details");
+                        if ( enclosingBox===prevBox ){
+                           enclosingBox = enclosingBox.parentElement
+                           if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
+                        if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
+                     }
+                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                        event.preventDefault();
+                        target.scrollIntoView(); }
+                     var nextElem = target.nextElementSibling;
+                     var nextNode = target.nextSibling;
+                     while ( nextNode && nextNode.nodeType==Node.TEXT_NODE && nextNode.data.trim().length == 0 ){
+                        nextNode = nextNode.nextSibling;}
+                     if ( nextElem && nextElem===nextNode && nextElem.localName.localeCompare("details")===0 && !nextElem.open){
+                        open_details(nextElem.id);}
+                  }
+                  else { return }
+                  if (!contentDiv.getAttribute("data-isHelpBrowser"))
+                  {
+                      update_back_position();
+                      returnButton.style.display = "block";
+                      var linkTop   = clickedElem.offsetTop;
+                      var targetTop = target.offsetTop;
+                      if (targetTop>linkTop){
+                          document.getElementById("down").style.display = "none";
+                          document.getElementById("up").style.display   = "inline"; }
+                      else{
+                          document.getElementById("up").style.display   = "none";
+                          document.getElementById("down").style.display = "inline"; }
+                      returnElem = clickedElem;
+                  }
+              }
+          }
+
+          function open_details(detailsID)
+          {
+              var details  = document.getElementById(detailsID);
+              skipCheck    = true;
+              state_check(details.id);
+              details.open = true;
+          }
+
+          function update_back_position()
+          {
+              try
+              {
+                  window.addEventListener("scroll", update_back_position, true);
+                  window.addEventListener("resize", update_back_position, true);
+                  var scrollPos;
+                  if (in_iFrame())
+                  {
+                      parent.window.addEventListener("scroll", update_back_position, true);
+                      parent.window.addEventListener("resize", update_back_position, true);
+                      var iFrame         = window.frameElement;
+                      var frameOffset    = get_offset(iFrame);
+                      var documentBottom = parent.window.innerHeight  + parent.window.scrollY;
+                      var extHeight      = Math.round(frameOffset.top + iFrame.getBoundingClientRect().height - documentBottom);
+                      if (extHeight<0) { extHeight = 0; }
+                      returnButton.style.bottom = (10+extHeight) + "px";
+                      document.getElementById("tooltiptext").style.bottom = (11+extHeight) + "px";
+                      scrollPos = contentDiv.scrollTop - 25 + iFrame.getBoundingClientRect().height - extHeight;
+                  }
+                  else{
+                      scrollPos = window.scrollY + window.innerHeight - 25;}
+                  if (returnElem.offsetTop>scrollPos){
+                      document.getElementById("down").style.display = "inline";
+                      document.getElementById("up").style.display   = "none";   }
+                  else{
+                      document.getElementById("down").style.display = "none";
+                      document.getElementById("up").style.display   = "inline"; }
+              }
+              catch(e){}
+          }
+          function set_theme(themePref)
+          {
+            var themeSwitch     = document.getElementById("ToggleTheme");
+            var themeSwitchText = "switch to";
+            var switchToText    = null;
+            if (!themePref){ themePref = get_theme_pref(); }
+            if (themePref.localeCompare("light")===0){
+                document.getElementById("dark-theme").sheet.disabled = true;
+                document.getElementById("hide-dark").sheet.disabled  = false;
+                switchToText = " dark theme";}
+            else{
+                document.getElementById("dark-theme").sheet.disabled = false;
+                document.getElementById("hide-dark").sheet.disabled  = true;
+                switchToText = " light theme";}
+            themeSwitch.innerHTML = themeSwitchText + switchToText;
+            set_theme_pref(themePref);
+          }
+
+          function toggle_theme()
+          {
+            if (document.getElementById("dark-theme").sheet.disabled) { set_theme("dark");  }
+            else                                                      { set_theme("light"); }
+          }
+
+          function set_theme_pref(themePref)
+          {
+              var d = new Date();
+              d.setTime(d.getTime() + (2*365*24*60*60*1000));
+              var expires = "expires="+ d.toUTCString();
+              document.cookie = "themepref=" + themePref + ";" + expires + "path=/";
+              localStorage.setItem("PRETTY_THEME", themePref);
+          }
+
+          function get_theme_pref() {
+              var name = "themepref=";
+              var decodedCookie = decodeURIComponent(document.cookie);
+              var ca = decodedCookie.split(';');
+              for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                  c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                  return c.substring(name.length, c.length);
+                }
+              }
+              var docTheme = localStorage.getItem("PRETTY_THEME");
+              if (docTheme) { return docTheme }
+              else          { return "light"  }
+          }
+
+          function toggle_details(section)
+          {
+            var link;
+            var subSection;
+            var details;
+            var linkText;
+            var i;
+            var openState  = true;
+            var border     = "6px 6px 0 0;"
+            if (section===0)
+            {
+              link = document.getElementById("Toggle"+section.toString());
+              if (link.innerHTML.localeCompare("collapse all on page")===0){
+                  openState = false;
+                  border    = "6px;"
+                  linkText  = "expand all";}
+              else{
+                  linkText   = "collapse all";}
+              link.innerHTML = linkText + " on page";
+              for (i = 0; i < allDetails.length; i++){
+                 allDetails[i].open = openState;
+                 allDetails[i].children[0].setAttribute( 'style', "border-radius:"+border );
+                 link = document.getElementById("Toggle"+allDetails[i].id.split(".", 1));
+                 if (allDetails[i].id.charAt(0).localeCompare("0") && link){link.innerHTML = linkText;}}
+            }
+            else
+            {
+               link = document.getElementById("Toggle"+section.toString());
+               subSection = 1;
+               if (link.innerHTML.localeCompare("collapse all")===0){
+                  openState      = false;
+                  border         = "6px;"
+                  link.innerHTML = "expand all";}
+               else{
+                  link.innerHTML = "collapse all";}
+               details = document.getElementById(section.toString()+"."+subSection.toString());
+               while (details){
+                    details.open = openState;
+                    details.children[0].setAttribute( 'style', "border-radius:"+border );
+                    subSection++;
+                    details = document.getElementById(section.toString()+"."+subSection.toString());}
+               var allCollapsed = true;
+               var allExpanded  = true;
+               for (i = 0; i < allDetails.length; i++){
+                   check_if_open(allDetails[i]);}
+               link = document.getElementById("Toggle0");
+               if (allExpanded) {link.innerHTML = "collapse all on page";}
+               if (allCollapsed){link.innerHTML = "expand all on page";}
+            }
+            function check_if_open(details)
+            {
+                if (details.open){allCollapsed = false;}
+                else             {allExpanded  = false;}
+            }
+          }
+
+          function state_check(detailsID)
+          {
+              // first deal with just the section
+              if (event.detail){document.activeElement.blur();}
+              var clickedElem   = event.target;
+              if (!skipCheck && clickedElem.localName.localeCompare("summary"))
+              { 
+                if (!(clickedElem.closest("summary"))) { return };
+              };
+              var details       = document.getElementById(detailsID);
+              if ( !skipCheck ) {
+                  var parentID  = clickedElem.closest("details").id;
+                  if (details.id.localeCompare(parentID)) { return };}
+              skipCheck         = false;
+              var clickedStatus = details.open;
+              var section       = detailsID.split(".", 1);
+              var subSection    = 1;
+              var allCollapsed  = true;
+              var allExpanded   = true;
+              var link          = document.getElementById("Toggle"+section);
+              if (clickedStatus) { details.children[0].setAttribute( 'style', "border-radius:6px;" ); }
+              else               { details.children[0].setAttribute( 'style', "border-radius:6px 6px 0 0;" ); }
+              if (link)
+              {
+                  details = document.getElementById(section+"."+subSection.toString());
+                  while (details){
+                    check_if_open(details);
+                    subSection++;
+                    details = document.getElementById(section+"."+subSection.toString());}
+                  if (allExpanded) {link.innerHTML = "collapse all";}
+                  if (allCollapsed){link.innerHTML = "expand all";}
+              }
+              // then the whole page
+              allCollapsed   = true;
+              allExpanded    = true;
+              for (var i = 0; i < allDetails.length; i++){
+                  check_if_open(allDetails[i]);}
+              link = document.getElementById("Toggle0");
+              if (allExpanded) {link.innerHTML = "collapse all on page";}
+              if (allCollapsed){link.innerHTML = "expand all on page";}
+
+              function check_if_open(details)
+              {
+                  var openStatus
+                  if (detailsID.localeCompare( details.id )===0 ){openStatus = !clickedStatus;}
+                  else                                           {openStatus = details.open;}
+                  if (openStatus){allCollapsed = false;}
+                  else           {allExpanded  = false;}
+              }
+          }
+
+          function in_iFrame ()
+          {
+               try {
+                   return window.self !== window.top;
+               } catch (e) {
+                   return true;
+               }
+          }
+</script>
+</head><body>
+<div class="content">
+<div id="return-link" style="display:none;" class="tooltip">
+<p onclick="jump_to()">
+    <span onclick="jump_to()"><span id="up">&#8679;</span><span id="down">&#8681;</span>
+    <span onclick="hide_back_link()" style="padding:2px; font-size:120%;" id="jump-close"><b onclick="hide_back_link()">&times;</b></span></span>
+</p>
+<div id="tooltiptext">click to return
+<br>(click <b>&times;</b> to hide)</div>
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Image Menu</h1><!--introduction-->
+<p>Image processing functions</p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction-->
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
+<div><ul><li><a href="#2">Mode</a></li>
+<li><a href="#3">Adjust Display/Image</a></li>
+<li><a href="#4">Color Channels</a></li>
+<li><a href="#5">Contrast</a></li>
+<li><a href="#6">Invert image</a></li>
+<li><a href="#7">Image filter</a></li>
+<li><a href="#8">Tools for images --&gt; Content-aware fill</a></li>
+<li><a href="#9">Tools for images --&gt; Debris removal</a></li>
+<li><a href="#10">Tools for images --&gt; Image arithmetics</a></li>
+<li><a href="#11">Tools for images --&gt; Intensity projection</a></li>
+<li><a href="#12">Tools for images --&gt; Select image frame</a></li>
+<li><a href="#13">Morphological operations</a></li>
+<li><a href="#14">Intensity profile</a></li></ul></div>
+<p><img class="image-fit" src="images\menuImage.png" alt=""> </p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="2">Mode</h2>
+<p>Allows to change mode and color depth of the shown dataset</p>
+<details open onclick="state_check('1.1')" id="1.1"><summary> <b>The following options are available</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li><b>Grayscale</b>, converts image to grayscale by removing any color information</li>
+<li><b>RGB Color</b>, converts image to the RGB color space</li>
+<li><b>HSV Color</b>, converts image to the HSV (hue, saturation, value) color space</li>
+<li><b>Indexed</b>, converts image to the indexed colors (<code>not implemented for True Color images</code>)</li>
+<li><b>8 bit</b>, convert dataset to the 8 bit format, the image intensities are scaled to preserve the adjusted from the <code>View Settings Panel-&gt;Display dialog</code></li>
+<li><b>16 bit</b>, convert dataset to the 16 bit format, the image intensities are scaled to preserve contrast of the original dataset</li>
+<li><b>32 bit</b>, convert dataset to the 32 bit format, the image intensities are scaled to preserve contrast of the original dataset</li></ul></div>
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p><h2 id="3">Adjust Display/Image</h2>
+<p>Starts a dialog to adjust display settings or resample image intensities. See more in the <a href="ug_panel_adjustments.html">Adjust display window section</a></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="4">Color Channels</h2>
+<p>Perform some actions with color channels of the image</p>
+A brief demonstration is available in the following videos:
+<br>
 <ul>
 <li> General demonstration: <a href="https://youtu.be/gT-c8TiLcuY"><img
 style="vertical-align:middle;" src="images\youtube2.png">
@@ -77,48 +565,119 @@ https://youtu.be/gT-c8TiLcuY</a></li>
 style="vertical-align:middle;" src="images\youtube2.png">
 https://youtu.be/-J2P8a_z7pE</a></li>
 </ul>
-</p><div><ul><li><b>Insert empty channel...</b>, insert an empty channel (intensity of all pixels is 0) to the specified position</li><li><b>Copy channel...</b>, copy one channel to another position</li><li><b>Invert channel...</b>, invert intensities of the specified color channel</li><li><b>Rotate channel...</b>, rotate the specified color channel</li><li><b>Shift channel...</b>, allows to shift a channel by X and Y pixels</li><li><b>Swap channels...</b>, allows to swap two color channels between each other</li><li><b>Delete channel...</b>, deletes specified color channel from the dataset</li></ul></div><p>It is also possible to do color channel operations from the <tt>Colors</tt> table in the <a href="ug_panel_view_settings.html">View settings panel</a>.</p><h2 id="5">Contrast</h2><p>Adjust contrast of the dataset. For the linear contrast stretching it is recommended to use Image Adjustment dialog available via the <a href="ug_panel_adjustments.html">Display button</a> in the <a href="ug_panel_view_settings.html">View Settings panel</a>.</p><p>
-A tutorial on image normalization is available in the following video:<br>
-<a href="https://youtu.be/MmBmdGtuUdM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MmBmdGtuUdM</a>
-</p><div><ul><li><b>Linear contrast</b>, is no longer available in MIB, please use the Display button in the <a href="ug_panel_view_settings.html">View Settings panel</a>.</li><li><b>Contrast-limited adaptive histogram equalization</b>, CLAHE contrast equalization. CLAHE operates on small regions in the image, called tiles, rather than the entire image. Each tile's contrast is enhanced, so that the histogram of the output region approximately matches the histogram specified by the 'Distribution' parameter. The neighboring tiles are then combined using bilinear interpolation to eliminate artificially induced boundaries. The contrast, especially in homogeneous areas, can be limited to avoid amplifying any noise that might be present in the image. For details see documentation for MATLAB function <tt>adapthisteq</tt>.</li><li><b>Normalize layers</b>, normalization of image intensities between the slices.  A) calculates mean intensity and standard deviation (std) for the whole dataset; B) calculates mean intensities and standard deviation for each image; C) shifts each image based on difference between mean values of that image and the whole dataset, plus stretches it based on ratio between standard deviation of the whole dataset and each image. For the 4D datasets it is possible to perform normalization also via the time dimension. For the Z stack it is possible to exclude black or white pixels from consideration</li><li><b>Normalize layers based on masked areas</b>, essentially similar to the <i>Normalize layers</i> mode, except that all values are calculated from the masked areas only.</li><li><b>Normalize based on masked background</b>, normalizes image intensities between the slices using background areas that should be masked. A) calculates mean intensity for the masked area for the whole dataset; B) calculates mean intensities for the masked area for each image; C) shifts each image based on difference between mean values of the image and the whole dataset</li></ul></div><h2 id="7">Invert image</h2><p>Invert image intensities, shortcut <tt>Ctrl+i</tt>.</p><p>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/1DG2w5XYA18"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/1DG2w5XYA18</a>
-</p><div><ul><li><b>Shown slice (2D)</b>, invert only the currently shown slice of the dataset</li><li><b>Current stack (3D)</b>, invert the current stack of the dataset</li><li><b>Complete volume (4D)</b>, invert complete dataset</li></ul></div><h2 id="8">Image filter</h2><p>Open a dialog with various image filters arranged into 4 categories:</p><div><ul><li>Basic image filtering in the spacial domain</li><li>Edge-preserving filtering</li><li>Contrast adjustment</li><li>Image binarization</li></ul></div><p>For further details, please refer to the <a href="ug_gui_menu_image_filters.html">Image Filters help page</a>.</p><h2 id="9">Tools for images --&gt; Content-aware fill</h2><p>
+<details open onclick="state_check('2.1')" id="2.1"><summary> <b>List of operations with color channels</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li><b>Insert empty channel...</b>, insert an empty channel (intensity of all pixels is 0) to the specified position</li>
+<li><b>Copy channel...</b>, copy one channel to another position</li>
+<li><b>Invert channel...</b>, invert intensities of the specified color channel</li>
+<li><b>Rotate channel...</b>, rotate the specified color channel</li>
+<li><b>Shift channel...</b>, allows to shift a channel by X and Y pixels</li>
+<li><b>Swap channels...</b>, allows to swap two color channels between each other</li>
+<li><b>Delete channel...</b>, deletes specified color channel from the dataset</li></ul></div>
+</div>
+</details>
+<br>
+<p>It is also possible to do color channel operations from the <code>Colors</code> table in the <a href="ug_panel_view_settings.html">View settings panel</a>. 
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="5">Contrast</h2>
+<p>Adjust contrast of the dataset. For the linear contrast stretching it is recommended to use Image Adjustment dialog available via the <a href="ug_panel_adjustments.html">Display button</a> in the <a href="ug_panel_view_settings.html">View Settings panel</a>.</p>
+<p>
+A tutorial on image normalization is available in the following video:
+<br>
+<a href="https://youtu.be/MmBmdGtuUdM"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MmBmdGtuUdM</a>
+</p>
+<details open onclick="state_check('3.1')" id="3.1"><summary> <b>List of contrast adjustment operations</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li><b>Linear contrast</b>, is no longer available in MIB, please use the Display button in the <a href="ug_panel_view_settings.html">View Settings panel</a>.</li>
+<li><b>Contrast-limited adaptive histogram equalization</b>, CLAHE contrast equalization. CLAHE operates on small regions in the image, called tiles, rather than the entire image. Each tile's contrast is enhanced, so that the histogram of the output region approximately matches the histogram specified by the 'Distribution' parameter. The neighboring tiles are then combined using bilinear interpolation to eliminate artificially induced boundaries. The contrast, especially in homogeneous areas, can be limited to avoid amplifying any noise that might be present in the image. For details see documentation for MATLAB function <code>adapthisteq</code>.</li>
+<li><b>Normalize layers</b>, normalization of image intensities between the slices.  A) calculates mean intensity and standard deviation (std) for the whole dataset; B) calculates mean intensities and standard deviation for each image; C) shifts each image based on difference between mean values of that image and the whole dataset, plus stretches it based on ratio between standard deviation of the whole dataset and each image. For the 4D datasets it is possible to perform normalization also via the time dimension. For the Z stack it is possible to exclude black or white pixels from consideration</li>
+<li><b>Normalize layers based on masked areas</b>, essentially similar to the <i>Normalize layers</i> mode, except that all values are calculated from the masked areas only.</li>
+<li><b>Normalize based on masked background</b>, normalizes image intensities between the slices using background areas that should be masked. A) calculates mean intensity for the masked area for the whole dataset; B) calculates mean intensities for the masked area for each image; C) shifts each image based on difference between mean values of the image and the whole dataset</li></ul></div>
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="6">Invert image</h2>
+<p>Invert image intensities, shortcut <span class="kbd">Ctrl+i|</span></p>
+<p>
+A brief demonstration is available in the following video:
+<br>
+<a href="https://youtu.be/1DG2w5XYA18"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/1DG2w5XYA18</a>
+</p>
+<details open onclick="state_check('4.1')" id="4.1"><summary> <b>Invert operations available for</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li><b>Shown slice (2D)</b>, invert only the currently shown slice of the dataset</li>
+<li><b>Current stack (3D)</b>, invert the current stack of the dataset</li>
+<li><b>Complete volume (4D)</b>, invert complete dataset</li></ul></div>
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p><h2 id="7">Image filter</h2>
+<p>Open a dialog with various image filters arranged into 4 categories:</p>
+<div><ul><li>Basic image filtering in the spacial domain</li>
+<li>Edge-preserving filtering</li>
+<li>Contrast adjustment</li>
+<li>Image binarization</li></ul></div>
+<p>For further details, please refer to the <a href="ug_gui_menu_image_filters.html">Image Filters help page</a>.</p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(5)" class="collapse-link"><a href="javascript:void(0);" id="Toggle5">collapse all</a></p><h2 id="8">Tools for images --&gt; Content-aware fill</h2>
+<p>Content aware fill can be used to reconstruct selected areas using information for neighboring regions.</p>
+<p>
+A brief demonstration is available in the following video:
+<br>
+<a href="https://youtu.be/H_TVvgA_br4"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/H_TVvgA_br4</a>
+</p>
+<details open onclick="state_check('5.1')" id="5.1"><summary> <b>Details of content-aware methods</b> </summary>
+<div class="details-div">
+<p></p>
 <table>
 <tr>
-<td colspan = 2><h2><font color="orange">Content-aware fill</font></h2>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/H_TVvgA_br4"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/H_TVvgA_br4</a>
-</td>
-</tr>
-<tr>
-<td><img src="images\MenuImageToolsContentAwareFill.png"></td>
+<td><img class="image-fit" src="images\MenuImageToolsContentAwareFill.png"></td>
 <td>
 <h2><font color="#ef6c00">inpaintCoherent</font></h2>
-<b><em>only for MATLAB R2019a and newer</em></b><br>
+<b><em>only for MATLAB R2019a and newer</em></b>
+<br>
 Restore specific image regions using coherence transport based image
-inpainting. <br><br>
+inpainting. 
+<br>
+<br>
 The areas for the content-aware fill can be specified using the Mask or
-Selection layers of MIB.<br><br>
+Selection layers of MIB.
+<br>
+<br>
 <ul>
 <li><b>Radius</b> - the inpainting radius denotes the radius of the circular
-neighborhood region centered on the pixel to be inpainted<br></li>
+neighborhood region centered on the pixel to be inpainted
+<br></li>
 <li><b>Smoothing Factor</b> - smoothing factor is used to compute the
 scales of the Gaussian filters while estimating the coherence
 direction</li>
 </ul>
-<b>References</b><br>
+<b>References</b>
+<br>
 [1] F. Bornemann and T. M?rz. "Fast Image Inpainting Based on Coherence Transport." Journal of Mathematical Imaging and Vision. Vol. 28, 2007, pp.259?278.
 </td>
 </tr>
 <tr>
-<td><img src="images\MenuImageToolsContentAwareFill2.png"></td>
+<td><img class="image-fit" src="images\MenuImageToolsContentAwareFill2.png"></td>
 <td>
 <h2><font color="#ef6c00">inpaintExemplar</font></h2>
-<b><em>only for MATLAB R2019b and newer</em></b><br>
-Fill image regions using exemplar-based image inpainting<br><br>
+<b><em>only for MATLAB R2019b and newer</em></b>
+<br>
+Fill image regions using exemplar-based image inpainting
+<br>
+<br>
 The areas for the content-aware fill can be specified using the Mask or
-Selection layers of MIB.<br><br>
+Selection layers of MIB.
+<br>
+<br>
 <ul>
 <li><b>PatchSize</b> - size of the image patch, for example, '9' or a
 pair of numbers as '9,9', where the image patches are the image regions
@@ -128,25 +687,31 @@ be used for calculating the patch priority. The patch priority value
 specifies the order of filling of the image patches in target
 regions</li>
 </ul>
-<b>References</b><br>
+<b>References</b>
+<br>
 [1]  A. Criminisi, P. Perez and K. Toyama. "Region Filling and Object Removal by Exemplar-Based Image Inpainting." IEEE Trans. on Image Processing. Vol. 13, No. 9, 2004, pp. 1200?1212.
 </td>
 </tr>
 </table>
-</p><h2 id="10">Tools for images --&gt; Debris removal</h2><p>
+
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p><h2 id="9">Tools for images --&gt; Debris removal</h2>
+<p>Automatically or manually restore areas of volumetric datasets that are corrupted with debris. The areas can either be automatically detected or manually selected into the Mask or Selection layers&lt;br&gt;&lt;br&gt;</p>
+<p>
+A brief demonstration is available in the following video:
+<br>
+<a href="https://youtu.be/iM2nHBxTjRw"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iM2nHBxTjRw</a>
+</p>
 <table>
 <tr>
-<td colspan = 2><h2><font color="orange">Debris removal</font></h2>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/iM2nHBxTjRw"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iM2nHBxTjRw</a>
-</td>
-</tr>
-<tr>
-<td><img src="images\MenuImageToolsDebrisRemoval2.png"><br>
-<img src="images\MenuImageToolsDebrisRemoval.png">
+<td><img class="image-fit" src="images\MenuImageToolsDebrisRemoval2.png">
+<br>
+<img class="image-fit" src="images\MenuImageToolsDebrisRemoval.png">
 </td>
 <td>
-Automatically or manually restore areas of volumetric datasets that are corrupted with debris. The areas can either be automatically detected or manually selected into the Mask or Selection layers<br><br>
 <ul>
 <li><b>Automatic detection</b> - automatic detection of debris areas:
 <ul>
@@ -156,6 +721,7 @@ Automatically or manually restore areas of volumetric datasets that are corrupte
 <li>all other areas are subjected to a series of erosion and dilation morphological operations with the strel size defined in the <em>Strel size</em> field</li>
 <li>finally the detected area is replaced with an average image generated using the previous and the following slice</li>
 </ul>
+
 <br>
 </li>
 <li><b>Masked areas</b> - the debris removal operation is performed on the specified in the Mask layer areas</li>
@@ -164,24 +730,30 @@ Automatically or manually restore areas of volumetric datasets that are corrupte
 </td>
 </tr>
 </table>
-</p><h2 id="11">Tools for images --&gt; Image arithmetics</h2><p>
-<table>
-<tr>
-<td colspan = 2><h2><font color="orange">Image arithmetics</font></h2><br>
-Use MATLAB syntax to apply custom arithmetic expression to Image, Model, Mask or Selection layers, see more in<br>
-a brief video and examples below.<br>
+<p>
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(6)" class="collapse-link"><a href="javascript:void(0);" id="Toggle6">collapse all</a></p><h2 id="10">Tools for images --&gt; Image arithmetics</h2>
+Use MATLAB syntax to apply custom arithmetic expression to Image, Model, Mask or Selection layers, see more in
+a brief video and examples below.
+<br>
 For MIB 2.60 and newer <a href="https://youtu.be/sDwvnJGLi8Q"><img
 style="vertical-align:middle;" src="images\youtube2.png">
-https://youtu.be/sDwvnJGLi8Q</a><br>
-For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
-</td>
-</tr>
+https://youtu.be/sDwvnJGLi8Q</a>
+<br>
+For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
+
+<br>
+<table>
 <tr>
-<td><img src="images\MenuImageToolsArithmetics.png"></td>
+<td><img class="image-fit" src="images\MenuImageToolsArithmetics.png"></td>
 <td>
 <ul>
-<b>Parameters and options:</b><br><br>
-<li><b>Coding:</b>,<br>
+<b>Parameters and options:</b>
+<br>
+<br>
+<li><b>Coding:</b>,
+<br>
   <ul>
    <li><b>I, I1, I2 ...</b> -> use I letter to identify the image layer; a number indicates MIB container that has the image, without the number the currently selected dataset is taken</li>
    <li><b>O, O1, O2 ...</b> -> use O letter to identify the model layer</li>
@@ -193,9 +765,15 @@ For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img style="vertic
 <li><b>Previous expresson</b>, a list of previous successfully executed expressions. Selection of any expression from this list will populate the expression edit box</li>
 <li><b>Expression</b>, an expression with arithmetic operation to perform, see below for some examples</li>
 </ul>
+
 <br>
+</td>
+</tr>
+</table>
+<details open onclick="state_check('6.1')" id="6.1"><summary> <b>Examples</b> </summary>
+<div class="details-div">
+<p></p>
 <ul>
-Examples:
 <li><b>I = I * 2</b>, increase intensity of all pixels of the current image in 2 times</li>
 <li><b>I2 = I2 + 100</b>, increase intensity of all pixels in image 2 by 100</li>
 <li><b>I1 = I1 + I2</b>, add image from container 2 to an image in container 1 and return result back to container 1</li>
@@ -205,63 +783,106 @@ Examples:
 <li><b>I(I==0) = I(I==0)+100</b>, increase image intensity of the black areas by 100 intensity counts</li>
 <li><b>disp(sum(abs(single(I1(:))-single(I2(:)))))</b>, find the difference between two images loaded to container 1 and 2 and print it to console; or use <em>msgbox(num2str())</em> instead of <em>disp</em> to show result as a message box</li>
 <li><b>M2 = M1</b>, copy mask layer from image 1 to image 2</li>
-<li><b>for z=1:size(I, 4)<br>
-          slice = I(:,:,2,z);<br>
-          mask = M(:,:,z);   <br>
-          slice(mask==1) = 0;<br>
-          I(:,:,2,z) = slice;<br>
+<li><b>for z=1:size(I, 4)
+<br>
+          slice = I(:,:,2,z);
+<br>
+          mask = M(:,:,z);   
+<br>
+          slice(mask==1) = 0;
+<br>
+          I(:,:,2,z) = slice;
+<br>
        end</b> - replace intensity of the second color channel in the masked area to 0
 </ul>
-</td>
-</tr>
-</table>
-</p><h2 id="12">Tools for images --&gt; Intensity projection</h2><p>
-<table>
-<tr>
-<td colspan = 2><h2><font color="orange">Intensity projection</font></h2><br>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/hwFpS_3eP9U</a>
-</td>
-</tr>
-<tr>
-<td><img src="images\MenuImageToolsIntensityProjection.png"></td>
-<td>
+
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(7)" class="collapse-link"><a href="javascript:void(0);" id="Toggle7">collapse all</a></p><h2 id="11">Tools for images --&gt; Intensity projection</h2>
+<p>Generate intensity projection actoss any dimension of the loaded dataset</p>
+<p><a href="html">html</a> <a href="table">table</a> <a href="tr">tr</a> <a href="td">td</a>&lt;img src="images\MenuImageToolsIntensityProjection.png"&gt;&lt;/td&gt; <a href="td">td</a> A brief demonstration is available in the following video:&lt;br&gt; <a href="a">href="https://youtu.be/hwFpS_3eP9U"</a>&lt;img style="vertical-align:middle;" src="images\youtube2.png"&gt;  <a href="https://youtu.be/hwFpS_3eP9U">https://youtu.be/hwFpS_3eP9U</a>&lt;/a&gt;</p>
+<p><a href="/td">/td</a> <a href="/tr">/tr</a> <a href="/table">/table</a> <a href="/html">/html</a></p>
+<details open onclick="state_check('7.1')" id="7.1"><summary> <b>List of available projection calculations</b> </summary>
+<div class="details-div">
+<p></p>
 <ul>
 Calculate one of the following intensity projections:
 <li><b>maximum intensity projection</b>, project the voxel with the highest value on every view throughout the volume onto a 2D image</li>
 <li><b>minimum intensity projection</b>, project the voxel with the smallest value on every view throughout the volume onto a 2D image</li>
 <li><b>mean intensity projection</b>, project the mean value of voxels on every view throughout the volume onto a 2D image</li>
 <li><b>median intensity projection</b>, project the median value of voxels on every view throughout the volume onto a 2D image</li>
-<li><a href="https://youtu.be/5L0xMSFVxiU"><img style="vertical-align:middle;" src="images\youtube.png"></a> <b>focus stacking</b>, Generate extended depth-of-field image from focus sequence using noise-robust selective all-in-focus algorithm (<a href="https://ieeexplore.ieee.org/document/6373725">Pertuz et. al. "Generation of all-in-focus images by
+<li><a href="https://youtu.be/5L0xMSFVxiU"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"></a> <b>focus stacking</b>, Generate extended depth-of-field image from focus sequence using noise-robust selective all-in-focus algorithm (<a href="https://ieeexplore.ieee.org/document/6373725">Pertuz et. al. "Generation of all-in-focus images by
   noise-robust selective fusion of limited depth-of-field
   images" IEEE Trans. Image Process, 22(3):1242 - 1251, 2013</a>)
 </li>
-</td>
-</tr>
-</table>
+</ul>
+
+</div>
+</details>
 <br>
-<br>
-<table>
-<tr>
-<td colspan = 2><h2><font color="orange">Select image frame</font></h2><br>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/sWjipmeU5eA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/sWjipmeU5eA</a>
-</td>
-</tr>
-<tr>
-<td><img src="images\image_border_detection.png"></td>
-<td>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p><h2 id="12">Tools for images --&gt; Select image frame</h2>
 Detects the frame (which is an area of the same intensity that touches edge
 of the image) of the image. The detected area can be assinged to the
 <em>Selection</em> or <em>Mask</em> layers, or that area can be replaced with another
 color for the <em>Image</em> layer.
+<table>
+<tr>
+<td><img class="image-fit" src="images\image_border_detection.png"></td>
+<td>
+A brief demonstration is available in the following video:
+<br>
+<a href="https://youtu.be/sWjipmeU5eA"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/sWjipmeU5eA</a>
 </td>
 </tr>
 </table>
-</p><h2 id="13">Morphological operations</h2><p>This section contains number of morphological operations that can be applied to images. The processed image may be also added or subtracted from the existing image (see the settings in the <tt>Additional action to the result</tt> panel).</p><p>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/itbVLFm0FKQ"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/itbVLFm0FKQ</a>
-</p><p><img vspace="5" hspace="5" src="images\MenuImageMorphOps.png" alt=""> </p><p>List of available morphological operations</p><div><ul><li><b>Bottom-hat filtering (imbothat)</b> computes the morphological closing of the image (using imclose`) and then subtracts the result from the original image</li><li><b>Clear border (imclearborder)</b> suppresses light structures connected to image border</li><li><b>Morphological closing (imclose)</b> morphologically closes the image: a dilation followed by an erosion</li><li><b>Dilate image (imdilate)</b></li><li><b>Erode image (imerode)</b></li><li><b>Fill regions (imfill)</b> fills holes in the image, where a hole is defined as an area of dark pixels surrounded by lighter pixels</li><li><b>H-maxima transform (imhmax)</b> suppresses all maxima in the image whose height is less than H</li><li><b>H-mminima transform (imhmin)</b> uppresses all minima in the image whose depth is less than H</li><li><b>Morphological opening (imopen)</b> morphologically opens image: an erosion followed by a dilation</li><li><b>Top-hat filtering (imtophat)</b> computes the morphological opening of the image (using imopen) and then subtracts the result from the original image</li></ul></div><h2 id="14">Intensity profile</h2><p>Generate an intensity profile of the image data. The profiles can be obtained in two modes:</p><div><ul><li><b>Line</b></li><li><b>Arbitrary</b></li></ul></div><p>For intensity profiles it is recommended to use the <a href="ug_gui_menu_tools_measure.html">Measure length tool</a>.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+<p>
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(8)" class="collapse-link"><a href="javascript:void(0);" id="Toggle8">collapse all</a></p><h2 id="13">Morphological operations</h2>
+<p>This section contains number of morphological operations that can be applied to images. The processed image may be also added or subtracted from the existing image (see the settings in the <code>Additional action to the result</code> panel).</p>
+<p>
+A brief demonstration is available in the following video:
+<br>
+<a href="https://youtu.be/itbVLFm0FKQ"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/itbVLFm0FKQ</a>
+</p>
+<p><img class="image-fit" src="images\MenuImageMorphOps.png" alt=""> </p>
+<details open onclick="state_check('8.1')" id="8.1"><summary> <b>List of available morphological operations</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li><b>Bottom-hat filtering (imbothat)</b> computes the morphological closing of the image (using imclose`) and then subtracts the result from the original image</li>
+<li><b>Clear border (imclearborder)</b> suppresses light structures connected to image border</li>
+<li><b>Morphological closing (imclose)</b> morphologically closes the image: a dilation followed by an erosion</li>
+<li><b>Dilate image (imdilate)</b></li>
+<li><b>Erode image (imerode)</b></li>
+<li><b>Fill regions (imfill)</b> fills holes in the image, where a hole is defined as an area of dark pixels surrounded by lighter pixels</li>
+<li><b>H-maxima transform (imhmax)</b> suppresses all maxima in the image whose height is less than H</li>
+<li><b>H-mminima transform (imhmin)</b> uppresses all minima in the image whose depth is less than H</li>
+<li><b>Morphological opening (imopen)</b> morphologically opens image: an erosion followed by a dilation</li>
+<li><b>Top-hat filtering (imtophat)</b> computes the morphological opening of the image (using imopen) and then subtracts the result from the original image</li></ul></div>
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p><h2 id="14">Intensity profile</h2>
+<p>Generate an intensity profile of the image data. The profiles can be obtained in two modes:</p>
+<div><ul><li><b>Line</b></li>
+<li><b>Arbitrary</b></li></ul></div>
+<p>For intensity profiles it is recommended to use the <a href="ug_gui_menu_tools_measure.html">Measure length tool</a>.</p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a></p>
+<p></p>
+<p>
+<script>
+  var allDetails = document.getElementsByTagName('details');
+  toggle_details(0);
+</script>
+</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Image Menu
 % Image processing functions
@@ -274,8 +895,12 @@ A brief demonstration is available in the following video:<br>
 % <<images\menuImage.png>>
 % 
 %% Mode
-% Allows to change mode of the shown dataset, the following options are available:
+% Allows to change mode and color depth of the shown dataset
 % 
+% 
+% [dtls]<summary> *The following options are available* </summary>
+<div class="details-div">
+%
 % * *Grayscale*, converts image to grayscale by removing any color
 % information
 % * *RGB Color*, converts image to the RGB color space
@@ -290,6 +915,9 @@ A brief demonstration is available in the following video:<br>
 % * *32 bit*, convert dataset to the 32 bit format, the image intensities are
 % scaled to preserve contrast of the original dataset
 % 
+% [/dtls]
+% [br8]
+%
 %% Adjust Display/Image
 % Starts a dialog to adjust display settings or resample image intensities.
 % See more in the <ug_panel_adjustments.html Adjust display window section>
@@ -297,8 +925,9 @@ A brief demonstration is available in the following video:<br>
 %% Color Channels
 % Perform some actions with color channels of the image
 % 
-% <html>
-% A brief demonstration is available in the following videos:<br>
+% <html lang="en">
+% A brief demonstration is available in the following videos:
+<br>
 % <ul>
 % <li> General demonstration: <a href="https://youtu.be/gT-c8TiLcuY"><img
 % style="vertical-align:middle;" src="images\youtube2.png">
@@ -309,6 +938,9 @@ A brief demonstration is available in the following video:<br>
 % </ul>
 % </html>
 %
+% [dtls]<summary> *List of operations with color channels* </summary>
+<div class="details-div">
+%
 % * *Insert empty channel...*, insert an empty channel (intensity of all
 % pixels is 0) to the specified position
 % * *Copy channel...*, copy one channel to another position 
@@ -318,18 +950,24 @@ A brief demonstration is available in the following video:<br>
 % * *Swap channels...*, allows to swap two color channels between each other
 % * *Delete channel...*, deletes specified color channel from the dataset
 %
+% [/dtls]
+%
 % It is also possible to do color channel operations from the |Colors| table in the <ug_panel_view_settings.html View settings panel>.
+% [br8]
 %
 %% Contrast
 % Adjust contrast of the dataset. For the linear contrast stretching it is
 % recommended to use Image Adjustment dialog available via the <ug_panel_adjustments.html Display
 % button> in the <ug_panel_view_settings.html View Settings panel>.
 %
-% <html>
-% A tutorial on image normalization is available in the following video:<br>
+% <html lang="en">
+% A tutorial on image normalization is available in the following video:
+<br>
 % <a href="https://youtu.be/MmBmdGtuUdM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MmBmdGtuUdM</a>
 % </html>
-%%
+%
+% [dtls]<summary> *List of contrast adjustment operations* </summary>
+<div class="details-div">
 % 
 % * *Linear contrast*, is no longer available in MIB, please use the Display button in the <ug_panel_view_settings.html View Settings panel>.
 % * *Contrast-limited adaptive histogram equalization*, CLAHE contrast equalization. CLAHE operates on small regions in the image, 
@@ -353,18 +991,28 @@ A brief demonstration is available in the following video:<br>
 % intensities for the masked area for each image; C) shifts each image based 
 % on difference between mean values of the image and the whole dataset
 % 
+% [/dtls]
+% [br8]
+%
 %% Invert image
-% Invert image intensities, shortcut |Ctrl+i|.
+% Invert image intensities, shortcut [class.kbd]Ctrl+i|[/class]
 % 
-% <html>
-% A brief demonstration is available in the following video:<br>
+% <html lang="en">
+% A brief demonstration is available in the following video:
+<br>
 % <a href="https://youtu.be/1DG2w5XYA18"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/1DG2w5XYA18</a>
 % </html>
+%
+% [dtls]<summary> *Invert operations available for* </summary>
+<div class="details-div">
 %
 % * *Shown slice (2D)*, invert only the currently shown slice of the
 % dataset
 % * *Current stack (3D)*, invert the current stack of the dataset
 % * *Complete volume (4D)*, invert complete dataset
+%
+% [/dtls]
+% [br8]
 %
 %% Image filter
 % Open a dialog with various image filters arranged into 4 categories: 
@@ -378,31 +1026,44 @@ A brief demonstration is available in the following video:<br>
 %
 %% Tools for images REPLACE_WITH_DASH_DASH> Content-aware fill
 %
-% <html>
-% <table>
-% <tr>
-% <td colspan = 2><h2><font color="orange">Content-aware fill</font></h2>
-% A brief demonstration is available in the following video:<br>
+% Content aware fill can be used to reconstruct selected areas using
+% information for neighboring regions.
+%
+% <html lang="en">
+% A brief demonstration is available in the following video:
+<br>
 % <a href="https://youtu.be/H_TVvgA_br4"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/H_TVvgA_br4</a>
-% </td>
-% </tr>
+% </html>
+% 
+% [dtls]<summary> *Details of content-aware methods* </summary>
+<div class="details-div">
+%
+% <html lang="en">
+% <table>
 % <tr>
 % <td><img src="images\MenuImageToolsContentAwareFill.png"></td>
 % <td>
 % <h2><font color="#ef6c00">inpaintCoherent</font></h2>
-% <b><em>only for MATLAB R2019a and newer</em></b><br>
+% <b><em>only for MATLAB R2019a and newer</em></b>
+<br>
 % Restore specific image regions using coherence transport based image
-% inpainting. <br><br>
+% inpainting. 
+<br>
+<br>
 % The areas for the content-aware fill can be specified using the Mask or
-% Selection layers of MIB.<br><br>
+% Selection layers of MIB.
+<br>
+<br>
 % <ul>
 % <li><b>Radius</b> - the inpainting radius denotes the radius of the circular
-% neighborhood region centered on the pixel to be inpainted<br></li>
+% neighborhood region centered on the pixel to be inpainted
+<br></li>
 % <li><b>Smoothing Factor</b> - smoothing factor is used to compute the
 % scales of the Gaussian filters while estimating the coherence
 % direction</li>
 % </ul>
-% <b>References</b><br>
+% <b>References</b>
+<br>
 % [1] F. Bornemann and T. M?rz. "Fast Image Inpainting Based on Coherence Transport." Journal of Mathematical Imaging and Vision. Vol. 28, 2007, pp.259?278.
 % </td>
 % </tr>
@@ -410,10 +1071,15 @@ A brief demonstration is available in the following video:<br>
 % <td><img src="images\MenuImageToolsContentAwareFill2.png"></td>
 % <td>
 % <h2><font color="#ef6c00">inpaintExemplar</font></h2>
-% <b><em>only for MATLAB R2019b and newer</em></b><br>
-% Fill image regions using exemplar-based image inpainting<br><br>
+% <b><em>only for MATLAB R2019b and newer</em></b>
+<br>
+% Fill image regions using exemplar-based image inpainting
+<br>
+<br>
 % The areas for the content-aware fill can be specified using the Mask or
-% Selection layers of MIB.<br><br>
+% Selection layers of MIB.
+<br>
+<br>
 % <ul>
 % <li><b>PatchSize</b> - size of the image patch, for example, '9' or a
 % pair of numbers as '9,9', where the image patches are the image regions
@@ -423,29 +1089,37 @@ A brief demonstration is available in the following video:<br>
 % specifies the order of filling of the image patches in target
 % regions</li>
 % </ul>
-% <b>References</b><br>
+% <b>References</b>
+<br>
 % [1]  A. Criminisi, P. Perez and K. Toyama. "Region Filling and Object Removal by Exemplar-Based Image Inpainting." IEEE Trans. on Image Processing. Vol. 13, No. 9, 2004, pp. 1200?1212.
 % </td>
 % </tr>
 % </table>
 % </html>
 %
+% [/dtls]
+% [br8]
+%
 %% Tools for images REPLACE_WITH_DASH_DASH> Debris removal
 %
-% <html>
+% Automatically or manually restore areas of volumetric datasets that are corrupted with debris. The areas can either be automatically detected or manually selected into the Mask or Selection layers
+<br>
+<br>
+% 
+% <html lang="en">
+% A brief demonstration is available in the following video:
+<br>
+% <a href="https://youtu.be/iM2nHBxTjRw"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iM2nHBxTjRw</a>
+% </html>
+%
+% <html lang="en">
 % <table>
 % <tr>
-% <td colspan = 2><h2><font color="orange">Debris removal</font></h2>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/iM2nHBxTjRw"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iM2nHBxTjRw</a>
-% </td>
-% </tr>
-% <tr>
-% <td><img src="images\MenuImageToolsDebrisRemoval2.png"><br>
+% <td><img src="images\MenuImageToolsDebrisRemoval2.png">
+<br>
 % <img src="images\MenuImageToolsDebrisRemoval.png">
 % </td>
 % <td>
-% Automatically or manually restore areas of volumetric datasets that are corrupted with debris. The areas can either be automatically detected or manually selected into the Mask or Selection layers<br><br>
 % <ul>
 % <li><b>Automatic detection</b> - automatic detection of debris areas:
 % <ul>
@@ -455,7 +1129,8 @@ A brief demonstration is available in the following video:<br>
 % <li>all other areas are subjected to a series of erosion and dilation morphological operations with the strel size defined in the <em>Strel size</em> field</li>
 % <li>finally the detected area is replaced with an average image generated using the previous and the following slice</li>
 % </ul>
-% <br>
+% 
+<br>
 % </li>
 % <li><b>Masked areas</b> - the debris removal operation is performed on the specified in the Mask layer areas</li>
 % <li><b>Selected areas</b> - the debris removal operation is performed on the specified in the Selection layer areas</li>
@@ -465,26 +1140,31 @@ A brief demonstration is available in the following video:<br>
 % </table>
 % </html>
 %
+% [br8]
+%
 %% Tools for images REPLACE_WITH_DASH_DASH> Image arithmetics
 %
-% <html>
-% <table>
-% <tr>
-% <td colspan = 2><h2><font color="orange">Image arithmetics</font></h2><br>
-% Use MATLAB syntax to apply custom arithmetic expression to Image, Model, Mask or Selection layers, see more in<br>
-% a brief video and examples below.<br>
+% <html lang="en">
+% Use MATLAB syntax to apply custom arithmetic expression to Image, Model, Mask or Selection layers, see more in
+% a brief video and examples below.
+<br>
 % For MIB 2.60 and newer <a href="https://youtu.be/sDwvnJGLi8Q"><img
 % style="vertical-align:middle;" src="images\youtube2.png">
-% https://youtu.be/sDwvnJGLi8Q</a><br>
+% https://youtu.be/sDwvnJGLi8Q</a>
+<br>
 % For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
-% </td>
-% </tr>
+% 
+<br>
+% <table>
 % <tr>
 % <td><img src="images\MenuImageToolsArithmetics.png"></td>
 % <td>
 % <ul>
-% <b>Parameters and options:</b><br><br>
-% <li><b>Coding:</b>,<br>
+% <b>Parameters and options:</b>
+<br>
+<br>
+% <li><b>Coding:</b>,
+<br>
 %   <ul>
 %    <li><b>I, I1, I2 ...</b> -> use I letter to identify the image layer; a number indicates MIB container that has the image, without the number the currently selected dataset is taken</li>
 %    <li><b>O, O1, O2 ...</b> -> use O letter to identify the model layer</li>
@@ -496,9 +1176,18 @@ A brief demonstration is available in the following video:<br>
 % <li><b>Previous expresson</b>, a list of previous successfully executed expressions. Selection of any expression from this list will populate the expression edit box</li> 
 % <li><b>Expression</b>, an expression with arithmetic operation to perform, see below for some examples</li> 
 % </ul>
-% <br>
+% 
+<br>
+% </td>
+% </tr>
+% </table>
+% </html>
+%
+% [dtls]<summary> *Examples* </summary>
+<div class="details-div">
+%
+% <html lang="en">
 % <ul>
-% Examples:
 % <li><b>I = I * 2</b>, increase intensity of all pixels of the current image in 2 times</li>
 % <li><b>I2 = I2 + 100</b>, increase intensity of all pixels in image 2 by 100</li>
 % <li><b>I1 = I1 + I2</b>, add image from container 2 to an image in container 1 and return result back to container 1</li>
@@ -508,31 +1197,45 @@ A brief demonstration is available in the following video:<br>
 % <li><b>I(I==0) = I(I==0)+100</b>, increase image intensity of the black areas by 100 intensity counts</li>
 % <li><b>disp(sum(abs(single(I1(:))-single(I2(:)))))</b>, find the difference between two images loaded to container 1 and 2 and print it to console; or use <em>msgbox(num2str())</em> instead of <em>disp</em> to show result as a message box</li>
 % <li><b>M2 = M1</b>, copy mask layer from image 1 to image 2</li>
-% <li><b>for z=1:size(I, 4)<br>
-%           slice = I(:,:,2,z);<br>
-%           mask = M(:,:,z);   <br>
-%           slice(mask==1) = 0;<br>
-%           I(:,:,2,z) = slice;<br>
+% <li><b>for z=1:size(I, 4)
+<br>
+%           slice = I(:,:,2,z);
+<br>
+%           mask = M(:,:,z);   
+<br>
+%           slice(mask==1) = 0;
+<br>
+%           I(:,:,2,z) = slice;
+<br>
 %        end</b> - replace intensity of the second color channel in the masked area to 0
 % </ul>
+% </html>
+% 
+% [/dtls]
+% [br8]
+%
+%% Tools for images REPLACE_WITH_DASH_DASH> Intensity projection
+%
+% Generate intensity projection actoss any dimension of the loaded dataset
+%
+% <html lang="en">
+% <table>
+% <tr>
+% <td><img src="images\MenuImageToolsIntensityProjection.png"></td>
+% <td>
+% A brief demonstration is available in the following video:
+<br>
+% <a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/hwFpS_3eP9U</a>
+%
 % </td>
 % </tr>
 % </table>
 % </html>
 %
-%% Tools for images REPLACE_WITH_DASH_DASH> Intensity projection
+% [dtls]<summary> *List of available projection calculations* </summary>
+<div class="details-div">
 %
-% <html>
-% <table>
-% <tr>
-% <td colspan = 2><h2><font color="orange">Intensity projection</font></h2><br>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/hwFpS_3eP9U</a>
-% </td>
-% </tr>
-% <tr>
-% <td><img src="images\MenuImageToolsIntensityProjection.png"></td>
-% <td>
+% <html lang="en">
 % <ul>
 % Calculate one of the following intensity projections:
 % <li><b>maximum intensity projection</b>, project the voxel with the highest value on every view throughout the volume onto a 2D image</li>
@@ -543,29 +1246,32 @@ A brief demonstration is available in the following video:<br>
 %   noise-robust selective fusion of limited depth-of-field
 %   images" IEEE Trans. Image Process, 22(3):1242 - 1251, 2013</a>)
 % </li>
-% </td>
-% </tr>
-% </table>
-% <br>
-% <br>
-% <table>
-% <tr>
-% <td colspan = 2><h2><font color="orange">Select image frame</font></h2><br>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/sWjipmeU5eA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/sWjipmeU5eA</a>
-% </td>
-% </tr>
-% <tr>
-% <td><img src="images\image_border_detection.png"></td>
-% <td>
+% </ul>
+% </html>
+%
+% [/dtls]
+% [br8]
+%
+%% Tools for images REPLACE_WITH_DASH_DASH> Select image frame
+%
+% <html lang="en">
 % Detects the frame (which is an area of the same intensity that touches edge
 % of the image) of the image. The detected area can be assinged to the
 % <em>Selection</em> or <em>Mask</em> layers, or that area can be replaced with another
 % color for the <em>Image</em> layer.
+% <table>
+% <tr>
+% <td><img src="images\image_border_detection.png"></td>
+% <td>
+% A brief demonstration is available in the following video:
+<br>
+% <a href="https://youtu.be/sWjipmeU5eA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/sWjipmeU5eA</a>
 % </td>
 % </tr>
 % </table>
 % </html>
+%
+% [br8]
 %
 %% Morphological operations
 % This section contains number of morphological operations that can be
@@ -573,14 +1279,16 @@ A brief demonstration is available in the following video:<br>
 % from the existing image (see the settings in the |Additional action to
 % the result| panel).
 % 
-% <html>
-% A brief demonstration is available in the following video:<br>
+% <html lang="en">
+% A brief demonstration is available in the following video:
+<br>
 % <a href="https://youtu.be/itbVLFm0FKQ"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/itbVLFm0FKQ</a>
 % </html>
 % 
 % <<images\MenuImageMorphOps.png>>
 % 
-% List of available morphological operations
+% [dtls]<summary> *List of available morphological operations* </summary>
+<div class="details-div">
 %
 % * *Bottom-hat filtering (imbothat)* computes the morphological closing of the image (using imclose`) and then subtracts the result from the original image 
 % * *Clear border (imclearborder)* suppresses light structures connected to image border
@@ -592,6 +1300,9 @@ A brief demonstration is available in the following video:<br>
 % * *H-mminima transform (imhmin)* uppresses all minima in the image whose depth is less than H
 % * *Morphological opening (imopen)* morphologically opens image: an erosion followed by a dilation
 % * *Top-hat filtering (imtophat)* computes the morphological opening of the image (using imopen) and then subtracts the result from the original image
+%
+% [/dtls]
+% [br8]
 %
 %% Intensity profile
 % Generate an intensity profile of the image data. The profiles can be
@@ -605,8 +1316,81 @@ A brief demonstration is available in the following video:<br>
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*>
+% 
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html lang="en">
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>
 
 
 
 ##### SOURCE END #####
---></body></html>
+--><script>
+var allDetails   = document.getElementsByTagName('details');
+var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
+var returnButton = document.getElementById("return-link");
+document.getElementById("iFrameBuf").style.display = "none";
+if(in_iFrame())
+{
+   try{
+      var footerNav = parent.document.getElementsByClassName("footernav");
+      var tabPane   = parent.document.getElementsByClassName("tab-pane");}
+   catch(err) { var footerNav = []; var tabPane = [];};
+   if(!(footerNav.length) || tabPane.length)
+   {
+      contentDiv.style.overflowY = "scroll";
+      contentDiv.style.overflowX = "hidden";
+      contentDiv.style.position  = "absolute";
+      contentDiv.style.width     = "95%";
+      contentDiv.style.top       = 0;
+      contentDiv.style.bottom    = 0;
+      if (tabPane.length){
+         contentDiv.setAttribute("data-isMATLABCentral","1");
+         returnButton.style.right = "40px";
+         document.getElementById("tooltiptext").style.right = "92px"; }
+      document.getElementById("iFrameBuf").style.display = "block";
+   }
+   else { contentDiv.setAttribute("data-isHelpBrowser","1"); }
+}
+if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
+   document.getElementById("anchor-offsets").sheet.disabled = true; }
+var jumpLinks = document.getElementsByTagName("a");
+for (var i = 0; i < jumpLinks.length; i++){
+  href = jumpLinks[i].getAttribute("href");
+  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
+</script></body></html>

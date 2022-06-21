@@ -3,28 +3,32 @@
 % *Back to* <im_browser_product_page.html *Index*>
 %% Run Microscopy Image Browser under MATLAB environment
 % 
-% # Download MATLAB distribution of the program (<http://mib.helsinki.fi/web-update/MIB2_Matlab.zip MIB2_Matlab.zip>)
-% # Unzip and copy MIB files to |MIB| directory in your
-% |Scripts| folder. For example, |c:\MATLAB\Scripts\mib\|
-% # Start MATLAB
-% # Add |MIB| starting directory (for example, |c:\MATLAB\Scripts\mib\|) into MATLAB path
-% |MATLAB->Home tab->Set path...->Add folder...->Save|, or alternatively use the |pathtool| function from MATLAB command window
-% # Type |mib| in the matlab command window and hit the Enter button to start the program
-% # Check <im_browser_system_requirements.html System Requirements> for further details about optional
-% steps, such as use of <http://fiji.sc/Fiji Fiji>, or <http://www.openmicroscopy.org/site OMERO>>
-% # Access help and tutorials from the MIB menu: |MIB->Menu->Help->Help| 
+% * Download MATLAB distribution of the program (<http://mib.helsinki.fi/web-update/MIB2_Matlab.zip MIB2_Matlab.zip>)
+% * Unzip and copy MIB files to |MIB| directory in your
+% |Scripts| folder. For example,
+% [class.code]c:\MATLAB\Scripts\mib\[/class]
+% * Start MATLAB
+% * Add |MIB| starting directory (for example,
+% [class.code]c:\MATLAB\Scripts\mib\[/class]) into MATLAB path:[br]
+% [class.code]MATLAB->Home tab->Set path...->Add folder...->Save[/class]
+% [br] alternatively use the [class.code]pathtool[/class] function from MATLAB command window
+%
+% * Type [class.code]mib[/class] in the MATLAB command window and hit the Enter button to start the program
+% * Check <im_browser_system_requirements.html System Requirements> for further details about optional
+% steps, such as use of <http://fiji.sc/Fiji Fiji>, or <http://www.openmicroscopy.org/site OMERO>
+% * Access help and tutorials from the MIB menu: [class.code]MIB->Menu->Help->Help[/class]
 %
 %% Run Microscopy Image Browser as standalone (Windows, x64 bit)
 % 
 % # Download a single executable file that installs MIB (<http://mib.helsinki.fi/web-update/MIB2_Win.exe MIB2_Win.exe>). 
-% # Run |MIB2_Win.exe| to install MIB to your computer (_requires
+% # Run [class.code]MIB2_Win.exe[/class] to install MIB to your computer (_requires
 % administrative privileges_). The required MATLAB Compiler Runtime
 % (MCR) environment will be automatically installed during the process.
 % <http://mib.helsinki.fi/downloads_installation_windows.html Click here for detailed instructions> .
-% # To start, please type MIB in the Start menu
+% # To start, please type MIB in the Start menu of Windows
 % # Check <im_browser_system_requirements.html System Requirements> for further details about optional
-% steps, such as use of <http://fiji.sc/Fiji Fiji>, or <http://www.openmicroscopy.org/site OMERO>>
-% # Access help and tutorials from the MIB menu: |MIB->Menu->Help->Help|
+% steps, such as use of <http://fiji.sc/Fiji Fiji>, or <http://www.openmicroscopy.org/site OMERO>
+% # Access help and tutorials from the MIB menu: [class.code]MIB->Menu->Help->Help[/class]
 % 
 %
 %% Run Microscopy Image Browser as standalone (MacOS, x64 bit)
@@ -36,17 +40,26 @@
 % 
 %
 %% Additional info
-% |im_browser| stores its configuration parameters:
+% MIB stores its configuration parameters:
 %
-% * *for Windows* - _C:\Users\Username\MATLAB\mib.mat_ or in the Windows TEMP directory (_C:\Users\User-name\AppData\Local\Temp\_). 
+% * *for Windows* - [class.code]C:\Users\Username\MATLAB\mib.mat[/class] or in the Windows TEMP directory ([class.code]C:\Users\User-name\AppData\Local\Temp\[/class]). 
 % The TEMP directory can be found and accessed with |Windows->Start button->%TEMP%| command
-% * *for Linux* - _/home/username/Matlab_ or local TEMP directory
-% * *for MacOS* - _/Users/username/Matlab_ or local TEMP directory
+% * *for Linux* - [class.code]/home/username/Matlab[/class] or local TEMP directory
+% * *for MacOS* - [class.code]/Users/username/Matlab[/class] or local TEMP directory
 %
-% The configuration file is automatically created/updated when closing |MIB|.
+% The actual path to the configuration file is dispayed in the command prompt during MIB startup. The configuration file is automatically created/updated when closing |MIB|.
 %
 % If |MIB| does not start check MATLAB path
-% and/or delete the configuration _mib.mat_ file.
+% and/or delete the configuration [class.code]mib.mat[/class] file.
 %
 %
 % *Back to* <im_browser_product_page.html *Index*>
+%
+% [cssClasses]
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]

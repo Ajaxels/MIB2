@@ -17,12 +17,14 @@ function [img, img_info] = mibGetImages(files, img_info, options)
 %          - .depth_end - > [@em optional], for Amira Mesh only, to take only specified sections
 %          - .depth_step -> [@em optional], for Amira Mesh only, Z-step to take not all sections
 %          - .xy_step -> [@em optional], for Amira Mesh only, XY-step, i.e. binning factor
-%          - .resizeMethod -> [@em optional], for Amira Mesh only, resize
-%           method for binning the XY-dimension, ''nearest'', ''bilinear'',
-%           ''bicubic''
-%          - .backgroundColor -> [@em optional], to define a color when
-%          generating a stack from images of different XY dimensions.
-%          Only files(1).background is needed
+%          - .resizeMethod -> [@em optional], for Amira Mesh only, resize method for binning the XY-dimension, ''nearest'', ''bilinear'', ''bicubic''
+%          - .backgroundColor -> [@em optional], to define a color when generating a stack from images of different XY dimensions. Only files(1).background is needed
+%          - .level -> level of the image pyramid to load or an inden within TIF container
+%		   - .xMin -> optional for loading of a region within the image, min X coordinate of the region to load
+%		   - .xMax -> optional for loading of a region within the image, max X coordinate of the region to load%
+%		   - .yMin -> optional for loading of a region within the image, min Y coordinate of the region to load
+%		   - .yMax -> optional for loading of a region within the image, max Y coordinate of the region to load
+%		   - .xyStep -> optional for loading of a region within the image, XY step, pixels between are skipped
 %       img_info: -> containers.Map with details of the dataset from getImageMetadata()
 %       options: -> structure with options
 %          - .waitbar -> @b 0 - no waitbar, @b 1 - show waitbar
@@ -41,7 +43,7 @@ function [img, img_info] = mibGetImages(files, img_info, options)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 14.04.2022, IB, added loading of subregions from TIF files
 
 if nargin < 2
     img = NaN;
@@ -229,19 +231,35 @@ for fn_index = 1:no_files
 %         end
         
         for subLayer=1:files(fn_index).noLayers
-            if files(fn_index).noLayers == 1
-                if ~isfield(files, 'level')
-                    I = imread(files(fn_index).filename);
+            if ~isfield(files, 'xMin')
+                if files(fn_index).noLayers == 1
+                    if ~isfield(files, 'level')
+                        I = imread(files(fn_index).filename);
+                    else
+                        I = imread(files(fn_index).filename, files(fn_index).level);
+                    end
                 else
-                    I = imread(files(fn_index).filename, files(fn_index).level);
+                    I = imread(files(fn_index).filename,subLayer);
                 end
             else
-%                 if convertGifSwitch == 1
-%                     [I, map] = imread(files(fn_index).filename,subLayer);
-%                     I = uint8(ind2rgb(I,map)*255);
-%                 else
-                    I = imread(files(fn_index).filename,subLayer);
-%                 end
+                if files(fn_index).noLayers == 1
+                    if ~isfield(files, 'level')
+                        I = imread(files(fn_index).filename, ...
+                            'PixelRegion', ...
+                            {[files(fn_index).yMin files(fn_index).xyStep files(fn_index).yMax], ...
+                            [files(fn_index).xMin files(fn_index).xyStep files(fn_index).xMax]});
+                    else
+                        I = imread(files(fn_index).filename, files(fn_index).level, ...
+                            'PixelRegion', ...
+                            {[files(fn_index).yMin files(fn_index).xyStep files(fn_index).yMax], ...
+                            [files(fn_index).xMin files(fn_index).xyStep files(fn_index).xMax]});
+                    end
+                else
+                    I = imread(files(fn_index).filename, subLayer, ...
+                            'PixelRegion', ...
+                            {[files(fn_index).yMin files(fn_index).xyStep files(fn_index).yMax], ...
+                            [files(fn_index).xMin files(fn_index).xyStep files(fn_index).xMax]});
+                end
             end
             if isa(I, 'single')     % uint32 RGB TIFs may be this class
                 if isKey(img_info, 'MaxSampleValue')

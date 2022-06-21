@@ -8,7 +8,7 @@
 % 
 % <html>
 % <table style="width: 550px; text-align: center;" cellspacing=2px cellpadding=2px >
-% <tr style="font-weight: bold;background: #ff6600;">
+% <tr style="font-weight: bold;background: #FFB74D;">
 %   <td>Menu</td>
 %   <td>Toolbar</td>
 %   <td>Panels</td>

@@ -9,8 +9,11 @@
 % <<images\menuImage.png>>
 % 
 %% Mode
-% Allows to change mode of the shown dataset, the following options are available:
+% Allows to change mode and color depth of the shown dataset
 % 
+% 
+% [dtls][smry] *The following options are available* [/smry]
+%
 % * *Grayscale*, converts image to grayscale by removing any color
 % information
 % * *RGB Color*, converts image to the RGB color space
@@ -25,6 +28,9 @@
 % * *32 bit*, convert dataset to the 32 bit format, the image intensities are
 % scaled to preserve contrast of the original dataset
 % 
+% [/dtls]
+% [br8]
+%
 %% Adjust Display/Image
 % Starts a dialog to adjust display settings or resample image intensities.
 % See more in the <ug_panel_adjustments.html Adjust display window section>
@@ -44,6 +50,8 @@
 % </ul>
 % </html>
 %
+% [dtls][smry] *List of operations with color channels* [/smry]
+%
 % * *Insert empty channel...*, insert an empty channel (intensity of all
 % pixels is 0) to the specified position
 % * *Copy channel...*, copy one channel to another position 
@@ -53,7 +61,10 @@
 % * *Swap channels...*, allows to swap two color channels between each other
 % * *Delete channel...*, deletes specified color channel from the dataset
 %
+% [/dtls]
+%
 % It is also possible to do color channel operations from the |Colors| table in the <ug_panel_view_settings.html View settings panel>.
+% [br8]
 %
 %% Contrast
 % Adjust contrast of the dataset. For the linear contrast stretching it is
@@ -64,7 +75,8 @@
 % A tutorial on image normalization is available in the following video:<br>
 % <a href="https://youtu.be/MmBmdGtuUdM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MmBmdGtuUdM</a>
 % </html>
-%%
+%
+% [dtls][smry] *List of contrast adjustment operations* [/smry]
 % 
 % * *Linear contrast*, is no longer available in MIB, please use the Display button in the <ug_panel_view_settings.html View Settings panel>.
 % * *Contrast-limited adaptive histogram equalization*, CLAHE contrast equalization. CLAHE operates on small regions in the image, 
@@ -88,18 +100,26 @@
 % intensities for the masked area for each image; C) shifts each image based 
 % on difference between mean values of the image and the whole dataset
 % 
+% [/dtls]
+% [br8]
+%
 %% Invert image
-% Invert image intensities, shortcut |Ctrl+i|.
+% Invert image intensities, shortcut [class.kbd]Ctrl+i|[/class]
 % 
 % <html>
 % A brief demonstration is available in the following video:<br>
 % <a href="https://youtu.be/1DG2w5XYA18"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/1DG2w5XYA18</a>
 % </html>
 %
+% [dtls][smry] *Invert operations available for* [/smry]
+%
 % * *Shown slice (2D)*, invert only the currently shown slice of the
 % dataset
 % * *Current stack (3D)*, invert the current stack of the dataset
 % * *Complete volume (4D)*, invert complete dataset
+%
+% [/dtls]
+% [br8]
 %
 %% Image filter
 % Open a dialog with various image filters arranged into 4 categories: 
@@ -113,14 +133,18 @@
 %
 %% Tools for images --> Content-aware fill
 %
+% Content aware fill can be used to reconstruct selected areas using
+% information for neighboring regions.
+%
 % <html>
-% <table>
-% <tr>
-% <td colspan = 2><h2><font color="orange">Content-aware fill</font></h2>
 % A brief demonstration is available in the following video:<br>
 % <a href="https://youtu.be/H_TVvgA_br4"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/H_TVvgA_br4</a>
-% </td>
-% </tr>
+% </html>
+% 
+% [dtls][smry] *Details of content-aware methods* [/smry]
+%
+% <html>
+% <table>
 % <tr>
 % <td><img src="images\MenuImageToolsContentAwareFill.png"></td>
 % <td>
@@ -165,22 +189,25 @@
 % </table>
 % </html>
 %
+% [/dtls]
+% [br8]
+%
 %% Tools for images --> Debris removal
+%
+% Automatically or manually restore areas of volumetric datasets that are corrupted with debris. The areas can either be automatically detected or manually selected into the Mask or Selection layers<br><br>
+% 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/iM2nHBxTjRw"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iM2nHBxTjRw</a>
+% </html>
 %
 % <html>
 % <table>
-% <tr>
-% <td colspan = 2><h2><font color="orange">Debris removal</font></h2>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/iM2nHBxTjRw"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iM2nHBxTjRw</a>
-% </td>
-% </tr>
 % <tr>
 % <td><img src="images\MenuImageToolsDebrisRemoval2.png"><br>
 % <img src="images\MenuImageToolsDebrisRemoval.png">
 % </td>
 % <td>
-% Automatically or manually restore areas of volumetric datasets that are corrupted with debris. The areas can either be automatically detected or manually selected into the Mask or Selection layers<br><br>
 % <ul>
 % <li><b>Automatic detection</b> - automatic detection of debris areas:
 % <ul>
@@ -200,20 +227,19 @@
 % </table>
 % </html>
 %
+% [br8]
+%
 %% Tools for images --> Image arithmetics
 %
 % <html>
-% <table>
-% <tr>
-% <td colspan = 2><h2><font color="orange">Image arithmetics</font></h2><br>
-% Use MATLAB syntax to apply custom arithmetic expression to Image, Model, Mask or Selection layers, see more in<br>
+% Use MATLAB syntax to apply custom arithmetic expression to Image, Model, Mask or Selection layers, see more in
 % a brief video and examples below.<br>
 % For MIB 2.60 and newer <a href="https://youtu.be/sDwvnJGLi8Q"><img
 % style="vertical-align:middle;" src="images\youtube2.png">
 % https://youtu.be/sDwvnJGLi8Q</a><br>
 % For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
-% </td>
-% </tr>
+% <br>
+% <table>
 % <tr>
 % <td><img src="images\MenuImageToolsArithmetics.png"></td>
 % <td>
@@ -232,8 +258,15 @@
 % <li><b>Expression</b>, an expression with arithmetic operation to perform, see below for some examples</li> 
 % </ul>
 % <br>
+% </td>
+% </tr>
+% </table>
+% </html>
+%
+% [dtls][smry] *Examples* [/smry]
+%
+% <html>
 % <ul>
-% Examples:
 % <li><b>I = I * 2</b>, increase intensity of all pixels of the current image in 2 times</li>
 % <li><b>I2 = I2 + 100</b>, increase intensity of all pixels in image 2 by 100</li>
 % <li><b>I1 = I1 + I2</b>, add image from container 2 to an image in container 1 and return result back to container 1</li>
@@ -250,24 +283,31 @@
 %           I(:,:,2,z) = slice;<br>
 %        end</b> - replace intensity of the second color channel in the masked area to 0
 % </ul>
+% </html>
+% 
+% [/dtls]
+% [br8]
+%
+%% Tools for images --> Intensity projection
+%
+% Generate intensity projection actoss any dimension of the loaded dataset
+%
+% <html>
+% <table>
+% <tr>
+% <td><img src="images\MenuImageToolsIntensityProjection.png"></td>
+% <td>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/hwFpS_3eP9U</a>
+%
 % </td>
 % </tr>
 % </table>
 % </html>
 %
-%% Tools for images --> Intensity projection
+% [dtls][smry] *List of available projection calculations* [/smry]
 %
 % <html>
-% <table>
-% <tr>
-% <td colspan = 2><h2><font color="orange">Intensity projection</font></h2><br>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/hwFpS_3eP9U</a>
-% </td>
-% </tr>
-% <tr>
-% <td><img src="images\MenuImageToolsIntensityProjection.png"></td>
-% <td>
 % <ul>
 % Calculate one of the following intensity projections:
 % <li><b>maximum intensity projection</b>, project the voxel with the highest value on every view throughout the volume onto a 2D image</li>
@@ -278,29 +318,31 @@
 %   noise-robust selective fusion of limited depth-of-field
 %   images" IEEE Trans. Image Process, 22(3):1242 - 1251, 2013</a>)
 % </li>
-% </td>
-% </tr>
-% </table>
-% <br>
-% <br>
-% <table>
-% <tr>
-% <td colspan = 2><h2><font color="orange">Select image frame</font></h2><br>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/sWjipmeU5eA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/sWjipmeU5eA</a>
-% </td>
-% </tr>
-% <tr>
-% <td><img src="images\image_border_detection.png"></td>
-% <td>
+% </ul>
+% </html>
+%
+% [/dtls]
+% [br8]
+%
+%% Tools for images --> Select image frame
+%
+% <html>
 % Detects the frame (which is an area of the same intensity that touches edge
 % of the image) of the image. The detected area can be assinged to the
 % <em>Selection</em> or <em>Mask</em> layers, or that area can be replaced with another
 % color for the <em>Image</em> layer.
+% <table>
+% <tr>
+% <td><img src="images\image_border_detection.png"></td>
+% <td>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/sWjipmeU5eA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/sWjipmeU5eA</a>
 % </td>
 % </tr>
 % </table>
 % </html>
+%
+% [br8]
 %
 %% Morphological operations
 % This section contains number of morphological operations that can be
@@ -315,7 +357,7 @@
 % 
 % <<images\MenuImageMorphOps.png>>
 % 
-% List of available morphological operations
+% [dtls][smry] *List of available morphological operations* [/smry]
 %
 % * *Bottom-hat filtering (imbothat)* computes the morphological closing of the image (using imclose`) and then subtracts the result from the original image 
 % * *Clear border (imclearborder)* suppresses light structures connected to image border
@@ -327,6 +369,9 @@
 % * *H-mminima transform (imhmin)* uppresses all minima in the image whose depth is less than H
 % * *Morphological opening (imopen)* morphologically opens image: an erosion followed by a dilation
 % * *Top-hat filtering (imtophat)* computes the morphological opening of the image (using imopen) and then subtracts the result from the original image
+%
+% [/dtls]
+% [br8]
 %
 %% Intensity profile
 % Generate an intensity profile of the image data. The profiles can be
@@ -340,5 +385,45 @@
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
+% 
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>
 
 

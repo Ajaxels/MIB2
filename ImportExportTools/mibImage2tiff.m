@@ -121,17 +121,22 @@ if options.showWaitbar
     set(findall(wb,'type','text'),'Interpreter','none');
     waitbar(0, wb);
 end
+
+[pathstr, name] = fileparts(filename);
+% create destination folder if it is does not exist
+if exist(pathstr, 'dir') ~= 7; mkdir(pathstr); end 
+
 if strcmp(options.Saving3d,'multi')
     if isnan(options.cmap)  % grayscale or rgb image
-        imwrite(squeeze(imageS(:,:,:,1)),filename,'tif','WriteMode','overwrite','Description',cell2mat(ImageDescription(1)),'Resolution',options.Resolution,'Compression',options.Compression);
+        imwrite(squeeze(imageS(:,:,:,1)), filename,'tif','WriteMode','overwrite','Description',cell2mat(ImageDescription(1)),'Resolution',options.Resolution,'Compression',options.Compression);
         for num = 2:files_no
-            imwrite(squeeze(imageS(:,:,:,num)),filename,'tif','WriteMode','append','Description',cell2mat(ImageDescription(num)),'Resolution',options.Resolution,'Compression',options.Compression);
+            imwrite(squeeze(imageS(:,:,:,num)), filename,'tif','WriteMode','append','Description',cell2mat(ImageDescription(num)),'Resolution',options.Resolution,'Compression',options.Compression);
             if options.showWaitbar; waitbar(num/files_no,wb); end
         end
     else    % indexed image
-        imwrite(imageS(:,:,:,1),options.cmap,filename,'tif','Compression','lzw','WriteMode','overwrite','Description',cell2mat(ImageDescription(1)),'Resolution',options.Resolution,'Compression',options.Compression);
+        imwrite(imageS(:,:,:,1),options.cmap, filename,'tif','Compression','lzw','WriteMode','overwrite','Description',cell2mat(ImageDescription(1)),'Resolution',options.Resolution,'Compression',options.Compression);
         for num = 2:files_no
-            imwrite(imageS(:,:,:,num),options.cmap,filename,'tif','Compression','lzw','WriteMode','append','Description',cell2mat(ImageDescription(num)),'Resolution',options.Resolution,'Compression',options.Compression);
+            imwrite(imageS(:,:,:,num),options.cmap, filename,'tif','Compression','lzw','WriteMode','append','Description',cell2mat(ImageDescription(num)),'Resolution',options.Resolution,'Compression',options.Compression);
             if options.showWaitbar; waitbar(num/files_no,wb); end
         end
     end
@@ -160,7 +165,6 @@ elseif strcmp(options.Saving3d,'sequence')
         end
     end
     
-    [pathstr, name] = fileparts(filename);
     if sequentialFn     % generate sequential filenames
         for i = 1:files_no
             options.SliceName{i} = fullfile(pathstr, generateSequentialFilename(name, i, files_no));
@@ -192,7 +196,6 @@ elseif strcmp(options.Saving3d,'sequence')
             options.SliceName{i} = fullfile(pathstr, options.SliceName{i});
         end
     end
-    
     
     for num = 1:files_no
         if isnan(options.cmap)  % grayscale or rgb image

@@ -35,6 +35,7 @@ function [bitmap, par] = amiraMesh2bitmap(filename, options)
 % ver 1.06 - 29.09.2015, added use of amiraLabels2bitmap for Labels
 % ver 1.07 - 09.01.2018, added extraction of embedded containers in the amiramesh headers
 % ver 1.08 - 30.01.2019, updated to be compatible with version AM 3
+% ver 1.09 - 22.04.2022, fixed loading of parts of AM files with step==1 (added: && dataBlock < dataIndex - 1)
 
 % -- debug block starts --
 %filename = '.am';
@@ -275,7 +276,7 @@ for dataBlock = 1:dataIndex - 1
         end
         zIndex = zIndex + 1;
     end
-    if depth_step == 1
+    if depth_step == 1 && dataBlock < dataIndex - 1
         tline = fgetl(fid);     % character return symbol
     end
 end

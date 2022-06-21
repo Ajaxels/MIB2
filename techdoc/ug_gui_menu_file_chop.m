@@ -23,9 +23,9 @@
 % smaller datasets. The first dataset will have dimensions [1: _width_ /2] and
 % the second [ _width_ /2: _width_], where _width_ is the width of the
 % original dataset
-% * *Chop model*, when model is present it can also be chopped into
+% * [class.kbd][&#10003;] *Chop model*[/class], when model is present it can also be chopped into
 % corresponding blocks, if this checkbox is selected
-% * *Chop mask*, when the Mask layer is present it can also be chopped into
+% * [class.kbd][&#10003;] *Chop mask*[/class], when the Mask layer is present it can also be chopped into
 % corresponding blocks, if this checkbox is selected 
 % * *Output directory* use this button or the editbox to define directory
 % where the chopped datasets should be saved
@@ -70,13 +70,52 @@
 % * *Generated filename of the model:* |Labels_Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.model|
 % * *Generated filename of the mask:* |Mask_Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.mask|
 % 
-% *Important!* If the |Images| checkbox is selected please select only
+% *Important!* If the [class.kbd][&#10003;] *Images*[/class] checkbox is selected please select only
 % files with images and do not select models nor mask files. The filenames
 % for models and masks will be automatically generated. However, if models
-% or masks are combined for the opened dataset (_i.e._ the |Images|
+% or masks are combined for the opened dataset (_i.e._ the [class.kbd][&#10003;] *Images*[/class]
 % checkbox is unselected) the actual model or mask filenames have to be
 % selected.
 % 
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_file.html *File Menu*>
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

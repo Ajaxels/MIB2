@@ -36,7 +36,8 @@
 % </li>
 % <li> 
 % -<b>right mouse click + Do new mask</b>, starts the selected generator.
-% The existing mask will be deleted.
+% The existing mask will be deleted.<br>
+% <img src="images\PanelsMaskGeneratorDropdown.png">
 % </li>
 % <li> 
 % -<b>right mouse click + Generate new mask and add it to the existing mask</b>, the generated mask will be added to the existing mask.
@@ -60,7 +61,7 @@
 % 
 % <<images\PanelsMaskGeneratorFrangi.png>>
 %
-% *Parameters:*
+% [dtls][smry] *Parameters:* [/smry]
 %
 % * *Range*, the range of sigmas used, default [1-6]
 % * *Ratio*, step size between sigmas, default [2]
@@ -72,7 +73,9 @@
 % image.
 % * *Object size limit*, after the run of the Frangi filter removes all
 % 2D objects that are smaller than this value.
-% * *Black on white* checkbox, if checked, detects black ridges on white background.
+% * [class.kbd][&#10003;] *Black on white*[/class] checkbox, if checked, detects black ridges on white background.
+%
+% [/dtls]
 %
 %% Morphological filters
 % Set of MATLAB based morphological filters.
@@ -125,12 +128,51 @@
 %
 % # *Strel size*, defines size of the structural element (|disk| type) for |imtophat| and |imbothat|
 % filtering. 
-% # *Fill* checkbox, check it to fill holes in the resulted |Mask| image.
+% # The [class.kbd][&#10003;] *Fill*[/class] checkbox, check it to fill holes in the resulted |Mask| image.
 % # *B/W threshold*, specifies parameter for the black and white thresholding.
 % # *Size limit*, limits the size of generated 2D objects so that objects smaller than this value are removed from the |Mask| during the
 % filter run.
-% # *Black on white* checkbox, when checked, the filter will use morphological bottom-hat filtering
+% # The [class.kbd][&#10003;] *Black on white*[/class] checkbox, when checked, the filter will use morphological bottom-hat filtering
 % (|imbothat|). When unchecked - morphological top-hat filtering (|imtophat|).
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
+%%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

@@ -15,6 +15,7 @@
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_file.html *File Menu*>
 %
+%% Introduction
 %
 % <html>
 % <table>
@@ -23,9 +24,9 @@
 % <td>
 % <ul>
 % There are two general modes of usage:<br><br>
-% <li>when the <b>Listen for MIB actions</b> checkbox is checked, all recordable MIB operations are
+% <li>when the <span class="kbd">[&#10003;] <b>Listen for MIB actions</b></span> checkbox is checked, all recordable MIB operations are
 % automatically detected and displayed as the current protocol step.
-% <br>When the <b>Auto add to protocol</b> checkbox is checked the detected action are automatically added to the protocol.<br>
+% <br>When the <span class="kbd">[&#10003;] <b>Auto add to protocol</b></span> checkbox is checked the detected action are automatically added to the protocol.<br>
 % <em><b>Please note</em></b> that not all available operations are detected
 % some of them (for example, loading or saving of images) can only be added manually</li>
 % <li>alternatively, possible operations can be manually selected using the <b>Protocol steps->Section</b> and 
@@ -45,6 +46,8 @@
 % sequence. 
 % </html>
 %
+% [br8]
+%
 %% Protocol panel
 % This section shows the steps of the protocol and allows basic operations
 % with it.
@@ -58,7 +61,7 @@
 % The right mouse click over the list of actions brings a popup menu with additional options:<br><br>
 % <li><b>Show settings</b> displays the parameters for the selected action
 % in the Protocol panel at the lower part of the window; from there the the specific parameters may be modified.
-% <b><em>Please note</b></em>, when the <b>Show parameters on click</b>
+% <b><em>Please note</b></em>, when the <span class="kbd">[&#10003;] <b>Show parameters on click</b></span>
 % checkbox is checked the parameters of the selected action are
 % automatically displayed in the Protocol steps panel</li>
 % <li><b>Duplicate</b> - duplicate the selected action and place it as the
@@ -84,13 +87,15 @@
 % otherwise please use the <b>Show settings</b> option in the popup menu, see above</li>
 % <li><img src="images\menuFileBatchMode_load_save_delete.png" style="vertical-align: text-bottom"> press the buttons to load, save or delete the protocol. Saving of the protocol is
 % also available in the Microsoft Excel format</li>
-% <li><b>Undo, Redo</b>, press to undo or redo any recent modification of the protocol</li>
+% <li><b><span class="kbd">Undo</span>, <span class="kbd">Redo</span></b>, press to undo or redo any recent modification of the protocol</li>
 % </ul>
 % </td>
 % </tr>
 % </table>
 % </html>
 % 
+% [br8]
+%
 %% Protocol steps panel
 % Individual steps of the protocol can be modified using this panel. 
 %
@@ -116,3 +121,44 @@
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_file.html *File Menu*>
+%
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>
+

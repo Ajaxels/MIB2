@@ -1,13 +1,12 @@
 
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head>
+<!DOCTYPE html>
+<html lang="en"><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>ROI Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-12"><meta name="DC.source" content="ug_panel_roi.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>ROI Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="ug_panel_roi.m"><style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -36,13 +35,13 @@ ol li ol li { list-style-type:lower-alpha; }
 ol li ul { padding-top:7px; }
 ol li ul li { list-style:square; }
 
-.content { font-size:1.2em; line-height:140%; padding: 20px; }
+.content { font-size:1.2em; line-height:160%; padding: 20px; }
 
-pre, code { font-size:12px; }
-tt { font-size: 1.2em; }
-pre { margin:0px 0px 20px; }
+pre { font-size:12px; }
+code { font-size: 1.15em; }
+pre { margin:0px 0px 15px; overflow-x:auto; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
-pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 15px; color:#4c4c4c; }
 pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
@@ -66,8 +65,493 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
+.kbd {     font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.2em 0.4em; 	font-family: inherit; 	font-size: 1em; }
 
-  </style></head><body><div class="content"><h1>ROI Panel</h1><!--introduction--><p>ROI panel provides a way to add one or more ROI (Region of Interest) above the image. The ROIs may be used to analyse or do filtering in only the ROI defined parts of the dataset.</p><p>The implementation of the ROI mode was updated in MIB version 0.998 using the code of the <a href="http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility"><b>Image Measurement Utility</b></a> written by Jan Neggers, Eindhoven Univeristy of Technology.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">1. ROI type combo box</a></li><li><a href="#3">2. Define parameters manually</a></li><li><a href="#4">3. Fix aspect ratio</a></li><li><a href="#5">4. Add button</a></li><li><a href="#6">5. Remove button</a></li><li><a href="#7">6. ROI to Selection button</a></li><li><a href="#8">7. ROI List</a></li><li><a href="#9">8. Options</a></li><li><a href="#10">9. Load button</a></li><li><a href="#11">10. Save button</a></li><li><a href="#12">11. Show label</a></li><li><a href="#13">12. Show ROI</a></li></ul></div><p><img vspace="5" hspace="5" src="images\PanelsROI.png" alt=""> </p><h2 id="2">1. ROI type combo box</h2><p>Define type of a ROI to add. Several ROI types are available. By default, an inteactive mode for placing of the ROIs is enabled, however it is possible to add ROIs manually using the <tt>Define parameters manually</tt> panel (<b>2.</b>) under the <tt>ROI type</tt> combo box.</p><div><ul><li><b>Rectangle</b>, rectangular ROI. To add: press the <tt>Add</tt> button (<b>4.</b>) and define two corners of the ROI using the left mouse button. Modify ROI if needed and double click above the ROI to accept it</li><li><b>Ellipse</b>, ellipsoid ROI. To add: press the <tt>Add</tt> button (<b>4.</b>) and define a center and a side of the ellipse using the left mouse button. Modify ROI if needed and double click above the ROI to accept it</li><li><b>Polyline</b>, adds a polyline object with desired number of vertices. The number of vertices can be selected in the <tt>Define parameters manually</tt> panel. To add: press the <tt>Add</tt> button (<b>4.</b>) and click as many times as number of defined vertices. Modify ROI if needed (it is possible to add extra vertices: press and hold the <tt>A</tt> key followed by pressing of the left mouse button to add a new vertice). To remove the vertex press right mouse button above the vertex and select <tt>Delete</tt>. Finally double click above the ROI to accept it</li><li><b>Lasso</b>, a freehand drawing of a ROI. To add: press the <tt>Add</tt> button (<b>4.</b>), hold the left mouse key while drawing the ROI. After the RIO has been drawn it is converted into the ROI polyline object with the suggestion for the reduction of number of vertices (large number of vertices reduces rendering of images significantly, so it is recommended to reduce number of vertices during this convertion to the ROI polyline)</li></ul></div><h2 id="3">2. Define parameters manually</h2><p>This panel offers a posibility to place ROI to specific position. To do that, please check the <tt>manually</tt> checkbox and provide required coordinates. When done press the <tt>Add</tt> button (<b>4.</b>) to add a ROI.</p><h2 id="4">3. Fix aspect ratio</h2><p>This checkbox can be used to fix aspect ratio of ROIs during initial placing or later during their modification.</p><h2 id="5">4. Add button</h2><p>Press the <tt>Add</tt> button to add a ROI to the image.</p><h2 id="6">5. Remove button</h2><p>Press the <tt>Remove</tt> button to delete a ROI highlighed in the <tt>ROI list</tt>.</p><h2 id="7">6. ROI to Selection button</h2><p>Add area under the shown ROI to the Selection layer.</p><h2 id="8">7. ROI List</h2><p>The <tt>ROI List</tt> may be used to select single or all ROIs for filtering or analysis. Additional actions are available for the ROIS:</p><p><img vspace="5" hspace="5" src="images\PanelsROIContext.png" alt=""> </p><div><ul><li><b>Rename</b>, change the name of ROI</li><li><b>Edit</b>, modify position of the ROI. Use double click to finish the editing. The '*a*' key shortcut allows to add a vertix to the polyline type of ROIs</li><li><b>Remove</b>, delete ROI from the list</li></ul></div><h2 id="9">8. Options</h2><p>Define visualization options for ROIs</p><h2 id="10">9. Load button</h2><p>Load ROI from a disk.</p><h2 id="11">10. Save button</h2><p>Save ROI information to disk in MATLAB format (a structure with <i>label, type, X, Y, orientation</i> fields).</p><h2 id="12">11. Show label</h2><p>When enabled, a text with the label of the selected ROI is displayed in the <tt>Image View</tt> panel.</p><h2 id="13">12. Show ROI</h2><p>When checked the ROIs are shown in the <tt>Image View</tt> panel. Alternatively the viewing state of the ROI objects may be switched using the <b><tt>R</tt></b> button in the <a href="ug_gui_toolbar.html">Toolbar</a>.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+#tooltiptext {
+  visibility: hidden;
+  padding: 5px 10px;
+  font-size: 75%;
+  line-height:110%;
+  text-align: center;
+  background-color: black;
+  color: #ddd;
+  border-radius: 6px;
+  position: fixed;
+  bottom: 11px;
+  right: 62px;
+  z-index: 2;
+}
+#tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+.tooltip:hover #tooltiptext {
+  visibility: visible;
+}
+#return-link {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    overflow: visible;
+    font-size:120%;
+    background: rgba(0, 0, 0, 0.75);
+    border-style: solid;
+    border-width: 3pt;
+    border-color: #202020;
+    border-radius: 4px;
+    cursor: pointer;
+    }
+#return-link > p { padding:3px; margin:0; color:#C0C0C0;}
+.MATLAB-Help {
+width: 100%;
+margin-bottom: 12px;
+border: 1px solid #ccc;
+border-right: none;
+border-bottom: none;
+font-size: 96%;
+line-height: 1.4;
+table-layout: fixed;
+overflow:hidden;}
+
+.MATLAB-Help > thead > tr > th {
+padding: 6px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+background: #F2F2F2;
+color: #000;
+font-weight: bold;
+text-align: left;
+vertical-align: middle;}
+
+.MATLAB-Help td{padding: 5px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+vertical-align: middle;}
+
+.language-matlab { line-height:135% }
+
+.collapse-link {float:right; line-height:200%; padding-left:10px; margin:0}
+
+
+details > summary,
+.details-div {
+  padding: 8px 20px;
+  border-style: solid;
+  border-width: 1.2pt;
+  border-color: #E0E0E0;
+}
+details > summary {
+  border-radius:6px 6px 0 0;
+  background-color: #F2F2F2;
+  cursor: pointer;
+}
+.details-div {
+  border-top-style: none;
+  border-radius: 0 0 6px 6px;
+}
+.image-fit-svg,
+.image-fit {
+    max-width:  95%;
+    max-height: 100%;
+    margin:     auto;
+}
+.image-fit-svg{ padding:0px; max-width:500px; }
+details > img.image-fit-svg{ padding: 0px 0px 10px; }
+@media (max-width: 580px) {
+  .image-fit-svg { max-width: 95%; }
+}
+.pretty-link  { color:#001188 !important; }
+</style>
+<style id="dark-theme">
+    h2, h3       { color: #B0B0B0; }
+    html body    { background-color: #101010; color: #B0B0B0; }
+    .pretty-link { color: #C46313 !important; }
+    a, a:visited { color: #C46313 }
+    a:hover      { color: orange; }
+    details > summary,
+    .details-div      { border-color:     #505050; }
+    details > summary { background-color: #202020; }
+    pre.codeinput     { border-width: 1.2pt; border-color:#001B33; background:#001129; color:#F0F0F0; }
+    pre.codeoutput    { color:#A5A5A5; }
+    span.keyword      { color:#FF9D00; }
+    span.comment      { color:#808080; }
+    span.string       { color:#3AD900; }
+    span.untermstring { color:#FFEE80; }
+    span.syscmd       { color:#CCCCCC; }
+    .MATLAB-Help, .MATLAB-Help > thead > tr > th, .MATLAB-Help td { border-color:#505050; }
+    .MATLAB-Help > thead > tr > th { background: #202020; color: #B0B0B0; }
+    .summary-sub-heading { color:#909090; }
+    .show-if-light    { display:none }
+</style>
+<style id="hide-dark">
+     .show-if-dark { display:none }
+</style>
+
+<style id="anchor-offsets">
+    h2::before, a[id]::before{
+    content: "";
+    display: block;
+    height: 100px;
+    margin: -100px 0 0;
+    visibility: hidden;
+    width:10%;
+    z-index: -1;
+}
+</style>
+
+<script>
+          var returnElem = null;
+          var skipCheck  = false;
+
+          function hide_back_link()
+          {
+              returnButton.style.display = "none";
+              try{
+                 window.removeEventListener("scroll", update_back_position, true);
+                 window.removeEventListener("resize", update_back_position, true);
+                 parent.window.removeEventListener("scroll", update_back_position, true);
+                 parent.window.removeEventListener("resize", update_back_position, true);}
+              catch(e){}
+          }
+
+          function get_offset(element)
+          {
+              if (!element.getClientRects().length){ return { top: 0, left: 0 }; }
+              var rect = element.getBoundingClientRect();
+              var win  = element.ownerDocument.defaultView;
+              return ( {top:  rect.top  + win.pageYOffset,
+                        left: rect.left + win.pageXOffset} );
+          }
+
+          function jump_to()
+          {
+              var clickedElem = event.target;
+              var clickedID   = clickedElem.closest("span");
+              if (clickedID){
+                clickedID = clickedID.getAttribute("id");
+                if (clickedID.localeCompare("jump-close")===0) { return };}
+              clickedID = clickedElem.closest("div").getAttribute("id");
+              if (clickedID && clickedID.localeCompare("return-link")===0)
+              {
+                  if (returnElem)
+                  {
+                      event.preventDefault();
+                      hide_back_link();
+                      returnElem.scrollIntoView();
+                      if (contentDiv.getAttribute("data-isHelpBrowser")){
+                         contentDiv.scrollTop = contentDiv.scrollTop-100; }
+                      if (contentDiv.getAttribute("data-isMATLABCentral")){
+                         parent.window.scrollBy(0,-100)}
+                      returnElem = null;
+                  }
+              }
+              else
+              {
+                  var href = clickedElem.closest("a").getAttribute("href");
+                  if ( href && href[0] == "#" )
+                  {
+                     var target = document.getElementById(href.substring(1));
+                     var enclosingBox = target;
+                     while ( enclosingBox )
+                     {
+                        prevBox      = enclosingBox;
+                        enclosingBox = enclosingBox.closest("details");
+                        if ( enclosingBox===prevBox ){
+                           enclosingBox = enclosingBox.parentElement
+                           if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
+                        if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
+                     }
+                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                        event.preventDefault();
+                        target.scrollIntoView(); }
+                     var nextElem = target.nextElementSibling;
+                     var nextNode = target.nextSibling;
+                     while ( nextNode && nextNode.nodeType==Node.TEXT_NODE && nextNode.data.trim().length == 0 ){
+                        nextNode = nextNode.nextSibling;}
+                     if ( nextElem && nextElem===nextNode && nextElem.localName.localeCompare("details")===0 && !nextElem.open){
+                        open_details(nextElem.id);}
+                  }
+                  else { return }
+                  if (!contentDiv.getAttribute("data-isHelpBrowser"))
+                  {
+                      update_back_position();
+                      returnButton.style.display = "block";
+                      var linkTop   = clickedElem.offsetTop;
+                      var targetTop = target.offsetTop;
+                      if (targetTop>linkTop){
+                          document.getElementById("down").style.display = "none";
+                          document.getElementById("up").style.display   = "inline"; }
+                      else{
+                          document.getElementById("up").style.display   = "none";
+                          document.getElementById("down").style.display = "inline"; }
+                      returnElem = clickedElem;
+                  }
+              }
+          }
+
+          function open_details(detailsID)
+          {
+              var details  = document.getElementById(detailsID);
+              skipCheck    = true;
+              state_check(details.id);
+              details.open = true;
+          }
+
+          function update_back_position()
+          {
+              try
+              {
+                  window.addEventListener("scroll", update_back_position, true);
+                  window.addEventListener("resize", update_back_position, true);
+                  var scrollPos;
+                  if (in_iFrame())
+                  {
+                      parent.window.addEventListener("scroll", update_back_position, true);
+                      parent.window.addEventListener("resize", update_back_position, true);
+                      var iFrame         = window.frameElement;
+                      var frameOffset    = get_offset(iFrame);
+                      var documentBottom = parent.window.innerHeight  + parent.window.scrollY;
+                      var extHeight      = Math.round(frameOffset.top + iFrame.getBoundingClientRect().height - documentBottom);
+                      if (extHeight<0) { extHeight = 0; }
+                      returnButton.style.bottom = (10+extHeight) + "px";
+                      document.getElementById("tooltiptext").style.bottom = (11+extHeight) + "px";
+                      scrollPos = contentDiv.scrollTop - 25 + iFrame.getBoundingClientRect().height - extHeight;
+                  }
+                  else{
+                      scrollPos = window.scrollY + window.innerHeight - 25;}
+                  if (returnElem.offsetTop>scrollPos){
+                      document.getElementById("down").style.display = "inline";
+                      document.getElementById("up").style.display   = "none";   }
+                  else{
+                      document.getElementById("down").style.display = "none";
+                      document.getElementById("up").style.display   = "inline"; }
+              }
+              catch(e){}
+          }
+          function set_theme(themePref)
+          {
+            var themeSwitch     = document.getElementById("ToggleTheme");
+            var themeSwitchText = "switch to";
+            var switchToText    = null;
+            if (!themePref){ themePref = get_theme_pref(); }
+            if (themePref.localeCompare("light")===0){
+                document.getElementById("dark-theme").sheet.disabled = true;
+                document.getElementById("hide-dark").sheet.disabled  = false;
+                switchToText = " dark theme";}
+            else{
+                document.getElementById("dark-theme").sheet.disabled = false;
+                document.getElementById("hide-dark").sheet.disabled  = true;
+                switchToText = " light theme";}
+            themeSwitch.innerHTML = themeSwitchText + switchToText;
+            set_theme_pref(themePref);
+          }
+
+          function toggle_theme()
+          {
+            if (document.getElementById("dark-theme").sheet.disabled) { set_theme("dark");  }
+            else                                                      { set_theme("light"); }
+          }
+
+          function set_theme_pref(themePref)
+          {
+              var d = new Date();
+              d.setTime(d.getTime() + (2*365*24*60*60*1000));
+              var expires = "expires="+ d.toUTCString();
+              document.cookie = "themepref=" + themePref + ";" + expires + "path=/";
+              localStorage.setItem("PRETTY_THEME", themePref);
+          }
+
+          function get_theme_pref() {
+              var name = "themepref=";
+              var decodedCookie = decodeURIComponent(document.cookie);
+              var ca = decodedCookie.split(';');
+              for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                  c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                  return c.substring(name.length, c.length);
+                }
+              }
+              var docTheme = localStorage.getItem("PRETTY_THEME");
+              if (docTheme) { return docTheme }
+              else          { return "light"  }
+          }
+
+          function toggle_details(section)
+          {
+            var link;
+            var subSection;
+            var details;
+            var linkText;
+            var i;
+            var openState  = true;
+            var border     = "6px 6px 0 0;"
+            if (section===0)
+            {
+              link = document.getElementById("Toggle"+section.toString());
+              if (link.innerHTML.localeCompare("collapse all on page")===0){
+                  openState = false;
+                  border    = "6px;"
+                  linkText  = "expand all";}
+              else{
+                  linkText   = "collapse all";}
+              link.innerHTML = linkText + " on page";
+              for (i = 0; i < allDetails.length; i++){
+                 allDetails[i].open = openState;
+                 allDetails[i].children[0].setAttribute( 'style', "border-radius:"+border );
+                 link = document.getElementById("Toggle"+allDetails[i].id.split(".", 1));
+                 if (allDetails[i].id.charAt(0).localeCompare("0") && link){link.innerHTML = linkText;}}
+            }
+            else
+            {
+               link = document.getElementById("Toggle"+section.toString());
+               subSection = 1;
+               if (link.innerHTML.localeCompare("collapse all")===0){
+                  openState      = false;
+                  border         = "6px;"
+                  link.innerHTML = "expand all";}
+               else{
+                  link.innerHTML = "collapse all";}
+               details = document.getElementById(section.toString()+"."+subSection.toString());
+               while (details){
+                    details.open = openState;
+                    details.children[0].setAttribute( 'style', "border-radius:"+border );
+                    subSection++;
+                    details = document.getElementById(section.toString()+"."+subSection.toString());}
+               var allCollapsed = true;
+               var allExpanded  = true;
+               for (i = 0; i < allDetails.length; i++){
+                   check_if_open(allDetails[i]);}
+               link = document.getElementById("Toggle0");
+               if (allExpanded) {link.innerHTML = "collapse all on page";}
+               if (allCollapsed){link.innerHTML = "expand all on page";}
+            }
+            function check_if_open(details)
+            {
+                if (details.open){allCollapsed = false;}
+                else             {allExpanded  = false;}
+            }
+          }
+
+          function state_check(detailsID)
+          {
+              // first deal with just the section
+              if (event.detail){document.activeElement.blur();}
+              var clickedElem   = event.target;
+              if (!skipCheck && clickedElem.localName.localeCompare("summary"))
+              { 
+                if (!(clickedElem.closest("summary"))) { return };
+              };
+              var details       = document.getElementById(detailsID);
+              if ( !skipCheck ) {
+                  var parentID  = clickedElem.closest("details").id;
+                  if (details.id.localeCompare(parentID)) { return };}
+              skipCheck         = false;
+              var clickedStatus = details.open;
+              var section       = detailsID.split(".", 1);
+              var subSection    = 1;
+              var allCollapsed  = true;
+              var allExpanded   = true;
+              var link          = document.getElementById("Toggle"+section);
+              if (clickedStatus) { details.children[0].setAttribute( 'style', "border-radius:6px;" ); }
+              else               { details.children[0].setAttribute( 'style', "border-radius:6px 6px 0 0;" ); }
+              if (link)
+              {
+                  details = document.getElementById(section+"."+subSection.toString());
+                  while (details){
+                    check_if_open(details);
+                    subSection++;
+                    details = document.getElementById(section+"."+subSection.toString());}
+                  if (allExpanded) {link.innerHTML = "collapse all";}
+                  if (allCollapsed){link.innerHTML = "expand all";}
+              }
+              // then the whole page
+              allCollapsed   = true;
+              allExpanded    = true;
+              for (var i = 0; i < allDetails.length; i++){
+                  check_if_open(allDetails[i]);}
+              link = document.getElementById("Toggle0");
+              if (allExpanded) {link.innerHTML = "collapse all on page";}
+              if (allCollapsed){link.innerHTML = "expand all on page";}
+
+              function check_if_open(details)
+              {
+                  var openStatus
+                  if (detailsID.localeCompare( details.id )===0 ){openStatus = !clickedStatus;}
+                  else                                           {openStatus = details.open;}
+                  if (openStatus){allCollapsed = false;}
+                  else           {allExpanded  = false;}
+              }
+          }
+
+          function in_iFrame ()
+          {
+               try {
+                   return window.self !== window.top;
+               } catch (e) {
+                   return true;
+               }
+          }
+</script>
+</head><body>
+<div class="content">
+<div id="return-link" style="display:none;" class="tooltip">
+<p onclick="jump_to()">
+    <span onclick="jump_to()"><span id="up">&#8679;</span><span id="down">&#8681;</span>
+    <span onclick="hide_back_link()" style="padding:2px; font-size:120%;" id="jump-close"><b onclick="hide_back_link()">&times;</b></span></span>
+</p>
+<div id="tooltiptext">click to return
+<br>(click <b>&times;</b> to hide)</div>
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>ROI Panel</h1><!--introduction-->
+<p>ROI panel provides a way to add one or more ROI (Region of Interest) above the image. The ROIs may be used to analyse or do filtering in only the ROI defined parts of the dataset.</p>
+<p>The implementation of the ROI mode was updated in MIB version 0.998 using the code of the <a href="http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility"><b>Image Measurement Utility</b></a> written by Jan Neggers, Eindhoven Univeristy of Technology.</p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2>
+<div><ul><li><a href="#2">ROI type combo box</a></li>
+<li><a href="#3">Define parameters manually</a></li>
+<li><a href="#4">Fix aspect ratio</a></li>
+<li><a href="#5">Add button</a></li>
+<li><a href="#6">Remove button</a></li>
+<li><a href="#7">ROI to Selection button</a></li>
+<li><a href="#8">ROI List</a></li>
+<li><a href="#9">Options</a></li>
+<li><a href="#10">Load button</a></li>
+<li><a href="#11">Save button</a></li>
+<li><a href="#12">Show label</a></li>
+<li><a href="#13">Show ROI</a></li></ul></div>
+<p><img class="image-fit" src="images\PanelsROI.png" alt=""> </p><h2 id="2">ROI type combo box</h2>
+<p>Define type of a ROI to add. Several ROI types are available. By default, an inteactive mode for placing of the ROIs is enabled, however it is possible to add ROIs manually using the <code>Define parameters manually</code> panel under the <code>ROI type</code> combo box.</p>
+<div><ul><li><b>Rectangle</b>, rectangular ROI. To add: press the <span class="kbd">Add</span> button and define two corners of the ROI using the left mouse button. Modify ROI if needed and double click above the ROI to accept it</li>
+<li><b>Ellipse</b>, ellipsoid ROI. To add: press the <span class="kbd">Add</span> button and define a center and a side of the ellipse using the left mouse button. Modify ROI if needed and double click above the ROI to accept it</li>
+<li><b>Polyline</b>, adds a polyline object with desired number of vertices. The number of vertices can be selected in the <code>Define parameters manually</code> panel. To add: press the <span class="kbd">Add</span> button and click as many times as number of defined vertices. Modify ROI if needed (it is possible to add extra vertices: press and hold the <span class="kbd">A</span> key followed by pressing of the left mouse button to add a new vertice). To remove the vertex press right mouse button above the vertex and select <span class="kbd">Delete</span>. Finally double click above the ROI to accept it</li>
+<li><b>Lasso</b>, a freehand drawing of a ROI. To add: press the <span class="kbd">Add</span> button, hold the left mouse key while drawing the ROI. After the RIO has been drawn it is converted into the ROI polyline object with the suggestion for the reduction of number of vertices (large number of vertices reduces rendering of images significantly, so it is recommended to reduce number of vertices during this convertion to the ROI polyline)</li></ul></div><h2 id="3">Define parameters manually</h2>
+<p>This panel offers a posibility to place ROI to specific position. To do that, please check the <span class="kbd">[&#10003;] <b>manually</b></span> checkbox and provide required coordinates. When done press the <span class="kbd">Add</span> button to add a ROI.</p><h2 id="4">Fix aspect ratio</h2>
+<p>This checkbox can be used to fix aspect ratio of ROIs during initial placing or later during their modification.</p><h2 id="5">Add button</h2>
+<p>Press the <span class="kbd">Add</span> button to add a ROI to the image.</p><h2 id="6">Remove button</h2>
+<p>Press the <span class="kbd">Remove</span> button to delete a ROI highlighed in the <code>ROI list</code>.</p><h2 id="7">ROI to Selection button</h2>
+<p>Add area under the shown ROI to the Selection layer.</p><h2 id="8">ROI List</h2>
+<p>The <code>ROI List</code> may be used to select single or all ROIs for filtering or analysis. Additional actions are available for the ROIS:</p>
+<p><img class="image-fit" src="images\PanelsROIContext.png" alt=""> </p>
+<div><ul><li><b>Rename</b>, change the name of ROI</li>
+<li><b>Edit</b>, modify position of the ROI. Use double click to finish the editing. The '*a*' key shortcut allows to add a vertix to the polyline type of ROIs</li>
+<li><b>Remove</b>, delete ROI from the list</li></ul></div><h2 id="9">Options</h2>
+<p>Define visualization options for ROIs</p><h2 id="10">Load button</h2>
+<p>Load ROI from a disk.</p><h2 id="11">Save button</h2>
+<p>Save ROI information to disk in MATLAB format (a structure with <i>label, type, X, Y, orientation</i> fields).</p><h2 id="12">Show label</h2>
+<p>When enabled, a text with the label of the selected ROI is displayed in the <code>Image View</code> panel.</p><h2 id="13">Show ROI</h2>
+<p>When checked the ROIs are shown in the <code>Image View</code> panel. Alternatively the viewing state of the ROI objects may be switched using the <b><code>R</code></b> button in the <a href="ug_gui_toolbar.html">Toolbar</a>.</p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a> </p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% ROI Panel
 % ROI panel provides a way to add one or more ROI (Region of Interest)
@@ -83,47 +567,50 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 %
 % <<images\PanelsROI.png>>
 %
-%% 1. ROI type combo box
+%% ROI type combo box
 % Define type of a ROI to add. Several ROI types are available. By default,
 % an inteactive mode for placing of the ROIs is enabled, however it is
-% possible to add ROIs manually using the |Define parameters manually| panel (*2.*) under the |ROI type| combo box. 
+% possible to add ROIs manually using the |Define parameters manually| panel under the |ROI type| combo box. 
 %
-% * *Rectangle*, rectangular ROI. To add: press the |Add| button (*4.*)
+% * *Rectangle*, rectangular ROI. To add: press the [class.kbd]Add[/class] button
 % and define two corners of the ROI using the left mouse button. Modify ROI
 % if needed and double click above the ROI to accept it
-% * *Ellipse*, ellipsoid ROI. To add: press the |Add| button (*4.*)
+% * *Ellipse*, ellipsoid ROI. To add: press the [class.kbd]Add[/class] button
 % and define a center and a side of the ellipse using the left mouse button. Modify ROI
 % if needed and double click above the ROI to accept it
 % * *Polyline*, adds a polyline object with desired number of vertices. The
 % number of vertices can be selected in the |Define parameters manually|
-% panel. To add: press the |Add| button (*4.*)
+% panel. To add: press the [class.kbd]Add[/class] button
 % and click as many times as number of defined vertices. Modify ROI
-% if needed (it is possible to add extra vertices: press and hold the |A|
+% if needed (it is possible to add extra vertices: press and hold the [class.kbd]A[/class]
 % key followed by pressing of the left mouse button to add a new vertice). To remove the
-% vertex press right mouse button above the vertex and select |Delete|.
+% vertex press right mouse button above the vertex and select [class.kbd]Delete[/class].
 % Finally double click above the ROI to accept it
-% * *Lasso*, a freehand drawing of a ROI. To add: press the |Add| button (*4.*),
+% * *Lasso*, a freehand drawing of a ROI. To add: press the [class.kbd]Add[/class] button,
 % hold the left mouse key while drawing the ROI. After the RIO has been drawn
 % it is converted into the ROI polyline object with the suggestion for the reduction of
 % number of vertices (large number of vertices reduces rendering of images significantly, so it is recommended to 
 % reduce number of vertices during this convertion to the ROI polyline)
-%% 2. Define parameters manually
+%
+%% Define parameters manually
 % This panel offers a posibility to place ROI to specific position. 
-% To do that, please check the |manually| checkbox and provide required
-% coordinates. When done press the |Add| button (*4.*) to add a ROI.
-%% 3. Fix aspect ratio
+% To do that, please check the [class.kbd][&#10003;] *manually*[/class] checkbox and provide required
+% coordinates. When done press the [class.kbd]Add[/class] button to add a ROI.
+%
+%% Fix aspect ratio
 % This checkbox can be used to fix aspect ratio of ROIs during initial
 % placing or later during their modification.
-%% 4. Add button
-% Press the |Add| button to add a ROI to the image.
 %
-%% 5. Remove button
-% Press the |Remove| button to delete a ROI highlighed in the |ROI list|.
+%% Add button
+% Press the [class.kbd]Add[/class] button to add a ROI to the image.
 %
-%% 6. ROI to Selection button
+%% Remove button
+% Press the [class.kbd]Remove[/class] button to delete a ROI highlighed in the |ROI list|.
+%
+%% ROI to Selection button
 % Add area under the shown ROI to the Selection layer.
 %
-%% 7. ROI List
+%% ROI List
 % The |ROI List| may be used to select single or all ROIs for filtering or
 % analysis. Additional actions are available for the ROIS:
 %
@@ -139,26 +626,80 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * *Remove*, delete ROI from the list
 % 
 %
-%% 8. Options
+%% Options
 % Define visualization options for ROIs
 %
-%% 9. Load button
+%% Load button
 % Load ROI from a disk. 
 %
-%% 10. Save button
+%% Save button
 % Save ROI information to disk in MATLAB format (a structure with _label,
 % type, X, Y, orientation_ fields).
-%% 11. Show label
+%
+%% Show label
 % When enabled, a text with the label of the selected ROI is displayed in
 % the |Image View| panel.
-%% 12. Show ROI
+%
+%% Show ROI
 % When checked the ROIs are shown in the |Image View| panel. Alternatively the viewing state of the ROI objects may be
 % switched using the *|R|* button in the <ug_gui_toolbar.html Toolbar>.
 %
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
-
+% [cssClasses]
+% .kbd { 
+%     font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.2em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% [/cssClasses]
 
 ##### SOURCE END #####
---></body></html>
+--><script>
+var allDetails   = document.getElementsByTagName('details');
+var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
+var returnButton = document.getElementById("return-link");
+document.getElementById("iFrameBuf").style.display = "none";
+if(in_iFrame())
+{
+   try{
+      var footerNav = parent.document.getElementsByClassName("footernav");
+      var tabPane   = parent.document.getElementsByClassName("tab-pane");}
+   catch(err) { var footerNav = []; var tabPane = [];};
+   if(!(footerNav.length) || tabPane.length)
+   {
+      contentDiv.style.overflowY = "scroll";
+      contentDiv.style.overflowX = "hidden";
+      contentDiv.style.position  = "absolute";
+      contentDiv.style.width     = "95%";
+      contentDiv.style.top       = 0;
+      contentDiv.style.bottom    = 0;
+      if (tabPane.length){
+         contentDiv.setAttribute("data-isMATLABCentral","1");
+         returnButton.style.right = "40px";
+         document.getElementById("tooltiptext").style.right = "92px"; }
+      document.getElementById("iFrameBuf").style.display = "block";
+   }
+   else { contentDiv.setAttribute("data-isHelpBrowser","1"); }
+}
+if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
+   document.getElementById("anchor-offsets").sheet.disabled = true; }
+var jumpLinks = document.getElementsByTagName("a");
+for (var i = 0; i < jumpLinks.length; i++){
+  href = jumpLinks[i].getAttribute("href");
+  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
+</script></body></html>

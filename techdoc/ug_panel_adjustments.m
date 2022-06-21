@@ -30,9 +30,9 @@
 %       <em>define the black point</em><br>
 %       <img src="images\panelsDisplayAdj_min.png"></td>
 %   <td>selection the black point; all intensities below this value will be rendered as black. 
-%   The <code>right mouse</code> click above the slider sets its value to 1.<br>
-%   *Note!* it is also possible to set this value using the <code>left
-%   mouse click</code> on the histogram plot at the bottom of the
+%   The <span class="kbd">right mouse click</span> above the slider sets its value to 1.<br>
+%   *Note!* it is also possible to set this value using the <span class="kbd">left
+%   mouse click</span> on the histogram plot at the bottom of the
 %   window<br><br>
 %   Use the <b>min button</b> to find minimal intensity value for the selected color
 %   channel and assign it to black. <br>
@@ -45,9 +45,9 @@
 %   <em>define the black point</em><br>
 %       <img src="images\panelsDisplayAdj_max.png"></td>
 %   <td>selection the white point; all intensities above this value will be rendered as pure color or white. 
-%   The <code>right mouse</code> click above the slider sets its value to maximal posible for the current image class.<br>
-%   *Note!* it is also possible to set this value using the <code>right
-%   mouse click</code> on the histogram plot at the bottom of the
+%   The <span class="kbd">right mouse click</span> above the slider sets its value to maximal posible for the current image class.<br>
+%   *Note!* it is also possible to set this value using the <span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right
+%   mouse click</span> on the histogram plot at the bottom of the
 %   window<br><br>
 %   Use the <b>max button</b> to find maximal intensity value for the selected color
 %   channel and assign it to white. <br>
@@ -60,16 +60,16 @@
 %   <td>allows modification of gamma parameters. Gamma values below 1 enhance
 %       high intensity values, and Gamma values above 1 enhance low intensity
 %       values.<br>
-%       The <code>right mouse</code> click above the slider sets this value to 1%   </td>
+%       The <span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> above the slider sets this value to 1%   </td>
 % </tr>
 % <tr>
-%   <td><bLink checkbox></b></td>
+%   <td><span class="kbd">[&#10003;] <b>Link</b></span> checkbox></td>
 %   <td>links all color channel so that changing of the
 %       <code>Min/Max/Gamma</code> sliders and editboxes affects all color channels at the same time
 %   </td>
 % </tr>
 % <tr>
-%   <td><b>Log checkbox</b></td>
+%   <td><span class="kbd">[&#10003;] <b>Log</b></span> checkbox</td>
 %   <td>defines type of histogram representation in the histogram plot: linear or logarithmic scale
 %   </td>
 % </tr>
@@ -81,12 +81,12 @@
 %   </td>
 % </tr>
 % <tr>
-%   <td><b>Update button</b></td>
+%   <td><b>The <span class="kbd">Update</span> button</b></td>
 %   <td>update the histogram for the currently shown slice
 %   </td>
 % </tr>
 % <tr>
-%   <td><b>Current button</b></td>
+%   <td><b>The <span class="kbd">Current</span> button</b></td>
 %   <td><b><em>recalculate</b></em> intensities of the selected color channel (the <code>Channel</code> combobox) 
 %   with parameters specified in the dialog for the currently shown slice. 
 %   The intensities below the <code>Min</code> value become black and the intensities above the <code>Max</code> value
@@ -96,17 +96,19 @@
 %   </td>
 % </tr>
 % <tr>
-%   <td><b>All slices button</b></td>
+%   <td><b>The <span class="kbd">All slices</span> button</b></td>
 %   <td><b><em>recalculate</b></em> intensities of the selected color channel (the <code>Channel</code> combobox) with parameters
-%   specified in this dialog for all slices. The intensities below the <code>Min<.code> value become black 
+%   specified in this dialog for all slices. The intensities below the <code>Min</code> value become black 
 %   and the intensities above the <code>Max</code> value become white
 %   </td>
 % </tr>
 % </table>
 % </html>
-%
+% 
+% [br8]
 %
 %% Histogram at the bottom of the window
+%
 % The histogram shows the plot with intensity values in the X-axis and number of pixels for each intensity value in the
 % Y-axis. *Note!* The histogram is calculated from the image shown in the <ug_panel_im_view.html Image View panel> - not from the full slice!
 %
@@ -117,3 +119,43 @@
 % plot. 
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*> |*-->*| <ug_panel_view_settings.html *View settings*>
+%
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

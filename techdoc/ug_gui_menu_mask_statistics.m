@@ -15,30 +15,52 @@
 % </td>
 % <td style="border: 0px">
 % <ul>
-% <li><b>1. The Objects panel</b> - using combo boxes of this panel it is possible to select material for analysis and type of the dataset: 
+% <li><b>The Objects panel</b> - using combo boxes of this panel it is possible to select material for analysis and type of the dataset: 
 % current slice (<em>2D Slice</em>), current Z-stack (<em>3D Stack</em>) or for the whole volume (<em>4D Dataset</em>).<br>
 % For the models with more than 255 materials the upper combo box has a 'Model' option. 
 % When this option is used, the tool quantifies all materials of the model at once; as result each material is described with a single value</li>
-% <li><b>2. The Shape panel</b> - allows selection of type of objects to detect: |2D| or |3D|</li>
-% <li><b>3. The Mode panel</b> - when the <em>Object mode</em> is selected the dialog returns
+% <li><b>The Shape panel</b> - allows selection of type of objects to detect: |2D| or |3D|</li>
+% <li><b>3The Mode panel</b> - when the <em>Object mode</em> is selected the dialog returns
 % statistic that is based on shape properties of objects, otherwise (<em>Intensity mode</em>) based
 % on image intensities behind the objects</li>
-% <li><b>4. Select properties to detect</b>. *Note!* The <em>EndpointsLength</em> requires the objects to be lines with diameter of 1 pixel; in
-% addition, the 8/26 connectivity should be selected. See below for available properties to measure</li>
-% <li><b>5.</b> Define <b>connectivity parameter</b> that will be used for separation of
-% objects. The connectivity |4/6| means that the objects that are touching
-% eachother at the corners will be separated into two individual objects</li>
-% <li><b>6. The first color channel combobox </b> is used to specify color channel for image intensity analysis</li>
-% <li><b>7. The second color channel combobox</b> for correlation intensity analysis</li>
-% <li><b>8. The Units combobox</b> specify units for the results: pixels or physical units.
-% <b>Important!</b> some parameters can only be calculated in pixels;
-% in addition, calculation of certain properties (such as <em>MeridionalEccentricity, EquatorialEccentricity, MajorAxisLength, SecondAxisLength, ThirdAxisLength, EquivDiameter, Surface Area</em>) of 3D objects 
-% in physical units is correct only for isotropic voxels</li>
-% <li><b>8. The multiple properties checkbox</b> allows detection of several object properties at the same time. The properties can be selected using <b>the Define properties button</b>
-% <img src="images\MenuMaskStatisticsMultiple.png"></li>
-% <li><b>9. The Statistics table</b> contains calculated values. The objects in this window may be sorted
-% (*16.*) or selected. Please press the right mouse button button for a
-% context menu with selection parameters:</li>
+% </td>
+% </td>
+% </table>
+% </html>
+%
+% * *Properties to detect*. *Note!* The |EndpointsLength| requires the objects to be lines with diameter of 1 pixel; in
+% addition, the 8/26 connectivity should be selected. See below for available properties to measure
+% * *Connectivity parameter* is used for separation of objects. The connectivity |4/6| means that the objects that are touching
+% eachother at the corners will be separated into two individual objects
+% * *The first color channel combobox* is used to specify color channel for image intensity analysis
+% * *The second color channel combobox* for correlation intensity analysis
+% * *The Units combobox* specify units for the results: pixels or physical units. 
+% 
+% [dtls][smry] *Additional info* [/smry]
+% 
+% *Important!* some parameters can only be calculated in pixels;[br]
+% in addition, calculation of certain properties (such as [class.code]MeridionalEccentricity[/class], [class.code]EquatorialEccentricity[/class], 
+% [class.code]MajorAxisLength[/class], [class.code]SecondAxisLength[/class], [class.code]ThirdAxisLength[/class], [class.code]EquivDiameter[/class], 
+% [class.code]Surface Area[/class]) of 3D objects in physical units is correct only for isotropic voxels
+%
+% [/dtls]
+%
+% * *The [class.kbd][&#10003;] *multiple properties*[/class] checkbox* allows detection of several object properties at the same time. The properties can 
+% be selected using the [class.kbd]Define properties[/class] button
+%
+% [dtls][smry] *Available properties for calculation* [/smry]
+% 
+% <<images\MenuMaskStatisticsMultiple.png>>
+% 
+% [/dtls]
+%
+% * *The Statistics table* contains calculated values. The objects in this window may be sorted
+% (see below) or selected. Please press the right mouse button button for a
+% context menu with selection parameters.
+%
+% [dtls][smry] *Context menu for the Statistics table* [/smry]
+%
+% <html>
 % </ul>
 % <table style="width: 600px; text-align: center; border: 0px;">
 % <tr style="font-weight: bold; background-color: #FF9258;">
@@ -139,27 +161,26 @@
 % </table>
 % </html>
 %
+% [/dtls]
 % 
-% * *10. A histogram plot* that shows distribution of statistic parameters
-% from *8.*. The plot may be shown on a normal or logarithmic scale
-% depending on selection of the |Log scale| check box (*13.*). Clicks with the left and
-% right mouse allows to make selections. 
-% * *11. The Auto highlight on a click checkbox* - when checked, each time
-% the object in the table (*8.*) is selected it is highlighted in the Image
-% View panel.
-% * *12. The Sorting combobox* can be used to change the sorting of the main table.
-% * *13. The Log scale checkbox* is for showing the histogram (*8.*) in the logarithmic scale.
-% * *14.* Two edit boxes are used to provides minimal and maximal values for highlighting after press of the |Do| button.
-% * *15. The Run button* starts quantification.
-% * *16. The Details panel* defines a way of object selection: the selected
+% * *Histogram plot* shows distribution of statistic parameters from the *Statistics table*. The plot may be shown on a normal or logarithmic scale
+% depending on selection of the |Log scale| check box. Clicks with the left and right mouse button allows to make selections. 
+% * The [class.kbd][&#10003;] *Auto highlight on a click*[/class] checkbox - when checked, each time the object in the *Segmentation table* is selected it is highlighted in the Image
+% View panel
+% * *The Sorting combobox* can be used to change the sorting of the main table
+% * The [class.kbd][&#10003;] *Log scale*[/class] checkbox is for showing the histogram in the logarithmic scale
+% * *Two edit boxes* are used to provides minimal and maximal values for highlighting after press of the [class.kbd]Do[/class] button.
+% * The [class.kbd]Run[/class] button starts quantification.
+% * *The Details panel* defines a way of object selection: the selected
 % objects may be added, removed or used for replacement of the |Selection|
 % layer.
-% * *17. The Export button* allows export of the statistic values to Excel or
-% MATLAB.
+% * The [class.kbd]Export[/class] button allows export of the statistic values to Excel or MATLAB.
 %
 %
 %% Statistical properties of 3D objects
 % Calculate properties of 3D objects of the dataset.
+%
+% [dtls][smry] *List of 3D properties* [/smry]
 %
 % * *Area* - calculates total number of pixels (~volume) within the 3D objects.
 % * *Endpoints Length* - calculates the distance between two end points of a *line* segment. Please note that the width of the line
@@ -175,9 +196,14 @@
 % * *SecondAxisLength* - returns the length of the second major axis in pixels
 % * *ThirdAxisLength* - returns the length of the minor axis in pixels
 %
+% [/dtls]
+% [br8]
+%
 %% Statistical properties of 2D objects
 %
 % Calculate properties of 3D objects of the dataset.
+%
+% [dtls][smry] *List of 2D properties* [/smry]
 %
 % * *Area* - calculates total number of pixels within the 2D objects.
 % * *ConvexArea* - calculates total number of pixels of the smallest convex polygon that can contain the object.
@@ -212,9 +238,14 @@
 % * *Solidity* - calculates the proportion of the pixels in the convex hull that are also in the object. Computed as
 % |Area/ConvexArea|.
 %
+% [/dtls]
+% [br8]
+%
 %% Statistical properties of intensities of 2D/3D objects
 %
-% These properties are calculated when the Intensity radio button in the Mode panel (*3.*) is selected.
+% These properties are calculated when the |Intensity| radio button in the |Mode| panel is selected.
+%
+% [dtls][smry] *List of intenstity properties* [/smry]
 %
 % * *MinIntensity* - detects minimal value of the image intensity within 2D or 3D objects.
 % * *MaxIntensity* - detects maximal value of the image intensity within 2D or 3D objects.
@@ -224,9 +255,46 @@
 % * *Correlation* - calculates correlation between image intensities of the two selected color channels. See more in the help
 % of MATLAB |corr2| function.
 %
+% [/dtls]
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_models.html *Models Menu*> *---* <ug_gui_menu_mask.html *Mask Menu*>
 %
-
-
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

@@ -13,8 +13,11 @@
 % Can be used to align the slices of the opened dataset or to align two
 % separate datasets. See details <ug_gui_menu_dataset_alignment.html *here*>.
 % 
+% [dtls][smry] *Alignement window* [/smry]
+%
 % <<images/MenuDatasetAlignment.png>>
-% 
+%
+% [/dtls]
 %
 %
 %% Crop dataset...
@@ -35,8 +38,8 @@
 % |Manual| mode. It is also possible to do cropping based on the selected
 % ROI. Use the <ug_panel_roi.html ROI panel> to make them.
 %
-% The dataset can be just cropped (the |Crop| button) or copied 
-% to another buffer and cropped (the |Crop to| button). The multiple buffer buttons buttons located at
+% The dataset can be just cropped (the [class.kbd]Crop[/class] button) or copied 
+% to another buffer and cropped (the [class.kbd]Crop to[/class] button). The multiple buffer buttons buttons located at
 % the top of the <ug_panel_dir.html Directory Contents panel>.
 %
 % The cropped datasets can be placed back to the original dataset using the
@@ -113,9 +116,12 @@
 % Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/PyEXX7j6pnc</a><br>
 % </html>
 %
-%% Slice
-% Manipulations with individual slices of the dataset. The following actions are possible
+% [br8]
 %
+%% Slice
+% Manipulations with individual slices of the dataset. 
+%
+% [dtls][smry] *The following actions are possible* [/smry]
 % 
 % * *Copy slice...* - allows to copy slice from one
 % position to another position within the same dataset (the 'Replace'
@@ -129,6 +135,9 @@
 % * *Delete frame(s)...* - removes desired frame(s) from a time series of the
 % dataset.
 % * *Swap slices...* - spaw two or more slices
+%
+% [/dtls]
+% [br8]
 %
 %% Scale bar
 % Scale bar is a tool that allows to use a scale bar printed on the 
@@ -159,6 +168,7 @@
 %
 % <<images/MenuDatasetBoundingBox.png>>
 % 
+% [dtls][smry] *Widgets and parameters* [/smry]
 % 
 % * *X, Y, Z, min* - defines minimal coordinates of the bounding box
 % * *X, Y, center* - defines central coordinates of the dataset. When the
@@ -201,12 +211,17 @@
 % </table>
 % </html>
 %
+% [/dtls]
+%
+% [dtls][smry] *Example for automatic detection of parameters* [/smry]
+%
 % Example of text that can be copied to the system clipboard for automatic
-% detection of paramters:
+% detection of parameters:
 % 
 % <<images/menuDatasetBoundingBox2.jpg>>
 % 
-% 
+% [/dtls]
+% [br8]
 % 
 %% Parameters
 % Modifies parameters of the dataset: voxels sizes, frame rate for movies and
@@ -218,3 +233,43 @@
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
+%
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

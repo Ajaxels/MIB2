@@ -11,7 +11,8 @@
 % <<images\menuSelection.png>>
 % 
 %% Selection to Buffer
-% Allows to Copy (|Ctrl+C| shortcut) the |Selection| of the currently shown slice to a buffer, which later can be pasted to any other slice with the |Ctrl+V| shortcut or to all slices (|Ctrl+Shift+V|).
+% Allows to Copy ([class.kbd]Ctrl[/class]+[class.kbd]C[/class] shortcut) the |Selection| of the currently shown slice to a buffer, which later can be pasted 
+% to any other slice with the [class.kbd]Ctrl[/class]+[class.kbd]V[/class] shortcut or to all slices ([class.kbd]Ctrl[/class]+[class.kbd]&#8679; Shift[/class]+[class.kbd]V[/class]).
 % In addition there is an option to clear the buffer
 % (|Menu->Selection->Selection to Buffer->Clear|); this action clears only
 % the buffer and does not affect any of the other layers (|Selection, Mask,
@@ -34,7 +35,9 @@
 % <<images\MenuSelectionMorphOps.png>>
 %
 % Performs morphological operations for 2D and 3D objects of the |Selection| layer. See more in the description of MATLAB |bwmorph|, |bwmorph3| and |bwskel|
-% functions. The following operations are available:
+% functions. 
+%
+% [dtls][smry] *List of available morphological operations* [/smry]
 %
 % <html>
 % <ul>
@@ -57,6 +60,8 @@
 % </ul>
 % </html>
 %
+% [/dtls]
+%
 %
 %% Expand to mask borders
 % Each selected area will be expanded to match the borders of the mask that
@@ -65,11 +70,12 @@
 %% Interpolate
 % Interpolation of the |Selection| layer is a method to reconstruct
 % |Selection| on empty slices between two slices containing the |Selection|
-% layer. Shortcut for this action is |i|. 
+% layer. Shortcut for this action is [class.kbd]i[/class]. 
 %
 % There are two types of interpolators. Select the best suitable interpolator in the <ug_gui_menu_file_preferences.html Preferences dialog> 
-% or by pressing the Interpolator type button in the <ug_gui_toolbar.html Toolbar>:
-%%
+% or by pressing the Interpolator type button in the <ug_gui_toolbar.html Toolbar>
+%
+% [dtls][smry] *Shape interpolation example* [/smry]
 % 
 % * *shape* - good for interpolation of the blobs (filled structures).
 %
@@ -80,6 +86,10 @@
 % A brief demonstration is available in the following video:<br>
 % <a href="https://youtu.be/ZcJQb59YzUA?t=4m3s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m3s</a>
 % </html>
+%
+% [/dtls]
+%
+% [dtls][smry] *Line interpolation example* [/smry]
 %
 % * *line* - good for interpolation of the *not closed* lines (such as membranes).
 %%
@@ -92,7 +102,10 @@
 % <a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
 % </html>
 % 
+% [/dtls]
+%
 % *_Please note!_* there should be only one object in the |Selection| layer on the starting and ending slices.
+% [br8]
 %
 %% Replace selected area in the image
 % Replaces image intensities in the selected areas with new values. A new
@@ -111,3 +124,42 @@
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

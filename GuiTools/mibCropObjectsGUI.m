@@ -30,7 +30,7 @@ function varargout = mibCropObjectsGUI(varargin)
 % Updates
 % 07.03.2016, IB, updated for 4D datasets
 
-% Last Modified by GUIDE v2.5 07-Aug-2019 10:26:14
+% Last Modified by GUIDE v2.5 25-May-2022 10:20:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -225,6 +225,21 @@ switch hObject.Tag
     case 'marginZEdit'
         type = 'CropObjectsMarginZ';
         newValue = hObject.String;
+    otherwise
+        type = hObject.Tag;
+        newValue = hObject.String;
 end
 handles.winController.updateBatchParameters(type, newValue);
+end
+
+
+% --- Executes on button press in Generate3DPatches.
+function Generate3DPatches_Callback(hObject, eventdata, handles)
+
+if handles.Generate3DPatches.Value == true
+    handles.CropObjectsDepth.Enable = 'on';
+else
+    handles.CropObjectsDepth.Enable = 'off';
+end
+handles.winController.updateBatchParameters('Generate3DPatches', handles.Generate3DPatches.Value);
 end

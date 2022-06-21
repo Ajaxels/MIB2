@@ -27,6 +27,7 @@ for fieldId = 1:numel(fieldNames)
                     try
                         View.Figure.(fieldNames{fieldId}).Value = BatchOpt.(fieldNames{fieldId}){1};
                     catch err
+                        fprintf('Field id: %s\n', fieldNames{fieldId});
                         err
                     end
                 case 'uicheckbox'
@@ -40,11 +41,13 @@ for fieldId = 1:numel(fieldNames)
                     end
                 case 'uidropdown'
                     if numel(BatchOpt.(fieldNames{fieldId})) == 2   % populate the contents of the dropdown
+                        % check whether the item exist in the list
                         View.Figure.(fieldNames{fieldId}).Items = BatchOpt.(fieldNames{fieldId}){2};
                     end
                     try
                         View.Figure.(fieldNames{fieldId}).Value = BatchOpt.(fieldNames{fieldId}){1};
                     catch err
+                        fprintf('Field id: %s\n', fieldNames{fieldId});
                         err
                     end
             end

@@ -73,6 +73,74 @@ classdef ImageConverterController < handle
             % read PNG files omitting the colormap
             imOut = imread(fn);
         end
+
+        function generatePyramidalTIF(data, writeInfo, outputType, levelsVec, compression)
+            % function generatePyramidalTIF(data, writeInfo, outputType, levelsVec)
+            % generate pyramidal TIF file
+            % 
+            % Parameters:
+            % data: an image at 100% magnification
+            % writeInfo: an object of type matlab.io.datastore.WriteInfo with fields
+            %   .ReadInfo - a structure with read-file info including Filename, FileSize and Label fields
+            %   .SuggestedOutputName - a string with suggested full output path and filename
+            %   .Location - a string with location path
+            % outputType: a sting with the output format to be written to
+            % levelsVec: a vector with levels to be exported, for example [1, 2, 3, 4]
+            % compression: compression for the output images, a string one
+            % of these: 
+            %   - 'LZW' -	Lempel-Ziv-Welch lossless compression
+            %   - 'PackBits	PackBits lossless compression
+            %   - 'Deflate'	Adobe DEFLATE lossless compression
+            %   - 'JPEG'	JPEG-based lossy compression
+            %   - 'None'	No compression
+            
+            % fix writeInfo.SuggestedOutputName
+            [pathOut, filenameOut] = fileparts(writeInfo.SuggestedOutputName);
+            writeInfo.SuggestedOutputName = fullfile(pathOut, [char(filenameOut) '.tif']);
+
+            % Efficient way to create a pyramid
+            for levelId=1:numel(levelsVec)
+                if levelId == 1
+                    if levelsVec(1) == 1
+                        bim{1} = blockedImage(data); 
+                    else
+                        scaleFactor = 1/2^(levelsVec(1)-1);
+                        bim{1} = blockedImage(data).apply(@(bigimg)ImageConverterController.resizeBlocks(bigimg, scaleFactor), 'DisplayWaitbar', false);
+                    end
+                else
+                    scaleFactor = 1/2^(levelsVec(levelId) - levelsVec(levelId-1));
+                    bim{levelId} = bim{levelId-1}.apply(@(bigimg)ImageConverterController.resizeBlocks(bigimg, scaleFactor), 'DisplayWaitbar', false);
+                end
+            end
+            
+            writeAdapter = images.blocked.TIFF(); % Specify the TIFF adapter
+            writeAdapter.Extension = 'tif';
+            switch compression
+                case 'None'
+                    writeAdapter.Compression = Tiff.Compression.None; 
+                case 'LZW'
+                    writeAdapter.Compression = Tiff.Compression.LZW; 
+                case 'PackBits' %	PackBits lossless compression
+                    writeAdapter.Compression = Tiff.Compression.PackBits; 
+                case 'Deflate'  %	Adobe DEFLATE lossless compression
+                    writeAdapter.Compression = Tiff.Compression.Deflate; 
+                case 'JPEG'     %	JPEG-based lossy compression
+                    writeAdapter.Compression = Tiff.Compression.JPEG; 
+            end
+
+            write(bim{1}, writeInfo.SuggestedOutputName, ...
+                'LevelImages', [bim{2:end}], ...
+                "BlockSize", [2048 2048], ...
+                "Adapter", writeAdapter, ...
+                'DisplayWaitbar',false);
+       end
+
+        function blockedImageOut = resizeBlocks(blockedImageIn, scaleFactor)
+            % function bigImageOut = resizeBlocks(bigImageIn, scaleFactor)
+            % resize blockedImage (blockedImageIn) using privided scale
+            % factor (scaleFactor)
+            blockedImageOut = imresize(blockedImageIn.Data, scaleFactor, 'bicubic');
+        end
     end
     
     methods
@@ -92,10 +160,20 @@ classdef ImageConverterController < handle
             registry = imformats();
             obj.BatchOpt.InputImageFormatExtension = {'tif'};
             obj.BatchOpt.InputImageFormatExtension{2} = [registry.ext];
+            obj.BatchOpt.BioFormatsReader = false;
+            obj.BatchOpt.BioFormatsInputImageFormatExtension = {'dm4'};
+            obj.BatchOpt.BioFormatsInputImageFormatExtension{2} = obj.mibModel.preferences.System.Files.BioFormatsExt;
+            obj.BatchOpt.BioFormatsIndex{1} = 1;
+            obj.BatchOpt.BioFormatsIndex{2} = [0 Inf];
+            obj.BatchOpt.BioFormatsIndex{3} = 'on';
             obj.BatchOpt.IncludeSubfolders = false;
             obj.BatchOpt.OutputImageFormatExtension = {'tif'};
             obj.BatchOpt.OutputImageFormatExtension{2} = {'png', 'jpg', 'jpeg', 'tif', 'tiff', 'xml'};
             obj.BatchOpt.DiscardColormap = false;
+            obj.BatchOpt.PyramidalTIFgenerate = false;
+            obj.BatchOpt.PyramidalTIFcompression = {'None'};
+            obj.BatchOpt.PyramidalTIFcompression{2} = {'None', 'LZW', 'PackBits', 'Deflate', 'JPEG'};
+            obj.BatchOpt.PyramidalTIFlevels = '1, 2, 3, 4';
             obj.BatchOpt.Prefix = '';
             obj.BatchOpt.Suffix = '';
             obj.BatchOpt.ParallelProcessing = false;
@@ -109,9 +187,16 @@ classdef ImageConverterController < handle
             obj.BatchOpt.mibBatchTooltip.InputDirectory = 'Directory with input images';
             obj.BatchOpt.mibBatchTooltip.OutputDirectory = 'Output directory for results';
             obj.BatchOpt.mibBatchTooltip.InputImageFormatExtension = 'Extension of the input images';
+            obj.BatchOpt.mibBatchTooltip.BioFormatsReader = 'Use BioFormats reader to read various microscopy formats';
+            obj.BatchOpt.mibBatchTooltip.BioFormatsInputImageFormatExtension = 'Extension of input images for BioFormats reader';
+            obj.BatchOpt.mibBatchTooltip.BioFormatsIndex = 'Index of a series to read in a BioFormats-compatible file';
             obj.BatchOpt.mibBatchTooltip.OutputImageFormatExtension = 'Extension of the output images';
             obj.BatchOpt.mibBatchTooltip.IncludeSubfolders = 'Include subfolders';
             obj.BatchOpt.mibBatchTooltip.DiscardColormap = 'Discard colormap during processing of PNG files';
+            obj.BatchOpt.mibBatchTooltip.PyramidalTIFgenerate = 'Tick to enable generation of pyramidal TIF files, where each level has x2 downsampled resolution relative to the previous one';
+            obj.BatchOpt.mibBatchTooltip.PyramidalTIFcompression = 'Specify compression for the generated TIF files';
+            obj.BatchOpt.mibBatchTooltip.PyramidalTIFlevels = 'Specify output levels of the pyramid as numbers, for example "1,2,3,4"';
+            
             obj.BatchOpt.mibBatchTooltip.Prefix = 'Prefix to the output filename';
             obj.BatchOpt.mibBatchTooltip.Suffix = 'Suffix to the output filename';
             obj.BatchOpt.mibBatchTooltip.ParallelProcessing = 'Use parallel processing during image conversion';
@@ -271,6 +356,23 @@ classdef ImageConverterController < handle
             figure(obj.View.gui);
         end
         
+        function BioFormatsReader_ValueChanged(obj, event)
+            % function BioFormatsReader_ValueChanged(obj, event)
+            % callback for press of BioFormats reader checkbox
+            % toggles between standard and BioFormats readers
+            
+            obj.updateBatchOptFromGUI(event);
+            if obj.View.handles.BioFormatsReader.Value     % use BioFormats reader
+                obj.View.handles.InputImageFormatExtension.Enable = 'off';
+                obj.View.handles.BioFormatsInputImageFormatExtension.Enable = 'on';
+                obj.View.handles.BioFormatsIndex.Enable = 'on';
+            else        % use standard reader
+                obj.View.handles.InputImageFormatExtension.Enable = 'on';
+                obj.View.handles.BioFormatsInputImageFormatExtension.Enable = 'off';
+                obj.View.handles.BioFormatsIndex.Enable = 'off';
+            end
+        end
+
         % ------------------------------------------------------------------
         % % Additional functions and callbacks
         function Convert(obj)
@@ -298,26 +400,37 @@ classdef ImageConverterController < handle
             end
             
             try
-                if strcmp(obj.BatchOpt.OutputImageFormatExtension{1}, 'xml')
-                    % use datastore instead of imageDatastore as we are
-                    % interested to process only metadata and reading of
-                    % the whole image is not needed
-                    imgDS = datastore(obj.BatchOpt.InputDirectory, ...
-                        'FileExtensions', lower(['.' obj.BatchOpt.InputImageFormatExtension{1}]), ...
-                        'Type', 'file', ...
-                        'IncludeSubfolders', obj.BatchOpt.IncludeSubfolders, ...
-                        'ReadFcn', @readMetaDataFromFibicsTIFs);
-                else
-                    if strcmp(obj.BatchOpt.InputImageFormatExtension{1}, 'png') && obj.BatchOpt.DiscardColormap
-                        imgDS = imageDatastore(obj.BatchOpt.InputDirectory, ...
+                if ~obj.BatchOpt.BioFormatsReader    % standard reader
+                    if strcmp(obj.BatchOpt.OutputImageFormatExtension{1}, 'xml')
+                        % use datastore instead of imageDatastore as we are
+                        % interested to process only metadata and reading of
+                        % the whole image is not needed
+                        imgDS = datastore(obj.BatchOpt.InputDirectory, ...
                             'FileExtensions', lower(['.' obj.BatchOpt.InputImageFormatExtension{1}]), ...
+                            'Type', 'file', ...
                             'IncludeSubfolders', obj.BatchOpt.IncludeSubfolders, ...
-                            'ReadFcn', @(fn)ImageConverterController.getPNGwithoutColormap(fn));
+                            'ReadFcn', @readMetaDataFromFibicsTIFs);
                     else
-                        imgDS = imageDatastore(obj.BatchOpt.InputDirectory, ...
-                            'FileExtensions', lower(['.' obj.BatchOpt.InputImageFormatExtension{1}]), ...
-                            'IncludeSubfolders', obj.BatchOpt.IncludeSubfolders);
+                        if strcmp(obj.BatchOpt.InputImageFormatExtension{1}, 'png') && obj.BatchOpt.DiscardColormap
+                            imgDS = imageDatastore(obj.BatchOpt.InputDirectory, ...
+                                'FileExtensions', lower(['.' obj.BatchOpt.InputImageFormatExtension{1}]), ...
+                                'IncludeSubfolders', obj.BatchOpt.IncludeSubfolders, ...
+                                'ReadFcn', @(fn)ImageConverterController.getPNGwithoutColormap(fn));
+                        else
+                            imgDS = imageDatastore(obj.BatchOpt.InputDirectory, ...
+                                'FileExtensions', lower(['.' obj.BatchOpt.InputImageFormatExtension{1}]), ...
+                                'IncludeSubfolders', obj.BatchOpt.IncludeSubfolders);
+                        end
                     end
+                else    % BioFormats reader
+                    getDataOptions.mibBioformatsCheck = obj.BatchOpt.BioFormatsReader;
+                    getDataOptions.verbose = false;
+                    getDataOptions.BioFormatsIndices = obj.BatchOpt.BioFormatsIndex{1};
+                    
+                    imgDS = imageDatastore(obj.BatchOpt.InputDirectory, ...
+                        'FileExtensions', lower(['.' obj.BatchOpt.BioFormatsInputImageFormatExtension{1}]), ...
+                        'IncludeSubfolders', obj.BatchOpt.IncludeSubfolders, ...
+                        'ReadFcn', @(fn)mibLoadImages(fn, getDataOptions));
                 end
             catch err
                 if obj.BatchOpt.showWaitbar; delete(wb); end
@@ -329,6 +442,7 @@ classdef ImageConverterController < handle
                 noFiles = numel(imgDS.Files);
                 wb.updateText(sprintf('Processing %d files\nPlease wait...', noFiles));
                 wb.increaseMaxNumberOfIterations(noFiles);
+                drawnow;
             end
 
             if strcmp(obj.BatchOpt.OutputImageFormatExtension{1}, 'xml')
@@ -340,6 +454,19 @@ classdef ImageConverterController < handle
                 catch err
                     if obj.BatchOpt.showWaitbar; delete(wb); end
                     warndlg(sprintf('%s, \n\nHINT: add filename prefix of suffix and try again', err.message), 'Directory selection error');
+                    return;
+                end
+            elseif obj.BatchOpt.PyramidalTIFgenerate
+                try
+                    levelsVec = str2num(obj.BatchOpt.PyramidalTIFlevels); %#ok<ST2NM> 
+                    compressionType = obj.BatchOpt.PyramidalTIFcompression{1};
+                    writeall(imgDS, obj.BatchOpt.OutputDirectory, ...
+                            'FilenamePrefix', obj.BatchOpt.Prefix, 'FilenameSuffix', obj.BatchOpt.Suffix, ...
+                            'UseParallel', obj.BatchOpt.ParallelProcessing, ...
+                            'WriteFcn', @(data, writeInfo, outputType)ImageConverterController.generatePyramidalTIF(data, writeInfo, outputType, levelsVec, compressionType));
+                catch err
+                    errordlg(sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), 'Convert to pyramidal TIFs');
+                    if obj.BatchOpt.showWaitbar; delete(wb); end
                     return;
                 end
             else

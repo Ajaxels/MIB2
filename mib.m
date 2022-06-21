@@ -85,14 +85,14 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'Tools', 'Supervoxels'));
 end
 
-mibVersion = 'ver. 2.82 / 12.04.2022';  % ATTENTION! it is important to have the version number between "ver." and "/"
+mibVersion = 'ver. 2.83 / 19.06.2022';  % ATTENTION! it is important to have the version number between "ver." and "/"
 
 % define max number of parallel workers for deployed versions
 % define workers for parallel pools
 parPool = parcluster('local'); % If no pool, do not create new one.
 if isdeployed
     if ispc()
-        cpuParallelLimit = 8;
+        cpuParallelLimit = 12;
     elseif ismac()
         cpuParallelLimit = 4;
     else

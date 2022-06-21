@@ -295,6 +295,7 @@ Prefs.Deep.TrainingOpt.ValidationFrequency = 2;
 Prefs.Deep.TrainingOpt.ValidationPatience = Inf;   % new in version 2.71
 Prefs.Deep.TrainingOpt.Plots = 'training-progress';  
 Prefs.Deep.TrainingOpt.OutputNetwork = 'last-iteration';     % new in v 2.82, requires R2021b
+Prefs.Deep.TrainingOpt.CheckpointFrequency = 1;              % new in v 2.83, requires R2022a
 
 Prefs.Deep.InputLayerOpt.Normalization = 'none';
 Prefs.Deep.InputLayerOpt.Mean = [];
@@ -330,13 +331,13 @@ Prefs.Deep.AugOpt2D.GaussianNoise = [0 0.005 0.05]; % variance
 Prefs.Deep.AugOpt2D.PoissonNoise = [1 0.05];
 Prefs.Deep.AugOpt2D.ImageBlur = [0 .5 0.05];
 
-Prefs.Deep.AugOpt3D.Fraction = 0.6;     % settings for 3D augumentation
-Prefs.Deep.AugOpt3D.FillValue = 0;
-Prefs.Deep.AugOpt3D.RandXReflection = true;
-Prefs.Deep.AugOpt3D.RandYReflection = true;
-Prefs.Deep.AugOpt3D.RandZReflection = true;
-Prefs.Deep.AugOpt3D.Rotation90 = true;
-Prefs.Deep.AugOpt3D.ReflectedRotation90 = true;
+% settings for 3D augumentation, same as for 2D but with addition of RandZReflection
+Prefs.Deep.AugOpt3D = Prefs.Deep.AugOpt2D;
+Prefs.Deep.AugOpt3D.RandZReflection = [1 0.05];
+
+Prefs.Deep.DynamicMaskOpt.Method = 'Keep above threshold';  % 'Keep above threshold' or 'Keep below threshold'
+Prefs.Deep.DynamicMaskOpt.ThresholdValue = 0;
+Prefs.Deep.DynamicMaskOpt.InclusionThreshold = 0;     % Inclusion threshold for mask blocks
 
 Prefs.Deep.Metrics.Accuracy = true;  % parameters for metrics evaluation
 Prefs.Deep.Metrics.BFscore = false;

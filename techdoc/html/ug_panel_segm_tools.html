@@ -1,13 +1,12 @@
 
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head>
+<!DOCTYPE html>
+<html lang="en"><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Segmentation Tools</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-12"><meta name="DC.source" content="ug_panel_segm_tools.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>Segmentation Tools</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="ug_panel_segm_tools.m"><style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -36,13 +35,13 @@ ol li ol li { list-style-type:lower-alpha; }
 ol li ul { padding-top:7px; }
 ol li ul li { list-style:square; }
 
-.content { font-size:1.2em; line-height:140%; padding: 20px; }
+.content { font-size:1.2em; line-height:160%; padding: 20px; }
 
-pre, code { font-size:12px; }
-tt { font-size: 1.2em; }
-pre { margin:0px 0px 20px; }
+pre { font-size:12px; }
+code { font-size: 1.15em; }
+pre { margin:0px 0px 15px; overflow-x:auto; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
-pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 15px; color:#4c4c4c; }
 pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
@@ -66,54 +65,536 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
+.kbd {     font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.h3 { color: #E65100; font-size: 12px; font-weight: bold; }
+.code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
-  </style></head><body><div class="content"><h1>Segmentation Tools</h1><!--introduction--><p>This panel hosts different tools that are used for the image segmentation.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a> <tt><b>--&gt;</b></tt> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">The 3D ball</a></li><li><a href="#2">The 3D lines</a></li><li><a href="#3">Annotations</a></li><li><a href="#4">The Brush tool</a></li><li><a href="#7">The Black and White Thresholding tool</a></li><li><a href="#8">Drag &amp; Drop materials</a></li><li><a href="#9">The Lasso tool</a></li><li><a href="#10">The Magic Wand+Region Growing tool</a></li><li><a href="#11">The Membrane Click Tracker tool</a></li><li><a href="#12">Object Picker</a></li><li><a href="#13">The Spot tool</a></li></ul></div><h2 id="1">The 3D ball</h2><p>
+#tooltiptext {
+  visibility: hidden;
+  padding: 5px 10px;
+  font-size: 75%;
+  line-height:110%;
+  text-align: center;
+  background-color: black;
+  color: #ddd;
+  border-radius: 6px;
+  position: fixed;
+  bottom: 11px;
+  right: 62px;
+  z-index: 2;
+}
+#tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+.tooltip:hover #tooltiptext {
+  visibility: visible;
+}
+#return-link {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    overflow: visible;
+    font-size:120%;
+    background: rgba(0, 0, 0, 0.75);
+    border-style: solid;
+    border-width: 3pt;
+    border-color: #202020;
+    border-radius: 4px;
+    cursor: pointer;
+    }
+#return-link > p { padding:3px; margin:0; color:#C0C0C0;}
+.MATLAB-Help {
+width: 100%;
+margin-bottom: 12px;
+border: 1px solid #ccc;
+border-right: none;
+border-bottom: none;
+font-size: 96%;
+line-height: 1.4;
+table-layout: fixed;
+overflow:hidden;}
+
+.MATLAB-Help > thead > tr > th {
+padding: 6px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+background: #F2F2F2;
+color: #000;
+font-weight: bold;
+text-align: left;
+vertical-align: middle;}
+
+.MATLAB-Help td{padding: 5px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+vertical-align: middle;}
+
+.language-matlab { line-height:135% }
+
+.collapse-link {float:right; line-height:200%; padding-left:10px; margin:0}
+
+
+details > summary,
+.details-div {
+  padding: 8px 20px;
+  border-style: solid;
+  border-width: 1.2pt;
+  border-color: #E0E0E0;
+}
+details > summary {
+  border-radius:6px 6px 0 0;
+  background-color: #F2F2F2;
+  cursor: pointer;
+}
+.details-div {
+  border-top-style: none;
+  border-radius: 0 0 6px 6px;
+}
+.image-fit-svg,
+.image-fit {
+    max-width:  95%;
+    max-height: 100%;
+    margin:     auto;
+}
+.image-fit-svg{ padding:0px; max-width:500px; }
+details > img.image-fit-svg{ padding: 0px 0px 10px; }
+@media (max-width: 580px) {
+  .image-fit-svg { max-width: 95%; }
+}
+.pretty-link  { color:#001188 !important; }
+</style>
+<style id="dark-theme">
+    h2, h3       { color: #B0B0B0; }
+    html body    { background-color: #101010; color: #B0B0B0; }
+    .pretty-link { color: #C46313 !important; }
+    a, a:visited { color: #C46313 }
+    a:hover      { color: orange; }
+    details > summary,
+    .details-div      { border-color:     #505050; }
+    details > summary { background-color: #202020; }
+    pre.codeinput     { border-width: 1.2pt; border-color:#001B33; background:#001129; color:#F0F0F0; }
+    pre.codeoutput    { color:#A5A5A5; }
+    span.keyword      { color:#FF9D00; }
+    span.comment      { color:#808080; }
+    span.string       { color:#3AD900; }
+    span.untermstring { color:#FFEE80; }
+    span.syscmd       { color:#CCCCCC; }
+    .MATLAB-Help, .MATLAB-Help > thead > tr > th, .MATLAB-Help td { border-color:#505050; }
+    .MATLAB-Help > thead > tr > th { background: #202020; color: #B0B0B0; }
+    .summary-sub-heading { color:#909090; }
+    .show-if-light    { display:none }
+</style>
+<style id="hide-dark">
+     .show-if-dark { display:none }
+</style>
+
+<style id="anchor-offsets">
+    h2::before, a[id]::before{
+    content: "";
+    display: block;
+    height: 100px;
+    margin: -100px 0 0;
+    visibility: hidden;
+    width:10%;
+    z-index: -1;
+}
+</style>
+
+<script>
+          var returnElem = null;
+          var skipCheck  = false;
+
+          function hide_back_link()
+          {
+              returnButton.style.display = "none";
+              try{
+                 window.removeEventListener("scroll", update_back_position, true);
+                 window.removeEventListener("resize", update_back_position, true);
+                 parent.window.removeEventListener("scroll", update_back_position, true);
+                 parent.window.removeEventListener("resize", update_back_position, true);}
+              catch(e){}
+          }
+
+          function get_offset(element)
+          {
+              if (!element.getClientRects().length){ return { top: 0, left: 0 }; }
+              var rect = element.getBoundingClientRect();
+              var win  = element.ownerDocument.defaultView;
+              return ( {top:  rect.top  + win.pageYOffset,
+                        left: rect.left + win.pageXOffset} );
+          }
+
+          function jump_to()
+          {
+              var clickedElem = event.target;
+              var clickedID   = clickedElem.closest("span");
+              if (clickedID){
+                clickedID = clickedID.getAttribute("id");
+                if (clickedID.localeCompare("jump-close")===0) { return };}
+              clickedID = clickedElem.closest("div").getAttribute("id");
+              if (clickedID && clickedID.localeCompare("return-link")===0)
+              {
+                  if (returnElem)
+                  {
+                      event.preventDefault();
+                      hide_back_link();
+                      returnElem.scrollIntoView();
+                      if (contentDiv.getAttribute("data-isHelpBrowser")){
+                         contentDiv.scrollTop = contentDiv.scrollTop-100; }
+                      if (contentDiv.getAttribute("data-isMATLABCentral")){
+                         parent.window.scrollBy(0,-100)}
+                      returnElem = null;
+                  }
+              }
+              else
+              {
+                  var href = clickedElem.closest("a").getAttribute("href");
+                  if ( href && href[0] == "#" )
+                  {
+                     var target = document.getElementById(href.substring(1));
+                     var enclosingBox = target;
+                     while ( enclosingBox )
+                     {
+                        prevBox      = enclosingBox;
+                        enclosingBox = enclosingBox.closest("details");
+                        if ( enclosingBox===prevBox ){
+                           enclosingBox = enclosingBox.parentElement
+                           if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
+                        if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
+                     }
+                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                        event.preventDefault();
+                        target.scrollIntoView(); }
+                     var nextElem = target.nextElementSibling;
+                     var nextNode = target.nextSibling;
+                     while ( nextNode && nextNode.nodeType==Node.TEXT_NODE && nextNode.data.trim().length == 0 ){
+                        nextNode = nextNode.nextSibling;}
+                     if ( nextElem && nextElem===nextNode && nextElem.localName.localeCompare("details")===0 && !nextElem.open){
+                        open_details(nextElem.id);}
+                  }
+                  else { return }
+                  if (!contentDiv.getAttribute("data-isHelpBrowser"))
+                  {
+                      update_back_position();
+                      returnButton.style.display = "block";
+                      var linkTop   = clickedElem.offsetTop;
+                      var targetTop = target.offsetTop;
+                      if (targetTop>linkTop){
+                          document.getElementById("down").style.display = "none";
+                          document.getElementById("up").style.display   = "inline"; }
+                      else{
+                          document.getElementById("up").style.display   = "none";
+                          document.getElementById("down").style.display = "inline"; }
+                      returnElem = clickedElem;
+                  }
+              }
+          }
+
+          function open_details(detailsID)
+          {
+              var details  = document.getElementById(detailsID);
+              skipCheck    = true;
+              state_check(details.id);
+              details.open = true;
+          }
+
+          function update_back_position()
+          {
+              try
+              {
+                  window.addEventListener("scroll", update_back_position, true);
+                  window.addEventListener("resize", update_back_position, true);
+                  var scrollPos;
+                  if (in_iFrame())
+                  {
+                      parent.window.addEventListener("scroll", update_back_position, true);
+                      parent.window.addEventListener("resize", update_back_position, true);
+                      var iFrame         = window.frameElement;
+                      var frameOffset    = get_offset(iFrame);
+                      var documentBottom = parent.window.innerHeight  + parent.window.scrollY;
+                      var extHeight      = Math.round(frameOffset.top + iFrame.getBoundingClientRect().height - documentBottom);
+                      if (extHeight<0) { extHeight = 0; }
+                      returnButton.style.bottom = (10+extHeight) + "px";
+                      document.getElementById("tooltiptext").style.bottom = (11+extHeight) + "px";
+                      scrollPos = contentDiv.scrollTop - 25 + iFrame.getBoundingClientRect().height - extHeight;
+                  }
+                  else{
+                      scrollPos = window.scrollY + window.innerHeight - 25;}
+                  if (returnElem.offsetTop>scrollPos){
+                      document.getElementById("down").style.display = "inline";
+                      document.getElementById("up").style.display   = "none";   }
+                  else{
+                      document.getElementById("down").style.display = "none";
+                      document.getElementById("up").style.display   = "inline"; }
+              }
+              catch(e){}
+          }
+          function set_theme(themePref)
+          {
+            var themeSwitch     = document.getElementById("ToggleTheme");
+            var themeSwitchText = "switch to";
+            var switchToText    = null;
+            if (!themePref){ themePref = get_theme_pref(); }
+            if (themePref.localeCompare("light")===0){
+                document.getElementById("dark-theme").sheet.disabled = true;
+                document.getElementById("hide-dark").sheet.disabled  = false;
+                switchToText = " dark theme";}
+            else{
+                document.getElementById("dark-theme").sheet.disabled = false;
+                document.getElementById("hide-dark").sheet.disabled  = true;
+                switchToText = " light theme";}
+            themeSwitch.innerHTML = themeSwitchText + switchToText;
+            set_theme_pref(themePref);
+          }
+
+          function toggle_theme()
+          {
+            if (document.getElementById("dark-theme").sheet.disabled) { set_theme("dark");  }
+            else                                                      { set_theme("light"); }
+          }
+
+          function set_theme_pref(themePref)
+          {
+              var d = new Date();
+              d.setTime(d.getTime() + (2*365*24*60*60*1000));
+              var expires = "expires="+ d.toUTCString();
+              document.cookie = "themepref=" + themePref + ";" + expires + "path=/";
+              localStorage.setItem("PRETTY_THEME", themePref);
+          }
+
+          function get_theme_pref() {
+              var name = "themepref=";
+              var decodedCookie = decodeURIComponent(document.cookie);
+              var ca = decodedCookie.split(';');
+              for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                  c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                  return c.substring(name.length, c.length);
+                }
+              }
+              var docTheme = localStorage.getItem("PRETTY_THEME");
+              if (docTheme) { return docTheme }
+              else          { return "light"  }
+          }
+
+          function toggle_details(section)
+          {
+            var link;
+            var subSection;
+            var details;
+            var linkText;
+            var i;
+            var openState  = true;
+            var border     = "6px 6px 0 0;"
+            if (section===0)
+            {
+              link = document.getElementById("Toggle"+section.toString());
+              if (link.innerHTML.localeCompare("collapse all on page")===0){
+                  openState = false;
+                  border    = "6px;"
+                  linkText  = "expand all";}
+              else{
+                  linkText   = "collapse all";}
+              link.innerHTML = linkText + " on page";
+              for (i = 0; i < allDetails.length; i++){
+                 allDetails[i].open = openState;
+                 allDetails[i].children[0].setAttribute( 'style', "border-radius:"+border );
+                 link = document.getElementById("Toggle"+allDetails[i].id.split(".", 1));
+                 if (allDetails[i].id.charAt(0).localeCompare("0") && link){link.innerHTML = linkText;}}
+            }
+            else
+            {
+               link = document.getElementById("Toggle"+section.toString());
+               subSection = 1;
+               if (link.innerHTML.localeCompare("collapse all")===0){
+                  openState      = false;
+                  border         = "6px;"
+                  link.innerHTML = "expand all";}
+               else{
+                  link.innerHTML = "collapse all";}
+               details = document.getElementById(section.toString()+"."+subSection.toString());
+               while (details){
+                    details.open = openState;
+                    details.children[0].setAttribute( 'style', "border-radius:"+border );
+                    subSection++;
+                    details = document.getElementById(section.toString()+"."+subSection.toString());}
+               var allCollapsed = true;
+               var allExpanded  = true;
+               for (i = 0; i < allDetails.length; i++){
+                   check_if_open(allDetails[i]);}
+               link = document.getElementById("Toggle0");
+               if (allExpanded) {link.innerHTML = "collapse all on page";}
+               if (allCollapsed){link.innerHTML = "expand all on page";}
+            }
+            function check_if_open(details)
+            {
+                if (details.open){allCollapsed = false;}
+                else             {allExpanded  = false;}
+            }
+          }
+
+          function state_check(detailsID)
+          {
+              // first deal with just the section
+              if (event.detail){document.activeElement.blur();}
+              var clickedElem   = event.target;
+              if (!skipCheck && clickedElem.localName.localeCompare("summary"))
+              { 
+                if (!(clickedElem.closest("summary"))) { return };
+              };
+              var details       = document.getElementById(detailsID);
+              if ( !skipCheck ) {
+                  var parentID  = clickedElem.closest("details").id;
+                  if (details.id.localeCompare(parentID)) { return };}
+              skipCheck         = false;
+              var clickedStatus = details.open;
+              var section       = detailsID.split(".", 1);
+              var subSection    = 1;
+              var allCollapsed  = true;
+              var allExpanded   = true;
+              var link          = document.getElementById("Toggle"+section);
+              if (clickedStatus) { details.children[0].setAttribute( 'style', "border-radius:6px;" ); }
+              else               { details.children[0].setAttribute( 'style', "border-radius:6px 6px 0 0;" ); }
+              if (link)
+              {
+                  details = document.getElementById(section+"."+subSection.toString());
+                  while (details){
+                    check_if_open(details);
+                    subSection++;
+                    details = document.getElementById(section+"."+subSection.toString());}
+                  if (allExpanded) {link.innerHTML = "collapse all";}
+                  if (allCollapsed){link.innerHTML = "expand all";}
+              }
+              // then the whole page
+              allCollapsed   = true;
+              allExpanded    = true;
+              for (var i = 0; i < allDetails.length; i++){
+                  check_if_open(allDetails[i]);}
+              link = document.getElementById("Toggle0");
+              if (allExpanded) {link.innerHTML = "collapse all on page";}
+              if (allCollapsed){link.innerHTML = "expand all on page";}
+
+              function check_if_open(details)
+              {
+                  var openStatus
+                  if (detailsID.localeCompare( details.id )===0 ){openStatus = !clickedStatus;}
+                  else                                           {openStatus = details.open;}
+                  if (openStatus){allCollapsed = false;}
+                  else           {allExpanded  = false;}
+              }
+          }
+
+          function in_iFrame ()
+          {
+               try {
+                   return window.self !== window.top;
+               } catch (e) {
+                   return true;
+               }
+          }
+</script>
+</head><body>
+<div class="content">
+<div id="return-link" style="display:none;" class="tooltip">
+<p onclick="jump_to()">
+    <span onclick="jump_to()"><span id="up">&#8679;</span><span id="down">&#8681;</span>
+    <span onclick="hide_back_link()" style="padding:2px; font-size:120%;" id="jump-close"><b onclick="hide_back_link()">&times;</b></span></span>
+</p>
+<div id="tooltiptext">click to return
+<br>(click <b>&times;</b> to hide)</div>
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Segmentation Tools</h1><!--introduction-->
+<p>This panel hosts different tools that are used for the image segmentation.</p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a> <code><b>--&gt;</b></code> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a></p><!--/introduction-->
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
+<div><ul><li><a href="#1">The 3D ball</a></li>
+<li><a href="#2">The 3D lines</a></li>
+<li><a href="#3">Annotations</a></li>
+<li><a href="#4">The Brush tool</a></li>
+<li><a href="#7">The Black and White Thresholding tool</a></li>
+<li><a href="#8">Drag &amp; Drop material</a></li>
+<li><a href="#9">The Lasso tool</a></li>
+<li><a href="#10">The Magic Wand + Region Growing tool</a></li>
+<li><a href="#11">The Membrane Click Tracker tool</a></li>
+<li><a href="#12">Object Picker</a></li>
+<li><a href="#13">The Spot tool</a></li></ul></div>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="1">The 3D ball</h2>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
-  <img src = "images\PanelsSegmentationTools3DBall.png">
+  <img class="image-fit" src = "images\PanelsSegmentationTools3DBall.png">
 </td>
 <td style="border: 0px">
 Makes selection as a spherical object in the 3D space with a radius taken from the
 <b>Radius, px</b> edit box. The <b>Eraser, x</b> edit box modifies
-increse of the 3D ball eraser, when holding the Clrl key.<br>
-A brief demonstration is available in the following video:<br>
+increse of the 3D ball eraser, when holding the <span class="kbd">Clrl</span> key.
+<br>
+A brief demonstration is available in the following video:
+<br>
 <a href="https://youtu.be/ZcJQb59YzUA?t=1s"><img
 style="vertical-align:middle;" src="images\youtube2.png">
-https://youtu.be/ZcJQb59YzUA?t=1s</a><br><br>
-<br><br>
-<b>Note!</b> The 3D shape of the ball is defined by the
-pixel dimensions, see <em>Dataset Parameters</em> in <a href="ug_gui_menu_dataset.html">Menu->Dataset->Parameters</a>.
-<br><br>
-<b>Selection modifiers</b>
-<ul>
-<li><b>None / Shift+left mouse click</b>, will add selection with the existing one</li>
-<li><b>Ctrl + left mouse click</b>, will remove selection from the current</li>
-</ul>
+https://youtu.be/ZcJQb59YzUA?t=1s</a>
+<br>
+<br>
+<b>Note!</b> The depth of 3D ball is defined by the pixel dimensions,
+<br>see <em>Dataset Parameters</em> in <a href="ug_gui_menu_dataset.html">Menu->Dataset->Parameters</a>
 </td>
 </tr>
 </table>
-</p><h2 id="2">The 3D lines</h2><p>
-A demonstration is available on youtube:<br>
-<a href=""><img style="vertical-align:middle;" src="images\youtube2.png">
-https://youtu.be/DNRUePJiCbE</a><br>
+<details open onclick="state_check('1.1')" id="1.1"><summary> <b>Selection modifiers</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li><span class="kbd">None</span> / <span class="kbd">&#8679; Shift</span>+<span class="kbd">left mouse click</span>, add 3D ball selection with the existing one</li>
+<li><span class="kbd">Ctrl</span> + <span class="kbd">left mouse click</span>, remove 3D ball selection from the current selection layer</li></ul></div>
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="2">The 3D lines</h2>
+<p><a id="target1"></a></p>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
-  <img src = "images\PanelsSegmentationTools3DLines.png">
+  <img class="image-fit" src = "images\PanelsSegmentationTools3DLines.png">
 </td>
 <td style="border: 0px">
 The 3D lines tool can be used to draw lines in 3D and arrange them as
 graphs or skeletons. The 3D lines composed of Nodes (Vertices)
 connected with Edges (a line that connect two nodes). Separated from each
-other sets of 3D lines organized into separate trees.
-<br><br>
+other sets of 3D lines organized into separate trees. 
+<br>
+A demonstration is available on:
+<a href=""><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">
+https://youtu.be/DNRUePJiCbE</a>
+<br>
+
+<br>
 Modification of nodes is possible using mouse clicks. To increase
 flexibility, the clicks can be extended with key-modifiers, such as
-<em>Shift, Control, Alt</em>. Each action can be configured depending on
-needs. Please refer to a table below for various options:
-<br><br>
-<b>Available actions</b>
+<span class="kbd">&#8679; Shift</span>, <span class="kbd">Ctrl</span>, <span class="kbd">Alt</span>.
+Each action can be configured depending on needs. Please refer to a
+table below for various options.
+</td>
+</tr>
+</table>
+<details open onclick="state_check('2.1')" id="2.1"><summary> <b>Available actions</b> </summary>
+<div class="details-div">
+<p></p>
 <ul>
 <li><b>Add node</b>, add a new node to the active tree; the new point will be connected to the active point (shown in red) of the tree</li>
 <li><b>Assign active node</b>, assign the closest node to position of the mouse click, as a new active node</li>
@@ -124,40 +605,29 @@ needs. Please refer to a table below for various options:
 <li><b>New tree</b>, add a new node and assign it to a new tree, which is not connected to other trees</li>
 <li><b>Split tree</b>, delete the closest node to position of the mouse click and split the tree at this point</li>
 </ul>
-Use the <b>Show lines</b> checkbox to toggle visibility of the lines in
+Use the <span class="kbd">[&#10003;] <b>Show lines</b></span> checkbox to toggle visibility of the lines in
 the Image View panel.
+
 <br>
-Press the <b>Table view</b> button to start a window which tables that
+Press the <span class="kbd">Table view</span> button to start a window which tables that
 describe the 3D lines (see below).
-<br><br>
-</td>
-</tr>
-</table>
+
+</div>
+</details>
+<br>
+<p><span class="h3">Lines 3D View</span></p>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
-  <img src = "images\PanelsSegmentationTools3DLinesDlg.png">
-<br><br>
-<b>Tools panel</b><br>
-<ul>
-<li><b>Load</b>, load 3D lines from a file in matlab-compatible lines3d format</li>
-<li><b>Save</b>, export to MATLAB or save 3D lines to a file:
-  <ul>
-  <li><b>MATLAB format, *.lines3d</b>, it is recommended to save the 3D lines in the matlab format!</li>
-  <li><b>Amira Spatial graph, *.am</b>, Amira-compatible format in binary or ascii form</li>
-  <li><b>Excel format, *.xls</b>, export Nodes and Edges tables to an Excel file</li>
-  </ul>
-</li>
-<li><b>Refresh</b>, refresh the tables shown in this window</li>
-<li><b>Delete all</b>, delete all 3D lines</li>
-<li><b>Visualize in 3D</b>, plot all trees in the 3D space</li>
-<li><b>Settings</b>, modify color and thickness of 3D lines</li>
-</ul>
+  <img class="image-fit" src = "images\PanelsSegmentationTools3DLinesDlg.png">
 </td>
 <td style="border: 0px">
-<b>Table with the list of trees</b><br>
+<b>Table with the list of trees</b>
+<br>
 The upper table shows the list of trees and number of nodes that compose
-each tree. <b><em>Each tree should have an unique name!</b></em><br><br>
+each tree. <b><em>Each tree should have an unique name!</b></em>
+<br>
+<br>
 Right mouse click starts a popup menu with various options:
 <ul>
 <li><b>Rename selected tree...</b>, rename selected in the table tree; tree name should be unique!</li>
@@ -166,358 +636,597 @@ Right mouse click starts a popup menu with various options:
 <li><b>Save/export selected tree(s)</b>, export to MATLAB or save to a file the selected trees, see the Tools panel below for the list of available file formats</li>
 <li><b>Delete selected tree(s)</b>, delete selected tree from the table</li>
 </ul>
-<br><br>
-<b>Space between the tables</b><br>
-<ul>
-<li><b>Active tree</b>, an index of the active tree</li>
+</td>
+</tr>
+</table>
+<details open onclick="state_check('2.2')" id="2.2"><summary> <b>Space between the tables</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li><b>Active tree</b>, an index of the active tree</li>
 <li><b>Active node</b>, an index of the active node</li>
 <li><b>Table</b>, a combo box to select what should be shown in the lower table: Nodes or Edges</li>
 <li><b>Field</b>, a combo box to define an additional field that should be shown the lower table. By default, only the Radius and Weights fields are available</li>
 <li><b>Auto jump</b>, when selected, auto jump to the selected node</li>
-<li><b>Auto refresh</b>, automatically refresh the tables, may be quite slow with many nodes</li>
-</ul>
+<li><b>Auto refresh</b>, automatically refresh the tables, may be quite slow with many nodes</li></ul></div>
+</div>
+</details>
 <br>
-<b>Nodes table</b><br>
-The table shows list of nodes and offers multiple actions via a popup
-menu:
-<ul>
-<li><b>Jump to the node</b>, jumps to the selected node and put it in the center of the Image View panel</li>
+<details open onclick="state_check('2.3')" id="2.3"><summary> <b>Nodes table</b> </summary>
+<div class="details-div">
+<p></p>
+<p>The table shows list of nodes and offers multiple actions via a popup menu:</p>
+<div><ul style="margin-bottom:0px;"><li><b>Jump to the node</b>, jumps to the selected node and put it in the center of the Image View panel</li>
 <li><b>Set as active node</b>, makes the selected node active</li>
 <li><b>Rename selected nodes...</b>, assign a new name for the selected nodes</li>
-<li><b>Show coordinates in pixels...</b>, by default, the coordinates of the nodes are shown in the physical units of the dataset, <em>i.e.</em> with respect to <a href="ug_gui_menu_dataset.html#8">the bounding box</a>; this action shows coordinate of the node in pixels</li>
+<li><b>Show coordinates in pixels...</b>, by default, the coordinates of the nodes are shown in the physical units of the dataset, <i>i.e.</i> with respect to <a href="ug_gui_menu_dataset.html#8">the bounding box</a> ; this action shows coordinate of the node in pixels</li>
 <li><b>New annotations from nodes</b>, generate a new annotations from the position of nodes</li>
 <li><b>Add nodes to annotations</b>, add selected nodes to the existing annotations</li>
 <li><b>Delete nodes from annotations</b>, delete selected nodes from the existing annotations</li>
-<li><b>Delete nodes...</b>, delete selected nodes</li>
-</ul>
+<li><b>Delete nodes...</b>, delete selected nodes</li></ul></div>
+</div>
+</details>
 <br>
-<b>Edges table</b><br>
-The table shows list of edges; certain actions available via a popup menu:
+<details open onclick="state_check('2.4')" id="2.4"><summary> <b>Edges table</b> </summary>
+<div class="details-div">
+<p> The table shows list of edges; certain actions available via a popup menu:</p>
+<div><ul style="margin-bottom:0px;"><li><b>Jump to the node</b>, jumps to the selected node and put it in the center of the Image View panel</li>
+<li><b>Set as active node</b>, makes the selected node active</li></ul></div>
+</div>
+</details>
+<br>
+<details open onclick="state_check('2.5')" id="2.5"><summary> <b>Tools panel</b></summary>
+<div class="details-div">
+<p></p>
+<div><ul><li><b><span class="kbd">Load</span></b>, load 3D lines from a file in matlab-compatible lines3d format</li>
+<li><b><span class="kbd">Save</span></b>, export to MATLAB or save 3D lines to a file:</li></ul></div>
 <ul>
-<li><b>Jump to the node</b>, jumps to the selected node and put it in the center of the Image View panel</li>
-<li><b>Set as active node</b>, makes the selected node active</li>
+<li><b>MATLAB format, *.lines3d</b>, it is recommended to save the 3D lines in the matlab format!</li>
+<li><b>Amira Spatial graph, *.am</b>, Amira-compatible format in binary or ascii form</li>
+<li><b>Excel format, *.xls</b>, export Nodes and Edges tables to an Excel file</li>
+</ul>
+<div><ul style="margin-bottom:0px;"><li><b><span class="kbd">Refresh</span></b>, refresh the tables shown in this window</li>
+<li><b><span class="kbd">Delete all</span></b>, delete all 3D lines</li>
+<li><b><span class="kbd">Visualize in 3D</span></b>, plot all trees in the 3D space</li>
+<li><b><span class="kbd">Settings</span></b>, modify color and thickness of 3D lines</li></ul></div>
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="3">Annotations</h2>
+<table style="width: 800px; border: 0px">
+<tr>
+<td style="border: 0px">
+  <img class="image-fit" src = "images\PanelsSegmentationToolsAnnotations.png">
+</td>
+<td style="border: 0px">
+A set of tools to add/remove annotations. Each annotation allows to mark
+specific location in the dataset, assign a label and a value to it
+<br>
+<br>
+Brief demonstration is available in the following videos:
+<br>
+<a href="https://youtu.be/3lARjx9dPi0"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+
+<br>
+<a href="https://youtu.be/3lARjx9dPi0"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/6otBey1eJ0U</a>
+
+<br>
+<br>
+<b> Addition and removal of annotations</b>
+<br>
+<ul>
+<li><span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, add annotation to the
+position under the mouse cursor</li>
+<li><span class="kbd">Ctrl</span> + <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, remove annotation that is the closest to the
+position under the mouse cursor</li>
 </ul>
 </td>
 </tr>
 </table>
-</p><h2 id="3">Annotations</h2><p>
-A brief demonstration is available in the following videos:<br>
-<a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
-<br>
-<a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/6otBey1eJ0U</a>
-<br>
-<table style="width: 800px; border: 0px">
-<tr>
-<td style="border: 0px">
-  <img src = "images\PanelsSegmentationToolsAnnotations.png">
-</td>
-<td style="border: 0px">
-A set of tools to add/remove annotations. Each annotation allows to mark specific location in the dataset, assign a label and a value to it<br><br>
-When the Annotation tool is selected the mouse click above the image adds annotation to the model.
-The annotations can be removed by using <em>Ctrl + left mouse click</em> combination.
-<br>
+<details open onclick="state_check('3.1')" id="3.1"><summary> <b>Annotation panel widgets</b> </summary>
+<div class="details-div">
+<p></p>
 <ul>
-<li>The <b>Annotation list</b> button starts a window with the list of existing
+<li>The <span class="kbd">Annotation list</span> button starts a window with the list of existing
 annotations. It is possible to load and save annotations to the main MATLAB
 workspace or to a file (matlab and excel formats). See more below.</li>
-<li>The <b>Delete All</b> button removes all annotations
+<li>The <span class="kbd">Delete All</span> button removes all annotations
 <li><b>Precision</b> edit box - specify number of digits after decimal
 point</li>
+<li><span class="kbd">[&#10003;] <b>Show prompt</b></span> checkbox, when ticked a dialog asking for label and value appear after addition of each annotation,
+otherwise the dialog is not shown and the label and field values are taken from the previously added annotation</li>
+<li><span class="kbd">[&#10003;] <b>Focus on Value</b></span> checkbox, when ticked, the first parameter during visualization of annotations is
+value and the second parameter is label.</li>
 <li>The <b>Display as</b> combobox - enables way how the annotations are
 displayed in the <a href="ug_panel_im_view.html">Image View panel</a>.
-<ul>The following modes are available:<br><br>
+<ul><b><em>The following modes are available:</b></em>
+<br>
 <li><b>Marker</b>, show only location of the annotation using a cross-marker</li>
 <li><b>Label</b>, show marker and label for each annotation</li>
 <li><b>Value</b>, show marker and value for each annotation</li>
 <li><b>Label + Value</b>, show marker, label and value for each annotation</li>
 </ul>
 </li>
-<li><b>Focus on Value</b> checkbox, when enabled, the first parameter during visualization of annotations is
-value and the second parameter is label.
 </ul>
-</td>
-</tr>
-</table>
-</p><p>
-<b>List of annotations window</b>
+
+</div>
+</details>
+<br>
+<p><span class="h3">List of annotations window</span></p>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
-  <img src = "images\PanelsSegmentationToolsAnnotationsTable.png">
+  <img class="image-fit" src = "images\PanelsSegmentationToolsAnnotationsTable.png">
 </td>
 <td style="border: 0px">
 <ul>
 <li>The <b>List of annotations</b> table shows a list of annotations.
   <ul>The <em>right mouse button</em></b> click calls an additional popup menu that allows to
       <li><em><b>Jump to annotation</em></b>, moves the image so that the selected annotation is in the middle of the Image View panel</li>
-      <li><em><b>Add annotation</em></b>, manually add annotation to the list, position of the first and second fields are defined by the <em>Value eccentric</em> checkbox of the Annotation panel, see above</li>
+      <li><em><b>Add annotation</em></b>, manually add annotation to the list, position of the first and second fields are defined by the <span class="kbd">[&#10003;] <b>Value eccentric</b></span> checkbox of the Annotation panel, see above</li>
       <li><em><b>Rename selected annotations</em></b>, rename names of the selected annotations</li>
       <li><em><b>Batch modify selected annotations</em></b>, modify annotation values or coordinates using a provided expression</li>
       <li><em><b>Count selected annotations</em></b>, calculate occurance of each annotation in the list of selected annotations.
-          The results are displayed in the MATLAB command window and
-          copied to the system clipboard
-          <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a>
+          The results are displayed in the MATLAB command window and copied to the system clipboard
+          <a href="https://youtu.be/rqZbH3Jpru8"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"></a>
           </li>
       <li><em><b>Copy selected annotations to clipboard</em></b>, the selected annotations are copied to the system clipboard as a text string ready to be pasted to Excel</li>
+      <li><em><b>Convert selected annotations to Mask...</em></b>, generate 2D/3D Mask spots centered at each annotation marker. The
+          size of the spot can either be fixed or scaled from the value field of the selected annotations
+<br>
+          <img class="image-fit" src="images\PanelsSegmentationToolsAnnotationsTableToMask.png"></li>
+      <li><em><b>Crop out patches around selected annotations</em></b>, 2D/3D patch of the predefined size is generated when this operation is used
+          <a href="https://youtu.be/QrKHgP76_R0"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"></a></li>
       <li><em><b>Export selected annotations</em></b>, export selected annotations in the MATLAB format, landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>), PSI format for Amira and Excel</li>
       <li><em><b>Export selected annotations to Imaris</em></b>, export selected annotations to Imaris (<em><b>Note!</em> please first export the dataset!</b>)</li>
       <li><em><b>Order</b></em>, subitems of the Order entry can be used to move annotations towards the top or the bottom of the list</li>
       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
   </ul>
-<li>The <b>Load</b> button, press to import annotations from the main MATLAB workspace or load them from a file</li>
-<li>The <b>Save</b> button, press to export annotations to the main MATLAB workspace or to save them as a file in MATLAB, Comma-separated CSV format, Excel formats or as landmarks for Amira (
-          <a href="https://youtu.be/wHr6nHpmVMo"><img style="vertical-align:middle;" src="images\youtube.png"></a> <em><b>Note!</em> only the coordinates are exported!</b>), or PSI format for Amira</li>
+<li>The <span class="kbd">Load</span> button, press to import annotations from the main MATLAB workspace or load them from a file</li>
+<li>The <span class="kbd">Save</span> button, press to export annotations to the main MATLAB workspace or to save them as a file in MATLAB, Comma-separated CSV format, Excel formats or as landmarks for Amira (
+          <a href="https://youtu.be/wHr6nHpmVMo"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"></a> <em><b>Note!</em> only the coordinates are exported!</b>), or PSI format for Amira</li>
 <li>The <b>Precision</b> editbox, modify precision of the value field in the table and for the visualization in the Image View panel
-<li>The <b>Auto jump</b> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>
+<li>The <span class="kbd">[&#10003;] <b>Auto jump</b></span> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>
 <li>The <b>Sort table</b> allows to sort annotations based on their Name, Value, X, Y, Z, T</li>
-<li>The <b>Settings</b> provides configuration of additional settings: extra slices to display annotation, when this value 0 annotations only belonging to the current slice are displayed, when a positive number from -value to +value depth</li>
-<li>The <b>Refresh table</b> button updates the list of annotations</li>
-<li>The <b>Delete all</b> button removes all annotations</li>
+<li>The <span class="kbd">Settings</span> provides configuration of additional settings: extra slices to display annotation, when this value 0 annotations only belonging to the current slice are displayed, when a positive number from -value to +value depth</li>
+<li>The <span class="kbd">Refresh table</span> button updates the list of annotations</li>
+<li>The <span class="kbd">Delete all</span> button removes all annotations</li>
 </ul>
 </td>
 </tr>
 </table>
-</p><h2 id="4">The Brush tool</h2><p>
+<p>
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="4">The Brush tool</h2>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
-  <img src = "images\PanelsSegmentationToolsBrush.png">
+  <img class="image-fit" src = "images\PanelsSegmentationToolsBrush.png">
 </td>
 <td style="border: 0px">
 Use brush to make selection. The brush size is regulated with
 the <b>Radius, px</b> edit box
+
 <br>
-A brief demonstration is available in the following videos:<br>
-<a href="https://youtu.be/VlTCxVAUxFc"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/VlTCxVAUxFc</a>
-<a href="https://youtu.be/ZcJQb59YzUA?t=37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=37s</a>
+A brief demonstration is available in the following videos:
 <br>
-<br><br>Objects from different image slices may be connected
+<a href="https://youtu.be/VlTCxVAUxFc"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/VlTCxVAUxFc</a>
+<a href="https://youtu.be/ZcJQb59YzUA?t=37s"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=37s</a>
+
+<br>
+
+<br>
+<br>Objects from different image slices may be connected
 using the <em>Interpolation</em> function (shortcut <b>i</b> or via <em>Menu->Selection->Interpolate</em>),
 see more in the <a href="ug_gui_menu_selection.html">Selection menu</a> section.
-<br><br>
-Size of the Brush can be regulated using <em>Ctrl + Mouse wheel</em>.
-<br><br>
-<b>Selection modifiers</b>
-<ul>
-<li><b>None / Shift + left mouse click</b>, will add selection with the existing one </li>
-<li><b>Ctrl + left mouse click</b>, will remove selection from the
-current, <em>i.e.</em> eraser mode</li>The radius of the brush in the
-eraser mode could be amplifier using the <b>Eraser, x</b> edit box.
-</ul>
+</td>
+</tr>
+</table>
+<details open onclick="state_check('4.1')" id="4.1"><summary> <b>Brush mouse controls</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li><span class="kbd">Ctrl</span> + <span class="kbd">Mouse wheel</span>,  change brush size</li>
+<li><span class="kbd">None</span> / <span class="kbd">&#8679; Shift</span> + <span class="kbd">left mouse click</span>, paint with brush</li>
+<li><span class="kbd">Ctrl</span> + <span class="kbd">left mouse click</span>, start eraser. The brush radius in the eraser mode could be amplifier using the <b>Eraser, x</b> edit box.</li></ul></div>
+</div>
+</details>
+<br>
+<details open onclick="state_check('4.2')" id="4.2"><summary> <b>Widgets of the brush panel</b> </summary>
+<div class="details-div">
+<p></p>
+<p>
+<b>Radius</b>, define radius of the brush tool in pixels
+<br>
+<b>Eraser, x</b>, define radius size multiplier when brush is in the eraser mode
 <br>
 <b>Interpolation settings</b>, press to start a dialog that allows to
 modify the interpolation settings. The settings can also be modified from
 the <a href="ug_gui_menu_file_preferences.html">Preference dialog</a> and the type can be switched
-using a dedicated button in the <a href="ug_gui_toolbar.html">toolbar</a>.<br>
-<img src="images\PanelsSegmentationToolsBrushInterpolation.png">
-</td>
-</tr>
-</table>
+using a dedicated button in the <a href="ug_gui_toolbar.html">toolbar</a>.
 <br>
-<h3>Superpixels with the Brush tool</h3>
-</p><p><b>The Superpixels mode</b> can be initiated by selecting the <a href="https://youtu.be/vVh1j3HBh-c"><b>Watershed</b></a> or <a href="https://youtu.be/6bZb_Mr_nS0?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj"><b>SLIC</b></a> checkbox. In the Superpixels mode the brush tool selects not individual pixels but rather groups of pixels (superpixels). While drawing the selection of the last superpixel can be undone by pressiong the <b><tt>Ctrl+Z</tt></b> shortcut.</p><p>The superpixels are calculated using the</p><div><ul><li><b>SLIC</b> (Simple Linear Iterative Clustering, good for objects with distinct intensities) algorithm written by <a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html">Radhakrishna Achanta et al., 2015</a> , Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland.</li><li><b>Watershed</b> (good for objects with distinct boundaries).</li></ul></div><p>The two additional edit boxed (<tt>N</tt>, <tt>Compact/Invert</tt>) offer possibility to modify the size of generated superpixels (<i>see below</i>). The values in the <tt>N</tt> edit box can be changed using the <b><i>Ctrl+Alt + mouse wheel</i></b> or <b><i>Ctrl+Alt+Shift + mouse wheel</i></b> shortcuts.</p><p>References:</p><div><ul><li>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, SLIC Superpixels Compared to State-of-the-art Superpixel Methods, IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 34, num. 11, p. 2274 - 2282, May 2012.</li><li>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, SLIC Superpixels, EPFL Technical Report no. 149300, June 2010.</li></ul></div><p><img vspace="5" hspace="5" src="images\PanelsSegmentationToolsBrushSupervoxels.jpg" alt=""> </p><p>The set of superpixels is individual for each magnification (especially in the <i>SLIC</i> mode). It is possible to define size of superpixels (the <tt>N</tt> edit box, default value 220 for SLIC, for Watershed use lower numbers) and compactness (the <tt>Compact</tt> edit box; higher compactness gives more rectangularly shaped superpixels). In the <i>Watershed</i> mode the <tt>Compact</tt> edit box is called <tt>Invert</tt>; when objects have dark boundaries over bright backround number in the <tt>Invert</tt> edit box should be 1 (or higher), if the objects have bright boundaries over dark background this number should be 0.</p><p>During drawing the boundaries of the superpixels for the SLIC mode are shown using the <i>drawregionboundaries.m</i> function written by <a href="http://www.peterkovesi.com/projects/segmentation/">Peter Kovesi</a> Centre for Exploration Targeting, School of Earth and Environment, The University of Western Australia.</p><p><b>Note 1!</b> The Superpixels mode is sensitive to the <tt>Adapt.</tt> checkbox in the <tt>Selection panel</tt>. When the <tt>Adapt.</tt> checkbox is selected the superpixels are selected based on the <i>mean value</i> of the initial selection <i>plus/minus</i> standard deviation within the same area multiplied by the factor specified in the <tt>Adapt.</tt> editbox of the <tt>Selection</tt> panel.</p><p><b>Note 2!</b> While drawing the value in the <tt>Adapt.</tt> editbox may be changed using the mouse wheel.</p><p><b>Note 3!</b> The function relies on <i>slicmex.c</i> that should be compiled for your operating system. Please refer to the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements</a> section for details.</p><h2 id="7">The Black and White Thresholding tool</h2><p>
+<img class="image-fit" src="images\PanelsSegmentationToolsBrushInterpolation.png">
+The <span class="kbd">[&#10003;] <b>Watershed</b></span> checkbox, when ticked, pixels of the image are clustered using the watershed algorithm and can be selected as clusters (see the following section)
+<br>
+The <span class="kbd">[&#10003;] <b>SLIC</b></span> checkbox, , when ticked, pixels of the image are clustered using the SLIC algorithm and can be selected as clusters (see the following section)
+<br>
+</p>
+</div>
+</details>
+<br>
+<details open onclick="state_check('4.3')" id="4.3"><summary> <b>Superpixels with the Brush tool</b> </summary>
+<div class="details-div">
+<p></p>
+<p><b>The Superpixels mode</b> can be initiated by selecting the <a href="https://youtu.be/vVh1j3HBh-c"><b>Watershed</b></a> or <a href="https://youtu.be/6bZb_Mr_nS0?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj"><b>SLIC</b></a> checkbox. In the Superpixels mode the brush tool selects not individual pixels but rather groups of pixels (superpixels). While drawing the selection of the last superpixel can be undone by pressiong the <span class="kbd">Ctrl+Z</span> shortcut.</p>
+<p>The superpixels are calculated using the</p>
+<div><ul><li><b>SLIC</b> (Simple Linear Iterative Clustering, good for objects with distinct intensities) algorithm written by <a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html">Radhakrishna Achanta et al., 2015</a> , Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland.</li>
+<li><b>Watershed</b> (good for objects with distinct boundaries).</li></ul></div>
+<p>The two additional edit boxed (<code>N</code>, <code>Compact/Invert</code>) offer possibility to modify the size of generated superpixels (<i>see below</i>). The values in the <code>N</code> edit box can be changed using the <span class="kbd">Ctrl+Alt + mouse wheel</span> or <span class="kbd">Ctrl</span>+<span class="kbd">Alt</span>+<span class="kbd">&#8679; Shift</span> + <span class="kbd">mouse wheel</span> shortcuts.</p>
+<p><b>References:</b></p>
+<div><ul><li>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, SLIC Superpixels Compared to State-of-the-art Superpixel Methods, IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 34, num. 11, p. 2274 - 2282, May 2012.</li>
+<li>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, SLIC Superpixels, EPFL Technical Report no. 149300, June 2010.</li></ul></div>
+<p><img class="image-fit" src="images\PanelsSegmentationToolsBrushSupervoxels.jpg" alt=""> </p>
+<p>The set of superpixels is individual for each magnification (especially in the <i>SLIC</i> mode). It is possible to define size of superpixels (the <code>N</code> edit box, default value 220 for SLIC, for Watershed use lower numbers) and compactness (the <code>Compact</code> edit box; higher compactness gives more rectangularly shaped superpixels). In the <i>Watershed</i> mode the <code>Compact</code> edit box is called <code>Invert</code>; when objects have dark boundaries over bright backround number in the <code>Invert</code> edit box should be 1 (or higher), if the objects have bright boundaries over dark background this number should be 0.</p>
+<p>During drawing the boundaries of the superpixels for the SLIC mode are shown using the <i>drawregionboundaries.m</i> function written by <a href="http://www.peterkovesi.com/projects/segmentation/">Peter Kovesi</a> Centre for Exploration Targeting, School of Earth and Environment, The University of Western Australia.</p>
+<p><b>Note 1!</b> The Superpixels mode is sensitive to the <span class="kbd">[&#10003;] <b>Adapt.</b></span> checkbox in the <code>Selection panel</code>. When the <span class="kbd">[&#10003;] <b>Adapt.</b></span> checkbox is selected the superpixels are selected based on the <i>mean value</i> of the initial selection <i>plus/minus</i> standard deviation within the same area multiplied by the factor specified in the <code>Adapt.</code> editbox of the <code>Selection</code> panel.</p>
+<p><b>Note 2!</b> While drawing the value in the <code>Adapt.</code> editbox may be changed using the mouse wheel.</p>
+<p><b>Note 3!</b> The function relies on <span class="code">slicmex.c</span> that should be compiled for your operating system. Please refer to the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements</a> section for details.</p>
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(5)" class="collapse-link"><a href="javascript:void(0);" id="Toggle5">collapse all</a></p><h2 id="7">The Black and White Thresholding tool</h2>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
-  <img src = "images\PanelsSegmentationToolsBWThres.png">
+  <img class="image-fit" src = "images\PanelsSegmentationToolsBWThres.png">
 </td>
 <td style="border: 0px">
 Makes black and white thresholding of the current image slice or the
-whole dataset (depending on status of the <b>3D</b> and <b>4D</b> checkboxes).
-<br><br>
-Use the <b>Low Lim</b> and <b>High Lim</b> sliders and edit boxes to provide
-the threshold values.
-<br><br>
-If the <b>Masked area</b> check box is selected the thresholding is
-performed only for the masked areas of the image, which is very convenient for local black and white thresholding.
-<br><br>
-The right mouse click above the threshold sliders opens a popup menu that
-allows to set the step for slider movement.
-<br><br>
-The <b>Adaptive</b> checkbox starts adaptive threshoding with the
-'Sensitivity' and 'Width' parameters modified by the scroll bars.
+whole dataset (depending on status of the <span class="kbd">[&#10003;] <b>3D</b></span> and <span class="kbd">[&#10003;] <b>4D</b></span> checkboxes).
+
+<br>
+<br>
+A brief demonstration is available in the following video:
+<br>
+<a href="https://youtu.be/ZcJQb59YzUA?t=4m37s"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m37s</a>
 </td>
 </tr>
 </table>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/ZcJQb59YzUA?t=4m37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m37s</a>
-</p><h2 id="8">Drag &amp; Drop materials</h2><p>
+<details open onclick="state_check('5.1')" id="5.1"><summary> <b>Parameters and controls</b> </summary>
+<div class="details-div">
+<p></p>
+<p>Use the <b>Low</b> and <b>High</b> sliders and edit boxes to provide threshold values tha will be used to select pixels with intensities between these values. 
+<br style="display:block; content:''; margin-top:8px;"> If the <b>Masked area</b> check box is selected the thresholding is performed only for the masked areas of the image, which is very convenient for local black and white thresholding. 
+<br style="display:block; content:''; margin-top:8px;"> <span class="kbd">Right mouse click</span> above the threshold sliders opens a popup menu that allows to set precision for the slider movement. 
+<br style="display:block; content:''; margin-top:8px;"> The <span class="kbd">[&#10003;] <b>Adaptive</b></span> checkbox starts adaptive threshoding with the <code>Sensitivity</code> and <code>Width</code> parameters modified by the scroll bars.</p>
+<p><b>Usage notes</b>
+<br> When doing thesholding for large 3D/4D datasets it is recommended to:</p>
+<div><ul style="margin-bottom:0px;"><li>start in 2D mode by unchecking <span class="kbd">[&#10003;] <b>3D</b></span> and <span class="kbd">[&#10003;] <b>4D</b></span> checkboxes</li>
+<li>adjust parameters using the currently shown slice</li>
+<li>when parameters are chosen, tick <span class="kbd">[&#10003;] <b>3D</b></span> or <span class="kbd">[&#10003;] <b>4D</b></span> checkbox</li>
+<li>select <code>Low</code> or <code>High</code> editbboxe and hit <span class="kbd">Enter</span> to apply thresholding values for the whole dataset</li></ul></div>
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(6)" class="collapse-link"><a href="javascript:void(0);" id="Toggle6">collapse all</a></p><h2 id="8">Drag &amp; Drop material</h2>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
-  <img src = "images\PanelsSegmentationToolsDragDrop.png">
+  <img class="image-fit" src = "images\PanelsSegmentationToolsDragDrop.png">
 </td>
 <td style="border: 0px">
 Shift MIB layers (selection, mask, model) to left/right/up/down
 direction. The tool allows to move individual 2D/3D objects as well as
 complete contents of the layers in 2D and 3D.
-<br><br>
+
+<br>
+<br>
 A combobox offers possibility to choose the layer to be moved. Mouse click or use of the buttons
 in the panel move the selected layer left/right/up/down by the specified number of pixels.
-<br><br>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/NGudNrxBbi0"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/NGudNrxBbi0</a>
-<br><br>
+
+<br>
+<br>
+A brief demonstration is available in the following video:
+<br>
+<a href="https://youtu.be/NGudNrxBbi0"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/NGudNrxBbi0</a>
+
+<br>
+<br>
 </td>
 </tr>
 </table>
-<br><br>
+<details open onclick="state_check('6.1')" id="6.1"><summary> <b>Mouse and key controls</b> </summary>
+<div class="details-div">
+<p></p>
 <table style="width: 800px; text-align: center;" cellspacing=2px cellpadding=2px >
 <tr style="font-weight: bold; background: #ffb74d;">
   <td>Start by</td>
   <td>Modifier</td>
-  <td>3D checkbox</td>
+  <td><span class="kbd">[&#10003;] <b>3D</b></span> checkbox</td>
   <td>Action</td>
 </tr>
-<tr><td>Mouse click over an object</td><td>Control</td><td>Unchecked</td><td>Move the selected object in 2D</td></tr>
-<tr><td>Mouse click over an object</td><td>Control</td><td>Checked</td><td>Move the selected 3D object. <b>Note! Only for MATLAB version 2017b and newer</b></td></tr>
-<tr><td>Mouse click</td><td>Shift</td><td>Unchecked</td><td>Move all objects on the shown slice, i.e. 2D movement</td></tr>
-<tr><td>Mouse click</td><td>Shift</td><td>Checked</td><td>Move all objects on all slices, i.e. 3D movement</td></tr>
-<tr><td>Left/Right/Up/Down buttons</td><td>-</td><td>Unchecked</td><td>Move all objects on the shown slice by the specified number of pixels, i.e. 2D movement</td></tr>
-<tr><td>Left/Right/Up/Down buttons</td><td>-</td><td>Checked</td><td>Move all objects on all slices by the specified number of pixels, i.e. 3D movement</td></tr>
+<tr><td><span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> Left mouse click</span> over an object</td><td><span class="kbd">Ctrl</span></td><td>Unchecked</td><td>Move the selected object in 2D</td></tr>
+<tr><td><span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> Left mouse click</span> over an object</td><td><span class="kbd">Ctrl</span></td><td>Checked</td><td>Move the selected 3D object. <b>Note! Only for MATLAB version 2017b and newer</b></td></tr>
+<tr><td><span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> Left mouse click</span></td><td><span class="kbd">&#8679; Shift</span></td><td>Unchecked</td><td>Move all objects on the shown slice, i.e. 2D movement</td></tr>
+<tr><td><span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> Left mouse click</span></td><td><span class="kbd">&#8679; Shift</span></td><td>Checked</td><td>Move all objects on all slices, i.e. 3D movement</td></tr>
+<tr><td><span class="kbd">Left</span>/<span class="kbd">Right</span>/<span class="kbd">Up</span>/<span class="kbd">Down buttons</span></td><td>-</td><td>Unchecked</td><td>Move all objects on the shown slice by the specified number of pixels, i.e. 2D movement</td></tr>
+<tr><td><span class="kbd">Left</span>/<span class="kbd">Right</span>/<span class="kbd">Up</span>/<span class="kbd">Down buttons</span></td><td>-</td><td>Checked</td><td>Move all objects on all slices by the specified number of pixels, i.e. 3D movement</td></tr>
 </table>
-</p><h2 id="9">The Lasso tool</h2><p>
+
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(7)" class="collapse-link"><a href="javascript:void(0);" id="Toggle7">collapse all</a></p><h2 id="9">The Lasso tool</h2>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
-  <img src = "images\PanelsSegmentationToolsLasso.png">
+  <img class="image-fit" src = "images\PanelsSegmentationToolsLasso.png">
 </td>
 <td style="border: 0px">
 Selection with a <em>lasso, rectangle, ellipse or polyline</em> tools.
+
 <br>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/OHFdGj9uBro"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/OHFdGj9uBro</a>
-<br><br>
-<b>How to use:</b>
-<ul>
-<li>Press and release the selection mouse key (default: left mouse button) above the
-image to initialize the lasso tool</li>
-<li>Press the <em>left mouse button</em> and drag the mouse to start selection of areas</li>
-<li>Release the <em>left mouse button</em> to finish selection</li>
-<li>Modify selected area, if needed</li>
-<li>Accept selection using a double click of the <em>left mouse button</em></li>
-</ul>
-When the <em>Add mode</em> is switched to the <em>Subtract mode</em> the
-selected area is removed from the Selection layer.
+A brief demonstration is available in the following video:
+<br>
+<a href="https://youtu.be/OHFdGj9uBro"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/OHFdGj9uBro</a>
 </td>
 </tr>
 </table>
-</p><p>The Lasso tool works also in 3D.</p><h2 id="10">The Magic Wand+Region Growing tool</h2><p>Selection of pixels with the <i>mouse button</i> based on their intensities. The intensity variation is calculated from the intensity of the selected pixel and two threshold values from the <tt>Variation</tt> edit boxes.</p><p>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/ZcJQb59YzUA?t=1m50s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=1m50s</a>
+<details open onclick="state_check('7.1')" id="7.1"><summary> <b>How to use:</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul><li>Press and release <span class="kbd">left mouse button</span> above the image to initialize the lasso tool</li>
+<li>Press and hold <span class="kbd">left mouse button</span> and drag the mouse to select an area</li>
+<li>Release the <span class="kbd">left mouse button</span> to finish the selection process</li>
+<li>Modify selected area, if needed</li>
+<li>Accept selection using <span class="kbd">double left mouse button click</span></li></ul></div>
+<p><b>Modes:</b></p>
+<div><ul><li><b>Add</b>, a new selection is added to the existing one</li>
+<li><b>Subtract</b>, a new selection is subtracted from the existing one</li></ul></div>
+<p>The Lasso tool works also in 3D.</p>
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(8)" class="collapse-link"><a href="javascript:void(0);" id="Toggle8">collapse all</a></p><h2 id="10">The Magic Wand + Region Growing tool</h2>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
-  <img src = "images\PanelsSegmentationToolsMagicWand.png">
+  <img class="image-fit" src = "images\PanelsSegmentationToolsMagicWand.png">
 </td>
 <td style="border: 0px">
-<ul>
+Selection of pixels with the _mouse button_ based on their
+intensities. The intensity variation is calculated from the intensity of the
+selected pixel and two threshold values from the |Variation| edit boxes.
+
+<br>
+<br>
+A brief demonstration is available in the following video:
+<br>
+<a href="https://youtu.be/ZcJQb59YzUA?t=1m50s"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=1m50s</a>
+</td>
+</tr>
+</table>
+<details open onclick="state_check('8.1')" id="8.1"><summary> <b>Widgets and parameters</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul><li><b>Variation</b> editboxes, specify variation of image intensities relative to the clicked value</li>
 <li><b>Connect 8</b> specifies the 8 (26 for 3D) connected neighbourhood connectivity</li>
 <li><b>Connect 4</b> specifies the 4 (6 for 3D) connected neighbourhood connectivity</li>
-<li><b>Radius</b> allows defining an effective range for the magic wand</li>
-</ul>
-</td>
-</tr>
-</table>
-</p><p>The Magic Wand works also in the 3D mode (the 3D switch in the <a href="ug_panel_selection.html"><tt>Selection panel</tt></a>).</p><p><b>Selection modifiers for the Magic wand tool:</b></p><div><ul><li><b>None + left mouse click</b>, will replace the existing selection with the new one.</li><li><b>Shift + left mouse click</b>, will add new selection to the existing one.</li><li><b>Ctrl + left mouse click</b>, will remove new selection from the current.</li></ul></div><h2 id="11">The Membrane Click Tracker tool</h2><p>This tool tracks membrane-type objects by using 2 mouse clicks that define start and end point of the membrane domain.</p><p>
-A brief demonstration for 2D is available in the following video:<br>
-<a href="https://youtu.be/ZcJQb59YzUA?t=3m14s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=3m14s</a>
+<li><b>Radius</b> allows defining an effective range for the magic wand</li></ul></div>
+<p>The Magic Wand works also in the 3D mode (the 3D switch in the <a href="ug_panel_selection.html"><code>Selection panel</code></a>).</p>
+</div>
+</details>
 <br>
-A brief demonstration for 3D is available in the following video:<br>
-<a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
+<details open onclick="state_check('8.2')" id="8.2"><summary> <b>Selection modifiers for the Magic wand tool</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li><span class="kbd">left mouse click</span>, will replace the existing selection with the new one.</li>
+<li><span class="kbd">&#8679; Shift</span> + <span class="kbd">left mouse click</span>, will add new selection to the existing one.</li>
+<li><span class="kbd">Ctrl</span> + <span class="kbd">left mouse click</span>, will remove new selection from the current.</li></ul></div>
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(9)" class="collapse-link"><a href="javascript:void(0);" id="Toggle9">collapse all</a></p><h2 id="11">The Membrane Click Tracker tool</h2>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
-  <img src = "images\PanelsSegmentationToolsMembraneClick.png">
+  <img class="image-fit" src = "images\PanelsSegmentationToolsMembraneClick.png">
 </td>
 <td style="border: 0px">
-<b>How to use:</b>
-<ul>
-<li><b>Ctrl + left mouse click</b> to define the starting point of a membrane fragment (before MIB version 2.651 the Shift + left mouse click combination was used)</li>
-<li><b>mouse click</b> to trace the membrane from the starting point to the clicked point</li>
-</ul>
+This tool tracks membrane-type objects by using 2 mouse clicks that define start and end point of the membrane domain.
+
+<br>
+<br>
+A brief demonstration for 2D is available in the following video:
+<br>
+<a href="https://youtu.be/ZcJQb59YzUA?t=3m14s"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=3m14s</a>
+
+<br>
+A brief demonstration for 3D is available in the following video:
+<br>
+<a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
 </td>
 </tr>
 </table>
-</p><p>The membrane is traced with help of Accurate Fast Marching function <a href="http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching">http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching</a> by Dirk-Jan Kroon, 2011, University of Twente.</p><p><b><i>Note!</i></b> It is highly recommended to compile the corresponding function (see details in the Membrane Click Tracker section of <a href="im_browser_system_requirements.html">the System Requirements page</a> ), otherwise the function is very slow!</p><p><b>Extra parameters:</b></p><div><ul><li>The <b>Scale</b> edit box - during the tracing the image gets enhanced by taking into account intensities of the starting and ending points <tt>img(img&gt;min([val1 val2])-diff([val1 val2])*options.scaleFactor) = maxIntensity;</tt></li><li>The <b>Width</b> edit box - defines a width of the resulting trace</li><li>The <b>BlackSignal</b> checkbox defines whether the signal is Black on White, or White on Black</li><li>The <b>Straight line</b> checkbox - when checked, the points are connected with a straight line</li></ul></div><p><b><i>Note!</i></b> When the 3D switch in the <a href="ug_panel_selection.html"><tt>Selection</tt> panel</a> is enabled the <b>Membrane Click Tracker</b> tool connects points (<i>linearly</i>) in the 3D space (this may be very usefull for tracing microtubules).</p><h2 id="12">Object Picker</h2><p>This mode allows fast selection of objects from the <tt>Mask</tt> or <tt>Model</tt> layers. When the <tt>Mask</tt> and <tt>Model</tt> radio buttons define the target layer for selection.</p><p>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/mzILHpbg89E"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/mzILHpbg89E</a>
+<details open onclick="state_check('9.1')" id="9.1"><summary> <b>How to use</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li><span class="kbd">Ctrl</span> + <span class="kbd">left mouse click</span> to define the starting point of a membrane fragment (before MIB version 2.651 the <span class="kbd">&#8679; Shift</span> + <span class="kbd">left mouse click</span> combination was used)&lt;/li&gt;</li>
+<li><span class="kbd">Left mouse click</span> to trace the membrane from the starting point to the clicked point&lt;/li&gt;</li></ul></div>
+</div>
+</details>
 <br>
+<details open onclick="state_check('9.2')" id="9.2"><summary> <b>Additional parameters</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul><li>The <b>Scale</b> edit box - during the tracing the image gets enhanced by taking into account intensities of the starting and ending points <code>img(img&gt;min([val1 val2])-diff([val1 val2])*options.scaleFactor) = maxIntensity;</code></li>
+<li>The <b>Width</b> edit box - defines a width of the resulting trace</li>
+<li>The <span class="kbd">[&#10003;] <b>BlackSignal</b></span> checkbox defines whether the signal is Black on White, or White on Black</li>
+<li>The <span class="kbd">[&#10003;] <b>Straight line</b></span> checkbox - when checked, the points are connected with a straight line</li></ul></div>
+<p><b><i>Note!</i></b> When the 3D switch in the <a href="ug_panel_selection.html"><code>Selection</code> panel</a> is enabled the <b>Membrane Click Tracker</b> tool connects points (<i>linearly</i>) in the 3D space (this may be very usefull for tracing microtubules). Alternatively for microtunules, consider <a href="#target1">3D lines tool</a></p>
+</div>
+</details>
+<br>
+<details open onclick="state_check('9.3')" id="9.3"><summary> <b>Reference and compilation</b> </summary>
+<div class="details-div">
+<p> The membrane is traced with help of Accurate Fast Marching function <a href="http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching">http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching</a> by Dirk-Jan Kroon, 2011, University of Twente.</p>
+<p><b><i>Note!</i></b> It is highly recommended to compile the corresponding function (see details in the Membrane Click Tracker section of <a href="im_browser_system_requirements.html">the System Requirements page</a> ), otherwise the function is very slow!</p>
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(10)" class="collapse-link"><a href="javascript:void(0);" id="Toggle10">collapse all</a></p><h2 id="12">Object Picker</h2>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
-  <img src = "images\PanelsSegmentationToolsObjectPicker.png">
+  <img class="image-fit" src = "images\PanelsSegmentationToolsObjectPicker.png">
 </td>
 <td style="border: 0px">
+This mode allows fast selection of objects from the |Mask| or |Model|
+layers. When the |Mask| and |Model| radio buttons define the target layer
+for selection.
+<br>
+<br>
+A brief demonstration is available in the following video:
+<br>
+<a href="https://youtu.be/mzILHpbg89E"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/mzILHpbg89E</a>
+
+<br>
 Works also in <em>3D</em> (select the <b>3D</b> check box in the <a href="ug_panel_selection.html">Selection panel</a>).
-<br><br>
+
+<br>
+<br>
 <b>Note!</b> The 3D mode requires calculating statistics for the objects. Please select the material in the
-<a href="ug_panel_segm.html">Select from</a> list box and press the <b>Recalc. Stats</b> button (the button becomes available when the
+<a href="ug_panel_segm.html">Select from</a> list box and press the <span class="kbd">Recalc. Stats</span> button (the button becomes available when the
 <a href="ug_panel_selection.html>3D check box</a> is checked).
-<br><br>
+
+<br>
+<br>
 <b>Note!</b> Some advanced mask or model filtering may be done via
 <a href="ug_gui_menu_mask_statistics.html"Menu->Mask->Mask statistics...</a> or <a href="ug_gui_menu_mask_statistics.html">Menu->Models->Model statistics...</a>.
 </td>
 </tr>
 </table>
-</p><p><b>Possible Object Picker selection modes are:</b></p><p>
+<details open onclick="state_check('10.1')" id="10.1"><summary> <b>Possible Object Picker selection modes</b> </summary>
+<div class="details-div">
+<p></p>
 <ul style="position:relative; left:35px;">
 <li>
-1. <b>Mouse click</b>: selects object from the <i>Mask/Model</i> layers with <i>mouse
-click</i>.
-<b>Note 1!</b> Separation of objects is sensitive to the connected neighbourhood connectivity parameter from the <i>Magic Wand</i> tool;
+1. <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> Left mouse click</span>, selects object from the <em>Mask/Model</em> layers with a single mouse click.
+<br>
+<b>Note 1!</b> Separation of objects is sensitive to the connected neighbourhood connectivity parameter from the <em>Magic Wand</em> tool;
 <b>Note 2!</b> In the 3D mode the function uses object statistics that is
-generated by pressing the |Recalc. Stats| button. If the <i>Mask/Model</i> layers have been changed press the |Recalc. Stats| button again.
+generated by pressing the  <span class="kbd">Recalc. Stats</span> button. If the <em>Mask/Model</em> layers have been changed press the
+<span class="kbd">Recalc. Stats</span> button again.
 </li>
 <li>
 2. <b>Lasso</b>: selects object with <em>lasso</em> tool (Press first
-<i>[None/Shift/Ctrl] + Right mouse button</i>, then hold the left mouse button
-while moving mouse around). Can also make selection for the whole dataset if the |3D| checkbox in
+ <span class="kbd">None</span>/<span class="kbd">&#8679; Shift</span>/<span class="kbd">Ctrl</span> +  <span class="kbd">Right mouse button</span>,
+ then hold the  <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> left mouse button</span> while moving mouse around). Can also make selection for the whole dataset if the <span class="kbd">[&#10003;] <b>3D</b></span> checkbox in
 the <a href="ug_panel_selection.html">Selection panel</a> is checked.
 </li>
 <li>
-3. <b>Rectangle</b> or <b>Ellipse</b>: these tools work in similar to the <i>lasso</i> tool
+3. <b>Rectangle</b> or <b>Ellipse</b>: these tools work in similar to the <em>lasso</em> tool
 manner but give rectangle or ellipsoid selection. Works also in 3D.
 </li>
 <li>
 4. With the <b>Polyline</b> option the selection is done by drawing a polygon
-shape point by point. Start drawing with <i>right mouse button</i> and finish with
-a <i>double click</i> or <i>right mouse click</i>. Works also in 3D.
+shape point by point. Start drawing with the <span class="kbd">right mouse button</span> and finish with
+a <span class="kbd">double click</span> or the <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\RMB_click.svg"> right mouse click</span>. Works also in 3D.
 </li>
 <li>
-5. Use <b>Brush</b> to select some of the masked/model areas. Size of the Brush is defined in the Brush edit box.
+5. Use <b>Brush</b> to select some of the masked/model areas. Size of the Brush tool is defined in the <em>Brush</em> editbox.
 </li>
 <li>
-6. <b>Mask within selection</b> with <em>mouse click</em> on the image
-makes a new selection that is an intersection of the existing selection
-and the mask/model layer. With <em>Ctrl+mouse click</em> the new selection is
-Selection <em>-minus-</em> Mask. This action is sensitive to the 3D checkbox state in the Selection panel.
+6. <b>Mask within selection</b> with the <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> left mouse click</span> on the image
+make a new selection that is an intersection of the existing selection
+and the mask/model layer. With  <span class="kbd">Ctrl</span>+ <span class="kbd">mouse click</span> the new selection is
+Selection <em>-minus-</em> Mask. This action is sensitive to the <span class="kbd">[&#10003;] <b>3D</b></span> checkbox state in the Selection panel.
 </li>
 </ul>
-</p><p><b>Selection modifiers</b>:</p><div><ul><li><b>None / Shift + left mouse click</b>, will add selection with the existing one.</li><li><b>Ctrl + left mouse click</b>, will remove selection from the current.</li></ul></div><h2 id="13">The Spot tool</h2><p>
+
+</div>
+</details>
+<br>
+<details open onclick="state_check('10.2')" id="10.2"><summary> <b>Selection modifiers</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li><span class="kbd">None</span>/<span class="kbd">&#8679; Shift</span> + <span class="kbd">left mouse click</span>, will add selection with the existing one</li>
+<li><span class="kbd">Ctrl</span> + <span class="kbd">left mouse click</span>, will remove selection from the current</li></ul></div>
+</div>
+</details>
+<br>
+<p> 
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(11)" class="collapse-link"><a href="javascript:void(0);" id="Toggle11">collapse all</a></p><h2 id="13">The Spot tool</h2>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
-  <img src = "images\PanelsSegmentationToolsSpot.png">
+  <img class="image-fit" src = "images\PanelsSegmentationToolsSpot.png">
 </td>
 <td style="border: 0px">
-Adds a spot - a circular object with a <em>mouse click</em><br><br>
-A brief demonstration is available in the following video:<br>
-<a href="https://youtu.be/AlCzjKuyJww"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/AlCzjKuyJww</a>
+Adds a spot - a circular object with a <em>mouse click</em>
 <br>
-Use the <b>Radius, px</b> edit box to specify the radius of the spot.
-<br><br>
-Works also in 3D.
-<br><br>
-<b>Selection modifiers</b>
-<ul>
-<li><b>None / Shift + left mouse click</b>, will add new spot to the existing ones</li>
-<li><b>Ctrl + left mouse click</b>, will remove selection from the current</li>
-</ul>
+<br>
+A brief demonstration is available in the following video:
+<br>
+<a href="https://youtu.be/AlCzjKuyJww"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/AlCzjKuyJww</a>
 </td>
 </tr>
 </table>
-</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a> <tt><b>--&gt;</b></tt> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+<details open onclick="state_check('11.1')" id="11.1"><summary> <b>Widgets and parameters</b> </summary>
+<div class="details-div">
+<p></p>
+Use the <b>Radius, px</b> edit box to specify the radius of the spot.
+
+<br>
+*Eraser, x*, specifies magnifier for the spot eraser tool
+
+<br>
+<br>
+Works also in 3D.
+
+<br>
+<br>
+<b>Selection modifiers</b>
+<ul>
+<li><span class="kbd">None</span>/<span class="kbd">&#8679; Shift</span> + <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, will add new spot to the existing ones</li>
+<li><span class="kbd">Ctrl</span> + <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, will remove selection from the current</li>
+</ul>
+
+</div>
+</details>
+<br>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a> <code><b>--&gt;</b></code> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a></p>
+<p></p>
+<p>
+<script>
+  var allDetails = document.getElementsByTagName('details');
+  toggle_details(0);
+</script>
+</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Segmentation Tools
 % This panel hosts different tools that are used for the image
@@ -529,7 +1238,7 @@ Works also in 3D.
 % 
 %% The 3D ball
 %
-% <html>
+% <html lang="en">
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -538,31 +1247,36 @@ Works also in 3D.
 % <td style="border: 0px">
 % Makes selection as a spherical object in the 3D space with a radius taken from the
 % <b>Radius, px</b> edit box. The <b>Eraser, x</b> edit box modifies
-% increse of the 3D ball eraser, when holding the Clrl key.<br>
-% A brief demonstration is available in the following video:<br>
+% increse of the 3D ball eraser, when holding the <span class="kbd">Clrl</span> key.
+<br>
+% A brief demonstration is available in the following video:
+<br>
 % <a href="https://youtu.be/ZcJQb59YzUA?t=1s"><img
 % style="vertical-align:middle;" src="images\youtube2.png">
-% https://youtu.be/ZcJQb59YzUA?t=1s</a><br><br>
-% <br><br>
-% <b>Note!</b> The 3D shape of the ball is defined by the
-% pixel dimensions, see <em>Dataset Parameters</em> in <a href="ug_gui_menu_dataset.html">Menu->Dataset->Parameters</a>.
-% <br><br>
-% <b>Selection modifiers</b>
-% <ul>
-% <li><b>None / Shift+left mouse click</b>, will add selection with the existing one</li>
-% <li><b>Ctrl + left mouse click</b>, will remove selection from the current</li>
-% </ul>
+% https://youtu.be/ZcJQb59YzUA?t=1s</a>
+<br>
+<br>
+% <b>Note!</b> The depth of 3D ball is defined by the pixel dimensions,
+<br>see <em>Dataset Parameters</em> in <a href="ug_gui_menu_dataset.html">Menu->Dataset->Parameters</a>
 % </td>
 % </tr>
 % </table>
 % </html>
 %
+% [dtls]<summary> *Selection modifiers* </summary>
+<div class="details-div">
+%
+% * [class.kbd]None[/class] / [class.kbd]&#8679; Shift[/class]+[class.kbd]left mouse click[/class], add 3D ball selection with the existing one
+% * [class.kbd]Ctrl[/class] + [class.kbd]left mouse click[/class], remove 3D ball selection from the current selection layer
+%
+% [/dtls]
+% [br8]
+%
 %% The 3D lines
 %
-% <html>
-% A demonstration is available on youtube:<br>
-% <a href=""><img style="vertical-align:middle;" src="images\youtube2.png">
-% https://youtu.be/DNRUePJiCbE</a><br>
+% [target1]
+%
+% <html lang="en">
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -573,13 +1287,27 @@ Works also in 3D.
 % graphs or skeletons. The 3D lines composed of Nodes (Vertices) 
 % connected with Edges (a line that connect two nodes). Separated from each
 % other sets of 3D lines organized into separate trees. 
-% <br><br>
+<br>
+% A demonstration is available on: 
+% <a href=""><img style="vertical-align:middle;" src="images\youtube2.png">
+% https://youtu.be/DNRUePJiCbE</a>
+<br>
+% 
+<br>
 % Modification of nodes is possible using mouse clicks. To increase
 % flexibility, the clicks can be extended with key-modifiers, such as
-% <em>Shift, Control, Alt</em>. Each action can be configured depending on
-% needs. Please refer to a table below for various options:
-% <br><br>
-% <b>Available actions</b>
+% <span class="kbd">&#8679; Shift</span>, <span class="kbd">Ctrl</span>, <span class="kbd">Alt</span>. 
+% Each action can be configured depending on needs. Please refer to a
+% table below for various options.
+% </td>
+% </tr>
+% </table>
+% </html>
+%
+% [dtls]<summary> *Available actions* </summary>
+<div class="details-div">
+% 
+% <html lang="en">
 % <ul>
 % <li><b>Add node</b>, add a new node to the active tree; the new point will be connected to the active point (shown in red) of the tree</li>
 % <li><b>Assign active node</b>, assign the closest node to position of the mouse click, as a new active node</li>
@@ -590,40 +1318,31 @@ Works also in 3D.
 % <li><b>New tree</b>, add a new node and assign it to a new tree, which is not connected to other trees</li>
 % <li><b>Split tree</b>, delete the closest node to position of the mouse click and split the tree at this point</li>
 % </ul>
-% Use the <b>Show lines</b> checkbox to toggle visibility of the lines in
+% Use the <span class="kbd">[&#10003;] <b>Show lines</b></span> checkbox to toggle visibility of the lines in
 % the Image View panel.
-% <br>
-% Press the <b>Table view</b> button to start a window which tables that
+% 
+<br>
+% Press the <span class="kbd">Table view</span> button to start a window which tables that
 % describe the 3D lines (see below).
-% <br><br>
-% </td>
-% </tr>
-% </table>
+% </html>
+%
+% [/dtls]
+%
+% [class.h3]Lines 3D View[/class]
+%
+% <html lang="en">
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
 %   <img src = "images\PanelsSegmentationTools3DLinesDlg.png">
-% <br><br>
-% <b>Tools panel</b><br>
-% <ul>
-% <li><b>Load</b>, load 3D lines from a file in matlab-compatible lines3d format</li>
-% <li><b>Save</b>, export to MATLAB or save 3D lines to a file:
-%   <ul>
-%   <li><b>MATLAB format, *.lines3d</b>, it is recommended to save the 3D lines in the matlab format!</li>
-%   <li><b>Amira Spatial graph, *.am</b>, Amira-compatible format in binary or ascii form</li>
-%   <li><b>Excel format, *.xls</b>, export Nodes and Edges tables to an Excel file</li>
-%   </ul>
-% </li>
-% <li><b>Refresh</b>, refresh the tables shown in this window</li>
-% <li><b>Delete all</b>, delete all 3D lines</li>
-% <li><b>Visualize in 3D</b>, plot all trees in the 3D space</li>
-% <li><b>Settings</b>, modify color and thickness of 3D lines</li>
-% </ul>
 % </td>
 % <td style="border: 0px">
-% <b>Table with the list of trees</b><br>
+% <b>Table with the list of trees</b>
+<br>
 % The upper table shows the list of trees and number of nodes that compose
-% each tree. <b><em>Each tree should have an unique name!</b></em><br><br>
+% each tree. <b><em>Each tree should have an unique name!</b></em>
+<br>
+<br>
 % Right mouse click starts a popup menu with various options:
 % <ul>
 % <li><b>Rename selected tree...</b>, rename selected in the table tree; tree name should be unique!</li>
@@ -632,86 +1351,141 @@ Works also in 3D.
 % <li><b>Save/export selected tree(s)</b>, export to MATLAB or save to a file the selected trees, see the Tools panel below for the list of available file formats</li>
 % <li><b>Delete selected tree(s)</b>, delete selected tree from the table</li>
 % </ul>
-% <br><br>
-% <b>Space between the tables</b><br>
-% <ul>
-% <li><b>Active tree</b>, an index of the active tree</li>
-% <li><b>Active node</b>, an index of the active node</li>
-% <li><b>Table</b>, a combo box to select what should be shown in the lower table: Nodes or Edges</li>
-% <li><b>Field</b>, a combo box to define an additional field that should be shown the lower table. By default, only the Radius and Weights fields are available</li>
-% <li><b>Auto jump</b>, when selected, auto jump to the selected node</li>
-% <li><b>Auto refresh</b>, automatically refresh the tables, may be quite slow with many nodes</li>
-% </ul>
-% <br>
-% <b>Nodes table</b><br>
-% The table shows list of nodes and offers multiple actions via a popup
-% menu:
-% <ul>
-% <li><b>Jump to the node</b>, jumps to the selected node and put it in the center of the Image View panel</li>
-% <li><b>Set as active node</b>, makes the selected node active</li>
-% <li><b>Rename selected nodes...</b>, assign a new name for the selected nodes</li>
-% <li><b>Show coordinates in pixels...</b>, by default, the coordinates of the nodes are shown in the physical units of the dataset, <em>i.e.</em> with respect to <a href="ug_gui_menu_dataset.html#8">the bounding box</a>; this action shows coordinate of the node in pixels</li>
-% <li><b>New annotations from nodes</b>, generate a new annotations from the position of nodes</li>
-% <li><b>Add nodes to annotations</b>, add selected nodes to the existing annotations</li>
-% <li><b>Delete nodes from annotations</b>, delete selected nodes from the existing annotations</li>
-% <li><b>Delete nodes...</b>, delete selected nodes</li>
-% </ul>
-% <br>
-% <b>Edges table</b><br>
-% The table shows list of edges; certain actions available via a popup menu:
-% <ul>
-% <li><b>Jump to the node</b>, jumps to the selected node and put it in the center of the Image View panel</li>
-% <li><b>Set as active node</b>, makes the selected node active</li>
-% </ul>
 % </td>
 % </tr>
 % </table>
 % </html>
 %
+% [dtls]<summary> *Space between the tables* </summary>
+<div class="details-div">
+% 
+% * *Active tree*, an index of the active tree
+% * *Active node*, an index of the active node
+% * *Table*, a combo box to select what should be shown in the lower table: Nodes or Edges
+% * *Field*, a combo box to define an additional field that should be shown the lower table. 
+% By default, only the Radius and Weights fields are available
+% * *Auto jump*, when selected, auto jump to the selected node
+% * *Auto refresh*, automatically refresh the tables, may be quite slow with many nodes
+%
+% [/dtls]
+%
+% [dtls]<summary> *Nodes table* </summary>
+<div class="details-div">
+% 
+% The table shows list of nodes and offers multiple actions via a popup
+% menu:
+%
+% * *Jump to the node*, jumps to the selected node and put it in the center of the Image View panel
+% * *Set as active node*, makes the selected node active
+% * *Rename selected nodes...*, assign a new name for the selected nodes
+% * *Show coordinates in pixels...*, by default, the coordinates of the nodes are shown in the physical units of the dataset, 
+% _i.e._ with respect to <ug_gui_menu_dataset.html#8 the bounding box> ; this action shows coordinate of the node in pixels
+% * *New annotations from nodes*, generate a new annotations from the position of nodes
+% * *Add nodes to annotations*, add selected nodes to the existing annotations
+% * *Delete nodes from annotations*, delete selected nodes from the existing annotations
+% * *Delete nodes...*, delete selected nodes
+%
+% [/dtls]
+%
+% [dtls]<summary> *Edges table* </summary>
+<div class="details-div">
+% The table shows list of edges; certain actions available via a popup menu:
+%
+% * *Jump to the node*, jumps to the selected node and put it in the center of the Image View panel
+% * *Set as active node*, makes the selected node active
+%
+% [/dtls]
+%
+% [dtls]<summary> *Tools panel*</summary>
+<div class="details-div">
+%
+% * *[class.kbd]Load[/class]*, load 3D lines from a file in matlab-compatible lines3d format
+% * *[class.kbd]Save[/class]*, export to MATLAB or save 3D lines to a file:
+%
+% <html lang="en">   
+% <ul>
+% <li><b>MATLAB format, *.lines3d</b>, it is recommended to save the 3D lines in the matlab format!</li>
+% <li><b>Amira Spatial graph, *.am</b>, Amira-compatible format in binary or ascii form</li>
+% <li><b>Excel format, *.xls</b>, export Nodes and Edges tables to an Excel file</li>
+% </ul>
+% </html>
+%
+% * *[class.kbd]Refresh[/class]*, refresh the tables shown in this window
+% * *[class.kbd]Delete all[/class]*, delete all 3D lines
+% * *[class.kbd]Visualize in 3D[/class]*, plot all trees in the 3D space
+% * *[class.kbd]Settings[/class]*, modify color and thickness of 3D lines
+%
+% [/dtls]
+% [br8]
+%
 %% Annotations
 %
-% <html>
-% A brief demonstration is available in the following videos:<br>
-% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
-% <br>
-% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/6otBey1eJ0U</a>
-% <br>
+% <html lang="en">
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
 %   <img src = "images\PanelsSegmentationToolsAnnotations.png">
 % </td>
 % <td style="border: 0px">
-% A set of tools to add/remove annotations. Each annotation allows to mark specific location in the dataset, assign a label and a value to it<br><br>
-% When the Annotation tool is selected the mouse click above the image adds annotation to the model.
-% The annotations can be removed by using <em>Ctrl + left mouse click</em> combination.
-% <br>
+% A set of tools to add/remove annotations. Each annotation allows to mark
+% specific location in the dataset, assign a label and a value to it
+<br>
+<br>
+% Brief demonstration is available in the following videos:
+<br>
+% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+% 
+<br>
+% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/6otBey1eJ0U</a>
+% 
+<br>
+<br>
+% <b> Addition and removal of annotations</b>
+<br>
 % <ul>
-% <li>The <b>Annotation list</b> button starts a window with the list of existing
-% annotations. It is possible to load and save annotations to the main MATLAB
-% workspace or to a file (matlab and excel formats). See more below.</li>
-% <li>The <b>Delete All</b> button removes all annotations
-% <li><b>Precision</b> edit box - specify number of digits after decimal
-% point</li>
-% <li>The <b>Display as</b> combobox - enables way how the annotations are
-% displayed in the <a href="ug_panel_im_view.html">Image View panel</a>. 
-    % <ul>The following modes are available:<br><br>
-    % <li><b>Marker</b>, show only location of the annotation using a cross-marker</li>
-    % <li><b>Label</b>, show marker and label for each annotation</li>
-    % <li><b>Value</b>, show marker and value for each annotation</li>
-    % <li><b>Label + Value</b>, show marker, label and value for each annotation</li>
-    % </ul>
-% </li>
-% <li><b>Focus on Value</b> checkbox, when enabled, the first parameter during visualization of annotations is
-% value and the second parameter is label.
+% <li><span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, add annotation to the
+% position under the mouse cursor</li>
+% <li><span class="kbd">Ctrl</span> + <span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, remove annotation that is the closest to the
+% position under the mouse cursor</li>
 % </ul>
 % </td>
 % </tr>
 % </table>
 % </html>
 %
-% <html>
-% <b>List of annotations window</b>
+% [dtls]<summary> *Annotation panel widgets* </summary>
+<div class="details-div">
+%
+% <html lang="en">
+% <ul>
+% <li>The <span class="kbd">Annotation list</span> button starts a window with the list of existing
+% annotations. It is possible to load and save annotations to the main MATLAB
+% workspace or to a file (matlab and excel formats). See more below.</li>
+% <li>The <span class="kbd">Delete All</span> button removes all annotations
+% <li><b>Precision</b> edit box - specify number of digits after decimal
+% point</li>
+% <li><span class="kbd">[&#10003;] <b>Show prompt</b></span> checkbox, when ticked a dialog asking for label and value appear after addition of each annotation, 
+% otherwise the dialog is not shown and the label and field values are taken from the previously added annotation</li>
+% <li><span class="kbd">[&#10003;] <b>Focus on Value</b></span> checkbox, when ticked, the first parameter during visualization of annotations is
+% value and the second parameter is label.</li>
+% <li>The <b>Display as</b> combobox - enables way how the annotations are
+% displayed in the <a href="ug_panel_im_view.html">Image View panel</a>. 
+    % <ul><b><em>The following modes are available:</b></em>
+<br>
+    % <li><b>Marker</b>, show only location of the annotation using a cross-marker</li>
+    % <li><b>Label</b>, show marker and label for each annotation</li>
+    % <li><b>Value</b>, show marker and value for each annotation</li>
+    % <li><b>Label + Value</b>, show marker, label and value for each annotation</li>
+    % </ul>
+% </li>
+% </ul>
+% </html>
+%
+% [/dtls]
+%
+% [class.h3]List of annotations window[/class]
+%
+% <html lang="en">
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -722,38 +1496,45 @@ Works also in 3D.
 % <li>The <b>List of annotations</b> table shows a list of annotations. 
 %   <ul>The <em>right mouse button</em></b> click calls an additional popup menu that allows to 
 %       <li><em><b>Jump to annotation</em></b>, moves the image so that the selected annotation is in the middle of the Image View panel</li>
-%       <li><em><b>Add annotation</em></b>, manually add annotation to the list, position of the first and second fields are defined by the <em>Value eccentric</em> checkbox of the Annotation panel, see above</li>
+%       <li><em><b>Add annotation</em></b>, manually add annotation to the list, position of the first and second fields are defined by the <span class="kbd">[&#10003;] <b>Value eccentric</b></span> checkbox of the Annotation panel, see above</li>
 %       <li><em><b>Rename selected annotations</em></b>, rename names of the selected annotations</li>
 %       <li><em><b>Batch modify selected annotations</em></b>, modify annotation values or coordinates using a provided expression</li>
 %       <li><em><b>Count selected annotations</em></b>, calculate occurance of each annotation in the list of selected annotations. 
-%           The results are displayed in the MATLAB command window and
-%           copied to the system clipboard 
+%           The results are displayed in the MATLAB command window and copied to the system clipboard 
 %           <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a>
 %           </li>
 %       <li><em><b>Copy selected annotations to clipboard</em></b>, the selected annotations are copied to the system clipboard as a text string ready to be pasted to Excel</li>
+%       <li><em><b>Convert selected annotations to Mask...</em></b>, generate 2D/3D Mask spots centered at each annotation marker. The
+%           size of the spot can either be fixed or scaled from the value field of the selected annotations
+<br>
+%           <img src="images\PanelsSegmentationToolsAnnotationsTableToMask.png"></li>
+%       <li><em><b>Crop out patches around selected annotations</em></b>, 2D/3D patch of the predefined size is generated when this operation is used
+%           <a href="https://youtu.be/QrKHgP76_R0"><img style="vertical-align:middle;" src="images\youtube.png"></a></li>
 %       <li><em><b>Export selected annotations</em></b>, export selected annotations in the MATLAB format, landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>), PSI format for Amira and Excel</li>
 %       <li><em><b>Export selected annotations to Imaris</em></b>, export selected annotations to Imaris (<em><b>Note!</em> please first export the dataset!</b>)</li>
 %       <li><em><b>Order</b></em>, subitems of the Order entry can be used to move annotations towards the top or the bottom of the list</li>
 %       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
 %   </ul>
-% <li>The <b>Load</b> button, press to import annotations from the main MATLAB workspace or load them from a file</li>
-% <li>The <b>Save</b> button, press to export annotations to the main MATLAB workspace or to save them as a file in MATLAB, Comma-separated CSV format, Excel formats or as landmarks for Amira (
+% <li>The <span class="kbd">Load</span> button, press to import annotations from the main MATLAB workspace or load them from a file</li>
+% <li>The <span class="kbd">Save</span> button, press to export annotations to the main MATLAB workspace or to save them as a file in MATLAB, Comma-separated CSV format, Excel formats or as landmarks for Amira (
 %           <a href="https://youtu.be/wHr6nHpmVMo"><img style="vertical-align:middle;" src="images\youtube.png"></a> <em><b>Note!</em> only the coordinates are exported!</b>), or PSI format for Amira</li>
 % <li>The <b>Precision</b> editbox, modify precision of the value field in the table and for the visualization in the Image View panel
-% <li>The <b>Auto jump</b> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>
+% <li>The <span class="kbd">[&#10003;] <b>Auto jump</b></span> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>
 % <li>The <b>Sort table</b> allows to sort annotations based on their Name, Value, X, Y, Z, T</li>
-% <li>The <b>Settings</b> provides configuration of additional settings: extra slices to display annotation, when this value 0 annotations only belonging to the current slice are displayed, when a positive number from -value to +value depth</li>
-% <li>The <b>Refresh table</b> button updates the list of annotations</li>
-% <li>The <b>Delete all</b> button removes all annotations</li>
+% <li>The <span class="kbd">Settings</span> provides configuration of additional settings: extra slices to display annotation, when this value 0 annotations only belonging to the current slice are displayed, when a positive number from -value to +value depth</li>
+% <li>The <span class="kbd">Refresh table</span> button updates the list of annotations</li>
+% <li>The <span class="kbd">Delete all</span> button removes all annotations</li>
 % </ul>
 % </td>
 % </tr>
 % </table>
 % </html>
+%
+% [br8]
 % 
 %% The Brush tool 
 %
-% <html>
+% <html lang="en">
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -762,41 +1543,63 @@ Works also in 3D.
 % <td style="border: 0px">
 % Use brush to make selection. The brush size is regulated with
 % the <b>Radius, px</b> edit box
-% <br>
-% A brief demonstration is available in the following videos:<br>
+% 
+<br>
+% A brief demonstration is available in the following videos:
+<br>
 % <a href="https://youtu.be/VlTCxVAUxFc"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/VlTCxVAUxFc</a>
 % <a href="https://youtu.be/ZcJQb59YzUA?t=37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=37s</a>
-% <br>
-% <br><br>Objects from different image slices may be connected
+% 
+<br>
+% 
+<br>
+<br>Objects from different image slices may be connected
 % using the <em>Interpolation</em> function (shortcut <b>i</b> or via <em>Menu->Selection->Interpolate</em>),
 % see more in the <a href="ug_gui_menu_selection.html">Selection menu</a> section.
-% <br><br>
-% Size of the Brush can be regulated using <em>Ctrl + Mouse wheel</em>.
-% <br><br>
-% <b>Selection modifiers</b>
-% <ul>
-% <li><b>None / Shift + left mouse click</b>, will add selection with the existing one </li>
-% <li><b>Ctrl + left mouse click</b>, will remove selection from the
-% current, <em>i.e.</em> eraser mode</li>The radius of the brush in the
-% eraser mode could be amplifier using the <b>Eraser, x</b> edit box.
-% </ul>
-% <br>
-% <b>Interpolation settings</b>, press to start a dialog that allows to
-% modify the interpolation settings. The settings can also be modified from
-% the <a href="ug_gui_menu_file_preferences.html">Preference dialog</a> and the type can be switched
-% using a dedicated button in the <a href="ug_gui_toolbar.html">toolbar</a>.<br>
-% <img src="images\PanelsSegmentationToolsBrushInterpolation.png">
 % </td>
 % </tr>
 % </table>
-% <br>
-% <h3>Superpixels with the Brush tool</h3>
 % </html>
 %
-% *The Superpixels mode* can be initiated by selecting the <https://youtu.be/vVh1j3HBh-c *Watershed*> or <https://youtu.be/6bZb_Mr_nS0?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj *SLIC*> checkbox. In the 
-% Superpixels mode the brush tool selects not individual pixels but rather
+% [dtls]<summary> *Brush mouse controls* </summary>
+<div class="details-div">
+%
+% * [class.kbd]Ctrl[/class] + [class.kbd]Mouse wheel[/class],  change brush size
+% * [class.kbd]None[/class] / [class.kbd]&#8679; Shift[/class] + [class.kbd]left mouse click[/class], paint with brush
+% * [class.kbd]Ctrl[/class] + [class.kbd]left mouse click[/class], start eraser. The brush radius in the
+% eraser mode could be amplifier using the *Eraser, x* edit box.
+%
+% [/dtls]
+% 
+% [dtls]<summary> *Widgets of the brush panel* </summary>
+<div class="details-div">
+% 
+% <html lang="en">
+% <b>Radius</b>, define radius of the brush tool in pixels
+<br>
+% <b>Eraser, x</b>, define radius size multiplier when brush is in the eraser mode
+<br>
+% <b>Interpolation settings</b>, press to start a dialog that allows to
+% modify the interpolation settings. The settings can also be modified from
+% the <a href="ug_gui_menu_file_preferences.html">Preference dialog</a> and the type can be switched
+% using a dedicated button in the <a href="ug_gui_toolbar.html">toolbar</a>.
+<br>
+% <img src="images\PanelsSegmentationToolsBrushInterpolation.png">
+% The <span class="kbd">[&#10003;] <b>Watershed</b></span> checkbox, when ticked, pixels of the image are clustered using the watershed algorithm and can be selected as clusters (see the following section)
+<br>
+% The <span class="kbd">[&#10003;] <b>SLIC</b></span> checkbox, , when ticked, pixels of the image are clustered using the SLIC algorithm and can be selected as clusters (see the following section)
+<br>
+% </html>
+%
+% [/dtls]
+%
+% [dtls]<summary> *Superpixels with the Brush tool* </summary>
+<div class="details-div">
+%
+% *The Superpixels mode* can be initiated by selecting the <https://youtu.be/vVh1j3HBh-c *Watershed*> or <https://youtu.be/6bZb_Mr_nS0?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj *SLIC*> 
+% checkbox. In the Superpixels mode the brush tool selects not individual pixels but rather
 % groups of pixels (superpixels). While drawing the selection of the last superpixel can
-% be undone by pressiong the *|Ctrl+Z|* shortcut.
+% be undone by pressiong the [class.kbd]Ctrl+Z[/class] shortcut.
 % 
 % The superpixels are calculated using the 
 %
@@ -809,10 +1612,10 @@ Works also in 3D.
 % 
 % The two additional edit boxed (|N|, |Compact/Invert|) offer possibility
 % to modify the size of generated superpixels (_see below_). The values in
-% the |N| edit box can be changed using the *_Ctrl+Alt + mouse wheel_* or
-% *_Ctrl+Alt+Shift + mouse wheel_* shortcuts.
+% the |N| edit box can be changed using the [class.kbd]Ctrl+Alt + mouse wheel[/class] or
+% [class.kbd]Ctrl[/class]+[class.kbd]Alt[/class]+[class.kbd]&#8679; Shift[/class] + [class.kbd]mouse wheel[/class] shortcuts.
 %
-% References:
+% *References:*
 %%
 % 
 % * Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, SLIC Superpixels Compared to State-of-the-art Superpixel Methods, IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 34, num. 11, p. 2274 - 2282, May 2012.
@@ -835,8 +1638,8 @@ Works also in 3D.
 % Centre for Exploration Targeting, School of Earth and Environment, The
 % University of Western Australia.
 %
-% *Note 1!* The Superpixels mode is sensitive to the |Adapt.| checkbox in
-% the |Selection panel|. When the |Adapt.| checkbox is selected the
+% *Note 1!* The Superpixels mode is sensitive to the [class.kbd][&#10003;] *Adapt.*[/class] checkbox in
+% the |Selection panel|. When the [class.kbd][&#10003;] *Adapt.*[/class] checkbox is selected the
 % superpixels are selected based on the _mean value_ of the initial
 % selection _plus/minus_ standard deviation within the same area multiplied
 % by the factor specified in the |Adapt.| editbox of the |Selection| panel.
@@ -844,15 +1647,18 @@ Works also in 3D.
 % *Note 2!* While drawing the value in the |Adapt.| editbox may be changed
 % using the mouse wheel.
 %
-% *Note 3!* The function relies on _slicmex.c_ that should be compiled for
+% *Note 3!* The function relies on [class.code]slicmex.c[/class] that should be compiled for
 % your operating system. Please refer to the
 % <im_browser_system_requirements.html
 % Microscopy Image Browser System Requirements> section for details.
 %
+% [/dtls]
+% [br8]
+%
 %% The Black and White Thresholding tool 
 %
 %
-% <html>
+% <html lang="en">
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -860,30 +1666,49 @@ Works also in 3D.
 % </td>
 % <td style="border: 0px">
 % Makes black and white thresholding of the current image slice or the
-% whole dataset (depending on status of the <b>3D</b> and <b>4D</b> checkboxes). 
-% <br><br>
-% Use the <b>Low Lim</b> and <b>High Lim</b> sliders and edit boxes to provide
-% the threshold values. 
-% <br><br>
-% If the <b>Masked area</b> check box is selected the thresholding is 
-% performed only for the masked areas of the image, which is very convenient for local black and white thresholding.
-% <br><br>
-% The right mouse click above the threshold sliders opens a popup menu that
-% allows to set the step for slider movement.
-% <br><br>
-% The <b>Adaptive</b> checkbox starts adaptive threshoding with the
-% 'Sensitivity' and 'Width' parameters modified by the scroll bars.
+% whole dataset (depending on status of the <span class="kbd">[&#10003;] <b>3D</b></span> and <span class="kbd">[&#10003;] <b>4D</b></span> checkboxes). 
+% 
+<br>
+<br>
+% A brief demonstration is available in the following video:
+<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=4m37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m37s</a>
 % </td>
 % </tr>
 % </table>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/ZcJQb59YzUA?t=4m37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m37s</a>
 % </html>
 %
+% [dtls]<summary> *Parameters and controls* </summary>
+<div class="details-div">
 %
-%% Drag & Drop materials
+% Use the *Low* and *High* sliders and edit boxes to provide
+% threshold values tha will be used to select pixels with intensities
+% between these values.
+% [br8]
+% If the *Masked area* check box is selected the thresholding is 
+% performed only for the masked areas of the image, which is very convenient for local black and white thresholding.
+% [br8]
+% [class.kbd]Right mouse click[/class] above the threshold sliders opens a popup menu that
+% allows to set precision for the slider movement.
+% [br8]
+% The [class.kbd][&#10003;] *Adaptive*[/class] checkbox starts adaptive threshoding with the
+% |Sensitivity| and |Width| parameters modified by the scroll bars.
 %
-% <html>
+% *Usage notes*
+<br>
+% When doing thesholding for large 3D/4D datasets it is recommended to:
+%
+% * start in 2D mode by unchecking [class.kbd][&#10003;] *3D*[/class] and [class.kbd][&#10003;] *4D*[/class] checkboxes
+% * adjust parameters using the currently shown slice
+% * when parameters are chosen, tick [class.kbd][&#10003;] *3D*[/class] or [class.kbd][&#10003;] *4D*[/class] checkbox 
+% * select |Low| or |High| editbboxe and hit [class.kbd]Enter[/class] to apply thresholding values for the whole dataset
+%
+% [/dtls]
+% [br8]
+%
+%% Drag & Drop material
+%
+% <html lang="en">
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -893,37 +1718,51 @@ Works also in 3D.
 % Shift MIB layers (selection, mask, model) to left/right/up/down
 % direction. The tool allows to move individual 2D/3D objects as well as
 % complete contents of the layers in 2D and 3D.
-% <br><br>
+% 
+<br>
+<br>
 % A combobox offers possibility to choose the layer to be moved. Mouse click or use of the buttons
 % in the panel move the selected layer left/right/up/down by the specified number of pixels.
-% <br><br>
-% A brief demonstration is available in the following video:<br>
+% 
+<br>
+<br>
+% A brief demonstration is available in the following video:
+<br>
 % <a href="https://youtu.be/NGudNrxBbi0"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/NGudNrxBbi0</a>
-% <br><br>
+% 
+<br>
+<br>
 % </td>
 % </tr>
 % </table>
-% <br><br>
+% </html>
+%
+% [dtls]<summary> *Mouse and key controls* </summary>
+<div class="details-div">
+%
+% <html lang="en">
 % <table style="width: 800px; text-align: center;" cellspacing=2px cellpadding=2px >
 % <tr style="font-weight: bold; background: #ffb74d;">
 %   <td>Start by</td>
 %   <td>Modifier</td>
-%   <td>3D checkbox</td>
+%   <td><span class="kbd">[&#10003;] <b>3D</b></span> checkbox</td>
 %   <td>Action</td>
 % </tr>
-% <tr><td>Mouse click over an object</td><td>Control</td><td>Unchecked</td><td>Move the selected object in 2D</td></tr>
-% <tr><td>Mouse click over an object</td><td>Control</td><td>Checked</td><td>Move the selected 3D object. <b>Note! Only for MATLAB version 2017b and newer</b></td></tr>
-% <tr><td>Mouse click</td><td>Shift</td><td>Unchecked</td><td>Move all objects on the shown slice, i.e. 2D movement</td></tr>
-% <tr><td>Mouse click</td><td>Shift</td><td>Checked</td><td>Move all objects on all slices, i.e. 3D movement</td></tr>
-% <tr><td>Left/Right/Up/Down buttons</td><td>-</td><td>Unchecked</td><td>Move all objects on the shown slice by the specified number of pixels, i.e. 2D movement</td></tr>
-% <tr><td>Left/Right/Up/Down buttons</td><td>-</td><td>Checked</td><td>Move all objects on all slices by the specified number of pixels, i.e. 3D movement</td></tr>
+% <tr><td><span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> Left mouse click</span> over an object</td><td><span class="kbd">Ctrl</span></td><td>Unchecked</td><td>Move the selected object in 2D</td></tr>
+% <tr><td><span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> Left mouse click</span> over an object</td><td><span class="kbd">Ctrl</span></td><td>Checked</td><td>Move the selected 3D object. <b>Note! Only for MATLAB version 2017b and newer</b></td></tr>
+% <tr><td><span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> Left mouse click</span></td><td><span class="kbd">&#8679; Shift</span></td><td>Unchecked</td><td>Move all objects on the shown slice, i.e. 2D movement</td></tr>
+% <tr><td><span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> Left mouse click</span></td><td><span class="kbd">&#8679; Shift</span></td><td>Checked</td><td>Move all objects on all slices, i.e. 3D movement</td></tr>
+% <tr><td><span class="kbd">Left</span>/<span class="kbd">Right</span>/<span class="kbd">Up</span>/<span class="kbd">Down buttons</span></td><td>-</td><td>Unchecked</td><td>Move all objects on the shown slice by the specified number of pixels, i.e. 2D movement</td></tr>
+% <tr><td><span class="kbd">Left</span>/<span class="kbd">Right</span>/<span class="kbd">Up</span>/<span class="kbd">Down buttons</span></td><td>-</td><td>Checked</td><td>Move all objects on all slices by the specified number of pixels, i.e. 3D movement</td></tr>
 % </table>
 % </html>
-% 
+%
+% [/dtls]
+% [br8]
 %
 %% The Lasso tool
 %
-% <html>
+% <html lang="en">
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -931,86 +1770,134 @@ Works also in 3D.
 % </td>
 % <td style="border: 0px">
 % Selection with a <em>lasso, rectangle, ellipse or polyline</em> tools.
-% <br>
-% A brief demonstration is available in the following video:<br>
+% 
+<br>
+% A brief demonstration is available in the following video:
+<br>
 % <a href="https://youtu.be/OHFdGj9uBro"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/OHFdGj9uBro</a>
-% <br><br>
-% <b>How to use:</b>
-% <ul>
-% <li>Press and release the selection mouse key (default: left mouse button) above the
-% image to initialize the lasso tool</li>
-% <li>Press the <em>left mouse button</em> and drag the mouse to start selection of areas</li>
-% <li>Release the <em>left mouse button</em> to finish selection</li>
-% <li>Modify selected area, if needed</li>
-% <li>Accept selection using a double click of the <em>left mouse button</em></li>
-% </ul>
-% When the <em>Add mode</em> is switched to the <em>Subtract mode</em> the
-% selected area is removed from the Selection layer.
 % </td>
 % </tr>
 % </table>
 % </html>
+%
+% [dtls]<summary> *How to use:* </summary>
+<div class="details-div">
+%
+% * Press and release [class.kbd]left mouse button[/class] above the image to initialize the lasso tool
+% * Press and hold [class.kbd]left mouse button[/class] and drag the mouse to select an area
+% * Release the [class.kbd]left mouse button[/class] to finish the selection process
+% * Modify selected area, if needed
+% * Accept selection using [class.kbd]double left mouse button click[/class]
+%
+% *Modes:*
+%
+% * *Add*, a new selection is added to the existing one
+% * *Subtract*, a new selection is subtracted from the existing one
 % 
 % The Lasso tool works also in 3D.
 %
-%% The Magic Wand+Region Growing tool
-% Selection of pixels with the _mouse button_ based on their
-% intensities. The intensity variation is calculated from the intensity of the 
-% selected pixel and two threshold values from the |Variation| edit boxes.
+% [/dtls]
+% [br8]
 %
-% <html>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/ZcJQb59YzUA?t=1m50s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=1m50s</a>
+%% The Magic Wand + Region Growing tool
+% 
+% <html lang="en">
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
 %   <img src = "images\PanelsSegmentationToolsMagicWand.png">
 % </td>
 % <td style="border: 0px">
-% <ul>
-% <li><b>Connect 8</b> specifies the 8 (26 for 3D) connected neighbourhood connectivity</li>
-% <li><b>Connect 4</b> specifies the 4 (6 for 3D) connected neighbourhood connectivity</li>
-% <li><b>Radius</b> allows defining an effective range for the magic wand</li>
-% </ul>
+% Selection of pixels with the _mouse button_ based on their
+% intensities. The intensity variation is calculated from the intensity of the 
+% selected pixel and two threshold values from the |Variation| edit boxes.
+% 
+<br>
+<br>
+% A brief demonstration is available in the following video:
+<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=1m50s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=1m50s</a>
 % </td>
 % </tr>
 % </table>
 % </html>
 %
+% [dtls]<summary> *Widgets and parameters* </summary>
+<div class="details-div">
+%
+% * *Variation* editboxes, specify variation of image intensities relative to the clicked value
+% * *Connect 8* specifies the 8 (26 for 3D) connected neighbourhood connectivity
+% * *Connect 4* specifies the 4 (6 for 3D) connected neighbourhood connectivity
+% * *Radius* allows defining an effective range for the magic wand
+%
 % The Magic Wand works also in the 3D mode (the 3D switch in the
 % <ug_panel_selection.html |Selection panel|>).
 %
-% *Selection modifiers for the Magic wand tool:*
+% [/dtls]
 %
-% * *None + left mouse click*, will replace the existing selection with the new one.
-% * *Shift + left mouse click*, will add new selection to the existing one.
-% * *Ctrl + left mouse click*, will remove new selection from the current.
+% [dtls]<summary> *Selection modifiers for the Magic wand tool* </summary>
+<div class="details-div">
+%
+% * [class.kbd]left mouse click[/class], will replace the existing selection with the new one.
+% * [class.kbd]&#8679; Shift[/class] + [class.kbd]left mouse click[/class], will add new selection to the existing one.
+% * [class.kbd]Ctrl[/class] + [class.kbd]left mouse click[/class], will remove new selection from the current.
+%
+% [/dtls]
+% [br8]
 %
 %% The Membrane Click Tracker tool
-% This tool tracks membrane-type objects by using 2 mouse clicks that define start and end point of the membrane domain. 
 %
-% <html>
-% A brief demonstration for 2D is available in the following video:<br>
-% <a href="https://youtu.be/ZcJQb59YzUA?t=3m14s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=3m14s</a>
-% <br>
-% A brief demonstration for 3D is available in the following video:<br>
-% <a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
+% <html lang="en">
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
 %   <img src = "images\PanelsSegmentationToolsMembraneClick.png">
 % </td>
 % <td style="border: 0px">
-% <b>How to use:</b>
-% <ul>
-% <li><b>Ctrl + left mouse click</b> to define the starting point of a membrane fragment (before MIB version 2.651 the Shift + left mouse click combination was used)</li>
-% <li><b>mouse click</b> to trace the membrane from the starting point to the clicked point</li>
-% </ul>
+% This tool tracks membrane-type objects by using 2 mouse clicks that define start and end point of the membrane domain. 
+% 
+<br>
+<br>
+% A brief demonstration for 2D is available in the following video:
+<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=3m14s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=3m14s</a>
+% 
+<br>
+% A brief demonstration for 3D is available in the following video:
+<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
 % </td>
 % </tr>
 % </table>
 % </html>
+%
+% [dtls]<summary> *How to use* </summary>
+<div class="details-div">
+%
+% * [class.kbd]Ctrl[/class] + [class.kbd]left mouse click[/class] to define the starting point of a membrane fragment 
+% (before MIB version 2.651 the [class.kbd]&#8679; Shift[/class] + [class.kbd]left mouse click[/class] combination was used)</li>
+% * [class.kbd]Left mouse click[/class] to trace the membrane from the starting point to the clicked point</li>
+%
+% [/dtls]
+%
+% [dtls]<summary> *Additional parameters* </summary>
+<div class="details-div">
 % 
+% * The *Scale* edit box - during the tracing the image gets enhanced by taking
+% into account intensities of the starting and ending points |img(img>min([val1 val2])-diff([val1
+% val2])*options.scaleFactor) = maxIntensity;| 
+% * The *Width* edit box - defines a width of the resulting trace 
+% * The [class.kbd][&#10003;] *BlackSignal*[/class] checkbox defines whether the signal is Black on White, or White on Black 
+% * The [class.kbd][&#10003;] *Straight line*[/class] checkbox - when checked, the points are connected with a straight line
+% 
+% *_Note!_* When the 3D switch in the <ug_panel_selection.html |Selection| panel> is enabled the *Membrane Click Tracker*
+% tool connects points (_linearly_) in the 3D space (this may be very
+% usefull for tracing microtubules). Alternatively for microtunules, consider [jumpto1]3D lines tool[/jumpto]
+%
+% [/dtls]
+% 
+% [dtls]<summary> *Reference and compilation* </summary>
+<div class="details-div">
 % The membrane is traced with help of Accurate Fast Marching function 
 % <http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching>
 % by Dirk-Jan Kroon, 2011, University of Twente.
@@ -1018,125 +1905,213 @@ Works also in 3D.
 % *_Note!_* It is highly recommended to compile the corresponding function 
 % (see details in the Membrane Click Tracker section of <im_browser_system_requirements.html the System Requirements page> ), otherwise the function is very slow! 
 %
-% *Extra parameters:* 
-%
-% * The *Scale* edit box - during the tracing the image gets enhanced by taking
-% into account intensities of the starting and ending points |img(img>min([val1 val2])-diff([val1
-% val2])*options.scaleFactor) = maxIntensity;| 
-% * The *Width* edit box - defines a width of the resulting trace 
-% * The *BlackSignal* checkbox defines whether the signal is Black on White, or White on Black 
-% * The *Straight line* checkbox - when checked, the points are connected with a straight line
-% 
-% *_Note!_* When the 3D switch in the <ug_panel_selection.html |Selection| panel> is enabled the *Membrane Click Tracker*
-% tool connects points (_linearly_) in the 3D space (this may be very
-% usefull for tracing microtubules).
-%
+% [/dtls]
+% [br8]
 %
 %% Object Picker
 %
-% This mode allows fast selection of objects from the |Mask| or |Model|
-% layers. When the |Mask| and |Model| radio buttons define the target layer
-% for selection.
-%
-% <html>
-% A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/mzILHpbg89E"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/mzILHpbg89E</a>
-% <br>
+% <html lang="en">
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
 %   <img src = "images\PanelsSegmentationToolsObjectPicker.png">
 % </td>
 % <td style="border: 0px">
+% This mode allows fast selection of objects from the |Mask| or |Model|
+% layers. When the |Mask| and |Model| radio buttons define the target layer
+% for selection.
+<br>
+<br>
+% A brief demonstration is available in the following video:
+<br>
+% <a href="https://youtu.be/mzILHpbg89E"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/mzILHpbg89E</a>
+% 
+<br>
 % Works also in <em>3D</em> (select the <b>3D</b> check box in the <a href="ug_panel_selection.html">Selection panel</a>).
-% <br><br>
+% 
+<br>
+<br>
 % <b>Note!</b> The 3D mode requires calculating statistics for the objects. Please select the material in the 
-% <a href="ug_panel_segm.html">Select from</a> list box and press the <b>Recalc. Stats</b> button (the button becomes available when the 
+% <a href="ug_panel_segm.html">Select from</a> list box and press the <span class="kbd">Recalc. Stats</span> button (the button becomes available when the 
 % <a href="ug_panel_selection.html>3D check box</a> is checked).
-% <br><br>
+% 
+<br>
+<br>
 % <b>Note!</b> Some advanced mask or model filtering may be done via 
 % <a href="ug_gui_menu_mask_statistics.html"Menu->Mask->Mask statistics...</a> or <a href="ug_gui_menu_mask_statistics.html">Menu->Models->Model statistics...</a>. 
 % </td>
 % </tr>
 % </table>
 % </html>
-% 
 %
-% *Possible Object Picker selection modes are:*
+% [dtls]<summary> *Possible Object Picker selection modes* </summary>
+<div class="details-div">
 %
-% <html>
+% <html lang="en">
 % <ul style="position:relative; left:35px;">
 % <li> 
-% 1. <b>Mouse click</b>: selects object from the <i>Mask/Model</i> layers with <i>mouse
-% click</i>. 
-% <b>Note 1!</b> Separation of objects is sensitive to the connected neighbourhood connectivity parameter from the <i>Magic Wand</i> tool; 
+% 1. <span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> Left mouse click</span>, selects object from the <em>Mask/Model</em> layers with a single mouse click.
+<br> 
+% <b>Note 1!</b> Separation of objects is sensitive to the connected neighbourhood connectivity parameter from the <em>Magic Wand</em> tool; 
 % <b>Note 2!</b> In the 3D mode the function uses object statistics that is
-% generated by pressing the |Recalc. Stats| button. If the <i>Mask/Model</i> layers have been changed press the |Recalc. Stats| button again.
+% generated by pressing the  <span class="kbd">Recalc. Stats</span> button. If the <em>Mask/Model</em> layers have been changed press the 
+% <span class="kbd">Recalc. Stats</span> button again.
 % </li>
 % <li>
 % 2. <b>Lasso</b>: selects object with <em>lasso</em> tool (Press first 
-% <i>[None/Shift/Ctrl] + Right mouse button</i>, then hold the left mouse button
-% while moving mouse around). Can also make selection for the whole dataset if the |3D| checkbox in 
+%  <span class="kbd">None</span>/<span class="kbd">&#8679; Shift</span>/<span class="kbd">Ctrl</span> +  <span class="kbd">Right mouse button</span>, 
+%  then hold the  <span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse button</span> while moving mouse around). Can also make selection for the whole dataset if the <span class="kbd">[&#10003;] <b>3D</b></span> checkbox in 
 % the <a href="ug_panel_selection.html">Selection panel</a> is checked. 
 % </li>
 % <li>
-% 3. <b>Rectangle</b> or <b>Ellipse</b>: these tools work in similar to the <i>lasso</i> tool
+% 3. <b>Rectangle</b> or <b>Ellipse</b>: these tools work in similar to the <em>lasso</em> tool
 % manner but give rectangle or ellipsoid selection. Works also in 3D.
 % </li>
 % <li>
 % 4. With the <b>Polyline</b> option the selection is done by drawing a polygon 
-% shape point by point. Start drawing with <i>right mouse button</i> and finish with
-% a <i>double click</i> or <i>right mouse click</i>. Works also in 3D.
+% shape point by point. Start drawing with the <span class="kbd">right mouse button</span> and finish with
+% a <span class="kbd">double click</span> or the <span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span>. Works also in 3D.
 % </li>
 % <li>
-% 5. Use <b>Brush</b> to select some of the masked/model areas. Size of the Brush is defined in the Brush edit box.
+% 5. Use <b>Brush</b> to select some of the masked/model areas. Size of the Brush tool is defined in the <em>Brush</em> editbox.
 % </li>
 % <li>
-% 6. <b>Mask within selection</b> with <em>mouse click</em> on the image
-% makes a new selection that is an intersection of the existing selection
-% and the mask/model layer. With <em>Ctrl+mouse click</em> the new selection is
-% Selection <em>-minus-</em> Mask. This action is sensitive to the 3D checkbox state in the Selection panel. 
+% 6. <b>Mask within selection</b> with the <span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span> on the image
+% make a new selection that is an intersection of the existing selection
+% and the mask/model layer. With  <span class="kbd">Ctrl</span>+ <span class="kbd">mouse click</span> the new selection is
+% Selection <em>-minus-</em> Mask. This action is sensitive to the <span class="kbd">[&#10003;] <b>3D</b></span> checkbox state in the Selection panel. 
 % </li>
 % </ul>
 % </html>
 %
-% *Selection modifiers*:
+% [/dtls]
 %
-% * *None / Shift + left mouse click*, will add selection with the existing one.
-% * *Ctrl + left mouse click*, will remove selection from the current.
+% [dtls]<summary> *Selection modifiers* </summary>
+<div class="details-div">
 %
+% * [class.kbd]None[/class]/[class.kbd]&#8679; Shift[/class] + [class.kbd]left mouse click[/class], will add selection with the existing one
+% * [class.kbd]Ctrl[/class] + [class.kbd]left mouse click[/class], will remove selection from the current
+%
+% [/dtls]
+% [br8]
 %
 %% The Spot tool 
 %
-% <html>
+% <html lang="en">
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
 %   <img src = "images\PanelsSegmentationToolsSpot.png">
 % </td>
 % <td style="border: 0px">
-% Adds a spot - a circular object with a <em>mouse click</em><br><br>
-% A brief demonstration is available in the following video:<br>
+% Adds a spot - a circular object with a <em>mouse click</em>
+<br>
+<br>
+% A brief demonstration is available in the following video:
+<br>
 % <a href="https://youtu.be/AlCzjKuyJww"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/AlCzjKuyJww</a>
-% <br>
-% Use the <b>Radius, px</b> edit box to specify the radius of the spot. 
-% <br><br>
-% Works also in 3D.
-% <br><br>
-% <b>Selection modifiers</b>
-% <ul>
-% <li><b>None / Shift + left mouse click</b>, will add new spot to the existing ones</li>
-% <li><b>Ctrl + left mouse click</b>, will remove selection from the current</li>
-% </ul>
 % </td>
 % </tr>
 % </table>
 % </html>
+%
+% [dtls]<summary> *Widgets and parameters* </summary>
+<div class="details-div">
+%
+% <html lang="en">
+% Use the <b>Radius, px</b> edit box to specify the radius of the spot.
 % 
+<br>
+% *Eraser, x*, specifies magnifier for the spot eraser tool
+% 
+<br>
+<br>
+% Works also in 3D.
+% 
+<br>
+<br>
+% <b>Selection modifiers</b>
+% <ul>
+% <li><span class="kbd">None</span>/<span class="kbd">&#8679; Shift</span> + <span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, will add new spot to the existing ones</li>
+% <li><span class="kbd">Ctrl</span> + <span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, will remove selection from the current</li>
+% </ul>
+% </html>
+%
+% [/dtls] 
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| 
 % <ug_gui_panels.html *Panels*> |*REPLACE_WITH_DASH_DASH>*| <ug_panel_segm.html *Segmentation Panel*>
 %
-
+% [cssClasses]
+% .kbd { 
+%     font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html lang="en">
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>
 ##### SOURCE END #####
---></body></html>
+--><script>
+var allDetails   = document.getElementsByTagName('details');
+var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
+var returnButton = document.getElementById("return-link");
+document.getElementById("iFrameBuf").style.display = "none";
+if(in_iFrame())
+{
+   try{
+      var footerNav = parent.document.getElementsByClassName("footernav");
+      var tabPane   = parent.document.getElementsByClassName("tab-pane");}
+   catch(err) { var footerNav = []; var tabPane = [];};
+   if(!(footerNav.length) || tabPane.length)
+   {
+      contentDiv.style.overflowY = "scroll";
+      contentDiv.style.overflowX = "hidden";
+      contentDiv.style.position  = "absolute";
+      contentDiv.style.width     = "95%";
+      contentDiv.style.top       = 0;
+      contentDiv.style.bottom    = 0;
+      if (tabPane.length){
+         contentDiv.setAttribute("data-isMATLABCentral","1");
+         returnButton.style.right = "40px";
+         document.getElementById("tooltiptext").style.right = "92px"; }
+      document.getElementById("iFrameBuf").style.display = "block";
+   }
+   else { contentDiv.setAttribute("data-isHelpBrowser","1"); }
+}
+if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
+   document.getElementById("anchor-offsets").sheet.disabled = true; }
+var jumpLinks = document.getElementsByTagName("a");
+for (var i = 0; i < jumpLinks.length; i++){
+  href = jumpLinks[i].getAttribute("href");
+  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
+</script></body></html>

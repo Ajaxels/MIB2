@@ -10,7 +10,7 @@
 %% Measure length
 % Allows measuring the length on the image.
 %
-% *Measure Tool*
+% [class.h3]Measure Tool[/class]
 %
 % Measure Tool of MIB is based on <http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility Image Measurement Utility>
 % written by Jan Neggers, Eindhoven Univeristy of Technology. Using this
@@ -18,7 +18,7 @@
 % <ug_gui_menu_tools_measure.html Press here for details>.
 % 
 %
-% *Line measure*
+% [class.h3]Line measure[/class]
 %
 % Measures the linear distance between two points. Press and hold left mouse
 % button to draw a line that connects two object. The result will be shown
@@ -26,7 +26,7 @@
 % The linear measuring tool can also be called from the <ug_gui_toolbar.html toolbar>. The pixel sizes are
 % defined in the <ug_gui_menu_dataset.html Dataset parameters>.
 %
-% *Free hand measure*
+% [class.h3]Free hand measure[/class]
 %
 % Similar to the line measure tool, except that the measured distance can
 % be drawn arbitrarily.
@@ -66,9 +66,12 @@
 % * <ug_gui_menu_tools_graphcut.html *Graphcut segmentation* (_recommended_)>
 % * <ug_gui_menu_tools_watershed.html *Watershed segmentation*>
 % 
-% 
+% [dtls][smry] *Graphcut and watershed example* [/smry]
 %
 % <<images\menuToolsGraphcutWatershed.jpg>>
+%
+% [/dtls]
+% [br8]
 %
 %% Object separation
 % Tools for separation of objects that can be as materials of the current
@@ -76,11 +79,12 @@
 %
 % * <ug_gui_menu_tools_objseparation.html *Object separation*>
 %
-% Example of seeded watersheding of cells:
-%
+% [dtls][smry] *Example of seeded watersheding of cells* [/smry]
 % 
 % <<images/menuToolsWatershedExample.jpg>>
 %
+% [/dtls]
+% [br8]
 %
 %% Stereology
 % The stereology tool of MIB counts number of intersections between materials of the opened
@@ -93,12 +97,15 @@
 % <a href="https://youtu.be/5gOiyVNr2vY"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/5gOiyVNr2vY</a>
 % </html>
 % 
+%
+% [dtls][smry] *Details and parameters* [/smry]
+%
 % <<images\menuToolsStereology.png>>
 % 
 % To calculate the grid use the |Generate| button in the |Grid options
 % panel|. The analysis is started by pressing the |Do stereology| button. 
 %
-% The include annotations checkbox is selected the Stereology tool also 
+% The [class.kbd][&#10003;] *Include annotations*[/class] checkbox is selected the Stereology tool also 
 % calculates occurances of the annotation labels (Segmentation Panel->Annotations tool)
 %
 %
@@ -106,6 +113,9 @@
 % 0|) the grid may not be shown properly at the magnifications that are
 % lower than 100%. To see the grid also at low magnification, increase the
 % |extra grid thickness| value.
+%
+% [/dtls]
+% [br8]
 %
 %% Wound healing assay
 % The wound healing assay is designed to measure migration parameters of
@@ -119,6 +129,9 @@
 % 
 % <<images\menuToolsWoundHealing.png>>
 % 
+%
+% [dtls][smry] *Details and parameters* [/smry]
+%
 % The tool has two parts:
 % 
 % <html>
@@ -144,7 +157,7 @@
 %   <td>
 %   <ul>
 %   <li>Populate the <em>Wound healing settings</em> panel: set the pixel size, time step and optional downsampling of resulting images for evaluation. 
-% When the <em>show interactive graph</em> checkbox is checked, the tool will generate an interactive plot with results after each time point</li>
+% When the <span class="kbd">[&#10003;] <b>show interactive graph</b></span> checkbox is checked, the tool will generate an interactive plot with results after each time point</li>
 %   <li>Select directories with the stitched images for the wound healing
 %   assay (the <em>Select directories...</em> button)</li>
 %   <li>Press the <em>Wound healing</em> button to start</li>
@@ -178,6 +191,46 @@
 % </table>
 % </html>
 %
-%
+% [/dtls]
+% [br8]
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

@@ -25,6 +25,10 @@ classdef mibCropObjectsController < handle
         % output variable for export to Matlab
         storedBatchOpt 
         % stored BatchOpt, because some of the parameters gets overwritten in the crop function
+        labelPosition
+        % matrix with center coordinates of patches to be cropped out from
+        % the image, it is used by mibAnnotationsController. Format:
+        % [pntId][z, x, y, t]
     end
     
     events
@@ -43,17 +47,19 @@ classdef mibCropObjectsController < handle
     end
     
     methods
-        function obj = mibCropObjectsController(mibModel, mibStatisticsController, BatchModeSwitch)
-            % function obj = mibCropObjectsController(mibModel, mibStatisticsController, BatchModeSwitch)
+        function obj = mibCropObjectsController(mibModel, mibStatisticsController, BatchModeSwitch, labelPosition)
+            % function obj = mibCropObjectsController(mibModel, mibStatisticsController, BatchModeSwitch, labelPosition)
             % constructor of the class
             % Parameters:
             % mibStatisticsController: a handle to the mibStatisticsController class
             % BatchModeSwitch: a logical switch to use the batch mode instead of GUI mode
+            % labelPosition: matrix with center coordinates of patches to crop out from the image [pntId][z, x, y, t]. It is used by mibAnnotationsController.
+            if nargin < 4; labelPosition = []; end
             if nargin < 3; BatchModeSwitch = 0; end
             
             obj.mibModel = mibModel;    % assign model
             obj.mibStatisticsController = mibStatisticsController;
-
+            obj.labelPosition = labelPosition;
             obj.storedBatchOpt = obj.mibStatisticsController.BatchOpt;  % store BatchOpt, because some of the parameters gets overwritten
             
             [~, obj.outputVar] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));  % to be used below in eval block
@@ -70,22 +76,50 @@ classdef mibCropObjectsController < handle
             
             guiName = 'mibCropObjectsGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
+
             obj.updateWidgets();
             %obj.View.gui.WindowStyle = 'modal';     % make window modal
             
-            if verLessThan('matlab',' 9.3')
-                if obj.mibStatisticsController.View.handles.Shape3D.Value == 1
-                    obj.View.handles.SingleMaskObjectPerDataset.Enable = 'off';     % because it is using bwselect3 function available in R2017b and newer
-                    obj.mibStatisticsController.BatchOpt.SingleMaskObjectPerDataset = false; 
+            if isempty(obj.labelPosition)   % standard call from mibStatisticsController
+                if verLessThan('matlab',' 9.3')
+                    if obj.mibStatisticsController.View.handles.Shape3D.Value == 1
+                        obj.View.handles.SingleMaskObjectPerDataset.Enable = 'off';     % because it is using bwselect3 function available in R2017b and newer
+                        obj.mibStatisticsController.BatchOpt.SingleMaskObjectPerDataset = false; 
+                    end
                 end
-            end
-            
-            % runId is a vector runId(1) index of the dataset, runId(2) index of material runId(2)==1 is mask
-            % for models <= 255:          -1=Mask; 0=Ext; 1-1st material  ...
-            % for models > 255: -2=Model; -1=Mask; 0=Ext; 1-1st material, 2-second selected material...
-            if obj.mibStatisticsController.runId(2) ~= -1 
-                obj.View.handles.SingleMaskObjectPerDataset.Enable = 'off';     % because the objects were not detected from the mask
-                obj.mibStatisticsController.BatchOpt.SingleMaskObjectPerDataset = false;
+
+                if obj.mibStatisticsController.View.handles.Shape3D.Value == 1
+                    obj.View.handles.Generate3DPatches.Value = true;
+                end
+                
+                % runId is a vector runId(1) index of the dataset, runId(2) index of material runId(2)==1 is mask
+                % for models <= 255:          -1=Mask; 0=Ext; 1-1st material  ...
+                % for models > 255: -2=Model; -1=Mask; 0=Ext; 1-1st material, 2-second selected material...
+                if obj.mibStatisticsController.runId(2) ~= -1 
+                    obj.View.handles.SingleMaskObjectPerDataset.Enable = 'off';     % because the objects were not detected from the mask
+                    obj.mibStatisticsController.BatchOpt.SingleMaskObjectPerDataset = false;
+                end
+            else % check for alternative call from mibAnnotationsController
+                obj.View.handles.marginXYtext.String = 'Width, px';
+                obj.View.handles.marginXYtext.Tooltip = 'width of the cropped block in pixels';
+                obj.View.handles.marginXYEdit.Tooltip = 'width of the cropped block in pixels';
+                obj.View.handles.marginZtext.String = 'Height, px';
+                obj.View.handles.marginZtext.Tooltip = 'width of the cropped block in pixels';
+                obj.View.handles.marginZEdit.Tooltip = 'width of the cropped block in pixels';
+                obj.View.handles.SingleMaskObjectPerDataset.Enable = 'off';     % because it is using bwselect3 function available in R2017b and newer
+                obj.mibStatisticsController.BatchOpt.SingleMaskObjectPerDataset = false; 
+                obj.View.handles.Generate3DPatches.Enable = 'on';
+                obj.mibStatisticsController.BatchOpt.Generate3DPatches = false;
+
+                obj.View.handles.marginXYEdit.String = obj.mibStatisticsController.BatchOpt.CropObjectsMarginXY;
+                obj.View.handles.marginZEdit.String = obj.mibStatisticsController.BatchOpt.CropObjectsMarginZ;
+                obj.View.handles.CropObjectsDepth.String = obj.mibStatisticsController.BatchOpt.CropObjectsDepth;
+
+                % when elements GIU needs to be updated, update obj.BatchOpt
+                % structure and after that update elements of GUI by the
+                % following function
+                % obj.View = updateGUIFromBatchOpt_Shared(obj.View, obj.mibStatisticsController.BatchOpt);    %
+
             end
             
             % add listner to obj.mibModel and call controller function as a callback
@@ -121,7 +155,6 @@ classdef mibCropObjectsController < handle
             if obj.mibModel.getImageProperty('modelExist') == 0
                 obj.View.handles.cropModelCheck.Enable = 'off';
             end
-            
         end
         
         
@@ -161,11 +194,295 @@ classdef mibCropObjectsController < handle
             switch type
                 case {'CropObjectsTo','CropObjectsIncludeModel','CropObjectsIncludeMask'}
                     obj.mibStatisticsController.BatchOpt.(type){1} = newValue;
-                case {'CropObjectsMarginXY', 'CropObjectsMarginZ', 'SingleMaskObjectPerDataset'}
+                case {'CropObjectsMarginXY', 'CropObjectsMarginZ', 'SingleMaskObjectPerDataset', 'CropObjectsDepth'}
                     obj.mibStatisticsController.BatchOpt.(type) = newValue;
+                case 'Generate3DPatches'
+                    obj.mibStatisticsController.BatchOpt.(type) = newValue;
+                otherwise
+                    error('wrong value!');
             end
         end
         
+        function generatePatches(obj)
+            % function generatePatches(obj)
+            % generate image patches using annotations as center
+            % coordinates. The coordinates are provided in
+            % obj.labelPosition as [pntId][z,x,y,t]
+
+            % round label coordinates
+            obj.labelPosition = round(obj.labelPosition);
+
+            % generate extension
+            extensionPosition = strfind(obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}, '*.');
+            ext = '';
+            if ~isempty(extensionPosition)
+                ext = obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}(extensionPosition+1:end-1);     % to be used below in eval block
+            end
+            if strcmp(obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}, 'Crop to Matlab')
+                Path = '';
+                fnTemplate = obj.outputVar;
+            else
+                [Path, fnTemplate] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));  % to be used below in eval block
+            end
+
+            % define materials for export
+            if obj.View.handles.cropModelCheck.Value == 1
+                button = questdlg(sprintf('Would you like to export all materials or only selected?'), 'Select material to export', ...
+                    'All materials', sprintf('Material "%s"', obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{max([1 obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2])}), 'Cancel', 'All materials');
+                switch button
+                    case 'Cancel'
+                        obj.View.handles.cropBtn.BackgroundColor = [0, 1, 0];
+                        return;
+                    case 'All materials'
+                        obj.mibStatisticsController.BatchOpt.CropObjectsIncludeModelMaterialIndex = 'NaN';
+                    otherwise
+                        obj.mibStatisticsController.BatchOpt.CropObjectsIncludeModelMaterialIndex = num2str(max([1 obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2]));
+                end
+            end
+
+            material_id = str2double(obj.mibStatisticsController.BatchOpt.CropObjectsIncludeModelMaterialIndex);
+            dimOpt.blockModeSwitch = 0;
+            [h, w, ~, z, tMax] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, NaN, dimOpt);
+        
+            if obj.mibStatisticsController.BatchOpt.Generate3DPatches == 0
+                obj.mibStatisticsController.BatchOpt.CropObjectsDepth = '1';
+                obj.View.handles.CropObjectsDepth.String = '1';
+            end
+
+            width = str2double(obj.mibStatisticsController.BatchOpt.CropObjectsMarginXY);
+            height = str2double(obj.mibStatisticsController.BatchOpt.CropObjectsMarginZ);
+            depth = str2double(obj.mibStatisticsController.BatchOpt.CropObjectsDepth);
+            
+            if obj.mibStatisticsController.BatchOpt.showWaitbar; wb = waitbar(0, 'Please wait...', 'Name', 'Saving objects'); end
+            
+            % get unique time points
+            noPoints = size(obj.labelPosition, 1);  % get number of annotation points
+            objDigits = numel(num2str(noPoints));   % get number of digits for objects
+
+            for pntId = 1:noPoints
+                % generate filename
+                cmdText = ['filename = fullfile(obj.outputDir, sprintf(''%s_%0' num2str(objDigits) 'd%s'',  fnTemplate, pntId, ext));'];
+                eval(cmdText);
+
+                z1 = obj.labelPosition(pntId, 1);
+                t1 = obj.labelPosition(pntId, 4);
+                getDataOpt.t = [t1 t1];
+                getDataOpt.z = [z1-floor(depth/2) z1-floor(depth/2)];
+            
+                x1 = obj.labelPosition(pntId, 2) - floor(width/2);
+                y1 = obj.labelPosition(pntId, 3) - floor(height/2);
+                z1 = obj.labelPosition(pntId, 1) - floor(depth/2);
+                if x1 < 1; x1 = 1; end
+                if x1 > w-width+1; x1 = w-width+1; end
+                if y1 < 1; y1 = 1; end
+                if y1 > h-height+1; y1 = h-height+1; end
+                if z1 < 1; z1 = 1; end
+                if z1 > z-depth+1; z1 = z-depth+1; end
+
+                getDataOpt.x = [x1, x1+width-1];
+                getDataOpt.y = [y1, y1+height-1];
+                getDataOpt.z = [z1, z1+depth-1];
+
+                imOut = obj.mibModel.I{obj.mibModel.Id}.getData('image', 4, material_id, getDataOpt);
+
+                imgOut2 = mibImage(imOut);
+                imgOut2.pixSize = obj.mibModel.getImageProperty('pixSize');
+                imgOut2.meta('ImageDescription') = obj.mibModel.I{obj.mibModel.Id}.meta('ImageDescription');
+                imgOut2.meta('Filename') = filename;
+
+                % update Bounding Box
+                xyzShift = [(x1-1)*imgOut2.pixSize.x (y1-1)*imgOut2.pixSize.y (z1-1)*imgOut2.pixSize.z];
+                imgOut2.updateBoundingBox(NaN, xyzShift);
+
+                % add XResolution/YResolution fields
+                [imgOut2.meta, imgOut2.pixSize] = mibUpdatePixSizeAndResolution(imgOut2.meta, imgOut2.pixSize);
+
+                log_text = sprintf('ObjectCrop: [y1:y2,x1:x2,:,z1:z2,t]: %d:%d,%d:%d,:,%d:%d,%d', y1,y1+height-1,x1,x1+width-1, z1, z1+depth-1, t1);
+                imgOut2.updateImgInfo(log_text);
+
+                switch obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}
+                    case 'Crop to Matlab'
+                        %matlabVarName = sprintf('%s_%06d%s',  fnTemplate, objId);
+                        if BatchModeSwitch == 0; [~, obj.outputVar] = fileparts(filename); end
+                        matlabVar.img = imgOut2.img{1};
+                        matlabVar.meta = containers.Map(keys(imgOut2.meta), values(imgOut2.meta));
+                    case 'Amira Mesh binary (*.am)'  % Amira Mesh
+                        savingOptions = struct('overwrite', 1);
+                        savingOptions.colors = obj.mibModel.getImageProperty('lutColors');   % store colors for color channels 0-1;
+                        savingOptions.showWaitbar = 0;  % do not show the waitbar
+                        bitmap2amiraMesh(filename, imgOut2.img{1}, ...
+                            containers.Map(keys(imgOut2.meta),values(imgOut2.meta)), savingOptions);
+                    case 'MRC format for IMOD (*.mrc)' % MRC
+                        savingOptions.volumeFilename = filename;
+                        savingOptions.pixSize = imgOut2.pixSize;
+                        savingOptions.showWaitbar = 0;  % do not show the waitbar
+                        mibImage2mrc(imgOut2.img{1}, savingOptions);
+                    case 'NRRD Data Format (*.nrrd)'  % NRRD
+                        savingOptions = struct('overwrite', 1);
+                        savingOptions.showWaitbar = 0;  % do not show the waitbar
+                        bb = imgOut2.getBoundingBox();
+                        bitmap2nrrd(filename, imgOut2.img{1}, bb, savingOptions);
+                    case {'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)'}  % LZW TIF / uncompressed TIF
+                        if strcmp(obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}, 'TIF format LZW compression (*.tif)')
+                            compression = 'lzw';
+                        else
+                            compression = 'none';
+                        end
+                        colortype = imgOut2.meta('ColorType');
+                        if strcmp(colortype,'indexed')
+                            cmap = imgOut2.meta('Colormap');
+                        else
+                            cmap = NaN;
+                        end
+
+                        ImageDescription = {imgOut2.meta('ImageDescription')};
+                        savingOptions = struct('Resolution', [imgOut2.meta('XResolution') imgOut2.meta('YResolution')],...
+                            'overwrite', 1, 'Saving3d', 'multi', 'cmap', cmap, 'Compression', compression, 'showWaitbar', 0);
+                        mibImage2tiff(filename, imgOut2.img{1}, savingOptions, ImageDescription);
+                end
+
+                % crop and save model
+                if ~strcmp(obj.mibStatisticsController.BatchOpt.CropObjectsIncludeModel{1}, 'Do not include')
+                    imOut = obj.mibModel.I{obj.mibModel.Id}.getData('model', 4, material_id, getDataOpt);
+                    modelMaterialNames = obj.mibModel.getImageProperty('modelMaterialNames'); %#ok<NASGU>
+                    modelMaterialColors = obj.mibModel.getImageProperty('modelMaterialColors'); %#ok<NASGU>
+                    if material_id > 0
+                        modelMaterialColors = modelMaterialColors(material_id, :); %#ok<NASGU>
+                        modelMaterialNames = modelMaterialNames(material_id);
+                    end
+
+                    if strcmp(obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}, 'Crop to Matlab')     % export to Matlab
+                        matlabVar.Model.model = imOut;
+                        matlabVar.Model.materials = modelMaterialNames;
+                        matlabVar.Model.colors = modelMaterialColors;
+                    else
+                        % generate filename
+                        [~, fnModel] = fileparts(filename);
+                        BoundingBox = imgOut2.getBoundingBox(); %#ok<NASGU>
+
+                        switch obj.mibStatisticsController.BatchOpt.CropObjectsIncludeModel{1}
+                            case 'Matlab format (*.model)'  % Matlab format
+                                fnModel = ['Labels_' fnModel '.model']; %#ok<AGROW>
+                                fnModel = fullfile(obj.outputDir, fnModel);
+                                modelVariable = 'imOut'; %#ok<NASGU>
+                                modelType = obj.mibModel.I{obj.mibModel.Id}.modelType;  %#ok<NASGU> % type of the model
+                                str1 = sprintf('save ''%s'' imOut modelMaterialNames modelMaterialColors BoundingBox modelVariable modelType -mat -v7.3', fnModel);
+                                eval(str1);
+                            case 'Amira Mesh binary (*.am)'  % Amira Mesh
+                                fnModel = ['Labels_' fnModel '.am']; %#ok<AGROW>
+                                fnModel = fullfile(obj.outputDir, fnModel);
+
+                                pixStr = imgOut2.pixSize;
+                                pixStr.minx = BoundingBox(1);
+                                pixStr.miny = BoundingBox(3);
+                                pixStr.minz = BoundingBox(5);
+                                showWaitbar = 0;  % show or not waitbar in bitmap2amiraMesh
+                                bitmap2amiraLabels(fnModel, imOut, 'binary', pixStr, modelMaterialColors, modelMaterialNames, 1, showWaitbar);
+                            case 'MRC format for IMOD (*.mrc)' % MRC
+                                fnModel = ['Labels_' fnModel '.mrc']; %#ok<AGROW>
+                                fnModel = fullfile(obj.outputDir, fnModel);
+
+                                Options.volumeFilename = fnModel;
+                                Options.pixSize = imgOut2.pixSize;
+                                Options.showWaitbar = 0;  % show or not waitbar in exportModelToImodModel
+                                mibImage2mrc(imOut, Options);
+                            case 'NRRD Data Format (*.nrrd)'  % NRRD
+                                fnModel = ['Labels_' fnModel '.nrrd']; %#ok<AGROW>
+                                fnModel = fullfile(obj.outputDir, fnModel);
+
+                                Options.overwrite = 1;
+                                Options.showWaitbar = 0;  % show or not waitbar in bitmap2nrrd
+                                bitmap2nrrd(fnModel, imOut, BoundingBox, Options);
+                            case {'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)'}  % LZW TIF / uncompressed TIF
+                                fnModel = ['Labels_' fnModel '.tif']; %#ok<AGROW>
+                                fnModel = fullfile(obj.outputDir, fnModel);
+
+                                if strcmp(obj.mibStatisticsController.BatchOpt.CropObjectsIncludeModel{1}, 'TIF format LZW compression (*.tif)')
+                                    compression = 'lzw';
+                                else
+                                    compression = 'none';
+                                end
+                                ImageDescription = {imgOut2.meta('ImageDescription')};
+                                imOut = reshape(imOut,[size(imOut,1) size(imOut,2) 1 size(imOut,3)]);
+                                savingOptions = struct('Resolution', [imgOut2.meta('XResolution') imgOut2.meta('YResolution')],...
+                                    'overwrite', 1, 'Saving3d', 'multi', 'Compression', compression, 'showWaitbar', 0);
+                                mibImage2tiff(fnModel, imOut, savingOptions, ImageDescription);
+                        end
+                    end
+                end
+
+                % crop and save mask
+                if ~strcmp(obj.mibStatisticsController.BatchOpt.CropObjectsIncludeMask{1}, 'Do not include')
+                    imOut = obj.mibModel.I{obj.mibModel.Id}.getData('mask', 4, material_id, getDataOpt);
+
+                    if strcmp(obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}, 'Crop to Matlab')   % export to Matlab
+                        matlabVar.Mask = imOut;
+                    else
+                        % generate filename
+                        [~, fnModel] = fileparts(filename);
+                        BoundingBox = imgOut2.getBoundingBox(); %#ok<NASGU>
+
+                        switch obj.mibStatisticsController.BatchOpt.CropObjectsIncludeMask{1}
+                            case 'Matlab format (*.mask)'  % Matlab format
+                                fnModel = ['Mask_' fnModel '.mask']; %#ok<AGROW>
+                                fnModel = fullfile(obj.outputDir, fnModel);
+                                save(fnModel, 'imOut','-mat', '-v7.3');
+                            case 'Amira Mesh binary (*.am)'  % Amira Mesh
+                                fnModel = ['Mask_' fnModel '.am']; %#ok<AGROW>
+                                fnModel = fullfile(obj.outputDir, fnModel);
+
+                                pixStr = imgOut2.pixSize;
+                                pixStr.minx = BoundingBox(1);
+                                pixStr.miny = BoundingBox(3);
+                                pixStr.minz = BoundingBox(5);
+                                showWaitbar = 0;  % show or not waitbar in bitmap2amiraMesh
+                                bitmap2amiraLabels(fnModel, imOut, 'binary', pixStr, [.567, .213, .625], cellstr('Mask'), 1, showWaitbar);
+                            case 'MRC format for IMOD (*.mrc)' % MRC
+                                fnModel = ['Mask_' fnModel '.mrc']; %#ok<AGROW>
+                                fnModel = fullfile(obj.outputDir, fnModel);
+
+                                Options.volumeFilename = fnModel;
+                                Options.pixSize = imgOut2.pixSize;
+                                Options.showWaitbar = 0;  % show or not waitbar in exportModelToImodModel
+                                mibImage2mrc(imOut, Options);
+                            case 'NRRD Data Format (*.nrrd)'     % NRRD
+                                fnModel = ['Mask_' fnModel '.nrrd']; %#ok<AGROW>
+                                fnModel = fullfile(obj.outputDir, fnModel);
+
+                                Options.overwrite = 1;
+                                Options.showWaitbar = 0;  % show or not waitbar in bitmap2nrrd
+                                bitmap2nrrd(fnModel, imOut, BoundingBox, Options);
+                            case {'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)'}  % LZW TIF / uncompressed TIF
+                                fnModel = ['Mask_' fnModel '.tif']; %#ok<AGROW>
+                                fnModel = fullfile(obj.outputDir, fnModel);
+
+                                if strcmp(obj.mibStatisticsController.BatchOpt.CropObjectsIncludeMask{1}, 'TIF format LZW compression (*.tif)')
+                                    compression = 'lzw';
+                                else
+                                    compression = 'none';
+                                end
+                                ImageDescription = {imgOut2.meta('ImageDescription')};
+                                imOut = reshape(imOut,[size(imOut,1) size(imOut,2) 1 size(imOut,3)]);
+                                savingOptions = struct('Resolution', [imgOut2.meta('XResolution') imgOut2.meta('YResolution')],...
+                                    'overwrite', 1, 'Saving3d', 'multi', 'Compression', compression, 'showWaitbar', 0);
+                                mibImage2tiff(fnModel, imOut, savingOptions, ImageDescription);
+                        end
+                    end
+                end
+
+                % export to Matlab
+                if strcmp(obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}, 'Crop to Matlab')
+                    [~, matlabVarName] = fileparts(filename);
+                    assignin('base', matlabVarName, matlabVar);
+                    fprintf('MIB: "%s" was exported to Matlab\n', matlabVarName);
+                end
+                if obj.mibStatisticsController.BatchOpt.showWaitbar; waitbar(pntId/noPoints, wb); end
+            end
+            if obj.mibStatisticsController.BatchOpt.showWaitbar; delete(wb); end
+            %obj.View.handles.cropBtn.BackgroundColor = [0 1 0];
+            obj.closeWindow(); 
+        end
+
         function cropBtn_Callback(obj, BatchModeSwitch)
             % function cropBtn_Callback(obj)
             % a callback for press of obj.View.handles.cropBtn to start cropping            
@@ -174,6 +491,11 @@ classdef mibCropObjectsController < handle
             if nargin < 2; BatchModeSwitch = 0; end
             global mibPath; % path to mib installation folder
             
+            if ~isempty(obj.labelPosition) % alternative call from mibAnnotationsController
+                obj.generatePatches();
+                return;
+            end
+
             % generate extension
             extensionPosition = strfind(obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}, '*.');
             ext = '';
@@ -284,7 +606,7 @@ classdef mibCropObjectsController < handle
                 for rowId = 1:numel(curTimeObjIndices)
                     objId = data(curTimeObjIndices(rowId), 1);
                     
-                    objectDigits = numel(num2str(numel(curTimeObjIndices)));    % get number of digits for objects
+                    objectDigits = numel(num2str(max(data(curTimeObjIndices, 1))));    % get number of digits for objects
                     if strcmp(obj.mibStatisticsController.BatchOpt.Shape{1}, 'Shape2D')  % 2D mode
                         sliceDigits = numel(num2str(z));    % get number of digits for slices
                         sliceNumber = data(curTimeObjIndices(rowId), 3); %#ok<NASGU>

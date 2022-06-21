@@ -1119,6 +1119,9 @@ classdef mibBatchController < handle
                     obj.View.handles.runProtocolBtn.BackgroundColor = 'r';
                 case 'from'
                     startStep = obj.protocolListIndex;
+                    if strcmp(obj.Protocol(startStep).mibBatchActionName, 'STOP EXECUTION')
+                        startStep = startStep + 1;
+                    end
                     finishStep = numel(obj.Protocol);
                     obj.View.handles.runProtocolBtn.String = 'Stop protocol';
                     obj.View.handles.runProtocolBtn.BackgroundColor = 'r';
@@ -1469,6 +1472,17 @@ classdef mibBatchController < handle
                     %                         Batch.Mode{1} = 'Combine datasets';     % replace mode to load the datasets
                     %                         Batch.BioFormatsIndices = num2str(stepOptions.seriesId);
                     %                     end
+                case 'Save dataset'
+                    Batch = obj.Protocol(stepId).Batch;
+                    if ~isempty(strfind(Batch.DestinationDirectory, '[InheritLastDIR]'))
+                        if ~isfield(stepOptions, 'DirectoryName')
+                            errordlg(sprintf('!!! Error !!!\n\n[InheritLastDIR] requires DIRECTORY LOOP START action above this step!'), 'Problem with [InheritLastDIR]');
+                            return;
+                        end
+                        % get inherited path
+                        [~, InheritLastDIR] = fileparts(stepOptions.DirectoryName);
+                        Batch.DestinationDirectory = strrep(Batch.DestinationDirectory, '[InheritLastDIR]', InheritLastDIR);
+                    end
                 otherwise
                     Batch = obj.Protocol(stepId).Batch; %#ok<NASGU>
                     % remove possible settings for the comboboxes from the

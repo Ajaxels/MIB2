@@ -25,15 +25,29 @@
 %
 %% Import Mask from
 % Imports mask from the main MATLAB workspace or from another dataset opened in MIB. 
-% The mask should be a matrix with dimensions similar to those of the loaded dataset |[1:height, 1:width, 1:no-slices]| of the |uint8| class.
+% The mask should be a matrix with dimensions similar to those of the loaded dataset [class.code][1:height, 1:width, 1:no-slices][/class] of the [class.code]uint8[/class] class.
 %
 %% Export Mask to
 % Exports mask to the main MATLAB workspace or to another dataset opened in MIB, the exported mask may be imported back 
 % to |MIB| using _Import Mask from Matlab_ command.
 %
 %% Save mask as...
-% Saves mask to disk. The mask is saved in the MATLAB format with |*.mask|
+% Saves mask to disk. By default, the mask is saved in the MATLAB format with |*.mask|
 % extension and |Mask_| prefix.
+%
+% [dtls][smry] *List of available formats to save masks* [/smry]
+%
+% * *Matlab format (.mask)*, default MATLAB format for saving masks
+% * *Amira mesh binary (.am)*, Amira mesh binary format
+% * *Amira mesh binary RLE compression SLOW (.am), compressed Amira Mesh
+% format. *Note*, use of this format is not recommended as it is very slow.
+% When working with Amira, the best to save mask in *Amira mesh binary* and
+% resave it from Amira using RLE compression
+% * *Hierarchial Data Format (.h5)*, chunked format suitable for saving masks to Ilastik
+% * *TIF format (.tif)*, standard TIF format
+% * *Hierarchial Data Format with XML header (.xml)*, generate HDF5 file and XML file with image parameters
+%
+% [/dtls]
 %
 %% Invert mask
 % Inverts mask so that the masked areas become background and the background
@@ -59,3 +73,42 @@
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

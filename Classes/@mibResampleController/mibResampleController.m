@@ -316,16 +316,17 @@ classdef mibResampleController  < handle
                     end
                     valZ = str2double(BatchOptLoc.VoxelZ);
                     ratio = valZ / pixSize.z;
-                    BatchOptLoc.DimensionZ = num2str(floor(obj.depth/ratio));
+                    BatchOptLoc.DimensionZ = num2str(round(obj.depth/ratio));
                 case 'PercentageXYZ'
                     val = str2double(BatchOptLoc.Percentage);
                     BatchOptLoc.DimensionX = num2str(floor(obj.width/100*val));
                     BatchOptLoc.DimensionY = num2str(floor(obj.height/100*val));
-                    BatchOptLoc.DimensionZ = num2str(floor(obj.depth/100*val));
+                    BatchOptLoc.DimensionZ = num2str(round(obj.depth/100*val));
                 case 'PercentageXY'
                     val = str2double(BatchOptLoc.Percentage);
                     BatchOptLoc.DimensionX = num2str(floor(obj.width/100*val));
                     BatchOptLoc.DimensionY = num2str(floor(obj.height/100*val));
+                    BatchOptLoc.DimensionZ = num2str(obj.depth);
             end
             
             newW = str2double(BatchOptLoc.DimensionX);
@@ -405,7 +406,7 @@ classdef mibResampleController  < handle
             options.imgType = '3D';
             % resample model and mask
             modelDataType = 'model';
-            if obj.mibModel.I{obj.mibModel.Id}.modelExist
+            if obj.mibModel.I{obj.mibModel.Id}.modelExist || (obj.mibModel.I{obj.mibModel.Id}.modelType == 63 && obj.mibModel.I{obj.mibModel.Id}.maskExist)
                 if BatchOptLoc.showWaitbar
                     waitbar(0.75,wb,sprintf('Resampling model...\n[%d %d %d %d]->[%d %d %d %d]', ...
                         obj.height, obj.width, obj.color, obj.depth, newH, newW, obj.color, newZ));

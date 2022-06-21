@@ -27,7 +27,6 @@ switch event.DropType
                 obj.mibModel.myPath = BatchOpt.DirectoryName{1};
                 obj.mibFilesListbox_cm_Callback([], BatchOpt);        
         end
-        
     case 'string'
         % nothing here yet
 end

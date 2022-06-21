@@ -1,13 +1,12 @@
 
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head>
+<!DOCTYPE html>
+<html lang="en"><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Image View Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-12"><meta name="DC.source" content="ug_panel_im_view.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>Image View Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="ug_panel_im_view.m"><style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -36,13 +35,13 @@ ol li ol li { list-style-type:lower-alpha; }
 ol li ul { padding-top:7px; }
 ol li ul li { list-style:square; }
 
-.content { font-size:1.2em; line-height:140%; padding: 20px; }
+.content { font-size:1.2em; line-height:160%; padding: 20px; }
 
-pre, code { font-size:12px; }
-tt { font-size: 1.2em; }
-pre { margin:0px 0px 20px; }
+pre { font-size:12px; }
+code { font-size: 1.15em; }
+pre { margin:0px 0px 15px; overflow-x:auto; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
-pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 15px; color:#4c4c4c; }
 pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
@@ -66,8 +65,493 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
+.kbd {     font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.2em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
-  </style></head><body><div class="content"><h1>Image View Panel</h1><!--introduction--><p>This panel displays slices of the opened dataset. The shown slices may be in the XY, ZX, or ZY dimension, depending on selected mode in the <a href="ug_gui_toolbar.html">Toolbar</a>. The change of slices is done using the slider/edit box on the left-hand side of the panel. When the opened dataset has only a single slice, the slider and the edit box are not displayed.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">List of possible image layers that may be simultaneously shown in <tt>MIB</tt>:</a></li><li><a href="#2">Mouse actions</a></li><li><a href="#3">Key actions</a></li><li><a href="#4">Extra parameters for the change slices slider.</a></li></ul></div><h2 id="1">List of possible image layers that may be simultaneously shown in <tt>MIB</tt>:</h2><p><img vspace="5" hspace="5" src="images\PanelsImageView.jpg" alt=""> </p><div><ul><li><b>Single or multichannel image</b></li><li><b>Model layer</b> , that contain information about materials of the segmented model, or difference map for correlation analysis. <a href="ug_gui_data_layers.html">Click to see more about the image layers</a></li><li><b>Mask layer</b>, mask layer is a black and white (bitmap) mask that is generated by some of the filters. The mask is a service layer that may be used as a source of shapes for segmentation or as an area for local black-and-white thresholding with the <a href="ug_panel_segm.html">BW Thresholding tool</a>.</li><li><b>Selection layer</b>, is a temporery layer used for segmentation. This layer may be easily modified and in the end should be sent to the <tt>Mask</tt> or <tt>Model</tt> layers.</li><li><b>ROI layer</b>, if ROIs are enabled, they may be also seen in the <tt>Image View panel</tt></li></ul></div><p><img vspace="5" hspace="5" src="images\mib_layers.jpg" alt=""> </p><p>Colors and transparencies of the <tt>Model</tt>, <tt>Mask</tt>, and <tt>Selection</tt> layers may be individually adjusted using the sliders in the <a href="ug_panel_view_settings.html">View Settings panel</a> and in the <a href="ug_gui_menu_file_preferences.html">Preference dialog</a>.</p><h2 id="2">Mouse actions</h2><div><ul><li><b>move mouse around the image</b> to see pixel information and coordinates in the <a href="ug_panel_path.html"><tt>Path Panel</tt></a></li><li><b>Left mouse click</b>, selection of pixels in the image based on specified method in the <a href="ug_panel_segm.html">Segmentation Panel</a></li><li><b>Right mouse press + mouse move</b>, turns on the pan mode to move the image left/right and up/down</li><li><b>Shift + Left mouse click</b>, adds selection to the existing selection</li><li><b>Ctrl + Left mouse click</b>, removes selection to the existing selection</li><li><b>Ctrl + mouse wheel (Ctrl + Shift + mouse wheel)</b> , changes size of the brush and other selection tools</li><li><b>Mouse wheel</b>, changes slices or zooms in/zooms out, depending on the settings in the <a href="ug_gui_menu_file_preferences.html">Preferences dialog</a></li><li><b>Shift + Mouse wheel</b>, jumps to 10 slices, number of slices can be defined from a popup menu that appears during the right mouse click above the slices slider in the <a href="ug_panel_im_view.html">Image View Panel</a></li></ul></div><h2 id="3">Key actions</h2><div><ul><li><b>left</b>, <b>down</b> arrow keys or <b>q</b> key, zooms out or changes to the previous slice</li><li><b>Shift</b> + <b>left</b>, <b>down</b> arrow keys or <b>q</b> key, jumps by 10 slices towards the beginning of the dataset (<i>to change this step, see below</i>)</li><li><b>right</b>, <b>up</b> arrow keys or <b>w</b> key, zooms in or changes to the next slice</li><li><b>Shift</b> + <b>right</b>, <b>up</b> arrow keys or <b>w</b> key, jumps by 10 slices towards the end of the dataset (<i>to change this step, see below</i>)</li></ul></div><h2 id="4">Extra parameters for the change slices slider.</h2><p>This slider is only shown when 3D or 4D datasets are loaded. By default, each iteration of the mouse wheel changes the shown image by 1. It is possible to modify this. Press <i>the right mouse button</i> on the slider to set the desired step.</p><p><img vspace="5" hspace="5" src="images\PanelsImageViewContext.png" alt=""> </p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+#tooltiptext {
+  visibility: hidden;
+  padding: 5px 10px;
+  font-size: 75%;
+  line-height:110%;
+  text-align: center;
+  background-color: black;
+  color: #ddd;
+  border-radius: 6px;
+  position: fixed;
+  bottom: 11px;
+  right: 62px;
+  z-index: 2;
+}
+#tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+.tooltip:hover #tooltiptext {
+  visibility: visible;
+}
+#return-link {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    overflow: visible;
+    font-size:120%;
+    background: rgba(0, 0, 0, 0.75);
+    border-style: solid;
+    border-width: 3pt;
+    border-color: #202020;
+    border-radius: 4px;
+    cursor: pointer;
+    }
+#return-link > p { padding:3px; margin:0; color:#C0C0C0;}
+.MATLAB-Help {
+width: 100%;
+margin-bottom: 12px;
+border: 1px solid #ccc;
+border-right: none;
+border-bottom: none;
+font-size: 96%;
+line-height: 1.4;
+table-layout: fixed;
+overflow:hidden;}
+
+.MATLAB-Help > thead > tr > th {
+padding: 6px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+background: #F2F2F2;
+color: #000;
+font-weight: bold;
+text-align: left;
+vertical-align: middle;}
+
+.MATLAB-Help td{padding: 5px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+vertical-align: middle;}
+
+.language-matlab { line-height:135% }
+
+.collapse-link {float:right; line-height:200%; padding-left:10px; margin:0}
+
+
+details > summary,
+.details-div {
+  padding: 8px 20px;
+  border-style: solid;
+  border-width: 1.2pt;
+  border-color: #E0E0E0;
+}
+details > summary {
+  border-radius:6px 6px 0 0;
+  background-color: #F2F2F2;
+  cursor: pointer;
+}
+.details-div {
+  border-top-style: none;
+  border-radius: 0 0 6px 6px;
+}
+.image-fit-svg,
+.image-fit {
+    max-width:  95%;
+    max-height: 100%;
+    margin:     auto;
+}
+.image-fit-svg{ padding:0px; max-width:500px; }
+details > img.image-fit-svg{ padding: 0px 0px 10px; }
+@media (max-width: 580px) {
+  .image-fit-svg { max-width: 95%; }
+}
+.pretty-link  { color:#001188 !important; }
+</style>
+<style id="dark-theme">
+    h2, h3       { color: #B0B0B0; }
+    html body    { background-color: #101010; color: #B0B0B0; }
+    .pretty-link { color: #C46313 !important; }
+    a, a:visited { color: #C46313 }
+    a:hover      { color: orange; }
+    details > summary,
+    .details-div      { border-color:     #505050; }
+    details > summary { background-color: #202020; }
+    pre.codeinput     { border-width: 1.2pt; border-color:#001B33; background:#001129; color:#F0F0F0; }
+    pre.codeoutput    { color:#A5A5A5; }
+    span.keyword      { color:#FF9D00; }
+    span.comment      { color:#808080; }
+    span.string       { color:#3AD900; }
+    span.untermstring { color:#FFEE80; }
+    span.syscmd       { color:#CCCCCC; }
+    .MATLAB-Help, .MATLAB-Help > thead > tr > th, .MATLAB-Help td { border-color:#505050; }
+    .MATLAB-Help > thead > tr > th { background: #202020; color: #B0B0B0; }
+    .summary-sub-heading { color:#909090; }
+    .show-if-light    { display:none }
+</style>
+<style id="hide-dark">
+     .show-if-dark { display:none }
+</style>
+
+<style id="anchor-offsets">
+    h2::before, a[id]::before{
+    content: "";
+    display: block;
+    height: 100px;
+    margin: -100px 0 0;
+    visibility: hidden;
+    width:10%;
+    z-index: -1;
+}
+</style>
+
+<script>
+          var returnElem = null;
+          var skipCheck  = false;
+
+          function hide_back_link()
+          {
+              returnButton.style.display = "none";
+              try{
+                 window.removeEventListener("scroll", update_back_position, true);
+                 window.removeEventListener("resize", update_back_position, true);
+                 parent.window.removeEventListener("scroll", update_back_position, true);
+                 parent.window.removeEventListener("resize", update_back_position, true);}
+              catch(e){}
+          }
+
+          function get_offset(element)
+          {
+              if (!element.getClientRects().length){ return { top: 0, left: 0 }; }
+              var rect = element.getBoundingClientRect();
+              var win  = element.ownerDocument.defaultView;
+              return ( {top:  rect.top  + win.pageYOffset,
+                        left: rect.left + win.pageXOffset} );
+          }
+
+          function jump_to()
+          {
+              var clickedElem = event.target;
+              var clickedID   = clickedElem.closest("span");
+              if (clickedID){
+                clickedID = clickedID.getAttribute("id");
+                if (clickedID.localeCompare("jump-close")===0) { return };}
+              clickedID = clickedElem.closest("div").getAttribute("id");
+              if (clickedID && clickedID.localeCompare("return-link")===0)
+              {
+                  if (returnElem)
+                  {
+                      event.preventDefault();
+                      hide_back_link();
+                      returnElem.scrollIntoView();
+                      if (contentDiv.getAttribute("data-isHelpBrowser")){
+                         contentDiv.scrollTop = contentDiv.scrollTop-100; }
+                      if (contentDiv.getAttribute("data-isMATLABCentral")){
+                         parent.window.scrollBy(0,-100)}
+                      returnElem = null;
+                  }
+              }
+              else
+              {
+                  var href = clickedElem.closest("a").getAttribute("href");
+                  if ( href && href[0] == "#" )
+                  {
+                     var target = document.getElementById(href.substring(1));
+                     var enclosingBox = target;
+                     while ( enclosingBox )
+                     {
+                        prevBox      = enclosingBox;
+                        enclosingBox = enclosingBox.closest("details");
+                        if ( enclosingBox===prevBox ){
+                           enclosingBox = enclosingBox.parentElement
+                           if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
+                        if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
+                     }
+                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                        event.preventDefault();
+                        target.scrollIntoView(); }
+                     var nextElem = target.nextElementSibling;
+                     var nextNode = target.nextSibling;
+                     while ( nextNode && nextNode.nodeType==Node.TEXT_NODE && nextNode.data.trim().length == 0 ){
+                        nextNode = nextNode.nextSibling;}
+                     if ( nextElem && nextElem===nextNode && nextElem.localName.localeCompare("details")===0 && !nextElem.open){
+                        open_details(nextElem.id);}
+                  }
+                  else { return }
+                  if (!contentDiv.getAttribute("data-isHelpBrowser"))
+                  {
+                      update_back_position();
+                      returnButton.style.display = "block";
+                      var linkTop   = clickedElem.offsetTop;
+                      var targetTop = target.offsetTop;
+                      if (targetTop>linkTop){
+                          document.getElementById("down").style.display = "none";
+                          document.getElementById("up").style.display   = "inline"; }
+                      else{
+                          document.getElementById("up").style.display   = "none";
+                          document.getElementById("down").style.display = "inline"; }
+                      returnElem = clickedElem;
+                  }
+              }
+          }
+
+          function open_details(detailsID)
+          {
+              var details  = document.getElementById(detailsID);
+              skipCheck    = true;
+              state_check(details.id);
+              details.open = true;
+          }
+
+          function update_back_position()
+          {
+              try
+              {
+                  window.addEventListener("scroll", update_back_position, true);
+                  window.addEventListener("resize", update_back_position, true);
+                  var scrollPos;
+                  if (in_iFrame())
+                  {
+                      parent.window.addEventListener("scroll", update_back_position, true);
+                      parent.window.addEventListener("resize", update_back_position, true);
+                      var iFrame         = window.frameElement;
+                      var frameOffset    = get_offset(iFrame);
+                      var documentBottom = parent.window.innerHeight  + parent.window.scrollY;
+                      var extHeight      = Math.round(frameOffset.top + iFrame.getBoundingClientRect().height - documentBottom);
+                      if (extHeight<0) { extHeight = 0; }
+                      returnButton.style.bottom = (10+extHeight) + "px";
+                      document.getElementById("tooltiptext").style.bottom = (11+extHeight) + "px";
+                      scrollPos = contentDiv.scrollTop - 25 + iFrame.getBoundingClientRect().height - extHeight;
+                  }
+                  else{
+                      scrollPos = window.scrollY + window.innerHeight - 25;}
+                  if (returnElem.offsetTop>scrollPos){
+                      document.getElementById("down").style.display = "inline";
+                      document.getElementById("up").style.display   = "none";   }
+                  else{
+                      document.getElementById("down").style.display = "none";
+                      document.getElementById("up").style.display   = "inline"; }
+              }
+              catch(e){}
+          }
+          function set_theme(themePref)
+          {
+            var themeSwitch     = document.getElementById("ToggleTheme");
+            var themeSwitchText = "switch to";
+            var switchToText    = null;
+            if (!themePref){ themePref = get_theme_pref(); }
+            if (themePref.localeCompare("light")===0){
+                document.getElementById("dark-theme").sheet.disabled = true;
+                document.getElementById("hide-dark").sheet.disabled  = false;
+                switchToText = " dark theme";}
+            else{
+                document.getElementById("dark-theme").sheet.disabled = false;
+                document.getElementById("hide-dark").sheet.disabled  = true;
+                switchToText = " light theme";}
+            themeSwitch.innerHTML = themeSwitchText + switchToText;
+            set_theme_pref(themePref);
+          }
+
+          function toggle_theme()
+          {
+            if (document.getElementById("dark-theme").sheet.disabled) { set_theme("dark");  }
+            else                                                      { set_theme("light"); }
+          }
+
+          function set_theme_pref(themePref)
+          {
+              var d = new Date();
+              d.setTime(d.getTime() + (2*365*24*60*60*1000));
+              var expires = "expires="+ d.toUTCString();
+              document.cookie = "themepref=" + themePref + ";" + expires + "path=/";
+              localStorage.setItem("PRETTY_THEME", themePref);
+          }
+
+          function get_theme_pref() {
+              var name = "themepref=";
+              var decodedCookie = decodeURIComponent(document.cookie);
+              var ca = decodedCookie.split(';');
+              for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                  c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                  return c.substring(name.length, c.length);
+                }
+              }
+              var docTheme = localStorage.getItem("PRETTY_THEME");
+              if (docTheme) { return docTheme }
+              else          { return "light"  }
+          }
+
+          function toggle_details(section)
+          {
+            var link;
+            var subSection;
+            var details;
+            var linkText;
+            var i;
+            var openState  = true;
+            var border     = "6px 6px 0 0;"
+            if (section===0)
+            {
+              link = document.getElementById("Toggle"+section.toString());
+              if (link.innerHTML.localeCompare("collapse all on page")===0){
+                  openState = false;
+                  border    = "6px;"
+                  linkText  = "expand all";}
+              else{
+                  linkText   = "collapse all";}
+              link.innerHTML = linkText + " on page";
+              for (i = 0; i < allDetails.length; i++){
+                 allDetails[i].open = openState;
+                 allDetails[i].children[0].setAttribute( 'style', "border-radius:"+border );
+                 link = document.getElementById("Toggle"+allDetails[i].id.split(".", 1));
+                 if (allDetails[i].id.charAt(0).localeCompare("0") && link){link.innerHTML = linkText;}}
+            }
+            else
+            {
+               link = document.getElementById("Toggle"+section.toString());
+               subSection = 1;
+               if (link.innerHTML.localeCompare("collapse all")===0){
+                  openState      = false;
+                  border         = "6px;"
+                  link.innerHTML = "expand all";}
+               else{
+                  link.innerHTML = "collapse all";}
+               details = document.getElementById(section.toString()+"."+subSection.toString());
+               while (details){
+                    details.open = openState;
+                    details.children[0].setAttribute( 'style', "border-radius:"+border );
+                    subSection++;
+                    details = document.getElementById(section.toString()+"."+subSection.toString());}
+               var allCollapsed = true;
+               var allExpanded  = true;
+               for (i = 0; i < allDetails.length; i++){
+                   check_if_open(allDetails[i]);}
+               link = document.getElementById("Toggle0");
+               if (allExpanded) {link.innerHTML = "collapse all on page";}
+               if (allCollapsed){link.innerHTML = "expand all on page";}
+            }
+            function check_if_open(details)
+            {
+                if (details.open){allCollapsed = false;}
+                else             {allExpanded  = false;}
+            }
+          }
+
+          function state_check(detailsID)
+          {
+              // first deal with just the section
+              if (event.detail){document.activeElement.blur();}
+              var clickedElem   = event.target;
+              if (!skipCheck && clickedElem.localName.localeCompare("summary"))
+              { 
+                if (!(clickedElem.closest("summary"))) { return };
+              };
+              var details       = document.getElementById(detailsID);
+              if ( !skipCheck ) {
+                  var parentID  = clickedElem.closest("details").id;
+                  if (details.id.localeCompare(parentID)) { return };}
+              skipCheck         = false;
+              var clickedStatus = details.open;
+              var section       = detailsID.split(".", 1);
+              var subSection    = 1;
+              var allCollapsed  = true;
+              var allExpanded   = true;
+              var link          = document.getElementById("Toggle"+section);
+              if (clickedStatus) { details.children[0].setAttribute( 'style', "border-radius:6px;" ); }
+              else               { details.children[0].setAttribute( 'style', "border-radius:6px 6px 0 0;" ); }
+              if (link)
+              {
+                  details = document.getElementById(section+"."+subSection.toString());
+                  while (details){
+                    check_if_open(details);
+                    subSection++;
+                    details = document.getElementById(section+"."+subSection.toString());}
+                  if (allExpanded) {link.innerHTML = "collapse all";}
+                  if (allCollapsed){link.innerHTML = "expand all";}
+              }
+              // then the whole page
+              allCollapsed   = true;
+              allExpanded    = true;
+              for (var i = 0; i < allDetails.length; i++){
+                  check_if_open(allDetails[i]);}
+              link = document.getElementById("Toggle0");
+              if (allExpanded) {link.innerHTML = "collapse all on page";}
+              if (allCollapsed){link.innerHTML = "expand all on page";}
+
+              function check_if_open(details)
+              {
+                  var openStatus
+                  if (detailsID.localeCompare( details.id )===0 ){openStatus = !clickedStatus;}
+                  else                                           {openStatus = details.open;}
+                  if (openStatus){allCollapsed = false;}
+                  else           {allExpanded  = false;}
+              }
+          }
+
+          function in_iFrame ()
+          {
+               try {
+                   return window.self !== window.top;
+               } catch (e) {
+                   return true;
+               }
+          }
+</script>
+</head><body>
+<div class="content">
+<div id="return-link" style="display:none;" class="tooltip">
+<p onclick="jump_to()">
+    <span onclick="jump_to()"><span id="up">&#8679;</span><span id="down">&#8681;</span>
+    <span onclick="hide_back_link()" style="padding:2px; font-size:120%;" id="jump-close"><b onclick="hide_back_link()">&times;</b></span></span>
+</p>
+<div id="tooltiptext">click to return
+<br>(click <b>&times;</b> to hide)</div>
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Image View Panel</h1><!--introduction-->
+<p>This panel displays slices of the opened dataset. The shown slices may be in the XY, ZX, or ZY dimension, depending on selected mode in the <a href="ug_gui_toolbar.html">Toolbar</a>. The change of slices is done using the slider/edit box on the left-hand side of the panel. When the opened dataset has only a single slice, the slider and the edit box are not displayed.</p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2>
+<div><ul><li><a href="#1">List of possible image layers that may be simultaneously shown in <code>MIB</code>:</a></li>
+<li><a href="#2">Mouse actions</a></li>
+<li><a href="#3">Key actions</a></li>
+<li><a href="#4">Extra parameters for the change slices slider.</a></li></ul></div><h2 id="1">List of possible image layers that may be simultaneously shown in <code>MIB</code>:</h2>
+<p><img class="image-fit" src="images\PanelsImageView.jpg" alt=""> </p>
+<div><ul><li><b>Grayscale or multi-channel image</b></li>
+<li><b>Model layer</b> , that contain information about materials of the segmented model, or difference map for correlation analysis. <a href="ug_gui_data_layers.html">Click to see more about the image layers</a></li>
+<li><b>Mask layer</b>, mask layer is a black and white (bitmap) mask that is generated by some of the filters. The mask is a service layer that may be used as a source of shapes for segmentation or as an area for local black-and-white thresholding with the <a href="ug_panel_segm.html">BW Thresholding tool</a>.</li>
+<li><b>Selection layer</b>, is a temporery layer used for segmentation. This layer may be easily modified and in the end should be sent to the <code>Mask</code> or <code>Model</code> layers.</li>
+<li><b>ROI layer</b>, if ROIs are enabled, they may be also seen in the <code>Image View panel</code></li></ul></div>
+<p><img class="image-fit" src="images\mib_layers.jpg" alt=""> </p>
+<p>Colors and transparencies of the <code>Model</code>, <code>Mask</code>, and <code>Selection</code> layers may be individually adjusted using the sliders in the <a href="ug_panel_view_settings.html">View Settings panel</a> and in the <a href="ug_gui_menu_file_preferences.html">Preference dialog</a>.</p><h2 id="2">Mouse actions</h2>
+<div><ul><li><span class="kbd">move mouse around the image</span> to see pixel information and coordinates in the <a href="ug_panel_path.html"><code>Path Panel</code></a></li>
+<li><span class="kbd">Left mouse click</span>, selection of pixels in the image based on specified method in the <a href="ug_panel_segm.html">Segmentation Panel</a></li>
+<li><span class="kbd">Right mouse press + mouse move</span>, turns on the pan mode to move the image left/right and up/down</li>
+<li><span class="kbd">&#8679; Shift</span> + <span class="kbd">Left mouse click</span>, adds selection to the existing selection</li>
+<li><span class="kbd">Ctrl</span> + <span class="kbd">Left mouse click</span>, removes selection to the existing selection</li>
+<li><span class="kbd">Ctrl</span> + <span class="kbd">mouse wheel (Ctrl + Shift + mouse wheel)</span> , changes size of the brush and other selection tools</li>
+<li><span class="kbd">Mouse wheel</span>, changes slices or zooms in/zooms out, depending on the settings in the <a href="ug_gui_menu_file_preferences.html">Preferences dialog</a></li>
+<li><span class="kbd">&#8679; Shift</span> + <span class="kbd">Mouse wheel</span>, jumps to 10 slices, number of slices can be defined from a popup menu that appears during the right mouse click above the slices slider in the <a href="ug_panel_im_view.html">Image View Panel</a></li></ul></div><h2 id="3">Key actions</h2>
+<div><ul><li><span class="kbd">w</span> key, zoom in to the area under the cursor</li>
+<li><span class="kbd">q</span> key, zoom out away from the area under the cursor</li>
+<li><span class="kbd">mouse wheel</span>, <span class="kbd">&#8679; Shift+mouse wheel</span> show next/previous slice</li>
+<li><span class="kbd">&#8679; Shift</span>+<span class="kbd">mouse wheel</span> jump 10 slices forward/back (<a href="#target1">to change this step, see below</a>)</li>
+<li><span class="kbd">up arrow</span>, show next slice</li>
+<li><span class="kbd">down arrow</span>, show previous slice</li>
+<li><span class="kbd">right arrow</span>, show next time point</li>
+<li><span class="kbd">left arrow</span>, show previous time point</li></ul></div>
+<p>Key shortcuts can be reassigned in <a href="ug_gui_menu_file_preferences.html">Menu-&gt;File-&gt;Preferences-&gt;Keyboard shortcuts</a> 
+<br> For full list of key shortcut consult with <a href="ug_gui_shortcuts.html">List of key and mouse shortcuts</a> .</p><h2 id="4">Extra parameters for the change slices slider.</h2>
+<p><a id="target1"></a> This slider is only shown when 3D or 4D datasets are loaded. By default, each iteration of the mouse wheel changes the shown image by 1. It is possible to modify this. Press <i>the right mouse button</i> on the slider to set the desired step.</p>
+<p><img class="image-fit" src="images\PanelsImageViewContext.png" alt=""> </p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p>
+<p></p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Image View Panel
 % This panel displays slices of the opened dataset. The shown slices may be in the XY, ZX, or ZY dimension, depending on selected mode in the <ug_gui_toolbar.html Toolbar>.
@@ -81,7 +565,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % 
 % <<images\PanelsImageView.jpg>>
 %
-% * *Single or multichannel image*
+% * *Grayscale or multi-channel image*
 % * *Model layer* , that contain information about materials of the segmented model,
 % or difference map for correlation analysis. <ug_gui_data_layers.html Click to see more about the image layers>
 % * *Mask layer*, mask layer is a black and white (bitmap) mask that is
@@ -100,27 +584,33 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 %
 %% Mouse actions 
 % 
-% * *move mouse around the image* to see pixel information and coordinates
-% in the <ug_panel_path.html |Path Panel|>
-% * *Left mouse click*, selection of pixels in the image based on
-% specified method in the <ug_panel_segm.html Segmentation Panel>
-% * *Right mouse press + mouse move*, turns on the pan mode to move the image left/right and up/down
-% * *Shift + Left mouse click*, adds selection to the existing selection
-% * *Ctrl + Left mouse click*, removes selection to the existing selection
-% * *Ctrl + mouse wheel (Ctrl + Shift + mouse wheel)* , changes size of the brush and other selection tools
-% * *Mouse wheel*, changes slices or zooms in/zooms out, depending on the settings in the <ug_gui_menu_file_preferences.html Preferences dialog>
-% * *Shift + Mouse wheel*, jumps to 10 slices, number of slices can be defined from a popup menu that appears during the right mouse click above the slices slider in the 
+% * [class.kbd]move mouse around the image[/class] to see pixel information and coordinates in the <ug_panel_path.html |Path Panel|>
+% * [class.kbd]Left mouse click[/class], selection of pixels in the image based on specified method in the <ug_panel_segm.html Segmentation Panel>
+% * [class.kbd]Right mouse press + mouse move[/class], turns on the pan mode to move the image left/right and up/down
+% * [class.kbd]&#8679; Shift[/class] + [class.kbd]Left mouse click[/class], adds selection to the existing selection
+% * [class.kbd]Ctrl[/class] + [class.kbd]Left mouse click[/class], removes selection to the existing selection
+% * [class.kbd]Ctrl[/class] + [class.kbd]mouse wheel (Ctrl + Shift + mouse wheel)[/class] , changes size of the brush and other selection tools
+% * [class.kbd]Mouse wheel[/class], changes slices or zooms in/zooms out, depending on the settings in the <ug_gui_menu_file_preferences.html Preferences dialog>
+% * [class.kbd]&#8679; Shift[/class] + [class.kbd]Mouse wheel[/class], jumps to 10 slices, number of slices can be defined from a popup menu that appears during the right mouse click above the slices slider in the 
 % <ug_panel_im_view.html Image View Panel>
 %
 %
 %% Key actions
-% * *left*, *down* arrow keys or *q* key, zooms out or changes to the previous slice
-% * *Shift* + *left*, *down* arrow keys or *q* key, jumps by 10 slices towards the beginning of the dataset (_to change this step, see below_)
-% * *right*, *up* arrow keys or *w* key, zooms in or changes to the next slice
-% * *Shift* + *right*, *up* arrow keys or *w* key, jumps by 10 slices towards the end of the dataset (_to change this step, see below_)
+% * [class.kbd]w[/class] key, zoom in to the area under the cursor
+% * [class.kbd]q[/class] key, zoom out away from the area under the cursor
+% * [class.kbd]mouse wheel[/class], [class.kbd]&#8679; Shift+mouse wheel[/class] show next/previous slice
+% * [class.kbd]&#8679; Shift[/class]+[class.kbd]mouse wheel[/class] jump 10 slices forward/back ([jumpto1]to change this step, see below[/jumpto])
+% * [class.kbd]up arrow[/class], show next slice
+% * [class.kbd]down arrow[/class], show previous slice
+% * [class.kbd]right arrow[/class], show next time point
+% * [class.kbd]left arrow[/class], show previous time point
+%
+% Key shortcuts can be reassigned in <ug_gui_menu_file_preferences.html Menu->File->Preferences->Keyboard shortcuts> 
+<br>
+% For full list of key shortcut consult with <ug_gui_shortcuts.html List of key and mouse shortcuts> .
 %
 %% Extra parameters for the change slices slider.
-% This slider is only shown when 3D or 4D datasets are loaded. By default,
+% [target1] This slider is only shown when 3D or 4D datasets are loaded. By default,
 % each iteration of the mouse wheel changes the shown image by 1. It is
 % possible to modify this. Press _the right mouse button_ on the slider to
 % set the desired step.
@@ -132,7 +622,66 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
-
+%
+% [cssClasses]
+% .kbd { 
+%     font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.2em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
 
 ##### SOURCE END #####
---></body></html>
+--><script>
+var allDetails   = document.getElementsByTagName('details');
+var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
+var returnButton = document.getElementById("return-link");
+document.getElementById("iFrameBuf").style.display = "none";
+if(in_iFrame())
+{
+   try{
+      var footerNav = parent.document.getElementsByClassName("footernav");
+      var tabPane   = parent.document.getElementsByClassName("tab-pane");}
+   catch(err) { var footerNav = []; var tabPane = [];};
+   if(!(footerNav.length) || tabPane.length)
+   {
+      contentDiv.style.overflowY = "scroll";
+      contentDiv.style.overflowX = "hidden";
+      contentDiv.style.position  = "absolute";
+      contentDiv.style.width     = "95%";
+      contentDiv.style.top       = 0;
+      contentDiv.style.bottom    = 0;
+      if (tabPane.length){
+         contentDiv.setAttribute("data-isMATLABCentral","1");
+         returnButton.style.right = "40px";
+         document.getElementById("tooltiptext").style.right = "92px"; }
+      document.getElementById("iFrameBuf").style.display = "block";
+   }
+   else { contentDiv.setAttribute("data-isHelpBrowser","1"); }
+}
+if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
+   document.getElementById("anchor-offsets").sheet.disabled = true; }
+var jumpLinks = document.getElementsByTagName("a");
+for (var i = 0; i < jumpLinks.length; i++){
+  href = jumpLinks[i].getAttribute("href");
+  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
+</script></body></html>

@@ -58,6 +58,8 @@ BatchOpt.mibBatchTooltip.FilenameFilter = sprintf('Filter for filenames: templat
 
 BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the waitbar');
 
+tryToLoadModel = false; % switch to load the model despite different XY dimension
+
 %% Batch mode check actions
 if nargin == 3  % batch mode 
     if isstruct(BatchOptIn) == 0
@@ -116,6 +118,7 @@ if nargin == 3  % batch mode
             return;
         end
     end
+    tryToLoadModel = true;  % switch to load the model despite different XY dimension
     batchModeSwitch = 1;    % indicates that the function is running in the batch mode
 else
     [filename, BatchOpt.DirectoryName{1}] = mib_uigetfile(...
@@ -305,12 +308,30 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
         end
         
         % check H/W/Z dimensions
-        if size(model, 1) ~= obj.I{BatchOpt.id}.height || size(model,2) ~= obj.I{BatchOpt.id}.width
-            if BatchOpt.showWaitbar; delete(wb); end
-            notify(obj, 'stopProtocol');
-            msgbox(sprintf('Model and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nModel (HxWxZ) = %d x %d x %d pixels',...
-                obj.I{BatchOpt.id}.height, obj.I{BatchOpt.id}.width, obj.I{BatchOpt.id}.depth, size(model,1), size(model,2), size(model,3)),'Error!','error','modal');
-            return;
+        if (size(model, 1) ~= obj.I{BatchOpt.id}.height || size(model,2) ~= obj.I{BatchOpt.id}.width)
+            if tryToLoadModel == false
+                answer = questdlg(sprintf('Model and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nModel (HxWxZ) = %d x %d x %d pixels',...
+                     obj.I{BatchOpt.id}.height, obj.I{BatchOpt.id}.width, obj.I{BatchOpt.id}.depth, size(model,1), size(model,2), size(model,3)), ...
+	                'Warning!', ...
+	                'Try to load','Cancel','Cancel');
+                if strcmp(answer, 'Cancel')
+                    if BatchOpt.showWaitbar; delete(wb); end
+                    notify(obj, 'stopProtocol');
+                    return;
+                end
+                tryToLoadModel = true;
+            end
+
+            if size(model, 1) < obj.I{BatchOpt.id}.height
+                model(size(model, 1)+1:obj.I{BatchOpt.id}.height, :, :) = 0;
+            elseif size(model, 1) > obj.I{BatchOpt.id}.height
+                model = model(1:obj.I{BatchOpt.id}.height, :, :);
+            end
+            if size(model,2) < obj.I{BatchOpt.id}.width
+                model(:, size(model,2)+1:obj.I{BatchOpt.id}.width, :) = 0;
+            elseif size(model,2) > obj.I{BatchOpt.id}.width
+                model = model(:, 1:obj.I{BatchOpt.id}.width, :);
+            end
         end
         
 %         if size(model,3) ~= obj.I{BatchOpt.id}.depth && size(model,3) > 1

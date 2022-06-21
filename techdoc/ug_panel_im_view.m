@@ -10,7 +10,7 @@
 % 
 % <<images\PanelsImageView.jpg>>
 %
-% * *Single or multichannel image*
+% * *Grayscale or multi-channel image*
 % * *Model layer* , that contain information about materials of the segmented model,
 % or difference map for correlation analysis. <ug_gui_data_layers.html Click to see more about the image layers>
 % * *Mask layer*, mask layer is a black and white (bitmap) mask that is
@@ -29,27 +29,32 @@
 %
 %% Mouse actions 
 % 
-% * *move mouse around the image* to see pixel information and coordinates
-% in the <ug_panel_path.html |Path Panel|>
-% * *Left mouse click*, selection of pixels in the image based on
-% specified method in the <ug_panel_segm.html Segmentation Panel>
-% * *Right mouse press + mouse move*, turns on the pan mode to move the image left/right and up/down
-% * *Shift + Left mouse click*, adds selection to the existing selection
-% * *Ctrl + Left mouse click*, removes selection to the existing selection
-% * *Ctrl + mouse wheel (Ctrl + Shift + mouse wheel)* , changes size of the brush and other selection tools
-% * *Mouse wheel*, changes slices or zooms in/zooms out, depending on the settings in the <ug_gui_menu_file_preferences.html Preferences dialog>
-% * *Shift + Mouse wheel*, jumps to 10 slices, number of slices can be defined from a popup menu that appears during the right mouse click above the slices slider in the 
+% * [class.kbd]move mouse around the image[/class] to see pixel information and coordinates in the <ug_panel_path.html |Path Panel|>
+% * [class.kbd]Left mouse click[/class], selection of pixels in the image based on specified method in the <ug_panel_segm.html Segmentation Panel>
+% * [class.kbd]Right mouse press + mouse move[/class], turns on the pan mode to move the image left/right and up/down
+% * [class.kbd]&#8679; Shift[/class] + [class.kbd]Left mouse click[/class], adds selection to the existing selection
+% * [class.kbd]Ctrl[/class] + [class.kbd]Left mouse click[/class], removes selection to the existing selection
+% * [class.kbd]Ctrl[/class] + [class.kbd]mouse wheel (Ctrl + Shift + mouse wheel)[/class] , changes size of the brush and other selection tools
+% * [class.kbd]Mouse wheel[/class], changes slices or zooms in/zooms out, depending on the settings in the <ug_gui_menu_file_preferences.html Preferences dialog>
+% * [class.kbd]&#8679; Shift[/class] + [class.kbd]Mouse wheel[/class], jumps to 10 slices, number of slices can be defined from a popup menu that appears during the right mouse click above the slices slider in the 
 % <ug_panel_im_view.html Image View Panel>
 %
 %
 %% Key actions
-% * *left*, *down* arrow keys or *q* key, zooms out or changes to the previous slice
-% * *Shift* + *left*, *down* arrow keys or *q* key, jumps by 10 slices towards the beginning of the dataset (_to change this step, see below_)
-% * *right*, *up* arrow keys or *w* key, zooms in or changes to the next slice
-% * *Shift* + *right*, *up* arrow keys or *w* key, jumps by 10 slices towards the end of the dataset (_to change this step, see below_)
+% * [class.kbd]w[/class] key, zoom in to the area under the cursor
+% * [class.kbd]q[/class] key, zoom out away from the area under the cursor
+% * [class.kbd]mouse wheel[/class], [class.kbd]&#8679; Shift+mouse wheel[/class] show next/previous slice
+% * [class.kbd]&#8679; Shift[/class]+[class.kbd]mouse wheel[/class] jump 10 slices forward/back ([jumpto1]to change this step, see below[/jumpto])
+% * [class.kbd]up arrow[/class], show next slice
+% * [class.kbd]down arrow[/class], show previous slice
+% * [class.kbd]right arrow[/class], show next time point
+% * [class.kbd]left arrow[/class], show previous time point
+%
+% Key shortcuts can be reassigned in <ug_gui_menu_file_preferences.html Menu->File->Preferences->Keyboard shortcuts> [br]
+% For full list of key shortcut consult with <ug_gui_shortcuts.html List of key and mouse shortcuts> .
 %
 %% Extra parameters for the change slices slider.
-% This slider is only shown when 3D or 4D datasets are loaded. By default,
+% [target1] This slider is only shown when 3D or 4D datasets are loaded. By default,
 % each iteration of the mouse wheel changes the shown image by 1. It is
 % possible to modify this. Press _the right mouse button_ on the slider to
 % set the desired step.
@@ -61,4 +66,30 @@
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
-
+%
+% [cssClasses]
+% .kbd { 
+%     font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.2em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]

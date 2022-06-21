@@ -2,6 +2,11 @@
 % The Alignment and Drift Correction tool can be used either to align slice of the opened dataset or to align two
 % separate datasets. 
 % 
+%
+% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_dataset.html *Dataset*>
+%
+%% Demos and tutorials
+%
 % <html>
 % A demonstration is available in the following videos:<br>
 % <a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/-qwoO5z02aA</a><br>
@@ -10,7 +15,7 @@
 % <a href="https://youtu.be/FtvWjDUMZ1I"><img style="vertical-align:middle;" src="images\youtube2.png"> HDD mode</a><br>
 % </html>
 %
-% *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_dataset.html *Dataset*>
+% [br8]
 %
 %% Current dataset panel
 % 
@@ -225,7 +230,7 @@
 %       this panel is used only when the <em>HDD Mode</em> is enabled.
 %       <li><b>Extension</b> - extension of files that should be
 %       aligned</li>
-%       <li><b>Bio</b> - enable the Bio-Formats file reader to load images
+%       <li><span class="kbd">[&#10003;] <b>Bio</b></span> - enable the Bio-Formats file reader to load images
 %       in various microscope formats</li>
 %       <li><b>Index</b> - a numeric index of a series to load from a
 %       container of images [Bio-formats only]</li>
@@ -278,3 +283,43 @@
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_dataset.html *Dataset*>
+%
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

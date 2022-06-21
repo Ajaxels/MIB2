@@ -1,13 +1,12 @@
 
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html><head>
+<!DOCTYPE html>
+<html lang="en"><head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser License</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-12"><meta name="DC.source" content="im_browser_license.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>Microscopy Image Browser License</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="im_browser_license.m"><style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -36,13 +35,13 @@ ol li ol li { list-style-type:lower-alpha; }
 ol li ul { padding-top:7px; }
 ol li ul li { list-style:square; }
 
-.content { font-size:1.2em; line-height:140%; padding: 20px; }
+.content { font-size:1.2em; line-height:160%; padding: 20px; }
 
-pre, code { font-size:12px; }
-tt { font-size: 1.2em; }
-pre { margin:0px 0px 20px; }
+pre { font-size:12px; }
+code { font-size: 1.15em; }
+pre { margin:0px 0px 15px; overflow-x:auto; }
 pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
-pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 15px; color:#4c4c4c; }
 pre.error { color:red; }
 
 @media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
@@ -67,128 +66,630 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Microscopy Image Browser License</h1><!--introduction--><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">License for Microscopy Image Browser source code</a></li><li><a href="#3">License for compiled application of Microscopy Image Browser</a></li><li><a href="#4">EXTERNAL PACKAGES</a></li><li><a href="#6">HOW TO CITE</a></li></ul></div><p>
-Developed during 2010-2021 by<br>
-Core developer:<br>
-Ilya Belevich<br>
-Developers:<br>
-Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br><br>
-<i><a href="https://www.helsinki.fi/en/infrastructures/bioimaging/embi">Electron Microscopy Unit</a><br>
-Institute of Biotechnology<br>
-PO Box 56 (Viikinkaari 9)<br>
-00014, University of Helsinki<br>
+#tooltiptext {
+  visibility: hidden;
+  padding: 5px 10px;
+  font-size: 75%;
+  line-height:110%;
+  text-align: center;
+  background-color: black;
+  color: #ddd;
+  border-radius: 6px;
+  position: fixed;
+  bottom: 11px;
+  right: 62px;
+  z-index: 2;
+}
+#tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+.tooltip:hover #tooltiptext {
+  visibility: visible;
+}
+#return-link {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    overflow: visible;
+    font-size:120%;
+    background: rgba(0, 0, 0, 0.75);
+    border-style: solid;
+    border-width: 3pt;
+    border-color: #202020;
+    border-radius: 4px;
+    cursor: pointer;
+    }
+#return-link > p { padding:3px; margin:0; color:#C0C0C0;}
+.MATLAB-Help {
+width: 100%;
+margin-bottom: 12px;
+border: 1px solid #ccc;
+border-right: none;
+border-bottom: none;
+font-size: 96%;
+line-height: 1.4;
+table-layout: fixed;
+overflow:hidden;}
+
+.MATLAB-Help > thead > tr > th {
+padding: 6px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+background: #F2F2F2;
+color: #000;
+font-weight: bold;
+text-align: left;
+vertical-align: middle;}
+
+.MATLAB-Help td{padding: 5px 5px;
+border: none;
+border-right: 1px solid #ccc;
+border-bottom: 1px solid #ccc;
+vertical-align: middle;}
+
+.language-matlab { line-height:135% }
+
+.collapse-link {float:right; line-height:200%; padding-left:10px; margin:0}
+
+
+details > summary,
+.details-div {
+  padding: 8px 20px;
+  border-style: solid;
+  border-width: 1.2pt;
+  border-color: #E0E0E0;
+}
+details > summary {
+  border-radius:6px 6px 0 0;
+  background-color: #F2F2F2;
+  cursor: pointer;
+}
+.details-div {
+  border-top-style: none;
+  border-radius: 0 0 6px 6px;
+}
+.image-fit-svg,
+.image-fit {
+    max-width:  95%;
+    max-height: 100%;
+    margin:     auto;
+}
+.image-fit-svg{ padding:0px; max-width:500px; }
+details > img.image-fit-svg{ padding: 0px 0px 10px; }
+@media (max-width: 580px) {
+  .image-fit-svg { max-width: 95%; }
+}
+.pretty-link  { color:#001188 !important; }
+</style>
+<style id="dark-theme">
+    h2, h3       { color: #B0B0B0; }
+    html body    { background-color: #101010; color: #B0B0B0; }
+    .pretty-link { color: #C46313 !important; }
+    a, a:visited { color: #C46313 }
+    a:hover      { color: orange; }
+    details > summary,
+    .details-div      { border-color:     #505050; }
+    details > summary { background-color: #202020; }
+    pre.codeinput     { border-width: 1.2pt; border-color:#001B33; background:#001129; color:#F0F0F0; }
+    pre.codeoutput    { color:#A5A5A5; }
+    span.keyword      { color:#FF9D00; }
+    span.comment      { color:#808080; }
+    span.string       { color:#3AD900; }
+    span.untermstring { color:#FFEE80; }
+    span.syscmd       { color:#CCCCCC; }
+    .MATLAB-Help, .MATLAB-Help > thead > tr > th, .MATLAB-Help td { border-color:#505050; }
+    .MATLAB-Help > thead > tr > th { background: #202020; color: #B0B0B0; }
+    .summary-sub-heading { color:#909090; }
+    .show-if-light    { display:none }
+</style>
+<style id="hide-dark">
+     .show-if-dark { display:none }
+</style>
+
+<style id="anchor-offsets">
+    h2::before, a[id]::before{
+    content: "";
+    display: block;
+    height: 100px;
+    margin: -100px 0 0;
+    visibility: hidden;
+    width:10%;
+    z-index: -1;
+}
+</style>
+
+<script>
+          var returnElem = null;
+          var skipCheck  = false;
+
+          function hide_back_link()
+          {
+              returnButton.style.display = "none";
+              try{
+                 window.removeEventListener("scroll", update_back_position, true);
+                 window.removeEventListener("resize", update_back_position, true);
+                 parent.window.removeEventListener("scroll", update_back_position, true);
+                 parent.window.removeEventListener("resize", update_back_position, true);}
+              catch(e){}
+          }
+
+          function get_offset(element)
+          {
+              if (!element.getClientRects().length){ return { top: 0, left: 0 }; }
+              var rect = element.getBoundingClientRect();
+              var win  = element.ownerDocument.defaultView;
+              return ( {top:  rect.top  + win.pageYOffset,
+                        left: rect.left + win.pageXOffset} );
+          }
+
+          function jump_to()
+          {
+              var clickedElem = event.target;
+              var clickedID   = clickedElem.closest("span");
+              if (clickedID){
+                clickedID = clickedID.getAttribute("id");
+                if (clickedID.localeCompare("jump-close")===0) { return };}
+              clickedID = clickedElem.closest("div").getAttribute("id");
+              if (clickedID && clickedID.localeCompare("return-link")===0)
+              {
+                  if (returnElem)
+                  {
+                      event.preventDefault();
+                      hide_back_link();
+                      returnElem.scrollIntoView();
+                      if (contentDiv.getAttribute("data-isHelpBrowser")){
+                         contentDiv.scrollTop = contentDiv.scrollTop-100; }
+                      if (contentDiv.getAttribute("data-isMATLABCentral")){
+                         parent.window.scrollBy(0,-100)}
+                      returnElem = null;
+                  }
+              }
+              else
+              {
+                  var href = clickedElem.closest("a").getAttribute("href");
+                  if ( href && href[0] == "#" )
+                  {
+                     var target = document.getElementById(href.substring(1));
+                     var enclosingBox = target;
+                     while ( enclosingBox )
+                     {
+                        prevBox      = enclosingBox;
+                        enclosingBox = enclosingBox.closest("details");
+                        if ( enclosingBox===prevBox ){
+                           enclosingBox = enclosingBox.parentElement
+                           if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
+                        if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
+                     }
+                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                        event.preventDefault();
+                        target.scrollIntoView(); }
+                     var nextElem = target.nextElementSibling;
+                     var nextNode = target.nextSibling;
+                     while ( nextNode && nextNode.nodeType==Node.TEXT_NODE && nextNode.data.trim().length == 0 ){
+                        nextNode = nextNode.nextSibling;}
+                     if ( nextElem && nextElem===nextNode && nextElem.localName.localeCompare("details")===0 && !nextElem.open){
+                        open_details(nextElem.id);}
+                  }
+                  else { return }
+                  if (!contentDiv.getAttribute("data-isHelpBrowser"))
+                  {
+                      update_back_position();
+                      returnButton.style.display = "block";
+                      var linkTop   = clickedElem.offsetTop;
+                      var targetTop = target.offsetTop;
+                      if (targetTop>linkTop){
+                          document.getElementById("down").style.display = "none";
+                          document.getElementById("up").style.display   = "inline"; }
+                      else{
+                          document.getElementById("up").style.display   = "none";
+                          document.getElementById("down").style.display = "inline"; }
+                      returnElem = clickedElem;
+                  }
+              }
+          }
+
+          function open_details(detailsID)
+          {
+              var details  = document.getElementById(detailsID);
+              skipCheck    = true;
+              state_check(details.id);
+              details.open = true;
+          }
+
+          function update_back_position()
+          {
+              try
+              {
+                  window.addEventListener("scroll", update_back_position, true);
+                  window.addEventListener("resize", update_back_position, true);
+                  var scrollPos;
+                  if (in_iFrame())
+                  {
+                      parent.window.addEventListener("scroll", update_back_position, true);
+                      parent.window.addEventListener("resize", update_back_position, true);
+                      var iFrame         = window.frameElement;
+                      var frameOffset    = get_offset(iFrame);
+                      var documentBottom = parent.window.innerHeight  + parent.window.scrollY;
+                      var extHeight      = Math.round(frameOffset.top + iFrame.getBoundingClientRect().height - documentBottom);
+                      if (extHeight<0) { extHeight = 0; }
+                      returnButton.style.bottom = (10+extHeight) + "px";
+                      document.getElementById("tooltiptext").style.bottom = (11+extHeight) + "px";
+                      scrollPos = contentDiv.scrollTop - 25 + iFrame.getBoundingClientRect().height - extHeight;
+                  }
+                  else{
+                      scrollPos = window.scrollY + window.innerHeight - 25;}
+                  if (returnElem.offsetTop>scrollPos){
+                      document.getElementById("down").style.display = "inline";
+                      document.getElementById("up").style.display   = "none";   }
+                  else{
+                      document.getElementById("down").style.display = "none";
+                      document.getElementById("up").style.display   = "inline"; }
+              }
+              catch(e){}
+          }
+          function set_theme(themePref)
+          {
+            var themeSwitch     = document.getElementById("ToggleTheme");
+            var themeSwitchText = "switch to";
+            var switchToText    = null;
+            if (!themePref){ themePref = get_theme_pref(); }
+            if (themePref.localeCompare("light")===0){
+                document.getElementById("dark-theme").sheet.disabled = true;
+                document.getElementById("hide-dark").sheet.disabled  = false;
+                switchToText = " dark theme";}
+            else{
+                document.getElementById("dark-theme").sheet.disabled = false;
+                document.getElementById("hide-dark").sheet.disabled  = true;
+                switchToText = " light theme";}
+            themeSwitch.innerHTML = themeSwitchText + switchToText;
+            set_theme_pref(themePref);
+          }
+
+          function toggle_theme()
+          {
+            if (document.getElementById("dark-theme").sheet.disabled) { set_theme("dark");  }
+            else                                                      { set_theme("light"); }
+          }
+
+          function set_theme_pref(themePref)
+          {
+              var d = new Date();
+              d.setTime(d.getTime() + (2*365*24*60*60*1000));
+              var expires = "expires="+ d.toUTCString();
+              document.cookie = "themepref=" + themePref + ";" + expires + "path=/";
+              localStorage.setItem("PRETTY_THEME", themePref);
+          }
+
+          function get_theme_pref() {
+              var name = "themepref=";
+              var decodedCookie = decodeURIComponent(document.cookie);
+              var ca = decodedCookie.split(';');
+              for(var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                  c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                  return c.substring(name.length, c.length);
+                }
+              }
+              var docTheme = localStorage.getItem("PRETTY_THEME");
+              if (docTheme) { return docTheme }
+              else          { return "light"  }
+          }
+
+          function toggle_details(section)
+          {
+            var link;
+            var subSection;
+            var details;
+            var linkText;
+            var i;
+            var openState  = true;
+            var border     = "6px 6px 0 0;"
+            if (section===0)
+            {
+              link = document.getElementById("Toggle"+section.toString());
+              if (link.innerHTML.localeCompare("collapse all on page")===0){
+                  openState = false;
+                  border    = "6px;"
+                  linkText  = "expand all";}
+              else{
+                  linkText   = "collapse all";}
+              link.innerHTML = linkText + " on page";
+              for (i = 0; i < allDetails.length; i++){
+                 allDetails[i].open = openState;
+                 allDetails[i].children[0].setAttribute( 'style', "border-radius:"+border );
+                 link = document.getElementById("Toggle"+allDetails[i].id.split(".", 1));
+                 if (allDetails[i].id.charAt(0).localeCompare("0") && link){link.innerHTML = linkText;}}
+            }
+            else
+            {
+               link = document.getElementById("Toggle"+section.toString());
+               subSection = 1;
+               if (link.innerHTML.localeCompare("collapse all")===0){
+                  openState      = false;
+                  border         = "6px;"
+                  link.innerHTML = "expand all";}
+               else{
+                  link.innerHTML = "collapse all";}
+               details = document.getElementById(section.toString()+"."+subSection.toString());
+               while (details){
+                    details.open = openState;
+                    details.children[0].setAttribute( 'style', "border-radius:"+border );
+                    subSection++;
+                    details = document.getElementById(section.toString()+"."+subSection.toString());}
+               var allCollapsed = true;
+               var allExpanded  = true;
+               for (i = 0; i < allDetails.length; i++){
+                   check_if_open(allDetails[i]);}
+               link = document.getElementById("Toggle0");
+               if (allExpanded) {link.innerHTML = "collapse all on page";}
+               if (allCollapsed){link.innerHTML = "expand all on page";}
+            }
+            function check_if_open(details)
+            {
+                if (details.open){allCollapsed = false;}
+                else             {allExpanded  = false;}
+            }
+          }
+
+          function state_check(detailsID)
+          {
+              // first deal with just the section
+              if (event.detail){document.activeElement.blur();}
+              var clickedElem   = event.target;
+              if (!skipCheck && clickedElem.localName.localeCompare("summary"))
+              { 
+                if (!(clickedElem.closest("summary"))) { return };
+              };
+              var details       = document.getElementById(detailsID);
+              if ( !skipCheck ) {
+                  var parentID  = clickedElem.closest("details").id;
+                  if (details.id.localeCompare(parentID)) { return };}
+              skipCheck         = false;
+              var clickedStatus = details.open;
+              var section       = detailsID.split(".", 1);
+              var subSection    = 1;
+              var allCollapsed  = true;
+              var allExpanded   = true;
+              var link          = document.getElementById("Toggle"+section);
+              if (clickedStatus) { details.children[0].setAttribute( 'style', "border-radius:6px;" ); }
+              else               { details.children[0].setAttribute( 'style', "border-radius:6px 6px 0 0;" ); }
+              if (link)
+              {
+                  details = document.getElementById(section+"."+subSection.toString());
+                  while (details){
+                    check_if_open(details);
+                    subSection++;
+                    details = document.getElementById(section+"."+subSection.toString());}
+                  if (allExpanded) {link.innerHTML = "collapse all";}
+                  if (allCollapsed){link.innerHTML = "expand all";}
+              }
+              // then the whole page
+              allCollapsed   = true;
+              allExpanded    = true;
+              for (var i = 0; i < allDetails.length; i++){
+                  check_if_open(allDetails[i]);}
+              link = document.getElementById("Toggle0");
+              if (allExpanded) {link.innerHTML = "collapse all on page";}
+              if (allCollapsed){link.innerHTML = "expand all on page";}
+
+              function check_if_open(details)
+              {
+                  var openStatus
+                  if (detailsID.localeCompare( details.id )===0 ){openStatus = !clickedStatus;}
+                  else                                           {openStatus = details.open;}
+                  if (openStatus){allCollapsed = false;}
+                  else           {allExpanded  = false;}
+              }
+          }
+
+          function in_iFrame ()
+          {
+               try {
+                   return window.self !== window.top;
+               } catch (e) {
+                   return true;
+               }
+          }
+</script>
+</head><body>
+<div class="content">
+<div id="return-link" style="display:none;" class="tooltip">
+<p onclick="jump_to()">
+    <span onclick="jump_to()"><span id="up">&#8679;</span><span id="down">&#8681;</span>
+    <span onclick="hide_back_link()" style="padding:2px; font-size:120%;" id="jump-close"><b onclick="hide_back_link()">&times;</b></span></span>
+</p>
+<div id="tooltiptext">click to return
+<br>(click <b>&times;</b> to hide)</div>
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Microscopy Image Browser License</h1><!--introduction-->
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><!--/introduction--><h2>Contents</h2>
+<div><ul><li><a href="#2">License for Microscopy Image Browser source code</a></li>
+<li><a href="#3">License for compiled application of Microscopy Image Browser</a></li>
+<li><a href="#4">EXTERNAL PACKAGES</a></li>
+<li><a href="#6">HOW TO CITE</a></li></ul></div>
+Developed during 2010-2021 by
+<br>
+Core developer:
+<br>
+Ilya Belevich
+<br>
+Developers:
+<br>
+Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
+<br>
+<br>
+<i><a href="https://www.helsinki.fi/en/infrastructures/bioimaging/embi">Electron Microscopy Unit</a>
+<br>
+Institute of Biotechnology
+<br>
+PO Box 56 (Viikinkaari 9)
+<br>
+00014, University of Helsinki
+<br>
 Finland</i>
-<br><br>
+
+<br>
+<br>
 <h4>Microscopy Image Browser source code</h4>
-MIB in MATLAB source code form is licensed under the GNU General Public License (<a href="http://mib.helsinki.fi/GNU2_license.txt">GPL2</a>), see GPL license of Microscopy Image Browser source code section below.<br>
+MIB in MATLAB source code form is licensed under the GNU General Public License (<a href="http://mib.helsinki.fi/GNU2_license.txt">GPL2</a>), see GPL license of Microscopy Image Browser source code section below.
+<br>
+
 <br>
 <h4>Microscopy Image Browser as standalone version</h4>
 The deployed application is governed by the <a href="http://mib.helsinki.fi/Matlab_MCR_license.txt">MathWorks MCR license</a>
 and applicable parts of <a
 href="http://mib.helsinki.fi/Matlab_license.txt">The MathWorks, Inc.
-Software License Agreement</a>.<br>
+Software License Agreement</a>.
+<br>
 Using the Microscopy Image Browser deployed application for commercial purposes is prohibited.
-</p><h2 id="2">License for Microscopy Image Browser source code</h2><p>
+<h2 id="2">License for Microscopy Image Browser source code</h2>
+<p>
 Microscopy Image Browser (MIB)
-<br><em>image segmentation and beyond</em><br>
-Copyright (c) 2010-2020<br>
-Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br>
-<a href="http://mib.helsinki.fi">http://mib.helsinki.fi</a><br>
-</p><p>This program is free software; you can redistribute it and/or modify it under the terms of the <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU General Public License</a> as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.</p><p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p><p><a href="http://www.gnu.org/licenses/gpl-2.0.html">See the GNU General Public License for more details</a>.</p><p>You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</p><h2 id="3">License for compiled application of Microscopy Image Browser</h2><p>By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to the terms of the disclaimer below, the <a href="http://mib.helsinki.fi/Matlab_MCR_license.txt">MATLAB Compiler Runtime (MCR) libraries license</a> and applicable parts of the MathWorks, Inc. <a href="http://mib.helsinki.fi/Matlab_license.txt">Software License Agreement</a>. The corresponding license files are also included into the MIB distribution under techdoc directory. As Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited.</p><p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.</p><h2 id="4">EXTERNAL PACKAGES</h2><p>Microscopy Image Browser as a bundle is licensed under the GPL, with exceptions for plugins and other components. This section lists the license under which additional components are released. See also the <a href="im_browser_ack.html">Acknowledgements</a> section</p><p>Abbreviations:</p><div><ul><li><a href="https://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29"><b>FreeBSD</b></a>, Berkeley Software Distribution, 2-clause license, GPL compatible</li><li><a href="http://www.gnu.org/licenses/gpl-2.0.html"><b>GPL</b></a>, GNU General Public License, version 2</li><li><a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><b>GPL3</b></a>, GNU General Public License, version 3</li><li><a href="https://en.wikipedia.org/wiki/BSD_licenses#3-clause_license_.28.22Revised_BSD_License.22.2C_.22New_BSD_License.22.2C_or_.22Modified_BSD_License.22.29"><b>ModifiedBSD</b></a>, Berkeley Software Distribution, 3-clause license, GPL compatible</li><li><a href="http://en.wikipedia.org/wiki/MIT_License"><b>MIT</b></a>, a free software license originating at the Massachusetts Institute of Technology, GPL compatible</li><li><a href="https://creativecommons.org/licenses/by-nd/3.0/"><b>CC BY-ND 3.0</b></a>, Attribution-NoDerivs 3.0 Unported</li><li><b>ND</b>, no data</li></ul></div><p>
+
+<br><em>image segmentation and beyond</em>
+<br>
+Copyright (c) 2010-2020
+<br>
+Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
+<br>
+<a href="http://mib.helsinki.fi">http://mib.helsinki.fi</a>
+<br>
+</p>
+<p>This program is free software; you can redistribute it and/or modify it under the terms of the <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU General Public License</a> as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<p><a href="http://www.gnu.org/licenses/gpl-2.0.html">See the GNU General Public License for more details</a>.</p>
+<p>You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</p><h2 id="3">License for compiled application of Microscopy Image Browser</h2>
+<p>By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to the terms of the disclaimer below, the <a href="http://mib.helsinki.fi/Matlab_MCR_license.txt">MATLAB Compiler Runtime (MCR) libraries license</a> and applicable parts of the MathWorks, Inc. <a href="http://mib.helsinki.fi/Matlab_license.txt">Software License Agreement</a>. The corresponding license files are also included into the MIB distribution under techdoc directory. As Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited.</p>
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.</p><h2 id="4">EXTERNAL PACKAGES</h2>
+<p>Microscopy Image Browser as a bundle is licensed under the GPL, with exceptions for plugins and other components. This section lists the license under which additional components are released. See also the <a href="im_browser_ack.html">Acknowledgements</a> section</p>
+<p>Abbreviations:</p>
+<div><ul><li><a href="https://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29"><b>FreeBSD</b></a>, Berkeley Software Distribution, 2-clause license, GPL compatible</li>
+<li><a href="http://www.gnu.org/licenses/gpl-2.0.html"><b>GPL</b></a>, GNU General Public License, version 2</li>
+<li><a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><b>GPL3</b></a>, GNU General Public License, version 3</li>
+<li><a href="https://en.wikipedia.org/wiki/BSD_licenses#3-clause_license_.28.22Revised_BSD_License.22.2C_.22New_BSD_License.22.2C_or_.22Modified_BSD_License.22.29"><b>ModifiedBSD</b></a>, Berkeley Software Distribution, 3-clause license, GPL compatible</li>
+<li><a href="http://en.wikipedia.org/wiki/MIT_License"><b>MIT</b></a>, a free software license originating at the Massachusetts Institute of Technology, GPL compatible</li>
+<li><a href="https://creativecommons.org/licenses/by-nd/3.0/"><b>CC BY-ND 3.0</b></a>, Attribution-NoDerivs 3.0 Unported</li>
+<li><b>ND</b>, no data</li></ul></div>
 <table style="width: 800px; text-align: center;" cellspacing=2px cellpadding=2px >
 <tr style="font-weight: bold; background: #ff6600;">
   <td>Name</td>
   <td>Author(s)</td>
   <td>Contact</td>
   <td>License, Year</td>
-  <td>MIB<br>version</td>
+  <td>MIB
+<br>version</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Accurate Fast Marching</td>
   <td>Dirk-Jan Kroon, University of Twente</td>
   <td><a href="http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2011</td>
+  <td>FreeBSD,
+<br> 2011</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">ANISODIFF</td>
   <td>Peter Kovesi</td>
   <td><a href="http://www.peterkovesi.com/matlabfns/#anisodiff">web site</a></td>
-  <td>MIT,<br> 2000-2002</td>
+  <td>MIT,
+<br> 2000-2002</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Bio-Formats</td>
   <td>Melissa Linkert, Curtis Rueden et al.</td>
   <td><a href="http://loci.wisc.edu/software/bio-formats">web site</a></td>
-  <td>GPL,<br> 2002-2013</td>
+  <td>GPL,
+<br> 2002-2013</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">bwdistsc, 3D Euclidean distance transform for variable data aspect ratio</td>
   <td>Yuriy Mishchenko, Toros University</td>
   <td><a href="http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2007-2013</td>
+  <td>FreeBSD,
+<br> 2007-2013</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
 <td style="font-weight: bold">Custom GINPUT</td>
 <td>Jiro Doke, MathWorks
 <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/38703-custom-ginput">via MATLAB Exchange</a></td>
-<td>ModifiedBSD,<br>2016</td>
+<td>ModifiedBSD,
+<br>2016</td>
 <td>2.82-</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Cell migration in scratch wound assays</td>
   <td>Constantino Carlos Reyes-Aldasoro, City, University of London</td>
   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays">via MATLAB Exchange</a></td>
-  <td>GPL3,<br> 2018</td>
+  <td>GPL3,
+<br> 2018</td>
   <td>2.65-</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Drag & Drop functionality for JAVA GUI components</td>
-  <td>Maarten van der Seijs<br>
+  <td>Maarten van der Seijs
+<br>
   Delft University of Technology, the Netherlands</td>
   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/53511-drag-drop-functionality-for-java-gui-components">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2015</td>
+  <td>FreeBSD,
+<br> 2015</td>
   <td>2.61-</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">DrawRegionBoundaries</td>
-  <td>Peter Kovesi<br>
+  <td>Peter Kovesi
+<br>
   Centre for Exploration Targeting, School of Earth and Environment, The
   University of Western Australia</td>
   <td><a href="http://www.peterkovesi.com/projects/segmentation/">author's website</a></td>
-  <td>MIT,<br> 2013</td>
+  <td>MIT,
+<br> 2013</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">drifty_shifty_deluxe</td>
-  <td>Joshua D. Sugar<br>
+  <td>Joshua D. Sugar
+<br>
   Sandia National Laboratories, Livermore, CA</td>
   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m">via MATLAB Exchange</a></td>
-  <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/view_license?file_info_id=45453">Custom</a>,<br> 2014</td>
+  <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/view_license?file_info_id=45453">Custom</a>,
+<br> 2014</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Export_fig</td>
   <td>Oliver Woodford and Yair Altman</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig">via MATLAB Exchange</a></td>
-  <td>ModifiedBSD,<br>2014-2015</td>
+  <td>ModifiedBSD,
+<br>2014-2015</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Extrema functions</td>
   <td>Carlos Adrian Vargas Aguilera, Universidad de Guadalajara</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/12275-extrema-m-extrema2-m">via MATLAB Exchange</a></td>
-  <td>ND,<br> 2006-2007</td>
+  <td>ND,
+<br> 2006-2007</td>
   <td>0.x-1.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Fast 3D/2D Region Growing (MEX)</td>
   <td>Christian Wuerslin, Stanford University</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/41666-fast-3d-2d-region-growing--mex-">via MATLAB Exchange</a></td>
-  <td>ModifiedBSD,<br> 2013-2015</td>
+  <td>ModifiedBSD,
+<br> 2013-2015</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
@@ -197,282 +698,331 @@ Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br
   </td>
   <td>Dirk-Jan Kroon, University of Twente</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/24925-fastrobust-template-matching">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2009-2011</td>
+  <td>FreeBSD,
+<br> 2009-2011</td>
   <td>0.x-1.22</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">FindJObj - find java handles of MATLAB graphic objects</td>
   <td>Yair Altman</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/14317-findjobj-find-java-handles-of-matlab-graphic-objects">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2007-2013</td>
+  <td>FreeBSD,
+<br> 2007-2013</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">fstack - extended depth-of-field image</td>
   <td>Said Pertuz, Universitat Rovira i Virgili, Tarragona, Spain</td>
   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/55115-extended-depth-of-field">via MATLAB Exchange</a></td>
-  <td>ModifiedBSD,<br> 2013</td>
+  <td>ModifiedBSD,
+<br> 2013</td>
   <td>2.51-</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Hardware accelerated 3D viewer for MATLAB</td>
   <td>Jean-Yves Tinevez, Institut Pasteur</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/32344-hardware-accelerated-3d-viewer-for-matlab">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2011</td>
+  <td>FreeBSD,
+<br> 2011</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Hessian based Frangi Vesselness filter</td>
   <td>Marc Schrijver and Dirk-Jan Kroon, University of Twente</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2001-2009</td>
+  <td>FreeBSD,
+<br> 2001-2009</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Highly portable JSON-input parser</td>
   <td>Nedialko</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser">via MATLAB Exchange</a></td>
-  <td>GPL,<br> 2013</td>
+  <td>GPL,
+<br> 2013</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">HistThresh toolbox</td>
   <td>Antti Niemist&ouml;, Tampere University of Technology, Finland</td>
   <td><a href="https://github.com/carandraug/histthresh">Github</a></td>
-  <td>GPLv3,<br>2014</td>
+  <td>GPLv3,
+<br>2014</td>
   <td>2.51 - </td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">IceImarisConnector</td>
   <td>Aaron C. Ponti, ETH Zurich</td>
   <td><a href="http://www.scs2.net/next/index.php?id=110">web link</a></td>
-  <td>GPL,<br> 2013</td>
+  <td>GPL,
+<br> 2013</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Image Edge Enhancing Coherence Filter</td>
   <td>Dirk-Jan Kroon, Pascal Getreuer University of Twente</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2009</td>
+  <td>FreeBSD,
+<br> 2009</td>
   <td>0.x-1.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Image Measurement Utility</td>
   <td>Jan Neggers, Eindhoven Univeristy of Technology</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2009-2014</td>
+  <td>FreeBSD,
+<br> 2009-2014</td>
   <td>1.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">ImageViewer</td>
   <td>Jiro Doke, Mathworks</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer">via MATLAB Exchange</a></td>
-  <td>ModifiedBSD,<br> 2010</td>
+  <td>ModifiedBSD,
+<br> 2010</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">ImClipboard</td>
   <td>Jiro Doke, MathWorks</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard">via MATLAB Exchange</a></td>
-  <td>ModifiedBSD,<br> 2010</td>
+  <td>ModifiedBSD,
+<br> 2010</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">ImGaussian</td>
   <td>Dirk-Jan Kroon, University of Twente</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25397-imgaussian">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2009</td>
+  <td>FreeBSD,
+<br> 2009</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Local Normalization</td>
   <td>Guanglei Xiong at Tsinghua University, Beijing</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/8303-local-normalization">via MATLAB Exchange</a></td>
-  <td>ND,<br> 2005</td>
+  <td>ND,
+<br> 2005</td>
   <td>0.x-1.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">MatGeom</td>
   <td>David Legland, INRA, France</td>
   <td><a href="https://github.com/mattools/matGeom">GitHub</a></td>
-  <td>FreeBSD,<br> 2011-</td>
+  <td>FreeBSD,
+<br> 2011-</td>
   <td>2.3-</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">MatTomo, a part of PEET</td>
   <td>Boulder Laboratory for 3-D Electron Microscopy of Cells</td>
   <td><a href="http://bio3d.colorado.edu/PEET/index.html">web site</a></td>
-  <td>GPL,<br> 2006-2010</td>
+  <td>GPL,
+<br> 2006-2010</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">MAXFLOW/MINCUT algorithm v2.22</td>
   <td>Yuri Boykov, University of Western Ontario and Vladimir Kolmogorov, Microsoft research, Cambridge</td>
   <td><a href="http://pub.ist.ac.at/~vnk/software.html">web site</a></td>
-  <td>GPL,<br> 2001-2014</td>
+  <td>GPL,
+<br> 2001-2014</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">MAXFLOW/MINCUT MATLAB wrapper</td>
   <td>Michael Rubinstein, Google</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2008</td>
+  <td>FreeBSD,
+<br> 2008</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Membrane detection with Random Forest</td>
   <td>Verena Kaynig, Harvard School of Engineering and Applied Sciences</td>
   <td><a href="http://www.kaynig.de/demos.html">web link</a></td>
-  <td>GPL,<br>2010</td>
+  <td>GPL,
+<br>2010</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">MIJ: Running ImageJ and Fiji within MATLAB</td>
   <td>Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin, EPFL Lausanne</td>
   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/47545-mij-running-imagej-and-fiji-within-matlab">via MATLAB Exchange</a></td>
-  <td>ModifiedBSD,<br>2012-2017</td>
+  <td>ModifiedBSD,
+<br>2012-2017</td>
   <td>2.6-</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">MTOC++</td>
   <td>Martin Drohmann (Universit?t M?nster), Daniel Wirtz (Universit?t Stuttgart)</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2011-2013</td>
+  <td>FreeBSD,
+<br> 2011-2013</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">NRRD Format File Reader</td>
   <td>Jeff Mather, the MathWorks, Inc.</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/34653-nrrd-format-file-reader">via MATLAB Exchange</a></td>
-  <td>ModifiedBSD,<br>2012</td>
+  <td>ModifiedBSD,
+<br>2012</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">NRRD NHDR reader and writer</td>
   <td> Gaetan Rensonnet, Ecole polytechnique federale de Lausanne and Universite catholique de Louvain</td>
   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/66645-nrrd-nhdr-reader-and-writer">via MATLAB Exchange</a></td>
-  <td><a href="http://mib.helsinki.fi/help/NRRD NHDR reader and writer_license.txt">CustomBSD</a><br>2018</td>
+  <td><a href="http://mib.helsinki.fi/help/NRRD NHDR reader and writer_license.txt">CustomBSD</a>
+<br>2018</td>
   <td>2.7-</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">OMERO MATLAB bindings</td>
   <td>The Open Microscopy Environment</td>
   <td><a href="https://www.openmicroscopy.org/omero/">OME website</a></td>
-  <td>GPL,<br>2019</td>
+  <td>GPL,
+<br>2019</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Patch Normals</td>
   <td>Dirk-Jan Kroon, University of Twente</td>
   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/24330-patch-normals">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2009</td>
+  <td>FreeBSD,
+<br> 2009</td>
   <td>2.22-</td>
+</tr>
+<tr style="">
+  <td style="font-weight: bold">Prettify MATLAB html</td>
+  <td>Harry Dymond, University of Bristol</td>
+  <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">via MATLAB Exchange</a></td>
+  <td>ModifiedBSD,
+<br>2020</td>
+  <td>2.83-</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Projects:MATLABSlicerExampleModule, to read NRRD format</td>
   <td>John Melonakos</td>
   <td><a href="http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule">web link</a></td>
-  <td>GPL,<br>2012</td>
+  <td>GPL,
+<br>2012</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Random Forest MATLAB</td>
   <td>Abhishek Jaiantilal</td>
   <td><a href="https://code.google.com/p/randomforest-matlab/">web link</a></td>
-  <td>GPL,<br> 2012</td>
+  <td>GPL,
+<br> 2012</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Region Adjacency Graph (RAG)</td>
   <td>David Legland, INRA, France</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2007-2013</td>
+  <td>FreeBSD,
+<br> 2007-2013</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">RegionProps3</td>
   <td>Chaoyuan Yeh</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/authors/393471">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2014</td>
+  <td>FreeBSD,
+<br> 2014</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Render</td>
   <td>Dirk-Jan Kroon, Focal Machine Vision en Optical Systems</td>
   <td><a href="http://se.mathworks.com/matlabcentral/fileexchange/21993-viewer3d">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2008-2011</td>
+  <td>FreeBSD,
+<br> 2008-2011</td>
   <td>1.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">Render RGB text over RGB or Grayscale Image</td>
   <td>Davide Di Gloria, Universita di Genova</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/26940-render-rgb-text-over-rgb-or-grayscale-image">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2010</td>
+  <td>FreeBSD,
+<br> 2010</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">SLIC (Simple Linear Iterative Clustering)</td>
   <td>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi,
-Pascal Fua, and Sabine S?sstrunk<br>Ecole Polytechnique Federale de
+Pascal Fua, and Sabine S?sstrunk
+<br>Ecole Polytechnique Federale de
 Lausanne (EPFL), Switzerland</td>
   <td><a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html">authors' website</a></td>
-  <td>ModifiedBSD,<br> 2015</td>
+  <td>ModifiedBSD,
+<br> 2015</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">STLWRITE</td>
   <td>Sven Holcombe, University of Michigan</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/20922-stlwrite-filename--varargin-">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2008-2015</td>
+  <td>FreeBSD,
+<br> 2008-2015</td>
   <td>1.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">STRUCT2XML</td>
   <td>Wouter Falkena, Delft University of Technology</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28639-struct2xml">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2010</td>
+  <td>FreeBSD,
+<br> 2010</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">UIGETFILE_N_DIR</td>
   <td>Tiago / Peugas</td>
   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/32555-uigetfile_n_dir-select-multiple-files-and-directories">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2011</td>
+  <td>FreeBSD,
+<br> 2011</td>
   <td>2.6-</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">VIEW3D</td>
   <td>Torsten Vogel</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 1999</td>
+  <td>FreeBSD,
+<br> 1999</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">VIOLIN</td>
   <td>Holger Hoffmann</td>
   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/45134-violin-plot">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br>2015</td>
+  <td>FreeBSD,
+<br>2015</td>
   <td>2.65-</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">XLWRITE: Generate XLS(X) files without Excel on Mac/Linux/Win</td>
   <td>Alec de Zegher, NV Bekaert SA</td>
   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/38591-xlwrite--generate-xls-x--files-without-excel-on-mac-linux-win">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2013</td>
+  <td>FreeBSD,
+<br> 2013</td>
   <td>2.1-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">XLSWRITE (improved)</td>
   <td>Barry Dillon, AON Insurance Brokers</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/27236-improved-xlswrite-m">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2010</td>
+  <td>FreeBSD,
+<br> 2010</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
   <td style="font-weight: bold">XML2STRUCT</td>
   <td>Wouter Falkena, Delft University of Technology</td>
   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28518-xml2struct">via MATLAB Exchange</a></td>
-  <td>FreeBSD,<br> 2010</td>
+  <td>FreeBSD,
+<br> 2010</td>
   <td>0.x-2.x</td>
 </tr>
 <tr style="">
@@ -486,60 +1036,91 @@ Lausanne (EPFL), Switzerland</td>
   <td style="font-weight: bold">Some icons</td>
   <td>Icons8.com</td>
   <td><a href="https://icons8.com">website</a></td>
-  <td>CC BY-ND 3.0,<br> 2018</td>
+  <td>CC BY-ND 3.0,
+<br> 2018</td>
   <td>2.22-</td>
 </tr>
 </table>
-</p><h2 id="6">HOW TO CITE</h2><p>
+<h2 id="6">HOW TO CITE</h2>
+<p>
 In November 2015 paper describing Microscopy Image Browser was accepted for publication in PLOS Biology,
 please cite it whenever referring to the software (the reference will be updated as soon as the article is published):
-<br><br>
+
+<br>
+<br>
 <b>
 Microscopy Image Browser: A platform for segmentation and analysis of
-multidimensional datasets<br>
-I. Belevich, M. Joensuu, D. Kumar, H. Vihinen and E. Jokitalo<br>
-PLOS Biology, PLoS Biology 2016 Jan 4;14(1):e1002340. doi: 10.1371/journal.pbio.1002340<br>
+multidimensional datasets
+<br>
+I. Belevich, M. Joensuu, D. Kumar, H. Vihinen and E. Jokitalo
+<br>
+PLOS Biology, PLoS Biology 2016 Jan 4;14(1):e1002340. doi: 10.1371/journal.pbio.1002340
+<br>
 <http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002340 Link to the article>
+
 <br></b>
 We appreciate if you let us know by email (ilya.belevich -=@=- helsinki.fi) when you cite MIB. This helps us to develop and maintain the program.
-</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+</p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Microscopy Image Browser License
 %
 % *Back to* <im_browser_product_page.html *Index*>
 %%
 % 
-% <html>
-% Developed during 2010-2021 by<br>
-% Core developer:<br>
-% Ilya Belevich<br>
-% Developers:<br>
-% Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br><br>
-% <i><a href="https://www.helsinki.fi/en/infrastructures/bioimaging/embi">Electron Microscopy Unit</a><br>
-% Institute of Biotechnology<br>
-% PO Box 56 (Viikinkaari 9)<br>
-% 00014, University of Helsinki<br>
+% <html lang="en">
+% Developed during 2010-2021 by
+<br>
+% Core developer:
+<br>
+% Ilya Belevich
+<br>
+% Developers:
+<br>
+% Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
+<br>
+<br>
+% <i><a href="https://www.helsinki.fi/en/infrastructures/bioimaging/embi">Electron Microscopy Unit</a>
+<br>
+% Institute of Biotechnology
+<br>
+% PO Box 56 (Viikinkaari 9)
+<br>
+% 00014, University of Helsinki
+<br>
 % Finland</i>
-% <br><br>
+% 
+<br>
+<br>
 % <h4>Microscopy Image Browser source code</h4>
-% MIB in MATLAB source code form is licensed under the GNU General Public License (<a href="http://mib.helsinki.fi/GNU2_license.txt">GPL2</a>), see GPL license of Microscopy Image Browser source code section below.<br>
-% <br>
+% MIB in MATLAB source code form is licensed under the GNU General Public License (<a href="http://mib.helsinki.fi/GNU2_license.txt">GPL2</a>), see GPL license of Microscopy Image Browser source code section below.
+<br>
+% 
+<br>
 % <h4>Microscopy Image Browser as standalone version</h4>
 % The deployed application is governed by the <a href="http://mib.helsinki.fi/Matlab_MCR_license.txt">MathWorks MCR license</a> 
 % and applicable parts of <a
 % href="http://mib.helsinki.fi/Matlab_license.txt">The MathWorks, Inc.
-% Software License Agreement</a>.<br>
+% Software License Agreement</a>.
+<br>
 % Using the Microscopy Image Browser deployed application for commercial purposes is prohibited.
 % </html>
 %
 %
 %% License for Microscopy Image Browser source code
-% <html>
+% <html lang="en">
 % Microscopy Image Browser (MIB)
-% <br><em>image segmentation and beyond</em><br>
-% Copyright (c) 2010-2020<br>
-% Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br>
-% <a href="http://mib.helsinki.fi">http://mib.helsinki.fi</a><br>
+% 
+<br><em>image segmentation and beyond</em>
+<br>
+% Copyright (c) 2010-2020
+<br>
+% Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
+<br>
+% <a href="http://mib.helsinki.fi">http://mib.helsinki.fi</a>
+<br>
 % </html>
 % 
 % This program is free software; you can redistribute it and/or modify it under the terms of the 
@@ -588,101 +1169,117 @@ We appreciate if you let us know by email (ilya.belevich -=@=- helsinki.fi) when
 %
 %%
 % 
-% <html>
+% <html lang="en">
 % <table style="width: 800px; text-align: center;" cellspacing=2px cellpadding=2px >
 % <tr style="font-weight: bold; background: #ff6600;">
 %   <td>Name</td>
 %   <td>Author(s)</td>
 %   <td>Contact</td>
 %   <td>License, Year</td>
-%   <td>MIB<br>version</td>
+%   <td>MIB
+<br>version</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Accurate Fast Marching</td>
 %   <td>Dirk-Jan Kroon, University of Twente</td>
 %   <td><a href="http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2011</td>
+%   <td>FreeBSD,
+<br> 2011</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">ANISODIFF</td>
 %   <td>Peter Kovesi</td>
 %   <td><a href="http://www.peterkovesi.com/matlabfns/#anisodiff">web site</a></td>
-%   <td>MIT,<br> 2000-2002</td>
+%   <td>MIT,
+<br> 2000-2002</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Bio-Formats</td>
 %   <td>Melissa Linkert, Curtis Rueden et al.</td>
 %   <td><a href="http://loci.wisc.edu/software/bio-formats">web site</a></td>
-%   <td>GPL,<br> 2002-2013</td>
+%   <td>GPL,
+<br> 2002-2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">bwdistsc, 3D Euclidean distance transform for variable data aspect ratio</td>
 %   <td>Yuriy Mishchenko, Toros University</td>
 %   <td><a href="http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2007-2013</td>
+%   <td>FreeBSD,
+<br> 2007-2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 % <td style="font-weight: bold">Custom GINPUT</td>
 % <td>Jiro Doke, MathWorks
 % <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/38703-custom-ginput">via MATLAB Exchange</a></td>
-% <td>ModifiedBSD,<br>2016</td>
+% <td>ModifiedBSD,
+<br>2016</td>
 % <td>2.82-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Cell migration in scratch wound assays</td>
 %   <td>Constantino Carlos Reyes-Aldasoro, City, University of London</td>
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays">via MATLAB Exchange</a></td>
-%   <td>GPL3,<br> 2018</td>
+%   <td>GPL3,
+<br> 2018</td>
 %   <td>2.65-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Drag & Drop functionality for JAVA GUI components</td>
-%   <td>Maarten van der Seijs<br>
+%   <td>Maarten van der Seijs
+<br>
 %   Delft University of Technology, the Netherlands</td>
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/53511-drag-drop-functionality-for-java-gui-components">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2015</td>
+%   <td>FreeBSD,
+<br> 2015</td>
 %   <td>2.61-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">DrawRegionBoundaries</td>
-%   <td>Peter Kovesi<br>
+%   <td>Peter Kovesi
+<br>
 %   Centre for Exploration Targeting, School of Earth and Environment, The
 %   University of Western Australia</td>
 %   <td><a href="http://www.peterkovesi.com/projects/segmentation/">author's website</a></td>
-%   <td>MIT,<br> 2013</td>
+%   <td>MIT,
+<br> 2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">drifty_shifty_deluxe</td>
-%   <td>Joshua D. Sugar<br>
+%   <td>Joshua D. Sugar
+<br>
 %   Sandia National Laboratories, Livermore, CA</td>
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m">via MATLAB Exchange</a></td>
-%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/view_license?file_info_id=45453">Custom</a>,<br> 2014</td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/view_license?file_info_id=45453">Custom</a>,
+<br> 2014</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Export_fig</td>
 %   <td>Oliver Woodford and Yair Altman</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig">via MATLAB Exchange</a></td>
-%   <td>ModifiedBSD,<br>2014-2015</td>
+%   <td>ModifiedBSD,
+<br>2014-2015</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Extrema functions</td>
 %   <td>Carlos Adrian Vargas Aguilera, Universidad de Guadalajara</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/12275-extrema-m-extrema2-m">via MATLAB Exchange</a></td>
-%   <td>ND,<br> 2006-2007</td>
+%   <td>ND,
+<br> 2006-2007</td>
 %   <td>0.x-1.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Fast 3D/2D Region Growing (MEX)</td>
 %   <td>Christian Wuerslin, Stanford University</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/41666-fast-3d-2d-region-growingREPLACE_WITH_DASH_DASHmex-">via MATLAB Exchange</a></td>
-%   <td>ModifiedBSD,<br> 2013-2015</td>
+%   <td>ModifiedBSD,
+<br> 2013-2015</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
@@ -691,282 +1288,331 @@ We appreciate if you let us know by email (ilya.belevich -=@=- helsinki.fi) when
 %   </td>
 %   <td>Dirk-Jan Kroon, University of Twente</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/24925-fastrobust-template-matching">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2009-2011</td>
+%   <td>FreeBSD,
+<br> 2009-2011</td>
 %   <td>0.x-1.22</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">FindJObj - find java handles of MATLAB graphic objects</td>
 %   <td>Yair Altman</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/14317-findjobj-find-java-handles-of-matlab-graphic-objects">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2007-2013</td>
+%   <td>FreeBSD,
+<br> 2007-2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">fstack - extended depth-of-field image</td>
 %   <td>Said Pertuz, Universitat Rovira i Virgili, Tarragona, Spain</td>
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/55115-extended-depth-of-field">via MATLAB Exchange</a></td>
-%   <td>ModifiedBSD,<br> 2013</td>
+%   <td>ModifiedBSD,
+<br> 2013</td>
 %   <td>2.51-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Hardware accelerated 3D viewer for MATLAB</td>
 %   <td>Jean-Yves Tinevez, Institut Pasteur</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/32344-hardware-accelerated-3d-viewer-for-matlab">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2011</td>
+%   <td>FreeBSD,
+<br> 2011</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Hessian based Frangi Vesselness filter</td>
 %   <td>Marc Schrijver and Dirk-Jan Kroon, University of Twente</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/24409-hessian-based-frangi-vesselness-filter">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2001-2009</td>
+%   <td>FreeBSD,
+<br> 2001-2009</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Highly portable JSON-input parser</td>
 %   <td>Nedialko</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser">via MATLAB Exchange</a></td>
-%   <td>GPL,<br> 2013</td>
+%   <td>GPL,
+<br> 2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">HistThresh toolbox</td>
 %   <td>Antti Niemist&ouml;, Tampere University of Technology, Finland</td>
 %   <td><a href="https://github.com/carandraug/histthresh">Github</a></td>
-%   <td>GPLv3,<br>2014</td>
+%   <td>GPLv3,
+<br>2014</td>
 %   <td>2.51 - </td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">IceImarisConnector</td>
 %   <td>Aaron C. Ponti, ETH Zurich</td>
 %   <td><a href="http://www.scs2.net/next/index.php?id=110">web link</a></td>
-%   <td>GPL,<br> 2013</td>
+%   <td>GPL,
+<br> 2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Image Edge Enhancing Coherence Filter</td>
 %   <td>Dirk-Jan Kroon, Pascal Getreuer University of Twente</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2009</td>
+%   <td>FreeBSD,
+<br> 2009</td>
 %   <td>0.x-1.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Image Measurement Utility</td>
 %   <td>Jan Neggers, Eindhoven Univeristy of Technology</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2009-2014</td>
+%   <td>FreeBSD,
+<br> 2009-2014</td>
 %   <td>1.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">ImageViewer</td>
 %   <td>Jiro Doke, Mathworks</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer">via MATLAB Exchange</a></td>
-%   <td>ModifiedBSD,<br> 2010</td>
+%   <td>ModifiedBSD,
+<br> 2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">ImClipboard</td>
 %   <td>Jiro Doke, MathWorks</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard">via MATLAB Exchange</a></td>
-%   <td>ModifiedBSD,<br> 2010</td>
+%   <td>ModifiedBSD,
+<br> 2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">ImGaussian</td>
 %   <td>Dirk-Jan Kroon, University of Twente</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25397-imgaussian">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2009</td>
+%   <td>FreeBSD,
+<br> 2009</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Local Normalization</td>
 %   <td>Guanglei Xiong at Tsinghua University, Beijing</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/8303-local-normalization">via MATLAB Exchange</a></td>
-%   <td>ND,<br> 2005</td>
+%   <td>ND,
+<br> 2005</td>
 %   <td>0.x-1.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">MatGeom</td>
 %   <td>David Legland, INRA, France</td>
 %   <td><a href="https://github.com/mattools/matGeom">GitHub</a></td>
-%   <td>FreeBSD,<br> 2011-</td>
+%   <td>FreeBSD,
+<br> 2011-</td>
 %   <td>2.3-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">MatTomo, a part of PEET</td>
 %   <td>Boulder Laboratory for 3-D Electron Microscopy of Cells</td>
 %   <td><a href="http://bio3d.colorado.edu/PEET/index.html">web site</a></td>
-%   <td>GPL,<br> 2006-2010</td>
+%   <td>GPL,
+<br> 2006-2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">MAXFLOW/MINCUT algorithm v2.22</td>
 %   <td>Yuri Boykov, University of Western Ontario and Vladimir Kolmogorov, Microsoft research, Cambridge</td>
 %   <td><a href="http://pub.ist.ac.at/~vnk/software.html">web site</a></td>
-%   <td>GPL,<br> 2001-2014</td>
+%   <td>GPL,
+<br> 2001-2014</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">MAXFLOW/MINCUT MATLAB wrapper</td>
 %   <td>Michael Rubinstein, Google</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/21310-maxflow">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2008</td>
+%   <td>FreeBSD,
+<br> 2008</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Membrane detection with Random Forest</td>
 %   <td>Verena Kaynig, Harvard School of Engineering and Applied Sciences</td>
 %   <td><a href="http://www.kaynig.de/demos.html">web link</a></td>
-%   <td>GPL,<br>2010</td>
+%   <td>GPL,
+<br>2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">MIJ: Running ImageJ and Fiji within MATLAB</td>
 %   <td>Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin, EPFL Lausanne</td>
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/47545-mij-running-imagej-and-fiji-within-matlab">via MATLAB Exchange</a></td>
-%   <td>ModifiedBSD,<br>2012-2017</td>
+%   <td>ModifiedBSD,
+<br>2012-2017</td>
 %   <td>2.6-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">MTOC++</td>
 %   <td>Martin Drohmann (Universit?t M?nster), Daniel Wirtz (Universit?t Stuttgart)</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/33826-mtoc++-doxygen-filter-for-matlab-and-tools">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2011-2013</td>
+%   <td>FreeBSD,
+<br> 2011-2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">NRRD Format File Reader</td>
 %   <td>Jeff Mather, the MathWorks, Inc.</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/34653-nrrd-format-file-reader">via MATLAB Exchange</a></td>
-%   <td>ModifiedBSD,<br>2012</td>
+%   <td>ModifiedBSD,
+<br>2012</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">NRRD NHDR reader and writer</td>
 %   <td> Gaetan Rensonnet, Ecole polytechnique federale de Lausanne and Universite catholique de Louvain</td>
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/66645-nrrd-nhdr-reader-and-writer">via MATLAB Exchange</a></td>
-%   <td><a href="http://mib.helsinki.fi/help/NRRD NHDR reader and writer_license.txt">CustomBSD</a><br>2018</td>
+%   <td><a href="http://mib.helsinki.fi/help/NRRD NHDR reader and writer_license.txt">CustomBSD</a>
+<br>2018</td>
 %   <td>2.7-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">OMERO MATLAB bindings</td>
 %   <td>The Open Microscopy Environment</td>
 %   <td><a href="https://www.openmicroscopy.org/omero/">OME website</a></td>
-%   <td>GPL,<br>2019</td>
+%   <td>GPL,
+<br>2019</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Patch Normals</td>
 %   <td>Dirk-Jan Kroon, University of Twente</td>
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/24330-patch-normals">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2009</td>
+%   <td>FreeBSD,
+<br> 2009</td>
 %   <td>2.22-</td>
+% </tr>
+% <tr style="">
+%   <td style="font-weight: bold">Prettify MATLAB html</td>
+%   <td>Harry Dymond, University of Bristol</td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">via MATLAB Exchange</a></td>
+%   <td>ModifiedBSD,
+<br>2020</td>
+%   <td>2.83-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Projects:MATLABSlicerExampleModule, to read NRRD format</td>
 %   <td>John Melonakos</td>
 %   <td><a href="http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule">web link</a></td>
-%   <td>GPL,<br>2012</td>
+%   <td>GPL,
+<br>2012</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Random Forest MATLAB</td>
 %   <td>Abhishek Jaiantilal</td>
 %   <td><a href="https://code.google.com/p/randomforest-matlab/">web link</a></td>
-%   <td>GPL,<br> 2012</td>
+%   <td>GPL,
+<br> 2012</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Region Adjacency Graph (RAG)</td>
 %   <td>David Legland, INRA, France</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graphREPLACE_WITH_DASH_DASHrag-">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2007-2013</td>
+%   <td>FreeBSD,
+<br> 2007-2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">RegionProps3</td>
 %   <td>Chaoyuan Yeh</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/authors/393471">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2014</td>
+%   <td>FreeBSD,
+<br> 2014</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Render</td>
 %   <td>Dirk-Jan Kroon, Focal Machine Vision en Optical Systems</td>
 %   <td><a href="http://se.mathworks.com/matlabcentral/fileexchange/21993-viewer3d">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2008-2011</td>
+%   <td>FreeBSD,
+<br> 2008-2011</td>
 %   <td>1.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Render RGB text over RGB or Grayscale Image</td>
 %   <td>Davide Di Gloria, Universita di Genova</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/26940-render-rgb-text-over-rgb-or-grayscale-image">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2010</td>
+%   <td>FreeBSD,
+<br> 2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">SLIC (Simple Linear Iterative Clustering)</td>
 %   <td>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, 
-% Pascal Fua, and Sabine S?sstrunk<br>Ecole Polytechnique Federale de
+% Pascal Fua, and Sabine S?sstrunk
+<br>Ecole Polytechnique Federale de
 % Lausanne (EPFL), Switzerland</td>
 %   <td><a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html">authors' website</a></td>
-%   <td>ModifiedBSD,<br> 2015</td>
+%   <td>ModifiedBSD,
+<br> 2015</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">STLWRITE</td>
 %   <td>Sven Holcombe, University of Michigan</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/20922-stlwrite-filenameREPLACE_WITH_DASH_DASHvarargin-">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2008-2015</td>
+%   <td>FreeBSD,
+<br> 2008-2015</td>
 %   <td>1.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">STRUCT2XML</td>
 %   <td>Wouter Falkena, Delft University of Technology</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28639-struct2xml">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2010</td>
+%   <td>FreeBSD,
+<br> 2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">UIGETFILE_N_DIR</td>
 %   <td>Tiago / Peugas</td>
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/32555-uigetfile_n_dir-select-multiple-files-and-directories">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2011</td>
+%   <td>FreeBSD,
+<br> 2011</td>
 %   <td>2.6-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">VIEW3D</td>
 %   <td>Torsten Vogel</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 1999</td>
+%   <td>FreeBSD,
+<br> 1999</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">VIOLIN</td>
 %   <td>Holger Hoffmann</td>
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/45134-violin-plot">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br>2015</td>
+%   <td>FreeBSD,
+<br>2015</td>
 %   <td>2.65-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">XLWRITE: Generate XLS(X) files without Excel on Mac/Linux/Win</td>
 %   <td>Alec de Zegher, NV Bekaert SA</td>
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/38591-xlwriteREPLACE_WITH_DASH_DASHgenerate-xls-xREPLACE_WITH_DASH_DASHfiles-without-excel-on-mac-linux-win">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2013</td>
+%   <td>FreeBSD,
+<br> 2013</td>
 %   <td>2.1-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">XLSWRITE (improved)</td>
 %   <td>Barry Dillon, AON Insurance Brokers</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/27236-improved-xlswrite-m">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2010</td>
+%   <td>FreeBSD,
+<br> 2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">XML2STRUCT</td>
 %   <td>Wouter Falkena, Delft University of Technology</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28518-xml2struct">via MATLAB Exchange</a></td>
-%   <td>FreeBSD,<br> 2010</td>
+%   <td>FreeBSD,
+<br> 2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
@@ -980,7 +1626,8 @@ We appreciate if you let us know by email (ilya.belevich -=@=- helsinki.fi) when
 %   <td style="font-weight: bold">Some icons</td>
 %   <td>Icons8.com</td>
 %   <td><a href="https://icons8.com">website</a></td>
-%   <td>CC BY-ND 3.0,<br> 2018</td>
+%   <td>CC BY-ND 3.0,
+<br> 2018</td>
 %   <td>2.22-</td>
 % </tr>
 % </table>
@@ -989,20 +1636,59 @@ We appreciate if you let us know by email (ilya.belevich -=@=- helsinki.fi) when
 %% HOW TO CITE
 %
 %%
-% <html>
+% <html lang="en">
 % In November 2015 paper describing Microscopy Image Browser was accepted for publication in PLOS Biology, 
 % please cite it whenever referring to the software (the reference will be updated as soon as the article is published):
-% <br><br>
+% 
+<br>
+<br>
 % <b>
 % Microscopy Image Browser: A platform for segmentation and analysis of
-% multidimensional datasets<br>
-% I. Belevich, M. Joensuu, D. Kumar, H. Vihinen and E. Jokitalo<br>
-% PLOS Biology, PLoS Biology 2016 Jan 4;14(1):e1002340. doi: 10.1371/journal.pbio.1002340<br>
+% multidimensional datasets
+<br>
+% I. Belevich, M. Joensuu, D. Kumar, H. Vihinen and E. Jokitalo
+<br>
+% PLOS Biology, PLoS Biology 2016 Jan 4;14(1):e1002340. doi: 10.1371/journal.pbio.1002340
+<br>
 % <http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002340 Link to the article>
-% <br></b>
+% 
+<br></b>
 % We appreciate if you let us know by email (ilya.belevich -=@=- helsinki.fi) when you cite MIB. This helps us to develop and maintain the program.
 % </html>
 %
 % *Back to* <im_browser_product_page.html *Index*>
 ##### SOURCE END #####
---></body></html>
+--><script>
+var allDetails   = document.getElementsByTagName('details');
+var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
+var returnButton = document.getElementById("return-link");
+document.getElementById("iFrameBuf").style.display = "none";
+if(in_iFrame())
+{
+   try{
+      var footerNav = parent.document.getElementsByClassName("footernav");
+      var tabPane   = parent.document.getElementsByClassName("tab-pane");}
+   catch(err) { var footerNav = []; var tabPane = [];};
+   if(!(footerNav.length) || tabPane.length)
+   {
+      contentDiv.style.overflowY = "scroll";
+      contentDiv.style.overflowX = "hidden";
+      contentDiv.style.position  = "absolute";
+      contentDiv.style.width     = "95%";
+      contentDiv.style.top       = 0;
+      contentDiv.style.bottom    = 0;
+      if (tabPane.length){
+         contentDiv.setAttribute("data-isMATLABCentral","1");
+         returnButton.style.right = "40px";
+         document.getElementById("tooltiptext").style.right = "92px"; }
+      document.getElementById("iFrameBuf").style.display = "block";
+   }
+   else { contentDiv.setAttribute("data-isHelpBrowser","1"); }
+}
+if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
+   document.getElementById("anchor-offsets").sheet.disabled = true; }
+var jumpLinks = document.getElementsByTagName("a");
+for (var i = 0; i < jumpLinks.length; i++){
+  href = jumpLinks[i].getAttribute("href");
+  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
+</script></body></html>

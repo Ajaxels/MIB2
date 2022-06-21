@@ -17,9 +17,9 @@
 % 
 % 
 % * *Image converter* - a plugin for bulk conversion of files from one
-% format to another. A small video tutorial is available via this link 
-% <https://youtu.be/Xu1waZ913bE https://youtu.be/Xu1waZ913bE>
-% * *ITEM2*
+% format to another. A small video tutorial is available via these links:
+% https://youtu.be/Xu1waZ913bE and https://youtu.be/X2XE5EZCsiI
+% * 
 % 
 % 
 %% Intensity analysis
@@ -36,7 +36,7 @@
 %
 % * *MCcalc*, a plugin for detection of contacts and calculation of
 % distance distributions from TEM images. See more in the the full MCcalc workflow presented on 
-% <http://mib.helsinki.fi/tutorials_tools.html http://mib.helsinki.fi/tutorials_tools.html>
+% http://mib.helsinki.fi/tutorials_tools.html
 % * *Surface Area 3D* - calculation of surface areas for planar structures
 % from MIB models. Use the Help button inside the plugin for details
 %
@@ -46,11 +46,11 @@
 % Paterlini A, Belevich I, Jokitalo E, Helariutta Y., Computational Tools
 % for Serial Block Electron Microscopy Reveal Plasmodesmata Distributions and Wall Environments,
 % Plant Physiol. 2020 Sep;184(1):53-64. doi: 10.1104/pp.20.00396. Epub 2020 Jul 23.
-% <https://pubmed.ncbi.nlm.nih.gov/32719057/ https://pubmed.ncbi.nlm.nih.gov/32719057/>
+% https://pubmed.ncbi.nlm.nih.gov/32719057
 %
 %% Tutorials
 %
-% Demo examples from the tutorials section: <http://mib.helsinki.fi/tutorials_programming.html http://mib.helsinki.fi/tutorials_programming.html>
+% Demo examples from the tutorials section: http://mib.helsinki.fi/tutorials_programming.html
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*>

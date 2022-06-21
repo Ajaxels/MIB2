@@ -66,7 +66,8 @@ function mibMeasureToolGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.winController = varargin{1};
 
 handles.measureTable_cm = uicontextmenu('Parent',handles.mibMeasureToolGUI);
-uimenu(handles.measureTable_cm, 'Label', 'Jump to measurement...', 'Callback', {@measureTable_cm, 'Jump'});
+uimenu(handles.measureTable_cm, 'Label', 'Modify info...', 'Callback', {@measureTable_cm, 'ModifyInfo'});
+uimenu(handles.measureTable_cm, 'Label', 'Jump to measurement...', 'Callback', {@measureTable_cm, 'Jump'}, 'Separator','on');
 uimenu(handles.measureTable_cm, 'Label', 'Modify measurement...', 'Callback', {@measureTable_cm, 'Modify'});
 uimenu(handles.measureTable_cm, 'Label', 'Recalculate selected measurements...', 'Callback', {@measureTable_cm, 'Recalculate'});
 uimenu(handles.measureTable_cm, 'Label', 'Duplicate measurement...', 'Callback', {@measureTable_cm, 'Duplicate'});
@@ -74,6 +75,17 @@ uimenu(handles.measureTable_cm, 'Label', 'Generate kymograph (line, polyline, fr
 uimenu(handles.measureTable_cm, 'Label', 'Plot intensity profile...', 'Callback', {@measureTable_cm, 'Plot'});
 uimenu(handles.measureTable_cm, 'Label', 'Delete measurement...', 'Callback', {@measureTable_cm, 'Delete'},'Separator','on');
 handles.measureTable.UIContextMenu = handles.measureTable_cm;
+
+% find java object for the measureTable
+userData.jScroll = findjobj(handles.measureTable);
+try
+    userData.jTable = userData.jScroll.getViewport.getComponent(0);
+catch err
+    warndlg('Please wait for MIB to load completely before interacting with the main window!');
+end
+userData.jScroll.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);  % add vertical scroll bar
+userData.jTable.setAutoResizeMode(userData.jTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+handles.measureTable.UserData = userData;
 
 % update font and size
 global Font;
