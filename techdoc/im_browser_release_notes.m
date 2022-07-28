@@ -5,10 +5,6 @@
 %
 %
 %
-%% 2.831 / 21.06.2022 (blockedImage and 2D patch-wise)
-% 
-% * Added Destination: Current to Crop in the batch processing mode
-%
 %% 2.831 / 21.06.2022; 2.83 / 19.06.2022 (blockedImage and 2D patch-wise)
 %
 % [dtls][smry] *2.83 / 19.06.2022 (blockedImage and 2D patch-wise)* [/smry]
