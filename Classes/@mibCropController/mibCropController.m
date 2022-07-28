@@ -56,7 +56,8 @@ classdef mibCropController  < handle
             % fill BatchOpt structure with default parameters
             % generate cell array of containers names for popup menus
             destBuffers = arrayfun(@(x) sprintf('Container %d', x), 1:obj.mibModel.maxId, 'UniformOutput', false);
-            
+            destBuffers = ['Current', destBuffers];
+
             [numberOfROI, indicesOfROI] = obj.mibModel.I{obj.mibModel.Id}.hROI.getNumberOfROI(0);
             ROIlist{1} = 'All';
             i=2;
@@ -71,7 +72,8 @@ classdef mibCropController  < handle
             obj.BatchOpt.Interactive = false;
             obj.BatchOpt.ROI = false;
             obj.BatchOpt.Manual = true;     % enable manual mode, when the values for crop are provided
-            obj.BatchOpt.Destination = {sprintf('Container %d', obj.mibModel.Id)};  % destination for the crop
+            %obj.BatchOpt.Destination = {sprintf('Container %d', obj.mibModel.Id)};  % destination for the crop
+            obj.BatchOpt.Destination = {'Current'};  % destination for the crop
             obj.BatchOpt.Destination{2} = destBuffers;
             obj.BatchOpt.SelectROI = {'All'};
             obj.BatchOpt.SelectROI{2} = ROIlist;
@@ -401,9 +403,11 @@ classdef mibCropController  < handle
             % Parameters:
             % hObject: handle to the pressed button, handles.croptoBtn or
             % handles.cropBtn
+
             if nargin > 1
                 if strcmp(hObject.Tag, 'cropBtn')
-                    obj.BatchOpt.Destination(1) = {sprintf('Container %d', obj.mibModel.Id)};
+                    %obj.BatchOpt.Destination(1) = {sprintf('Container %d', obj.mibModel.Id)};
+                    obj.BatchOpt.Destination(1) = {'Current'};
                 end
             end
             
@@ -476,7 +480,7 @@ classdef mibCropController  < handle
             end
             
             % check for CropTo use
-            if ~strcmp(BatchOptLoc.Destination{1}, sprintf('Container %d', obj.mibModel.Id))
+            if ~strcmp(BatchOptLoc.Destination{1}, sprintf('Container %d', obj.mibModel.Id)) && ~strcmp(BatchOptLoc.Destination{1}, 'Current')
                 bufferId = str2double(BatchOptLoc.Destination{1}(end));
                 % copy dataset to the destination buffer
                 obj.mibModel.mibImageDeepCopy(obj.mibModel.Id, bufferId);

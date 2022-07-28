@@ -9,7 +9,7 @@ function imgOut = mibCrossShiftStack(imgIn, shiftsX, shiftsY, options)
 % shiftsY: a vector for Y-shifts [1:depth]
 % options: an optional structure with options
 %  - .backgroundColor -> background color: 'black', 'white', 'mean', or a number
-%  - .waitbar -> [optional] a handle to the opened waitbar
+%  - .waitbar -> [optional] a handle to the opened waitbar, when empty do not show waitbar
 %
 % Return values:
 % imgOut: aligned stack
@@ -31,8 +31,13 @@ if nargin < 3
     return;
 end
 
+showWaitbar = true;
 if isfield(options, 'waitbar') == 1
-    wb = options.waitbar;
+    if isempty(options.waitbar)
+        showWaitbar = false;
+    else
+        wb = options.waitbar;
+    end
 else
     wb = waitbar(0, sprintf('Aligning the images\nPlease wait'), 'Name', 'Align and drift correction', 'WindowStyle','modal');
 end
@@ -73,14 +78,14 @@ for slice = 1:depth
     Yo = shiftsY(slice)-minY+1;
     
     imgOut(Yo:Yo+height-1,Xo:Xo+width-1,:,slice) = imgIn(:,:,:,slice);
-    waitbar(slice/depth, wb);
+    if showWaitbar; waitbar(slice/depth, wb); end
 end
 
 % permute dataset back to 3D mode if needed
 if strcmp(mode, '3D')
     imgOut = squeeze(imgOut);
 end
-if ~isfield(options, 'waitbar')
+if showWaitbar && ~isfield(options, 'waitbar')
     delete(wb);
 end
 %assignin('base', 'I2', imgOut);

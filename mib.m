@@ -85,7 +85,7 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'Tools', 'Supervoxels'));
 end
 
-mibVersion = 'ver. 2.83 / 19.06.2022';  % ATTENTION! it is important to have the version number between "ver." and "/"
+mibVersion = 'ver. 2.831 / 21.06.2022';  % ATTENTION! it is important to have the version number between "ver." and "/"
 
 % define max number of parallel workers for deployed versions
 % define workers for parallel pools

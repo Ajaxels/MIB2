@@ -118,6 +118,9 @@ classdef mibStatisticsController < handle
             if isempty(contIndex); contIndex = mibModel.I{mibModel.Id}.selectedMaterial+2; end
             
             %% Define default BatchOpt structure
+            %obj.BatchOpt.Operation = {'Calculate'};
+            %obj.BatchOpt.Operation{2} = {'Calculate', 'New selection', 'Add to selection', 'Remove from selection'};
+
             obj.BatchOpt.MaterialIndex = num2str(contIndex);   % index of material to be quantified: -1, mask; 0-exterior; 1,2,etc indices of materials; NaN-complete model for models with more than 255 materials
             obj.BatchOpt.DatasetType = {'3D, Stack'};   % perform opertion on dataset
             obj.BatchOpt.DatasetType{2} = {'2D, Slice', '3D, Stack', '4D, Dataset'};

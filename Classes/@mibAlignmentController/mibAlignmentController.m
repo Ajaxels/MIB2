@@ -974,6 +974,7 @@ classdef mibAlignmentController < handle
                             end
 
                             % calculate drifts
+                            if ~obj.BatchOpt.showWaitbar; parameters.waitbar = []; end % make it empty to do not show the waitbar in mibCalcShifts
                             [shiftX, shiftY] = mibCalcShifts(I, parameters);
                             if isempty(shiftX); notify(obj.mibModel, 'stopProtocol'); return; end
 

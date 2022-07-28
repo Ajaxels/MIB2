@@ -5,7 +5,11 @@
 %
 %
 %
-%% 2.83 / 19.06.2022 (blockedImage and 2D patch-wise)
+%% 2.831 / 21.06.2022 (blockedImage and 2D patch-wise)
+% 
+% * Added Destination: Current to Crop in the batch processing mode
+%
+%% 2.831 / 21.06.2022; 2.83 / 19.06.2022 (blockedImage and 2D patch-wise)
 %
 % [dtls][smry] *2.83 / 19.06.2022 (blockedImage and 2D patch-wise)* [/smry]
 % 
@@ -17,9 +21,11 @@
 % * Added [InheritLastDIR] tag to inherit directory name from DIR LOOP when saving images using the Protocol organizer ([class.code]Menu->File->Batch processing->DIRECTORY LOOP START[/class])
 % * Added "end" tag to the crop operation for the Protocol organizer ([class.code]Menu->File->Batch processing->Crop dataset[/class])
 % * Added Drag-and-drop model files to the Segmentation table to load them
+% * [2.831] Added Destination: Current to Crop in the batch processing mode
 % * Correction of pixel size for pyramidal formats when levels are not multiplied by factor of 2
 % * Fixed loading of partial AM files, when step was set to 1
 % * Fixed loading of TIF files with YCbCr color space
+% * [2.831] MATLAB versions compatibility bug fixes
 % * Updated Bio-Formats to 6.10.0 
 % * [DeepMIB] Rearranged Architecture into Workflow and Architecture parameters ([class.code]DeepMIB->Network panel[/class])
 % * [DeepMIB] Optimized to work without preprocessing of images

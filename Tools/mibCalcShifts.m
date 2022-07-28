@@ -8,7 +8,7 @@ function [shiftX, shiftY] = mibCalcShifts(I, options)
 % - .method -> method: 'Drift correction', 'Template matching'
 % - .refFrame, a number with the reference slice: when @b 0 - use the previous
 % - .mask, an optional mask image to select subareas to use for alignment,
-% - .waitbar, [optional] a handle to an existing waitbar
+% - .waitbar, [optional] a handle to an existing waitbar, when empty do not show waitbar
 %
 % Return values:
 % shiftX: a vector with absolute shifts in the X-plane, the shifts are calculated relative to the first slice
@@ -36,8 +36,13 @@ if nargin < 2; options = struct(); end
 if ~isfield(options, 'method'); options.method = 'xcMatlab'; end    
 if ~isfield(options, 'refFrame'); options.refFrame = 0; end    % use the previous slice for the reference
 
+showWaitbar = true;
 if isfield(options, 'waitbar')
-    wb = options.waitbar;
+    if isempty(options.waitbar)
+        showWaitbar = false;
+    else
+        wb = options.waitbar;
+    end
 else
     wb = waitbar(0, '', 'Name', 'Align and drift correction', 'WindowStyle','modal');
 end
@@ -55,7 +60,7 @@ Iref=fft2(I(:,:,1));
 imgCenterX=floor((Width/2)+1);
 imgCenterY=floor((Height/2)+1);
 
-waitbar(0,wb, sprintf('Calculating drifts\nPlease wait...'));
+if showWaitbar; waitbar(0,wb, sprintf('Calculating drifts\nPlease wait...')); end
 
 %assignin('base', 'I', I);
 
@@ -89,7 +94,7 @@ switch options.method
                 Iref = fft2(I(:,:,i+options.refFrame+1));
             end
             
-            if mod(i,10)==0
+            if showWaitbar && mod(i,10)==0
                 waitbar(i/Depth, wb);
             end
         end 
@@ -130,7 +135,7 @@ switch options.method
             shiftY = shiftY2;
         end
 end
-if ~isfield(options, 'waitbar')
+if showWaitbar && ~isfield(options, 'waitbar')
     delete(wb);
 end
 

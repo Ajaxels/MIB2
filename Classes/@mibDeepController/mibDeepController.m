@@ -1042,7 +1042,7 @@ classdef mibDeepController < handle
             
             obj.View.handles.(indexFieldName).Enable = 'on';
             if obj.BatchOpt.(bioformatsFileName)    % bio formats checkbox ticked
-                obj.BatchOpt.(extentionFieldName){2} = upper(obj.mibModel.preferences.System.Files.BioFormatsExt); %{'.LEI', '.ZVI''};
+                obj.BatchOpt.(extentionFieldName){2} = upper(obj.mibModel.preferences.System.Files.BioFormatsExt); %{'.LEI', '.ZVI'};
             else
                 obj.BatchOpt.(extentionFieldName){2} = upper(obj.mibModel.preferences.System.Files.StdExt); %{'.AM', '.PNG', '.TIF'};
 %                 if strcmp(indexFieldName, 'BioformatsTrainingIndex')
@@ -1081,9 +1081,15 @@ classdef mibDeepController < handle
                         networkName = fullfile(path, file);
                     end
                     if exist(networkName, 'file') ~= 2
-                        uialert(obj.View.gui, ...
-                            sprintf('!!! Error !!!\n\nThe provided file does not exist!\n\n%s', networkName), ...
-                            'Wrong network name', 'Icon', 'error', 'Interpreter', 'html');
+                        if obj.mibController.matlabVersion < 9.11 % 'Interpreter' is available only from R2021b
+                            uialert(obj.View.gui, ...
+                                sprintf('!!! Error !!!\n\nThe provided file does not exist!\n\n%s', networkName), ...
+                                'Wrong network name', 'Icon', 'error');
+                        else
+                            uialert(obj.View.gui, ...
+                                sprintf('!!! Error !!!\n\nThe provided file does not exist!\n\n%s', networkName), ...
+                                'Wrong network name', 'Icon', 'error', 'Interpreter', 'html');
+                        end
                         obj.View.Figure.NetworkFilename.Value = obj.BatchOpt.NetworkFilename;
                         return;
                     end
@@ -1370,15 +1376,13 @@ classdef mibDeepController < handle
                             end
                         catch err
                             delete(obj.wb);
-                            uialert(obj.View.gui, ...
-                                sprintf('!!! Error !!!\n\n%s\n\n%s\n\nMost likely required package is missing!', err.identifier, err.message), ...
-                                'Missing packages', 'Interpreter', 'html');
+                            obj.showErrorDialog(err, 'Missing packages', '', 'Most likely required package is missing!');
                             return;
                         end
                 end     % end of "switch obj.BatchOpt.Workflow"
             catch err
                 uialert(obj.View.gui, ...
-                    sprintf('%s', err.message), 'Network configuration error', 'Icon', 'error', 'Interpreter', 'html');
+                    sprintf('%s', err.message), 'Network configuration error', 'Icon', 'error');
                 delete(obj.wb);
                 return;
             end
@@ -3222,9 +3226,7 @@ classdef mibDeepController < handle
                             'ReadFcn', @(fn)mibLoadImages(fn, getDataOptions));
                 end
             catch err
-                uialert(obj.View.gui, ...
-                    sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), ...
-                    'Missing files', 'Icon', 'error', 'Interpreter', 'html');
+                obj.showErrorDialog(err, 'Missing files');
                 if obj.BatchOpt.showWaitbar; delete(obj.wb); end
                 return;
             end
@@ -3254,9 +3256,7 @@ classdef mibDeepController < handle
                     end
                 end
             catch err
-                uialert(obj.View.gui, ...
-                    sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), ...
-                    'Problems', 'Icon', 'error', 'Interpreter', 'html');
+                obj.showErrorDialog(err, 'Problems');
                 if obj.BatchOpt.showWaitbar; delete(obj.wb); end
                 return;
             end
@@ -3410,9 +3410,7 @@ classdef mibDeepController < handle
                                             'IncludeSubfolders', false, 'FileExtensions', lower(['.' obj.BatchOpt.MaskFilenameExtension{1}]));
                                 end
                             catch err
-                                uialert(obj.View.gui, ...
-                                    sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), ...
-                                    'Missing masks', 'Icon', 'error', 'Interpreter', 'html');
+                                obj.showErrorDialog(err, 'Missing masks');
                                 if obj.BatchOpt.showWaitbar; delete(obj.wb); end
                                 return;
                             end
@@ -3437,9 +3435,7 @@ classdef mibDeepController < handle
                                 'FileExtensions', '.mask', 'ReadFcn', @mibDeepController.mibImgFileRead);
                         end
                     catch err
-                        uialert(obj.View.gui, ...
-                            sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), ...
-                            'Missing files', 'Icon', 'error', 'Interpreter', 'html');
+                        obj.showErrorDialog(err, 'Missing files');
                         if obj.BatchOpt.showWaitbar; delete(obj.wb); end
                         return;
                     end
@@ -3652,9 +3648,7 @@ classdef mibDeepController < handle
                                 mkdir(fullfile(outputValidationImagesDir, char(classNames(classId))));
                             end
                         catch err
-                            uialert(obj.View.gui, ...
-                                sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), ...
-                                'Split images problem', 'Icon', 'error', 'Interpreter', 'html');
+                            obj.showErrorDialog(err, 'Split images problem');
                             if obj.BatchOpt.showWaitbar; delete(obj.wb); end
                             return;
                         end
@@ -3725,9 +3719,7 @@ classdef mibDeepController < handle
                                 mkdir(outputValidationLabelsDir);
                             end
                         catch err
-                            uialert(obj.View.gui, ...
-                                sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), ...
-                                'Split images problem', 'Icon', 'error', 'Interpreter', 'html');
+                            obj.showErrorDialog(err, 'Split images problem');
                             if obj.BatchOpt.showWaitbar; delete(obj.wb); end
                             return;
                         end
@@ -4487,9 +4479,7 @@ classdef mibDeepController < handle
                 [net, info] = trainNetwork(AugTrainDS, lgraph, TrainingOptions);
             catch err
                 errorMessage = err.message;
-                uialert(obj.View.gui, ...
-                    sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), ...
-                    'Train network error', 'Icon', 'error', 'Interpreter', 'html');
+                obj.showErrorDialog(err, 'Train network error');
                 if obj.BatchOpt.showWaitbar; if isvalid(obj.wb); delete(obj.wb); end; end
                 return;
             end
@@ -4694,9 +4684,7 @@ classdef mibDeepController < handle
                 % generate TrainingOptions structure
                 eval(evalTrainingOptions); 
             catch err
-                uialert(obj.View.gui, ...
-                    sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), ...
-                    'Wrong training options', 'Icon', 'error', 'Interpreter', 'html');
+                obj.showErrorDialog(err, 'Wrong training options');
                 if obj.BatchOpt.showWaitbar; delete(obj.wb); return; end
             end
         end
@@ -5344,9 +5332,7 @@ classdef mibDeepController < handle
                     end
                 end
             catch err
-                uialert(obj.View.gui, ...
-                    sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), ...
-                    'Missing files', 'Icon', 'error', 'Interpreter', 'html');
+                obj.showErrorDialog(err, 'Missing files');
                 if obj.BatchOpt.showWaitbar; delete(obj.wb); end
                 return;
             end
@@ -5772,9 +5758,7 @@ classdef mibDeepController < handle
                         'ReadFcn', @(fn)obj.loadImages(fn, fnExtention, trainingSwitch));
                 end
             catch err
-                uialert(obj.View.gui, ...
-                    sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), ...
-                    'Missing files', 'Icon', 'error', 'Interpreter', 'html');
+                obj.showErrorDialog(err, 'Missing files');
                 if obj.BatchOpt.showWaitbar; delete(obj.wb); end
                 return;
             end
@@ -6114,9 +6098,7 @@ classdef mibDeepController < handle
                         'ReadFcn', @(fn)obj.loadImages(fn, fnExtention, trainingSwitch));
                 end
             catch err
-                uialert(obj.View.gui, ...
-                    sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), ...
-                    'Missing files', 'Icon', 'error', 'Interpreter', 'html');
+                obj.showErrorDialog(err, 'Missing files');
                 if obj.BatchOpt.showWaitbar; delete(obj.wb); end
                 return;
             end
@@ -6557,7 +6539,7 @@ classdef mibDeepController < handle
             if isempty(fnList)
                 uialert(obj.View.gui, ...
                     sprintf('!!! Error !!!\n\nNo files with predictions were found in\n%s\n\nPlease update the Directory with resulting images field of the Directories and Preprocessing tab!', scoreDir), ...
-                    'Missing files', 'Icon', 'error', 'Interpreter', 'html');
+                    'Missing files', 'Icon', 'error');
                 return;
             end
             if strcmp(obj.BatchOpt.Workflow{1}(1:2), '3D')  % take only the first file for 3D case
@@ -6598,7 +6580,7 @@ classdef mibDeepController < handle
             if isempty(imgList) || isempty(modelList)
                 uialert(obj.View.gui, ...
                     sprintf('!!! Error !!!\n\nFiles were not found in\n%s\n\n%s\n\nPlease update the Directory prediction and resulting images fields of the Directories and Preprocessing tab!', imgDir, modelDir), ...
-                    'Missing files', 'Icon', 'error', 'Interpreter', 'html');
+                    'Missing files', 'Icon', 'error');
                 return;
             end
             
@@ -6764,9 +6746,8 @@ classdef mibDeepController < handle
                     end
                 end
             catch err
-                uialert(obj.View.gui, ...
-                    sprintf('!!! Error !!!\n\n%s\n\n%s\n\nCheck the ground truth directory:\n%s', err.identifier, err.message, truthDir), ...
-                    'Wrong class name', 'Icon', 'error', 'Interpreter', 'html');
+                optionalSuffix = sprintf('Check the ground truth directory:\n%s', truthDir);
+                obj.showErrorDialog(err, 'Wrong class name', '', optionalSuffix);
                 return;
             end
             
@@ -6791,9 +6772,8 @@ classdef mibDeepController < handle
             try
                 ssm = evaluateSemanticSegmentation(dsResults, dsTruth, 'Metrics', metricsList);
             catch err
-                uialert(obj.View.gui, ...
-                    sprintf('!!! Error !!!\n\n%s\n\n%s\n\nMost likely the class names in the GroundTruth do not match the class names of the model\nor alternatively, the ground truth model is in a single .MODEL file (preprecess the dataset in this case)', err.identifier, err.message), ...
-                    'Wrong class names', 'Icon', 'error', 'Interpreter', 'html');
+                optionalSuffix = 'Most likely the class names in the GroundTruth do not match the class names of the model\nor alternatively, the ground truth model is in a single .MODEL file (preprecess the dataset in this case)';
+                obj.showErrorDialog(err, 'Wrong class names', '', optionalSuffix);
             end
             pw.increment();
             
@@ -7161,10 +7141,7 @@ classdef mibDeepController < handle
                             exportONNXNetwork(Model.net, outoutFilename, 'OpsetVersion', str2double(answer{1}));
                         catch err2
                             delete(wb);
-                            uialert(obj.View.gui, ...
-                                sprintf('!!! Error !!!\n\n%s\n\n%s', err2.identifier, err2.message), ...
-                                'ONNX export', ...
-                                'Icon', 'error', 'Interpreter', 'html');
+                            obj.showErrorDialog(err2, 'ONNX export');
                             return;
                         end
                     end
@@ -7265,9 +7242,7 @@ classdef mibDeepController < handle
                     %    'ReadFcn', @mibDeepController.matlabCategoricalFileRead);
                 end
             catch err
-                uialert(obj.View.gui, ...
-                    sprintf('!!! Error !!!\n\n%s\n\n%s', err.identifier, err.message), ...
-                    'Missing files', 'Icon', 'error', 'Interpreter', 'html');
+                obj.showErrorDialog(err, 'Missing files');
                 if obj.BatchOpt.showWaitbar; delete(obj.wb); end
                 return;
             end
@@ -7461,9 +7436,15 @@ classdef mibDeepController < handle
             % % use Import opetation to load and adapt the network for use with DeepMIB
             global mibPath;
 
-            selection = uiconfirm(obj.View.gui,...
-                sprintf('[BETA] The following operation is allowing to import a network designed or trained externally\nResult of the operation is generation of "mibCfg" and "mibDeep" files that can be used with DeepMIB\n\nBefore proceeding please make sure that the most closest architecture is selected in DeepMIB settings and all other relevant parameter (e.g. directories) are specified. Check <a href="http://mib.helsinki.fi/help/main2/ug_gui_menu_tools_deeplearning.html#6">Help</a> for details.\n\nSupported formats:\n-Matlab'),...
-                '[BETA] Import network', 'Options', {'Continue', 'Cancel'}, 'Icon', 'info', 'Interpreter', 'html');
+            if obj.mibController.matlabVersion < 9.11 % 'Interpreter' is available only from R2021b
+                selection = uiconfirm(obj.View.gui,...
+                    sprintf('[BETA] The following operation is allowing to import a network designed or trained externally\nResult of the operation is generation of "mibCfg" and "mibDeep" files that can be used with DeepMIB\n\nBefore proceeding please make sure that the most closest architecture is selected in DeepMIB settings and all other relevant parameter (e.g. directories) are specified. Check <a href="http://mib.helsinki.fi/help/main2/ug_gui_menu_tools_deeplearning.html#6">Help</a> for details.\n\nSupported formats:\n-Matlab'),...
+                    '[BETA] Import network', 'Options', {'Continue', 'Cancel'}, 'Icon', 'info');
+            else
+                selection = uiconfirm(obj.View.gui,...
+                    sprintf('[BETA] The following operation is allowing to import a network designed or trained externally\nResult of the operation is generation of "mibCfg" and "mibDeep" files that can be used with DeepMIB\n\nBefore proceeding please make sure that the most closest architecture is selected in DeepMIB settings and all other relevant parameter (e.g. directories) are specified. Check <a href="http://mib.helsinki.fi/help/main2/ug_gui_menu_tools_deeplearning.html#6">Help</a> for details.\n\nSupported formats:\n-Matlab'),...
+                    '[BETA] Import network', 'Options', {'Continue', 'Cancel'}, 'Icon', 'info', 'Interpreter', 'html');
+            end
             if strcmp(selection, 'Cancel'); return; end
         
             fileFilters = {'*.mat;', 'Matlab format (*.mat)';
@@ -7805,6 +7786,34 @@ classdef mibDeepController < handle
             end
             waitbar(1, wb);
             delete(wb);
+        end
+
+        function showErrorDialog(obj, err, winTitle, optionalPrefix, optionalSuffix)
+            % function showErrorDialog(obj, err, winTitle, optionalPrefix, optionalSuffix)
+            % show error that is generated in try/catch blocks
+            %
+            % Parameters:
+            % err: a structure generated by MATLAB, when an error is
+            % triggered with the following fields,
+            %   .identifier - identificator of the error
+            %   .message - error message
+            % winTitle: an optional string with a title for the window
+            % optionalPrefix: an optional text string that will be added before the end of the error message
+            % optionalSuffix: an optional text string that will be added after the end of the error message
+
+            if nargin < 5; optionalSuffix = ''; end
+            if nargin < 4; optionalPrefix = ''; end
+            if nargin < 3; winTitle = 'Error'; end
+            
+            if obj.mibController.matlabVersion < 9.11 % 'Interpreter' is available only from R2021b
+                uialert(obj.View.gui, ...
+                    sprintf('!!! Error !!!\n\n%s\n%s\n\n%s\n\n%s', optionalPrefix, err.identifier, err.message, optionalSuffix), ...
+                    winTitle, 'Icon', 'error');
+            else
+                uialert(obj.View.gui, ...
+                    sprintf('!!! Error !!!\n\n%s\n%s\n\n%s\n\n%s', optionalPrefix, err.identifier, err.message, optionalSuffix), ...
+                    winTitle, 'Icon', 'error', 'Interpreter', 'html');
+            end
         end
 
         function ExploreActivations(obj)
