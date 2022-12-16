@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="572434171" file="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v283/MIB_Linux.prj" location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v283" name="MIB_Linux" preferred-package-location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v283/MIB_Linux/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="3244077872" file="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v284/MIB_Linux.prj" location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v284" name="MIB_Linux" preferred-package-location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v284/MIB_Linux/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}/MIB_Mac_resources/icon.icns</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
     </param.icons>
-    <param.version>2.83</param.version>
+    <param.version>2.84</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -57,9 +57,7 @@ ${LD_LIBRARY_PATH}:MR/v911/runtime/glnxa64:MR/v911/bin/glnxa64:MR/v911/sys/os/gl
 -a /home/ibelev/Documents/MATLAB/SupportPackages/R2021b/resources/nnet_cnn_onnx
 -a /home/ibelev/Documents/MATLAB/SupportPackages/R2021b/bin/glnxa64</param.user.defined.mcr.options>
     <param.target.type>subtarget.standalone</param.target.type>
-    <param.support.packages>
-      <item>&lt;package displayname="Deploy Imported Models for ONNX Model Format Deep Learning Toolbox Converter" enabled="true" name="Deep Learning Toolbox Converter for ONNX Model Format" product="Deep Learning Toolbox"/&gt;</item>
-    </param.support.packages>
+    <param.support.packages />
     <param.web.mcr>true</param.web.mcr>
     <param.package.mcr>false</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
@@ -87,6 +85,7 @@ ${LD_LIBRARY_PATH}:MR/v911/runtime/glnxa64:MR/v911/bin/glnxa64:MR/v911/sys/os/gl
       <param.logdir />
       <param.enable.clean.build />
       <param.target.type />
+      <param.support.packages />
       <param.web.mcr />
       <param.package.mcr />
       <param.no.mcr />
@@ -708,10 +707,10 @@ ${LD_LIBRARY_PATH}:MR/v911/runtime/glnxa64:MR/v911/bin/glnxa64:MR/v911/sys/os/gl
       <file>/home/ibelev/Documents/MATLAB/SupportPackages/R2021b/toolbox/nnet/supportpackages/onnx/thirdpartylicenses/onnx-license.txt</file>
     </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="run_MIB.sh" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v283/MIB_Linux/for_testing/run_MIB.sh</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="splash.png" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v283/MIB_Linux/for_testing/splash.png</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="readme.txt" optional="true">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v283/MIB_Linux/for_testing/readme.txt</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="MIB" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v283/MIB_Linux/for_testing/MIB</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="run_MIB.sh" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v284/MIB_Linux/for_testing/run_MIB.sh</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="splash.png" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v284/MIB_Linux/for_testing/splash.png</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="readme.txt" optional="true">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v284/MIB_Linux/for_testing/readme.txt</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux/for_testing" name="MIB" optional="false">/home/ad/home/i/ibelev/Matlab/MIB_deploy_v284/MIB_Linux/for_testing/MIB</file>
     </build-deliverables>
     <workflow />
     <matlab>
@@ -764,7 +763,7 @@ ${LD_LIBRARY_PATH}:MR/v911/runtime/glnxa64:MR/v911/bin/glnxa64:MR/v911/sys/os/gl
       <vista>false</vista>
       <linux>true</linux>
       <solaris>false</solaris>
-      <osver>5.13.0-48-generic</osver>
+      <osver>5.15.0-56-generic</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>glnxa64</arch>

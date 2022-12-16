@@ -319,6 +319,7 @@ else        % ************ uint6 model type
                         currentDataset = obj.model{1}(Ylim(1):Ylim(2),Xlim(1):Xlim(2),Zlim(1):Zlim(2),Tlim(1):Tlim(2));
                         %currentDataset(bitand(currentDataset, col_channel)==col_channel) = bitand(currentDataset(bitand(currentDataset, col_channel)==col_channel), 192);  % 192 = 11000000, remove Material from the model
                         currentDataset(bitand(currentDataset, 63)==col_channel) = bitand(currentDataset(bitand(currentDataset, 63)==col_channel), 192);  % 192 = 11000000, remove Material from the model
+                        currentDataset(dataset==1) = bitand(currentDataset(dataset==1), 192);    % empty positions for the new material
                         currentDataset(dataset==1) = bitor(currentDataset(dataset==1), col_channel);
                         obj.model{1}(Ylim(1):Ylim(2),Xlim(1):Xlim(2),Zlim(1):Zlim(2),Tlim(1):Tlim(2)) = currentDataset;
                     else

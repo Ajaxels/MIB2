@@ -32,7 +32,7 @@
 % The pretrained network is saved to disk and can be distributed to predict (the <em>Predict tab</em>) unseen
 % datasets.<br>
 % Please refer to the documentation below for details of various
-% options available in MIB.
+% options available in MIB.<br>
 % <img src="images\DeepLearning_scheme.jpg">
 % </html>
 %

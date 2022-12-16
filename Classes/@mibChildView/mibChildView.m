@@ -70,7 +70,7 @@ classdef mibChildView < handle
             for i=1:numel(childrenList)     % generate handles structure similar to guide
                 obj.handles.(childrenList(i).Tag) = childrenList(i);
                 switch childrenList(i).Type
-                    case {'uigridlayout', 'uipanel','uitabgroup', 'uitab', 'uitree'}
+                    case {'uigridlayout', 'uipanel','uitabgroup', 'uitab', 'uitree', 'uicontextmenu', 'uimenu'}
                         obj.getChildren(obj.handles.(childrenList(i).Tag));
                     otherwise
                         %childrenList(i).Type

@@ -13,9 +13,10 @@ function menuDatasetTrasform_Callback(obj, mode, BatchOpt)
 % @li 'Flip T', flip the time vector of the dataset
 % @li 'Rotate 90 degrees', rotate dataset 90 degrees clockwise
 % @li 'Rotate -90 degrees', rotate dataset 90 degrees counterclockwise
-% @li 'Transpose XY -> ZX', transpose the dataset so that YX->XZ
-% @li 'Transpose XY -> ZY', transpose the dataset so that YX->YZ
-% @li 'Transpose ZX -> ZY', transpose the dataset so that XZ->YZ
+% @li 'Transpose YX -> YZ', transpose the dataset so that YX->YZ
+% @li 'Transpose YX -> XZ', transpose the dataset so that YX->XZ
+% @li 'Transpose YX -> XY', transpose the dataset so that YX->XY
+% @li 'Transpose YX -> ZX', transpose the dataset so that YX->ZX
 % @li 'Transpose Z<->T', transpose the dataset so that Z->T
 % BatchOptIn: a structure for batch processing mode, when NaN return
 %   a structure with default options via "syncBatch" event, see Declaration of the BatchOpt structure below for details, the function
@@ -53,7 +54,7 @@ global mibPath;
 
 PossibleOptions = {'Flip horizontally', 'Flip vertically', 'Flip Z', 'Flip T', ...
     'Rotate 90 degrees', 'Rotate -90 degrees', ...
-    'Transpose XY -> ZX', 'Transpose XY -> ZY', 'Transpose ZX -> ZY', 'Transpose Z<->T', 'Transpose Z<->C'};
+    'Transpose YX -> YZ', 'Transpose YX -> XZ', 'Transpose YX -> XY', 'Transpose YX -> ZX', 'Transpose Z<->T', 'Transpose Z<->C'};
 PossibleOptionsPosition = {'Center', 'Left-upper corner', 'Right-upper corner', 'Left-bottom corner','Right-bottom corner'};
 
 if nargin == 3
@@ -119,7 +120,6 @@ end
 if nargin < 3
     BatchOpt = struct();
     BatchOpt.mibBatchSectionName = 'Menu -> Dataset';
-    BatchOpt.showWaitbar = true;   % show or not the waitbar
     BatchOpt.Transform = {mode};
     if strcmp(mode, 'Transpose Z<->C')
         answer = mibInputDlg({mibPath}, 'Please enter number of resulting color channels; keep empty to transform all Z to C', 'Z<->C transformation', '');
@@ -128,6 +128,7 @@ if nargin < 3
     else
         BatchOpt.NumberOfColorChannels = '';   % number of color channels during Z->C conversion
     end
+    BatchOpt.showWaitbar = true;   % show or not the waitbar
 end
 
 % check for the virtual stacking mode and close the controller
@@ -154,7 +155,8 @@ switch BatchOpt.Transform{1}
         obj.mibModel.rotateDataset(BatchOpt.Transform{1}, BatchOpt.showWaitbar);
         BatchOpt.mibBatchActionName = 'Transform...';
         BatchOpt.Transform{2} = PossibleOptions;
-    case {'Transpose XY -> ZX', 'Transpose XY -> ZY','Transpose ZX -> ZY','Transpose Z<->T','Transpose Z<->C'}
+    case {'Transpose YX -> YZ', 'Transpose YX -> XZ','Transpose YX -> XY', 'Transpose YX -> ZX', ...
+            'Transpose Z<->T','Transpose Z<->C'}
         obj.mibModel.transposeDataset(BatchOpt.Transform{1}, BatchOpt.showWaitbar, str2double(BatchOpt.NumberOfColorChannels));
         BatchOpt.mibBatchActionName = 'Transform...';
         BatchOpt.Transform{2} = PossibleOptions;

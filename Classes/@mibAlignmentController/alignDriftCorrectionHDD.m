@@ -1,8 +1,24 @@
 function result = alignDriftCorrectionHDD(obj, parameters)
+% function result = alignDriftCorrectionHDD(obj, parameters)
+% perform drift correction alignment in HDD mode when
+% images are processed on the hard drive without combining them all in MIB
+
+% Copyright (C) 17.02.2017 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% This program is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public License
+% as published by the Free Software Foundation; either version 2
+% of the License, or (at your option) any later version.
 
 %parameters.step = str2double(obj.View.handles.CorrelateStep,'string'));
 tic
-result = 0;
+result = false;
+
+answer = questdlg(sprintf('!!! Warning !!!\n\nBefore proceeding further please make sure that images are of the same size!\nAlternatively, if images have variable dimensions you can try the HDD mode of the Automatic feature-based algorithm'), ...
+    'Warning', ...
+    'Yes images have the same dimensions', 'Stop and quit', 'Stop and quit');
+if strcmp(answer, 'Stop and quit'); return; end
+
 manualModeSwitch = 0;
 if isempty(obj.shiftsX) && strcmp(obj.BatchOpt.Subarea{1}, 'Manually specified')
     x1 = str2double(obj.BatchOpt.minX);

@@ -4,7 +4,8 @@
 % images and generation of semantic segmentation models.
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
-% |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools Menu*>
+% |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools
+% Menu*> |*-->*| <ug_gui_menu_tools_deeplearning.html *Deep learning segmentation*>
 % 
 %
 %% How to start the prediction (inference) process
@@ -248,7 +249,8 @@
 % [/dtls]
 % 
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
-% |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools Menu*>
+% |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools
+% Menu*> |*-->*| <ug_gui_menu_tools_deeplearning.html *Deep learning segmentation*>
 %
 % [cssClasses]
 % .dropdown { 

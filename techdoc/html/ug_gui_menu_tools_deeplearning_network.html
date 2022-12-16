@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>DeepMIB - Network panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_network.m"><style>
+      --><title>DeepMIB - Network panel</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_network.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -146,10 +146,11 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 8px 20px;
+  padding: 6px 14px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
+  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -582,28 +583,49 @@ Encoder-Decoder Architecture for Image Segmentation." arXiv. Preprint arXiv:
 - Create SegNet layers for semantic segmentation
 (<a href="https://se.mathworks.com/help/vision/ref/segnetlayers.html">link</a>)
 </li>
-<li><b>2D DeepLabV3 Resnet18</b>, (<b><em>recommended</b></em>) an efficient DeepLab v3+ convolutional neural network for semantic image segmentation
-initialized with Resnet18 as a base network. Suitable for large variety
+<li><b>2D DeepLabV3 Resnet18/Resnet50/Xception/Inception-ResNet-v2</b>, (<b><em>recommended</b></em>) an efficient DeepLab v3+ convolutional neural network for
+semantic image segmentation initialized with selectable base network. Suitable for large variety
 of segmentation tasks. The input images can be grayscale or RGB colors.
+<ul>Base networks:
+<li><b>Resnet18</b> initialize DeepLabV3 using ResNet-18, a convolutional neural network that is 18 layers deep with original image input size of 224 x 224 pixels.
+This is the lightest available version that is quickest and has lowest
+GPU requirements. The network is intialized using a pretrained for EM or pathology
+template that is automatically downloaded the first time the network is used.
 
 <br>
-<b>Reference:</b>
+<b>ResNet-18 reference:</b> 
+<br>He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. "Deep residual learning for image recognition." <a href="https://ieeexplore.ieee.org/document/7780459">In Proceedings of the IEEE conference on computer vision and pattern recognition</a>, pp. 770-778. 2016
+<li><b>Resnet50</b> initialize DeepLabV3 using ResNet-50, a convolutional neural network that is 50 layers deep with original image input size of 224 x 224 pixels.
+The most balanced option for moderate GPU with good performance/requirements ratio. The network is intialized using a pretrained for EM or pathology
+template that is automatically downloaded the first time the network is used.
+
 <br>
--  Chen, L., Y. Zhu, G. Papandreou, F. Schroff, and H. Adam. "Encoder-Decoder
-with Atrous Separable Convolution for Semantic Image Segmentation."
-Computer Vision â ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="https://arxiv.org/abs/1802.02611">link</a>)
-<br>
+<b>ResNet-50 reference:</b> 
+<br>He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. "Deep residual learning for image recognition." In <a href="https://ieeexplore.ieee.org/document/7780459">Proceedings of the IEEE conference on computer vision and pattern recognition</a>, pp. 770-778. 2016
 </li>
-<li><b>2D DeepLabV3 Resnet50</b>, (<em>MATLAB version of MIB only</em>) an efficient DeepLab v3+ convolutional neural network for semantic image segmentation
-initialized with Resnet50 as a base network. Comparing to _2D DeepLabV3 Resnet18_ this network requires more resources for training and prediction,
-but may potentially produce results with highter prediction scores.Suitable for large variety of segmentation tasks. The input images can be grayscale or RGB colors.
+<li><b>Xception</b> [<em><b>MATLAB version of MIB only</b></em>]
+initialize DeepLabV3 using Xception, a convolutional neural network that
+is 71 layers deep with original image input size of 299 x 299 pixels.
+
+<br>
+<b>Xception reference:</b> 
+<br>Chollet, Francois, 2017. "Xception: Deep Learning with Depthwise Separable Convolutions." <a href="https://arxiv.org/abs/1610.02357">arXiv preprint, pp.1610-02357</a>.
+</li>
+<li><b>Inception-ResNet-v2</b> [<em><b>MATLAB version of MIB only</b></em>] initialize DeepLabV3 using Inception-ResNet-v2, a convolutional neural network that
+is 164 layers deep with original image input size of 299 x 299 pixels.
+This network has high GPU requirements, but expected to provide the best results. 
+<br>
+<b>Inception-ResNet-v2 reference:</b> 
+<br>Szegedy Christian, Sergey Ioffe, Vincent Vanhoucke, and Alexander A. Alemi. "Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning." In <a href="https://dl.acm.org/doi/10.5555/3298023.3298188">AAAI</a>, vol. 4, p. 12. 2017.
+</li>
+</ul>
 
 <br>
 <b>Reference:</b>
 <br>
 -  Chen, L., Y. Zhu, G. Papandreou, F. Schroff, and H. Adam. "Encoder-Decoder
 with Atrous Separable Convolution for Semantic Image Segmentation."
-Computer Vision â ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="https://arxiv.org/abs/1802.02611">link</a>)
+Computer Vision - ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="https://arxiv.org/abs/1802.02611">link</a>)
 <br>
 </li>
 </ul>
@@ -762,7 +784,7 @@ Press the "<b>?</b>" button to see GPU info dialog
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% DeepMIB - Network panel
@@ -838,28 +860,49 @@ Press the "<b>?</b>" button to see GPU info dialog
 % - Create SegNet layers for semantic segmentation
 % (<a href="https://se.mathworks.com/help/vision/ref/segnetlayers.html">link</a>)
 % </li>
-% <li><b>2D DeepLabV3 Resnet18</b>, (<b><em>recommended</b></em>) an efficient DeepLab v3+ convolutional neural network for semantic image segmentation
-% initialized with Resnet18 as a base network. Suitable for large variety
-% of segmentation tasks. The input images can be grayscale or RGB colors.
+% <li><b>2D DeepLabV3 Resnet18/Resnet50/Xception/Inception-ResNet-v2</b>, (<b><em>recommended</b></em>) an efficient DeepLab v3+ convolutional neural network for 
+% semantic image segmentation initialized with selectable base network. Suitable for large variety
+% of segmentation tasks. The input images can be grayscale or RGB colors. 
+% <ul>Base networks:
+% <li><b>Resnet18</b> initialize DeepLabV3 using ResNet-18, a convolutional neural network that is 18 layers deep with original image input size of 224 x 224 pixels.
+% This is the lightest available version that is quickest and has lowest
+% GPU requirements. The network is intialized using a pretrained for EM or pathology
+% template that is automatically downloaded the first time the network is used.
 % 
 <br>
-% <b>Reference:</b>
-<br>
-% -  Chen, L., Y. Zhu, G. Papandreou, F. Schroff, and H. Adam. "Encoder-Decoder 
-% with Atrous Separable Convolution for Semantic Image Segmentation." 
-% Computer Vision â ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="https://arxiv.org/abs/1802.02611">link</a>)
-<br>
+% <b>ResNet-18 reference:</b> 
+<br>He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. "Deep residual learning for image recognition." <a href="https://ieeexplore.ieee.org/document/7780459">In Proceedings of the IEEE conference on computer vision and pattern recognition</a>, pp. 770-778. 2016
+% <li><b>Resnet50</b> initialize DeepLabV3 using ResNet-50, a convolutional neural network that is 50 layers deep with original image input size of 224 x 224 pixels. 
+% The most balanced option for moderate GPU with good performance/requirements ratio. The network is intialized using a pretrained for EM or pathology
+% template that is automatically downloaded the first time the network is used.
+% 
+<br> 
+% <b>ResNet-50 reference:</b> 
+<br>He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. "Deep residual learning for image recognition." In <a href="https://ieeexplore.ieee.org/document/7780459">Proceedings of the IEEE conference on computer vision and pattern recognition</a>, pp. 770-778. 2016
 % </li>
-% <li><b>2D DeepLabV3 Resnet50</b>, (<em>MATLAB version of MIB only</em>) an efficient DeepLab v3+ convolutional neural network for semantic image segmentation
-% initialized with Resnet50 as a base network. Comparing to _2D DeepLabV3 Resnet18_ this network requires more resources for training and prediction, 
-% but may potentially produce results with highter prediction scores.Suitable for large variety of segmentation tasks. The input images can be grayscale or RGB colors.
+% <li><b>Xception</b> [<em><b>MATLAB version of MIB only</b></em>]
+% initialize DeepLabV3 using Xception, a convolutional neural network that
+% is 71 layers deep with original image input size of 299 x 299 pixels.
+% 
+<br> 
+% <b>Xception reference:</b> 
+<br>Chollet, Francois, 2017. "Xception: Deep Learning with Depthwise Separable Convolutions." <a href="https://arxiv.org/abs/1610.02357">arXiv preprint, pp.1610-02357</a>.
+% </li>
+% <li><b>Inception-ResNet-v2</b> [<em><b>MATLAB version of MIB only</b></em>] initialize DeepLabV3 using Inception-ResNet-v2, a convolutional neural network that 
+% is 164 layers deep with original image input size of 299 x 299 pixels.
+% This network has high GPU requirements, but expected to provide the best results. 
+<br> 
+% <b>Inception-ResNet-v2 reference:</b> 
+<br>Szegedy Christian, Sergey Ioffe, Vincent Vanhoucke, and Alexander A. Alemi. "Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning." In <a href="https://dl.acm.org/doi/10.5555/3298023.3298188">AAAI</a>, vol. 4, p. 12. 2017.
+% </li>
+% </ul>
 % 
 <br>
 % <b>Reference:</b>
 <br>
 % -  Chen, L., Y. Zhu, G. Papandreou, F. Schroff, and H. Adam. "Encoder-Decoder 
 % with Atrous Separable Convolution for Semantic Image Segmentation." 
-% Computer Vision â ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="https://arxiv.org/abs/1802.02611">link</a>)
+% Computer Vision - ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="https://arxiv.org/abs/1802.02611">link</a>)
 <br>
 % </li>
 % </ul>

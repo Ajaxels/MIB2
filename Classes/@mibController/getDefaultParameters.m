@@ -110,10 +110,14 @@ end
 
 % add Bio-formats java libraries
 if all(cellfun(@isempty, strfind(javapath, 'bioformats_package.jar')))  %#ok<*STRCLFH>
-    cPath = fullfile(obj.mibPath, 'ImportExportTools', 'BioFormats', 'bioformats_package.jar');
+    %cPath = fullfile(obj.mibPath, 'ImportExportTools', 'BioFormats', 'bioformats_package.jar');
+    cPath = fullfile(obj.mibPath, 'jars', 'BioFormats', 'bioformats_package.jar');
     javaaddpath(cPath, '-end');
     disp(['MIB: adding "' cPath '" to Matlab java path']);
 end
+% Initialize bio-formats logging, otherwise in R2022b use of bio-formats
+% generates multiple warning messages
+bfInitLogging();
 
 % add ImageSelection.java for imclipboard
 if all(cellfun(@isempty, strfind(javapath, 'ImageSelection')))
@@ -229,9 +233,20 @@ if ~isfield(obj.mibModel.sessionSettings, 'ImageFilters') || ~isfield(obj.mibMod
     obj.mibModel.sessionSettings.ImageFilters.Disk.mibBatchTooltip.Radius = 'Radius of a disk-shaped filter, specified as a positive number';
     
     if ~verLessThan('matlab', '9.7') % obj.matlabVersion >= 9.7
-        obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.mibBatchTooltip.Info = 'Elastic distortion filter, see details in <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.160.8494&rep=rep1&type=pdf" target="_blank">Best Practices for Convolutional Neural Networks Applied to Visual Document Analysis</a>';
+        obj.mibModel.sessionSettings.ImageFilters.DistanceMap.mibBatchTooltip.Info = 'Calculate distance map from seeds provided in the "Source Layer" dropdown.<br>The 2D map is calculated using MATLAB <a href="https://www.mathworks.com/help/images/ref/bwdist.html" target="_blank">bwdist</a>, while 3D using <a href="https://se.mathworks.com/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio" target="_blank">bwdistsc</a> by Yuriy Mishchenko';
     else
-        obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.mibBatchTooltip.Info = 'Elastic distortion filter, see details in Best Practices for Convolutional Neural Networks Applied to Visual Document Analysis, http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.160.8494&rep=rep1&type=pdf';
+        obj.mibModel.sessionSettings.ImageFilters.DistanceMap.mibBatchTooltip.Info = 'Calculate distance map from seeds provided in the "Source Layer" dropdown.<br>The 2D map is calculated using MATLAB bwdist (https://www.mathworks.com/help/images/ref/bwdist.html), while 3D using bwdistsc by Yuriy Mishchenko (https://se.mathworks.com/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio)';
+    end
+    obj.mibModel.sessionSettings.ImageFilters.DistanceMap.Method{1} = 'euclidean';
+    obj.mibModel.sessionSettings.ImageFilters.DistanceMap.Method{2} = {'chessboard', 'cityblock', 'euclidean', 'quasi-euclidean'};
+    obj.mibModel.sessionSettings.ImageFilters.DistanceMap.mibBatchTooltip.Method = 'Method for calculation of distances';
+    obj.mibModel.sessionSettings.ImageFilters.DistanceMap.AspectRatio3D = '1 1 1';
+    obj.mibModel.sessionSettings.ImageFilters.DistanceMap.mibBatchTooltip.AspectRatio3D = 'Aspect ratio for calculation of distances in 3D, using "1 1 1" gives the fastest results';
+
+    if ~verLessThan('matlab', '9.7') % obj.matlabVersion >= 9.7
+        obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.mibBatchTooltip.Info = 'Elastic distortion filter, see details in <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.160.8494&rep=rep1&type=pdf" target="_blank">Best Practices for Convolutional Neural Networks Applied to Visual Document Analysis</a> (<a href="https://cognitivemedium.com/assets/rmnist/Simard.pdf" target="_blank">pdf</a>)';
+    else
+        obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.mibBatchTooltip.Info = 'Elastic distortion filter, see details in Best Practices for Convolutional Neural Networks Applied to Visual Document Analysis, https://cognitivemedium.com/assets/rmnist/Simard.pdf';
     end
     obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.ScalingFactor{1} = 30;
     obj.mibModel.sessionSettings.ImageFilters.ElasticDistortion.ScalingFactor{2} = [1 Inf];
@@ -328,16 +343,25 @@ if ~isfield(obj.mibModel.sessionSettings, 'ImageFilters') || ~isfield(obj.mibMod
     obj.mibModel.sessionSettings.ImageFilters.LoG.NormalizationFactor{3} = 'off';
     obj.mibModel.sessionSettings.ImageFilters.LoG.mibBatchTooltip.NormalizationFactor = 'Normalization factor for scaling the resulting image';
     
-     if ~verLessThan('matlab', '9.8') % obj.matlabVersion >= 9.8
+    obj.mibModel.sessionSettings.ImageFilters.MathOps.mibBatchTooltip.Info = 'Apply basic mathematical operations to the image';
+    obj.mibModel.sessionSettings.ImageFilters.MathOps.Operation = {'Add'};
+    obj.mibModel.sessionSettings.ImageFilters.MathOps.Operation{2} = {'Add', 'Subtract', 'Multiply', 'Divide'};
+    obj.mibModel.sessionSettings.ImageFilters.MathOps.mibBatchTooltip.Operation = 'Mathematical operation to perform';
+    obj.mibModel.sessionSettings.ImageFilters.MathOps.Value = '5';
+    obj.mibModel.sessionSettings.ImageFilters.MathOps.mibBatchTooltip.Value = 'Value to apply';
+    obj.mibModel.sessionSettings.ImageFilters.MathOps.OutputImageClass = {'Unchanged'};
+    obj.mibModel.sessionSettings.ImageFilters.MathOps.OutputImageClass{2} = {'Unchanged', 'uint8', 'uint16', 'uint32'};
+    obj.mibModel.sessionSettings.ImageFilters.MathOps.mibBatchTooltip.OutputImageClass = 'Generate the resulting image in this data class';
+
+    if ~verLessThan('matlab', '9.8') % obj.matlabVersion >= 9.8
         obj.mibModel.sessionSettings.ImageFilters.Mode.mibBatchTooltip.Info = 'Mode filter<br>the filtering is done with <a href="https://se.mathworks.com/help/releases/R2020a/images/ref/modefilt.html" target="_blank">modefilt</a> function. Each output pixel contains the mode (most frequently occurring value) in the neighborhood around the corresponding pixel in the input image';
         obj.mibModel.sessionSettings.ImageFilters.Mode.FiltSize = '3 3 3';
         obj.mibModel.sessionSettings.ImageFilters.Mode.mibBatchTooltip.FiltSize = 'Size of filter in pixels as [height, width, depth]';
         obj.mibModel.sessionSettings.ImageFilters.Mode.Padding = {'symmetric'};
         obj.mibModel.sessionSettings.ImageFilters.Mode.Padding{2} = {'symmetric', 'replicate', 'zeros'};
         obj.mibModel.sessionSettings.ImageFilters.Mode.mibBatchTooltip.Padding = 'Padding method; symmetric - a mirror reflection of itself; replicate - repeating border elements; zeros - zero values';
-    end  
-    
-    
+    end
+
     if ~verLessThan('matlab', '9.7') % obj.matlabVersion >= 9.7
         obj.mibModel.sessionSettings.ImageFilters.Motion.mibBatchTooltip.Info = 'Motion blur filter<br>the filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">motion</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>';
     else
@@ -677,9 +701,9 @@ if ~isfield(obj.mibModel.sessionSettings, 'ImageFilters') || ~isfield(obj.mibMod
     obj.mibModel.sessionSettings.ImageFilters.Edge.mibBatchTooltip.Sigma = '[Canny, LaplacianOfGaussian only] standard deviation of Sigma"';
     
     if ~verLessThan('matlab', '9.7') % obj.matlabVersion >= 9.7
-        obj.mibModel.sessionSettings.ImageFilters.SlicClustering.mibBatchTooltip.Info = 'Cluster together pixels of similar intensity using the <a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html" target="_blank">SLIC (Simple Linear Iterative Clustering) algorithm</a>';
+        obj.mibModel.sessionSettings.ImageFilters.SlicClustering.mibBatchTooltip.Info = 'Cluster together pixels of similar intensity using the <a href="https://www.epfl.ch/labs/ivrl/research/slic-superpixels" target="_blank">SLIC (Simple Linear Iterative Clustering) algorithm</a>';
     else
-        obj.mibModel.sessionSettings.ImageFilters.SlicClustering.mibBatchTooltip.Info = 'Cluster together pixels of similar intensity using the SLIC (Simple Linear Iterative Clustering) algorithm (http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html)';
+        obj.mibModel.sessionSettings.ImageFilters.SlicClustering.mibBatchTooltip.Info = 'Cluster together pixels of similar intensity using the SLIC (Simple Linear Iterative Clustering) algorithm (https://www.epfl.ch/labs/ivrl/research/slic-superpixels)';
     end
     obj.mibModel.sessionSettings.ImageFilters.SlicClustering.DestinationLayer{1} = 'model';
     obj.mibModel.sessionSettings.ImageFilters.SlicClustering.DestinationLayer{2} = {'model'};

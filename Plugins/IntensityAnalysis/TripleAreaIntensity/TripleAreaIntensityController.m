@@ -180,7 +180,11 @@ classdef TripleAreaIntensityController < handle
             end
             
             connectionsCheck = obj.View.handles.connectionsCheck.Value;     % show or not connected objects
-            
+            if connectionsCheck
+                % clear the Mask layer
+                obj.mibModel.I{obj.mibModel.Id}.clearMask();
+            end
+
             parameterToCalculateList = obj.View.handles.parameterCombo.String;    % get type of intensity to calculate (min, max, average...)
             parameterToCalculateVal = obj.View.handles.parameterCombo.Value;
             parameterToCalculate = parameterToCalculateList{parameterToCalculateVal};
@@ -575,7 +579,7 @@ classdef TripleAreaIntensityController < handle
             end
             
             if connectionsCheck
-                obj.mibModel.setData3D('selection', selection, NaN, 4, NaN, options);
+                obj.mibModel.setData3D('mask', selection, NaN, 4, NaN, options);
             end
             
             if obj.View.handles.savetoExcel.Value
@@ -591,6 +595,7 @@ classdef TripleAreaIntensityController < handle
             
             % turn on annotations
             obj.mibModel.mibShowAnnotationsCheck = 1;
+            notify(obj.mibModel, 'showMask');
             notify(obj.mibModel, 'plotImage');
             
             % plot histogram

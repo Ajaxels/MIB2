@@ -277,11 +277,13 @@ classdef ThreshAnalysisForObjectsController < handle
                     BW(currModel == materialId(matId)) = true;
                     if matId == 1
                         CC = bwconncomp(BW, objConnectivity);
+                        CC.objMaterialName = repmat(materialNames(matId), [CC.NumObjects, 1]);  % add material name
                     else
                         CC1 = bwconncomp(BW, objConnectivity);
                         % combine connected components
                         CC.NumObjects = CC.NumObjects + CC1.NumObjects;
                         CC.PixelIdxList = [CC.PixelIdxList CC1.PixelIdxList];
+                        CC.objMaterialName = [CC.objMaterialName; repmat(materialNames(matId), [CC1.NumObjects, 1])]; % add material name
                     end
                 end
                 if CC.NumObjects == 0; continue; end   % skip slice when no objects
@@ -302,6 +304,9 @@ classdef ThreshAnalysisForObjectsController < handle
                 end
                 
                 for objId = 1:CC.NumObjects
+                    % add material name to STATS structure
+                    STATS(objId).objMaterialName = CC.objMaterialName(objId);
+
                     if strcmp(thresholdPolicy, 'Absolute')
                         indices = currImg(CC.PixelIdxList{objId}) > absoluteThresholdValue;
                     else
@@ -334,6 +339,7 @@ classdef ThreshAnalysisForObjectsController < handle
                 for objId = 1:CC.NumObjects
                     obj.Results(annId).objId = objId;
                     obj.Results(annId).sliceNo = sliceId;
+                    obj.Results(annId).objMaterialName = STATS(objId).objMaterialName;
                     obj.Results(annId).CentroidX = STATS(objId).Centroid(1);
                     obj.Results(annId).CentroidY = STATS(objId).Centroid(2);
                     obj.Results(annId).FirstAxisLength = STATS(objId).FirstAxisLength*pixSize.x;
@@ -529,28 +535,31 @@ classdef ThreshAnalysisForObjectsController < handle
                 end
                 
                 rowId = 13;
-                s(rowId,1) = {'ObjId'}; s(rowId,2) = {'SliceNo'}; s(rowId,3) = {'SliceName'}; s(rowId,4) = {'CentroidX, px'}; s(rowId,5) = {'CentroidY, px'};
-                s(rowId,6) = {'FirstAxisLength, units'}; s(rowId,7) = {'SecondAxisLength, units'}; s(rowId,8) = {'Eccentricity'};
-                s(rowId,9) = {'MedianIntensity'}; s(rowId,10) = {'Total Area, units'}; s(rowId,11) = {'Thresholded Area, units'}; 
-                s(rowId,12) = {'Ratio, Thresholded/Total'}; s(rowId,13) = {'Threshold value'};
+                s(rowId,1) = {'ObjId'}; s(rowId,2) = {'SliceNo'}; s(rowId,3) = {'SliceName'}; s(rowId,4) = {'ObjMaterial'}; 
                 
-                if isfield(obj.Results, 'minDiameterAverage'); s(rowId,14) = {'Average min diameter, um'}; end
+                s(rowId,5) = {'CentroidX, px'}; s(rowId,6) = {'CentroidY, px'};
+                s(rowId,7) = {'FirstAxisLength, units'}; s(rowId,8) = {'SecondAxisLength, units'}; s(rowId,9) = {'Eccentricity'};
+                s(rowId,10) = {'MedianIntensity'}; s(rowId,11) = {'Total Area, units'}; s(rowId,12) = {'Thresholded Area, units'}; 
+                s(rowId,13) = {'Ratio, Thresholded/Total'}; s(rowId,14) = {'Threshold value'};
+                
+                if isfield(obj.Results, 'minDiameterAverage'); s(rowId,15) = {'Average min diameter, um'}; end
                 
                 noElements = numel(obj.Results);
                 s(rowId+1:rowId+noElements, 1) = num2cell([obj.Results(:).objId]);
                 s(rowId+1:rowId+noElements, 2) = num2cell([obj.Results(:).sliceNo]);
                 s(rowId+1:rowId+noElements, 3) = [obj.Results(:).SliceName];
-                s(rowId+1:rowId+noElements, 4) = num2cell([obj.Results(:).CentroidX]);
-                s(rowId+1:rowId+noElements, 5) = num2cell([obj.Results(:).CentroidY]);
-                s(rowId+1:rowId+noElements, 6) = num2cell([obj.Results(:).FirstAxisLength]);
-                s(rowId+1:rowId+noElements, 7) = num2cell([obj.Results(:).SecondAxisLength]);
-                s(rowId+1:rowId+noElements, 8) = num2cell([obj.Results(:).Eccentricity]);
-                s(rowId+1:rowId+noElements, 9) = num2cell([obj.Results(:).Median]);
-                s(rowId+1:rowId+noElements, 10) = num2cell([obj.Results(:).TotalArea]);
-                s(rowId+1:rowId+noElements, 11) = num2cell([obj.Results(:).ThresholdedArea]);
-                s(rowId+1:rowId+noElements, 12) = num2cell([obj.Results(:).RatioOfAreas]);
-                s(rowId+1:rowId+noElements, 13) = num2cell([obj.Results(:).objThresholdValues]);
-                if isfield(obj.Results, 'minDiameterAverage');s(rowId+1:rowId+noElements, 14) = num2cell([obj.Results(:).minDiameterAverage]); end
+                s(rowId+1:rowId+noElements, 4) = [obj.Results(:).objMaterialName]';
+                s(rowId+1:rowId+noElements, 5) = num2cell([obj.Results(:).CentroidX]);
+                s(rowId+1:rowId+noElements, 6) = num2cell([obj.Results(:).CentroidY]);
+                s(rowId+1:rowId+noElements, 7) = num2cell([obj.Results(:).FirstAxisLength]);
+                s(rowId+1:rowId+noElements, 8) = num2cell([obj.Results(:).SecondAxisLength]);
+                s(rowId+1:rowId+noElements, 9) = num2cell([obj.Results(:).Eccentricity]);
+                s(rowId+1:rowId+noElements, 10) = num2cell([obj.Results(:).Median]);
+                s(rowId+1:rowId+noElements, 11) = num2cell([obj.Results(:).TotalArea]);
+                s(rowId+1:rowId+noElements, 12) = num2cell([obj.Results(:).ThresholdedArea]);
+                s(rowId+1:rowId+noElements, 13) = num2cell([obj.Results(:).RatioOfAreas]);
+                s(rowId+1:rowId+noElements, 14) = num2cell([obj.Results(:).objThresholdValues]);
+                if isfield(obj.Results, 'minDiameterAverage');s(rowId+1:rowId+noElements, 15) = num2cell([obj.Results(:).minDiameterAverage]); end
                 
                 xlswrite2(exportExcelFn, s, 'Results', 'A1');
             end

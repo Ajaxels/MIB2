@@ -24,34 +24,39 @@ global mibPath;
 
 switch parameter
     case 'mib'  % hardware rendering in MIB, from R2018b
-        if verLessThan('matlab', '9.5') % obj.matlabVersion < 9.5
-            errordlg(sprintf('!!! Error !!!\n\nHardware accelerated rendering is only available in Matlab R2018b or newer!'),'Matlab version is too old');
-            return;
-        end
-        colorsNo = obj.mibModel.getImageProperty('colors');
-        if colorsNo > 1
-            colCh = cell([colorsNo, 1]);
-            for i=1:colorsNo
-                colCh{i} = sprintf('Color channel %d', i);
+        if verLessThan('Matlab', '9.13'); obj.mibModel.preferences.System.RenderingEngine = 'Volshow, R2018b'; end
+        if strcmp(obj.mibModel.preferences.System.RenderingEngine, 'Viewer3d, R2022b')
+            obj.startController('mibVolRenAppController');
+        elseif strcmp(obj.mibModel.preferences.System.RenderingEngine, 'Volshow, R2018b')
+            if verLessThan('matlab', '9.5') % obj.matlabVersion < 9.5
+                errordlg(sprintf('!!! Error !!!\n\nHardware accelerated rendering is only available in Matlab R2018b or newer!'),'Matlab version is too old');
+                return;
             end
-            colCh{end+1} = max([1, obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel]);
-            prompts = {'Select color channel'};
-            defAns = {colCh};
-            dlgTitle = 'Select color channel';
-            options.Title = sprintf('The volume rendering is only available for a single color channel!\nPlease select the color channel to render');
-            options.TitleLines = 3;                 
-            [answer, colCh] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
-            if isempty(answer); return; end
-        else
-            colCh = 1;
+            colorsNo = obj.mibModel.getImageProperty('colors');
+            if colorsNo > 1
+                colCh = cell([colorsNo, 1]);
+                for i=1:colorsNo
+                    colCh{i} = sprintf('Color channel %d', i);
+                end
+                colCh{end+1} = max([1, obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel]);
+                prompts = {'Select color channel'};
+                defAns = {colCh};
+                dlgTitle = 'Select color channel';
+                options.Title = sprintf('The volume rendering is only available for a single color channel!\nPlease select the color channel to render');
+                options.TitleLines = 3;
+                [answer, colCh] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                if isempty(answer); return; end
+            else
+                colCh = 1;
+            end
+            options.mode = 'VolumeRendering'; % 'VolumeRendering', 'MaximumIntensityProjection','Isosurface'
+            options.dataType = 'image';
+            options.colorChannel = colCh;
+            if isfield(obj.mibModel.sessionSettings, 'VolumeRendering')
+                options.Settings = obj.mibModel.sessionSettings.VolumeRendering;
+            end
+            obj.startController('mibVolRenController', options);
         end
-        options.mode = 'VolumeRendering'; % 'VolumeRendering', 'MaximumIntensityProjection','Isosurface'
-        options.dataType = 'image';
-        options.colorChannel = colCh; 
-        if isfield(obj.mibModel.sessionSettings, 'VolumeRendering')
-            options.Settings = obj.mibModel.sessionSettings.VolumeRendering;
-        end
-        obj.startController('mibVolRenController', options);
     case 'fiji'
         img = cell2mat(obj.mibModel.getData3D('image', NaN, 4));
         mibRenderVolumeWithFiji(img, obj.mibModel.I{obj.mibModel.Id}.pixSize);

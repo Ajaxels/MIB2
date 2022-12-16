@@ -3,6 +3,7 @@ function [img, DisplacementField, randomSeed] = mibElasticDistortionFilter(img, 
 % apply elastic deformations to img, the code is based on Best Practices for Convolutional Neural Networks
 % Applied to Visual Document Analysis by Patrice Y. Simard, Dave Steinkraus, John C. Platt
 % http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.160.8494&rep=rep1&type=pdf
+% https://cognitivemedium.com/assets/rmnist/Simard.pdf
 % and codes available at
 % - https://stackoverflow.com/questions/39308301/expand-mnist-elastic-deformations-matlab
 % - https://se.mathworks.com/matlabcentral/fileexchange/66663-elastic-distortion-transformation-on-an-image

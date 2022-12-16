@@ -19,16 +19,22 @@
 % 
 %%
 % 
-% * *Duplicate dataset*, creates a duplicate of the currently shown dataset
-% and put it behind one of the available buffers
-% * *Sync view, (xy) with...*, synchronizes the view with another dataset in the XY
-% coordinates
-% * *Sync view, (xyz) with...*, synchronizes the view with another dataset in the
-% XYZ coordinates, for 4D-5D datasets
-% * *Sync view, (xyzt) with...*, synchronizes the view with another dataset in the
-% XYZT coordinates, for 5D datasets
-% * *Close dataset*, removes selected dataset from the memory
-% * *Close all stored datasets*, removes all stored datasets from the memory
+% <html>
+% <ul>
+% <li> <b>Duplicate dataset</b>, creates a duplicate of the currently shown dataset
+% and put it behind one of the available buffers</li>
+% <li> <b>Sync view, (xy) with...</b>, synchronizes the view with another dataset in the XY coordinates</li>
+% <li> <b>Sync view, (xyz) with...</b>, synchronizes the view with another dataset in the XYZ coordinates, for 4D-5D datasets</li>
+% <li> <b>Sync view, (xyzt) with...</b>, synchronizes the view with another dataset in the XYZT coordinates, for 5D datasets</li>
+% <li> <b>Link view with</b>, press to link the views in two MIB buffers. Whenever
+% the views are linked, shift of one view is automatically shifts the
+% other. The buffers can be toggled using <span class="kbd">^ Ctrl</span> +
+% <span class="kbd">E</span> key shortcut. See more in this demo: 
+% <a href="https://youtu.be/DvSBBSuEiDo"><img style="vertical-align:middle;" src="images\youtube.png"></a></li>
+% <li> <b>Close dataset</b>, removes selected dataset from the computer memory</li>
+% <li> <b>Close all stored datasets</b>, removes all stored datasets from the computer memory</li>
+% </ul>
+% </html>
 % 
 %% 2. Main list box
 % The major part of the panel is occupied with this list box that shows

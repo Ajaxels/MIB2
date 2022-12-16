@@ -937,12 +937,13 @@ classdef mibAnnotationsController < handle
             % define additional settings for the annotations
             global mibPath;
             
-            prompts = {sprintf('Show annotations for extra slices (positive integer):')};
+            prompts = {sprintf('Show annotations for extra slices (positive integer):'), 'Annotation size:'};
                 defAns = {sprintf('%d', obj.mibModel.preferences.SegmTools.Annotations.ShownExtraDepth); ...
+                    {'1 (pt 8)', '2 (pt 10)', '3 (pt 12)', '4 (pt 14)', '5 (pt 16)', '6 (pt 18)', '7 (pt 20)', obj.mibModel.preferences.SegmTools.Annotations.FontSize}; ...
                     };
                 dlgTitle = 'Annotation settings';
                 options.WindowStyle = 'normal';       % [optional] style of the window
-                options.PromptLines = [2];   % [optional] number of lines for widget titles
+                options.PromptLines = [2; 1];   % [optional] number of lines for widget titles
                 %options.Title = 'Title';
                 %options.TitleLines = 1;
                 %options.Columns = 2;    % [optional] make window x1.2 times wider
@@ -956,6 +957,8 @@ classdef mibAnnotationsController < handle
                 return
             end
             obj.mibModel.preferences.SegmTools.Annotations.ShownExtraDepth = abs(round(value));
+            obj.mibModel.preferences.SegmTools.Annotations.FontSize = selIndex(2);
+            notify(obj.mibModel, 'plotImage');
         end
         
     end

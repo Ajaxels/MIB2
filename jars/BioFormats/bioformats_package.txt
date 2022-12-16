@@ -1,0 +1,4 @@
+bioformats_package.jar
+version 6.11.0
+Corresponding MATLAB files are located in 
+MIB\ImportExportTools\BioFormats\

@@ -109,7 +109,8 @@ classdef mibDeepController < handle
         % colors of materials
         PatchPreviewOpt
         % structure with preview patch options
-        % .noImages = 25, number of images in montage
+        % .noImages = 9, number of images in montage
+        % .imageSize = 160, patch size for preview
         % .labelShow = true, display overlay labels with details
         % .labelSize = 9, font size for the label
         % .labelColor = 'black', color of the label
@@ -208,7 +209,7 @@ classdef mibDeepController < handle
             end
         end
         
-        function [outputLabeledImageBlock, scoreBlock] = segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, ExecutionEnvironment, padShift)
+        function [outputLabeledImageBlock, scoreBlock] = segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, executionEnvironment, padShift)
             % test function for utilization of blockedImage for prediction
             % The input block will be a batch of blocks from the a blockedImage.
             % 
@@ -230,7 +231,7 @@ classdef mibDeepController < handle
             % switch2D: logical switch indicating type of data, when true->2D, when false->3D
             % patchwiseWorkflowSwitch: logical switch indicating the patch-wise mode, when true->use patch mode, when false->use semantic segmentation
             % generateScoreFiles: logical switch to generate (true) or not (false) score files with probabilities of classes
-            % ExecutionEnvironment: string with the environment to execute prediction 
+            % executionEnvironment: string with the environment to execute prediction 
             % padShift: numeric, value for the padding, used during the overlap mode to crop the output patch for export
 
             batchSizeDimension = numel(block.BlockSize) + 1;
@@ -242,11 +243,11 @@ classdef mibDeepController < handle
                         % requres to permute the dataset to add a color channel
                         [outputLabeledImageBlock, ~, scoreBlock] = semanticseg(permute(block.Data, [1,2,4,3]), net, ...
                             'OutputType', 'uint8',...
-                            'ExecutionEnvironment', ExecutionEnvironment);
+                            'ExecutionEnvironment', executionEnvironment);
                     else
                         [outputLabeledImageBlock, ~, scoreBlock] = semanticseg(block.Data, net, ...
                             'OutputType', 'uint8',...
-                            'ExecutionEnvironment', ExecutionEnvironment);
+                            'ExecutionEnvironment', executionEnvironment);
                     end
     
                     % crop the output
@@ -275,7 +276,7 @@ classdef mibDeepController < handle
                     end
                 else
                     [outputLabeledImageBlock, scoreBlock] = classify(net, block.Data, ...
-                        'ExecutionEnvironment', ExecutionEnvironment);
+                        'ExecutionEnvironment', executionEnvironment);
                     
                     outputLabeledImageBlock = reshape(outputLabeledImageBlock, [1 batchSize]);
                     scoreBlock = reshape(scoreBlock', [1 1 size(scoreBlock,2) batchSize]);
@@ -286,11 +287,11 @@ classdef mibDeepController < handle
                         % requres to permute the dataset to add a color channel
                         [outputLabeledImageBlock, ~, scoreBlock] = semanticseg(permute(block.Data, [1,2,3,5,4]), net, ...
                             'OutputType', 'uint8',...
-                            'ExecutionEnvironment', ExecutionEnvironment);
+                            'ExecutionEnvironment', executionEnvironment);
                     else
                         [outputLabeledImageBlock, ~, scoreBlock] = semanticseg(block.Data, net, ...
                             'OutputType', 'uint8',...
-                            'ExecutionEnvironment', ExecutionEnvironment);
+                            'ExecutionEnvironment', executionEnvironment);
                     end
     
                     % crop the output
@@ -335,6 +336,8 @@ classdef mibDeepController < handle
         % declaration of functions in the external files, keep empty line in between for the doc generator
         net = generateDeepLabV3Network(obj, imageSize, numClasses, targetNetwork) % generate DeepLab v3+ convolutional neural network for semantic image segmentation of 2D RGB images
 
+        net = generate3DDeepLabV3Network(obj, imageSize, numClasses, downsamplingFactor, targetNetwork) % generate DeepLab v3+ convolutional neural network for semantic image segmentation of 2D RGB images
+
         function obj = mibDeepController(mibModel, varargin)
             obj.mibModel = mibModel;    % assign model
             obj.mibController = varargin{1};
@@ -352,7 +355,7 @@ classdef mibDeepController < handle
             obj.BatchOpt.Workflow = {'2D Semantic'};
             obj.BatchOpt.Workflow{2} = {'2D Semantic', '3D Semantic', '2D Patch-wise'}; % {'2D U-net', '2D SegNet', '2D DeepLabV3 Resnet18', '3D U-net', '3D U-net Anisotropic', '2D Patch-wise Resnet18', '2D Patch-wise Resnet50'}
             obj.BatchOpt.Architecture = {'DeepLabV3 Resnet18'};
-            obj.BatchOpt.Architecture{2} = {'U-net', 'SegNet', 'DeepLabV3 Resnet18', 'DeepLabV3 Resnet50'}; 
+            obj.BatchOpt.Architecture{2} = {'U-net', 'SegNet', 'DeepLabV3 Resnet18', 'DeepLabV3 Resnet50', 'DeepLabV3 Xception', 'DeepLabV3 Inception-ResNet-v2'}; 
             % 2D Semantic: {'U-net', 'SegNet', 'DeepLabV3 Resnet18'}
             % 3D Semantic: {'U-net', '3D U-net Anisotropic'}
             % 2D Patch-wise: {'Resnet18', 'Resnet50', 'Resnet101', 'Xception'}
@@ -370,7 +373,7 @@ classdef mibDeepController < handle
                 obj.BatchOpt.T_SegmentationLayer{2} = {'pixelClassificationLayer', 'focalLossLayer', 'dicePixelClassificationLayer', 'dicePixelCustomClassificationLayer'};
             end
             obj.BatchOpt.T_ActivationLayer = {'reluLayer'};
-            obj.BatchOpt.T_ActivationLayer{2} = {'reluLayer', 'leakyReluLayer', 'clippedReluLayer', 'eluLayer', 'tanhLayer'};
+            obj.BatchOpt.T_ActivationLayer{2} = {'clippedReluLayer', 'eluLayer', 'leakyReluLayer', 'reluLayer', 'swishLayer', 'tanhLayer'};
             obj.BatchOpt.T_EncoderDepth{1} = 3;
             obj.BatchOpt.T_EncoderDepth{2} = [1 Inf];
             obj.BatchOpt.T_NumFirstEncoderFilters{1} = 32;
@@ -399,7 +402,7 @@ classdef mibDeepController < handle
             obj.BatchOpt.BioformatsIndex{2} = [1 Inf];
             obj.BatchOpt.BioformatsIndex{3} = true;
             
-            obj.BatchOpt.SingleModelTrainingFile = true;    % use single model file with the model
+            obj.BatchOpt.SingleModelTrainingFile = false;    % use single model file with the model
             obj.BatchOpt.ModelFilenameExtension = {'MODEL'};    % extension for model files
             obj.BatchOpt.ModelFilenameExtension{2} = {'MODEL', 'PNG', 'TIF', 'TIFF'};
             obj.BatchOpt.MaskFilenameExtension = {'MASK'};      % extension for mask files
@@ -419,7 +422,7 @@ classdef mibDeepController < handle
             obj.BatchOpt.ImageFilenameExtensionTraining = obj.mibModel.preferences.Deep.ImageFilenameExtension;
             obj.BatchOpt.ImageFilenameExtensionTraining{2} = upper(obj.mibModel.preferences.System.Files.StdExt); %{'.AM', '.PNG', '.TIF'};
             
-            obj.BatchOpt.PreprocessingMode = {'Training and Prediction'};
+            obj.BatchOpt.PreprocessingMode = {'Preprocessing is not required'};
             obj.BatchOpt.PreprocessingMode{2} = {'Training', 'Prediction', 'Training and Prediction', 'Preprocessing is not required', 'Split files for training/validation'};
             obj.BatchOpt.CompressProcessedImages = obj.mibModel.preferences.Deep.CompressProcessedImages;
             obj.BatchOpt.CompressProcessedModels = obj.mibModel.preferences.Deep.CompressProcessedModels;
@@ -526,7 +529,8 @@ classdef mibDeepController < handle
             if isfield(obj.mibModel.preferences.Deep, 'PatchPreviewOpt')
                 obj.PatchPreviewOpt = obj.mibModel.preferences.Deep.PatchPreviewOpt;
             else
-                obj.PatchPreviewOpt.noImages = 25;         % number of images in montage
+                obj.PatchPreviewOpt.noImages = 9;         % number of images in montage
+                obj.PatchPreviewOpt.imageSize = 160;         % patch image size for preview
                 obj.PatchPreviewOpt.labelShow = true;   % display overlay labels with details
                 obj.PatchPreviewOpt.labelSize = 9;      % font size for the label
                 obj.PatchPreviewOpt.labelColor = 'black'; % color of the label
@@ -745,10 +749,7 @@ classdef mibDeepController < handle
                 obj.View.Figure.ResultingImagesDir.Value = obj.mibModel.myPath;
                 foldersOk = 0;
             end
-            if foldersOk == 0
-                warndlg(sprintf('!!! Warning !!!\n\nSome directories specified in the config file are missing!\nPlease check the directories in the Directories and Preprocessing tab'), 'Wrong directories');
-            end
-            
+                        
             if obj.View.handles.UseParallelComputing.Value
                 obj.View.handles.PreprocessingParForWorkers.Enable = 'on';
             else
@@ -764,7 +765,6 @@ classdef mibDeepController < handle
             % update preprocessing window widgets
             if strcmp(obj.BatchOpt.PreprocessingMode{1}, 'Preprocessing is not required') || strcmp(obj.BatchOpt.PreprocessingMode{1}, 'Split files for training/validation')
                 obj.View.handles.MaskAway.Enable = 'off';
-                obj.View.handles.SingleModelTrainingFile.Enable = 'off';
                 obj.View.handles.CompressProcessedImages.Enable = 'off';
                 obj.View.handles.CompressProcessedModels.Enable = 'off';
                 obj.View.handles.MaskFilenameExtension.Enable = 'off';
@@ -810,6 +810,10 @@ classdef mibDeepController < handle
                 obj.View.handles.O_NumberOfPoints.Enable = 'off';
                 obj.View.handles.O_PreviewImagePatches.Enable = 'off';
                 obj.View.handles.O_FractionOfPreviewPatches.Enable = 'off';
+            end
+
+            if foldersOk == 0
+                warndlg(sprintf('!!! Warning !!!\n\nSome directories specified in the config file are missing!\nPlease check the directories in the Directories and Preprocessing tab'), 'Wrong directories');
             end
         end
         
@@ -922,7 +926,7 @@ classdef mibDeepController < handle
             obj.View.handles.T_UseImageNetWeights.Enable = 'off';
             switch obj.BatchOpt.Workflow{1}
                 case '2D Semantic'
-                    obj.BatchOpt.Architecture{2} = {'U-net', 'SegNet', 'DeepLabV3 Resnet18', 'DeepLabV3 Resnet50'};
+                    obj.BatchOpt.Architecture{2} = {'U-net', 'SegNet', 'DeepLabV3 Resnet18', 'DeepLabV3 Resnet50', 'DeepLabV3 Xception', 'DeepLabV3 Inception-ResNet-v2'};
                 case '3D Semantic'
                     obj.BatchOpt.Architecture{2} = {'U-net', 'U-net Anisotropic'};
                 case '2D Patch-wise'
@@ -957,7 +961,7 @@ classdef mibDeepController < handle
                 case '2D Semantic'
                     obj.View.handles.SingleModelTrainingFile.Enable = 'on';
                     switch obj.BatchOpt.Architecture{1}
-                        case {'DeepLabV3 Resnet18', 'DeepLabV3 Resnet50'}
+                        case {'DeepLabV3 Resnet18', 'DeepLabV3 Resnet50', 'DeepLabV3 Xception', 'DeepLabV3 Inception-ResNet-v2'}
                             obj.View.handles.T_EncoderDepth.Enable = 'off';
                             obj.View.handles.T_EncoderDepth.Value = 4;
                             obj.BatchOpt.T_EncoderDepth{1} = 4;
@@ -1190,7 +1194,7 @@ classdef mibDeepController < handle
         end
         
         function CheckNetwork(obj)
-            obj.wb = waitbar(0, sprintf('Generating network\nPlease wait...'));
+            obj.wb = waitbar(0, sprintf('Generating network\nPlease wait...'), 'Name', 'Generating network');
             previewSwitch = 1;  % indicate that the network is only for preview, the weights of classes won't be calculated
             [lgraph, outputPatchSize] = obj.createNetwork(previewSwitch);
             if isempty(lgraph); return; end
@@ -1198,10 +1202,56 @@ classdef mibDeepController < handle
             if ~isdeployed
                 analyzeNetwork(lgraph);
             else
-                lgraph.Layers
+                uiFig = uifigure('Visible', 'off');
+                ScreenSize = get(0, 'ScreenSize');
+                FigPos(1) = 1/2*(ScreenSize(3)-800);
+                FigPos(2) = 2/3*(ScreenSize(4)-900);
+                uiFig.Position = [FigPos(1), FigPos(2), 800, 900];
+                uiFig.Name = sprintf('Preview network (%s)', obj.BatchOpt.Architecture{1});
+
+                uiFigGridLayout = uigridlayout(uiFig);
+                uiFigGridLayout.ColumnWidth = {'1x'};
+                uiFigGridLayout.RowHeight = {40, '1x'};
+
+                % Create previewTable
+                previewTable = uitable(uiFigGridLayout);
+                previewTable.ColumnName = {'Index'; 'Layer name'; 'Layer type'; 'Details'};
+                previewTable.RowName = {};
+                previewTable.Layout.Row = 2;
+                previewTable.Layout.Column = 1;
+                
+                % text area
+                textArea = uitextarea(uiFigGridLayout);
+                textArea.Layout.Row = 1;
+                textArea.Layout.Column = 1;
+
+                % format lgraph into string
+                layersStr = formattedDisplayText(lgraph.Layers);
+                % split lines
+                layerLines = splitlines(layersStr);
+                % clip the header
+                layerLines = layerLines(3:end);
+                % allocate space for the table
+                tableData = cell([numel(lgraph.Layers), 4]);
+                for rowId=1:numel(layerLines)
+                    % split line using more than 2 spaces
+                    rowStr = strsplit(layerLines(rowId), '[ ]{3,}', 'DelimiterType', 'RegularExpression');
+                    % populate the table data without the first empty entry
+                    tableData(rowId,:) = rowStr(2:end).cellstr;
+                end
+                previewTable.Data = tableData;
+                previewTable.ColumnWidth = {50, 'fit', 'fit','auto'};
+
+                % add header
+                textArea.Value = [  {sprintf('Architecture: %s', obj.BatchOpt.Architecture{1})}; ...
+                                    {sprintf('Input patch size: %s   Output patch size: %s', obj.BatchOpt.T_InputPatchSize, num2str(outputPatchSize))} ];
+                textArea.Editable = false;
+                uiFig.Visible = 'on';
+
+                % plot layer-graph, this function can not be included in uiFig
                 figure;
                 plot(lgraph);
-                msgbox(sprintf('!!! Warning !!!\n\nThe network preview is limited in the standalone version of MIB\n\nInput patch size: %s\nOutput patch size: %s', obj.BatchOpt.T_InputPatchSize, num2str(outputPatchSize)), 'Info');
+                title(obj.BatchOpt.Architecture{1});
             end
             waitbar(0.6, obj.wb);
             delete(obj.wb);
@@ -1223,25 +1273,29 @@ classdef mibDeepController < handle
             if nargin < 2; previewSwitch = 0; end
             lgraph = [];
             outputPatchSize = [];
-            InputPatchSize = str2num(obj.BatchOpt.T_InputPatchSize);    % as [height, width, depth, color]
+            inputPatchSize = str2num(obj.BatchOpt.T_InputPatchSize);    % as [height, width, depth, color]
             
+            % debug 2.5D
+            %obj.BatchOpt.Workflow{1} = '2.5D Semantic';
+            %obj.BatchOpt.Architecture{1} = '3DUnet+DLv3 Resnet18';
+
             try
                 switch obj.BatchOpt.Workflow{1}
                     case '2D Semantic'
                         switch obj.BatchOpt.Architecture{1}
                             case 'U-net'
                                 [lgraph, outputPatchSize] = unetLayers(...
-                                    InputPatchSize([1 2 4]), obj.BatchOpt.T_NumberOfClasses{1}, ...
+                                    inputPatchSize([1 2 4]), obj.BatchOpt.T_NumberOfClasses{1}, ...
                                     'NumFirstEncoderFilters', obj.BatchOpt.T_NumFirstEncoderFilters{1}, 'FilterSize', obj.BatchOpt.T_FilterSize{1}, ...
                                     'ConvolutionPadding', obj.BatchOpt.T_ConvolutionPadding{1}, 'EncoderDepth', obj.BatchOpt.T_EncoderDepth{1}); %#ok<*ST2NM>
                                 outputPatchSize = [outputPatchSize(1), outputPatchSize(2), 1, outputPatchSize(3)];  % reformat to [height, width, depth, color]
                             case 'SegNet'
-                                lgraph = segnetLayers(InputPatchSize([1 2 4]), obj.BatchOpt.T_NumberOfClasses{1}, obj.BatchOpt.T_EncoderDepth{1}, ...
+                                lgraph = segnetLayers(inputPatchSize([1 2 4]), obj.BatchOpt.T_NumberOfClasses{1}, obj.BatchOpt.T_EncoderDepth{1}, ...
                                     'NumOutputChannels', obj.BatchOpt.T_NumFirstEncoderFilters{1}, ...
                                     'FilterSize', obj.BatchOpt.T_FilterSize{1});
-                                outputPatchSize = InputPatchSize;  % as [height, width, depth, color]
-                            case {'DeepLabV3 Resnet18', 'DeepLabV3 Resnet50'}
-                                if strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'valid') %|| InputPatchSize(4) ~= 3 || InputPatchSize(1) < 224 || InputPatchSize(2) < 224
+                                outputPatchSize = inputPatchSize;  % as [height, width, depth, color]
+                            case {'DeepLabV3 Resnet18', 'DeepLabV3 Resnet50', 'DeepLabV3 Xception', 'DeepLabV3 Inception-ResNet-v2'}
+                                if strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'valid') %|| inputPatchSize(4) ~= 3 || inputPatchSize(1) < 224 || inputPatchSize(2) < 224
                                     uialert(obj.View.gui, ...
                                         sprintf('!!! Error !!!\n\n"%s" network architecture requires:\n - input patch size of at least [224 224]\n- 1 or 3 color channels\n- "same" padding', obj.BatchOpt.Architecture{1}), ...
                                         'Wrong configuration!');
@@ -1252,24 +1306,78 @@ classdef mibDeepController < handle
                                     case 'DeepLabV3 Resnet18'
                                         targetNetwork = 'resnet18';
                                     case 'DeepLabV3 Resnet50'
+                                        targetNetwork = 'resnet50';
+                                    case 'DeepLabV3 Xception'
                                         if isdeployed
                                             uialert(obj.View.gui, ...
-                                                sprintf('!!! Error !!!\n\nCurrently %s network is only available in MIB for MATLAB\nTry to use DeepLabV3-Resnet18 instead!', obj.BatchOpt.Architecture{1}), ...
+                                                sprintf('!!! Error !!!\n\nCurrently %s network is only available in MIB for MATLAB\nTry to use DeepLabV3-Resnet18/50 instead!', obj.BatchOpt.Architecture{1}), ...
                                                 'Now available');
                                             delete(obj.wb);
                                             return;
                                         end
-                                        targetNetwork = 'resnet50';
+                                        targetNetwork = 'xception';
+                                    case 'DeepLabV3 Inception-ResNet-v2'
+                                        if isdeployed
+                                            uialert(obj.View.gui, ...
+                                                sprintf('!!! Error !!!\n\nCurrently %s network is only available in MIB for MATLAB\nTry to use DeepLabV3-Resnet18/50 instead!', obj.BatchOpt.Architecture{1}), ...
+                                                'Now available');
+                                            delete(obj.wb);
+                                            return;
+                                        end
+                                        targetNetwork = 'inceptionresnetv2';
                                 end
-                                lgraph = obj.generateDeepLabV3Network(InputPatchSize([1 2 4]), obj.BatchOpt.T_NumberOfClasses{1}, targetNetwork);
+                                lgraph = obj.generateDeepLabV3Network(inputPatchSize([1 2 4]), obj.BatchOpt.T_NumberOfClasses{1}, targetNetwork);
+                                
                                 if isempty(lgraph); delete(obj.wb); return; end
-                                outputPatchSize = InputPatchSize([1 2 4]);
+                                outputPatchSize = inputPatchSize([1 2 4]);
+                        end
+                    case '2.5D Semantic'
+                        switch obj.BatchOpt.Architecture{1}
+                            case {'3DUnet+DLv3 Resnet18', '3DUnet+DLv3 Resnet50', '3DUnet+DLv3 Xception', '3DUnet+DLv3 Inception-ResNet-v2'}
+                                if strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'valid') 
+                                    uialert(obj.View.gui, ...
+                                        sprintf('!!! Error !!!\n\n"%s" network architecture requires:\n - input patch size of at least [224 224]\n- 1 or 3 color channels\n- "same" padding', obj.BatchOpt.Architecture{1}), ...
+                                        'Wrong configuration!');
+                                    delete(obj.wb);
+                                    return;
+                                end
+                                switch obj.BatchOpt.Architecture{1}
+                                    case '3DUnet+DLv3 Resnet18'
+                                        targetNetwork = 'resnet18';
+                                    case '3DUnet+DLv3 Resnet50'
+                                        targetNetwork = 'resnet50';
+                                    case '3DUnet+DLv3 Xception'
+                                        if isdeployed
+                                            uialert(obj.View.gui, ...
+                                                sprintf('!!! Error !!!\n\nCurrently %s network is only available in MIB for MATLAB\nTry to use DeepLabV3-Resnet18/50 instead!', obj.BatchOpt.Architecture{1}), ...
+                                                'Now available');
+                                            delete(obj.wb);
+                                            return;
+                                        end
+                                        targetNetwork = 'xception';
+                                    case '3DUnet+DLv3 Inception-ResNet-v2'
+                                        if isdeployed
+                                            uialert(obj.View.gui, ...
+                                                sprintf('!!! Error !!!\n\nCurrently %s network is only available in MIB for MATLAB\nTry to use DeepLabV3-Resnet18/50 instead!', obj.BatchOpt.Architecture{1}), ...
+                                                'Now available');
+                                            delete(obj.wb);
+                                            return;
+                                        end
+                                        targetNetwork = 'inceptionresnetv2';
+                                end
+                                lgraph = obj.generate3DDeepLabV3Network(inputPatchSize, obj.BatchOpt.T_NumberOfClasses{1}, targetNetwork);
+
+                                if isempty(lgraph); delete(obj.wb); return; end
+                                outputPatchSize = inputPatchSize([1 2 4]);
                         end
                     case '3D Semantic'
                         switch obj.BatchOpt.Architecture{1}
                             case 'U-net'
+                                %lgraph = obj.generate3DDeepLabV3Network(inputPatchSize([1 2 4]), obj.BatchOpt.T_NumberOfClasses{1}, 8, 'resnet50');
+
+
                                 [lgraph, outputPatchSize] = unet3dLayers(...
-                                    InputPatchSize, obj.BatchOpt.T_NumberOfClasses{1}, ...
+                                    inputPatchSize, obj.BatchOpt.T_NumberOfClasses{1}, ...
                                     'NumFirstEncoderFilters', obj.BatchOpt.T_NumFirstEncoderFilters{1}, 'FilterSize', obj.BatchOpt.T_FilterSize{1}, ...
                                     'ConvolutionPadding', obj.BatchOpt.T_ConvolutionPadding{1}, 'EncoderDepth', obj.BatchOpt.T_EncoderDepth{1}); %#ok<*ST2NM>
                             case 'U-net Anisotropic'
@@ -1284,7 +1392,7 @@ classdef mibDeepController < handle
 
                                 % generate standard 3D Unet
                                 [lgraph, outputPatchSize] = unet3dLayers(...
-                                    InputPatchSize, obj.BatchOpt.T_NumberOfClasses{1}, ...
+                                    inputPatchSize, obj.BatchOpt.T_NumberOfClasses{1}, ...
                                     'NumFirstEncoderFilters', obj.BatchOpt.T_NumFirstEncoderFilters{1}, 'FilterSize', obj.BatchOpt.T_FilterSize{1}, ...
                                     'ConvolutionPadding', obj.BatchOpt.T_ConvolutionPadding{1}, 'EncoderDepth', obj.BatchOpt.T_EncoderDepth{1});
 
@@ -1342,11 +1450,11 @@ classdef mibDeepController < handle
                                     'Not available', 'Icon', 'warning');
                                 return;
                             end
-                            if InputPatchSize(4) ~= 3
+                            if inputPatchSize(4) ~= 3
                                 delete(obj.wb);
                                 uialert(obj.View.gui,...
                                     sprintf('!!! Warning !!!\n\nInitialization of the network with imagenet weights is only available for images with 3 color channels!\n\nPlease change "Input patch size" to [%d %d %d 3] and try again.', ...
-                                    InputPatchSize(1), InputPatchSize(2), InputPatchSize(3)), ...
+                                    inputPatchSize(1), inputPatchSize(2), inputPatchSize(3)), ...
                                     'Not available', 'Icon', 'warning');
                                 return;
                             end
@@ -1358,16 +1466,16 @@ classdef mibDeepController < handle
                             switch obj.BatchOpt.Architecture{1}
                                 case 'Resnet18'
                                     lgraph = resnet18('Weights', weightsValue);
-                                    outputPatchSize = [1 1 InputPatchSize(4)];
+                                    outputPatchSize = [1 1 inputPatchSize(4)];
                                 case 'Resnet50'
                                     lgraph = resnet50('Weights', weightsValue);
-                                    outputPatchSize = [1 1 InputPatchSize(4)];
+                                    outputPatchSize = [1 1 inputPatchSize(4)];
                                 case 'Resnet101'
                                     lgraph = resnet101('Weights', weightsValue);
-                                    outputPatchSize = [1 1 InputPatchSize(4)];
+                                    outputPatchSize = [1 1 inputPatchSize(4)];
                                 case 'Xception'
                                     lgraph = xception('Weights', weightsValue);
-                                    outputPatchSize = [1 1 InputPatchSize(4)];
+                                    outputPatchSize = [1 1 inputPatchSize(4)];
                             end
                             % convert from 'DAGNetwork' to 'LayerGraph'
                             % when init with imagenet weights
@@ -1387,39 +1495,75 @@ classdef mibDeepController < handle
                 return;
             end
             
-            % ---------------------------------------------------------
-            % update the input layer settings
+            % update the input layer
+            lgraph = obj.updateNetworkInputLayer(lgraph, inputPatchSize);
+            if isempty(lgraph); delete(obj.wb); return; end
+
+            % update the activation layers
+            lgraph = obj.updateActivationLayers(lgraph);
+            
+            % update maxPool and TransposedConvolution layers depending on network downsampling factor
+            if obj.View.handles.T_DownsamplingFactor.Value ~=2 && ismember(obj.BatchOpt.Architecture{1}, {'U-net', 'SegNet'})
+                lgraph = obj.updateMaxPoolAndTransConvLayers(lgraph);
+            end
+
+            if strcmp(obj.BatchOpt.Workflow{1}, '2D Patch-wise') % 2D Patch-wise Resnet18 or 2D Patch-wise Resnet50
+                % update last 3 layers to adapt them to the new number of output classes
+                fullConnLayer = fullyConnectedLayer(obj.BatchOpt.T_NumberOfClasses{1}-1, 'Name', 'FullyConnectedLayer');
+                switch obj.BatchOpt.Architecture{1}
+                    case {'Resnet18', 'Resnet50', 'Resnet101'}
+                        lgraph = replaceLayer(lgraph, 'fc1000', fullConnLayer);
+                    case 'Xception'
+                        lgraph = replaceLayer(lgraph, 'predictions', fullConnLayer);
+                end
+                if obj.BatchOpt.T_UseImageNetWeights % replace classification output layer
+                    classificationOutputLayer = classificationLayer('Name', 'ClassificationLayer_predictions');
+                    lgraph = replaceLayer(lgraph, lgraph.Layers(end).Name, classificationOutputLayer); % 'ClassificationLayer_predictions'
+                end
+            else    % semantic segmentation
+                lgraph = obj.updateSegmentationLayer(lgraph);
+            end
+        end
+
+        function lgraph = updateNetworkInputLayer(obj, lgraph, inputPatchSize)
+            % function lgraph = updateNetworkInputLayer(obj, lgraph, inputPatchSize)
+            % update the input layer settings for lgraph
+            % paramters are taken from obj.InputLayerOpt
+
             switch obj.BatchOpt.Workflow{1}(1:2)
                 case '2D'
                     % update the input layer settings
                     switch obj.InputLayerOpt.Normalization
                         case 'zerocenter'
-                            inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
+                            inputLayer = imageInputLayer(inputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
                                 'Normalization', obj.InputLayerOpt.Normalization, ...
                                 'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 numel(obj.InputLayerOpt.Mean)]));
                         case 'zscore'
-                            inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
+                            inputLayer = imageInputLayer(inputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
                                 'Normalization', obj.InputLayerOpt.Normalization, ...
                                 'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 numel(obj.InputLayerOpt.Mean)]), ...
                                 'StandardDeviation', reshape(obj.InputLayerOpt.StandardDeviation, [1 1 numel(obj.InputLayerOpt.StandardDeviation)]));
                         case {'rescale-symmetric', 'rescale-zero-one'}
-                            inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
+                            inputLayer = imageInputLayer(inputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
                                 'Normalization', obj.InputLayerOpt.Normalization, ...
                                 'Min', reshape(obj.InputLayerOpt.Min, [1 1 numel(obj.InputLayerOpt.Min)]), ...
                                 'Max', reshape(obj.InputLayerOpt.Max, [1 1 numel(obj.InputLayerOpt.Max)]));
                         case 'none'
-                            inputLayer = imageInputLayer(InputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
+                            inputLayer = imageInputLayer(inputPatchSize([1 2 4]), 'Name', 'ImageInputLayer', ...
                                 'Normalization', obj.InputLayerOpt.Normalization);
                         otherwise
                             uialert(obj.View.gui, ...
                                 sprintf('!!! Error !!!\n\nWrong normlization paramter (%s)!\n\nUse one of those:\n - zerocenter\n - zscore\n - rescale-symmetric\n - rescale-zero-one\n - none', obj.InputLayerOpt.Normalization), ...
                                 'Wrong normalization');
+                            lgraph = [];
                             return;
                     end
                     switch obj.BatchOpt.Architecture{1}
-                        case {'U-net', 'DeepLabV3 Resnet18'}
+                        case {'U-net', 'DeepLabV3 Resnet18', 'DeepLabV3 Resnet50', 'DeepLabV3 Xception', 'DeepLabV3 Inception-ResNet-v2'}
                             try
-                                lgraph = replaceLayer(lgraph, 'ImageInputLayer', inputLayer);
+                                %inputLayer.Name = 'data';
+                                lgraph = replaceLayer(lgraph, lgraph.Layers(1).Name, inputLayer);
+                                %lgraph = replaceLayer(lgraph, 'ImageInputLayer', inputLayer);
                             catch err
                                 % when deeplabv3plusLayers used to generate
                                 % one of the standard networks
@@ -1433,35 +1577,41 @@ classdef mibDeepController < handle
                             lgraph = replaceLayer(lgraph, 'input_1', inputLayer);
                             
                     end
-                case '3D'
+                case {'3D', '2.'}
                     % update the input layer settings
                     switch obj.InputLayerOpt.Normalization
                         case 'zerocenter'
-                            inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
+                            inputLayer = image3dInputLayer(inputPatchSize, 'Name', 'ImageInputLayer', ...
                                 'Normalization', obj.InputLayerOpt.Normalization, ...
                                 'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 1 numel(obj.InputLayerOpt.Mean)]));
                         case 'zscore'
-                            inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
+                            inputLayer = image3dInputLayer(inputPatchSize, 'Name', 'ImageInputLayer', ...
                                 'Normalization', obj.InputLayerOpt.Normalization, ...
                                 'Mean', reshape(obj.InputLayerOpt.Mean, [1 1 numel(obj.InputLayerOpt.Mean)]),...
                                 'StandardDeviation', reshape(obj.InputLayerOpt.StandardDeviation, [1 1 1 numel(obj.InputLayerOpt.StandardDeviation)]));
                         case {'rescale-symmetric', 'rescale-zero-one'}
-                            inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
+                            inputLayer = image3dInputLayer(inputPatchSize, 'Name', 'ImageInputLayer', ...
                                 'Normalization', obj.InputLayerOpt.Normalization, ...
                                 'Min', reshape(obj.InputLayerOpt.Min, [1 1 1 numel(obj.InputLayerOpt.Min)]), ...
                                 'Max', reshape(obj.InputLayerOpt.Max, [1 1 1 numel(obj.InputLayerOpt.Max)]));
                         case 'none'
-                            inputLayer = image3dInputLayer(InputPatchSize, 'Name', 'ImageInputLayer', ...
+                            inputLayer = image3dInputLayer(inputPatchSize, 'Name', 'ImageInputLayer', ...
                                 'Normalization', obj.InputLayerOpt.Normalization);
                         otherwise
                             uialert(obj.View.gui, ...
                                 sprintf('!!! Error !!!\n\nWrong normlization paramter (%s)!\n\nUse one of those:\n - zerocenter\n - zscore\n - rescale-symmetric\n - rescale-zero-one\n - none', obj.InputLayerOpt.Normalization), ...
                                 'Wrong normalization');
+                            lgraph = [];
                             return;
                     end
                     lgraph = replaceLayer(lgraph, 'ImageInputLayer', inputLayer);
             end
-
+        end
+        
+        function lgraph = updateActivationLayers(obj, lgraph)
+            % update the activation layers depending on settings in
+            % obj.BatchOpt.T_ActivationLayer and obj.ActivationLayerOpt
+            
             % redefine the activation layers
             if ~strcmp(obj.BatchOpt.T_ActivationLayer{1}, 'reluLayer')
                 ReLUIndices = zeros([numel(lgraph.Layers), 1]);
@@ -1482,16 +1632,28 @@ classdef mibDeepController < handle
                             layer = clippedReluLayer(obj.ActivationLayerOpt.clippedReluLayer.Ceiling, 'Name', sprintf('clippedReLU-%d', id));
                         case 'eluLayer'
                             layer = eluLayer(obj.ActivationLayerOpt.eluLayer.Alpha, 'Name', sprintf('ELU-%d', id));
+                        case 'swishLayer'
+                            layer = swishLayer('Name', sprintf('Swish-%d', id));
                         case 'tanhLayer'
                             layer = tanhLayer('Name', sprintf('Tahn-%d', id));
                     end
                     lgraph = replaceLayer(lgraph, lgraph.Layers(layerId).Name, layer);
                 end
             end
-            
-            % update maxPool and TransposedConvolution layers depending on
-            % downsampling factor
-            poolSize = obj.View.handles.T_DownsamplingFactor.Value; 
+        end
+
+        function lgraph = updateMaxPoolAndTransConvLayers(obj, lgraph, poolSize)
+            % function lgraph = updateMaxPoolAndTransConvLayers(obj, lgraph, poolSize)
+            % update maxPool and TransposedConvolution layers depending
+            % on network downsampling factor only for U-net and SegNet.
+            % This function is applied when the network downsampling factor
+            % is different from 2
+
+            if nargin < 3
+                % downsampling factor
+                poolSize = obj.View.handles.T_DownsamplingFactor.Value;
+            end
+
             if poolSize ~= 2 && ismember(obj.BatchOpt.Architecture{1}, {'U-net', 'SegNet'})
                 maxPoolIndices = zeros([numel(lgraph.Layers), 1]);
                 transConvIndices = zeros([numel(lgraph.Layers), 1]);
@@ -1538,89 +1700,86 @@ classdef mibDeepController < handle
                     lgraph = replaceLayer(lgraph, lgraph.Layers(layerId).Name, layer);
                 end
             end
+        end
 
-            if strcmp(obj.BatchOpt.Workflow{1}, '2D Patch-wise') % 2D Patch-wise Resnet18 or 2D Patch-wise Resnet50
-                % update last 3 layers to adapt them to the new number of output classes
-                fullConnLayer = fullyConnectedLayer(obj.BatchOpt.T_NumberOfClasses{1}-1, 'Name', 'FullyConnectedLayer');
-                switch obj.BatchOpt.Architecture{1}
-                    case {'Resnet18', 'Resnet50', 'Resnet101'}
-                        lgraph = replaceLayer(lgraph, 'fc1000', fullConnLayer);
-                    case 'Xception'
-                        lgraph = replaceLayer(lgraph, 'predictions', fullConnLayer);
+        function lgraph = updateSegmentationLayer(obj, lgraph, classNames)
+            % function lgraph = updateSegmentationLayer(obj, lgraph, classNames)
+            % redefine the segmentation layer of lgraph based on
+            % obj.BatchOpt settings
+            %
+            % Parameters:
+            % classNames: cell array with class names, when not provided is 'auto' switch is used
+
+            if nargin < 3; classNames = 'auto'; end
+
+            if ~strcmp(obj.BatchOpt.T_SegmentationLayer{1}, 'pixelClassificationLayer')
+                switch obj.BatchOpt.T_SegmentationLayer{1}
+                    case 'weightedClassificationLayer'
+                        %                         if previewSwitch == 0
+                        %                             reset(pxds);
+                        %                             Labels = read(pxds);
+                        %                             for classId = 1:numel(obj.BatchOpt.T_NumberOfClasses{1})
+                        %                                 classWeights(classId) = numel(find(Labels{1}==classNames{classId}));
+                        %                             end
+                        %                             classWeights = 1-(classWeights./sum(classWeights));
+                        %                         else
+                        %                             classWeights = ones([obj.BatchOpt.T_NumberOfClasses{1} 1])/obj.BatchOpt.T_NumberOfClasses{1};
+                        %                         end
+                        classWeights = [0.8251 0.1429 0.0283 0.0038];
+                        outputLayer = weightedClassificationLayer('Segmentation-Layer', classWeights);
+                        %if previewSwitch == 0; reset(pxds); end
+                    case 'dicePixelCustomClassificationLayer'
+                        switch obj.BatchOpt.Workflow{1}
+                            case '3D Semantic'
+                                outputLayerName = 'Custom Dice Segmentation Layer 3D';
+                            case {'2D Semantic', '2D Patch-wise', '2.5D Semantic'}
+                                outputLayerName = 'Custom Dice Segmentation Layer 2D';
+                        end
+                        outputLayer = dicePixelCustomClassificationLayer(outputLayerName);
+                        outputLayer.Classes = classNames;
+                        % check layer
+                        %layer = dicePixelCustomClassificationLayer(outputLayerName);
+                        %numClasses = 4;
+                        %validInputSize = [4 4 numClasses];
+                        %checkLayer(layer,validInputSize, 'ObservationDimension',4)
+                    case 'focalLossLayer'
+                        segLayerInitString = sprintf('outputLayer = %s(''Alpha'', %.3f, ''Gamma'', %.3f, ''Classes'', classNames, ''Name'', ''Segmentation-Layer'');', ...
+                            obj.BatchOpt.T_SegmentationLayer{1}, ...
+                            obj.SegmentationLayerOpt.focalLossLayer.Alpha, obj.SegmentationLayerOpt.focalLossLayer.Gamma);
+                        eval(segLayerInitString);
+                    otherwise
+                        segLayerInitString = sprintf('outputLayer = %s(''Name'', ''Segmentation-Layer'', ''Classes'', classNames);', obj.BatchOpt.T_SegmentationLayer{1});
+                        eval(segLayerInitString);
                 end
-                if obj.BatchOpt.T_UseImageNetWeights % replace classification output layer
-                    classificationOutputLayer = classificationLayer('Name', 'ClassificationLayer_predictions');
-                    lgraph = replaceLayer(lgraph, lgraph.Layers(end).Name, classificationOutputLayer); % 'ClassificationLayer_predictions'
+
+                switch obj.BatchOpt.Workflow{1}
+                    case {'2D Semantic', '2.5D Semantic'}
+                        switch obj.BatchOpt.Architecture{1}
+                            case {'U-net', 'DeepLabV3 Resnet18', 'DeepLabV3 Resnet50', 'DeepLabV3 Xception', 'DeepLabV3 Inception-ResNet-v2', ...
+                                    '3DUnet+DLv3 Resnet18', '3DUnet+DLv3 Resnet50', '3DUnet+DLv3 Xception', '3DUnet+DLv3 Inception-ResNet-v2'}
+                                try
+                                    lgraph = replaceLayer(lgraph, 'Segmentation-Layer', outputLayer);
+                                catch err
+                                    % when deeplabv3plusLayers used to generate
+                                    % one of the standard networks
+                                    lgraph = replaceLayer(lgraph, 'classification', outputLayer);
+                                end
+                            case 'SegNet'
+                                lgraph = replaceLayer(lgraph, 'pixelLabels', outputLayer);
+                        end
+                    case '3D Semantic'
+                        if strcmp(obj.BatchOpt.Architecture{1}, 'U-net')
+                            lgraph = replaceLayer(lgraph, 'Segmentation-Layer', outputLayer);
+                        end
+                    case '2D Patch-wise'
+                        lgraph = replaceLayer(lgraph, 'ClassificationLayer_predictions', outputLayer);
                 end
-            else    % semantic segmentation
-                % redefine the last layer
-                if ~strcmp(obj.BatchOpt.T_SegmentationLayer{1}, 'pixelClassificationLayer')
-                    switch obj.BatchOpt.T_SegmentationLayer{1}
-                        case 'weightedClassificationLayer'
-                            %                         if previewSwitch == 0
-                            %                             reset(pxds);
-                            %                             Labels = read(pxds);
-                            %                             for classId = 1:numel(obj.BatchOpt.T_NumberOfClasses{1})
-                            %                                 classWeights(classId) = numel(find(Labels{1}==classNames{classId}));
-                            %                             end
-                            %                             classWeights = 1-(classWeights./sum(classWeights));
-                            %                         else
-                            %                             classWeights = ones([obj.BatchOpt.T_NumberOfClasses{1} 1])/obj.BatchOpt.T_NumberOfClasses{1};
-                            %                         end
-                            classWeights = [0.8251 0.1429 0.0283 0.0038];
-                            outputLayer = weightedClassificationLayer('Segmentation-Layer', classWeights);
-                            %if previewSwitch == 0; reset(pxds); end
-                        case 'dicePixelCustomClassificationLayer'
-                            switch obj.BatchOpt.Workflow{1}
-                                case '3D Semantic'
-                                    outputLayerName = 'Custom Dice Segmentation Layer 3D';
-                                case {'2D Semantic', '2D Patch-wise'}
-                                    outputLayerName = 'Custom Dice Segmentation Layer 2D';
-                            end
-                            outputLayer = dicePixelCustomClassificationLayer(outputLayerName);
-                            
-                            % check layer
-                            %layer = dicePixelCustomClassificationLayer(outputLayerName);
-                            %numClasses = 4;
-                            %validInputSize = [4 4 numClasses];
-                            %checkLayer(layer,validInputSize, 'ObservationDimension',4)
-                        case 'focalLossLayer'
-                            segLayerInitString = sprintf('outputLayer = %s(''Alpha'', %.3f, ''Gamma'', %.3f, ''Name'', ''Segmentation-Layer'');', ...
-                                obj.BatchOpt.T_SegmentationLayer{1}, ...
-                                obj.SegmentationLayerOpt.focalLossLayer.Alpha, obj.SegmentationLayerOpt.focalLossLayer.Gamma);
-                            eval(segLayerInitString);
-                        otherwise
-                            segLayerInitString = sprintf('outputLayer = %s(''Name'', ''Segmentation-Layer'');', obj.BatchOpt.T_SegmentationLayer{1});
-                            eval(segLayerInitString);
-                    end
-                    switch obj.BatchOpt.Workflow{1}
-                        case '2D Semantic'
-                            switch obj.BatchOpt.Architecture{1}
-                                case {'U-net', 'DeepLabV3 Resnet18'}
-                                    try
-                                        lgraph = replaceLayer(lgraph, 'Segmentation-Layer', outputLayer);
-                                    catch err
-                                        % when deeplabv3plusLayers used to generate
-                                        % one of the standard networks
-                                        lgraph = replaceLayer(lgraph, 'classification', outputLayer);
-                                    end
-                                case 'SegNet'
-                                    lgraph = replaceLayer(lgraph, 'pixelLabels', outputLayer);
-                            end
-                        case '3D Semantic'
-                            if strcmp(obj.BatchOpt.Architecture{1}, 'U-net')
-                                lgraph = replaceLayer(lgraph, 'Segmentation-Layer', outputLayer);
-                            end
-                        case '2D Patch-wise'
-                            lgraph = replaceLayer(lgraph, 'ClassificationLayer_predictions', outputLayer);
-                    end
-                else
-                    %outputLayer = pixelClassificationLayer('Name', 'Segmentation-Layer2', 'Classes', {'Exterior', 'Triangles'});
-                    %lgraph = replaceLayer(lgraph, 'Segmentation-Layer', outputLayer);
-                end
+            else
+                %outputLayer = pixelClassificationLayer('Name', 'Segmentation-Layer2', 'Classes', {'Exterior', 'Triangles'});
+                %lgraph = replaceLayer(lgraph, 'Segmentation-Layer', outputLayer);
             end
         end
-        
+
         function status = setAugFuncHandles(obj, inputPatchSize, mode)
             % function status = setAugFuncHandles(obj, inputPatchSize, mode)
             % define list of 2D/3D augmentation functions
@@ -2078,10 +2237,11 @@ classdef mibDeepController < handle
             if obj.BatchOpt.O_PreviewImagePatches && rand < obj.BatchOpt.O_FractionOfPreviewPatches{1}
                 if isfield(obj.TrainingProgress, 'UIFigure')
                     if size(inpVol{1}, 3) == 3 || size(inpVol{1}, 3) == 1
-                        image(obj.TrainingProgress.imgPatch, inpVol{1});
+                        image(obj.TrainingProgress.imgPatch, inpVol{1}, 'CDataMapping', 'scaled');
                     elseif size(inpVol{1}, 3) == 2
                         out2 = inpVol{1};
                         out2(:,:,3) = zeros([size(inpVol{1},1) size(inpVol{1},2)]);
+                        out2 = uint8(out2 * (255/double(max(out2(:)))));
                         image(obj.TrainingProgress.imgPatch, out2);
                     end
                     if ~classificationType
@@ -2391,10 +2551,11 @@ classdef mibDeepController < handle
                 if isfield(obj.TrainingProgress, 'UIFigure')
                     zVal = ceil(size(inpVol{1}, 3)/2);  % calculate position of mid-slice
                     if size(inpVol{1}, 4) == 3 || size(inpVol{1}, 4) == 1
-                        image(obj.TrainingProgress.imgPatch, squeeze(inpVol{1}(:,:,zVal,:)));
+                        image(obj.TrainingProgress.imgPatch, squeeze(inpVol{1}(:,:,zVal,:)), 'CDataMapping', 'scaled');
                     elseif size(inpVol{1}, 4) == 2
                         out2 = squeeze(inpVol{1}(:,:,zVal,:));
                         out2(:,:,3) = zeros([size(inpVol{1},1) size(inpVol{1},2)]);
+                        out2 = uint8(out2 * (255/double(max(out2(:)))));
                         image(obj.TrainingProgress.imgPatch, out2);
                     end
                     if ~classificationType
@@ -3913,6 +4074,18 @@ classdef mibDeepController < handle
                     'Wrong patch size');
                 return;
             end
+            %   check for rectangular shape of the input patch
+            if inputPatchSize(1)~=inputPatchSize(2) && obj.BatchOpt.T_augmentation
+                if (strcmp(obj.BatchOpt.Workflow{1}(1:2), '2D') && obj.AugOpt2D.Rotation90(2) ) || ...
+                        (strcmp(obj.BatchOpt.Workflow{1}(1:2), '3D') && obj.AugOpt3D.Rotation90(2) )
+                    uialert(obj.View.gui, ...
+                        sprintf('!!! Error !!!\n\nRotation augmentations are only implemented for input patches that have a square shape!\n\nHow to fix (one of these options):\n   a) set probability of Rotation90 augmentations to 0\n   b) make sure that the input patch size has a square shape as "%d %d %d %d"\n   c)   if Rotation90 is required rotate the original dataset (images and labels) and save it as additional files to be used for training', ...
+                        inputPatchSize(1), inputPatchSize(1), inputPatchSize(3), inputPatchSize(4)), ...
+                        'Rotation90 is not available', 'Icon', 'error');
+                    return;
+                end
+
+            end
 
             % check input patch size for 2D Patch-wise workflow
             if strcmp(obj.BatchOpt.Workflow{1}, '2D Patch-wise')
@@ -4449,10 +4622,8 @@ classdef mibDeepController < handle
                         if obj.BatchOpt.showWaitbar; delete(obj.wb); end
                         return;
                     end
-                    
-                    %outLayer.Classes = categorical(classNames);    % this syntax gives an error in trainNetwork when used with tranfer learning
-                    outLayer.Classes = classNames;
-                    lgraph = replaceLayer(lgraph, outPutLayerName{1}, outLayer);
+                    % redefine the segmentation layer to update the names of classes
+                    lgraph = obj.updateSegmentationLayer(lgraph, classNames);
                 end
                 if obj.BatchOpt.showWaitbar; if ~isvalid(obj.wb); return; end; waitbar(0.06, obj.wb, sprintf('Loading checkpoint...done\nPlease wait...')); end
             end
@@ -4588,21 +4759,21 @@ classdef mibDeepController < handle
             
             try
                 % select gpu or cpu for training
-                % and define ExecutionEnvironment
+                % and define executionEnvironment
                 selectedIndex = find(ismember(obj.View.Figure.GPUDropDown.Items, obj.View.Figure.GPUDropDown.Value));
                 switch obj.View.Figure.GPUDropDown.Value
                     case 'CPU only'
                         if numel(obj.View.Figure.GPUDropDown.Items) > 2 % i.e. GPU is present
                             gpuDevice([]);  % CPU only mode
                         end
-                        ExecutionEnvironment = 'cpu';
+                        executionEnvironment = 'cpu';
                     case 'Multi-GPU'
-                        ExecutionEnvironment = 'multi-gpu';
+                        executionEnvironment = 'multi-gpu';
                     case 'Parallel'
-                        ExecutionEnvironment = 'parallel';
+                        executionEnvironment = 'parallel';
                     otherwise
                         gpuDevice(selectedIndex);   % choose selected GPU device
-                        ExecutionEnvironment = 'gpu';
+                        executionEnvironment = 'gpu';
                 end
                 
                 % recalculate validation frequency from epochs to
@@ -4622,9 +4793,9 @@ classdef mibDeepController < handle
                     "'Verbose', verboseSwitch,"
                     "'ResetInputNormalization', ResetInputNormalization,"
                     "'MiniBatchSize', obj.BatchOpt.T_MiniBatchSize{1},"
-                    "'OutputFcn', @obj.trainingProgressDisplay,"
+                    "'OutputFcn', @obj.customTrainingProgressDisplay,"
                     "'CheckpointPath', CheckpointPath, "
-                    "'ExecutionEnvironment', ExecutionEnvironment,"
+                    "'ExecutionEnvironment', executionEnvironment,"
                     ], ' ');
 
                 % define solver specific settings
@@ -4761,20 +4932,20 @@ classdef mibDeepController < handle
 
             % update res.BatchOpt to be compatible with DeepMIB v2.83
             if ~isfield(res.BatchOpt, 'Workflow')
-                obj.BatchOpt.Architecture = {};
+                %obj.BatchOpt.Architecture = {};
                 switch res.BatchOpt.Architecture{1}
                     case {'2D U-net', '2D SegNet', '2D DeepLabV3 Resnet18'}
                         res.BatchOpt.Workflow = {'2D Semantic'};
                         res.BatchOpt.Architecture{1} = res.BatchOpt.Architecture{1}(4:end);
-                        obj.BatchOpt.Architecture{2} = {'U-net', 'SegNet', 'DeepLabV3 Resnet18'}; % OBJ -> because updateBatchOptCombineFields_Shared does not update the second element
+                        res.BatchOpt.Architecture{2} = {'U-net', 'SegNet', 'DeepLabV3 Resnet18', 'DeepLabV3 Resnet50', 'DeepLabV3 Xception', 'DeepLabV3 Inception-ResNet-v2'}; 
                     case {'3D U-net', '3D U-net Anisotropic'}
                         res.BatchOpt.Workflow = {'3D Semantic'};
                         res.BatchOpt.Architecture{1} = res.BatchOpt.Architecture{1}(4:end);
-                        obj.BatchOpt.Architecture{2} = {'U-net', 'U-net Anisotropic'};
+                        res.BatchOpt.Architecture{2} = {'U-net', 'U-net Anisotropic'};
                     case {'2D Patch-wise Resnet18', '2D Patch-wise Resnet50'}
                         res.BatchOpt.Workflow = {'2D Patch-wise'};
                         res.BatchOpt.Architecture{1} = res.BatchOpt.Architecture{1}(15:end);
-                        obj.BatchOpt.Architecture{2} = {'Resnet18', 'Resnet50', 'Resnet101', 'Xception'};
+                        res.BatchOpt.Architecture{2} = {'Resnet18', 'Resnet50', 'Resnet101', 'Xception'};
                 end
                 res.BatchOpt.Workflow{2} = {'2D Semantic', '3D Semantic', '2D Patch-wise'}; % {'2D U-net', '2D SegNet', '2D DeepLabV3 Resnet18', '3D U-net', '3D U-net Anisotropic', '2D Patch-wise Resnet18', '2D Patch-wise Resnet50'}
             end
@@ -4815,12 +4986,18 @@ classdef mibDeepController < handle
             
             if ~isfield(res.BatchOpt, 'T_ActivationLayer')
                 res.BatchOpt.T_ActivationLayer = {'reluLayer'};
-                res.BatchOpt.T_ActivationLayer{2} = {'reluLayer', 'leakyReluLayer', 'clippedReluLayer', 'eluLayer', 'tanhLayer'};
+                res.BatchOpt.T_ActivationLayer{2} = {'clippedReluLayer', 'eluLayer', 'leakyReluLayer', 'reluLayer', 'swishLayer', 'tanhLayer'};
             end
             
             % update res.BatchOpt to be compatible with DeepMIB v2.83
             res = correctBatchOpt(obj, res);
             
+            % compare current vs the loaded workflow
+            if ~strcmp(obj.BatchOpt.Workflow{1}, res.BatchOpt.Workflow{1})
+                obj.View.handles.Workflow.Value = res.BatchOpt.Workflow{1};
+                obj.selectWorkflow();
+            end
+
             % add/update BatchOpt with the provided fields in BatchOptIn
             % combine fields from input and default structures
             obj.BatchOpt = updateBatchOptCombineFields_Shared(obj.BatchOpt, res.BatchOpt);
@@ -4851,6 +5028,38 @@ classdef mibDeepController < handle
             delete(obj.wb);
         end
         
+        function saveTrainingPlot(obj, varargin)
+            % save custom training plot to a file
+
+            % grab the figure as a screenshot
+            screenSize = get(0, 'ScreenSize');
+            robot = java.awt.Robot();
+            pos = obj.TrainingProgress.UIFigure.Position; % [left top width height]
+            rect = java.awt.Rectangle(pos(1), screenSize(4) - (pos(2)+pos(4)), pos(3), pos(4));
+            cap = robot.createScreenCapture(rect);
+            
+            % Convert to an RGB image
+            rgb = typecast(cap.getRGB(0,0,cap.getWidth,cap.getHeight,[],0,cap.getWidth),'uint8');
+            imgData = zeros(cap.getHeight,cap.getWidth,3,'uint8');
+            imgData(:,:,1) = reshape(rgb(3:4:end),cap.getWidth,[])';
+            imgData(:,:,2) = reshape(rgb(2:4:end),cap.getWidth,[])';
+            imgData(:,:,3) = reshape(rgb(1:4:end),cap.getWidth,[])';
+            %imtool(imgData);
+
+            formatsList = {'*.png', 'Portable Network Graphics (*.png)';
+                           '*.jpg', 'Joint Photographic Experts Group (*.jpg)';
+                           '*.tif', 'Tagged Image File Format (*.tif)'};
+
+            [pathOut, fnOut] = fileparts(obj.BatchOpt.NetworkFilename);
+            [fnOut, pathOut, indx] = uiputfile(formatsList, 'Select format and destination', ...
+                fullfile(pathOut, [fnOut '_trainingPlot']));
+            if fnOut == 0; return; end
+            outputFilename = fullfile(pathOut, fnOut);
+            
+            imwrite(imgData, outputFilename);
+            fprintf('DeepMIB training snapshot has been exported to:\n%s\n', outputFilename);
+        end
+
         function stopTrainingCallback(obj, varargin)
             % callback for press of the Stop traininig button
             
@@ -4886,8 +5095,8 @@ classdef mibDeepController < handle
             obj.TrainingProgress.StopTrainingButton.BackgroundColor = [1 .5 0];
         end
         
-        function result = trainingProgressDisplay(obj, ProgressStruct)
-            % function res = trainingProgressDisplay(obj, ProgressStruct)
+        function result = customTrainingProgressDisplay(obj, ProgressStruct)
+            % function res = customTrainingProgressDisplay(obj, ProgressStruct)
             % display network training progress for the compiled MIB
             %
             % Parameters:
@@ -5075,6 +5284,12 @@ classdef mibDeepController < handle
                 obj.TrainingProgress.EmergencyBrakeButton.Text = 'Emergency brake';
                 obj.TrainingProgress.EmergencyBrakeButton.Tooltip = 'Instantly stop the run, the final network file will be generated from the recent existing checkpoint';
                 
+                obj.TrainingProgress.saveTrainingPlotBtn = uibutton(obj.TrainingProgress.InputPatchPreviewPanel, 'push',...
+                    'ButtonPushedFcn', @obj.saveTrainingPlot);
+                obj.TrainingProgress.saveTrainingPlotBtn.Position = [10 8 70 22];
+                obj.TrainingProgress.saveTrainingPlotBtn.Text = 'Save plot';
+                obj.TrainingProgress.saveTrainingPlotBtn.Tooltip = 'Save the custom training plot to a file';
+
                 % Create axes
                 obj.TrainingProgress.UILossAxes = uiaxes(obj.TrainingProgress.GridLayout);
                 obj.TrainingProgress.UILossAxes.Units = 'pixels';
@@ -5090,6 +5305,16 @@ classdef mibDeepController < handle
                 obj.TrainingProgress.hPlot(2).MarkerFaceColor = 'r';
                 legend(obj.TrainingProgress.UILossAxes, 'Training', 'Validation');
                 
+                % add a context menu to the axes
+                % Create ContextMenu
+                obj.TrainingProgress.UILossAxes_cm = uicontextmenu(obj.TrainingProgress.UIFigure);
+                % define menu entries
+                obj.TrainingProgress.UILossAxes_cm_setYmin = uimenu(obj.TrainingProgress.UILossAxes_cm);
+                obj.TrainingProgress.UILossAxes_cm_setYmin.MenuSelectedFcn = @(src, evnt)obj.trainingProgressUpdateAxesLimits(src, evnt, 'setYlimits');
+                obj.TrainingProgress.UILossAxes_cm_setYmin.Text = 'Set Y limits';
+                % Assign app.ContextMenu
+                obj.TrainingProgress.UILossAxes.ContextMenu = obj.TrainingProgress.UILossAxes_cm;
+
                 obj.TrainingProgress.imgPatch = uiaxes(obj.TrainingProgress.InputPatchPreviewPanel);
                 obj.TrainingProgress.imgPatch.XTick = [];
                 obj.TrainingProgress.imgPatch.XTickLabel = '';
@@ -5146,7 +5371,9 @@ classdef mibDeepController < handle
                 
                 obj.TrainingProgress.hPlot(1).XData = obj.TrainingProgress.TrainXvec(1:obj.TrainingProgress.TrainXvecIndex-1);
                 obj.TrainingProgress.hPlot(1).YData = obj.TrainingProgress.TrainLoss(1:obj.TrainingProgress.TrainXvecIndex-1);
-                obj.TrainingProgress.AccTrainGauge.Value = ProgressStruct.TrainingAccuracy;
+                if ~isnan(ProgressStruct.TrainingAccuracy)
+                    obj.TrainingProgress.AccTrainGauge.Value = ProgressStruct.TrainingAccuracy;
+                end
                 obj.TrainingProgress.AccTrainingValue.Text = sprintf('%.2f%%', ProgressStruct.TrainingAccuracy);
                 
                 obj.TrainingProgress.ElapsedTime.Text = ...
@@ -5166,7 +5393,9 @@ classdef mibDeepController < handle
                     
                     obj.TrainingProgress.hPlot(2).XData = obj.TrainingProgress.ValidationXvec(1:obj.TrainingProgress.ValidationXvecIndex-1);
                     obj.TrainingProgress.hPlot(2).YData = obj.TrainingProgress.ValidationLoss(1:obj.TrainingProgress.ValidationXvecIndex-1);
-                    obj.TrainingProgress.AccValGauge.Value = ProgressStruct.ValidationAccuracy;
+                    if ~isnan(ProgressStruct.ValidationAccuracy)
+                        obj.TrainingProgress.AccValGauge.Value = ProgressStruct.ValidationAccuracy;
+                    end
                     obj.TrainingProgress.AccValidationValue.Text = sprintf('%.2f%%', ProgressStruct.ValidationAccuracy);
                     
                 end
@@ -5200,6 +5429,24 @@ classdef mibDeepController < handle
             end
         end
         
+        function trainingProgressUpdateAxesLimits(obj, hMenu, actionData, parameter)
+            % function trainingProgressUpdateAxesLimits(obj, hMenu, actionData, parameter)
+            % function to handle callbacks from the context menu for obj.TrainingProgress.UILossAxes
+            
+            global mibPath;
+
+            prompts = {'Define value for Y min:', 'Define value for Y max:'};
+            defAns = {num2str(obj.TrainingProgress.UILossAxes.YLim(1)), num2str(obj.TrainingProgress.UILossAxes.YLim(2))};
+            dlgTitle = 'Update Y limits';
+            options.WindowStyle = 'normal';
+            answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+            if isempty(answer); return; end 
+            ymin = str2double(answer{1});
+            ymax = str2double(answer{2});
+            if isnan(ymin) || isnan(ymax); return; end
+            obj.TrainingProgress.UILossAxes.YLim = [ymin, ymax];
+        end
+
         function startPredictionBlockedImage(obj)
             % function startPredictionBlockedImage(obj)
             % predict 2D/3D datasets using the blockedImage class
@@ -5254,9 +5501,9 @@ classdef mibDeepController < handle
                 generateScoreFiles = 0;
             else
                 % check for grayscale images, in R2021a-R2022a they can not be generated
-                if str2double(obj.BatchOpt.T_InputPatchSize(end)) == 1  
+                if str2double(obj.BatchOpt.T_InputPatchSize(end)) == 1 && verLessThan('matlab', '9.13') 
                     uialert(obj.View.gui, ...
-                        sprintf('!!! Error !!!\n\nUnfortunately generation of score files for grayscale datasets is not possible for the block-image processing mode.\n\nPlease select:\nScore files: "Do not generate"\n\nor use the legacy mode instead!'), ...
+                        sprintf('!!! Error !!!\n\nUnfortunately generation of score files for grayscale datasets for the block-image processing mode is only possible in R2022b or newer!\n\nPlease select:\nScore files: "Do not generate"\n\nor use the legacy mode instead!'), ...
                         'Score files error');
                     return;
                 end
@@ -5328,6 +5575,11 @@ classdef mibDeepController < handle
                             'IncludeSubfolders', true, ...
                             "LabelSource", "foldernames", ...
                             'ReadFcn', @(fn)obj.loadImages(fn, fnExtention, trainingSwitch));
+                        if numel(imgDS.Folders) < 2
+                            ME = MException('MyComponent:noSuchVariable:MissingFiles', ...
+                                'For the patch-wise mode the files needs to be arranged under "Images"/"Labels" subfolders\nor under subfolders with names of each image class!\n\nPlease check directory with images for Prediction');
+                            throw(ME);
+                        end
                         patchwisePatchesPredictSwitch = true;
                     end
                 end
@@ -5337,7 +5589,12 @@ classdef mibDeepController < handle
                 return;
             end
             
-            if obj.BatchOpt.showWaitbar;  pwb.updateText('Loading network...'); drawnow; end
+            if obj.BatchOpt.showWaitbar
+                extraWaitbarInfo = '';
+                if patchwisePatchesPredictSwitch; extraWaitbarInfo = ' for the patch-wise mode'; end
+                pwb.updateText(sprintf('Loading network%s\nPlease wait...', extraWaitbarInfo)); 
+                drawnow; 
+            end
             % loading: 'net', 'TrainingOptStruct', 'classNames',
             % 'inputPatchSize', 'outputPatchSize', 'BatchOpt' variables
             load(obj.BatchOpt.NetworkFilename, '-mat');
@@ -5366,7 +5623,7 @@ classdef mibDeepController < handle
             t1 = tic;
             noFiles = numel(imgDS.Files);
             if obj.BatchOpt.showWaitbar
-                pwb.updateText(sprintf('Starting prediction\nPlease wait...'));
+                pwb.updateText(sprintf('Starting prediction%s\nPlease wait...', extraWaitbarInfo));
                 pwb.increaseMaxNumberOfIterations(noFiles);
                 drawnow; 
             end
@@ -5377,21 +5634,21 @@ classdef mibDeepController < handle
             % smaller that then dataset for training: 2D and 3D cases
             % 2. check different padvalue in the code below: volPadded = padarray (vol, padSize, 0, 'post');
             
-            % select gpu or cpu for prediction and define ExecutionEnvironment
+            % select gpu or cpu for prediction and define executionEnvironment
             selectedIndex = find(ismember(obj.View.Figure.GPUDropDown.Items, obj.View.Figure.GPUDropDown.Value));
             switch obj.View.Figure.GPUDropDown.Value
                 case 'CPU only'
                     if numel(obj.View.Figure.GPUDropDown.Items) > 2 % i.e. GPU is present
                         gpuDevice([]);  % CPU only mode
                     end
-                    ExecutionEnvironment = 'cpu';
+                    executionEnvironment = 'cpu';
                 case 'Multi-GPU'
-                    ExecutionEnvironment = 'multi-gpu';
+                    executionEnvironment = 'multi-gpu';
                 case 'Parallel'
-                    ExecutionEnvironment = 'parallel';
+                    executionEnvironment = 'parallel';
                 otherwise
                     gpuDevice(selectedIndex);   % choose selected GPU device
-                    ExecutionEnvironment = 'gpu';
+                    executionEnvironment = 'gpu';
             end
 
             if patchwisePatchesPredictSwitch % images in Predict folder is stored in subfolders named as class names
@@ -5426,137 +5683,49 @@ classdef mibDeepController < handle
                         blockSize = outputPatchSize(1:numel(outputPatchSize)-1);
                     end
                 end
-
+                
                 % read image
                 vol = read(imgDS);
-                if switch2D && size(vol, 3) ~= inputPatchSize(4)
-                    % dynamically convert grayscale to RGB if needed
-                    vol = repmat(vol, [1, 1, 3]);
-                end
-                % get number of colors in vol
-                noColors = size(vol, numel(blockSize)+1);
-                vol = blockedImage(vol, ...     % % [height, width, color] or  [height, width, depth, color] 
-                       'Adapter', images.blocked.InMemory);    % convert to blockedimage
-                
-                % detect blocks for the dynamic masking mode
-                if obj.BatchOpt.P_DynamicMasking
-                    bls = obj.generateDynamicMaskingBlocks(vol, blockSize, noColors);
-                end
-
-                blockedImageWaitBarStatus = false; % due to a bug switch off waitbar for blockedImage/apply
-                if strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'same')     % same
-                    if obj.BatchOpt.P_OverlappingTiles == false
-                        if obj.BatchOpt.P_DynamicMasking
-                            [outputLabels, scoreImg] = apply(vol, ...       % apply(blockedImage, function, parameters)
-                                @(block, blockInfo) mibDeepController.segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, ExecutionEnvironment, padShift), ...
-                                'Adapter', images.blocked.InMemory, ...
-                                'Level', 1, ...
-                                'PadPartialBlocks', true, ...
-                                'UseParallel', false,...
-                                'DisplayWaitbar', blockedImageWaitBarStatus, ...    
-                                'BatchSize', obj.BatchOpt.P_MiniBatchSize{1}, ...
-                                'BlockLocationSet', bls);
-                        else
-                            [outputLabels, scoreImg] = apply(vol, ...       % apply(blockedImage, function, parameters)
-                                @(block, blockInfo) mibDeepController.segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, ExecutionEnvironment, padShift), ...
-                                'Adapter', images.blocked.InMemory, ...
-                                'Level', 1, ...
-                                'PadPartialBlocks', true, ...
-                                'BlockSize', blockSize,...
-                                'UseParallel', false,...
-                                'DisplayWaitbar', blockedImageWaitBarStatus, ...    
-                                'BatchSize', obj.BatchOpt.P_MiniBatchSize{1});
-                        end
-                    else % same + overlap
-                        %padShift = (obj.BatchOpt.T_FilterSize{1}-1)*obj.BatchOpt.T_EncoderDepth{1};
-                        padShift = ceil(inputPatchSize(1)*obj.BatchOpt.P_OverlappingTilesPercentage{1}/100);
-                        if obj.BatchOpt.P_DynamicMasking
-                            [outputLabels, scoreImg] = apply(vol, ...       % apply(blockedImage, function, parameters)
-                                @(block, blockInfo) mibDeepController.segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, ExecutionEnvironment, padShift), ...
-                                'Adapter', images.blocked.InMemory, ...
-                                'Level', 1, ...
-                                'PadPartialBlocks', true, ...
-                                'BorderSize', repmat(padShift, [1, numel(blockSize)]),...
-                                'UseParallel', false,...
-                                'DisplayWaitbar', blockedImageWaitBarStatus, ...    
-                                'BatchSize', obj.BatchOpt.P_MiniBatchSize{1}, ...
-                                'BlockLocationSet', bls);
-                        else
-                            [outputLabels, scoreImg] = apply(vol, ...       % apply(blockedImage, function, parameters)
-                                @(block, blockInfo) mibDeepController.segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, ExecutionEnvironment, padShift), ...
-                                'Adapter', images.blocked.InMemory, ...
-                                'Level', 1, ...
-                                'PadPartialBlocks', true, ...
-                                'BlockSize', blockSize,...  % blockSize-padShift*2
-                                'BorderSize', repmat(padShift, [1, numel(blockSize)]),...
-                                'UseParallel', false,...
-                                'DisplayWaitbar', blockedImageWaitBarStatus, ...   
-                                'BatchSize', obj.BatchOpt.P_MiniBatchSize{1});
-                        end
-                    end
-                else    % valid padding
-                    if obj.BatchOpt.P_DynamicMasking
-                        [outputLabels, scoreImg] = apply(vol, ...       % apply(blockedImage, function, parameters)
-                            @(block, blockInfo) mibDeepController.segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, ExecutionEnvironment, padShift), ...
-                            'Adapter', images.blocked.InMemory, ...
-                            'Level', 1, ...
-                            'PadPartialBlocks', true, ...
-                            'BorderSize', (inputPatchSize(1:numel(blockSize)) - outputPatchSize(1:numel(blockSize))) / 2,...  %  [(inputPatchSize(1)-outputPatchSize(1))/2 (inputPatchSize(2)-outputPatchSize(2))/2]
-                            'UseParallel', false,...
-                            'DisplayWaitbar', blockedImageWaitBarStatus, ...    
-                            'BatchSize', obj.BatchOpt.P_MiniBatchSize{1}, ...
-                            'BlockLocationSet', bls);
-                    else
-                        [outputLabels, scoreImg] = apply(vol, ...       % apply(blockedImage, function, parameters)
-                            @(block, blockInfo) mibDeepController.segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, ExecutionEnvironment, padShift), ...
-                            'Adapter', images.blocked.InMemory, ...
-                            'Level', 1, ...
-                            'PadPartialBlocks', true, ...
-                            'BlockSize', blockSize,...  	% outputPatchSize(1:numel(outputPatchSize)-1) or [outputPatchSize(1) outputPatchSize(2)]
-                            'BorderSize', (inputPatchSize(1:numel(blockSize)) - outputPatchSize(1:numel(blockSize))) / 2,...  %  [(inputPatchSize(1)-outputPatchSize(1))/2 (inputPatchSize(2)-outputPatchSize(2))/2]
-                            'UseParallel', false,...
-                            'DisplayWaitbar', blockedImageWaitBarStatus, ...    
-                            'BatchSize', obj.BatchOpt.P_MiniBatchSize{1});
-                    end
-                end
-
                 [~, fn] = fileparts(imgDS.Files{id});
-                % Save results
 
-                if ~patchwisePatchesPredictSwitch % standard semantic segmentation mode or patch-wise mode when prediction images are not in patches
-                    outputLabels = gather(outputLabels, 'Level', 1); % convert blocked image to normal matrix
-                    if ~patchwiseWorkflowSwitch
-                        outputLabels = outputLabels - 1;    % remove the first "exterior" class
-                                    
-                        % additional cropping from the right-side may be required
-                        if switch2D         % 2D case
-                            if sum(abs(size(outputLabels) - vol.Size(1:2))) ~= 0
-                                outputLabels = outputLabels(1:size(vol.Source, 1), 1:size(vol.Source, 2), :);
-                            end
-                        else                % 3D case
-                            if sum(abs(size(outputLabels) - vol.Size(1:3))) ~= 0
-                                outputLabels = outputLabels(1:size(vol.Source, 1), 1:size(vol.Source, 2), 1:size(vol.Source, 3), :);
+                % detect whether to use 2D net with 3D datasets, in this
+                % case the full volume will be loaded and processed
+                % slice-by-slice
+                if switch2D && size(vol, 3) > 3 && size(vol, 3) ~= inputPatchSize(4)
+                    use3DdatasetWith2Dnet = true;
+                else
+                    use3DdatasetWith2Dnet = false;
+                end
+
+                if use3DdatasetWith2Dnet
+                    for zValue = 1:size(vol, 3)
+                        [outputLabelsCurrent, scoreImgCurrent] = obj.processBlocksBlockedImage(vol(:,:,zValue), zValue, net, ...
+                            inputPatchSize, outputPatchSize, blockSize, padShift, ...
+                            switch2D, patchwiseWorkflowSwitch, patchwisePatchesPredictSwitch, ...
+                            classNames, generateScoreFiles, executionEnvironment, fn);
+                        if zValue == 1
+                            outputLabels = zeros([size(outputLabelsCurrent,1), size(outputLabelsCurrent,2), size(vol, 3)], 'uint8');
+                            if generateScoreFiles
+                                scoreImg = zeros([size(scoreImgCurrent,1), size(scoreImgCurrent,2), size(scoreImgCurrent,3), size(vol, 3)], 'uint8');
+                            else
+                                scoreImg = 0;
                             end
                         end
-                    else
-                        outputLabels = uint8(outputLabels);
-                        % generate CSV files for the patch-wise segmentations
-                        filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', ['Labels_' fn '.csv']);
-                        writematrix(outputLabels, filename, 'FileType' , 'Text');
-                        % upscale the resulting labels
-                        if obj.BatchOpt.P_PatchWiseUpsample
-                            if obj.BatchOpt.P_OverlappingTiles
-                                outHeight = (inputPatchSize(1)-padShift*2)*size(outputLabels,1);
-                                outWidth = (inputPatchSize(2)-padShift*2)*size(outputLabels,2);
-                            else
-                                outHeight = inputPatchSize(1)*size(outputLabels,1);
-                                outWidth = inputPatchSize(2)*size(outputLabels,2);
-                            end
-                            dummyLabels = imresize(outputLabels, [outHeight, outWidth], 'nearest');
-                            outputLabels = dummyLabels(1:size(vol.Source, 1), 1:size(vol.Source, 2));
+                        outputLabels(:,:,zValue) = outputLabelsCurrent;
+                        if generateScoreFiles
+                            scoreImg(:,:,:,zValue) = scoreImgCurrent;
                         end
                     end
-    
+                else
+                    zValue = NaN;
+                    [outputLabels, scoreImg] = obj.processBlocksBlockedImage(vol, zValue, net, ...
+                        inputPatchSize, outputPatchSize, blockSize, padShift, ...
+                        switch2D, patchwiseWorkflowSwitch, patchwisePatchesPredictSwitch, ...
+                        classNames, generateScoreFiles, executionEnvironment, fn);
+                end
+
+                % Save results
+                if ~patchwisePatchesPredictSwitch % standard semantic segmentation mode or patch-wise mode when prediction images are not in patches
                     % depending on the selected output type
                     switch obj.BatchOpt.P_ModelFiles{1}
                         case 'MIB Model format'
@@ -5582,51 +5751,15 @@ classdef mibDeepController < handle
                             end
                             filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', ['Labels_' fn '.tif']);
                             imwrite(outputLabels(:,:,1), filename, 'tif', 'WriteMode', 'overwrite', 'Description', sprintf('DeepMIB segmentation: $s %s', obj.BatchOpt.Workflow{1}, obj.BatchOpt.Architecture{1}), 'Compression', tifCompression);
-                            if ~switch2D
+                            if ~switch2D || use3DdatasetWith2Dnet
                                 for sliceId = 2:size(outputLabels, 3)
                                     imwrite(outputLabels(:,:,sliceId), filename, 'tif', 'WriteMode', 'append', 'Compression', tifCompression);
                                 end
                             end
                     end
-    
-                    % save score map
+                    %
+                    %                     % save score map
                     if generateScoreFiles == 1
-                        scoreImg = gather(scoreImg, 'Level', 1); % convert blocked image to normal matrix
-                        % additional cropping from the right-side may be required
-                        if switch2D         % 2D case
-                            if ~patchwiseWorkflowSwitch
-                                % trim the long end if needed
-                                if sum(abs(size(scoreImg, 1:2) - vol.Size(1:2))) ~= 0
-                                    scoreImg = scoreImg(1:size(vol.Source, 1), 1:size(vol.Source, 2), :);
-                                end
-                            else
-                                % generate CSV files for the patch-wise segmentations
-                                filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores', ['Score_' fn '.csv']);
-                                % generate score table with probabilities
-                                % of each class
-                                T = table();
-                                for classId = 1:size(scoreImg, 3)
-                                    T.(classNames{classId}) =  scoreImg(:,:,classId);
-                                end
-                                writetable(T, filename, 'FileType' , 'Text');
-                                
-                                scoreImg = uint8(scoreImg*255); % convert to uint8 and scale 0-255
-                                if obj.BatchOpt.P_PatchWiseUpsample
-                                    % upscale the resulting scores
-                                    dummyLabels = zeros([inputPatchSize(1)*size(scoreImg,1), inputPatchSize(2)*size(scoreImg,2), size(scoreImg, 3)], 'uint8');
-                                    for colCh=1:size(scoreImg, 3)
-                                        dummyLabels(:,:,colCh) = imresize(scoreImg(:,:,colCh), [inputPatchSize(1)*size(scoreImg,1), inputPatchSize(2)*size(scoreImg,2)], 'nearest');
-                                    end
-                                    scoreImg = dummyLabels(1:size(vol.Source, 1), 1:size(vol.Source, 2), :);
-                                end
-                            end
-                        else                % 3D case
-                            if sum(abs(size(scoreImg, 1:3) - vol.Size(1:3))) ~= 0
-                                scoreImg = scoreImg(1:size(vol.Source, 1), 1:size(vol.Source, 2), 1:size(vol.Source, 3), :);
-                            end
-                            scoreImg = permute(scoreImg, [1 2 4 3]);    % convert to [height, width, color, depth]
-                        end
-    
                         if generateScoreFilesFormat == 1    % 'Use AM format'
                             filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores', ['Score_' fn '.am']);
                             amiraOpt.overwrite = 1;
@@ -5639,11 +5772,12 @@ classdef mibDeepController < handle
                         end
                     end
                 else    % patchwisePatchesPredictSwitch == true, patch-wise mode, when each patch is contained in its own subfolder
-                    outputLabels = gather(outputLabels, 'Level', 1); % convert blocked image to normal matrix
+                    %                     outputLabels = gather(outputLabels, 'Level', 1); % convert blocked image to normal matrix
                     patchWiseOutout.PredictedClass{id} = char(outputLabels);
                     scoreImg = gather(scoreImg, 'Level', 1); % convert blocked image to normal matrix
                     patchWiseOutout.MaxProbability(id,:) = squeeze(max(scoreImg,[], 1:2))';
                 end
+
                 % copy original file to the results for easier evaluation
                 if obj.BatchOpt.showWaitbar
                     elapsedTime = toc(t1);
@@ -5653,6 +5787,7 @@ classdef mibDeepController < handle
                 end
                 id=id+1;
             end
+
             % save the resulting file
             if patchwisePatchesPredictSwitch == true
                 % generate CSV files for the patch-wise segmentations
@@ -5664,6 +5799,212 @@ classdef mibDeepController < handle
             fprintf('Prediction finished: ');
             toc(t1)
             if obj.BatchOpt.showWaitbar; delete(pwb); end
+        end
+
+        function [outputLabels, scoreImg] = processBlocksBlockedImage(obj, vol, zValue, net, ...
+                inputPatchSize, outputPatchSize, blockSize, padShift, ...
+                switch2D, patchwiseWorkflowSwitch, patchwisePatchesPredictSwitch, ...
+                classNames, generateScoreFiles, executionEnvironment, fn)
+
+            if switch2D && size(vol, 3) ~= inputPatchSize(4)
+                % dynamically convert grayscale to RGB if needed
+                vol = repmat(vol, [1, 1, 3]);
+            end
+
+            % get number of colors in vol
+            noColors = size(vol, numel(blockSize)+1);
+            vol = blockedImage(vol, ...     % % [height, width, color] or  [height, width, depth, color]
+                'Adapter', images.blocked.InMemory);    % convert to blockedimage
+
+            % detect blocks for the dynamic masking mode
+            if obj.BatchOpt.P_DynamicMasking
+                bls = obj.generateDynamicMaskingBlocks(vol, blockSize, noColors);
+            else
+                % just init with something to make sure that the following
+                % condition will work
+                bls.ImageNumber = 1;
+            end
+
+            if numel(bls.ImageNumber) > 0
+                blockedImageWaitBarStatus = false; % due to a bug switch off waitbar for blockedImage/apply
+                if strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'same')     % same
+                    if obj.BatchOpt.P_OverlappingTiles == false
+                        if obj.BatchOpt.P_DynamicMasking
+                            [outputLabels, scoreImg] = apply(vol, ...       % apply(blockedImage, function, parameters)
+                                @(block, blockInfo) mibDeepController.segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, executionEnvironment, padShift), ...
+                                'Adapter', images.blocked.InMemory, ...
+                                'Level', 1, ...
+                                'PadPartialBlocks', true, ...
+                                'UseParallel', false,...
+                                'DisplayWaitbar', blockedImageWaitBarStatus, ...
+                                'BatchSize', obj.BatchOpt.P_MiniBatchSize{1}, ...
+                                'BlockLocationSet', bls);
+                        else
+                            [outputLabels, scoreImg] = apply(vol, ...       % apply(blockedImage, function, parameters)
+                                @(block, blockInfo) mibDeepController.segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, executionEnvironment, padShift), ...
+                                'Adapter', images.blocked.InMemory, ...
+                                'Level', 1, ...
+                                'PadPartialBlocks', true, ...
+                                'BlockSize', blockSize,...
+                                'UseParallel', false,...
+                                'DisplayWaitbar', blockedImageWaitBarStatus, ...
+                                'BatchSize', obj.BatchOpt.P_MiniBatchSize{1});
+                        end
+                    else % same + overlap
+                        %padShift = (obj.BatchOpt.T_FilterSize{1}-1)*obj.BatchOpt.T_EncoderDepth{1};
+                        padShift = ceil(inputPatchSize(1)*obj.BatchOpt.P_OverlappingTilesPercentage{1}/100);
+                        if obj.BatchOpt.P_DynamicMasking
+                            [outputLabels, scoreImg] = apply(vol, ...       % apply(blockedImage, function, parameters)
+                                @(block, blockInfo) mibDeepController.segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, executionEnvironment, padShift), ...
+                                'Adapter', images.blocked.InMemory, ...
+                                'Level', 1, ...
+                                'PadPartialBlocks', true, ...
+                                'BorderSize', repmat(padShift, [1, numel(blockSize)]),...
+                                'UseParallel', false,...
+                                'DisplayWaitbar', blockedImageWaitBarStatus, ...
+                                'BatchSize', obj.BatchOpt.P_MiniBatchSize{1}, ...
+                                'BlockLocationSet', bls);
+                        else
+                            [outputLabels, scoreImg] = apply(vol, ...       % apply(blockedImage, function, parameters)
+                                @(block, blockInfo) mibDeepController.segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, executionEnvironment, padShift), ...
+                                'Adapter', images.blocked.InMemory, ...
+                                'Level', 1, ...
+                                'PadPartialBlocks', true, ...
+                                'BlockSize', blockSize,...  % blockSize-padShift*2
+                                'BorderSize', repmat(padShift, [1, numel(blockSize)]),...
+                                'UseParallel', false,...
+                                'DisplayWaitbar', blockedImageWaitBarStatus, ...
+                                'BatchSize', obj.BatchOpt.P_MiniBatchSize{1});
+                        end
+                    end
+                else    % valid padding
+                    if obj.BatchOpt.P_DynamicMasking
+                        [outputLabels, scoreImg] = apply(vol, ...       % apply(blockedImage, function, parameters)
+                            @(block, blockInfo) mibDeepController.segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, executionEnvironment, padShift), ...
+                            'Adapter', images.blocked.InMemory, ...
+                            'Level', 1, ...
+                            'PadPartialBlocks', true, ...
+                            'BorderSize', (inputPatchSize(1:numel(blockSize)) - outputPatchSize(1:numel(blockSize))) / 2,...  %  [(inputPatchSize(1)-outputPatchSize(1))/2 (inputPatchSize(2)-outputPatchSize(2))/2]
+                            'UseParallel', false,...
+                            'DisplayWaitbar', blockedImageWaitBarStatus, ...
+                            'BatchSize', obj.BatchOpt.P_MiniBatchSize{1}, ...
+                            'BlockLocationSet', bls);
+                    else
+                        [outputLabels, scoreImg] = apply(vol, ...       % apply(blockedImage, function, parameters)
+                            @(block, blockInfo) mibDeepController.segmentBlockedImage(block, net, switch2D, patchwiseWorkflowSwitch, generateScoreFiles, executionEnvironment, padShift), ...
+                            'Adapter', images.blocked.InMemory, ...
+                            'Level', 1, ...
+                            'PadPartialBlocks', true, ...
+                            'BlockSize', blockSize,...  	% outputPatchSize(1:numel(outputPatchSize)-1) or [outputPatchSize(1) outputPatchSize(2)]
+                            'BorderSize', (inputPatchSize(1:numel(blockSize)) - outputPatchSize(1:numel(blockSize))) / 2,...  %  [(inputPatchSize(1)-outputPatchSize(1))/2 (inputPatchSize(2)-outputPatchSize(2))/2]
+                            'UseParallel', false,...
+                            'DisplayWaitbar', blockedImageWaitBarStatus, ...
+                            'BatchSize', obj.BatchOpt.P_MiniBatchSize{1});
+                    end
+                end
+            else
+                if switch2D
+                    outputLabels = blockedImage(ones([vol.Size(1) vol.Size(2)], 'uint8'), ...     % % [height, width] or  [height, width, depth]
+                        'Adapter', images.blocked.InMemory);    % convert to blockedimage
+                    scoreImg = blockedImage(ones([vol.Size(1) vol.Size(2), numel(classNames)], 'uint8'), ...     % % [height, width, classes]
+                        'Adapter', images.blocked.InMemory);    % convert to blockedimage
+                else
+                    outputLabels = blockedImage(ones([vol.Size(1) vol.Size(2), vol.Size(3)], 'uint8'), ...     % [height, width, depth, classes]
+                        'Adapter', images.blocked.InMemory);    % convert to blockedimage
+                    scoreImg = blockedImage(ones([vol.Size(1) vol.Size(2),  vol.Size(3), numel(classNames)], 'uint8'), ...     % % [height, width, classes]
+                        'Adapter', images.blocked.InMemory);    % convert to blockedimage
+                end
+            end
+
+            %[~, fn] = fileparts(imgDS.Files{id});
+
+            if ~patchwisePatchesPredictSwitch % standard semantic segmentation mode or patch-wise mode when prediction images are not in patches
+                outputLabels = gather(outputLabels, 'Level', 1); % convert blocked image to normal matrix
+                if ~patchwiseWorkflowSwitch
+                    outputLabels = outputLabels - 1;    % remove the first "exterior" class
+
+                    % additional cropping from the right-side may be required
+                    if switch2D         % 2D case
+                        if sum(abs(size(outputLabels) - vol.Size(1:2))) ~= 0
+                            outputLabels = outputLabels(1:size(vol.Source, 1), 1:size(vol.Source, 2), :);
+                        end
+                    else                % 3D case
+                        if sum(abs(size(outputLabels) - vol.Size(1:3))) ~= 0
+                            outputLabels = outputLabels(1:size(vol.Source, 1), 1:size(vol.Source, 2), 1:size(vol.Source, 3), :);
+                        end
+                    end
+                else
+                    outputLabels = uint8(outputLabels);
+                    % generate CSV files for the patch-wise segmentations
+                    if isnan(zValue)
+                        filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', sprintf('Labels_%s_%.4d.csv', fn, zValue));
+                    else
+                        filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', sprintf('Labels_%s.csv', fn));
+                    end
+                    writematrix(outputLabels, filename, 'FileType' , 'Text');
+                    % upscale the resulting labels
+                    if obj.BatchOpt.P_PatchWiseUpsample
+                        if obj.BatchOpt.P_OverlappingTiles
+                            outHeight = (inputPatchSize(1)-padShift*2)*size(outputLabels,1);
+                            outWidth = (inputPatchSize(2)-padShift*2)*size(outputLabels,2);
+                        else
+                            outHeight = inputPatchSize(1)*size(outputLabels,1);
+                            outWidth = inputPatchSize(2)*size(outputLabels,2);
+                        end
+                        dummyLabels = imresize(outputLabels, [outHeight, outWidth], 'nearest');
+                        outputLabels = dummyLabels(1:size(vol.Source, 1), 1:size(vol.Source, 2));
+                    end
+                end
+
+                % save/generate score map
+                if generateScoreFiles == 1
+                    scoreImg = gather(scoreImg, 'Level', 1); % convert blocked image to normal matrix
+                    % additional cropping from the right-side may be required
+                    if switch2D         % 2D case
+                        if ~patchwiseWorkflowSwitch
+                            % trim the long end if needed
+                            if sum(abs(size(scoreImg, 1:2) - vol.Size(1:2))) ~= 0
+                                scoreImg = scoreImg(1:size(vol.Source, 1), 1:size(vol.Source, 2), :);
+                            end
+                        else
+                            % generate CSV files for the patch-wise segmentations
+                            if isnan(zValue)
+                                filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores', sprintf('Score_%s_%.4d.csv', fn, zValue));
+                            else
+                                filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores', sprintf('Score_%s.csv', fn));
+                            end
+                            
+                            % generate score table with probabilities
+                            % of each class
+                            T = table();
+                            for classId = 1:size(scoreImg, 3)
+                                T.(classNames{classId}) =  scoreImg(:,:,classId);
+                            end
+                            writetable(T, filename, 'FileType' , 'Text');
+
+                            scoreImg = uint8(scoreImg*255); % convert to uint8 and scale 0-255
+                            if obj.BatchOpt.P_PatchWiseUpsample
+                                % upscale the resulting scores
+                                dummyLabels = zeros([inputPatchSize(1)*size(scoreImg,1), inputPatchSize(2)*size(scoreImg,2), size(scoreImg, 3)], 'uint8');
+                                for colCh=1:size(scoreImg, 3)
+                                    dummyLabels(:,:,colCh) = imresize(scoreImg(:,:,colCh), [inputPatchSize(1)*size(scoreImg,1), inputPatchSize(2)*size(scoreImg,2)], 'nearest');
+                                end
+                                scoreImg = dummyLabels(1:size(vol.Source, 1), 1:size(vol.Source, 2), :);
+                            end
+                        end
+                    else                % 3D case
+                        if sum(abs(size(scoreImg, 1:3) - vol.Size(1:3))) ~= 0
+                            scoreImg = scoreImg(1:size(vol.Source, 1), 1:size(vol.Source, 2), 1:size(vol.Source, 3), :);
+                        end
+                        scoreImg = permute(scoreImg, [1 2 4 3]);    % convert to [height, width, color, depth]
+                    end
+                end
+            else    % patchwisePatchesPredictSwitch == true, patch-wise mode, when each patch is contained in its own subfolder
+                outputLabels = gather(outputLabels, 'Level', 1); % convert blocked image to normal matrix
+                %patchWiseOutout.PredictedClass{id} = char(outputLabels);
+                %scoreImg = gather(scoreImg, 'Level', 1); % convert blocked image to normal matrix
+                %patchWiseOutout.MaxProbability(id,:) = squeeze(max(scoreImg,[], 1:2))';
+            end
         end
 
         function startPrediction2D(obj)
@@ -5798,26 +6139,26 @@ classdef mibDeepController < handle
             patchCount = 1; % counter of processed patches
             nDims = 2;  % number of dimensions for data, 2
             
-            % select gpu or cpu for prediction and define ExecutionEnvironment
+            % select gpu or cpu for prediction and define executionEnvironment
             selectedIndex = find(ismember(obj.View.Figure.GPUDropDown.Items, obj.View.Figure.GPUDropDown.Value));
             switch obj.View.Figure.GPUDropDown.Value
                 case 'CPU only'
                     if numel(obj.View.Figure.GPUDropDown.Items) > 2 % i.e. GPU is present
                         gpuDevice([]);  % CPU only mode
                     end
-                    ExecutionEnvironment = 'cpu';
+                    executionEnvironment = 'cpu';
                 case 'Multi-GPU'
                     uialert(obj.View.gui, ...
                         sprintf('!!! Warning !!!\n\nMulti-GPU mode cannot be yet used for prediction. Please select a GPU from the list and restart prediction!'), ...
                         'Not available', 'icon', 'warning');
                     if obj.BatchOpt.showWaitbar; delete(obj.wb); end
                     return;
-                    %ExecutionEnvironment = 'multi-gpu';
+                    %executionEnvironment = 'multi-gpu';
                 case 'Parallel'
-                    ExecutionEnvironment = 'parallel';
+                    executionEnvironment = 'parallel';
                 otherwise
                     gpuDevice(selectedIndex);   % choose selected GPU device
-                    ExecutionEnvironment = 'gpu';
+                    executionEnvironment = 'gpu';
             end
            
             while hasdata(imgDS)
@@ -5836,7 +6177,7 @@ classdef mibDeepController < handle
                     if obj.BatchOpt.P_OverlappingTiles == false
                         if height == inputPatchSize(1) && width == inputPatchSize(2)
                             [outputLabels, ~, scoreImg] = semanticseg(squeeze(vol), net, ...
-                                'OutputType', 'uint8', 'ExecutionEnvironment', ExecutionEnvironment, ...
+                                'OutputType', 'uint8', 'ExecutionEnvironment', executionEnvironment, ...
                                 'MiniBatchSize', obj.BatchOpt.P_MiniBatchSize{1});
                             if generateScoreFiles == 1; scoreImg = uint8(scoreImg*255); end
                         else
@@ -5851,7 +6192,7 @@ classdef mibDeepController < handle
                             if sum(padSizePost)>0; volPadded = padarray(volPadded, padSizePost, 'symmetric', 'post'); end
                             
                             [outputLabels, ~, scoreImg] = semanticseg(squeeze(volPadded), net, ...
-                                'OutputType', 'uint8', 'ExecutionEnvironment', ExecutionEnvironment,...
+                                'OutputType', 'uint8', 'ExecutionEnvironment', executionEnvironment,...
                                 'MiniBatchSize', obj.BatchOpt.P_MiniBatchSize{1}');
 
                             % Remove the padding if needed
@@ -5859,8 +6200,8 @@ classdef mibDeepController < handle
                                 outputLabels = outputLabels(padSizePre(1)+1:end-padSizePost(1), ...
                                     padSizePre(2)+1:end-padSizePost(2));
                                 if generateScoreFiles == 1
-                                    scoreImg = scoreImg(padSizePre(1)+1:end-padSizePost(1), ...
-                                        padSizePre(2)+1:end-padSizePost(2), :);
+                                    scoreImg = uint8(scoreImg(padSizePre(1)+1:end-padSizePost(1), ...
+                                        padSizePre(2)+1:end-padSizePost(2), :)*255);
                                 end
                             end
                             
@@ -5868,7 +6209,9 @@ classdef mibDeepController < handle
                     else        % the section below is for obj.BatchOpt.P_OverlappingTiles == true
                         % pad the image to include extended areas due to
                         % the overlapping strategy
-                        if strcmp(obj.BatchOpt.Architecture{1}, 'DeepLabV3 Resnet18'); obj.BatchOpt.T_EncoderDepth{1} = 4; end
+                        if strcmp(obj.BatchOpt.Architecture{1}, {'DeepLabV3 Resnet18', 'DeepLabV3 Resnet50', 'DeepLabV3 Xception', 'DeepLabV3 Inception-ResNet-v2'})
+                            obj.BatchOpt.T_EncoderDepth{1} = 4;
+                        end
                         
                         %padShift = (obj.BatchOpt.T_FilterSize{1}-1)*obj.BatchOpt.T_EncoderDepth{1};
                         padShift = ceil(inputPatchSize(1)*obj.BatchOpt.P_OverlappingTilesPercentage{1}/100);
@@ -5893,7 +6236,7 @@ classdef mibDeepController < handle
                                 patch = volPadded( i:i+inputPatchSize(1)-1,...
                                     j:j+inputPatchSize(2)-1, :);
                                 [patchSeg, ~, scoreBlock] = semanticseg(squeeze(patch), net, ...
-                                    'OutputType', 'uint8', 'ExecutionEnvironment', ExecutionEnvironment,...
+                                    'OutputType', 'uint8', 'ExecutionEnvironment', executionEnvironment,...
                                     'MiniBatchSize', obj.BatchOpt.P_MiniBatchSize{1});
                                 x1 = i + padShift - 1;
                                 y1 = j + padShift - 1;
@@ -5938,12 +6281,12 @@ classdef mibDeepController < handle
                     volPadded = padarray(volPadded, additionalPaddingPost(1:2), 'symmetric', 'post');
                     
                     [outputLabels, ~, scoreImg] = semanticseg(squeeze(volPadded), net, ...
-                        'OutputType', 'uint8', 'ExecutionEnvironment', ExecutionEnvironment, ...
+                        'OutputType', 'uint8', 'ExecutionEnvironment', executionEnvironment, ...
                         'MiniBatchSize', obj.BatchOpt.P_MiniBatchSize{1});
                     
                     % Crop out the extra padded region.
                     outputLabels = outputLabels(1:volSize(1), 1:volSize(2));
-                    if generateScoreFiles == 1; scoreImg = scoreImg(1:volSize(1), 1:volSize(2), :); end
+                    if generateScoreFiles == 1; scoreImg = uint8(scoreImg(1:volSize(1), 1:volSize(2), :)*255); end
                 end
                 
                 % Save generated model files
@@ -5985,7 +6328,7 @@ classdef mibDeepController < handle
                         amiraOpt.overwrite = 1;
                         amiraOpt.showWaitbar = 0;
                         amiraOpt.verbose = false;
-                        bitmap2amiraMesh(filename, uint8(scoreImg*255), [], amiraOpt);  % convert to 8-bit and scale between 0-255
+                        bitmap2amiraMesh(filename, scoreImg, [], amiraOpt);
                     else  % 2=='Use Matlab non-compressed format', 3=='Use Matlab compressed format'
                         filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores', ['Score_' fn '.mibImg']);
                         saveImageParFor(filename, scoreImg, generateScoreFilesFormat-2, saveImageOpt);
@@ -6143,26 +6486,26 @@ classdef mibDeepController < handle
             
             nDims = 3;  % number of dimensions for data, 2 or 3
             
-            % select gpu or cpu for prediction and define ExecutionEnvironment
+            % select gpu or cpu for prediction and define executionEnvironment
             selectedIndex = find(ismember(obj.View.Figure.GPUDropDown.Items, obj.View.Figure.GPUDropDown.Value));
             switch obj.View.Figure.GPUDropDown.Value
                 case 'CPU only'
                     if numel(obj.View.Figure.GPUDropDown.Items) > 2 % i.e. GPU is present
                         gpuDevice([]);  % CPU only mode
                     end
-                    ExecutionEnvironment = 'cpu';
+                    executionEnvironment = 'cpu';
                 case 'Multi-GPU'
                     uialert(obj.View.gui, ...
                         sprintf('!!! Warning !!!\n\nMulti-GPU mode cannot be yet used for prediction. Please select a GPU from the list and restart prediction!'), ...
                         'Not available', 'icon', 'warning');
                     if obj.BatchOpt.showWaitbar; delete(obj.wb); end
                     return;
-                    %ExecutionEnvironment = 'multi-gpu';
+                    %executionEnvironment = 'multi-gpu';
                 case 'Parallel'
-                    ExecutionEnvironment = 'parallel';
+                    executionEnvironment = 'parallel';
                 otherwise
                     gpuDevice(selectedIndex);   % choose selected GPU device
-                    ExecutionEnvironment = 'gpu';
+                    executionEnvironment = 'gpu';
             end
             
             while hasdata(imgDS)
@@ -6175,7 +6518,7 @@ classdef mibDeepController < handle
                     if obj.BatchOpt.P_OverlappingTiles == false
                         if height == inputPatchSize(1) && width == inputPatchSize(2)  && depth == inputPatchSize(3)     % 3.5552
                             [outputLabels, ~, scoreImg] = semanticseg(squeeze(vol), net, ...
-                                'OutputType', 'uint8', 'ExecutionEnvironment', ExecutionEnvironment, ...
+                                'OutputType', 'uint8', 'ExecutionEnvironment', executionEnvironment, ...
                                 'MiniBatchSize', obj.BatchOpt.P_MiniBatchSize{1});
                             if generateScoreFiles == 1; scoreImg = uint8(scoreImg*255); end
                         else    % 5.6641 sec
@@ -6206,7 +6549,7 @@ classdef mibDeepController < handle
                                             j:j+inputPatchSize(2)-1,...
                                             k:k+inputPatchSize(3)-1,:);
                                         [patchSeg, ~, scoreBlock] = semanticseg(squeeze(patch), net, ...
-                                            'OutputType', 'uint8', 'ExecutionEnvironment', ExecutionEnvironment, ...
+                                            'OutputType', 'uint8', 'ExecutionEnvironment', executionEnvironment, ...
                                             'MiniBatchSize', obj.BatchOpt.P_MiniBatchSize{1});
                                         
                                         % act0 = activations(net, squeeze(patch),'ImageInputLayer');
@@ -6282,7 +6625,7 @@ classdef mibDeepController < handle
                                     %    0
                                     %end
                                     [patchSeg, ~, scoreBlock] = semanticseg(squeeze(patch), net, ...
-                                        'OutputType', 'uint8', 'ExecutionEnvironment', ExecutionEnvironment, ...
+                                        'OutputType', 'uint8', 'ExecutionEnvironment', executionEnvironment, ...
                                         'MiniBatchSize', obj.BatchOpt.P_MiniBatchSize{1});
                                     x1 = i + padShift - 1;
                                     y1 = j + padShift - 1;
@@ -6353,7 +6696,7 @@ classdef mibDeepController < handle
                     %
                     %                     scoreBlock = cell([patchIndex-1 1]);
                     %                     parfor (patchId = 1:patchIndex-1, 2)
-                    %                         [patch{patchId}, ~, scoreBlock{patchId}] = semanticseg(patch{patchId}, net, 'OutputType', 'uint8', 'ExecutionEnvironment', ExecutionEnvironment);
+                    %                         [patch{patchId}, ~, scoreBlock{patchId}] = semanticseg(patch{patchId}, net, 'OutputType', 'uint8', 'ExecutionEnvironment', executionEnvironment);
                     %                     end
                     %
                     %                     patchId = 1;
@@ -6380,7 +6723,7 @@ classdef mibDeepController < handle
                                     j:j+inputPatchSize(2)-1,...
                                     k:k+inputPatchSize(3)-1,:);
                                 [patchSeg, ~, scoreBlock] = semanticseg(squeeze(patch), net, ...
-                                    'OutputType', 'uint8', 'ExecutionEnvironment', ExecutionEnvironment, ...
+                                    'OutputType', 'uint8', 'ExecutionEnvironment', executionEnvironment, ...
                                     'MiniBatchSize', obj.BatchOpt.P_MiniBatchSize{1});
                                 
                                 outputLabels(i:i+outputPatchSize(1)-1, ...
@@ -6454,7 +6797,7 @@ classdef mibDeepController < handle
                 if generateScoreFiles == 1
                     if generateScoreFilesFormat == 1    % 'Use AM format'
                         filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores', ['Score_' fn '.am']);
-                        scoreImg = uint8(scoreImg*255);     % convert to 8bit and scale between 0-255
+                        %scoreImg = uint8(scoreImg*255);     % convert to 8bit and scale between 0-255
                         scoreImg = permute(scoreImg, [1 2 4 3]);    % convert to [height, width, color, depth]
                         
                         amiraOpt.overwrite = 1;
@@ -6802,7 +7145,7 @@ classdef mibDeepController < handle
             h.XLabel = 'Predicted Class';
             h.YLabel = 'True Class';
             [~, netName] = fileparts(obj.BatchOpt.NetworkFilename);
-            h.Title = sprintf('Normalized Confusion Matrix\n(%s)', netName);
+            h.Title = sprintf('Normalized Confusion Matrix\n(%s)', strrep(netName, '_', '-'));
             
             % display results
             metricName = ssm.DataSetMetrics.Properties.VariableNames;
@@ -7063,14 +7406,18 @@ classdef mibDeepController < handle
             % update settings for preview of augmented patches
             global mibPath;
             
+            if ~isfield(obj.PatchPreviewOpt, 'imageSize'); obj.PatchPreviewOpt.imageSize = 160; end
+
             colorList = {'blue', 'green', 'red', 'cyan', 'magenta', 'yellow','black', 'white'};
-            prompts = { 'Number of patches to show [def=25]';...
+            prompts = { 'Number of patches to show [def=9]';...
+                'Patch size in pixels'; ...
                 'Show information label [def=true]';...
                 'Label size [def=9]'; ...
                 'Label color [def=black]'; ...
                 'Label background color [def=yellow]'; ...
                 'Label background opacity [def=0.6]'};
             defAns = {num2str(obj.PatchPreviewOpt.noImages); ...
+                num2str(obj.PatchPreviewOpt.imageSize); ...
                 obj.PatchPreviewOpt.labelShow; ...
                 num2str(obj.PatchPreviewOpt.labelSize); ...
                 [colorList, {find(ismember(colorList, obj.PatchPreviewOpt.labelColor)==1)}]; ...
@@ -7086,11 +7433,12 @@ classdef mibDeepController < handle
             if isempty(answer); return; end
             
             obj.PatchPreviewOpt.noImages = round(str2double(answer{1}));
-            obj.PatchPreviewOpt.labelShow = logical(answer{2});
-            obj.PatchPreviewOpt.labelSize = round(str2double(answer{3}));
-            obj.PatchPreviewOpt.labelColor = answer{4};
-            obj.PatchPreviewOpt.labelBgColor = answer{5};
-            obj.PatchPreviewOpt.labelBgOpacity = str2double(answer{6});
+            obj.PatchPreviewOpt.imageSize = round(str2double(answer{2}));
+            obj.PatchPreviewOpt.labelShow = logical(answer{3});
+            obj.PatchPreviewOpt.labelSize = round(str2double(answer{4}));
+            obj.PatchPreviewOpt.labelColor = answer{5};
+            obj.PatchPreviewOpt.labelBgColor = answer{6};
+            obj.PatchPreviewOpt.labelBgOpacity = str2double(answer{7});
         end
         
         function ExportNetworkToONNXButton(obj)
@@ -7252,7 +7600,8 @@ classdef mibDeepController < handle
             mibInputMultiDlgOptions.PromptLines = 5;
             switch obj.BatchOpt.Workflow{1}(1:2)
                 case '3D'
-                    randomStoreInputPatchSize = inputPatchSize(1:3);
+                    %randomStoreInputPatchSize = inputPatchSize(1:3);
+                    randomStoreInputPatchSize = [obj.PatchPreviewOpt.imageSize obj.PatchPreviewOpt.imageSize obj.PatchPreviewOpt.imageSize];
                     status = setAugFuncHandles(obj, inputPatchSize, '3D');
                     noAugmentations = 18; % max number of augmentations
                     if status == 0; return; end
@@ -7266,7 +7615,8 @@ classdef mibDeepController < handle
                         end
                     end
                 case '2D'
-                    randomStoreInputPatchSize = inputPatchSize(1:2);
+                    %randomStoreInputPatchSize = inputPatchSize(1:2);
+                    randomStoreInputPatchSize = [obj.PatchPreviewOpt.imageSize obj.PatchPreviewOpt.imageSize];
                     status = setAugFuncHandles(obj, inputPatchSize, '2D');
                     noAugmentations = 17; % max number of augmentations
                     if status == 0; return; end
@@ -7358,7 +7708,7 @@ classdef mibDeepController < handle
             [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
             if isempty(answer); return; end
             
-            wbar = waitbar(0, sprintf('Performing transfer learning\nPlease wait...'), 'Name', 'Transfer learning');
+            obj.wb = waitbar(0, sprintf('Performing transfer learning\nPlease wait...'), 'Name', 'Transfer learning');
             
             newNoClasses = str2double(answer{1});
             newSegLayer = answer{2};
@@ -7371,15 +7721,18 @@ classdef mibDeepController < handle
             obj.BatchOpt.T_SegmentationLayer{1} = newSegLayer;  % update segmentation layer
             
             [lgraph, outputPatchSize] = obj.createNetwork();
-            waitbar(0.3, wbar);
+            waitbar(0.3, obj.wb);
             
             % find layer after which all layers should be replaced
-            if strcmp(obj.BatchOpt.Architecture{1}, 'SegNet')
-                layerName = 'decoder1_conv1';   % 2D segnet
-            else    % 2D, 3D Unets
-                layerName = 'Final-ConvolutionLayer';
+            switch obj.BatchOpt.Architecture{1}
+                case 'SegNet'
+                    layerName = 'decoder1_conv1';   % 2D segnet
+                case {'DeepLabV3 Resnet18', 'DeepLabV3 Resnet50', 'DeepLabV3 Xception', 'DeepLabV3 Inception-ResNet-v2'}
+                    layerName = 'scorer';   % 2D DeepLabV3
+                otherwise
+                    layerName = 'Final-ConvolutionLayer';
             end
-            
+
             segmLayerId = numel(net.Layers);
             notOk = 1;
             while notOk
@@ -7393,11 +7746,11 @@ classdef mibDeepController < handle
                     uialert(obj.View.gui, ...
                         sprintf('!!! Error !!!\n\nThe original network does not have %s layer', layerName), ...
                         'Transfer learning!', 'Icon', 'error');
-                    delete(wbar);
+                    delete(obj.wb);
                     return;
                 end
             end
-            waitbar(0.5, wbar);
+            waitbar(0.5, obj.wb);
             
             % convert DAG object to LayerGraph object to allow
             % modification of layers
@@ -7405,12 +7758,12 @@ classdef mibDeepController < handle
             for layerId=segmLayerId:numel(net.Layers)
                 net = replaceLayer(net, net.Layers(layerId).Name, lgraph.Layers(layerId));
             end
-            waitbar(0.6, wbar);
+            waitbar(0.6, obj.wb);
             
             obj.BatchOpt.NetworkFilename = outNetworkName;
             save(outNetworkName, 'net', '-mat', '-v7.3');
             obj.saveConfig(outConfigName);
-            waitbar(0.9, wbar);
+            waitbar(0.9, obj.wb);
             
             % update elements of GUI
             obj.View.Figure.NetworkFilename.Value = obj.BatchOpt.NetworkFilename;
@@ -7418,9 +7771,9 @@ classdef mibDeepController < handle
             obj.View.Figure.NumberOfClassesPreprocessing.Value = obj.BatchOpt.T_NumberOfClasses{1};
             obj.View.Figure.T_SegmentationLayer.Value = obj.BatchOpt.T_SegmentationLayer{1};
             
-            waitbar(1, wbar);
+            waitbar(1, obj.wb);
             fprintf('The transfer learning finished:\n%s\n', outNetworkName);
-            delete(wbar);
+            delete(obj.wb);
         end
 
         function importNetwork(obj)
@@ -7614,6 +7967,69 @@ classdef mibDeepController < handle
             end
         end
 
+        function previewDynamicMask(obj)
+            % function previewDynamicMask(obj)
+            % preview results for the dynamic mode
+            
+            wb = waitbar(0, 'Please wait...', 'Name', 'Generating blocks');
+
+            % get current image
+            getDataOpt.blockModeSwitch = true;
+            img = obj.mibModel.getData2D('image', NaN, NaN, NaN, getDataOpt);
+            noColors = size(img, 3);
+            inputPatchSize = str2num(obj.BatchOpt.T_InputPatchSize);
+            img = blockedImage(img{1}, ...              % % [height, width, color] 
+                'Adapter', images.blocked.InMemory);    % convert to blockedimage
+            waitbar(.3, wb);
+            inputPatchSize(1:2) = inputPatchSize(1:2);
+            bls = obj.generateDynamicMaskingBlocks(img, inputPatchSize(1:2), noColors);
+            waitbar(.6, wb);
+
+            % show
+            figure(randi(1024)); 
+            bigimageshow(img);
+            blockedWH = fliplr(bls.BlockSize(1,1:2));
+            for ind = 1:size(bls.BlockOrigin,1)
+                % BlockOrigin is already in x,y order.
+                drawrectangle('Position', [bls.BlockOrigin(ind,1:2),blockedWH]);
+            end
+            waitbar(1, wb);
+            delete(wb);
+        end
+        
+        function ExploreActivations(obj)
+            % explore activations within the trained network
+            obj.startController('mibDeepActivationsController', obj);
+        end
+        
+        function showErrorDialog(obj, err, winTitle, optionalPrefix, optionalSuffix)
+            % function showErrorDialog(obj, err, winTitle, optionalPrefix, optionalSuffix)
+            % show error that is generated in try/catch blocks
+            %
+            % Parameters:
+            % err: a structure generated by MATLAB, when an error is
+            % triggered with the following fields,
+            %   .identifier - identificator of the error
+            %   .message - error message
+            % winTitle: an optional string with a title for the window
+            % optionalPrefix: an optional text string that will be added before the end of the error message
+            % optionalSuffix: an optional text string that will be added after the end of the error message
+
+            if nargin < 5; optionalSuffix = ''; end
+            if nargin < 4; optionalPrefix = ''; end
+            if nargin < 3; winTitle = 'Error'; end
+            
+            if obj.mibController.matlabVersion < 9.11 % 'Interpreter' is available only from R2021b
+                uialert(obj.View.gui, ...
+                    sprintf('!!! Error !!!\n\n%s\n%s\n\n%s\n\n%s', optionalPrefix, err.identifier, err.message, optionalSuffix), ...
+                    winTitle, 'Icon', 'error');
+            else
+                uialert(obj.View.gui, ...
+                    sprintf('!!! Error !!!\n\n%s\n%s\n\n%s\n\n%s', optionalPrefix, err.identifier, err.message, optionalSuffix), ...
+                    winTitle, 'Icon', 'error', 'Interpreter', 'html');
+            end
+        end
+
         function countLabels(obj)
             % count occurrences of labels in model files
             % callback for press of the "Count labels" in the Options panel
@@ -7758,68 +8174,163 @@ classdef mibDeepController < handle
             end
         end
         
-        function previewDynamicMask(obj)
-            % function previewDynamicMask(obj)
-            % preview results for the dynamic mode
-            
-            wb = waitbar(0, 'Please wait...', 'Name', 'Generating blocks');
+        function balanceClasses(obj)
+            % balance classes before training
+            % see example from here:
+            % https://se.mathworks.com/help/vision/ref/balancepixellabels.html
+            global mibPath;
 
-            % get current image
-            getDataOpt.blockModeSwitch = true;
-            img = obj.mibModel.getData2D('image', NaN, NaN, NaN, getDataOpt);
-            noColors = size(img, 3);
+            if ~isfield(obj.sessionSettings, 'numBalanceObservations'); obj.sessionSettings.numBalanceObservations = 200; end
+            if ~isfield(obj.sessionSettings, 'balanceObservationsParallel'); obj.sessionSettings.balanceObservationsParallel = false; end
+
+            % Set block size of the images. 
             inputPatchSize = str2num(obj.BatchOpt.T_InputPatchSize);
-            img = blockedImage(img{1}, ...              % % [height, width, color] 
-                'Adapter', images.blocked.InMemory);    % convert to blockedimage
-            waitbar(.3, wb);
-            inputPatchSize(1:2) = inputPatchSize(1:2);
-            bls = obj.generateDynamicMaskingBlocks(img, inputPatchSize(1:2), noColors);
-            waitbar(.6, wb);
+            blockSize = [inputPatchSize(1) inputPatchSize(2)];
 
-            % show
-            figure(randi(1024)); 
-            bigimageshow(img);
-            blockedWH = fliplr(bls.BlockSize(1,1:2));
-            for ind = 1:size(bls.BlockOrigin,1)
-                % BlockOrigin is already in x,y order.
-                drawrectangle('Position', [bls.BlockOrigin(ind,1:2),blockedWH]);
-            end
-            waitbar(1, wb);
-            delete(wb);
-        end
-
-        function showErrorDialog(obj, err, winTitle, optionalPrefix, optionalSuffix)
-            % function showErrorDialog(obj, err, winTitle, optionalPrefix, optionalSuffix)
-            % show error that is generated in try/catch blocks
-            %
-            % Parameters:
-            % err: a structure generated by MATLAB, when an error is
-            % triggered with the following fields,
-            %   .identifier - identificator of the error
-            %   .message - error message
-            % winTitle: an optional string with a title for the window
-            % optionalPrefix: an optional text string that will be added before the end of the error message
-            % optionalSuffix: an optional text string that will be added after the end of the error message
-
-            if nargin < 5; optionalSuffix = ''; end
-            if nargin < 4; optionalPrefix = ''; end
-            if nargin < 3; winTitle = 'Error'; end
+            prompts = {sprintf('Number of patches in the balanced dataset to generate:'); 'Output patch size:'; 'Number of classes (incl. Exterior):'; 'Use parallel processing:'};
+            defAns = {num2str(obj.sessionSettings.numBalanceObservations); num2str(blockSize); obj.BatchOpt.T_NumberOfClasses{1}; obj.sessionSettings.balanceObservationsParallel};
+            dlgTitle = 'Settings';
+            inputDlgOpt.PromptLines = 1;
+            inputDlgOpt.Title = sprintf(['This is a beta procedure to balance rare classes in the dataset\n' ...
+                'The procedure is implemented only for the 2D Semantic workflow and only for images and labels that are ' ...
+                'stored in standard image formats (e.g. TIF, PNG, JPG).\n' ...
+                'The images and labels needs to be placed in "Images" and "Labels" subfolders under ' ...
+                '"Directories with images and labels for training" specified in the "Directories and preprocessing" tab\n' ...
+                'The balanced results are generated under the same directory in ' ...
+                '"ImagesBalanced" and "LabelsBalanced" subfolders']);
+            inputDlgOpt.TitleLines = 10;
+            inputDlgOpt.WindowWidth = 1.5;
+            inputDlgOpt.helpBtnText = 'Info example';
+            inputDlgOpt.HelpUrl = 'https://se.mathworks.com/help/vision/ref/balancepixellabels.html';
+            inputDlgOpt.WindowStyle = 'normal';
+            [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, inputDlgOpt);
+            if isempty(answer); return; end
             
-            if obj.mibController.matlabVersion < 9.11 % 'Interpreter' is available only from R2021b
-                uialert(obj.View.gui, ...
-                    sprintf('!!! Error !!!\n\n%s\n%s\n\n%s\n\n%s', optionalPrefix, err.identifier, err.message, optionalSuffix), ...
-                    winTitle, 'Icon', 'error');
-            else
-                uialert(obj.View.gui, ...
-                    sprintf('!!! Error !!!\n\n%s\n%s\n\n%s\n\n%s', optionalPrefix, err.identifier, err.message, optionalSuffix), ...
-                    winTitle, 'Icon', 'error', 'Interpreter', 'html');
-            end
-        end
+            % Speciy number of block locations to sample from the dataset.
+            obj.sessionSettings.numBalanceObservations = str2double(answer{1});
+            blockSize = str2num(answer{2});
+            numberOfClasses = str2double(answer{3});
+            obj.sessionSettings.balanceObservationsParallel = logical(answer{4});
 
-        function ExploreActivations(obj)
-            obj.startController('mibDeepActivationsController', obj);
+            parforArg = 0;  % no parallel pool
+            if obj.sessionSettings.balanceObservationsParallel
+                parforArg = obj.View.handles.PreprocessingParForWorkers.Value;    % Maximum number of workers running in parallel
+            end
+
+            % check for the proper workflow
+            if ~strcmp(obj.BatchOpt.Workflow{1}, '2D Semantic')
+                uialert(obj.View.gui, ...
+                    sprintf(['!!! Error !!!\n\n' ...
+                    'Balancing of labels is implemented only for the 2D Semantic workflow!']), ...
+                    'Wrong workflow', 'icon', 'error');
+                return
+            end
+            tic;
+
+            % define input directories for images and labels
+            try
+                imageDir = fullfile(obj.BatchOpt.OriginalTrainingImagesDir, 'Images');
+                labelDir = fullfile(obj.BatchOpt.OriginalTrainingImagesDir, 'Labels');
+                imageSet = matlab.io.datastore.FileSet(imageDir, "FileExtensions", {['.' obj.BatchOpt.ImageFilenameExtensionTraining{1}]});
+                labelSet = matlab.io.datastore.FileSet(labelDir, "FileExtensions", {['.' obj.BatchOpt.ModelFilenameExtension{1}]});
+            catch err
+                obj.showErrorDialog(err, 'Missing files');
+                return;
+            end
+            % check that number of image and label files match
+            if imageSet.NumFiles ~= labelSet.NumFiles
+                uialert(obj.View.gui, ...
+                    sprintf(['!!! Error !!!\n\n' ...
+                    'Directories with images and labels should have equal number of files!\n\n' ...
+                    'Directory with images:\n%s\n\nDirectory with labels:\n%s\n'], imageDir, labelDir), ...
+                    'Number of files mismatch', 'icon', 'error');
+                return
+            end
+
+            pw = PoolWaitbar(imageSet.NumFiles, sprintf('Balancing labels\nPlease wait...'));
+
+            % Create an array of labeled images from the dataset.
+            blockedLabelsList = blockedImage(labelSet);
+            blockedImagesList = blockedImage(imageSet);
+
+            % Create a blockedImageDatastore from the image array.
+            blockedLabelsDS = blockedImageDatastore(blockedLabelsList, 'BlockSize', blockSize);
+
+            % Count pixel label occurrences of each class. The classes in the pixel label images are not balanced.
+            if numberOfClasses == 2
+                pixelLabelID = 0:numberOfClasses-1; %  exclude exterior
+                classNames = {'Exterior', 'Class01'};
+            else
+                pixelLabelID = 1:numberOfClasses-1; %  exclude exterior
+                classNames = arrayfun(@(x) sprintf('Class%.2d', x), 1:numberOfClasses-1, 'UniformOutput', false);
+            end
+
+            % Select block locations from the labeled images to achieve class.
+            locationSet = balancePixelLabels(blockedLabelsList, blockSize, obj.sessionSettings.numBalanceObservations,...
+                'Classes', classNames, 'PixelLabelIDs', pixelLabelID);
+
+            % Create a blockedImageDatastore using the block locations after balancing.
+            blockLabeldsBalanced = blockedImageDatastore(blockedLabelsList, 'BlockLocationSet', locationSet);
+            blockImagesBalanced = blockedImageDatastore(blockedImagesList, 'BlockLocationSet', locationSet);
+
+            outImgDir = fullfile(obj.BatchOpt.OriginalTrainingImagesDir, 'ImagesBalanced');
+            outLabelDir = fullfile(obj.BatchOpt.OriginalTrainingImagesDir, 'LabelsBalanced');
+            if isfolder(outImgDir); rmdir(outImgDir, 's'); end
+            if isfolder(outLabelDir); rmdir(outLabelDir, 's'); end
+            mkdir(outImgDir);
+            mkdir(outLabelDir);
+
+            pw.updateMaxNumberOfIterations(blockImagesBalanced.TotalNumBlocks);
+            pw.setIncrement(20);  % set increment step to 20
+
+            fnIndex = 1;
+            parfor (fnIndex = 1:blockImagesBalanced.TotalNumBlocks, parforArg)
+                [imgIn, imgInfo] = read(blockImagesBalanced);
+                [labelIn, labelInfo] = read(blockLabeldsBalanced);
+                fn = sprintf('img_%.3d.tif', fnIndex);
+                imwrite(imgIn{1}, fullfile(outImgDir, fn));
+                imwrite(labelIn{1}, fullfile(outLabelDir, fn));
+                if mod(fnIndex, 20) == 1; increment(pw); end
+            end
+
+            pw.updateText(sprintf('Counting labels\nPlease wait...'));
+            pw.updateMaxNumberOfIterations(3);
+            pw.setIncrement(1);  % set increment step to 20
+            increment(pw);
+
+            if numberOfClasses == 2
+                classNamesCounting = classNames;
+                pixelLabelIDCounting = 0:numberOfClasses-1;
+            else
+                %classNamesCounting = ['Ext', classNames];
+                %pixelLabelIDCounting = 0:numberOfClasses-1;
+                classNamesCounting = classNames;
+                pixelLabelIDCounting = 1:numberOfClasses-1;
+            end
+            
+            labelCounts = countEachLabel(blockedLabelsDS,...
+                'Classes', classNamesCounting, 'PixelLabelIDs', pixelLabelIDCounting);
+            increment(pw);
+
+            % Recalculate the pixel label occurrences for the balanced dataset.
+            labelCountsBalanced = countEachLabel(blockLabeldsBalanced,...
+                'Classes', classNamesCounting, 'PixelLabelIDs', pixelLabelIDCounting);
+            increment(pw);
+
+            % Compare the original unbalanced labels and labels after label balancing.
+            figure(321);
+            h1 = histogram('Categories',labelCounts.Name,...
+                'BinCounts',labelCounts.PixelCount);
+            title(h1.Parent,'Original dataset labels')
+
+            figure(322);
+            h2 = histogram('Categories',labelCountsBalanced.Name,...
+                'BinCounts',labelCountsBalanced.PixelCount);
+            title(h2.Parent, sprintf('Balanced labels, N=%d', obj.sessionSettings.numBalanceObservations));
+            fprintf('Balancing of classes is over!\n');
+            toc;
+            pw.deletePoolWaitbar();
         end
-        
         
     end
 end

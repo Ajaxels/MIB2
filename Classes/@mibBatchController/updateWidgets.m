@@ -10,6 +10,9 @@ obj.View.handles.sectionPopup.Value = obj.selectedSection;
 obj.View.handles.actionPopup.String = {obj.Sections(obj.selectedSection).Actions.Name}';
 obj.View.handles.actionPopup.Value = obj.selectedAction;
 
+obj.View.gui.WindowButtonMotionFcn = (@(hObject, eventdata, handles) obj.gui_WinMouseMotionFcn());   
+obj.View.gui.WindowButtonDownFcn = (@(hObject, eventdata, handles) obj.gui_WindowButtonDownFcn());   
+
 end
 
 

@@ -99,12 +99,14 @@
 % <td>- rotate dataset 90 degrees clockwise diirection</td></tr>
 % <tr><td><b>Rotate -90 degrees</b></td>
 % <td>- rotate dataset 90 degrees anti-clockwise diirection</td></tr>
-% <tr><td><b>Transpose XY -> ZX</b></td>
-% <td>- physically transpose the dataset, so that the XY orienation, becomes ZX</td></tr>
-% <tr><td><b>Transpose XY -> ZY</b></td>
-% <td>- physically transpose the dataset, so that the XY orienation, becomes ZY</td></tr>
-% <tr><td><b>Transpose ZX -> ZY</b></td>
-% <td>- physically transpose the dataset, so that the ZX orienation, becomes ZY</td></tr>
+% <tr><td><b>Transpose YX -> YZ</b></td>
+% <td>- physically transpose the dataset, so that the YX orienation, becomes YZ. Repeat of this operation returns dataset back to the original configuration</td></tr>
+% <tr><td><b>Transpose YX -> XZ</b></td>
+% <td>- physically transpose the dataset, so that the YX orienation, becomes XZ. . Repeat of this operation twice to return dataset back to the original configuration</td></tr>
+% <tr><td><b>Transpose YX -> XY</b></td>
+% <td>- physically transpose the dataset, so that the YX orienation, becomes XY. Repeat of this operation returns dataset back to the original configuration</td></tr>
+% <tr><td><b>Transpose YX -> ZX</b></td>
+% <td>- physically transpose the dataset, so that the YX orienation, becomes ZX. Repeat of this operation returns dataset back to the original configuration</td></tr>
 % <tr><td><b>Transpose Z <-> T</b></td>
 % <td>- physically transpose the dataset, so that the Z orienation, becomes T</td></tr>
 % <tr><td><b>Transpose Z <-> C</b></td>

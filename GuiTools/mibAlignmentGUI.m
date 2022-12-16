@@ -65,17 +65,17 @@ function mibAlignmentGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % obtain controller
 handles.winController = varargin{1};
 
-% update font and size
-global Font;
-if ~isempty(Font)
-    if handles.existingFnText1.FontSize ~= Font.FontSize ...
-            || ~strcmp(handles.existingFnText1.FontName, Font.FontName)
-        mibUpdateFontSize(handles.mibAlignmentGUI, Font);
-    end
-end
-
-% rescale widgets for Mac and Linux
-mibRescaleWidgets(handles.mibAlignmentGUI);
+% % update font and size
+% global Font;
+% if ~isempty(Font)
+%     if handles.existingFnText1.FontSize ~= Font.FontSize ...
+%             || ~strcmp(handles.existingFnText1.FontName, Font.FontName)
+%         mibUpdateFontSize(handles.mibAlignmentGUI, Font);
+%     end
+% end
+% 
+% % rescale widgets for Mac and Linux
+% mibRescaleWidgets(handles.mibAlignmentGUI);
 
 % set size of the window, because in Guide it is bigger
 winPos = handles.mibAlignmentGUI.Position;
@@ -294,6 +294,9 @@ switch methodSelected
         handles.previewFeaturesBtn.Enable = 'on';
         handles.ColorChannel.Enable = 'on';
         handles.winController.updateBatchOptFromGUI(handles.TransformationType);   % update BatchOpt parameters
+        handles.HDD_Mode.Enable = 'on';
+        handles.HDD_Mode.Value = HDD_ModeValue;     % restore the value
+        handles.UseParallelComputing.Enable = 'on';
     case 'AMST: median-smoothed template'
         if handles.TransformationType.Value > 3; handles.TransformationType.Value = 1; end
         textStr = sprintf('Align dataset to a median smoothed in Z version of itself which compensate for local deformations, the dataset has to be prealigned with Drift correction');

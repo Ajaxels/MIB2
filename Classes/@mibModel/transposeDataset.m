@@ -4,9 +4,10 @@ function transposeDataset(obj, mode, showWaitbar, noColorChannels)
 %
 % Parameters:
 % mode: -> a string that defines the transpose dimension
-%     - ''Transpose XY -> ZX'' -> transpose so that XY dimension becomes ZX
-%     - ''Transpose XY -> ZY'' -> transpose so that XY dimension becomes ZY
-%     - ''Transpose ZX -> ZY'' -> transpose so that ZX dimension becomes ZY
+%     - 'Transpose YX -> YZ', transpose the dataset so that YX->YZ
+%     - 'Transpose YX -> XZ', transpose the dataset so that YX->XZ
+%     - 'Transpose YX -> XY', transpose the dataset so that YX->XY
+%     - 'Transpose YX -> ZX', transpose the dataset so that YX->ZX
 %     - ''Transpose Z<->T'' -> transpose so that Z-dimension becomes T-dimension
 %     - ''Transpose Z->C'' -> transpose Z to C, if noColorChannels 
 % showWaitbar: logical, show or not the waitbar
@@ -33,15 +34,20 @@ tic
 [yMax, xMax, cMax, zMax, tMax] = obj.I{obj.Id}.getDatasetDimensions('image', 4, NaN, options);
 cMax = obj.I{obj.Id}.colors;
 switch mode
-    case 'Transpose XY -> ZX'
-        imgOut = zeros([zMax, xMax, cMax, yMax, tMax], obj.I{obj.Id}.meta('imgClass')); %#ok<ZEROLIKE>
-        outputDims = [zMax, xMax, cMax, yMax, tMax];
-    case 'Transpose XY -> ZY'
+    % updated section
+    case 'Transpose YX -> YZ'  
         imgOut = zeros([yMax, zMax, cMax, xMax tMax], obj.I{obj.Id}.meta('imgClass')); %#ok<ZEROLIKE>
         outputDims = [yMax, zMax, cMax, xMax tMax];
-    case 'Transpose ZX -> ZY'
+    case 'Transpose YX -> XZ' 
+        imgOut = zeros([xMax, zMax, cMax, yMax, tMax], obj.I{obj.Id}.meta('imgClass')); %#ok<ZEROLIKE>
+        outputDims = [xMax, zMax, cMax, yMax, tMax];
+    case 'Transpose YX -> XY'  
         imgOut = zeros([xMax, yMax, cMax, zMax, tMax], obj.I{obj.Id}.meta('imgClass')); %#ok<ZEROLIKE>
         outputDims = [xMax, yMax, cMax, zMax, tMax];
+    case 'Transpose YX -> ZX'  % ==> YX->ZX
+        imgOut = zeros([zMax, xMax, cMax, yMax, tMax], obj.I{obj.Id}.meta('imgClass')); %#ok<ZEROLIKE>
+        outputDims = [zMax, xMax, cMax, yMax, tMax];
+
     case 'Transpose Z<->T'
         obj.transposeZ2T();
         log_text = 'Transpose: mode=Z->T';
@@ -178,16 +184,7 @@ clear img;
 bb = obj.I{obj.Id}.getBoundingBox();    % get current bounding box
 
 switch mode
-    case 'Transpose XY -> ZX'
-        % swap pixSize.y and pixSize.z
-        dummy = obj.I{obj.Id}.pixSize.y;
-        obj.I{obj.Id}.pixSize.y = obj.I{obj.Id}.pixSize.z;
-        obj.I{obj.Id}.pixSize.z = dummy;
-        % update the bounding box
-        dummy = bb(3:4);
-        bb(3:4) = bb(5:6);
-        bb(5:6) = dummy;
-    case 'Transpose XY -> ZY'
+    case 'Transpose YX -> YZ'
         % swap pixSize.x and pixSize.z
         dummy = obj.I{obj.Id}.pixSize.x;
         obj.I{obj.Id}.pixSize.x = obj.I{obj.Id}.pixSize.z;
@@ -196,7 +193,20 @@ switch mode
         dummy = bb(1:2);
         bb(1:2) = bb(5:6);
         bb(5:6) = dummy;
-    case 'Transpose ZX -> ZY'
+    case 'Transpose YX -> XZ'
+        % swap pixSize.y -> pixSize.x
+        % swap pixSize.x -> pixSize.z
+        % swap pixSize.z -> pixSize.y
+        pixSizeOld = obj.I{obj.Id}.pixSize;
+        obj.I{obj.Id}.pixSize.x = pixSizeOld.z;
+        obj.I{obj.Id}.pixSize.y = pixSizeOld.x;
+        obj.I{obj.Id}.pixSize.z = pixSizeOld.y;
+        % update the bounding box
+        dummyBB = bb;
+        bb(1:2) = dummyBB(5:6);
+        bb(3:4) = dummyBB(1:2);
+        bb(5:6) = dummyBB(3:4);
+    case 'Transpose YX -> XY'
         % swap pixSize.y and pixSize.x
         dummy = obj.I{obj.Id}.pixSize.x;
         obj.I{obj.Id}.pixSize.x = obj.I{obj.Id}.pixSize.y;
@@ -205,6 +215,15 @@ switch mode
         dummy = bb(1:2);
         bb(1:2) = bb(3:4);
         bb(3:4) = dummy;
+    case 'Transpose YX -> ZX'
+        % swap pixSize.y and pixSize.z
+        dummy = obj.I{obj.Id}.pixSize.y;
+        obj.I{obj.Id}.pixSize.y = obj.I{obj.Id}.pixSize.z;
+        obj.I{obj.Id}.pixSize.z = dummy;
+        % update the bounding box
+        dummy = bb(3:4);
+        bb(3:4) = bb(5:6);
+        bb(5:6) = dummy;
 end
 obj.I{obj.Id}.updateBoundingBox(bb);  % update bounding box
 
@@ -220,26 +239,30 @@ end
 
 function img = transposeme(img, mode)
 % transpose function
-%     - ''Transpose XY -> ZX'' -> transpose so that XY dimension becomes ZX
-%     - ''Transpose XY -> ZY'' -> transpose so that XY dimension becomes ZY
-%     - ''Transpose ZX -> ZY'' -> transpose so that ZX dimension becomes ZY
+%     - ''Transpose YX -> ZX'' -> transpose so that XY dimension becomes ZX
+%     - ''Transpose YX -> YZ'' -> transpose so that XY dimension becomes ZY
+%     - ''Transpose YX -> XY'' -> transpose so that ZX dimension becomes ZY
 
 if ndims(img) == 4  % for image
     switch mode
-        case 'Transpose XY -> ZX'
+        case 'Transpose YX -> XZ'
+            img = permute(img,[2, 4, 3, 1]);
+        case 'Transpose YX -> ZX'
             img = permute(img,[4, 2, 3, 1]);
-        case 'Transpose XY -> ZY'
+        case 'Transpose YX -> YZ'
             img = permute(img,[1, 4, 3, 2]);
-        case 'Transpose ZX -> ZY'
+        case 'Transpose YX -> XY'
             img = permute(img,[2, 1, 3, 4]);
     end
 else     % for other layers
     switch mode
-        case 'Transpose XY -> ZX'
-            img = permute(img,[3, 2, 1]);
-        case 'Transpose XY -> ZY'
+        case 'Transpose YX -> YZ'
             img = permute(img,[1, 3, 2]);
-        case 'Transpose ZX -> ZY'
+        case 'Transpose YX -> XZ'
+            img = permute(img,[2, 3, 1]);
+        case 'Transpose YX -> ZX'
+            img = permute(img,[3, 2, 1]);
+        case 'Transpose YX -> XY'
             img = permute(img,[2, 1, 3]);
     end
 end

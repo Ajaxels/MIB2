@@ -60,6 +60,7 @@ if ~isstruct(pixList), pixList.PixelList = pixList; end
 
 for ii = 1:length(pixList)
     pixs = struct2array(pixList(ii));
+
     covmat = cov(pixs);
     % fix situation when object consists of a single pixel
     if size(covmat,1) == 1 

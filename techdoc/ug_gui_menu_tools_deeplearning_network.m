@@ -61,23 +61,39 @@
 % - Create SegNet layers for semantic segmentation
 % (<a href="https://se.mathworks.com/help/vision/ref/segnetlayers.html">link</a>)
 % </li>
-% <li><b>2D DeepLabV3 Resnet18</b>, (<b><em>recommended</b></em>) an efficient DeepLab v3+ convolutional neural network for semantic image segmentation
-% initialized with Resnet18 as a base network. Suitable for large variety
-% of segmentation tasks. The input images can be grayscale or RGB colors.
+% <li><b>2D DeepLabV3 Resnet18/Resnet50/Xception/Inception-ResNet-v2</b>, (<b><em>recommended</b></em>) an efficient DeepLab v3+ convolutional neural network for 
+% semantic image segmentation initialized with selectable base network. Suitable for large variety
+% of segmentation tasks. The input images can be grayscale or RGB colors. 
+% <ul>Base networks:
+% <li><b>Resnet18</b> initialize DeepLabV3 using ResNet-18, a convolutional neural network that is 18 layers deep with original image input size of 224 x 224 pixels.
+% This is the lightest available version that is quickest and has lowest
+% GPU requirements. The network is intialized using a pretrained for EM or pathology
+% template that is automatically downloaded the first time the network is used.
 % <br>
-% <b>Reference:</b><br>
-% -  Chen, L., Y. Zhu, G. Papandreou, F. Schroff, and H. Adam. "Encoder-Decoder 
-% with Atrous Separable Convolution for Semantic Image Segmentation." 
-% Computer Vision — ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="https://arxiv.org/abs/1802.02611">link</a>)<br>
+% <b>ResNet-18 reference:</b> <br>He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. "Deep residual learning for image recognition." <a href="https://ieeexplore.ieee.org/document/7780459">In Proceedings of the IEEE conference on computer vision and pattern recognition</a>, pp. 770-778. 2016
+% <li><b>Resnet50</b> initialize DeepLabV3 using ResNet-50, a convolutional neural network that is 50 layers deep with original image input size of 224 x 224 pixels. 
+% The most balanced option for moderate GPU with good performance/requirements ratio. The network is intialized using a pretrained for EM or pathology
+% template that is automatically downloaded the first time the network is used.
+% <br> 
+% <b>ResNet-50 reference:</b> <br>He, Kaiming, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. "Deep residual learning for image recognition." In <a href="https://ieeexplore.ieee.org/document/7780459">Proceedings of the IEEE conference on computer vision and pattern recognition</a>, pp. 770-778. 2016
 % </li>
-% <li><b>2D DeepLabV3 Resnet50</b>, (<em>MATLAB version of MIB only</em>) an efficient DeepLab v3+ convolutional neural network for semantic image segmentation
-% initialized with Resnet50 as a base network. Comparing to _2D DeepLabV3 Resnet18_ this network requires more resources for training and prediction, 
-% but may potentially produce results with highter prediction scores.Suitable for large variety of segmentation tasks. The input images can be grayscale or RGB colors.
+% <li><b>Xception</b> [<em><b>MATLAB version of MIB only</b></em>]
+% initialize DeepLabV3 using Xception, a convolutional neural network that
+% is 71 layers deep with original image input size of 299 x 299 pixels.
+% <br> 
+% <b>Xception reference:</b> <br>Chollet, Francois, 2017. "Xception: Deep Learning with Depthwise Separable Convolutions." <a href="https://arxiv.org/abs/1610.02357">arXiv preprint, pp.1610-02357</a>.
+% </li>
+% <li><b>Inception-ResNet-v2</b> [<em><b>MATLAB version of MIB only</b></em>] initialize DeepLabV3 using Inception-ResNet-v2, a convolutional neural network that 
+% is 164 layers deep with original image input size of 299 x 299 pixels.
+% This network has high GPU requirements, but expected to provide the best results. <br> 
+% <b>Inception-ResNet-v2 reference:</b> <br>Szegedy Christian, Sergey Ioffe, Vincent Vanhoucke, and Alexander A. Alemi. "Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning." In <a href="https://dl.acm.org/doi/10.5555/3298023.3298188">AAAI</a>, vol. 4, p. 12. 2017.
+% </li>
+% </ul>
 % <br>
 % <b>Reference:</b><br>
 % -  Chen, L., Y. Zhu, G. Papandreou, F. Schroff, and H. Adam. "Encoder-Decoder 
 % with Atrous Separable Convolution for Semantic Image Segmentation." 
-% Computer Vision — ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="https://arxiv.org/abs/1802.02611">link</a>)<br>
+% Computer Vision - ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="https://arxiv.org/abs/1802.02611">link</a>)<br>
 % </li>
 % </ul>
 % </html>

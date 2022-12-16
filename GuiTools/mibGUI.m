@@ -22,7 +22,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 05-Jun-2022 14:44:18
+% Last Modified by GUIDE v2.5 25-Oct-2022 18:34:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -96,6 +96,7 @@ for i=1:9
     eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Sync view (x,y) with...'', ''Separator'',''on'',''Callback'', {@mibBufferToggleContext_Callback, ''sync_xy'',%d});', i, i));
     eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Sync view (x,y,z) with...'', ''Callback'', {@mibBufferToggleContext_Callback, ''sync_xyz'',%d});', i, i));
     eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Sync view (x,y,z,t) with...'', ''Callback'', {@mibBufferToggleContext_Callback, ''sync_xyzt'',%d});', i, i));
+    eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Link view with... [Unlinked]'', ''Separator'',''on'', ''Callback'', {@mibBufferToggleContext_Callback, ''link_views'',%d});', i, i));
     eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Close dataset'', ''Separator'',''on'',''Callback'', {@mibBufferToggleContext_Callback, ''close'',%d});', i, i));
     eval(sprintf('uimenu(handles.mibBufferToggle%d_cm, ''Label'', ''Close all stored datasets'', ''Callback'', {@mibBufferToggleContext_Callback, ''closeAll'',%d});', i, i));
     eval(sprintf('set(handles.mibBufferToggle%d,''uicontextmenu'',handles.mibBufferToggle%d_cm);', i, i));
@@ -1781,6 +1782,16 @@ if nargin < 4;     parameter = 'matlab'; end
 handles.mibController.menuFileImportImage_Callback(parameter);
 end
 
+function menuFileExamples_Callback(hObject, eventdata, handles)
+% hObject    handle to menuFileExamplesDeepSynLargeSpots (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+pos = strfind(eventdata.Source.Text, '(');
+BatchOpt.Dataset = {eventdata.Source.Text(1:pos-2)};
+BatchOpt.DirectoryName = {'Current MIB path'};
+handles.mibController.menuFileExamples_Callback(BatchOpt);
+end
+
 function menuFileExportImage_Callback(hObject, eventdata, handles, parameter)
 % a callback from Menu->File->Export
 if nargin < 4;     parameter = 'matlab'; end
@@ -1947,6 +1958,10 @@ end
 % --------------------------------------------------------------------
 function menuImageIntensity_Callback(hObject, eventdata, handles, parameter)
 handles.mibController.menuImageIntensity_Callback(parameter)
+end
+
+function menuImageToolsWhiteBalance_Callback(hObject, eventdata, handles)
+handles.mibController.startController('mibWhiteBalanceController');
 end
 
 %% ------------------ Models menu ------------------ 

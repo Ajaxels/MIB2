@@ -9,9 +9,9 @@
 %% The 3D ball
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationTools3DBall.png">
 % </td>
 % <td style="border: 0px">
@@ -41,9 +41,9 @@
 % [target1]
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationTools3DLines.png">
 % </td>
 % <td style="border: 0px">
@@ -173,9 +173,9 @@
 %% Annotations
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsAnnotations.png">
 % </td>
 % <td style="border: 0px">
@@ -229,9 +229,9 @@
 % [class.h3]List of annotations window[/class]
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 400px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsAnnotationsTable.png">
 % </td>
 % <td style="border: 0px">
@@ -257,13 +257,24 @@
 %       <li><em><b>Order</b></em>, subitems of the Order entry can be used to move annotations towards the top or the bottom of the list</li>
 %       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
 %   </ul>
+% </ul>
+% </td>
+% </tr>
+% <tr style="border: 0px">
+% <td colspan=2>
+% <ul>
 % <li>The <span class="kbd">Load</span> button, press to import annotations from the main MATLAB workspace or load them from a file</li>
 % <li>The <span class="kbd">Save</span> button, press to export annotations to the main MATLAB workspace or to save them as a file in MATLAB, Comma-separated CSV format, Excel formats or as landmarks for Amira (
 %           <a href="https://youtu.be/wHr6nHpmVMo"><img style="vertical-align:middle;" src="images\youtube.png"></a> <em><b>Note!</em> only the coordinates are exported!</b>), or PSI format for Amira</li>
 % <li>The <b>Precision</b> editbox, modify precision of the value field in the table and for the visualization in the Image View panel
 % <li>The <span class="kbd">[&#10003;] <b>Auto jump</b></span> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>
 % <li>The <b>Sort table</b> allows to sort annotations based on their Name, Value, X, Y, Z, T</li>
-% <li>The <span class="kbd">Settings</span> provides configuration of additional settings: extra slices to display annotation, when this value 0 annotations only belonging to the current slice are displayed, when a positive number from -value to +value depth</li>
+% <li>The <span class="kbd">Settings</span> provides configuration of additional settings: 
+% <ul>
+% <li><b>Show annotations for extra slices</b>, extra slices to display annotation, when this value 0 annotations only belonging to the current slice are displayed, when a positive number from -value to +value depth</li>
+% <li><b>Annotation size</b>, size of the annotation marker from 8 to 20pt</li>
+% </ul>
+% </li>
 % <li>The <span class="kbd">Refresh table</span> button updates the list of annotations</li>
 % <li>The <span class="kbd">Delete all</span> button removes all annotations</li>
 % </ul>
@@ -277,9 +288,9 @@
 %% The Brush tool 
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsBrush.png">
 % </td>
 % <td style="border: 0px">
@@ -388,9 +399,9 @@
 %
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsBWThres.png">
 % </td>
 % <td style="border: 0px">
@@ -433,9 +444,9 @@
 %% Drag & Drop material
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsDragDrop.png">
 % </td>
 % <td style="border: 0px">
@@ -515,9 +526,9 @@
 %% The Magic Wand + Region Growing tool
 % 
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsMagicWand.png">
 % </td>
 % <td style="border: 0px">
@@ -556,9 +567,9 @@
 %% The Membrane Click Tracker tool
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsMembraneClick.png">
 % </td>
 % <td style="border: 0px">
@@ -611,9 +622,9 @@
 %% Object Picker
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsObjectPicker.png">
 % </td>
 % <td style="border: 0px">
@@ -687,9 +698,9 @@
 %% The Spot tool 
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsSpot.png">
 % </td>
 % <td style="border: 0px">

@@ -42,10 +42,10 @@
 % A brief demonstration is available in the following videos:<br>
 % <ul>
 % <li> General demonstration: <a href="https://youtu.be/gT-c8TiLcuY"><img
-% style="vertical-align:middle;" src="images\youtube2.png">
+% style="vertical-align:middle;" src="images\youtube.png">
 % https://youtu.be/gT-c8TiLcuY</a></li>
 % <li> Correction of color shifts between images: <a href="https://youtu.be/-J2P8a_z7pE"><img
-% style="vertical-align:middle;" src="images\youtube2.png">
+% style="vertical-align:middle;" src="images\youtube.png">
 % https://youtu.be/-J2P8a_z7pE</a></li>
 % </ul>
 % </html>
@@ -73,7 +73,7 @@
 %
 % <html>
 % A tutorial on image normalization is available in the following video:<br>
-% <a href="https://youtu.be/MmBmdGtuUdM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MmBmdGtuUdM</a>
+% <a href="https://youtu.be/MmBmdGtuUdM"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/MmBmdGtuUdM</a>
 % </html>
 %
 % [dtls][smry] *List of contrast adjustment operations* [/smry]
@@ -108,7 +108,7 @@
 % 
 % <html>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/1DG2w5XYA18"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/1DG2w5XYA18</a>
+% <a href="https://youtu.be/1DG2w5XYA18"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/1DG2w5XYA18</a>
 % </html>
 %
 % [dtls][smry] *Invert operations available for* [/smry]
@@ -138,7 +138,7 @@
 %
 % <html>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/H_TVvgA_br4"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/H_TVvgA_br4</a>
+% <a href="https://youtu.be/H_TVvgA_br4"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/H_TVvgA_br4</a>
 % </html>
 % 
 % [dtls][smry] *Details of content-aware methods* [/smry]
@@ -198,8 +198,10 @@
 % 
 % <html>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/iM2nHBxTjRw"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iM2nHBxTjRw</a>
+% <a href="https://youtu.be/iM2nHBxTjRw"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/iM2nHBxTjRw</a>
 % </html>
+%
+% [dtls][smry] *Snapshot and details* [/smry]
 %
 % <html>
 % <table>
@@ -227,18 +229,25 @@
 % </table>
 % </html>
 %
+% [/dtls]
+%
 % [br8]
 %
-%% Tools for images --> Image arithmetics
+%% Tools for images --> Image arithmetics (MIB for MATLAB only)
 %
 % <html>
 % Use MATLAB syntax to apply custom arithmetic expression to Image, Model, Mask or Selection layers, see more in
 % a brief video and examples below.<br>
 % For MIB 2.60 and newer <a href="https://youtu.be/sDwvnJGLi8Q"><img
-% style="vertical-align:middle;" src="images\youtube2.png">
+% style="vertical-align:middle;" src="images\youtube.png">
 % https://youtu.be/sDwvnJGLi8Q</a><br>
-% For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
+% For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/-puVxiNYGsI</a>
 % <br>
+% </html>
+%
+% [dtls][smry] *Snapshot and details* [/smry]
+%
+% <html>
 % <table>
 % <tr>
 % <td><img src="images\MenuImageToolsArithmetics.png"></td>
@@ -263,7 +272,9 @@
 % </table>
 % </html>
 %
-% [dtls][smry] *Examples* [/smry]
+% [/dtls]
+%
+% [dtls][smry] *Examples of arithmetic operations* [/smry]
 %
 % <html>
 % <ul>
@@ -298,8 +309,7 @@
 % <td><img src="images\MenuImageToolsIntensityProjection.png"></td>
 % <td>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/hwFpS_3eP9U</a>
-%
+% <a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/hwFpS_3eP9U</a>
 % </td>
 % </tr>
 % </table>
@@ -336,11 +346,47 @@
 % <td><img src="images\image_border_detection.png"></td>
 % <td>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/sWjipmeU5eA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/sWjipmeU5eA</a>
+% <a href="https://youtu.be/sWjipmeU5eA"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/sWjipmeU5eA</a>
 % </td>
 % </tr>
 % </table>
 % </html>
+%
+% [br8]
+%
+%% Tools for images --> White balance correction
+%
+% <html>
+% <a href="https://youtu.be/Fdm-W4e6kHA"><img style="vertical-align:middle;" src="images\youtube.png"> White balance correction demo</a><br>
+% Correct white balance of the open dataset. Start with selection of an
+% area that should be white or gray and assign that to the <em>Mask</em> or
+% <em>Selection</em> layers or alternatively use the <em>Manual</em> mode and provide an RGB value
+% that should be corrected to become white or gray.
+% </html>
+%
+% [dtls][smry] *Snapshot, details and reference* [/smry]
+%
+% <html>
+% <table>
+% <tr>
+% <td><img src="images\MenuImageToolsWhiteBalanceCorrection.png"></td>
+% </tr>
+% <tr>
+% <td>
+% For details please check <a href="https://se.mathworks.com/help/images/ref/chromadapt.html">chromadapt</a> function
+% </td>
+% </tr>
+% <tr>
+% <td>
+% <b>Reference</b><br>
+% [1] Lindbloom, Bruce. Chromatic Adaptation. <a
+% href="http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html">http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html</a>
+% </td>
+% </tr>
+% </table>
+% </html>
+%
+% [/dtls]
 %
 % [br8]
 %
@@ -352,11 +398,15 @@
 % 
 % <html>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/itbVLFm0FKQ"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/itbVLFm0FKQ</a>
+% <a href="https://youtu.be/itbVLFm0FKQ"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/itbVLFm0FKQ</a>
 % </html>
 % 
+% [dtls][smry] *Snapshot* [/smry]
+%
 % <<images\MenuImageMorphOps.png>>
 % 
+% [/dtls]
+%
 % [dtls][smry] *List of available morphological operations* [/smry]
 %
 % * *Bottom-hat filtering (imbothat)* computes the morphological closing of the image (using imclose`) and then subtracts the result from the original image 

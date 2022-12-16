@@ -85,11 +85,17 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'Tools', 'Supervoxels'));
 end
 
-mibVersion = 'ver. 2.831 / 21.06.2022';  % ATTENTION! it is important to have the version number between "ver." and "/"
+mibVersion = 'ver. 2.84 / 09.12.2022';  % ATTENTION! it is important to have the version number between "ver." and "/"
 
 % define max number of parallel workers for deployed versions
 % define workers for parallel pools
-parPool = parcluster('local'); % If no pool, do not create new one.
+% use try block to make it work with MATLAB Online
+try
+    parPool = parcluster('local'); % If no pool, do not create new one.
+catch err
+    parPool.NumWorkers = 1;
+end
+
 if isdeployed
     if ispc()
         cpuParallelLimit = 12;

@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Deep MIB - Train tab</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_train.m"><style>
+      --><title>Deep MIB - Train tab</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_train.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -146,10 +146,11 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 8px 20px;
+  padding: 6px 14px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
+  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -517,7 +518,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <br>(click <b>&times;</b> to hide)</div>
 </div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Deep MIB - Train tab</h1><!--introduction-->
 <p>This tab contains settings for generating deep convolutional network and training.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a></p><!--/introduction-->
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a></p><!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
 <div><ul><li><a href="#1">Train tab</a></li>
@@ -602,6 +603,13 @@ button <img class="image-fit" src="images\DeepLearningTrainSettingsBtn.png"> on 
 <details open onclick="state_check('1.2')" id="1.2"><summary> <b>List of available activation layers</b> </summary>
 <div class="details-div">
 <p></p>
+With DeepMIB, the users have a possibility to define the activation layer
+using one of the options listed below. For comparison of the different
+activation layers check <a
+href="https://se.mathworks.com/help/deeplearning/ug/compare-activation-layers.html">this
+link</a>
+<br>
+<br>
 <ul>
 <li><em>reluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.relulayer.html">
 Rectified Linear Unit (ReLU) layer</a>, it is a default activation layer of the networks,
@@ -616,6 +624,8 @@ clipping ceiling is set to that clipping ceiling</li>
 <li><em>eluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.elulayer.html">
 Exponential linear unit (ELU) layer</a> performs the identity operation on positive inputs and an
 exponential nonlinearity on negative inputs</li>
+<li><em>swishLayer</em> - A <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.swishlayer.html">
+swish activation layer</a> applies the applies the swish function (f(x) = x / (1+e^(-x)) ) on the layer inputs</li>
 <li><em>tanhLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.tanhlayer.html">
 Hyperbolic tangent (tanh) layer</a> applies the tanh function on the layer inputs</li>
 </ul>
@@ -662,7 +672,10 @@ network and does not check it.
 <details open onclick="state_check('1.4')" id="1.4"><summary> <b>Snapshots of the network check window for the MATLAB and standalone versions of MIB</b> </summary>
 <div class="details-div">
 <p></p>
+<p>A snapshot of the network check preview for the MATLAB version of MIB:</p>
 <p><img class="image-fit" src="images\DeepLearning_OrganizationDiagram.jpg" alt=""> </p>
+<p>A snapshot of the network check preview for the standalone version of MIB:</p>
+<p><img class="image-fit" src="images\DeepLearning_OrganizationDiagram_deployed.jpg" alt=""> </p>
 </div>
 </details>
 <br>
@@ -821,6 +834,11 @@ red curve for the validation set. The accuracy of the prediction for both
 train and validation sets is displayed using the linear gauge widgets at
 the left bottom corner of the window.
 <br>
+<span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\RMB_click.svg">
+right mouse click</span> over the plot opens a popup menu, that can be
+used to scale the plot.
+
+<br>
 <br>
 It is possible to stop training at any moment by pressing the <span class="kbd">Stop</span> or
 <span class="kbd">Emergency brake</span> buttons. When the <span class="kbd">Emergency brake</span> button
@@ -853,7 +871,7 @@ is 0.01 only 1% of patches is displayed.
 After the training, the network and config files with all paramters are generated in location specified in the
 <span class="dropdown">Network filename...</span> editbox of the <em>Network</em> panel.
 </p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a></p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a></p>
 <p></p>
 <p>
 <script>
@@ -861,14 +879,15 @@ After the training, the network and config files with all paramters are generate
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Deep MIB - Train tab
 % This tab contains settings for generating deep convolutional network and training.
 % 
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
-% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools.html *Tools Menu*>
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools.html *Tools
+% Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools_deeplearning.html *Deep learning segmentation*>
 % 
 %
 %% Train tab
@@ -961,6 +980,13 @@ After the training, the network and config files with all paramters are generate
 <div class="details-div">
 %
 % <html lang="en">
+% With DeepMIB, the users have a possibility to define the activation layer
+% using one of the options listed below. For comparison of the different
+% activation layers check <a
+% href="https://se.mathworks.com/help/deeplearning/ug/compare-activation-layers.html">this
+% link</a>
+<br>
+<br>
 % <ul>
 % <li><em>reluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.relulayer.html">
 % Rectified Linear Unit (ReLU) layer</a>, it is a default activation layer of the networks, 
@@ -975,6 +1001,8 @@ After the training, the network and config files with all paramters are generate
 % <li><em>eluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.elulayer.html">
 % Exponential linear unit (ELU) layer</a> performs the identity operation on positive inputs and an 
 % exponential nonlinearity on negative inputs</li>
+% <li><em>swishLayer</em> - A <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.swishlayer.html">
+% swish activation layer</a> applies the applies the swish function (f(x) = x / (1+e^(-x)) ) on the layer inputs</li>
 % <li><em>tanhLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.tanhlayer.html">
 % Hyperbolic tangent (tanh) layer</a> applies the tanh function on the layer inputs</li>
 % </ul>
@@ -1028,7 +1056,13 @@ After the training, the network and config files with all paramters are generate
 % [dtls]<summary> *Snapshots of the network check window for the MATLAB and standalone versions of MIB* </summary>
 <div class="details-div">
 %
+% A snapshot of the network check preview for the MATLAB version of MIB:
+%
 % <<images\DeepLearning_OrganizationDiagram.jpg>>
+% 
+% A snapshot of the network check preview for the standalone version of MIB:
+%
+% <<images\DeepLearning_OrganizationDiagram_deployed.jpg>>
 % 
 %
 % [/dtls]
@@ -1247,6 +1281,11 @@ After the training, the network and config files with all paramters are generate
 % train and validation sets is displayed using the linear gauge widgets at
 % the left bottom corner of the window.
 <br>
+% <span class="kbd"><img style="height: 1em" src="images\RMB_click.svg">
+% right mouse click</span> over the plot opens a popup menu, that can be
+% used to scale the plot.
+% 
+<br>
 <br>
 % It is possible to stop training at any moment by pressing the <span class="kbd">Stop</span> or
 % <span class="kbd">Emergency brake</span> buttons. When the <span class="kbd">Emergency brake</span> button
@@ -1282,7 +1321,8 @@ After the training, the network and config files with all paramters are generate
 %
 % 
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
-% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools.html *Tools Menu*>
+% |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools.html *Tools
+% Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools_deeplearning.html *Deep learning segmentation*>
 %
 % [cssClasses]
 % .dropdown { 

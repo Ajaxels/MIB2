@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Image Menu</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="ug_gui_menu_image.m"><style>
+      --><title>Image Menu</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_image.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -145,10 +145,11 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 8px 20px;
+  padding: 6px 14px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
+  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -527,11 +528,12 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li><a href="#7">Image filter</a></li>
 <li><a href="#8">Tools for images --&gt; Content-aware fill</a></li>
 <li><a href="#9">Tools for images --&gt; Debris removal</a></li>
-<li><a href="#10">Tools for images --&gt; Image arithmetics</a></li>
+<li><a href="#10">Tools for images --&gt; Image arithmetics (MIB for MATLAB only)</a></li>
 <li><a href="#11">Tools for images --&gt; Intensity projection</a></li>
 <li><a href="#12">Tools for images --&gt; Select image frame</a></li>
-<li><a href="#13">Morphological operations</a></li>
-<li><a href="#14">Intensity profile</a></li></ul></div>
+<li><a href="#13">Tools for images --&gt; White balance correction</a></li>
+<li><a href="#14">Morphological operations</a></li>
+<li><a href="#15">Intensity profile</a></li></ul></div>
 <p><img class="image-fit" src="images\menuImage.png" alt=""> </p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="2">Mode</h2>
@@ -559,10 +561,10 @@ A brief demonstration is available in the following videos:
 <br>
 <ul>
 <li> General demonstration: <a href="https://youtu.be/gT-c8TiLcuY"><img
-style="vertical-align:middle;" src="images\youtube2.png">
+style="vertical-align:middle;" src="images\youtube.png">
 https://youtu.be/gT-c8TiLcuY</a></li>
 <li> Correction of color shifts between images: <a href="https://youtu.be/-J2P8a_z7pE"><img
-style="vertical-align:middle;" src="images\youtube2.png">
+style="vertical-align:middle;" src="images\youtube.png">
 https://youtu.be/-J2P8a_z7pE</a></li>
 </ul>
 <details open onclick="state_check('2.1')" id="2.1"><summary> <b>List of operations with color channels</b> </summary>
@@ -586,7 +588,7 @@ https://youtu.be/-J2P8a_z7pE</a></li>
 <p>
 A tutorial on image normalization is available in the following video:
 <br>
-<a href="https://youtu.be/MmBmdGtuUdM"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MmBmdGtuUdM</a>
+<a href="https://youtu.be/MmBmdGtuUdM"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/MmBmdGtuUdM</a>
 </p>
 <details open onclick="state_check('3.1')" id="3.1"><summary> <b>List of contrast adjustment operations</b> </summary>
 <div class="details-div">
@@ -607,7 +609,7 @@ A tutorial on image normalization is available in the following video:
 <p>
 A brief demonstration is available in the following video:
 <br>
-<a href="https://youtu.be/1DG2w5XYA18"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/1DG2w5XYA18</a>
+<a href="https://youtu.be/1DG2w5XYA18"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/1DG2w5XYA18</a>
 </p>
 <details open onclick="state_check('4.1')" id="4.1"><summary> <b>Invert operations available for</b> </summary>
 <div class="details-div">
@@ -632,7 +634,7 @@ A brief demonstration is available in the following video:
 <p>
 A brief demonstration is available in the following video:
 <br>
-<a href="https://youtu.be/H_TVvgA_br4"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/H_TVvgA_br4</a>
+<a href="https://youtu.be/H_TVvgA_br4"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/H_TVvgA_br4</a>
 </p>
 <details open onclick="state_check('5.1')" id="5.1"><summary> <b>Details of content-aware methods</b> </summary>
 <div class="details-div">
@@ -698,13 +700,18 @@ regions</li>
 </details>
 <br>
 <p> 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="9">Tools for images --&gt; Debris removal</h2>
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(6)" class="collapse-link"><a href="javascript:void(0);" id="Toggle6">collapse all</a></p><h2 id="9">Tools for images --&gt; Debris removal</h2>
 <p>Automatically or manually restore areas of volumetric datasets that are corrupted with debris. The areas can either be automatically detected or manually selected into the Mask or Selection layers&lt;br&gt;&lt;br&gt;</p>
 <p>
 A brief demonstration is available in the following video:
 <br>
-<a href="https://youtu.be/iM2nHBxTjRw"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iM2nHBxTjRw</a>
+<a href="https://youtu.be/iM2nHBxTjRw"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/iM2nHBxTjRw</a>
 </p>
+<details open onclick="state_check('6.1')" id="6.1"><summary> <b>Snapshot and details</b> </summary>
+<div class="details-div">
+<p></p>
 <table>
 <tr>
 <td><img class="image-fit" src="images\MenuImageToolsDebrisRemoval2.png">
@@ -730,20 +737,28 @@ A brief demonstration is available in the following video:
 </td>
 </tr>
 </table>
+
+</div>
+</details>
 <p>
 <br style="display:block; content:''; margin-top:8px;"></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(6)" class="collapse-link"><a href="javascript:void(0);" id="Toggle6">collapse all</a></p><h2 id="10">Tools for images --&gt; Image arithmetics</h2>
+<p onclick="toggle_details(7)" class="collapse-link"><a href="javascript:void(0);" id="Toggle7">collapse all</a></p><h2 id="10">Tools for images --&gt; Image arithmetics (MIB for MATLAB only)</h2>
+<p>
 Use MATLAB syntax to apply custom arithmetic expression to Image, Model, Mask or Selection layers, see more in
 a brief video and examples below.
 <br>
 For MIB 2.60 and newer <a href="https://youtu.be/sDwvnJGLi8Q"><img
-style="vertical-align:middle;" src="images\youtube2.png">
+style="vertical-align:middle;" src="images\youtube.png">
 https://youtu.be/sDwvnJGLi8Q</a>
 <br>
-For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
+For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/-puVxiNYGsI</a>
 
 <br>
+</p>
+<details open onclick="state_check('7.1')" id="7.1"><summary> <b>Snapshot and details</b> </summary>
+<div class="details-div">
+<p></p>
 <table>
 <tr>
 <td><img class="image-fit" src="images\MenuImageToolsArithmetics.png"></td>
@@ -770,7 +785,11 @@ For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img class="image-
 </td>
 </tr>
 </table>
-<details open onclick="state_check('6.1')" id="6.1"><summary> <b>Examples</b> </summary>
+
+</div>
+</details>
+<br>
+<details open onclick="state_check('7.2')" id="7.2"><summary> <b>Examples of arithmetic operations</b> </summary>
 <div class="details-div">
 <p></p>
 <ul>
@@ -802,11 +821,19 @@ For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img class="image-
 <p> 
 <br style="display:block; content:''; margin-top:8px;"></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(7)" class="collapse-link"><a href="javascript:void(0);" id="Toggle7">collapse all</a></p><h2 id="11">Tools for images --&gt; Intensity projection</h2>
+<p onclick="toggle_details(8)" class="collapse-link"><a href="javascript:void(0);" id="Toggle8">collapse all</a></p><h2 id="11">Tools for images --&gt; Intensity projection</h2>
 <p>Generate intensity projection actoss any dimension of the loaded dataset</p>
-<p><a href="html">html</a> <a href="table">table</a> <a href="tr">tr</a> <a href="td">td</a>&lt;img src="images\MenuImageToolsIntensityProjection.png"&gt;&lt;/td&gt; <a href="td">td</a> A brief demonstration is available in the following video:&lt;br&gt; <a href="a">href="https://youtu.be/hwFpS_3eP9U"</a>&lt;img style="vertical-align:middle;" src="images\youtube2.png"&gt;  <a href="https://youtu.be/hwFpS_3eP9U">https://youtu.be/hwFpS_3eP9U</a>&lt;/a&gt;</p>
-<p><a href="/td">/td</a> <a href="/tr">/tr</a> <a href="/table">/table</a> <a href="/html">/html</a></p>
-<details open onclick="state_check('7.1')" id="7.1"><summary> <b>List of available projection calculations</b> </summary>
+<table>
+<tr>
+<td><img class="image-fit" src="images\MenuImageToolsIntensityProjection.png"></td>
+<td>
+A brief demonstration is available in the following video:
+<br>
+<a href="https://youtu.be/hwFpS_3eP9U"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/hwFpS_3eP9U</a>
+</td>
+</tr>
+</table>
+<details open onclick="state_check('8.1')" id="8.1"><summary> <b>List of available projection calculations</b> </summary>
 <div class="details-div">
 <p></p>
 <ul>
@@ -836,22 +863,64 @@ color for the <em>Image</em> layer.
 <td>
 A brief demonstration is available in the following video:
 <br>
-<a href="https://youtu.be/sWjipmeU5eA"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/sWjipmeU5eA</a>
+<a href="https://youtu.be/sWjipmeU5eA"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/sWjipmeU5eA</a>
 </td>
 </tr>
 </table>
 <p>
 <br style="display:block; content:''; margin-top:8px;"></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(8)" class="collapse-link"><a href="javascript:void(0);" id="Toggle8">collapse all</a></p><h2 id="13">Morphological operations</h2>
+<p onclick="toggle_details(9)" class="collapse-link"><a href="javascript:void(0);" id="Toggle9">collapse all</a></p><h2 id="13">Tools for images --&gt; White balance correction</h2>
+<p>
+<a href="https://youtu.be/Fdm-W4e6kHA"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> White balance correction demo</a>
+<br>
+Correct white balance of the open dataset. Start with selection of an
+area that should be white or gray and assign that to the <em>Mask</em> or
+<em>Selection</em> layers or alternatively use the <em>Manual</em> mode and provide an RGB value
+that should be corrected to become white or gray.
+</p>
+<details open onclick="state_check('9.1')" id="9.1"><summary> <b>Snapshot, details and reference</b> </summary>
+<div class="details-div">
+<p></p>
+<table>
+<tr>
+<td><img class="image-fit" src="images\MenuImageToolsWhiteBalanceCorrection.png"></td>
+</tr>
+<tr>
+<td>
+For details please check <a href="https://se.mathworks.com/help/images/ref/chromadapt.html">chromadapt</a> function
+</td>
+</tr>
+<tr>
+<td>
+<b>Reference</b>
+<br>
+[1] Lindbloom, Bruce. Chromatic Adaptation. <a
+href="http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html">http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html</a>
+</td>
+</tr>
+</table>
+
+</div>
+</details>
+<p>
+<br style="display:block; content:''; margin-top:8px;"></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(10)" class="collapse-link"><a href="javascript:void(0);" id="Toggle10">collapse all</a></p><h2 id="14">Morphological operations</h2>
 <p>This section contains number of morphological operations that can be applied to images. The processed image may be also added or subtracted from the existing image (see the settings in the <code>Additional action to the result</code> panel).</p>
 <p>
 A brief demonstration is available in the following video:
 <br>
-<a href="https://youtu.be/itbVLFm0FKQ"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/itbVLFm0FKQ</a>
+<a href="https://youtu.be/itbVLFm0FKQ"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/itbVLFm0FKQ</a>
 </p>
+<details open onclick="state_check('10.1')" id="10.1"><summary> <b>Snapshot</b> </summary>
+<div class="details-div">
+<p></p>
 <p><img class="image-fit" src="images\MenuImageMorphOps.png" alt=""> </p>
-<details open onclick="state_check('8.1')" id="8.1"><summary> <b>List of available morphological operations</b> </summary>
+</div>
+</details>
+<br>
+<details open onclick="state_check('10.2')" id="10.2"><summary> <b>List of available morphological operations</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li><b>Bottom-hat filtering (imbothat)</b> computes the morphological closing of the image (using imclose`) and then subtracts the result from the original image</li>
@@ -868,7 +937,7 @@ A brief demonstration is available in the following video:
 </details>
 <br>
 <p> 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="14">Intensity profile</h2>
+<br style="display:block; content:''; margin-top:8px;"></p><h2 id="15">Intensity profile</h2>
 <p>Generate an intensity profile of the image data. The profiles can be obtained in two modes:</p>
 <div><ul><li><b>Line</b></li>
 <li><b>Arbitrary</b></li></ul></div>
@@ -881,7 +950,7 @@ A brief demonstration is available in the following video:
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Image Menu
@@ -930,10 +999,10 @@ A brief demonstration is available in the following video:
 <br>
 % <ul>
 % <li> General demonstration: <a href="https://youtu.be/gT-c8TiLcuY"><img
-% style="vertical-align:middle;" src="images\youtube2.png">
+% style="vertical-align:middle;" src="images\youtube.png">
 % https://youtu.be/gT-c8TiLcuY</a></li>
 % <li> Correction of color shifts between images: <a href="https://youtu.be/-J2P8a_z7pE"><img
-% style="vertical-align:middle;" src="images\youtube2.png">
+% style="vertical-align:middle;" src="images\youtube.png">
 % https://youtu.be/-J2P8a_z7pE</a></li>
 % </ul>
 % </html>
@@ -963,7 +1032,7 @@ A brief demonstration is available in the following video:
 % <html lang="en">
 % A tutorial on image normalization is available in the following video:
 <br>
-% <a href="https://youtu.be/MmBmdGtuUdM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MmBmdGtuUdM</a>
+% <a href="https://youtu.be/MmBmdGtuUdM"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/MmBmdGtuUdM</a>
 % </html>
 %
 % [dtls]<summary> *List of contrast adjustment operations* </summary>
@@ -1000,7 +1069,7 @@ A brief demonstration is available in the following video:
 % <html lang="en">
 % A brief demonstration is available in the following video:
 <br>
-% <a href="https://youtu.be/1DG2w5XYA18"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/1DG2w5XYA18</a>
+% <a href="https://youtu.be/1DG2w5XYA18"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/1DG2w5XYA18</a>
 % </html>
 %
 % [dtls]<summary> *Invert operations available for* </summary>
@@ -1032,7 +1101,7 @@ A brief demonstration is available in the following video:
 % <html lang="en">
 % A brief demonstration is available in the following video:
 <br>
-% <a href="https://youtu.be/H_TVvgA_br4"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/H_TVvgA_br4</a>
+% <a href="https://youtu.be/H_TVvgA_br4"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/H_TVvgA_br4</a>
 % </html>
 % 
 % [dtls]<summary> *Details of content-aware methods* </summary>
@@ -1109,8 +1178,11 @@ A brief demonstration is available in the following video:
 % <html lang="en">
 % A brief demonstration is available in the following video:
 <br>
-% <a href="https://youtu.be/iM2nHBxTjRw"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iM2nHBxTjRw</a>
+% <a href="https://youtu.be/iM2nHBxTjRw"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/iM2nHBxTjRw</a>
 % </html>
+%
+% [dtls]<summary> *Snapshot and details* </summary>
+<div class="details-div">
 %
 % <html lang="en">
 % <table>
@@ -1140,21 +1212,29 @@ A brief demonstration is available in the following video:
 % </table>
 % </html>
 %
+% [/dtls]
+%
 % [br8]
 %
-%% Tools for images REPLACE_WITH_DASH_DASH> Image arithmetics
+%% Tools for images REPLACE_WITH_DASH_DASH> Image arithmetics (MIB for MATLAB only)
 %
 % <html lang="en">
 % Use MATLAB syntax to apply custom arithmetic expression to Image, Model, Mask or Selection layers, see more in
 % a brief video and examples below.
 <br>
 % For MIB 2.60 and newer <a href="https://youtu.be/sDwvnJGLi8Q"><img
-% style="vertical-align:middle;" src="images\youtube2.png">
+% style="vertical-align:middle;" src="images\youtube.png">
 % https://youtu.be/sDwvnJGLi8Q</a>
 <br>
-% For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-puVxiNYGsI</a>
+% For MIB 2.52 and older <a href="https://youtu.be/-puVxiNYGsI"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/-puVxiNYGsI</a>
 % 
 <br>
+% </html>
+%
+% [dtls]<summary> *Snapshot and details* </summary>
+<div class="details-div">
+%
+% <html lang="en">
 % <table>
 % <tr>
 % <td><img src="images\MenuImageToolsArithmetics.png"></td>
@@ -1183,7 +1263,9 @@ A brief demonstration is available in the following video:
 % </table>
 % </html>
 %
-% [dtls]<summary> *Examples* </summary>
+% [/dtls]
+%
+% [dtls]<summary> *Examples of arithmetic operations* </summary>
 <div class="details-div">
 %
 % <html lang="en">
@@ -1225,8 +1307,7 @@ A brief demonstration is available in the following video:
 % <td>
 % A brief demonstration is available in the following video:
 <br>
-% <a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/hwFpS_3eP9U</a>
-%
+% <a href="https://youtu.be/hwFpS_3eP9U"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/hwFpS_3eP9U</a>
 % </td>
 % </tr>
 % </table>
@@ -1265,11 +1346,50 @@ A brief demonstration is available in the following video:
 % <td>
 % A brief demonstration is available in the following video:
 <br>
-% <a href="https://youtu.be/sWjipmeU5eA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/sWjipmeU5eA</a>
+% <a href="https://youtu.be/sWjipmeU5eA"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/sWjipmeU5eA</a>
 % </td>
 % </tr>
 % </table>
 % </html>
+%
+% [br8]
+%
+%% Tools for images REPLACE_WITH_DASH_DASH> White balance correction
+%
+% <html lang="en">
+% <a href="https://youtu.be/Fdm-W4e6kHA"><img style="vertical-align:middle;" src="images\youtube.png"> White balance correction demo</a>
+<br>
+% Correct white balance of the open dataset. Start with selection of an
+% area that should be white or gray and assign that to the <em>Mask</em> or
+% <em>Selection</em> layers or alternatively use the <em>Manual</em> mode and provide an RGB value
+% that should be corrected to become white or gray.
+% </html>
+%
+% [dtls]<summary> *Snapshot, details and reference* </summary>
+<div class="details-div">
+%
+% <html lang="en">
+% <table>
+% <tr>
+% <td><img src="images\MenuImageToolsWhiteBalanceCorrection.png"></td>
+% </tr>
+% <tr>
+% <td>
+% For details please check <a href="https://se.mathworks.com/help/images/ref/chromadapt.html">chromadapt</a> function
+% </td>
+% </tr>
+% <tr>
+% <td>
+% <b>Reference</b>
+<br>
+% [1] Lindbloom, Bruce. Chromatic Adaptation. <a
+% href="http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html">http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html</a>
+% </td>
+% </tr>
+% </table>
+% </html>
+%
+% [/dtls]
 %
 % [br8]
 %
@@ -1282,11 +1402,16 @@ A brief demonstration is available in the following video:
 % <html lang="en">
 % A brief demonstration is available in the following video:
 <br>
-% <a href="https://youtu.be/itbVLFm0FKQ"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/itbVLFm0FKQ</a>
+% <a href="https://youtu.be/itbVLFm0FKQ"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/itbVLFm0FKQ</a>
 % </html>
 % 
+% [dtls]<summary> *Snapshot* </summary>
+<div class="details-div">
+%
 % <<images\MenuImageMorphOps.png>>
 % 
+% [/dtls]
+%
 % [dtls]<summary> *List of available morphological operations* </summary>
 <div class="details-div">
 %

@@ -154,7 +154,8 @@ classdef mibPreferencesAppController < handle
                 end
 
                 obj.View.handles.RecentDirsNumber.Value = obj.preferences.System.Dirs.RecentDirsNumber;
-                
+                obj.View.handles.RenderingEngine.Value = obj.preferences.System.RenderingEngine;
+
                 obj.View.handles.CurrentFontLabel.Text = ...
                     sprintf('Current font: [ %s, %d, %s ]', obj.preferences.System.Font.FontName,  obj.preferences.System.Font.FontSize, obj.preferences.System.Font.FontUnits);
                 obj.View.handles.FontSizeEditField.Value = obj.preferences.System.Font.FontSize;
@@ -287,16 +288,20 @@ classdef mibPreferencesAppController < handle
                 
                 obj.View.handles.annotationFontSize.Value = obj.View.handles.annotationFontSize.Items{obj.preferences.SegmTools.Annotations.FontSize};
                 obj.View.handles.annotationShownExtraDepth.Value = obj.preferences.SegmTools.Annotations.ShownExtraDepth;
-                
+                obj.View.handles.AnnotationsColorButton2.BackgroundColor = obj.preferences.SegmTools.Annotations.Color;
+
                 obj.View.handles.InterpolationType.Value = obj.preferences.SegmTools.Interpolation.Type;
                 obj.View.handles.InterpolationNumberOfPoints.Value = obj.preferences.SegmTools.Interpolation.NoPoints;
                 obj.View.handles.InterpolationLineWidth.Value = obj.preferences.SegmTools.Interpolation.LineWidth;
                 obj.renderedPanels(6) = 1; 
             end
-            
-            
         end
         
+        function helpBtnCallback(obj)
+            global mibPath;
+            web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_file_preferences.html'), '-helpbrowser');
+        end
+
         function status = ApplyButtonPushedCallback(obj)
             % function ApplyButtonPushedCallback(obj)
             % apply preferences to MIB
@@ -444,12 +449,13 @@ classdef mibPreferencesAppController < handle
                     if length(c) == 1; return; end
                     obj.preferences.Colors.MaskColor = c;
                     obj.View.handles.MaskColorButton.BackgroundColor = c;
-                case 'AnnotationsColorButton'   % update annotations color
+                case {'AnnotationsColorButton', 'AnnotationsColorButton2'}   % update annotations color
                     sel_color = obj.preferences.SegmTools.Annotations.Color;
                     c = uisetcolor(sel_color, 'Annotations color');
                     if length(c) == 1; return; end
                     obj.preferences.SegmTools.Annotations.Color = c;
                     obj.View.handles.AnnotationsColorButton.BackgroundColor = c;
+                    obj.View.handles.AnnotationsColorButton2.BackgroundColor = c;
                 case 'PaletteGeneratorDropDown'     % generate palette
                     materialsNumber = numel(obj.mibModel.getImageProperty('modelMaterialNames'));
                     
@@ -603,6 +609,8 @@ classdef mibPreferencesAppController < handle
                     end
                 case 'RecentDirsNumber'
                     obj.preferences.System.Dirs.RecentDirsNumber = obj.View.handles.RecentDirsNumber.Value;
+                case 'RenderingEngine'
+                    obj.preferences.System.RenderingEngine = obj.View.handles.RenderingEngine.Value;
                 case 'FontSizeEditField'
                     obj.preferences.System.Font.FontSize = obj.View.handles.FontSizeEditField.Value;
                     obj.updateWidgets();

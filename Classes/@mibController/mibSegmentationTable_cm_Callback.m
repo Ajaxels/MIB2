@@ -147,18 +147,9 @@ switch type
         
         mibRenderModel(model{1}, contIndex, obj.mibModel.I{obj.mibModel.Id}.pixSize, bb, modelMaterialColors, image, Options);
     case 'mib'
-        if verLessThan('matlab', '9.5') % obj.matlabVersion < 9.5
-            errordlg(sprintf('!!! Error !!!\n\nHardware accelerated rendering is only available in Matlab R2018b or newer!'), 'Matlab version is too old');
-            return;
-        end
-        
+        if verLessThan('Matlab', '9.13'); obj.mibModel.preferences.System.RenderingEngine = 'Volshow, R2018b'; end
         contIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
         options.fillBg = 0;
-        
-        if isfield(obj.mibModel.sessionSettings, 'VolumeRendering')
-            options.Settings = obj.mibModel.sessionSettings.VolumeRendering;
-        end
-        
         if contIndex == -1
             if obj.mibModel.I{obj.mibModel.Id}.maskExist == 0
                 errordlg(sprintf('!!! Error !!!\n\nMask was not found!'), 'Missing mask');
@@ -174,12 +165,22 @@ switch type
                 options.Settings.IsoColor = modelMaterialColors(contIndex,:);
             end
         end
-                
         options.mode = 'Isosurface'; % 'VolumeRendering', 'MaximumIntensityProjection', 'Isosurface'
         options.colorChannel = contIndex;
-        
-        obj.startController('mibVolRenController', options);
-        
+
+        if strcmp(obj.mibModel.preferences.System.RenderingEngine, 'Viewer3d, R2022b')
+            obj.startController('mibVolRenAppController', options);
+        else
+            if verLessThan('matlab', '9.5') % obj.matlabVersion < 9.5
+                errordlg(sprintf('!!! Error !!!\n\nHardware accelerated rendering is only available in Matlab R2018b or newer!'), 'Matlab version is too old');
+                return;
+            end
+            
+            if isfield(obj.mibModel.sessionSettings, 'VolumeRendering')
+                options.Settings = obj.mibModel.sessionSettings.VolumeRendering;
+            end
+            obj.startController('mibVolRenController', options);
+        end
     case 'volumeFiji'
         contIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
         options.fillBg = 0;

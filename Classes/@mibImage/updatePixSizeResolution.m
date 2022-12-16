@@ -43,7 +43,7 @@ result = 0;
 global mibPath;
 
 if nargin < 2
-    prompts = {'Voxel size, X:'; 'Voxel size, Y:'; 'Voxel size, Z:'; 'Time between frames:'; 'Pixel units (m, cm, mm, um, nm):'; 'Time units:'};
+    prompts = {'Voxel size, X:'; 'Voxel size, Y:'; 'Voxel size, Z:'; 'Time between frames:'; 'Pixel units (m, cm, mm, um, nm):'; 'Time units (h, m, s):'};
     dlg_title = 'Dataset parameters';
     
     % generate the list of possible units and detect current one

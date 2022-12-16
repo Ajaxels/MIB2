@@ -72,6 +72,15 @@ classdef mibController < handle
                         obj.updateAxesLimits('resize');
                         obj.mibModel.I{obj.mibModel.Id}.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir; % update BioFormatsMemoizer directory
                     end
+
+                    % uncheck the linked views state
+                    currentButtonHandle = sprintf('mibBufferToggle%i', obj.mibModel.Id);
+                    if obj.mibView.handles.(currentButtonHandle).ContextMenu.Children(3).Text(1) == '[' % check for "[Linked ..."
+                        secondButtonHandle = ['mibBufferToggle' obj.mibView.handles.(currentButtonHandle).ContextMenu.Children(3).Text(16)];
+                        obj.mibView.handles.(currentButtonHandle).ContextMenu.Children(3).Text = 'Link view with... [Unlinked]';
+                        obj.mibView.handles.(secondButtonHandle).ContextMenu.Children(3).Text = 'Link view with... [Unlinked]';
+                    end
+                    
                     obj.updateGuiWidgets();
                     obj.mibModel.newDatasetSwitch = abs(obj.mibModel.newDatasetSwitch) - 1;
                     if strcmp(evnt.EventName, 'newDataset')
@@ -127,6 +136,8 @@ classdef mibController < handle
         menuDatasetTrasform_Callback(obj, mode, BatchOpt)        % callback to Menu->Dataset->Transform... do different transformation with the dataset
         
         menuFileChoppedImage_Callback(obj, parameter)        % callback to Menu->File->Chopped images, chop/rechop dataset to/from smaller subsets
+        
+        menuFileExamples_Callback(obj, parameter)           % callback to Menu->File->Example datasets
         
         menuFileExportImage_Callback(obj, parameter)        % callback to Menu->File->Export Image, export image and meta-data from MIB to the main Matlab workspace or Imaris
         

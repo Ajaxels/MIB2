@@ -45,7 +45,7 @@ BatchOpt.AdaptiveCoef = obj.mibView.handles.mibDilateAdaptCoefEdit.String;
 BatchOpt.AdaptiveSmoothing = logical(obj.mibView.handles.mibAdaptiveSmoothCheck.Value);
 BatchOpt.FixSelectionToMaterial = NaN;
 if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial  % area for dilation is taken only from selected contour
-    BatchOpt.FixSelectionToMaterial = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
+    BatchOpt.FixSelectionToMaterial = num2str(obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex());
 end
 BatchOpt.FixSelectionToMask = logical(obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMask);
 

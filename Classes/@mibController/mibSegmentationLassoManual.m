@@ -33,8 +33,8 @@ type = list{obj.mibView.handles.mibFilterSelectionPopup.Value};    % Lasso or Re
 
 bb(1) = str2double(obj.mibView.handles.mibSegmObjectPickerPanelSub2X1.String);
 bb(2) = str2double(obj.mibView.handles.mibSegmObjectPickerPanelSub2Y1.String);
-bb(3) = str2double(obj.mibView.handles.mibSegmObjectPickerPanelSub2Width.String);
-bb(4) = str2double(obj.mibView.handles.mibSegmObjectPickerPanelSub2Height.String);
+bb(3) = str2double(obj.mibView.handles.mibSegmObjectPickerPanelSub2Width.String)*2;
+bb(4) = str2double(obj.mibView.handles.mibSegmObjectPickerPanelSub2Height.String)*2;
 
 switch type
     case 'Lasso'

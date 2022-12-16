@@ -152,6 +152,7 @@ end
 % --- Executes on button press in selectDirBtn.
 function selectDirBtn_Callback(hObject, eventdata, handles)
 handles.winController.selectDirBtn_Callback();
+drawnow;
 end
 
 

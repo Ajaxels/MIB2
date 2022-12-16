@@ -5,6 +5,43 @@
 %
 %
 %
+%% 2.84 / 09.12.2022 (new 3D viewer and HDD alignement)
+%
+% [dtls][smry] *2.8331 / 21.06.2022 (Updated 3D viewer, HDD automatic alignment)* [/smry]
+% 
+% * Added Example datasets: Menu->File->Example datasets
+% * Added new Volume renderer: Menu->File->Render volume->MIB rendering
+% * Added export images to OME-TIFF 5D format
+% * Added alignement of datasets without loading using the Automatic feature-based mode
+% * Added white balance correction (Menu->Image->Tools for images->White balance correction)
+% * Added modification of annotation size to settings in the Annotation list window 
+% * Added [F] template for saving images to Batch Processing 
+% * Added showWaitbar option to Batch Processing of DIRLOOPs
+% * Added resizing of panels to the batch processing dialog
+% * Added erosion of models and erosion with parallel processing
+% * Added dilation of models
+% * Added linking of views
+% * Added calculation of DistanceMaps relative to model, masks, or selections (Menu->Image->Image Filters->Basic image filtering->DistanceMap)
+% * Added basic mathematical operations (add, subtract, multiply, divide to image filters (Menu->Image->Image Filters->Basic image filtering->MathOps)
+% * Added destination "Current" to the Intensity Projection tool (Menu->Image->Tools for Images->Intensity projection)
+% * Updated Bio-Formats to 6.11.0 (please delete the old bioformats_package.jar from MIB\ImportExportTools\BioFormats)
+% * Updated Plugins->TripleAreaIntensity to highlight the connected objects using the Mask layer
+% * Fixed bug in the shape interpolation method seen in some configuration of shapes (thanks to Aapo Tervonen, PhD, University of Jyväskylä)
+% * Fixed slow update of selected directory in CropObjects to file dialog
+% * Fixed application of MorphOps for images when the active container of MIB has been changed
+% * Fixed loading of some jpg files due to multiple ImageDescription tags
+% * [DeepMIB] Added prediction of 3D stacks with 2D models
+% * [DeepMIB] Added possibility to specify patch size during augmentation preview
+% * [DeepMIB] Added 'DeepLabV3 Xception' and 'DeepLabV3 Inception-ResNet-v2' for MATLAB version of MIB
+% * [DeepMIB] Added swish activation layer as one of available options
+% * [DeepMIB] Added a function to balance classes for large rasters (Options tab->Tools->Balance classes)
+% * [DeepMIB] Added network preview for the deployed version
+% * [DeepMIB] Added saving of the custom training plot as an image to a file
+% * [DeepMIB] Added scaling of the loss function plot upon right mouse click
+% * [DeepMIB] Fixed generation of score maps for the Legacy mode
+%
+% [/dtls]
+%
 %% 2.831 / 21.06.2022; 2.83 / 19.06.2022 (blockedImage and 2D patch-wise)
 %
 % [dtls][smry] *2.83 / 19.06.2022 (blockedImage and 2D patch-wise)* [/smry]

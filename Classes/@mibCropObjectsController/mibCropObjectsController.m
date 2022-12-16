@@ -163,10 +163,12 @@ classdef mibCropObjectsController < handle
             % a callback for press of obj.View.handles.selectDirBtn to select
             % output directory
             
+            obj.View.handles.cropBtn.Enable = 'off';    % sometimes update of dir takes longer and this ensures that crop object waits for the update of the directory
             folder_name = uigetdir(obj.View.handles.dirEdit.String, 'Select directory');
-            if isequal(folder_name, 0); return; end
-            obj.View.handles.dirEdit.String = folder_name;
+            if isequal(folder_name, 0); obj.View.handles.cropBtn.Enable = 'on'; return; end
             obj.outputDir = folder_name;
+            obj.View.handles.dirEdit.String = folder_name;
+            obj.View.handles.cropBtn.Enable = 'on';
         end
         
         function dirEdit_Callback(obj)

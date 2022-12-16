@@ -4,7 +4,8 @@
 % <<images\DeepLearningOptions.png>>
 % 
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
-% |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools Menu*>
+% |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools
+% Menu*> |*-->*| <ug_gui_menu_tools_deeplearning.html *Deep learning segmentation*>
 % 
 %
 %% Custom training plot section
@@ -103,6 +104,25 @@
 %
 % [/dtls]
 %
+% * [class.kbd]Balance classes[/class], this is a beta procedure to balance
+% rare classes in the dataset. The procedure is implemented only for the 2D Semantic workflow and only for images and labels that are 
+% stored in standard image formats (e.g. TIF, PNG, JPG) and suitable in
+% cases when pathces for rare classes needs to be generated from large
+% rasters.
+%
+% [dtls][smry] *Details of Balance classes* [/smry]
+%
+% The images and labels needs to be placed in "Images" and "Labels" subfolders under 
+% "Directories with images and labels for training" specified in the "Directories and preprocessing" tab
+% The balanced results are generated under the same directory in 
+% "ImagesBalanced" and "LabelsBalanced" subfolders'
+%
+% The function is driven by
+% <https://se.mathworks.com/help/vision/ref/balancepixellabels.html
+% balancepixellabels> function.
+%
+% [/dtls]
+%
 %% Augmentation section
 % Supporting functions that are used to reset or disable augmentations.
 % 
@@ -124,7 +144,8 @@
 % </html>
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
-% |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools Menu*>
+% |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools
+% Menu*> |*-->*| <ug_gui_menu_tools_deeplearning.html *Deep learning segmentation*>
 %
 % [cssClasses]
 % .dropdown { 

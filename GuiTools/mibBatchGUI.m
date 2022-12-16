@@ -22,7 +22,7 @@ function varargout = mibBatchGUI(varargin)
 
 % Edit the above text to modify the response to help mibBatchGUI
 
-% Last Modified by GUIDE v2.5 14-Jun-2022 21:36:36
+% Last Modified by GUIDE v2.5 30-Sep-2022 12:09:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -229,24 +229,29 @@ end
 
 % --- Executes when mibBatchGUI is resized.
 function mibBatchGUI_SizeChangedFcn(hObject, eventdata, handles)
-mainFigPos = handles.mibBatchGUI.Position;
-if mainFigPos(4) < 372
-    handles.mibBatchGUI.Position(4) = 372;
-    handles.mibBatchGUI.Position(2) = mainFigPos(2)-(372-mainFigPos(4));
-    return; 
-end
-handles.actionListPanel.Position(2:3) = [mainFigPos(4)-handles.actionListPanel.Position(4), ...
-                mainFigPos(3) - 10];
-handles.selectActionPanel.Position(3:4) = [mainFigPos(3) - 10, ...
-                handles.actionListPanel.Position(2) - handles.selectActionPanel.Position(2)];
+handles.winController.sizeChangedFcn();
 
-handles.StepsSubpanelUp.Position(2) = handles.selectActionPanel.Position(4) - handles.StepsSubpanelUp.Position(4) - 10;
-handles.selectedActionTable.Position(3:4) = [(handles.selectActionPanel.Position(3) - handles.selectedActionTable.Position(2))/2, ...
-                handles.StepsSubpanelUp.Position(2) - 10];
-handles.ParametersText.Position(2) = handles.selectedActionTable.Position(2)+handles.selectedActionTable.Position(4)-handles.ParametersText.Position(4);
-handles.StepsSubpanelRight.Position(2) = handles.StepsSubpanelUp.Position(2) - handles.StepsSubpanelRight.Position(4);
-handles.StepsSubpanelRight.Position(1) = handles.selectedActionTable.Position(1)+handles.selectedActionTable.Position(3) + 10;
-handles.StepsSubpanelRight.Position(3) = handles.selectActionPanel.Position(3)-handles.StepsSubpanelRight.Position(1);
+% mainFigPos = handles.mibBatchGUI.Position;
+% if mainFigPos(4) < 372
+%     handles.mibBatchGUI.Position(4) = 372;
+%     handles.mibBatchGUI.Position(2) = mainFigPos(2)-(372-mainFigPos(4));
+%     return; 
+% end
+% handles.actionListPanel.Position(2:3) = [mainFigPos(4)-handles.actionListPanel.Position(4), ...
+%                 mainFigPos(3) - 10];
+% % x,y,w,h            
+% handles.separatingPanel.Position(2) = handles.actionListPanel.Position(2) - 4;          
+%             
+% handles.selectActionPanel.Position(3:4) = [mainFigPos(3) - 14, ...
+%                 handles.actionListPanel.Position(2) - handles.selectActionPanel.Position(2)]-4;
+% 
+% handles.StepsSubpanelUp.Position(2) = handles.selectActionPanel.Position(4) - handles.StepsSubpanelUp.Position(4) - 10;
+% handles.selectedActionTable.Position(3:4) = [(handles.selectActionPanel.Position(3) - handles.selectedActionTable.Position(2))/2, ...
+%                 handles.StepsSubpanelUp.Position(2) - 10];
+% handles.ParametersText.Position(2) = handles.selectedActionTable.Position(2)+handles.selectedActionTable.Position(4)-handles.ParametersText.Position(4);
+% handles.StepsSubpanelRight.Position(2) = handles.StepsSubpanelUp.Position(2) - handles.StepsSubpanelRight.Position(4);
+% handles.StepsSubpanelRight.Position(1) = handles.selectedActionTable.Position(1)+handles.selectedActionTable.Position(3) + 10;
+% handles.StepsSubpanelRight.Position(3) = handles.selectActionPanel.Position(3)-handles.StepsSubpanelRight.Position(1);
 end
 
 

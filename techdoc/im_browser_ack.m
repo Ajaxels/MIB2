@@ -29,13 +29,11 @@
 % * *John Heumann*, The Boulder Laboratory For 3-D Electron Microscopy of
 % Cells for help with Mattomo
 % * *Konstantin Kogan*, University of Helsinki for assistance with Mac OS
-% * *David Legland*, INRA, France for modification of the
-% <http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-
+% * *David Legland*, INRA, France for modification of the <http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-
 % Region Adjacency Graph (imRAG)> function for detection of indices between
 % watershed regions and help with few other functions
-% * *Henrik P Sahlin Pettersen*, Norwegian University of Science and
-% Technology/St. Olavs hospital, Trondheim for extensive testing of
-% DeepMIB.
+% * *Vladimir Moltchanov*, for discussions on software architectures
+% * *Henrik P Sahlin Pettersen*, Norwegian University of Science and Technology/St. Olavs hospital, Trondheim for driving DeepMIB for pathology
 %
 % Microscopy Image Browser team would like to acknowledge the <http://www.mathworks.se/matlabcentral/ User Community of MATLAB-Central> and the authors whose code was used during MIB development. 
 % Microscopy Image Browser adapts partially or completely codes from the
@@ -49,7 +47,8 @@
 % * <http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff *ANISODIFF*> function written by Peter Kovesi, 2000-2002 is used for anisotropic diffusion filtering of images 
 % * <http://www.loci.wisc.edu/software/bio-formats *BIO-FORMATS*> by Melissa Linkert, Curtis Rueden et al. 2002-2013  is utilized for reading of proprietary microscopy image formats using the <code>Bio</code> checkbox
 % * <http://www.cs.tut.fi/~foi/GCF-BM3D/ *BMxD external filters*> by Kostadin Dabov et al., Tampere University of Technology, Finland 2007-2014 can be used with MIB, when separately installed on the system to filter the images
-% * <http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio *BWDISTSC*> for 3D Euclidean distance transform for variable data aspect ratio written by Yuriy Mishchenko (Toros University, 2007-2013) is used for separation of anisotropic objects in 3D
+% *
+% <http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio *BWDISTSC*> for 3D Euclidean distance transform for variable data aspect ratio written by Yuriy Mishchenko (Toros University, 2007-2013) is used for separation of anisotropic objects in 3D and calculation of distance maps
 % * <https://se.mathworks.com/matlabcentral/fileexchange/38703-custom-ginput *Custom GINPUT*>, written by Jiro Doke (MathWorks 2016) to get coordinates of a clicked point
 % * <https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays CELL MIGRATION IN SCRATCH WOUND ASSAYS*> by Constantino Carlos Reyes-Aldasoro, City, University of London was used for the wound healing assay tool
 % * <https://se.mathworks.com/matlabcentral/fileexchange/53511-drag-drop-functionality-for-java-gui-components *Drag & Drop functionality for JAVA GUI components*> written by Maarten van der Seijs (Delft University of Technology, the Netherlands, 2015)
@@ -86,7 +85,7 @@
 % * <http://www.mathworks.com/matlabcentral/fileexchange/26940-render-rgb-text-over-rgb-or-grayscale-image *RENDERTEXT*> function by Davide Di Gloria (Universita di Genova, 2010) is utilized for addition of text to image
 % * Rendering with Fiji is based on <http://www.mathworks.com/matlabcentral/fileexchange/32344-hardware-accelerated-3d-viewer-for-matlab *Hardware accelerated 3D viewer for MATLAB*> written by Jean-Yves Tinevez (Institut Pasteur, 2011)
 % * Rendering with MATLAB is using <http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m *VIEW3D*> function written by Torsten Vogel, 1999  
-% * <http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html *SLIC (Simple Linear Iterative Clustering)*> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland, 2015 was utilized for the superpixels mode of the Brush tool and for the Graphcut segmentation.
+% * <https://www.epfl.ch/labs/ivrl/research/slic-superpixels *SLIC (Simple Linear Iterative Clustering)*> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland, 2015 was utilized for the superpixels mode of the Brush tool and for the Graphcut segmentation.
 % * <http://www.mathworks.com/matlabcentral/fileexchange/20922-stlwrite-filename--varargin- *STLWRITE*> by Sven Holcombe (University of Michigan 2008-2015) for saving models using the STL format
 % * <https://se.mathworks.com/matlabcentral/fileexchange/32555-uigetfile_n_dir-select-multiple-files-and-directories *UIGETFILE_N_DIR*> by Tiago / Peugas is used for selection of multiple directories
 % * <http://se.mathworks.com/matlabcentral/fileexchange/21993-viewer3d *VIEWER3D*> by Dirk-Jan Kroon (Focal Machine Vision en Optical Systems) is used as a basis for the volume rendering of datasets

@@ -446,6 +446,9 @@ classdef mibImageMorphOpsController < handle
             % callback for press of obj.View.handles.continueBtn
             % perform the selected morph ops
             
+            % update id with the index of the currently shown dataset
+            obj.BatchOpt.id = obj.mibModel.Id;
+
             BatchOptLoc = obj.BatchOpt;     % make a local copy of the BatchOpt, because it may be extended with additional fields
             
             if BatchOptLoc.showWaitbar; wb = waitbar(0, 'Please wait...', 'Name', [BatchOptLoc.MorphOperation{1} ' filter']); end

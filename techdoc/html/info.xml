@@ -27,7 +27,7 @@ xsi:noNamespaceSchemaLocation="optional">
             <!-- The label provides the text for this menu item --> 
             <label>Microscopy Image Browser Documentation</label>
             <!-- This callback is a command to open your documentation -->
-            <callback>web(fullfile(fileparts(which('im_browser')),'techdoc','html','im_browser_product_page.html'),'-helpbrowser')
+            <callback>web(fullfile(fileparts(which('mib')),'techdoc','html','im_browser_product_page.html'),'-helpbrowser')
             </callback>
             <!-- Menu item icon (a toolbox icon from the help browser ) -->
             <icon>$toolbox/matlab/icons/bookicon.gif</icon>
@@ -36,7 +36,7 @@ xsi:noNamespaceSchemaLocation="optional">
         <listitem>
             <!-- Include call to show release note, if any -->
             <label>Microscopy Image Browser Release Notes</label>
-            <callback>web(fullfile(fileparts(which('im_browser')),'techdoc','html','im_browser_release_notes.html'),'-helpbrowser')</callback>
+            <callback>web(fullfile(fileparts(which('mib')),'techdoc','html','im_browser_release_notes.html'),'-helpbrowser')</callback>
             <icon>$toolbox/matlab/icons/help_rn.png</icon>
         </listitem>
         

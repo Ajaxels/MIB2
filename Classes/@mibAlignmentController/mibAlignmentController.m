@@ -191,7 +191,7 @@ classdef mibAlignmentController < handle
             obj.BatchOpt.ColorChannel{2} = arrayfun(@(x) sprintf('ColCh %d', x), 1:obj.mibModel.I{obj.mibModel.Id}.colors, 'UniformOutput', false);
             obj.BatchOpt.IntensityGradient = false;     % use intensity gradient instead of intensities for the correlation
             obj.BatchOpt.TransformationType = {'non reflective similarity'};   % transformation type for the automatic alignment
-            obj.BatchOpt.TransformationType{2} = {'non reflective similarity','similarity','affine','projective'};                     
+            obj.BatchOpt.TransformationType{2} = {'non reflective similarity', 'similarity','affine','projective'};                     
             obj.BatchOpt.TransformationMode = {'extended'};   % transformation mode, the cropped mode limits the area to the view of view of the first slice; extended includes complete images
             obj.BatchOpt.TransformationMode{2} = {'extended', 'cropped'};                     
             obj.BatchOpt.TransformationDegree = {'2 (min: 6 pnt)'};   % degree of the polynomial transformation degree
@@ -304,6 +304,16 @@ classdef mibAlignmentController < handle
             guiName = 'mibAlignmentGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
+            % resize all elements x1.25 times for macOS
+            mibRescaleWidgets(obj.View.gui);
+
+            % update font and size
+            Font = obj.mibModel.preferences.System.Font;
+            if obj.View.handles.existingFnText1.FontSize ~= Font.FontSize ...
+                    || ~strcmp(obj.View.handles.existingFnText1.FontName, Font.FontName)
+                mibUpdateFontSize(obj.View.gui, Font);
+            end
+
             % update elements of GUI from the BatchMode
             obj.View = updateGUIFromBatchOpt_Shared(obj.View, obj.BatchOpt);
             
@@ -860,7 +870,14 @@ classdef mibAlignmentController < handle
                     % Automatic alignment using detected features
                     
                     parameters.detectPointsType = obj.BatchOpt.FeatureDetectorType{1};
-                    obj.AutomaticFeatureBasedAlignment(parameters);
+                    if obj.BatchOpt.HDD_Mode
+                        result = obj.automaticFeatureBasedAlignmentHDD(parameters);
+                        if result == 0
+                            if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
+                        end
+                    else
+                        obj.AutomaticFeatureBasedAlignment(parameters);
+                    end
                     return;
                 elseif strcmp(parameters.method, 'AMST: median-smoothed template')
                     parameters.detectPointsType = obj.BatchOpt.FeatureDetectorType{1};
@@ -880,7 +897,10 @@ classdef mibAlignmentController < handle
                         end
                         parameters.useBatchMode = useBatchMode;
                         result = obj.alignDriftCorrectionHDD(parameters);
-                        if result == 0; return; end
+                        if result == 0
+                            if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
+                            return; 
+                        end
                         
                         if obj.BatchOpt.SaveShiftsToFile     % save shifts to a file
                             if useBatchMode == 1
@@ -2533,6 +2553,15 @@ classdef mibAlignmentController < handle
             % ----------------------------------------------
             % start the transformation procedure
             % ----------------------------------------------
+            else
+                if parameters.useBatchMode == 1
+                    fn = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
+                    [obj.pathstr, name, ext] = fileparts(fn);
+                    fn = fullfile(obj.pathstr, [name '_align.coefXY']);
+                else
+                    fn = obj.View.handles.loadShiftsXYpath.String;
+                end
+                load(fn, '-mat'); % Load these veriables: 'tformMatrix', 'rbMatrix', 'heightVec', 'widthVec'
             end
             
             refImgSize = imref2d([Height, Width]);  % reference image size
@@ -2748,7 +2777,7 @@ classdef mibAlignmentController < handle
                 else
                     fn = obj.View.handles.saveShiftsXYpath.String;
                 end
-                save(fn, 'tformMatrix', 'rbMatrix');
+                save(fn, 'tformMatrix', 'rbMatrix', 'heightVec', 'widthVec');
                 fprintf('alignment: tformMatrix and rbMatrix were saved to a file:\n%s\n', fn);
             end
             
@@ -2776,7 +2805,7 @@ classdef mibAlignmentController < handle
             % structure with it to the macro recorder / mibBatchController
             obj.returnBatchOpt(obj.BatchOpt);
             
-            if parameters.useBatchMode == 0; obj.closeWindow(); end
+            %if parameters.useBatchMode == 0; obj.closeWindow(); end
         end
         
         function HDD_BioformatsReader_Callback(obj)

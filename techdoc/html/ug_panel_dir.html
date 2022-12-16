@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Directory Contents Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="ug_panel_dir.m"><style>
+      --><title>Directory Contents Panel</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_panel_dir.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -144,10 +144,11 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 8px 20px;
+  padding: 6px 14px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
+  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -527,12 +528,21 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <p><img class="image-fit" src="images\PanelsDirContents.png" alt=""> </p><h2 id="2">1. Multiple buffer buttons</h2>
 <p>These buttons allow fast access to several datasets stored in the memory. The green color of the button indicates that there is a dataset loaded. When cursor is above the button a tooltip with the full file name appears to help with identification of the loaded dataset. The datasets may be switched using the left mouse button press on the desired button. The left mouse button shows a popup menu with additional options:</p>
 <p><img class="image-fit" src="images\PanelsDirContentsBuffers.png" alt=""> </p>
-<div><ul><li><b>Duplicate dataset</b>, creates a duplicate of the currently shown dataset and put it behind one of the available buffers</li>
-<li><b>Sync view, (xy) with...</b>, synchronizes the view with another dataset in the XY coordinates</li>
-<li><b>Sync view, (xyz) with...</b>, synchronizes the view with another dataset in the XYZ coordinates, for 4D-5D datasets</li>
-<li><b>Sync view, (xyzt) with...</b>, synchronizes the view with another dataset in the XYZT coordinates, for 5D datasets</li>
-<li><b>Close dataset</b>, removes selected dataset from the memory</li>
-<li><b>Close all stored datasets</b>, removes all stored datasets from the memory</li></ul></div><h2 id="4">2. Main list box</h2>
+<ul>
+<li> <b>Duplicate dataset</b>, creates a duplicate of the currently shown dataset
+and put it behind one of the available buffers</li>
+<li> <b>Sync view, (xy) with...</b>, synchronizes the view with another dataset in the XY coordinates</li>
+<li> <b>Sync view, (xyz) with...</b>, synchronizes the view with another dataset in the XYZ coordinates, for 4D-5D datasets</li>
+<li> <b>Sync view, (xyzt) with...</b>, synchronizes the view with another dataset in the XYZT coordinates, for 5D datasets</li>
+<li> <b>Link view with</b>, press to link the views in two MIB buffers. Whenever
+the views are linked, shift of one view is automatically shifts the
+other. The buffers can be toggled using <span class="kbd">^ Ctrl</span> +
+<span class="kbd">E</span> key shortcut. See more in this demo:
+<a href="https://youtu.be/DvSBBSuEiDo"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"></a></li>
+<li> <b>Close dataset</b>, removes selected dataset from the computer memory</li>
+<li> <b>Close all stored datasets</b>, removes all stored datasets from the computer memory</li>
+</ul>
+<h2 id="4">2. Main list box</h2>
 <p>The major part of the panel is occupied with this list box that shows list of files in the selected directory (the directory can be selected from the <a href="ug_panel_path.html">Path Panel</a>). The files are filtered with the specified filter (<b>Filter</b>). Value <code>all known</code> displays all readable formats.</p>
 <div><ul><li>Double click on a file, loads it into <code>MIB</code> and displays it in the <a href="ug_panel_im_view.html">Image View panel</a>. If <code>sequence</code> (<b>8</b>) is checked then all shown files are assembled into a single multi-layered dataset</li>
 <li>Double click on the <b>[.]</b> line changes the folder to the top level of the current logical drive</li>
@@ -573,7 +583,7 @@ points, z-step and the XY binning. This option is implemented only for Amira Mes
 <p>Access to this help page</p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p>
 <p></p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Directory Contents Panel
@@ -597,16 +607,22 @@ points, z-step and the XY binning. This option is implemented only for Amira Mes
 % 
 %%
 % 
-% * *Duplicate dataset*, creates a duplicate of the currently shown dataset
-% and put it behind one of the available buffers
-% * *Sync view, (xy) with...*, synchronizes the view with another dataset in the XY
-% coordinates
-% * *Sync view, (xyz) with...*, synchronizes the view with another dataset in the
-% XYZ coordinates, for 4D-5D datasets
-% * *Sync view, (xyzt) with...*, synchronizes the view with another dataset in the
-% XYZT coordinates, for 5D datasets
-% * *Close dataset*, removes selected dataset from the memory
-% * *Close all stored datasets*, removes all stored datasets from the memory
+% <html lang="en">
+% <ul>
+% <li> <b>Duplicate dataset</b>, creates a duplicate of the currently shown dataset
+% and put it behind one of the available buffers</li>
+% <li> <b>Sync view, (xy) with...</b>, synchronizes the view with another dataset in the XY coordinates</li>
+% <li> <b>Sync view, (xyz) with...</b>, synchronizes the view with another dataset in the XYZ coordinates, for 4D-5D datasets</li>
+% <li> <b>Sync view, (xyzt) with...</b>, synchronizes the view with another dataset in the XYZT coordinates, for 5D datasets</li>
+% <li> <b>Link view with</b>, press to link the views in two MIB buffers. Whenever
+% the views are linked, shift of one view is automatically shifts the
+% other. The buffers can be toggled using <span class="kbd">^ Ctrl</span> +
+% <span class="kbd">E</span> key shortcut. See more in this demo: 
+% <a href="https://youtu.be/DvSBBSuEiDo"><img style="vertical-align:middle;" src="images\youtube.png"></a></li>
+% <li> <b>Close dataset</b>, removes selected dataset from the computer memory</li>
+% <li> <b>Close all stored datasets</b>, removes all stored datasets from the computer memory</li>
+% </ul>
+% </html>
 % 
 %% 2. Main list box
 % The major part of the panel is occupied with this list box that shows

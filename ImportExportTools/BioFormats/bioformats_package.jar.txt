@@ -1,0 +1,1 @@
+Place bioformats_package.jar to MIB\jars\BioFormats directory

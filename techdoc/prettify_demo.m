@@ -12,7 +12,7 @@
 % * RMB (html only): <span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span>
 % * left arrow:  [class.kbd] &#8592; [/class]
 % * right arrow:  [class.kbd] &#8594; [/class]
-% * Ctrl:  [class.kbd]^ Ctrl[/class]
+% * Ctrl:  [class.kbd]^ Ctrl[/class]   /   <span class="kbd">^ Ctrl</span>
 % * Checkbox: [class.kbd][&#10003;] *Bio*[/class]  / <span class="kbd">[&#10003;] <b>Bio</b></span>
 % * Dropdown: [class.dropdown]Dropdown &#9660;[/class]  / <span class="dropdown">Dropdown &#9660;</span>
 % * Editbox: [class.dropdown]editbox...[/class] / <span class="dropdown">editbox...</span>

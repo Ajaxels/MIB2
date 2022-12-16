@@ -2,7 +2,8 @@
 % This tab contains settings for generating deep convolutional network and training.
 % 
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
-% |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools Menu*>
+% |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools
+% Menu*> |*-->*| <ug_gui_menu_tools_deeplearning.html *Deep learning segmentation*>
 % 
 %
 %% Train tab
@@ -89,6 +90,11 @@
 % [dtls][smry] *List of available activation layers* [/smry]
 %
 % <html>
+% With DeepMIB, the users have a possibility to define the activation layer
+% using one of the options listed below. For comparison of the different
+% activation layers check <a
+% href="https://se.mathworks.com/help/deeplearning/ug/compare-activation-layers.html">this
+% link</a><br><br>
 % <ul>
 % <li><em>reluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.relulayer.html">
 % Rectified Linear Unit (ReLU) layer</a>, it is a default activation layer of the networks, 
@@ -103,6 +109,8 @@
 % <li><em>eluLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.elulayer.html">
 % Exponential linear unit (ELU) layer</a> performs the identity operation on positive inputs and an 
 % exponential nonlinearity on negative inputs</li>
+% <li><em>swishLayer</em> - A <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.swishlayer.html">
+% swish activation layer</a> applies the applies the swish function (f(x) = x / (1+e^(-x)) ) on the layer inputs</li>
 % <li><em>tanhLayer</em> - <a href="https://se.mathworks.com/help/deeplearning/ref/nnet.cnn.layer.tanhlayer.html">
 % Hyperbolic tangent (tanh) layer</a> applies the tanh function on the layer inputs</li>
 % </ul>
@@ -154,7 +162,13 @@
 %
 % [dtls][smry] *Snapshots of the network check window for the MATLAB and standalone versions of MIB* [/smry]
 %
+% A snapshot of the network check preview for the MATLAB version of MIB:
+%
 % <<images\DeepLearning_OrganizationDiagram.jpg>>
+% 
+% A snapshot of the network check preview for the standalone version of MIB:
+%
+% <<images\DeepLearning_OrganizationDiagram_deployed.jpg>>
 % 
 %
 % [/dtls]
@@ -346,7 +360,11 @@
 % curve displays the loss function calculated for the train set, while the
 % red curve for the validation set. The accuracy of the prediction for both
 % train and validation sets is displayed using the linear gauge widgets at
-% the left bottom corner of the window.<br><br>
+% the left bottom corner of the window.<br>
+% <span class="kbd"><img style="height: 1em" src="images\RMB_click.svg">
+% right mouse click</span> over the plot opens a popup menu, that can be
+% used to scale the plot.
+% <br><br>
 % It is possible to stop training at any moment by pressing the <span class="kbd">Stop</span> or
 % <span class="kbd">Emergency brake</span> buttons. When the <span class="kbd">Emergency brake</span> button
 % is pressed DeepMIB will stop the training as fast as possible, which may lead to
@@ -374,7 +392,8 @@
 %
 % 
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
-% |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools Menu*>
+% |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools
+% Menu*> |*-->*| <ug_gui_menu_tools_deeplearning.html *Deep learning segmentation*>
 %
 % [cssClasses]
 % .dropdown { 

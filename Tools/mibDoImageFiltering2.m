@@ -69,6 +69,19 @@ if BatchOpt.Mode3D  % perform the 3D filters
                     logText = sprintf('%s, %s, PadValue:%d, ', logText, BatchOpt.Padding{1}, BatchOpt.PaddingValue{1});
                 end
                 img(:,:,colCh,:) = permute(imfilter(squeeze(img(:,:,colCh,:)), h, Padding, BatchOpt.FilteringMode{1}), [1 2 4 3]);
+            case 'DistanceMap'
+                % calculate distance transform
+                img = bwdistsc(squeeze(img), str2num(BatchOpt.AspectRatio3D));
+                maxVal = max(img(:));
+                if maxVal < 256
+                    img = uint8(img);
+                elseif maxVal < 65536
+                    img = uint16(img);
+                else
+                    img = uint32(img);
+                end
+                img = permute(img, [1,2,4,3]);
+                logText = sprintf('%s, 3D, Method:%s, Aspect: %s', logText, BatchOpt.Method{1}, BatchOpt.AspectRatio3D);
             case {'Prewitt', 'Sobel'}
                 if colCh==1
                     h = fspecial3(lower(BatchOpt.FilterName{1}), BatchOpt.Direction{1});
@@ -337,6 +350,26 @@ else    % perform 2D filters
                     if showWaitbar; pwb.increment(); end
                 end
             end
+        case 'DistanceMap'
+            methodVar = BatchOpt.Method{1};
+            imgOut = zeros(size(img));
+            parfor (z = 1:size(img, 4), parforArg)
+                % calculate distance transform
+                if max(max(img(:,:,1,z))) == 0
+                    imgOut(:,:,1,z) = 0;
+                else
+                    imgOut(:,:,1,z) = bwdist(img(:,:,1,z), methodVar);
+                end
+                if showWaitbar; pwb.increment(); end
+            end
+            maxVal = max(imgOut(:));
+            if maxVal < 256
+                img = uint8(imgOut);
+            elseif maxVal < 65536
+                img = uint16(imgOut);
+            else
+                img = uint32(imgOut);
+            end
         case 'DNNdenoise'
             net = denoisingNetwork(BatchOpt.NetworkName{1});
             logText = sprintf('%s, Net: %s', logText, BatchOpt.NetworkName{1});
@@ -592,6 +625,27 @@ else    % perform 2D filters
                     if showWaitbar; pwb.increment(); end
                 end
             end
+        case 'MathOps'
+            logText = sprintf('%s, Operation: %s, Value:%s', logText, BatchOpt.Operation{1}, BatchOpt.Value);
+            if strcmp(BatchOpt.OutputImageClass{1}, 'Unchanged')
+                outputClass = class(img);
+            else
+                outputClass = BatchOpt.OutputImageClass{1};
+            end
+            value = str2double(BatchOpt.Value);
+            for colCh=1:size(img, 3)
+                switch BatchOpt.Operation{1}
+                    case 'Add'
+                        img = cast(double(img) + value, outputClass);
+                    case 'Subtract'
+                        img = cast(double(img) - value, outputClass);
+                    case 'Multiply'
+                        img = cast(double(img) * value, outputClass);
+                    case 'Divide'
+                        img = cast(double(img) / value, outputClass);
+                end
+            end
+            if showWaitbar; pwb.increment(); end
         case 'Median'
             NeighborhoodSize = str2num(BatchOpt.NeighborhoodSize);
             if isempty('NeighborhoodSize'); errordlg('NeighborhoodSize should contain one or two numbers!'); return; end

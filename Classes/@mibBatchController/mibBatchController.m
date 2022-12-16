@@ -118,6 +118,8 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Name = 'Menu -> File';
             obj.Sections(secIndex).Actions(actionId).Name = 'Load and combine images';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibFilesListbox_cm_Callback([], Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Example datasets';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.menuFileExamples_Callback(Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Save dataset';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.saveImageAsDialog([], Batch);'; actionId = actionId + 1;
             %obj.Sections(secIndex).Actions(actionId).Name = 'Make snapshot';
@@ -178,6 +180,8 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.contrastNormalization(''Z stack'', Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Invert image';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.menuImageInvert_Callback([], Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Image filters';
+            obj.Sections(secIndex).Actions(actionId).Command = ''; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Tools for Images -> Content-aware fill';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.contentAwareFill(Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Tools for Images -> Debris removal';
@@ -186,6 +190,8 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''mibImageArithmeticController'', [], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Tools for Images -> Intensity projection';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.menuImageToolsProjection_Callback(Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Tools for Images -> White balance correction';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''mibWhiteBalanceController'', [], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Morphological operations';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''mibImageMorphOpsController'', [], Batch);'; actionId = actionId + 1;
             
@@ -287,6 +293,8 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibBufferToggleContext_Callback(''closeAll'', [], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Sync views';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibBufferToggleContext_Callback(''sync_xy'', [], Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Link views';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibBufferToggleContext_Callback(''link_views'', [], Batch);'; actionId = actionId + 1;
             
             secIndex = secIndex + 1;
             actionId = 1;
@@ -347,12 +355,12 @@ classdef mibBatchController < handle
             secIndex = secIndex + 1;
             obj.Sections(secIndex).Name = 'Panel -> Image filters';
             if verLessThan('Matlab', '9.8')
-                FiltersList = {'Average', 'Disk', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std',...
+                FiltersList = {'Average', 'Disk', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'MathOps', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std',...
                     'AnisotropicDiffusion', 'Bilateral', 'DNNdenoise', 'Median', 'NonLocalMeans', 'Wiener',...
                     'AddNoise', 'FastLocalLaplacian', 'FlatfieldCorrection', 'LocalBrighten', 'LocalContrast', 'ReduceHaze', 'UnsharpMask',...
                     'Edge', 'SlicClustering', 'WatershedClustering'};
             else
-                FiltersList = {'Average', 'Disk', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Mode', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std',...
+                FiltersList = {'Average', 'Disk', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'MathOps', 'Mode', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std',...
                     'AnisotropicDiffusion', 'Bilateral', 'DNNdenoise', 'Median', 'NonLocalMeans', 'Wiener',...
                     'AddNoise', 'FastLocalLaplacian', 'FlatfieldCorrection', 'LocalBrighten', 'LocalContrast', 'ReduceHaze', 'UnsharpMask',...
                     'Edge', 'SlicClustering', 'WatershedClustering'};
@@ -363,7 +371,6 @@ classdef mibBatchController < handle
                     FiltersList{end+1} = 'BMxD';
                 end
             end
-            
             
             FiltersList = sort(FiltersList);
             for actionId = 1:numel(FiltersList)
@@ -478,7 +485,13 @@ classdef mibBatchController < handle
                     obj.selectedSection = hObject.Value;
                     obj.selectedAction = 1;
                 case 'actionPopup'
-                    obj.selectedAction = hObject.Value;
+                    if strcmp(hObject.String{hObject.Value}, 'Image filters')
+                        obj.selectedSection = find(ismember(obj.View.handles.sectionPopup.String, 'Panel -> Image filters'));   
+                        obj.View.handles.sectionPopup.Value = obj.selectedSection;
+                        obj.selectedAction = 1;
+                    else
+                        obj.selectedAction = hObject.Value;
+                    end
             end
             
             if isempty(obj.Sections(obj.selectedSection).Actions(obj.selectedAction).Command)
@@ -591,6 +604,11 @@ classdef mibBatchController < handle
                         obj.View.handles.selectedActionTableCellCheck.Value = obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex});
                     case 'char'
                         obj.View.handles.selectedActionTableCellEdit.Visible = 'on';
+                        if numel(strfind(obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex}), sprintf('\n'))) > 0
+                            obj.View.handles.selectedActionTableCellEdit.Max = 3;
+                        else
+                            obj.View.handles.selectedActionTableCellEdit.Max = 1;
+                        end
                         obj.View.handles.selectedActionTableCellEdit.String = obj.CurrentBatch.(fieldNames{obj.selectedActionTableIndex});
                 end
             end
@@ -679,24 +697,34 @@ classdef mibBatchController < handle
             
             switch parameter
                 case 'add'  % add parameter
-                    prompts = {'Parameter type'; 'Parameter name'; 'Parameter value'};
-                    defAns = {{'numeric', 1}; {'z', 'x', 'y', 't', 'c', 'id', 1}; '1'};
+                    prompts = {'Parameter type'; 'Parameter name'; 'Custom parameter name';'Parameter value'};
+                    defAns = {{'numeric', 'logical', 1}; {'z', 'x', 'y', 't', 'c', 'id', 'custom name', 1}; ''; '1'};
                     dlgTitle = 'Please specify parameter to add';
                     options.WindowStyle = 'normal';
-                    options.PromptLines = [1, 1, 1];
+                    options.PromptLines = [1, 1, 1, 1];
                     options.Title = 'Add parameter';
                     options.TitleLines = 1;
                     options.WindowWidth = 1;
                     options.Focus = 3;
                     [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                     if isempty(answer); return; end
+
+                    % select existing of new parameter name
+                    if ~isempty(answer{3})
+                        newParName = answer{3};
+                    else
+                        newParName = answer{2};
+                    end
+
                     switch answer{1}
                         case 'numeric'
-                            newValue =  str2num(answer{3});      %#ok<ST2NM>
-                            if ismember(answer{2}, {'x', 'y', 'z', 't', 'c'}) && numel(newValue) == 1
+                            newValue =  str2num(answer{4});      %#ok<ST2NM>
+                            if ismember(newParName, {'x', 'y', 'z', 't', 'c'}) && numel(newValue) == 1
                                 newValue = [newValue newValue];
                             end
-                            obj.CurrentBatch.(answer{2}) = newValue;
+                            obj.CurrentBatch.(newParName) = newValue;
+                        case 'logical'
+                            obj.CurrentBatch.(newParName) = logical(str2num(answer{4}));
                     end
                     obj.updateSelectedActionTable(obj.CurrentBatch);
                 case 'delete'   % delete parameter
@@ -1139,7 +1167,6 @@ classdef mibBatchController < handle
                     end
             end
             
-            %if obj.BatchOpt.showWaitbar; wb = waitbar(0, 'Please wait...', 'Name', [obj.BatchOpt.Method ' thresholding']); end
             stepId = startStep;
             while stepId <= finishStep
                 if strcmp(obj.Protocol(stepId).mibBatchActionName, 'DIRECTORY LOOP START')    % make directory loop
@@ -1147,7 +1174,24 @@ classdef mibBatchController < handle
                     finishStep2 = find(ismember({obj.Protocol(:).mibBatchActionName}, 'DIRECTORY LOOP STOP'));
                     if isempty(finishStep2); finishStep2 = finishStep; end
                     
+                    % for compatibility add check for DirLoopWaitbar
+                    if ~isfield(obj.Protocol(stepId).Batch, 'DirLoopWaitbar')
+                        obj.Protocol(stepId).Batch.DirLoopWaitbar = false;
+                        obj.Protocol(stepId).Batch.mibBatchTooltip.DirLoopWaitbar = 'when checked the waitbar for the dirloop is displayed';
+                    end
+
+                    % show dirloop waitbar
+                    if obj.Protocol(stepId).Batch.DirLoopWaitbar 
+                        dirLoopWaitbar = waitbar(0, 'Please wait...', 'Name', 'Processing directories'); 
+                        set(findall(dirLoopWaitbar, 'type', 'text'), 'Interpreter', 'none'); 
+                    end
+                    
                     for dirId = 1:numel(obj.Protocol(stepId).Batch.DirectoriesList{2})
+                        if obj.Protocol(stepId).Batch.DirLoopWaitbar
+                            [~, currDirWaitbarText] = fileparts(obj.Protocol(stepId).Batch.DirectoriesList{2}{dirId});
+                            waitbar(dirId/numel(obj.Protocol(stepId).Batch.DirectoriesList{2}), dirLoopWaitbar, sprintf('Processing: %s\nPlease wait...', currDirWaitbarText)); 
+                        end
+
                         stepId2 = startStep2;
                         while stepId2 <= finishStep2
                             %for stepId2 = startStep2:finishStep2
@@ -1172,6 +1216,7 @@ classdef mibBatchController < handle
                                     if status == 0
                                         notify(obj.mibModel, 'stopProtocol');
                                         obj.View.handles.autoAddToProtocol.Value = autoAddSwitch;
+                                        if obj.Protocol(stepId).Batch.DirLoopWaitbar; delete(dirLoopWaitbar); end
                                         return;
                                     end
                                     stepId2 = fileLoopFinish + 1;
@@ -1184,12 +1229,14 @@ classdef mibBatchController < handle
                                     if status == 0
                                         notify(obj.mibModel, 'stopProtocol');
                                         obj.View.handles.autoAddToProtocol.Value = autoAddSwitch;
+                                        if obj.Protocol(stepId).Batch.DirLoopWaitbar; delete(dirLoopWaitbar); end
                                         return;
                                     end
                                     stepId2 = stepId2 + 1;
                             end
                         end
                     end
+                    if obj.Protocol(stepId).Batch.DirLoopWaitbar; delete(dirLoopWaitbar); end
                     stepId = finishStep2 + 1;
                 elseif strcmp(obj.Protocol(stepId).mibBatchActionName, 'FILE LOOP START')
                     if strcmp(obj.Protocol(stepId).Batch.DirectoryName{1}, 'Inherit from Directory loop')
@@ -1237,7 +1284,6 @@ classdef mibBatchController < handle
                 obj.protocolList_SelectionCallback();
             end
             obj.View.handles.autoAddToProtocol.Value = autoAddSwitch;
-            %if obj.BatchOpt.showWaitbar; delete(wb); end
             
             obj.View.handles.runProtocolBtn.String = 'Start protocol';
             obj.View.handles.runProtocolBtn.BackgroundColor = 'g';
@@ -1483,6 +1529,15 @@ classdef mibBatchController < handle
                         [~, InheritLastDIR] = fileparts(stepOptions.DirectoryName);
                         Batch.DestinationDirectory = strrep(Batch.DestinationDirectory, '[InheritLastDIR]', InheritLastDIR);
                     end
+                case 'Example datasets'
+                    Batch = obj.Protocol(stepId).Batch;
+                    if strcmp(Batch.DirectoryName{1}, 'Inherit from Directory/File loop')
+                        if ~isfield(stepOptions, 'DirectoryName')
+                            errordlg(sprintf('!!! Error !!!\n\nWrong settings: Inherit from Directory/File loop parameter requires Directory or File loop before this action!'));
+                            return;
+                        end
+                        Batch.DirectoryName{1} = stepOptions.DirectoryName;
+                    end
                 otherwise
                     Batch = obj.Protocol(stepId).Batch; %#ok<NASGU>
                     % remove possible settings for the comboboxes from the
@@ -1512,12 +1567,15 @@ classdef mibBatchController < handle
             % callback for selection of Directory Loop action
             BatchOpt.DirectoriesList = {obj.mibModel.myPath};   % cell with the selected directory
             BatchOpt.DirectoriesList{2} = {obj.mibModel.myPath};    %  cell array with list of directories
+            BatchOpt.DirLoopWaitbar = true;   % when true show waitbar for the directory loop
+
             % add section name and action name for the batch tool
             BatchOpt.mibBatchSectionName = 'Service steps';
             BatchOpt.mibBatchActionName = 'DIRECTORY LOOP START';
             % tooltips that will accompany the BatchOpt
             BatchOpt.mibBatchTooltip.DirectoriesList = sprintf('List of directories that are going to be processed in the loop; use the right mouse click over the Parameters table to add/remove directory');
-            
+            BatchOpt.mibBatchTooltip.DirLoopWaitbar = 'when checked the waitbar for the dirloop is displayed';
+
             if nargin == 2
                 if isstruct(BatchOptInput) == 0
                     if isnan(BatchOptInput)
@@ -1631,6 +1689,83 @@ classdef mibBatchController < handle
                 % combine fields from input and default structures
                 BatchOpt = updateBatchOptCombineFields_Shared(BatchOpt, BatchOptInput);
             end
+        end
+        
+        function gui_WinMouseMotionFcn(obj)
+            % function gui_WinMouseMotionFcn(obj)
+            % get mouse coordinates for the window to change cursor shape when above separatingPanel
+            % to rescaling the panels
+            
+            position = obj.View.gui.CurrentPoint;
+            x = round(position(1,1));
+            y = round(position(1,2));
+            separatingPanelPos = obj.View.handles.separatingPanel.Position;
+        
+            if x>separatingPanelPos(1) && x<separatingPanelPos(1)+separatingPanelPos(3) && ...
+                y>separatingPanelPos(2) && y<separatingPanelPos(2)+separatingPanelPos(4) % mouse pointer within the panel
+                obj.View.gui.Pointer = 'top';
+            else
+                obj.View.gui.Pointer = 'arrow';
+            end
+        end
+        
+        function gui_WindowButtonDownFcn(obj)
+            % function gui_WindowButtonDownFcn(obj)
+            % callback for mouse press over the figure,
+            % to start rescaling of panels
+            
+            position = obj.View.gui.CurrentPoint;
+            x = round(position(1,1));
+            y = round(position(1,2));
+            
+            separatingPanelPos = obj.View.handles.separatingPanel.Position;
+            if x>separatingPanelPos(1) && x<separatingPanelPos(1)+separatingPanelPos(3) && ...
+                    y>separatingPanelPos(2) && y<separatingPanelPos(2)+separatingPanelPos(4) % mouse pointer within the panel
+
+                obj.View.gui.WindowButtonUpFcn = (@(hObject, eventdata, handles) obj.panelShiftBtnUpFcn());
+                return;
+            end
+        end
+        
+        function panelShiftBtnUpFcn(obj)
+            % function panelShiftBtnUpFcn(obj)
+            % get values to change size of the panels
+            
+            obj.View.gui.Pointer = 'arrow';
+            
+            position = obj.View.gui.CurrentPoint;  % get position of the cursor
+            y = round(position(1,2));
+            obj.View.handles.actionListPanel.Position(4) = obj.View.handles.mibBatchGUI.Position(4) - y - 6;
+            obj.View.gui.WindowButtonUpFcn = [];
+            obj.sizeChangedFcn();
+        end
+        
+        function sizeChangedFcn(obj)
+            % function sizeChangedFcn(obj)
+            % main resizing function for the window
+            
+            mainFigPos = obj.View.handles.mibBatchGUI.Position;
+            if mainFigPos(4) < 372
+                obj.View.handles.mibBatchGUI.Position(4) = 372;
+                obj.View.handles.mibBatchGUI.Position(2) = mainFigPos(2)-(372-mainFigPos(4));
+                return;
+            end
+            obj.View.handles.actionListPanel.Position(2:3) = [mainFigPos(4)-obj.View.handles.actionListPanel.Position(4), ...
+                mainFigPos(3) - 10];
+            obj.View.handles.protocolList.Position(4) = obj.View.handles.actionListPanel.Position(4) - 30;
+            
+            obj.View.handles.separatingPanel.Position(2) = obj.View.handles.actionListPanel.Position(2) - 4;
+            
+            obj.View.handles.selectActionPanel.Position(3:4) = [mainFigPos(3) - 14, ...
+                obj.View.handles.actionListPanel.Position(2) - obj.View.handles.selectActionPanel.Position(2)]-4;
+            
+            obj.View.handles.StepsSubpanelUp.Position(2) = obj.View.handles.selectActionPanel.Position(4) - obj.View.handles.StepsSubpanelUp.Position(4) - 10;
+            obj.View.handles.selectedActionTable.Position(3:4) = [(obj.View.handles.selectActionPanel.Position(3) - obj.View.handles.selectedActionTable.Position(2))/2, ...
+                obj.View.handles.StepsSubpanelUp.Position(2) - 10];
+            obj.View.handles.ParametersText.Position(2) = obj.View.handles.selectedActionTable.Position(2)+obj.View.handles.selectedActionTable.Position(4)-obj.View.handles.ParametersText.Position(4);
+            obj.View.handles.StepsSubpanelRight.Position(2) = obj.View.handles.StepsSubpanelUp.Position(2) - obj.View.handles.StepsSubpanelRight.Position(4);
+            obj.View.handles.StepsSubpanelRight.Position(1) = obj.View.handles.selectedActionTable.Position(1)+obj.View.handles.selectedActionTable.Position(3) + 10;
+            obj.View.handles.StepsSubpanelRight.Position(3) = obj.View.handles.selectActionPanel.Position(3)-obj.View.handles.StepsSubpanelRight.Position(1);
         end
         
         function listenMIB_Callback(obj)

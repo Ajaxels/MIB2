@@ -216,9 +216,13 @@ classdef mibMakeMovieController < handle
                     obj.extraController.View.handles.volViewPanel.Units = curUnits;
                     obj.origWidth = width;
                     obj.resizedWidth = width;
+                elseif strcmp(obj.extraController.View.gui.Name, '3D Controls')
+                    height = ceil(obj.extraController.childControllers{1}.View.handles.volumeViewerPanel.Position(4));
+                    width = ceil(obj.extraController.childControllers{1}.View.handles.volumeViewerPanel.Position(3));
+                    obj.origWidth = width;
+                    obj.resizedWidth = width;
                 end
             end
-            
             obj.splitChannelsCheck_Callback();
             
             obj.origHeight = height;
@@ -256,7 +260,7 @@ classdef mibMakeMovieController < handle
             % callback for the Crop radio buttons
             
             if ~isempty(obj.extraController)     % making movie from the MIB image view panel
-                if strcmp(obj.extraController.View.gui.Name, '3D rendering')
+                if strcmp(obj.extraController.View.gui.Name, '3D rendering') || strcmp(obj.extraController.View.gui.Name, '3D Controls') 
                     if obj.View.handles.fullImageRadio.Value
                         obj.extraOptions.mode = 'spin';
                     elseif obj.View.handles.shownAreaRadio.Value
@@ -390,7 +394,7 @@ classdef mibMakeMovieController < handle
                 newHeight = round(newWidth*ratio);
                 obj.View.handles.heightEdit.String = num2str(newHeight);
             else
-                if strcmp(obj.extraController.View.gui.Name, '3D rendering')
+                if strcmp(obj.extraController.View.gui.Name, '3D rendering') || strcmp(obj.extraController.View.gui.Name, '3D Controls') 
                     screensize = get(groot, 'Screensize');
                     if screensize(3) < newWidth
                         warndlg(sprintf('!!! Warning !!!\n\nThe output dimensions should be smaller than the screen size!'), 'Size is too large','modal');
@@ -411,7 +415,7 @@ classdef mibMakeMovieController < handle
                 newWidth = round(newHeight/ratio);
                 obj.View.handles.widthEdit.String = num2str(newWidth);
             else
-                if strcmp(obj.extraController.View.gui.Name, '3D rendering')
+                if strcmp(obj.extraController.View.gui.Name, '3D rendering') || strcmp(obj.extraController.View.gui.Name, '3D Controls') 
                     screensize = get(groot, 'Screensize');
                     if screensize(4) < newHeight
                         warndlg(sprintf('!!! Warning !!!\n\nThe output dimensions should be smaller than the screen size!'), 'Size is too large','modal');
@@ -675,7 +679,14 @@ classdef mibMakeMovieController < handle
                 end
                 obj.mibModel.I{obj.mibModel.Id}.slices{3} = colorChannels;
             else
-                if strcmp(obj.extraController.View.gui.Name, '3D rendering')    % making a movie from the volume viewer
+                if strcmp(obj.extraController.View.gui.Name, '3D rendering') || strcmp(obj.extraController.View.gui.Name, '3D Controls')    % making a movie from the volume viewer
+                    % update name of object containing Camera
+                    if strcmp(obj.extraController.View.gui.Name, '3D rendering')
+                        cameraObject = 'volume';
+                    elseif strcmp(obj.extraController.View.gui.Name, '3D Controls')
+                        cameraObject = 'viewer';
+                    end
+
                     % open the movie writer
                     open(writerObj);
                     
@@ -698,10 +709,10 @@ classdef mibMakeMovieController < handle
                             grabFrameOptions.showWaitbar = 0;
                             grabFrameOptions.resizeWindow = 0;
                             for frameId = 1:noFrames
-                                obj.extraController.volume.CameraPosition = positions.CameraPosition(frameId, :);
-                                obj.extraController.volume.CameraUpVector = positions.CameraUpVector(frameId, :);
+                                obj.extraController.(cameraObject).CameraPosition = positions.CameraPosition(frameId, :);
+                                obj.extraController.(cameraObject).CameraUpVector = positions.CameraUpVector(frameId, :);
                                 if ~isempty(positions.CameraTarget)
-                                    obj.extraController.volume.CameraTarget = positions.CameraTarget(frameId, :);
+                                    obj.extraController.(cameraObject).CameraTarget = positions.CameraTarget(frameId, :);
                                 end
                                 img = obj.extraController.grabFrame(newWidth, newHeight, grabFrameOptions);
                                 
@@ -723,14 +734,14 @@ classdef mibMakeMovieController < handle
                             obj.extraController.prepareWindowForGrabFrame(newWidth, newHeight);
                             
                             % update camera positions
-                            obj.extraController.volume.CameraUpVector = positions.CameraUpVector;
-                            obj.extraController.volume.CameraTarget = positions.CameraTarget;
+                            obj.extraController.(cameraObject).CameraUpVector = positions.CameraUpVector;
+                            obj.extraController.(cameraObject).CameraTarget = positions.CameraTarget;
                             
                             % start the camera spin
                             grabFrameOptions.showWaitbar = 0;
                             grabFrameOptions.resizeWindow = 0;
                             for frameId = 1:noFrames
-                                obj.extraController.volume.CameraPosition = positions.CameraPosition(frameId, :);
+                                obj.extraController.(cameraObject).CameraPosition = positions.CameraPosition(frameId, :);
                                 img = obj.extraController.grabFrame(newWidth, newHeight, grabFrameOptions);
                                 
                                 writeVideo(writerObj, im2frame(img));

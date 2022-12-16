@@ -130,14 +130,14 @@ classdef mibImageFiltersController < handle
             obj.ImageFilters.Bilateral.degreeOfSmoothing = num2str(obj.mibModel.I{obj.BatchOpt.id}.meta('MaxInt')^2*.01);
             
             if verLessThan('Matlab', '9.8')
-                obj.BasicFiltersList = {'Average', 'Disk', 'ElasticDistortion', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std'};
+                obj.BasicFiltersList = {'Average', 'Disk', 'DistanceMap', 'ElasticDistortion', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'MathOps', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std'};
             else
-                obj.BasicFiltersList = {'Average', 'Disk', 'ElasticDistortion', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Mode', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std'};
+                obj.BasicFiltersList = {'Average', 'Disk', 'DistanceMap', 'ElasticDistortion', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'MathOps', 'Mode', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std'};
             end
             obj.EdgePreservingFiltersList = {'AnisotropicDiffusion', 'Bilateral', 'DNNdenoise', 'Median', 'NonLocalMeans', 'Wiener'};
             obj.ContrastFiltersList = {'AddNoise', 'FastLocalLaplacian', 'FlatfieldCorrection', 'LocalBrighten', 'LocalContrast', 'ReduceHaze', 'UnsharpMask'};
             obj.BinarizationFiltersList = {'Edge', 'SlicClustering', 'WatershedClustering'};
-            obj.Filters3D = {'Average', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Median', 'Mode', 'Prewitt', 'SlicClustering', 'Sobel', 'WatershedClustering'};     % list of 3D compatible filters
+            obj.Filters3D = {'Average', 'DistanceMap', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'Median', 'Mode', 'Prewitt', 'SlicClustering', 'Sobel', 'WatershedClustering'};     % list of 3D compatible filters
             
             % add BMxD filter if available
             if ~isempty(obj.mibModel.preferences.ExternalDirs.bm3dInstallationPath)

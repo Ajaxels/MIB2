@@ -46,6 +46,7 @@ end
 
 % update resolution and pixel sizes
 curr_text = img_info('ImageDescription');
+if iscell(curr_text); curr_text = curr_text{1}; end
 width = img_info('Width');
 height = img_info('Height');
 depth = img_info('Depth');
@@ -93,6 +94,7 @@ else
     str2 = sprintf('BoundingBox %.5f %.5f %.5f %.5f %.5f %.5f ',...
     newBB(1), newBB(2), newBB(3), newBB(4), newBB(5), newBB(6));
     curr_text = img_info('ImageDescription');
+    if iscell(curr_text); curr_text = curr_text{1}; end
     img_info('ImageDescription') = sprintf('%s|%s', str2, curr_text); 
     
 end

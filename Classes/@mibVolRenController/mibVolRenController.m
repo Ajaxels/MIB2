@@ -639,7 +639,6 @@ classdef mibVolRenController < handle
                         sin(vec)*radius+obj.volume.CameraTarget(2) ...
                         zeros(size(vec))+currZ+obj.volume.CameraTarget(3)];
             end
-            
         end
         
         function spinBtn_Callback(obj)
@@ -765,7 +764,11 @@ classdef mibVolRenController < handle
             volViewPanelPos = obj.View.handles.volViewPanel.Position;
             obj.View.handles.volViewPanel.Position(3) = obj.View.handles.volViewPanel.Position(4);
             if isempty(obj.volume)
-                obj.volume = volshow(squeeze(img), 'parent', obj.View.handles.volViewPanel);
+                if verLessThan('matlab','9.13')
+                    obj.volume = volshow(squeeze(img), 'parent', obj.View.handles.volViewPanel);
+                else
+                    obj.volume = images.compatibility.volshow.R2022a.volshow(squeeze(img), 'parent', obj.View.handles.volViewPanel);
+                end
             else
                 obj.volume.setVolume(squeeze(img));
             end

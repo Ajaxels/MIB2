@@ -291,6 +291,10 @@ classdef mibSnapshotController < matlab.mixin.Copyable
                     width = ceil(obj.extraController.View.handles.volViewPanel.Position(3));
                     obj.extraController.View.handles.volViewPanel.Units = curUnits;
                     obj.origWidth = width;
+                elseif strcmp(obj.extraController.View.gui.Name, '3D Controls')
+                    height = ceil(obj.extraController.childControllers{1}.View.handles.volumeViewerPanel.Position(4));
+                    width = ceil(obj.extraController.childControllers{1}.View.handles.volumeViewerPanel.Position(3));
+                    obj.origWidth = width;
                 end
             end
             obj.View.handles.Width.String = num2str(width);
@@ -465,7 +469,7 @@ classdef mibSnapshotController < matlab.mixin.Copyable
                 newHeight = round(newWidth*ratio);    
                 obj.View.handles.Height.String = num2str(newHeight);
             else
-                if strcmp(obj.extraController.View.gui.Name, '3D rendering')
+                if strcmp(obj.extraController.View.gui.Name, '3D rendering') || strcmp(obj.extraController.View.gui.Name, '3D Controls')  
                     screensize = get(groot, 'Screensize');
                     if screensize(3) < newWidth
                         warndlg(sprintf('!!! Warning !!!\n\nThe output dimensions should be smaller than the screen size!'), 'Size is too large','modal');
@@ -666,7 +670,7 @@ classdef mibSnapshotController < matlab.mixin.Copyable
             else
                 maxImageIndex = 1;
                 imageId = 1;
-                if strcmp(obj.extraController.View.gui.Name, '3D rendering')
+                if strcmp(obj.extraController.View.gui.Name, '3D rendering') || strcmp(obj.extraController.View.gui.Name, '3D Controls') 
                     imgOut = obj.extraController.grabFrame(newWidth, newHeight);
                 end
             end

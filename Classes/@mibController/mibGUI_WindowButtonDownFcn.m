@@ -220,7 +220,13 @@ elseif strcmp(operation, 'interact')
             return;
         case 'Lasso'
             % Lasso mode
-            if strcmp(obj.mibView.handles.mibSegmObjectPickerPanelSub2Select.Enable, 'on'); return; end   % cancel when the manual mode is enabled
+            if strcmp(obj.mibView.handles.mibSegmObjectPickerPanelSub2Select.Enable, 'on')
+                [w, h, z] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 1);
+                spotToolBatchOpt.Shape = {'square'};
+                spotToolBatchOpt.Radius = [obj.mibView.handles.mibSegmObjectPickerPanelSub2Width.String ';' obj.mibView.handles.mibSegmObjectPickerPanelSub2Height.String];
+                obj.mibSegmentationSpot(ceil(h), ceil(w), modifier, spotToolBatchOpt);
+                return; 
+            end   % cancel when the manual mode is enabled
             modifier = '';
             % have to define subtract action differently for the lasso type of tools
             if obj.mibView.handles.mibSegmObjectPickerPanelAddPopup.Value == 2 % subtract mode

@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Alignment and Drift Correction</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="ug_gui_menu_dataset_alignment.m"><style>
+      --><title>Alignment and Drift Correction</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_dataset_alignment.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -145,10 +145,11 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 8px 20px;
+  padding: 6px 14px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
+  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -526,13 +527,15 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <p>
 A demonstration is available in the following videos:
 <br>
-<a href="https://youtu.be/-qwoO5z02aA"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/-qwoO5z02aA</a>
+<a href="https://youtu.be/-qwoO5z02aA"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> How to do image alignment</a>
 <br>
-<a href="https://youtu.be/rlXoyZcTpJs"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png"> Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a>
+<a href="https://youtu.be/rlXoyZcTpJs"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a>
 <br>
-<a href="https://youtu.be/-en5zD5Ou9s"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png"> Automatic feature-based</a>
+<a href="https://youtu.be/-en5zD5Ou9s"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> Automatic feature-based</a>
 <br>
-<a href="https://youtu.be/FtvWjDUMZ1I"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png"> HDD mode</a>
+<a href="https://youtu.be/tpe9GhpS2o8"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> Automatic feature-based using HDD mode</a>
+<br>
+<a href="https://youtu.be/FtvWjDUMZ1I"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> HDD mode</a> (Drift correction and Automatic feature based only)
 <br>
 </p>
 <p>
@@ -551,12 +554,15 @@ A demonstration is available in the following videos:
   </li>
   <li>
     <b>Algorithm</b> - selection of method to be used for the alignment:
-    <table style="width: 550px; text-align: center; margin-left: 50px;" cellspacing=2px cellpadding=2px >
+    <table style="width: 950px; text-align: center; margin-left: 50px;" cellspacing=2px cellpadding=2px >
     <tr>
       <td style="width=250px;"><b>Drift correction</b></td>
       <td>The Drift correction mode is recommended for small shifts or comparably sized images
 <br>
-          It is recommended for most situations
+          It is recommended for most situations and also implemented for
+          image files without loading them into MIB (see the <b>HDD
+          mode</b> below. <em>The image size should be the same in all
+          files!</em>
       </td>
     </tr>
     <tr>
@@ -569,7 +575,10 @@ A demonstration is available in the following videos:
     </tr>
     <tr>
       <td><b>Automatic feature-based</b></td>
-      <td><a href="https://www.youtube.com/embed/-en5zD5Ou9s"><img class="image-fit" src="images/youtube.png"></a> The automatic image alignement based on features (blobs,
+      <td><a href="https://www.youtube.com/embed/-en5zD5Ou9s"><img class="image-fit" src="images/youtube.png"> Standard mode, </a>
+      <a href="https://youtu.be/tpe9GhpS2o8"><img class="image-fit" src="images/youtube.png"> HDD mode</a>
+      
+<br>The automatic image alignement based on features (blobs,
       regions or corners) detected on consecutive slices.
 <br>
       The available
@@ -583,6 +592,10 @@ A demonstration is available in the following videos:
 <br>
       Please refer to the documentation of the <a href="https://se.mathworks.com/help/vision/ref/matchfeatures.html">matchFeatures</a> function of
       MATLAB for more details.
+      
+<br>
+<br>
+      This mode is also implemented for image files without loading them into MIB (see the <b>HDD mode</b> below.
       
 <br>
 <br>
@@ -635,7 +648,7 @@ A demonstration is available in the following videos:
 <br>
       A demonstration is available in the following video:
 <br>
-      <a href="https://youtu.be/MNt_Yzt4pw0"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MNt_Yzt4pw0</a>
+      <a href="https://youtu.be/MNt_Yzt4pw0"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/MNt_Yzt4pw0</a>
       </td>
     </tr>
     <tr>
@@ -689,13 +702,14 @@ A demonstration is available in the following videos:
   </li>
   <li>
       <b>HDD mode</b> -
-      <a href="https://youtu.be/FtvWjDUMZ1I"><img class="image-fit" src="images/youtube.png"></a>
+      <a href="https://youtu.be/FtvWjDUMZ1I"><img class="image-fit" src="images/youtube.png"> Drift correction</a>,
+      <a href="https://youtu.be/tpe9GhpS2o8"><img class="image-fit" src="images/youtube.png"> Feature-based</a>,
       when selected the alignment tool will align
       files specified in the bottom panel of the window
       (<em>HDD Mode (Image directories and formats)</em>). This mode is
       suitable for large collection of images that can not be fit into
       computer memory. This mode is only implemented for the "Drift
-      correction" algorithm.
+      correction" (<b>the images should be of the same size</b>) and "Automatic feature-based" algorithms
 <br>
   </li>
   <li>
@@ -799,7 +813,7 @@ A demonstration is available in the following videos:
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Alignment and Drift Correction
@@ -814,13 +828,15 @@ A demonstration is available in the following videos:
 % <html lang="en">
 % A demonstration is available in the following videos:
 <br>
-% <a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/-qwoO5z02aA</a>
+% <a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube.png"> How to do image alignment</a>
 <br>
-% <a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube2.png"> Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a>
+% <a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube.png"> Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a>
 <br>
-% <a href="https://youtu.be/-en5zD5Ou9s"><img style="vertical-align:middle;" src="images\youtube2.png"> Automatic feature-based</a>
+% <a href="https://youtu.be/-en5zD5Ou9s"><img style="vertical-align:middle;" src="images\youtube.png"> Automatic feature-based</a>
 <br>
-% <a href="https://youtu.be/FtvWjDUMZ1I"><img style="vertical-align:middle;" src="images\youtube2.png"> HDD mode</a>
+% <a href="https://youtu.be/tpe9GhpS2o8"><img style="vertical-align:middle;" src="images\youtube.png"> Automatic feature-based using HDD mode</a>
+<br>
+% <a href="https://youtu.be/FtvWjDUMZ1I"><img style="vertical-align:middle;" src="images\youtube.png"> HDD mode</a> (Drift correction and Automatic feature based only)
 <br>
 % </html>
 %
@@ -852,12 +868,15 @@ A demonstration is available in the following videos:
 %   </li>
 %   <li>
 %     <b>Algorithm</b> - selection of method to be used for the alignment:
-%     <table style="width: 550px; text-align: center; margin-left: 50px;" cellspacing=2px cellpadding=2px >
+%     <table style="width: 950px; text-align: center; margin-left: 50px;" cellspacing=2px cellpadding=2px >
 %     <tr>
 %       <td style="width=250px;"><b>Drift correction</b></td>
 %       <td>The Drift correction mode is recommended for small shifts or comparably sized images
 <br>
-%           It is recommended for most situations
+%           It is recommended for most situations and also implemented for
+%           image files without loading them into MIB (see the <b>HDD
+%           mode</b> below. <em>The image size should be the same in all
+%           files!</em>
 %       </td>
 %     </tr>
 %     <tr>
@@ -870,7 +889,10 @@ A demonstration is available in the following videos:
 %     </tr>
 %     <tr>
 %       <td><b>Automatic feature-based</b></td>
-%       <td><a href="https://www.youtube.com/embed/-en5zD5Ou9s"><img src="images/youtube.png"></a> The automatic image alignement based on features (blobs,
+%       <td><a href="https://www.youtube.com/embed/-en5zD5Ou9s"><img src="images/youtube.png"> Standard mode, </a> 
+%       <a href="https://youtu.be/tpe9GhpS2o8"><img src="images/youtube.png"> HDD mode</a>
+%       
+<br>The automatic image alignement based on features (blobs,
 %       regions or corners) detected on consecutive slices.
 <br>
 %       The available
@@ -884,6 +906,10 @@ A demonstration is available in the following videos:
 <br>
 %       Please refer to the documentation of the <a href="https://se.mathworks.com/help/vision/ref/matchfeatures.html">matchFeatures</a> function of
 %       MATLAB for more details.
+%       
+<br>
+<br>
+%       This mode is also implemented for image files without loading them into MIB (see the <b>HDD mode</b> below. 
 %       
 <br>
 <br>
@@ -936,7 +962,7 @@ A demonstration is available in the following videos:
 <br>
 %       A demonstration is available in the following video:
 <br>
-%       <a href="https://youtu.be/MNt_Yzt4pw0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MNt_Yzt4pw0</a>
+%       <a href="https://youtu.be/MNt_Yzt4pw0"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/MNt_Yzt4pw0</a>
 %       </td>
 %     </tr>
 %     <tr>
@@ -990,13 +1016,14 @@ A demonstration is available in the following videos:
 %   </li>
 %   <li>
 %       <b>HDD mode</b> - 
-%       <a href="https://youtu.be/FtvWjDUMZ1I"><img src="images/youtube.png"></a> 
+%       <a href="https://youtu.be/FtvWjDUMZ1I"><img src="images/youtube.png"> Drift correction</a>, 
+%       <a href="https://youtu.be/tpe9GhpS2o8"><img src="images/youtube.png"> Feature-based</a>, 
 %       when selected the alignment tool will align 
 %       files specified in the bottom panel of the window 
 %       (<em>HDD Mode (Image directories and formats)</em>). This mode is
 %       suitable for large collection of images that can not be fit into
 %       computer memory. This mode is only implemented for the "Drift
-%       correction" algorithm.
+%       correction" (<b>the images should be of the same size</b>) and "Automatic feature-based" algorithms
 <br>
 %   </li>
 %   <li>

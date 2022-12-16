@@ -410,7 +410,7 @@
 %   <td>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, 
 % Pascal Fua, and Sabine S?sstrunk<br>Ecole Polytechnique Federale de
 % Lausanne (EPFL), Switzerland</td>
-%   <td><a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html">authors' website</a></td>
+%   <td><a href="https://www.epfl.ch/labs/ivrl/research/slic-superpixels">authors' website</a></td>
 %   <td>ModifiedBSD,<br> 2015</td>
 %   <td>0.x-2.x</td>
 % </tr>

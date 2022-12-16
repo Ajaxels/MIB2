@@ -54,6 +54,19 @@
 %   <td>2D</td>
 % </tr>
 % <tr>
+%   <td><img src="images\image_filters_distancemap.jpg"></td>
+%   <td><b>Distance map filter</b><br>
+%        Calculate distance map from seeds provided in the "Source Layer" dropdown.<br>The 2D map is calculated using MATLAB <a href="https://www.mathworks.com/help/images/ref/bwdist.html" target="_blank">bwdist</a>, while 3D using <a href="https://se.mathworks.com/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio" target="_blank">bwdistsc</a> by Yuriy Mishchenko
+%        <br><br>
+%        The <b>Source Layer</b> should be one of these options:
+%        "selection", "mask", "material".
+%        <br>
+%        Four calculations methods are available for the 2D mode, while in
+%        the 3D mode only the "euclidean" method is used.
+%   </td>
+%   <td>2D/3D</td>
+% </tr>
+% <tr>
 %   <td><img src="images\image_filters_elasticdist.jpg"></td>
 %   <td><b>Elastic distortion filter</b><br>
 %        Elastic distortion filter, based on Best Practices for Convolutional Neural Networks
@@ -99,6 +112,13 @@
 %        Filter the image using the Laplacian of Gaussian filter, which highlights the edges<br>The resulting image is converted to unsigned integers by its multiplying with the NormalizationFactor and adding half of max class integer value.  The filtering is done with <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a> function and the "<span style="color:red;">log</span>" predefined filter from <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a>
 %   </td>
 %   <td>2D/3D</td>
+% </tr>
+% <tr>
+%   <td><img src="images\image_filters_MathOps.jpg"></td>
+%   <td><b>Mathematical operations</b><br>
+%        Apply standard mathematical operations: add, subtract, multiply, or divide to the image. During the operation it is possible to convert image class to a different type. 
+%   </td>
+%   <td>2D</td>
 % </tr>
 % <tr>
 %   <td><img src="images\image_filters_mode.jpg"></td>
@@ -299,6 +319,38 @@
 %        <li><b>Prewitt</b> - finds edges at those points where the gradient of I is maximum, using the Prewitt approximation to the derivative</li>
 %        <li><b>Roberts</b> - finds edges at those points where the gradient of I is maximum, using the Roberts approximation to the derivative</li>
 %        <li><b>Sobel</b> - Finds edges at those points where the gradient of the image I is maximum, using the Sobel approximation to the derivative</li>
+%        </ul>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td style="width: 300px"><img src="images\image_filters_slic.jpg"></td>
+%   <td><b>SLIC clustering filter</b><br>
+%        Cluster together pixels of similar intensity using the <a
+%        href="https://www.epfl.ch/labs/ivrl/research/slic-superpixels"
+%        target="_blank">SLIC (Simple Linear Iterative Clustering)
+%        algorithm</a>
+%        <br><br>
+%        <ul>Options and settings:
+%        <li><b>Cluster size</b> - approximate size of each cluster in pixels</li>
+%        <li><b>Compactness</b> - a value specifying how much the cluster shape is closer to square (100) or extremely flexible (0)</li>
+%        <li><b>ChopX</b> - as computations are memory intense, it is possible to split the dataset into a number of sub-blocks. Use this field to define number of horizontal blocks</li>
+%        <li><b>ChopY</b> - use this field to define number of vertical blocks</li>
+%        </ul>
+%   </td>
+%   <td>2D</td>
+% </tr>
+% <tr>
+%   <td style="width: 300px"><img src="images\image_filters_watershed.jpg"></td>
+%   <td><b>Watershed clustering filter</b><br>
+%        Cluster together pixels based on presence of ridges using the <a href="https://se.mathworks.com/help/images/ref/watershed.html" target="_blank">watershed algorithm</a>
+%        <br><br>
+%        <ul>Options and settings:
+%        <li><b>DestinationLayer</b> - calculation results can be assigned to different layers of MIB</li>
+%        <li><b>ClusterSize</b> - a parameter that defines size of the generated clusters, the larger the value, the bigger the clusters</li>
+%        <li><b>TypeOfSignal</b> - define color of the ridges: for electron microscopy use "black-on-white", while for light microscopy "white-on-black"</li>
+%        <li><b>GapPolicy</b> - cental line of the watershed ridge forms a gap. The gap can be preserved or filled using the neighbouring clusters</li>
+%        <li><b>ResultingShape</b> - produce as result clusters ("clusters") or gaps between the clusters ("ridges")</li>
 %        </ul>
 %   </td>
 %   <td>2D</td>

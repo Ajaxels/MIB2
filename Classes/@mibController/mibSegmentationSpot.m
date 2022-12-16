@@ -11,7 +11,8 @@ function mibSegmentationSpot(obj, y, x, modifier, BatchOptIn)
 % BatchOptIn: a structure for batch processing mode, when NaN return
 %   a structure with default options via "syncBatch" event, see Declaration of the BatchOpt structure below for details, the function
 %   variables are preferred over the BatchOptIn variables
-% @li .Radius - Spot radius in pixels
+% @li .Shape - shape of the spot "circle"/"square"
+% @li .Radius - Spot radius in pixels, or 2 numbers to set it to half width/height
 % @li .X - Vector or a single X coordinate of the spot center
 % @li .Y - Vector or a single X coordinate of the spot center
 % @li .Z - Vector or a single Z coordinate of the spot center, keep empty to use the currently shown
@@ -45,6 +46,8 @@ radius = round(radius);
 %% Declaration of the BatchOpt structure
 BatchOpt = struct();
 BatchOpt.id = obj.mibModel.Id;   % optional, id
+BatchOpt.Shape = {'circle'};
+BatchOpt.Shape{2} = {'circle', 'square'};
 BatchOpt.Radius = num2str(radius);
 if ~isempty(x)
     BatchOpt.X = num2str(x);
@@ -130,7 +133,10 @@ end
 
 orientation = find(ismember(BatchOpt.Orientation{2}, BatchOpt.Orientation{1}));
 options.id = BatchOpt.id;
-radius = str2double(BatchOpt.Radius);
+radius = str2num(BatchOpt.Radius);
+if numel(radius) == 1 %  circle shape
+    radius(2) = radius; 
+end
 
 showWaitbarLocal = 0;
 if BatchOpt.showWaitbar && (BatchOpt.Check3D || numel(xVec) > 1)
@@ -140,19 +146,23 @@ if showWaitbarLocal; wb = waitbar(0, 'Please wait...', 'Name', 'Spot segmentatio
 backupOptions.id = BatchOpt.id;
 
 for index = 1:numel(xVec)
-    options.x = [xVec(index)-radius xVec(index)+radius];
-    options.y = [yVec(index)-radius yVec(index)+radius];
+    options.x = [xVec(index)-radius(1) xVec(index)+radius(1)];
+    options.y = [yVec(index)-radius(2) yVec(index)+radius(2)];
     options.z = [zVec(index) zVec(index)];
     options.blockModeSwitch = 0;
     % recalculate x and y for the obtained cropped image
-    x = radius + min([options.x(1) 1]);
-    y = radius + min([options.y(1) 1]);
+    x = radius(1) + min([options.x(1) 1]);
+    y = radius(2) + min([options.y(1) 1]);
 
     currSelection = cell2mat(obj.mibModel.getData2D(BatchOpt.Target{1}, zVec(index), orientation, NaN, options));
-    currSelection2 = zeros(size(currSelection), 'uint8');
-    currSelection2(y, x) = 1;
-    currSelection2 = bwdist(currSelection2); 
-    currSelection2 = uint8(currSelection2 <= radius);
+    if strcmp(BatchOpt.Shape{1}, 'circle')
+        currSelection2 = zeros(size(currSelection), 'uint8');
+        currSelection2(y, x) = 1;
+        currSelection2 = bwdist(currSelection2); 
+        currSelection2 = uint8(currSelection2 <= radius);
+    else
+        currSelection2 = zeros(size(currSelection), 'uint8')+1;
+    end
 
     if BatchOpt.Check3D
         if orientation == 4

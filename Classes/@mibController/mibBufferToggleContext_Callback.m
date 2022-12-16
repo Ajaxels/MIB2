@@ -10,6 +10,7 @@ function mibBufferToggleContext_Callback(obj, parameter, buttonID, BatchOptIn)
 % @li @b ''sync_xy'' - synchronize datasets with another dataset in XY
 % @li @b ''sync_xyz'' - synchronize datasets with another dataset in XYZ
 % @li @b ''sync_xyzt'' - synchronize datasets with another dataset in XYZT
+% @li @b ''link_views'' - link the view between two containers
 % @li @b ''close'' - delete the dataset
 % @li @b ''closeAll'' - delete all datasets
 % buttonID: - a number (from 1 to 9) of the pressed toggle button.
@@ -26,12 +27,43 @@ function mibBufferToggleContext_Callback(obj, parameter, buttonID, BatchOptIn)
 %
 % Updates
 % 07.08.2019 updated for the batch mode
+% 06.10.2022 added link views
 
 global mibPath; % path to mib installation folder
 
 %% Declaration of the BatchOpt structure
 BatchOpt = struct();
 switch parameter
+    case 'link_views'
+        destinationButton = obj.mibModel.maxId;
+        for i=1:obj.mibModel.maxId-1
+            if ~strcmp(obj.mibModel.I{i}.meta('Filename'), 'none.tif') && i ~= obj.mibModel.Id
+                destinationButton = i;
+                break;
+            end
+        end
+        if isempty(buttonID)
+            BatchOpt.ContainerA = {'Current'};
+            buttonID = obj.mibModel.Id;
+        else
+            BatchOpt.ContainerA = {sprintf('Container %d', buttonID)};
+        end
+
+        BatchOpt.ContainerA{2} = [{'Current'}, arrayfun(@(x) sprintf('Container %d', x), 1:obj.mibModel.maxId, 'UniformOutput', false)];
+        BatchOpt.ContainerB = {sprintf('Container %d', destinationButton)};
+        BatchOpt.ContainerB{2} = arrayfun(@(x) sprintf('Container %d', x), 1:obj.mibModel.maxId, 'UniformOutput', false);
+        % generate a string for evaluation
+        buttonIDHandle = sprintf('mibBufferToggle%i', buttonID);
+        linked = obj.mibView.handles.(buttonIDHandle).ContextMenu.Children(3).Text(1) == '['; % check for "[Linked..."
+        if linked
+            BatchOpt.Linked = false;
+        else
+            BatchOpt.Linked = true;
+        end
+        BatchOpt.mibBatchTooltip.ContainerA = sprintf('Index of the first container to link the views');
+        BatchOpt.mibBatchTooltip.ContainerB = sprintf('Index of the second container to link the views');
+        BatchOpt.mibBatchTooltip.Linked = sprintf('Check to link the views between ContainerA and ContainerB');
+        BatchOpt.mibBatchActionName = 'Link views';
     case {'duplicate', 'mirror'}
         destinationButton = obj.mibModel.maxId;
         for i=1:obj.mibModel.maxId-1
@@ -120,6 +152,57 @@ if nargin == 4  % batch mode
 end
 
 switch parameter
+    case 'link_views'
+        if strcmp(BatchOpt.ContainerA{1}, 'Current')
+            buttonID = obj.mibModel.Id;
+        else
+            buttonID = str2double(BatchOpt.ContainerA{1}(10:end));
+        end
+        buttonIDHandle = sprintf('mibBufferToggle%i', buttonID);
+
+        if BatchOpt.Linked == false
+            sourceButtonStr = obj.mibView.handles.(buttonIDHandle).ContextMenu.Children(3).Text(10);
+            sourceButtonStr = ['mibBufferToggle', sourceButtonStr];
+            destinationButtonStr = obj.mibView.handles.(buttonIDHandle).ContextMenu.Children(3).Text(16);
+            destinationButtonHandle = ['mibBufferToggle', destinationButtonStr];
+            
+            obj.mibView.handles.(sourceButtonStr).ContextMenu.Children(3).Text = 'Link view with... [Unlinked]';
+            obj.mibView.handles.(destinationButtonHandle).ContextMenu.Children(3).Text = 'Link view with... [Unlinked]';
+        else
+            if obj.mibModel.I{buttonID}.volren.show == 1; return; end
+            if nargin < 4
+                prompts = {'Enter number of the dataset to link the view with:'};
+                defAns = {arrayfun(@(x) {num2str(x)}, 1:obj.mibModel.maxId)};
+                defAns{1}(end+1) = {destinationButton};
+                title = 'Link views';
+                answer = mibInputMultiDlg({mibPath}, prompts, defAns, title);
+                if isempty(answer); return; end
+                BatchOpt.ContainerB(1) = {sprintf('Container %s', answer{1})};
+            end
+            destinationButton = str2double(BatchOpt.ContainerB{1}(10:end));
+
+            if destinationButton == buttonID
+                warndlg(sprintf('!!! Warning !!!\n\nPlease select 2 different datasets!\n\nSelected datasets:\n   %s\n   %s', BatchOpt.ContainerA{1}, BatchOpt.ContainerB{1}), 'Wrong selection!');
+                return;
+            end
+
+            if obj.mibModel.I{buttonID}.orientation ~= obj.mibModel.I{destinationButton}.orientation
+                errordlg(sprintf('The datasets should be in the same orientation!\n\nFor example, switch orientation of both datasets to XY (the XY button in the toolbar) and try again'),'Wrong buffer'); notify(obj.mibModel, 'stopProtocol'); return;
+            end
+            
+            destinationButtonHandle = sprintf('mibBufferToggle%i', destinationButton);
+            % check whether the destination is already linked
+            if obj.mibView.handles.(destinationButtonHandle).ContextMenu.Children(3).Text(1) == '['
+                warndlg(sprintf('!!! Warnining !!!\n\nThe second dataset in %s is already linked!\nUnlink it first and repeat the operation', BatchOpt.ContainerB{1}), 'Already linked!');
+                notify(obj.mibModel, 'stopProtocol');
+                return;
+            end
+            obj.mibView.handles.(buttonIDHandle).ContextMenu.Children(3).Text = sprintf('[Linked: %i <-> %i] press to unlink', buttonID, destinationButton);
+            obj.mibView.handles.(destinationButtonHandle).ContextMenu.Children(3).Text = sprintf('[Linked: %i <-> %i] press to unlink', destinationButton, buttonID);
+        end
+        % notify the batch mode
+        eventdata = ToggleEventData(BatchOpt);
+        notify(obj.mibModel, 'syncBatch', eventdata);
     case {'duplicate', 'mirror'}    % duplicate dataset to a new position
         if nargin < 4 
             prompts = {'Enter the destination buffer:'};

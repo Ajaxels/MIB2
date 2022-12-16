@@ -47,6 +47,7 @@
                   <tocitem target="ug_gui_menu_file_rename_and_shuffle.html">File/Rename and shuffle</tocitem>
                   <tocitem target="ug_gui_menu_file_makevideo.html">File/Save as movie...</tocitem>
                   <tocitem target="ug_gui_menu_file_makesnapshot.html">File/Make snapshot</tocitem>
+                  <tocitem target="ug_gui_menu_file_3D_viewer.html">File/3D viewer</tocitem>
                   <tocitem target="ug_gui_menu_file_preferences.html">File/Preferences</tocitem>
                 </tocitem>
                 <tocitem target="ug_gui_menu_dataset.html">Dataset

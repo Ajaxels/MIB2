@@ -27,11 +27,13 @@ function net = generateDeepLabV3Network(obj, imageSize, numClasses, targetNetwor
 % - add for classification layer options
 % - add ReLU layer options
 
+global mibPath;
+
 if nargin < 4; targetNetwork = 'resnet18'; end
 
 % generate template network
 
-if strcmp(targetNetwork, 'resnet50') % 'resnet50', 'xception', 'inceptionresnetv2'
+if strcmp(targetNetwork, 'xception') || strcmp(targetNetwork, 'inceptionresnetv2')  % 'resnet50', 'xception', 'inceptionresnetv2'
     % define parameters for dummy initialization
     if imageSize(3) == 3
         net = deeplabv3plusLayers(imageSize, numClasses, targetNetwork, 'DownsamplingFactor', 16);
@@ -40,19 +42,40 @@ if strcmp(targetNetwork, 'resnet50') % 'resnet50', 'xception', 'inceptionresnetv
     dummyImageSize = [imageSize([1 2]), 3];
     lgraph = deeplabv3plusLayers(dummyImageSize, numClasses, targetNetwork, 'DownsamplingFactor', 16);
 else
-    if exist(fullfile(obj.mibModel.preferences.ExternalDirs.DeepMIBDir, '2D_DeepLabV3_Resnet18.mat'), 'file') == 0
-        result = uiconfirm(obj.View.gui, ...
-            sprintf('!!! Warning !!!\n\nGeneration of the "2D DeepLabV3 Resnet18" requires a templete file!\nThe file will be downloaded and placed to\n%s\n\nThis destination directory can be changed from\nMenu->File->Preferences->External directories', obj.mibModel.preferences.ExternalDirs.DeepMIBDir), ...
-            'Download the network template','Icon', 'warning');
-        if strcmp(result, 'Cancel')
-            net = [];
-            return;
+    switch targetNetwork
+        case 'resnet18'
+            netName = '2D_DeepLabV3_Resnet18.mat';  % original: 2D_DeepLabV3_Resnet18_old.mat; updated: 2D_DeepLabV3_Resnet18.mat
+            %netName = '2D_DeepLabV3_Resnet18_old.mat';  
+        case 'resnet50'
+            netName = '2D_DeepLabV3_Resnet50.mat'; 
+    end   
+    [~, fnTemplate] = fileparts(netName);
+
+    if exist(fullfile(obj.mibModel.preferences.ExternalDirs.DeepMIBDir, netName), 'file') == 0
+        prompts = {sprintf('Select the target application:')};
+        defAns = {{'Electron Microscopy', 'Light microscopy/Pathology', 1}};
+        dlgTitle = 'Download network template';
+        options.WindowStyle = 'normal';       % [optional] style of the window
+        options.PromptLines = 1;   % [optional] number of lines for widget titles
+        options.Title = sprintf('!!! Warning !!!\n\nGeneration of CNN using the "2D DeepLabV3 %s" architecture requires a templete file!\n\nThe file will be downloaded and placed to\n%s\nThis destination directory can be changed from\nMenu->File->Preferences->External directories', targetNetwork, obj.mibModel.preferences.ExternalDirs.DeepMIBDir);
+        options.TitleLines = 9;                   % [optional] make it twice tall, number of text lines for the title
+        options.WindowWidth = 1.5; 
+        options.HelpUrl = 'http://mib.helsinki.fi/help/main2/ug_gui_menu_tools_deeplearning.html';
+        [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+        if isempty(answer); net = []; return; end 
+
+        switch answer{1}
+            case 'Electron Microscopy'
+                fnTemplate = [fnTemplate '_sbem'];
+            case 'Light microscopy/Pathology'
+                fnTemplate = [fnTemplate '_pathology'];
         end
+
         if obj.BatchOpt.showWaitbar; waitbar(0, obj.wb, sprintf('Downloading network\nPlease wait...')); end
-        unzip('http://mib.helsinki.fi/tutorials/deepmib/2D_DeepLabV3_Resnet18.zip', obj.mibModel.preferences.ExternalDirs.DeepMIBDir);
+        unzip(sprintf('http://mib.helsinki.fi/tutorials/deepmib/%s.zip', fnTemplate), obj.mibModel.preferences.ExternalDirs.DeepMIBDir);
         if obj.BatchOpt.showWaitbar; waitbar(0.5, obj.wb, sprintf('Generating network\nPlease wait...')); end
     end
-    load(fullfile(obj.mibModel.preferences.ExternalDirs.DeepMIBDir, '2D_DeepLabV3_Resnet18.mat'), 'lgraph');
+    load(fullfile(obj.mibModel.preferences.ExternalDirs.DeepMIBDir, netName), 'lgraph');
 end
 
 % start a new network for the output
@@ -77,6 +100,7 @@ for layerId = 1:noLayers
                 NumFilters = numClasses;
                 afterScorerLayerSwitch = true;  % define that the following layers are coming after the scorer layer and should have update number of classes
                 %props(ismember(props, {'Bias', 'Weights'}) = '';
+
             else
                 NumFilters = lgraph.Layers(layerId).NumFilters;
             end
@@ -102,8 +126,18 @@ for layerId = 1:noLayers
                     'Stride', lgraph.Layers(layerId).Stride);
             end
             for propId = 1:numel(props)
-                if layerId == 2 && imageSize(3) == 1 && strcmp(props{propId}, 'Weights')
-                    layer.(props{propId}) = mean(lgraph.Layers(layerId).(props{propId}), 3);
+                if layerId == 2 && strcmp(props{propId}, 'Weights') % correct weights for the first 2D convolution layer
+                    if size(lgraph.Layers(layerId).(props{propId}), 3) == imageSize(3)
+                        layer.(props{propId}) = lgraph.Layers(layerId).(props{propId});
+                    elseif size(lgraph.Layers(layerId).(props{propId}), 3) > imageSize(3)
+                        layer.(props{propId}) = mean(lgraph.Layers(layerId).(props{propId}), 3);
+                    elseif size(lgraph.Layers(layerId).(props{propId}), 3) < imageSize(3)
+                        layer.(props{propId}) = repmat(lgraph.Layers(layerId).(props{propId}), [1 1 imageSize(3) 1]);
+                    end
+                %if layerId == 2 && imageSize(3) == 1 && strcmp(props{propId}, 'Weights')  % this is an old code that handles case when the template network is trained with 3 colors
+                %    layer.(props{propId}) = mean(lgraph.Layers(layerId).(props{propId}), 3);
+                elseif afterScorerLayerSwitch && (strcmp(props{propId}, 'Weights') || strcmp(props{propId}, 'Bias'))
+                    layer.(props{propId}) = [];     % clear weights for the scorer layer
                 else
                     layer.(props{propId}) = lgraph.Layers(layerId).(props{propId});
                 end
@@ -191,7 +225,7 @@ for layerId = 1:noLayers
         case 'nnet.cnn.layer.PixelClassificationLayer'
             layer = pixelClassificationLayer('Name', 'Segmentation-Layer');
             props(ismember(props, {'OutputSize', 'LossFunction', 'Name', ...
-                'NumInputs', 'InputNames', 'NumOutputs', 'OutputNames'})) = '';
+                'NumInputs', 'InputNames', 'NumOutputs', 'OutputNames', 'Classes'})) = '';
             for propId = 1:numel(props)
                 layer.(props{propId}) = lgraph.Layers(layerId).(props{propId});
             end
@@ -220,10 +254,10 @@ if obj.BatchOpt.showWaitbar; waitbar(0.5, obj.wb, sprintf('Connecting layers\nPl
 sourceLayers = lgraph.Connections.Source;
 destinationLayers = lgraph.Connections.Destination;
 switch targetNetwork
-    case 'resnet18'
+    case {'resnet18', 'resnet50'}
         sourceLayers(ismember(sourceLayers, 'data')) = {'ImageInputLayer'};
         destinationLayers(ismember(destinationLayers, 'data')) = {'ImageInputLayer'};
-    case {'inceptionresnetv2', 'resnet50'}
+    case {'inceptionresnetv2', 'xception'}
         sourceLayers(ismember(sourceLayers, 'input_1')) = {'ImageInputLayer'};
         destinationLayers(ismember(destinationLayers, 'input_1')) = {'ImageInputLayer'};
 end

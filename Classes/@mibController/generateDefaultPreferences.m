@@ -92,7 +92,7 @@ Prefs.System.Files.BioFormatsExt = sort(BioFormats);
 % bioformats, virtual mode
 % old: preferences.Filefilter.bioVirtExt
 Prefs.System.Files.BioFormatsVirtExt = sort([{'am'}, BioFormats]);
-
+Prefs.System.RenderingEngine = 'Viewer3d, R2022b';   % default rendering engine from R2022b, alternative is "Volshow, R2018b"
 
 %% ----------- COLORS PANEL -----------
 
@@ -266,6 +266,30 @@ Prefs.ImageArithmetic.OutputVars = {'I'};
 % old: imagearithmetic.no_stored_actions
 Prefs.ImageArithmetic.NoStoredActions = 10;
 
+%% ------------- VolRen -------------
+Prefs.VolRen.Viewer.backgroundColor = [0 0.329 0.529]; 
+Prefs.VolRen.Viewer.gradientColor = [0 0.561 1];
+Prefs.VolRen.Viewer.backgroundGradient = 'on';
+Prefs.VolRen.Viewer.lighting = 'on';
+Prefs.VolRen.Viewer.lightColor = [1 1 1];
+Prefs.VolRen.Viewer.showScaleBar = true;
+Prefs.VolRen.Viewer.scaleBarUnits = 'um';
+Prefs.VolRen.Viewer.showOrientationAxes = true;
+Prefs.VolRen.Viewer.showBox = false;
+
+Prefs.VolRen.Volume.renderer = 'VolumeRendering';
+Prefs.VolRen.Volume.gradientOpacityValue = 0.3;
+Prefs.VolRen.Volume.volumeAlphaCurve.x = [0 .3 .7 1];
+Prefs.VolRen.Volume.volumeAlphaCurve.y = [1 1 0 0];
+Prefs.VolRen.Volume.isosurfaceValue = 0.5;
+Prefs.VolRen.Volume.colormapName = 'gray';
+Prefs.VolRen.Volume.colormapInvert = true;
+Prefs.VolRen.Volume.colormapBlackPoint = 0;
+Prefs.VolRen.Volume.colormapWhitePoint = 255;
+Prefs.VolRen.Volume.markerSize = 15;
+
+Prefs.VolRen.Animation.noFrames = 120;  % default number of frames
+Prefs.VolRen.Animation.animationPath = struct();
 
 %% ------------- DeepMIB -------------
 % old: preferences.Deep
@@ -290,7 +314,7 @@ Prefs.Deep.TrainingOpt.LearnRateDropFactor = 0.1;
 Prefs.Deep.TrainingOpt.L2Regularization = 0.0001;
 Prefs.Deep.TrainingOpt.Momentum = 0.9;
 Prefs.Deep.TrainingOpt.GradientDecayFactor = 0.9;    % new in version 2.71
-Prefs.Deep.TrainingOpt.SquaredGradientDecayFactor = 0.9; % new in version 2.71
+Prefs.Deep.TrainingOpt.SquaredGradientDecayFactor = 0.999; % new in version 2.71
 Prefs.Deep.TrainingOpt.ValidationFrequency = 2;
 Prefs.Deep.TrainingOpt.ValidationPatience = Inf;   % new in version 2.71
 Prefs.Deep.TrainingOpt.Plots = 'training-progress';  

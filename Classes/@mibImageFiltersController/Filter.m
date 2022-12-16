@@ -28,6 +28,23 @@ end
 
 obj.ImageFilters.DesiredFilterName = BatchOptOut.FilterName{1}; % update the last used filter name
 
+% check parameters
+if strcmp(BatchOptOut.FilterName{1}, 'DistanceMap')
+    % check source layer and method
+    errorMessage = [];
+    if BatchOptOut.Mode3D == 1 && ~strcmp(BatchOptOut.Method{1}, 'euclidean')
+        errorMessage = sprintf('!!! Warning !!!\n\nDistanceMap in the 3D mode is implemented only for the "euclidean" method!\nPlease chanage the Method field to "euclidean" or switch off 3D and try again');
+    end
+    if strcmp(BatchOptOut.SourceLayer{1}, 'image')
+        errorMessage = sprintf('!!! Error !!!\n\nThe source layer for the DistanceMap filter should be one of these: "selection", "mask", or "model"');
+    end
+    if ~isempty(errorMessage )
+        uialert(obj.View.gui, ...
+            errorMessage, 'Wrong parameters!');
+        return;
+    end
+end
+
 returnBatchSettings = 0;    % switch to return settings to the mibBatchController
 if isempty(img)
     % check for the virtual stacking mode and close the controller if the plugin is not compatible with the virtual stacking mode
@@ -49,6 +66,9 @@ if isempty(img)
     end
     % define if full backup is needed
     if strcmp(BatchOptOut.FilterName{1}, 'ElasticDistortion') && BatchOptOut.DistortAllLAyers
+        backupLayer = 'mibImage';
+    end
+    if strcmp(BatchOptOut.FilterName{1}, 'DistanceMap')
         backupLayer = 'mibImage';
     end
     
@@ -176,12 +196,31 @@ for sourceLayerId = 1:numel(sourceLayersList)
                     [imgOut, log_text] = mibDoImageFiltering2(img{roi}, BatchOptOut, obj.mibModel.cpuParallelLimit);
                     img{roi} = img{roi}-imgOut;
             end
-            if ~strcmp(sourceLayersList{sourceLayerId}, 'image')
+            if ~strcmp(sourceLayersList{sourceLayerId}, 'image') && ~ismember(BatchOptOut.FilterName{1}, {'DistanceMap'})
                 img{roi} = squeeze(img{roi});
             end
         end
 
-        if ~ismember(BatchOptOut.FilterName{1}, obj.BinarizationFiltersList)
+        if ismember(BatchOptOut.FilterName{1}, {'DistanceMap'})
+            % apply result to the image layer
+            % convert image to a different class
+            if strcmp(obj.mibModel.I{obj.mibModel.Id}.meta('imgClass'), class(img{1}(1))) == 0
+                convertOpt.showWaitbar = true;
+                obj.mibModel.I{obj.mibModel.Id}.convertImage(class(img{1}(1)), convertOpt);
+                notify(obj.mibModel, 'newDatasetLite');
+            end
+            if strcmp(BatchOptOut.DatasetType{1}, '2D, Slice')
+                obj.mibModel.setData2D('image', img, obj.mibModel.I{obj.BatchOpt.id}.getCurrentSliceNumber(), NaN, 1, getDataOptions);
+            else
+                obj.mibModel.setData3D('image', img, t, NaN, 1, getDataOptions);
+            end
+        elseif ~ismember(BatchOptOut.FilterName{1}, obj.BinarizationFiltersList)
+            if strcmp(BatchOptOut.FilterName{1}, 'MathOps')
+                if ~strcmp(class(img{1}), obj.mibModel.I{obj.mibModel.Id}.meta('imgClass'))
+                    % convert the current image into the new output format
+                    obj.mibModel.I{obj.mibModel.Id}.convertImage(class(img{1}));
+                end
+            end
             if ~strcmp(BatchOptOut.DatasetType{1}, '2D, Slice')
                 obj.mibModel.setData3D(sourceLayersList{sourceLayerId}, img, t, NaN, colChannel, getDataOptions);
             else

@@ -7,12 +7,22 @@ function BatchOpt = updateBatchOptCombineFields_Shared(BatchOpt, BatchOptInput)
 BatchOptInputFields = fieldnames(BatchOptInput);
 for i=1:numel(BatchOptInputFields)
     % check for popup menu, update only the first element, because the second element provides the list of options
+    
+%     if strcmp(BatchOptInputFields{i}, 'Architecture')
+%         0;
+%     end
+
     if iscell(BatchOptInput.(BatchOptInputFields{i}))
         if isempty(BatchOptInput.(BatchOptInputFields{i}))
             BatchOpt.(BatchOptInputFields{i})(1) = {''};
         else
-            for indexId = 1:numel(BatchOptInput.(BatchOptInputFields{i}))
-                BatchOpt.(BatchOptInputFields{i})(indexId) = BatchOptInput.(BatchOptInputFields{i})(indexId);
+            if isfield(BatchOpt, BatchOptInputFields{i})
+                % take only the first element
+                BatchOpt.(BatchOptInputFields{i})(1) = BatchOptInput.(BatchOptInputFields{i})(1);
+            else    % take all elements
+                for indexId = 1:numel(BatchOptInput.(BatchOptInputFields{i}))
+                    BatchOpt.(BatchOptInputFields{i})(indexId) = BatchOptInput.(BatchOptInputFields{i})(indexId);
+                end
             end
             % BatchOpt.(BatchOptInputFields{i})(1) = BatchOptInput.(BatchOptInputFields{i})(1);
         end

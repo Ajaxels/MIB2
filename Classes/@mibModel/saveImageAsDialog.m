@@ -73,7 +73,7 @@ BatchOpt.showWaitbar = true;   % show or not the waitbar
 
 BatchOpt.mibBatchSectionName = 'Menu -> File';    % section name for the Batch
 BatchOpt.mibBatchActionName = 'Save dataset';
-BatchOpt.mibBatchTooltip.Filename = sprintf('[Use new provided name only]: new filename for the image');
+BatchOpt.mibBatchTooltip.Filename = sprintf('[Use new provided name only]: new filename for the image; it is possible to use template [F] that encodes the filename, as for example, Label_[F]_suffix');
 BatchOpt.mibBatchTooltip.FilenamePolicy = sprintf('Use existing name: the filename used during loading of the model; Use new provided name: filename provided in Filename field');
 BatchOpt.mibBatchTooltip.Format = sprintf('Available file formats for saving images');
 BatchOpt.mibBatchTooltip.OutputDirectoryPolicy = sprintf('Subfolder: to subfolder, relative to loading; Full path: save to the provided in DestinationDirectory path; Same as loaded: to the same folder from where images were loaded');
@@ -159,6 +159,13 @@ end
 
 if strcmp(BatchOpt.FilenamePolicy{1}, 'Use existing name')
     [~, BatchOpt.Filename] = fileparts(obj.I{BatchOpt.id}.meta('Filename'));
+else
+    templateDetection = strfind(BatchOpt.Filename, '[');  % detect [F] template
+    if ~isempty(templateDetection)
+        [path, fn] = fileparts(obj.I{BatchOpt.id}.meta('Filename'));
+        BatchOpt.Filename = sprintf('%s%s%s', ...
+            BatchOpt.Filename(1:templateDetection(1)-1), fn, BatchOpt.Filename(templateDetection(1)+3:end));
+    end    
 end
 
 saveImageOptions.Format = BatchOpt.Format{1};

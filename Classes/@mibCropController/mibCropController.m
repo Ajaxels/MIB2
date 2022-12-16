@@ -423,6 +423,8 @@ classdef mibCropController  < handle
                 delete(h);
                 obj.mibModel.disableSegmentation = 0;    % re-enable selection switch 
                 
+                if isempty(new_position); obj.View.gui.Visible = 'on'; return; end
+
                 if new_position(3) == 0 || new_position(4) == 0
                     errordlg(sprintf('!!! Error !!!\n\nThe defined area is too small!\nTo select the area for crop press the left mouse button and drag the mouse while having the left mouse button pressed. To confirm selection, double click inside the selected area'));
                     obj.View.gui.Visible = 'on';
@@ -512,7 +514,8 @@ classdef mibCropController  < handle
             end
             obj.listener{1}.Enabled = 1;    % re-enable listener to do not update widgets
             
-            if strcmp(BatchOptLoc.Destination{1}, sprintf('Container %d', obj.mibModel.Id))
+            if strcmp(BatchOptLoc.Destination{1}, sprintf('Container %d', obj.mibModel.Id)) || ...
+                strcmp(BatchOptLoc.Destination{1}, 'Current')
                 eventdata = ToggleEventData(1);
                 notify(obj.mibModel, 'plotImage', eventdata);
             end

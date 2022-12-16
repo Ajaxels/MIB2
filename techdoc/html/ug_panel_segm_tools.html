@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Segmentation Tools</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-06-17"><meta name="DC.source" content="ug_panel_segm_tools.m"><style>
+      --><title>Segmentation Tools</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_panel_segm_tools.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -145,10 +145,11 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 8px 20px;
+  padding: 6px 14px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
+  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -532,9 +533,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li><a href="#13">The Spot tool</a></li></ul></div>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="1">The 3D ball</h2>
-<table style="width: 800px; border: 0px">
+<table style="border: 0px">
 <tr>
-<td style="border: 0px">
+<td style="width: 300px; border: 0px">
   <img class="image-fit" src = "images\PanelsSegmentationTools3DBall.png">
 </td>
 <td style="border: 0px">
@@ -567,9 +568,9 @@ https://youtu.be/ZcJQb59YzUA?t=1s</a>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="2">The 3D lines</h2>
 <p><a id="target1"></a></p>
-<table style="width: 800px; border: 0px">
+<table style="border: 0px">
 <tr>
-<td style="border: 0px">
+<td style="width: 300px; border: 0px">
   <img class="image-fit" src = "images\PanelsSegmentationTools3DLines.png">
 </td>
 <td style="border: 0px">
@@ -695,9 +696,9 @@ Right mouse click starts a popup menu with various options:
 <br style="display:block; content:''; margin-top:8px;"></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="3">Annotations</h2>
-<table style="width: 800px; border: 0px">
+<table style="border: 0px">
 <tr>
-<td style="border: 0px">
+<td style="width: 300px; border: 0px">
   <img class="image-fit" src = "images\PanelsSegmentationToolsAnnotations.png">
 </td>
 <td style="border: 0px">
@@ -755,9 +756,9 @@ displayed in the <a href="ug_panel_im_view.html">Image View panel</a>.
 </details>
 <br>
 <p><span class="h3">List of annotations window</span></p>
-<table style="width: 800px; border: 0px">
+<table style="border: 0px">
 <tr>
-<td style="border: 0px">
+<td style="width: 400px; border: 0px">
   <img class="image-fit" src = "images\PanelsSegmentationToolsAnnotationsTable.png">
 </td>
 <td style="border: 0px">
@@ -784,13 +785,24 @@ displayed in the <a href="ug_panel_im_view.html">Image View panel</a>.
       <li><em><b>Order</b></em>, subitems of the Order entry can be used to move annotations towards the top or the bottom of the list</li>
       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
   </ul>
+</ul>
+</td>
+</tr>
+<tr style="border: 0px">
+<td colspan=2>
+<ul>
 <li>The <span class="kbd">Load</span> button, press to import annotations from the main MATLAB workspace or load them from a file</li>
 <li>The <span class="kbd">Save</span> button, press to export annotations to the main MATLAB workspace or to save them as a file in MATLAB, Comma-separated CSV format, Excel formats or as landmarks for Amira (
           <a href="https://youtu.be/wHr6nHpmVMo"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"></a> <em><b>Note!</em> only the coordinates are exported!</b>), or PSI format for Amira</li>
 <li>The <b>Precision</b> editbox, modify precision of the value field in the table and for the visualization in the Image View panel
 <li>The <span class="kbd">[&#10003;] <b>Auto jump</b></span> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>
 <li>The <b>Sort table</b> allows to sort annotations based on their Name, Value, X, Y, Z, T</li>
-<li>The <span class="kbd">Settings</span> provides configuration of additional settings: extra slices to display annotation, when this value 0 annotations only belonging to the current slice are displayed, when a positive number from -value to +value depth</li>
+<li>The <span class="kbd">Settings</span> provides configuration of additional settings:
+<ul>
+<li><b>Show annotations for extra slices</b>, extra slices to display annotation, when this value 0 annotations only belonging to the current slice are displayed, when a positive number from -value to +value depth</li>
+<li><b>Annotation size</b>, size of the annotation marker from 8 to 20pt</li>
+</ul>
+</li>
 <li>The <span class="kbd">Refresh table</span> button updates the list of annotations</li>
 <li>The <span class="kbd">Delete all</span> button removes all annotations</li>
 </ul>
@@ -801,9 +813,9 @@ displayed in the <a href="ug_panel_im_view.html">Image View panel</a>.
 <br style="display:block; content:''; margin-top:8px;"></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="4">The Brush tool</h2>
-<table style="width: 800px; border: 0px">
+<table style="border: 0px">
 <tr>
-<td style="border: 0px">
+<td style="width: 300px; border: 0px">
   <img class="image-fit" src = "images\PanelsSegmentationToolsBrush.png">
 </td>
 <td style="border: 0px">
@@ -880,9 +892,9 @@ The <span class="kbd">[&#10003;] <b>SLIC</b></span> checkbox, , when ticked, pix
 <br style="display:block; content:''; margin-top:8px;"></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(5)" class="collapse-link"><a href="javascript:void(0);" id="Toggle5">collapse all</a></p><h2 id="7">The Black and White Thresholding tool</h2>
-<table style="width: 800px; border: 0px">
+<table style="border: 0px">
 <tr>
-<td style="border: 0px">
+<td style="width: 300px; border: 0px">
   <img class="image-fit" src = "images\PanelsSegmentationToolsBWThres.png">
 </td>
 <td style="border: 0px">
@@ -917,9 +929,9 @@ A brief demonstration is available in the following video:
 <br style="display:block; content:''; margin-top:8px;"></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(6)" class="collapse-link"><a href="javascript:void(0);" id="Toggle6">collapse all</a></p><h2 id="8">Drag &amp; Drop material</h2>
-<table style="width: 800px; border: 0px">
+<table style="border: 0px">
 <tr>
-<td style="border: 0px">
+<td style="width: 300px; border: 0px">
   <img class="image-fit" src = "images\PanelsSegmentationToolsDragDrop.png">
 </td>
 <td style="border: 0px">
@@ -1002,9 +1014,9 @@ A brief demonstration is available in the following video:
 <br style="display:block; content:''; margin-top:8px;"></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(8)" class="collapse-link"><a href="javascript:void(0);" id="Toggle8">collapse all</a></p><h2 id="10">The Magic Wand + Region Growing tool</h2>
-<table style="width: 800px; border: 0px">
+<table style="border: 0px">
 <tr>
-<td style="border: 0px">
+<td style="width: 300px; border: 0px">
   <img class="image-fit" src = "images\PanelsSegmentationToolsMagicWand.png">
 </td>
 <td style="border: 0px">
@@ -1044,9 +1056,9 @@ A brief demonstration is available in the following video:
 <br style="display:block; content:''; margin-top:8px;"></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(9)" class="collapse-link"><a href="javascript:void(0);" id="Toggle9">collapse all</a></p><h2 id="11">The Membrane Click Tracker tool</h2>
-<table style="width: 800px; border: 0px">
+<table style="border: 0px">
 <tr>
-<td style="border: 0px">
+<td style="width: 300px; border: 0px">
   <img class="image-fit" src = "images\PanelsSegmentationToolsMembraneClick.png">
 </td>
 <td style="border: 0px">
@@ -1095,9 +1107,9 @@ A brief demonstration for 3D is available in the following video:
 <br style="display:block; content:''; margin-top:8px;"></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(10)" class="collapse-link"><a href="javascript:void(0);" id="Toggle10">collapse all</a></p><h2 id="12">Object Picker</h2>
-<table style="width: 800px; border: 0px">
+<table style="border: 0px">
 <tr>
-<td style="border: 0px">
+<td style="width: 300px; border: 0px">
   <img class="image-fit" src = "images\PanelsSegmentationToolsObjectPicker.png">
 </td>
 <td style="border: 0px">
@@ -1179,9 +1191,9 @@ Selection <em>-minus-</em> Mask. This action is sensitive to the <span class="kb
 <br style="display:block; content:''; margin-top:8px;"></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(11)" class="collapse-link"><a href="javascript:void(0);" id="Toggle11">collapse all</a></p><h2 id="13">The Spot tool</h2>
-<table style="width: 800px; border: 0px">
+<table style="border: 0px">
 <tr>
-<td style="border: 0px">
+<td style="width: 300px; border: 0px">
   <img class="image-fit" src = "images\PanelsSegmentationToolsSpot.png">
 </td>
 <td style="border: 0px">
@@ -1225,7 +1237,7 @@ Works also in 3D.
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Segmentation Tools
@@ -1239,9 +1251,9 @@ Works also in 3D.
 %% The 3D ball
 %
 % <html lang="en">
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationTools3DBall.png">
 % </td>
 % <td style="border: 0px">
@@ -1277,9 +1289,9 @@ Works also in 3D.
 % [target1]
 %
 % <html lang="en">
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationTools3DLines.png">
 % </td>
 % <td style="border: 0px">
@@ -1421,9 +1433,9 @@ Works also in 3D.
 %% Annotations
 %
 % <html lang="en">
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsAnnotations.png">
 % </td>
 % <td style="border: 0px">
@@ -1486,9 +1498,9 @@ Works also in 3D.
 % [class.h3]List of annotations window[/class]
 %
 % <html lang="en">
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 400px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsAnnotationsTable.png">
 % </td>
 % <td style="border: 0px">
@@ -1515,13 +1527,24 @@ Works also in 3D.
 %       <li><em><b>Order</b></em>, subitems of the Order entry can be used to move annotations towards the top or the bottom of the list</li>
 %       <li><em><b>Delete annotation</em></b>, delete selected annotations from the list</li>
 %   </ul>
+% </ul>
+% </td>
+% </tr>
+% <tr style="border: 0px">
+% <td colspan=2>
+% <ul>
 % <li>The <span class="kbd">Load</span> button, press to import annotations from the main MATLAB workspace or load them from a file</li>
 % <li>The <span class="kbd">Save</span> button, press to export annotations to the main MATLAB workspace or to save them as a file in MATLAB, Comma-separated CSV format, Excel formats or as landmarks for Amira (
 %           <a href="https://youtu.be/wHr6nHpmVMo"><img style="vertical-align:middle;" src="images\youtube.png"></a> <em><b>Note!</em> only the coordinates are exported!</b>), or PSI format for Amira</li>
 % <li>The <b>Precision</b> editbox, modify precision of the value field in the table and for the visualization in the Image View panel
 % <li>The <span class="kbd">[&#10003;] <b>Auto jump</b></span> checkbox - when enabled, the image in the <a href="ug_panel_im_view.html">Image View panel</a> is automatically shifted, thereby placing the selected annotation at the center of the image</li>
 % <li>The <b>Sort table</b> allows to sort annotations based on their Name, Value, X, Y, Z, T</li>
-% <li>The <span class="kbd">Settings</span> provides configuration of additional settings: extra slices to display annotation, when this value 0 annotations only belonging to the current slice are displayed, when a positive number from -value to +value depth</li>
+% <li>The <span class="kbd">Settings</span> provides configuration of additional settings: 
+% <ul>
+% <li><b>Show annotations for extra slices</b>, extra slices to display annotation, when this value 0 annotations only belonging to the current slice are displayed, when a positive number from -value to +value depth</li>
+% <li><b>Annotation size</b>, size of the annotation marker from 8 to 20pt</li>
+% </ul>
+% </li>
 % <li>The <span class="kbd">Refresh table</span> button updates the list of annotations</li>
 % <li>The <span class="kbd">Delete all</span> button removes all annotations</li>
 % </ul>
@@ -1535,9 +1558,9 @@ Works also in 3D.
 %% The Brush tool 
 %
 % <html lang="en">
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsBrush.png">
 % </td>
 % <td style="border: 0px">
@@ -1659,9 +1682,9 @@ Works also in 3D.
 %
 %
 % <html lang="en">
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsBWThres.png">
 % </td>
 % <td style="border: 0px">
@@ -1709,9 +1732,9 @@ Works also in 3D.
 %% Drag & Drop material
 %
 % <html lang="en">
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsDragDrop.png">
 % </td>
 % <td style="border: 0px">
@@ -1802,9 +1825,9 @@ Works also in 3D.
 %% The Magic Wand + Region Growing tool
 % 
 % <html lang="en">
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsMagicWand.png">
 % </td>
 % <td style="border: 0px">
@@ -1848,9 +1871,9 @@ Works also in 3D.
 %% The Membrane Click Tracker tool
 %
 % <html lang="en">
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsMembraneClick.png">
 % </td>
 % <td style="border: 0px">
@@ -1911,9 +1934,9 @@ Works also in 3D.
 %% Object Picker
 %
 % <html lang="en">
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsObjectPicker.png">
 % </td>
 % <td style="border: 0px">
@@ -1998,9 +2021,9 @@ Works also in 3D.
 %% The Spot tool 
 %
 % <html lang="en">
-% <table style="width: 800px; border: 0px">
+% <table style="border: 0px">
 % <tr>
-% <td style="border: 0px">
+% <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsSpot.png">
 % </td>
 % <td style="border: 0px">

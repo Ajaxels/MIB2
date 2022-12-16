@@ -34,7 +34,7 @@ function devTest_ClickedCallback(obj)
 % TO DO:
 % 1. test inversion of EM datasets when padding is 'same', since it is
 % extended with 0s, which are signal on EM images
-obj.startController('mibPreferencesController', obj); % an old guide version
+
 return
 
 % Restore specific image regions
@@ -152,65 +152,6 @@ end
 
 return;
 
-obj.mibModel.mibDoBackup('image', 1);
-[height, width, colors, depth, time] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image');
-intensityThreshold = 100;
-objSizeThreshold = 1480;
-obj.mibModel.clearMask();
-wb = waitbar(0, 'Please wait...', 'Name', 'Removing debris');
-for z=2:depth-1
-    waitbar(z/depth, wb);
-    
-    % get image
-    if z > 2
-        I1 = I2;
-        I2 = I3;
-        Iprev = Icurr;
-        Icurr = Inext;
-        
-        Inext = cell2mat(obj.mibModel.getData2D('image', z+1));
-        I3 = Inext + imbothat(Inext, strel('disk', 7, 0));
-    else
-        Iprev = cell2mat(obj.mibModel.getData2D('image', z-1));
-        Icurr = cell2mat(obj.mibModel.getData2D('image', z));
-        Inext = cell2mat(obj.mibModel.getData2D('image', z+1));
-        
-        I1 = Iprev + imbothat(Iprev, strel('disk', 7, 0));
-        I2 = Icurr + imbothat(Icurr, strel('disk', 7, 0));
-        I3 = Inext + imbothat(Inext, strel('disk', 7, 0));
-    end
-    
-    % get difference
-    dI1 = I1-I2;
-    dI2 = I3-I2;
-    dI = dI1+dI2;
-
-    S = zeros(size(dI), 'uint8');
-    S(dI > intensityThreshold) = 1;
-    CC = bwconncomp(S, 8);
-    STATS = regionprops(CC, {'Area','PixelIdxList'});
-    if numel(STATS) == 0; continue; end
-    
-    for objId = 1:numel(STATS)
-        if STATS(objId).Area < objSizeThreshold
-            S(STATS(objId).PixelIdxList) = 0;
-        end
-    end
-    S = imdilate(S, strel('disk', 5, 0));
-    S = imfill(S);
-    S = imerode(S, strel('disk', 3, 0));
-    obj.mibModel.setData2D('mask', S, z);
-    
-    Iout = Icurr;
-    Ipatch = Iprev/2+Inext/2;
-    %Ipatch = Iprev+Inext;
-    Iout(S==1) = Ipatch(S==1);
-    obj.mibModel.setData2D('image', Iout, z);
-end
-obj.plotImage();
-delete(wb);
-return
-
 %%
 [height, width, colors, depth, time] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image');
 outDir = 'd:\3\imod_5k_20proc_overlap\tifs';
@@ -232,25 +173,6 @@ for z = [1 2 27 28 53 54]
     I.saveImageAsDialog(fn, saveFileOptions);
 end
 return;
-
-
-% obj.mibModel.mibDoBackup('image', 1);
-% img = cell2mat(obj.mibModel.getData3D('image'));
-% img2 = zeros(size(img), 'uint8');
-% for i=1:size(img,4)
-%     %img2(:,:,:,i) = locallapfilt(img(:,:,:,i), .2, 2, .5);
-% end
-% %obj.mibModel.setData3D('image', c2);
-% obj.mibModel.setData3D('selection', squeeze(img2));
-% obj.plotImage();
-% return;
-
-% %sigma = 100;
-% %img = imflatfield(img, sigma);
-% img = histeq(img, 64);
-% obj.mibModel.setData2D('image', img);
-% obj.plotImage();
-
 
 % to do 
 %
@@ -310,54 +232,7 @@ boxplot(ratio);
 set(gca, 'ylim', [0 1]);
 
 
-% 
-% % stretching, option A: the whole stack
-% obj.mibModel.mibDoBackup('image', 1);
-% mask = cell2mat(obj.mibModel.getData3D('mask', 1, 4));  % get the mask
-% %for colCh = 1:obj.mibModel.I{obj.mibModel.Id}.colors  % loop across the color channels
-% colCh = 1;
-%     img = squeeze(cell2mat(obj.mibModel.getData3D('image', 1, 4, colCh)));  % get images
-%     maxIntVal = double(intmax(class(img)));    
-%     
-%     indices = img(mask==1);     % extract image intensities inside the mask
-%     [N, edges] = histcounts(indices, 100);   % calculate distribution 
-% 
-%     for z=1:size(img, 3)
-%         cSlice = img(:,:,z);
-%         img(:,:,z) = imadjust(cSlice, [edges(2)/maxIntVal edges(end-1)/maxIntVal],[]);
-%     end
-%     img = permute(img, [1,2,4,3]);
-%     obj.mibModel.setData3D('image', img, 1, 4, colCh);    
-% %end
-% obj.plotImage();
 
-% 
-% % stretching, option B: slice by slice
-% obj.mibModel.mibDoBackup('image', 1);
-% img = cell2mat(obj.mibModel.getData3D('image', 1, 4));  % get images
-% mask = cell2mat(obj.mibModel.getData3D('mask', 1, 4));  % get the mask
-% maxIntVal = double(intmax(class(img)));     % max integer value
-% 
-% for colCh = 1:size(img, 3)  % loop across the color channels
-%     for z=1:size(img, 4)    % loop across slices
-%         cImg = img(:, :, colCh, z);     % get image
-%         cMask = mask(:, :, z);          % get mask
-%         indices = cImg(cMask==1);     % extract image intensities inside the mask
-%         [N, edges] = histcounts(indices, 100);   % calculate distribution, 
-%         
-%         img(:, :, colCh, z) = imadjust(cImg, [edges(2)/maxIntVal edges(end-1)/maxIntVal],[]);
-%     end
-% end
-% obj.mibModel.setData3D('image', img, 1, 4);
-% obj.plotImage();
-
-% figure
-% subplot(1,2,1)
-% boxplot(a)
-% set(gca, 'ylim', [0 1]);
-% subplot(1,2,2)
-% boxplot(b)
-% set(gca, 'ylim', [0 1]);
 
 % tic
 % obj.mibModel.mibDoBackup('image', 0);

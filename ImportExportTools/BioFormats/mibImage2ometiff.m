@@ -60,6 +60,15 @@ if ~isfield(options, 'Saving3d'); options.Saving3d = '5D'; end
 if ~isfield(options, 'Compression'); options.Compression = 'none'; end
 if ~isfield(options, 'DimensionOrder'); options.DimensionOrder = 'XYZCT'; end
 
+% define time units for the output
+switch options.pixSize.tunits
+    case {'sec', 's'}
+        tunits = ome.units.UNITS.SECOND;
+    case {'min', 'm'}
+        tunits = ome.units.UNITS.MINUTE;
+    case {'hour', 'h'}
+        tunits = ome.units.UNITS.HOUR;
+end
 
 if options.overwrite == 0
     if exist(filename, 'file') == 2
@@ -95,7 +104,7 @@ options.pixSize.y = options.pixSize.y * scaleFactor;
 options.pixSize.z = options.pixSize.z * scaleFactor;
 
 if strcmp(options.Saving3d, '5D')
-    % permute image from y,x,c,z,t to x,y,z,c,t
+    % permute image from y,x,c,z,t to y,x,z,c,t
     % imageS = permute(imageS, [1 2 4 3 5]);
     
     metadata = createMinimalOMEXMLMetadata(imageS, options.DimensionOrder);
@@ -105,17 +114,12 @@ if strcmp(options.Saving3d, '5D')
     metadata.setPixelsPhysicalSizeY(pixelSize, 0);
     pixelSize = ome.units.quantity.Length(java.lang.Double(options.pixSize.z), ome.units.UNITS.MICROMETER);
     metadata.setPixelsPhysicalSizeZ(pixelSize, 0);
+    pixelSize = ome.units.quantity.Time(java.lang.Double(options.pixSize.t), tunits);
+    metadata.setPixelsTimeIncrement(pixelSize, 0);
     
-    %metadata.setPixelsSizeX(ome.xml.model.primitives.PositiveInteger(java.lang.Integer(size(imageS, 1))), 0);
-    %metadata.setPixelsSizeY(ome.xml.model.primitives.PositiveInteger(java.lang.Integer(size(imageS, 2))), 0);
-    %metadata.setPixelsSizeZ(ome.xml.model.primitives.PositiveInteger(java.lang.Integer(size(imageS, 3))), 0);
-    %metadata.setPixelsSizeC(ome.xml.model.primitives.PositiveInteger(java.lang.Integer(size(imageS, 4))), 0);
-    %metadata.setPixelsSizeT(ome.xml.model.primitives.PositiveInteger(java.lang.Integer(size(imageS, 5))), 0);
-    
-    %metadata.setPixelsDimensionOrder(ome.xml.model.enums.DimensionOrder.XYCZT, 0);
-    %metadata.setPixelsDimensionOrder(ome.xml.model.enums.DimensionOrder.XYZCT, 0);
-    %metadata.getPixelsDimensionOrder(0)
-    
+    % delete old file
+    if exist(filename, 'file') == 2; delete(filename); end
+
     if strcmp(options.Compression, 'none')
         bfsave(imageS, filename, 'metadata', metadata);        
     else
@@ -203,18 +207,18 @@ function fn = generateSequentialFilename(name, num, files_no)
 % num - sequential number to generate
 % files_no - total number of files in sequence
 if files_no == 1
-    fn = [name '.tif'];
+    fn = [name '.ome.tiff'];
 elseif files_no < 100
-    fn = [name '_' sprintf('%02i',num) '.tiff'];
+    fn = [name '_' sprintf('%02i',num) '.ome.tiff'];
 elseif files_no < 1000
-    fn = [name '_' sprintf('%03i',num) '.tiff'];
+    fn = [name '_' sprintf('%03i',num) '.ome.tiff'];
 elseif files_no < 10000
-    fn = [name '_' sprintf('%04i',num) '.tiff'];
+    fn = [name '_' sprintf('%04i',num) '.ome.tiff'];
 elseif files_no < 100000
-    fn = [name '_' sprintf('%05i',num) '.tiff'];
+    fn = [name '_' sprintf('%05i',num) '.ome.tiff'];
 elseif files_no < 1000000
-    fn = [name '_' sprintf('%06i',num) '.tiff'];
+    fn = [name '_' sprintf('%06i',num) '.ome.tiff'];
 elseif files_no < 10000000
-    fn = [name '_' sprintf('%07i',num) '.tiff'];    
+    fn = [name '_' sprintf('%07i',num) '.ome.tiff'];    
 end
 end

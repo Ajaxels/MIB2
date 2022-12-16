@@ -9,10 +9,11 @@
 %
 % <html>
 % A demonstration is available in the following videos:<br>
-% <a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/-qwoO5z02aA</a><br>
-% <a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube2.png"> Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a><br>
-% <a href="https://youtu.be/-en5zD5Ou9s"><img style="vertical-align:middle;" src="images\youtube2.png"> Automatic feature-based</a><br>
-% <a href="https://youtu.be/FtvWjDUMZ1I"><img style="vertical-align:middle;" src="images\youtube2.png"> HDD mode</a><br>
+% <a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube.png"> How to do image alignment</a><br>
+% <a href="https://youtu.be/rlXoyZcTpJs"><img style="vertical-align:middle;" src="images\youtube.png"> Multi-point landmarks,  https://youtu.be/rlXoyZcTpJs</a><br>
+% <a href="https://youtu.be/-en5zD5Ou9s"><img style="vertical-align:middle;" src="images\youtube.png"> Automatic feature-based</a><br>
+% <a href="https://youtu.be/tpe9GhpS2o8"><img style="vertical-align:middle;" src="images\youtube.png"> Automatic feature-based using HDD mode</a><br>
+% <a href="https://youtu.be/FtvWjDUMZ1I"><img style="vertical-align:middle;" src="images\youtube.png"> HDD mode</a> (Drift correction and Automatic feature based only)<br>
 % </html>
 %
 % [br8]
@@ -43,11 +44,14 @@
 %   </li>
 %   <li>
 %     <b>Algorithm</b> - selection of method to be used for the alignment:
-%     <table style="width: 550px; text-align: center; margin-left: 50px;" cellspacing=2px cellpadding=2px >
+%     <table style="width: 950px; text-align: center; margin-left: 50px;" cellspacing=2px cellpadding=2px >
 %     <tr>
 %       <td style="width=250px;"><b>Drift correction</b></td>
 %       <td>The Drift correction mode is recommended for small shifts or comparably sized images<br>
-%           It is recommended for most situations
+%           It is recommended for most situations and also implemented for
+%           image files without loading them into MIB (see the <b>HDD
+%           mode</b> below. <em>The image size should be the same in all
+%           files!</em>
 %       </td>
 %     </tr>
 %     <tr>
@@ -59,7 +63,9 @@
 %     </tr>
 %     <tr>
 %       <td><b>Automatic feature-based</b></td>
-%       <td><a href="https://www.youtube.com/embed/-en5zD5Ou9s"><img src="images/youtube.png"></a> The automatic image alignement based on features (blobs,
+%       <td><a href="https://www.youtube.com/embed/-en5zD5Ou9s"><img src="images/youtube.png"> Standard mode, </a> 
+%       <a href="https://youtu.be/tpe9GhpS2o8"><img src="images/youtube.png"> HDD mode</a>
+%       <br>The automatic image alignement based on features (blobs,
 %       regions or corners) detected on consecutive slices.<br>
 %       The available
 %       transfomations are 'similarity', 'affine', or 'projective' (see
@@ -70,6 +76,8 @@
 %       positions of the detected points.<br>
 %       Please refer to the documentation of the <a href="https://se.mathworks.com/help/vision/ref/matchfeatures.html">matchFeatures</a> function of
 %       MATLAB for more details.
+%       <br><br>
+%       This mode is also implemented for image files without loading them into MIB (see the <b>HDD mode</b> below. 
 %       <br><br>
 %       Here some short description of features, adapted from this <a
 %       href="https://stackoverflow.com/questions/49963061/what-is-the-best-feature-detection">topic</a><br>
@@ -112,7 +120,7 @@
 %       function</a> for details</li>
 %       </ul><br>
 %       A demonstration is available in the following video:<br>
-%       <a href="https://youtu.be/MNt_Yzt4pw0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MNt_Yzt4pw0</a>
+%       <a href="https://youtu.be/MNt_Yzt4pw0"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/MNt_Yzt4pw0</a>
 %       </td>
 %     </tr>
 %     <tr>
@@ -160,13 +168,14 @@
 %   </li>
 %   <li>
 %       <b>HDD mode</b> - 
-%       <a href="https://youtu.be/FtvWjDUMZ1I"><img src="images/youtube.png"></a> 
+%       <a href="https://youtu.be/FtvWjDUMZ1I"><img src="images/youtube.png"> Drift correction</a>, 
+%       <a href="https://youtu.be/tpe9GhpS2o8"><img src="images/youtube.png"> Feature-based</a>, 
 %       when selected the alignment tool will align 
 %       files specified in the bottom panel of the window 
 %       (<em>HDD Mode (Image directories and formats)</em>). This mode is
 %       suitable for large collection of images that can not be fit into
 %       computer memory. This mode is only implemented for the "Drift
-%       correction" algorithm.<br>
+%       correction" (<b>the images should be of the same size</b>) and "Automatic feature-based" algorithms<br>
 %   </li>
 %   <li>
 %     <b>Correlate with</b> - three different options for the reference slide:

@@ -230,7 +230,6 @@ classdef mibStatisticsController < handle
                 obj.runStatAnalysis_Callback(batchModeSwitch);    % with the
                 return;
             end
-            
             %%
             
             guiName = 'mibStatisticsGUI';
@@ -266,6 +265,8 @@ classdef mibStatisticsController < handle
             
             obj.Material_Callback();
             
+            obj.View.handles.autoHighlightCheck.Tooltip = 'Auto highlight on a click; Automatically highlight selected object when clicking on a cell or Ctrl+click -> to unselect';
+
             % add listner to obj.mibModel and call controller function as a callback
             obj.listener{1} = addlistener(obj.mibModel, 'updateId', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));
             obj.listener{2} = addlistener(obj.mibModel, 'newDataset', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));
@@ -933,6 +934,8 @@ classdef mibStatisticsController < handle
             % - 'obj2model', generate a new model, where each selected object will be assigned to own index
             % - 'skip' to do not highlight selected objects
             
+            modifier = obj.View.gui.CurrentModifier;    % detect control to change size of the brush tool
+
             if strcmp(parameter, 'obj2model')       % convert selected objects to a new model, where each objects will be assigned to its own material
                 answer = questdlg(sprintf('!!! Warning !!!\n\nYou are going to creare a new model, where each of the selected objects gets its own index, i.e. assigned to a new material.\n\nATTENTION!!! The current model will be deleted!'), ...
                     'Convert models', 'Continue','Cancel','Cancel');
@@ -978,7 +981,11 @@ classdef mibStatisticsController < handle
                 if obj.View.handles.autoHighlightCheck.Value == 0     % stop here and do not highlight the objects
                     return;
                 end
-                parameter = obj.View.handles.detailsPanel.SelectedObject.String;
+                if ~isempty(modifier) && strcmp(modifier{1}, 'control')
+                    parameter = 'Remove';
+                else
+                    parameter = obj.View.handles.detailsPanel.SelectedObject.String;
+                end
             end
             indices = obj.indices;
             indices = unique(indices(:,1));

@@ -592,6 +592,7 @@ for fn_index = 1:no_files
             
             if isKey(img_info, 'ImageDescription')
                 bbStart = strfind(img_info('ImageDescription'), 'BoundingBox');
+                if iscell(bbStart); bbStart = bbStart{1}; end
             else
                 bbStart = [];
             end
@@ -753,7 +754,6 @@ for fn_index = 1:no_files
             % Cache the initialized readers for each file and close the reader
             filesTemp.hDataset = loci.formats.Memoizer(bfGetReader(), 0, java.io.File(options.BioFormatsMemoizerMemoDir));
             filesTemp.hDataset.setId(filenames{fn_index});
-            
             numSeries = filesTemp.hDataset.getSeriesCount();
             if numSeries > 1
                 if ~isfield(options, 'BioFormatsIndices')
@@ -808,7 +808,6 @@ for fn_index = 1:no_files
         end
         % have to implement use of DimensionOrder
         filesTemp.DimensionOrder = char(filesTemp.hDataset.getDimensionOrder);
-        
         if strcmp(filesTemp.seriesIndex, 'Cancel'); if options.waitbar==1; delete(wb); end; return; end
         
         if ~isfloat(filesTemp.seriesIndex)
@@ -959,7 +958,7 @@ for fn_index = 1:no_files
             layer_id = layer_id + 1;
         end
         filesTemp.hDataset.close();
-        
+
         % update pixel size
         %omeMeta = filesTemp.hDataset.getMetadataStore();
         if fn_index == 1
@@ -996,6 +995,10 @@ for fn_index = 1:no_files
                 else
                     pixSize.z = double(omeMeta.getPixelsPhysicalSizeZ(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
                 end
+                tVal = omeMeta.getPixelsTimeIncrement(filesTemp.seriesIndex(fileSubIndex)-1);
+                if ~isempty(zVal)
+                    pixSize.t = double(tVal.value(ome.units.UNITS.SECOND));   % in seconds
+                end
             catch err
                 continue;
             end
@@ -1006,24 +1009,23 @@ for fn_index = 1:no_files
                 pixSize.z = pixSize.x;
                 pixSize.x = pixSize.y;
             end
-            
             pixSize.units = 'um';
             
-            try
-                dt = omeMeta.getPlaneDeltaT(0,0);
-            catch err
-                dt = [];
-            end
-            if ~isempty(dt)
-                if double(dt.value) == 0    % force pixSize.t be 1
-                    pixSize.t = 1;
-                else
-                    pixSize.t = double(dt.value);
-                end
-            else
-                pixSize.t = 1;
-            end
-            pixSize.tunits = 's';
+%             try
+%                 dt = omeMeta.getPlaneDeltaT(0,0);
+%             catch err
+%                 dt = [];
+%             end
+%             if ~isempty(dt)
+%                 if double(dt.value) == 0    % force pixSize.t be 1
+%                     pixSize.t = 1;
+%                 else
+%                     pixSize.t = double(dt.value);
+%                 end
+%             else
+%                 pixSize.t = 1;
+%             end
+%             pixSize.tunits = 's';
         end
         
         % get colors for the color channels

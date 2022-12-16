@@ -352,7 +352,7 @@ classdef GuiTutorialController < handle
                 warndlg(sprintf('The current dataset is already %s class!', convertTo));
                 return;
             end
-            wb = waitbar(0, 'Please wait...');
+             wb = waitbar(0, 'Please wait...');
             if strcmp(convertTo, 'uint16')  % convert to uint16 class
                 % calculate stretching coefficient
                 coef = double(intmax('uint16')) / double(intmax(class(img{1})));
@@ -367,6 +367,7 @@ classdef GuiTutorialController < handle
                 % convert stretch dataset to uint16
                 img{1} = uint8(img{1}*coef);
             end
+
             waitbar(0.5, wb);
             % update dataset in MIB
             obj.mibModel.setData4D('image', img, 4, 0, options);

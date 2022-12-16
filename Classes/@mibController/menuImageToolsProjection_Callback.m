@@ -33,7 +33,7 @@ else
     PossibleProjections = {'Max', 'Min', 'Mean', 'Median', 'Sum'};
     PossibleDimensions = {'Z'};
 end
-PossibleDestinations = arrayfun(@(x) sprintf('Container %d', x), 1: obj.mibModel.maxId, 'UniformOutput', false);
+PossibleDestinations = [{'Current'}, arrayfun(@(x) sprintf('Container %d', x), 1:obj.mibModel.maxId, 'UniformOutput', false)];
 BatchOpt = struct();
 
 % update the Batch opt from the session settings structure
@@ -54,7 +54,7 @@ else
 end
 BatchOpt.ProjectionType{2} = PossibleProjections;
 BatchOpt.Dimension{2} = PossibleDimensions;
-BatchOpt.Destination = {'Container 1'};
+BatchOpt.Destination = {'Current'};
 BatchOpt.Destination{2} = PossibleDestinations;
 BatchOpt.showWaitbar = true;   % show or not the waitbar
 
@@ -96,7 +96,7 @@ if nargin < 2
     end
     prompts = {'Projection type'; 'Dimension'; 'Destination buffer'};
     destBuffers = PossibleDestinations;
-    destBuffers{end+1} = obj.mibModel.Id;
+    destBuffers{end+1} = 1;
     defAns = {[BatchOpt.ProjectionType{2}, {find(ismember(BatchOpt.ProjectionType{2}, BatchOpt.ProjectionType{1})==1)}]; ...
                   [BatchOpt.Dimension{2}, {find(ismember(BatchOpt.Dimension{2}, BatchOpt.Dimension{1})==1)}]; ...
                   destBuffers};
@@ -114,7 +114,11 @@ end
 
 projectionType = lower(BatchOpt.ProjectionType{1});
 dim = find(ismember(PossibleDimensions, BatchOpt.Dimension{1})==1);  % index of dimension over which to calculate projection
-bufferId = find(ismember(PossibleDestinations, BatchOpt.Destination{1})==1);
+if strcmp(BatchOpt.Destination{1}, 'Current')
+    bufferId = obj.mibModel.Id;
+else
+    bufferId = find(ismember(PossibleDestinations, BatchOpt.Destination{1})==1)-1;
+end
 
 if BatchOpt.showWaitbar; wb = waitbar(0, sprintf('Generating the projection\nPlease wait...'), 'Name', 'Projection'); end
 
@@ -223,6 +227,7 @@ if isa(I, 'double')
                 I = uint32(I);
                 imgClass = 'uint32';
             end
+            obj.mibModel.I{obj.mibModel.Id}.viewPort.max = repmat(maxVal, [colors, 1]);
     end
 end
 

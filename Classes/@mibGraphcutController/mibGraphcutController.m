@@ -2079,7 +2079,11 @@ classdef mibGraphcutController  < handle
 
                     Edges2 = fliplr(obj.graphcut(graphId).Edges{i});    % complement for both ways
                     Edges = double([obj.graphcut(graphId).Edges{i}; Edges2]);
-                    obj.graphcut(graphId).Graph{i} = sparse(Edges(:,1), Edges(:,2), [EdgesValues EdgesValues]);
+                    try
+                        obj.graphcut(graphId).Graph{i} = sparse(Edges(:,1), Edges(:,2), [EdgesValues EdgesValues]);
+                    catch err
+                        %obj.graphcut(graphId).Graph{i} = obj.graphcut(graphId);
+                    end
                     %if showWaitbar; waitbar(i/numel(obj.graphcut(1).EdgesValues), wb); end
                 end
 

@@ -54,7 +54,7 @@
 % [br8]
 % 
 % [class.h3]Directory with images for prediction[/class][br]
-% [ _used only for training_ ][br]
+% [ _used only for prediction_ ][br]
 % use these widgets to specify directory with images for prediction (named [class.code]2_Prediction[/class] in [jumpto1]the file organization schemes below[/jumpto]).
 % 
 % <<images\DeepLearningDirs_panel2.png>>
@@ -65,7 +65,7 @@
 % [br8]
 % When the preprocessing mode is used the images from this folder are
 % converted and saved to [class.code]3_Results\Prediction images[/class] directory. 
-% [br]For 2D networks the files should contain individual 2D images, while for 3D networks
+% [br]For 2D networks the files should contain individual 2D images or 3D stacks, while for 3D networks
 % individual 3D datasets.
 % [br8]
 % When the ground truth labels are present, they are also processed and copied to 
