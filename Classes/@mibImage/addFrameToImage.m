@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function BatchOpt = addFrameToImage(obj, BatchOpt)
 % function BatchOpt = addFrameToImage(obj, BatchOpt)
 % Add a frame around the dataset
@@ -20,13 +36,6 @@ function BatchOpt = addFrameToImage(obj, BatchOpt)
 % BatchOpt = obj.mibModel.I{obj.mibModel.Id}.addFrameToImage();  // call from mibController; add a frame; parameters of the frame will be prompted
 % @endcode
 
-% Copyright (C) 13.12.2018, Ilya Belevich (ilya.belevich -at- helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 12.03.2019, IB updated for the batch mode
 
@@ -42,7 +51,7 @@ getDataOpt.blockModeSwitch = 0;
 if nargin < 2 || ~isfield(BatchOpt, 'Position') || ~isfield(BatchOpt, 'NewImageWidth') || ~isfield(BatchOpt, 'NewImageHeight') || ~isfield(BatchOpt, 'FrameColorIntensity') 
     options = struct(); 
     prompts = {'Position of the image:'; 'New image width:'; 'New image height:'; 'Frame color intensity:'};
-    defAns = {{'Center', 'Left-upper corner', 'Right-upper corner', 'Left-bottom corner','Right-bottom corner', 1}; num2str(width); num2str(height); '0'};
+    defAns = {{'Center', 'Left-upper corner', 'Center-top', 'Right-upper corner', 'Left-bottom corner', 'Center-bottom', 'Right-bottom corner', 1}; num2str(width); num2str(height); '0'};
     dlgTitle = 'Add frame to the image';
     options.WindowStyle = 'normal';       % [optional] style of the window
     options.PromptLines = [1, 1, 1, 1];   % [optional] number of lines for widget titles
@@ -79,6 +88,11 @@ switch BatchOpt.Position{1}
         rightFrame = newWidth - width;
         topFrame = 0;
         bottomFrame = newHeight - height;
+    case 'Center-top'
+        leftFrame = floor((newWidth - width)/2);
+        rightFrame = newWidth - leftFrame - width;
+        topFrame = 0;
+        bottomFrame = newHeight - height;
     case 'Right-upper corner'
         leftFrame = newWidth - width;
         rightFrame = 0;
@@ -87,6 +101,11 @@ switch BatchOpt.Position{1}
     case 'Left-bottom corner'
         leftFrame = 0;
         rightFrame = newWidth - width;
+        topFrame = newHeight - height;
+        bottomFrame = 0;
+    case 'Center-bottom'
+        leftFrame = floor((newWidth - width)/2);
+        rightFrame = newWidth - leftFrame - width;
         topFrame = newHeight - height;
         bottomFrame = 0;
     case 'Right-bottom corner'
@@ -161,8 +180,8 @@ obj.hROI.crop(crop_factor);
 obj.hLabels.crop(crop_factor);
 
 % update the log
-log_text = sprintf('AddFrame: [left right top bottom]: %d %d %d %d; color=%d', ...
-    leftFrame, rightFrame, topFrame, bottomFrame, frameColor);
+log_text = sprintf('AddFrame: %s [left right top bottom]: %d %d %d %d; color=%d', ...
+    BatchOpt.Position{1}, leftFrame, rightFrame, topFrame, bottomFrame, frameColor);
 obj.updateImgInfo(log_text);
 
 if BatchOpt.showWaitbar

@@ -1,5 +1,5 @@
 %% DeepMIB - Network panel
-% The upper part of Deep MIB is occupied with the _Network panel_. This
+% The upper part of DeepMIB is occupied with the _Network panel_. This
 % panel is used to select workflow and convolutional network architecture to be used during training
 %
 % <<images\DeepLearningNetwork.png>>
@@ -16,6 +16,9 @@
 % <ul>
 % <li><b>2D Semantic</b> segmentation, where 2D image pixels that belong
 % to the same material are clustered together. 
+% <li><b>2.5D Semantic</b> segmentation, where 2D network architectures are used as a template to process
+% small (3-9 stacks) subvolumes, where only the central slice is
+% segmented</li>
 % <li><b>3D Semantic</b> segmentation, where 3D image voxels that belong
 % to the same material are clustered together. 
 % <li><b>2D Patch-wise</b> segmentation, where 2D image is predicted in
@@ -96,6 +99,67 @@
 % Computer Vision - ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="https://arxiv.org/abs/1802.02611">link</a>)<br>
 % </li>
 % </ul>
+% </html>
+%
+% [/dtls]
+% [br8]
+%
+%% 2.5D Semantic workflow
+%
+% [dtls][smry] *Architectures available in 2.5D workflows* [/smry]
+% 
+% <html>
+% <h2>Depth to Color</h2>
+% In this mode subslices are arranged as color channels for sstandard 2D
+% architectures. Typically, this improves the segmentation results but with
+% the cost of x1.4-1.6 slower training.
+% <br> A scheme below illustrates this:<br>
+% <img src="images\DeepLearningNetwork25Z2C.jpg">
+% <br>
+% Comparison of segmentation results achieved using 2.5D vs 2D
+% architectures:<br>
+% <img src="images\DeepLearning_25D_comparison.jpg">
+% <br>
+% Available Depth to color architectures (for details please check the 2D semantic segmentation section above):<br>
+% <ul>
+% <li><b>Z2C + U-net</b>, a standard U-net architecture is used as the template</li>
+% <li><b>Z2C + DLv3 Resnet18</b>, DeepLab v3 architecture based on Resnet 18</li>
+% <li><b>Z2C + DLv3 Resnet50</b>, DeepLab v3 architecture based on Resnet 50</li>
+% </ul>
+% <br>
+% <h2>3D convolutions for substacks</h2>
+% in this mode the substacks are processed using 3D convolutions. As the 3D
+% convolutions are quite slow, this mode is significantly slower than 2D or
+% 2.5 Z2C approaches.
+% <br>
+% <b>Available architectures:</b>
+% <ul>
+% <li><b>3DC + DLv3 Resnet 18</b>, an adapted for 2.5D approach DeepLab v3
+% architecture based on Resnet 18</li>
+% </ul>
+% </html>
+%
+% [/dtls]
+% [br8]
+%
+% [dtls][smry] *Notes on application of 2.5D workflows* [/smry]
+% 
+% <html>
+% Work with the 2.5D workflows is essentially the same as with the 2D
+% workflows, however there
+% <ul>
+% <li><b>Input images and labels</b>, should be a small (3-9 sections) substacks, where only the central slice is segmented. 
+% Each substack should be saved in a separate file</li>
+% <li><b>Preprocessing</b> is not implemented</li>
+% <li><b>Generation of patches for training</b>, the subvolumes for
+% traininig can be automatocally generated using:
+% <ul>
+% <li>From models: <em>Menu->Models(or
+% Masks)->Model (Mask) statistics->detect obkects->right mouse click->Crop
+% to a file</em></li>
+% <li>From annotations: <em>Menu->Models->Annotations->right mouse click over the selected
+% annotations->Crop out patches around selected annotations</em></li>
+% <li>Check this youtube video: <a href="https://youtu.be/QrKHgP76_R0?si=j_58ipCpp6Sn7r11">https://youtu.be/QrKHgP76_R0?si=j_58ipCpp6Sn7r11</a>
 % </html>
 %
 % [/dtls]
@@ -268,7 +332,7 @@
 % <ul>
 % <li><b>Name of a GPU to use</b>, the dropdown menu starts with the list
 % of available GPUs to use; select one that should be used for deep learning application</li>
-% <li><b>Multi-GPU</b> (<b>under development</b>),  use multiple GPUs on one machine, using a local parallel pool based on your default cluster profile. 
+% <li><b>Multi-GPU</b>,  use multiple GPUs on one machine, using a local parallel pool based on your default cluster profile. 
 % If there is no current parallel pool, the software starts a parallel pool
 % with pool size equal to the number of available GPUs. <em>This option is
 % only shown when multiple GPUs are present on the system</em></li>
@@ -287,6 +351,11 @@
 %
 % [/dtls]
 %
+%% The Eye button
+% Load the network file specified in the [class.dropdown]Network
+% filename[/class] field and perform its check.[br]
+% This operation differs from pressing the [class.kbd]Check network[/class] button in the 'Train' panel. 
+% When you press this button, the network stored in the file is loaded instead of generating it using the parameters in the 'Train' panel.
 %
 % 
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 

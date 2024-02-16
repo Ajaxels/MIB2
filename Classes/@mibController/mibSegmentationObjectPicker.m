@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibSegmentationObjectPicker(obj, yxzCoordinate, modifier)
 % function mibSegmentationObjectPicker(obj, yxzCoordinate, modifier)
 % Select 2d/3d objects from the Mask or Model layers
@@ -16,15 +32,8 @@ function mibSegmentationObjectPicker(obj, yxzCoordinate, modifier)
 % @code yxzCoordinate = [50, 75]; @endcode
 % @code handles = obj.mibSegmentationObjectPicker(yxzCoordinate, modifier);  // call from mibController; select object at position [y,x]=50,75 @endcode
 
-% Copyright (C) 20.12.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
-% 
+% 25.08.2023, selection of mask or model is done based on the selected row in the segmentation table
 
 % check for switch that disables segmentation tools
 if obj.mibModel.disableSegmentation == 1; return; end
@@ -33,18 +42,8 @@ tic
 switch3d = obj.mibView.handles.mibActions3dCheck.Value;     % use tool in 3d
 options.blockModeSwitch = obj.mibModel.getImageProperty('blockModeSwitch');
 
-if obj.mibView.handles.mibSegmMaskClickModelCheck.Value
-    type = 'model';
-    if obj.mibModel.getImageProperty('modelExist') == 0
-        msg = [{'Model was not found!'}
-            {'Please create a model first...'}
-            ];
-        msgbox(msg,'Error!','error','modal');
-        return;
-    end
-    colchannel = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
-    if obj.mibModel.I{obj.mibModel.Id}.modelType > 255; colchannel = NaN; end     % get all materials
-else
+colchannel = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
+if colchannel == -1
     type = 'mask';
     if obj.mibModel.getImageProperty('maskExist') == 0
         msg = [{'No mask found!'}
@@ -54,6 +53,16 @@ else
         return;
     end
     colchannel = 0;
+else
+    type = 'model';
+    if obj.mibModel.getImageProperty('modelExist') == 0
+        msg = [{'Model was not found!'}
+            {'Please create a model first...'}
+            ];
+        msgbox(msg,'Error!','error','modal');
+        return;
+    end
+    if obj.mibModel.I{obj.mibModel.Id}.modelType > 255; colchannel = NaN; end     % get all materials
 end
 
 if switch3d
@@ -80,7 +89,7 @@ end
 switch obj.mibView.handles.mibFilterSelectionPopup.Value
     case 1 % selection with mouse button
         if switch3d
-            if obj.mibModel.I{obj.mibModel.Id}.modelType > 255
+            if isfield(obj.mibModel.I{obj.mibModel.Id}.maskStat, 'PixelIdxList') %obj.mibModel.I{obj.mibModel.Id}.modelType > 255
                 convertPixelOpt.y = [1 obj.mibModel.I{obj.mibModel.Id}.height]; % y-dimensions of the cropped dataset
                 convertPixelOpt.x = [1 obj.mibModel.I{obj.mibModel.Id}.width];  % x-dimensions of the cropped dataset
                 convertPixelOpt.z = [z, z]; % z-dimensions of the cropped dataset
@@ -112,9 +121,7 @@ switch obj.mibView.handles.mibFilterSelectionPopup.Value
                 
                 return;
             else
-
                 options.blockModeSwitch = 0;
-
                 permuteSwitch = 4;  % get dataset in the XY orientation
                 obj_id = obj.mibModel.I{obj.mibModel.Id}.maskStat.L(h, w, z);
                 if obj_id == 0; return; end
@@ -255,7 +262,7 @@ switch obj.mibView.handles.mibFilterSelectionPopup.Value
         else
             obj.mibModel.mibDoBackup('selection', 0);
             selarea = bitand(selected_mask, currMask);
-        end;
+        end
     case 4 % selection with ellipse tool
         obj.mibView.gui.Pointer = 'cross';
         obj.mibView.gui.WindowButtonDownFcn = [];
@@ -298,7 +305,7 @@ switch obj.mibView.handles.mibFilterSelectionPopup.Value
         else
             obj.mibModel.mibDoBackup('selection', 0);
             selarea = bitand(selected_mask, currMask);
-        end;
+        end
     case 5 % selection with polyline tool
         obj.mibView.gui.Pointer = 'cross';
         obj.mibView.gui.WindowButtonDownFcn = [];
@@ -409,8 +416,10 @@ else
         obj.mibModel.setData2D('selection', selarea, NaN, NaN, NaN, options);
     end
 end
-
-
 obj.plotImage();
+
+% count user's points
+obj.mibModel.preferences.Users.Tiers.numberOfObjectPickers = obj.mibModel.preferences.Users.Tiers.numberOfObjectPickers+1;
+notify(obj.mibModel, 'updateUserScore');     % update score using default obj.mibModel.preferences.Users.singleToolScores increase
 
 end

@@ -1,14 +1,23 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibRechopDatasetController < handle
     % classdef mibRechopDatasetController < handle
     % a controller class for re-chopping several small datasets into a
     % single one
-    
-    % Copyright (C) 16.01.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
     
     % Updates:
     % 10.12.2018, added fusing of annotations together with models
@@ -112,14 +121,13 @@ classdef mibRechopDatasetController < handle
                 end
             end
             
-            [FileName, PathName, FilterIndex] = ...
+            [fileName, pathName, FilterIndex] = ...
                 mib_uigetfile(fileFormats,'Select chopped files', obj.outputDir, 'on');
-            if isequal(FileName,0);    return;  end
-            if ischar(FileName); FileName = {FileName}; end
-            FileName = sort(FileName);    % re-sort filenames to arrange as in dir
+            if isequal(fileName,0);    return;  end
+            fileName = sort(fileName);    % re-sort filenames to arrange as in dir
             
-            obj.View.handles.selectedFilesList.String = FileName;
-            obj.filenames = fullfile(PathName, FileName);
+            obj.View.handles.selectedFilesList.String = fileName;
+            obj.filenames = fullfile(pathName, fileName);
             
             if ischar(obj.filenames)
                 obj.filenames = cellstr(obj.filenames);
@@ -599,13 +607,23 @@ classdef mibRechopDatasetController < handle
                         
                         % find shifts
                         currBB = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();    % get current Bounding Box
-                        x1 = max([1 ceil((bb(1)-currBB(1))/obj.mibModel.I{obj.mibModel.Id}.pixSize.x + 0.000000001)+xOffset]);    % need to add a small number due to floats
-                        y1 = max([1 ceil((bb(3)-currBB(3))/obj.mibModel.I{obj.mibModel.Id}.pixSize.y + 0.000000001)+yOffset]);
-                        z1 = max([1 ceil((bb(5)-currBB(5))/obj.mibModel.I{obj.mibModel.Id}.pixSize.z + 0.000000001)+zOffset]);
-                        
-                        %x1 = max([1 ceil((bb(1)-currBB(1))/obj.mibModel.I{obj.mibModel.Id}.pixSize.x)+1]);    
-                        %y1 = max([1 ceil((bb(3)-currBB(3))/obj.mibModel.I{obj.mibModel.Id}.pixSize.y)+1]);
-                        %z1 = max([1 ceil((bb(5)-currBB(5))/obj.mibModel.I{obj.mibModel.Id}.pixSize.z)+1]);
+
+                        cropModel = false;
+                        if bb(1) < currBB(1) || bb(2) > currBB(2) || bb(3) < currBB(3) || bb(4) > currBB(4) || bb(5) < currBB(5) || bb(6) > currBB(6)
+                            % case 1: 
+                            % The loaded dataset is smaller than the size of the model to be imported
+                            % The imported model will be cropped to match the size of the loaded dataset
+                            x1 = max([1 ceil((currBB(1)-bb(1))/obj.mibModel.I{obj.mibModel.Id}.pixSize.x + 0.000000001)+xOffset]); 
+                            y1 = max([1 ceil((currBB(3)-bb(3))/obj.mibModel.I{obj.mibModel.Id}.pixSize.y + 0.000000001)+yOffset]);
+                            z1 = max([1 ceil((currBB(5)-bb(5))/obj.mibModel.I{obj.mibModel.Id}.pixSize.z + 0.000000001)+zOffset]);
+                            cropModel = true;
+                        else
+                            % case 2
+                            % The imported model is smaller or match the size of the loaded dataset
+                            x1 = max([1 ceil((bb(1)-currBB(1))/obj.mibModel.I{obj.mibModel.Id}.pixSize.x + 0.000000001)+xOffset]);    % need to add a small number due to floats
+                            y1 = max([1 ceil((bb(3)-currBB(3))/obj.mibModel.I{obj.mibModel.Id}.pixSize.y + 0.000000001)+yOffset]);
+                            z1 = max([1 ceil((bb(5)-currBB(5))/obj.mibModel.I{obj.mibModel.Id}.pixSize.z + 0.000000001)+zOffset]);
+                        end
                         
                         if x1 < 1 || y1 < 1 || z1 < 1
                             errordlg(sprintf('!!! Error !!!\nWrong minimal coordinate of the bounding box!\n\nFilename: %s', obj.filenames{fnId}), 'Wrong bounding box!');
@@ -621,9 +639,35 @@ classdef mibRechopDatasetController < handle
                             R.modelVariable = 'imOut';
                         end
                         
-                        x2 = x1+size(R.(R.modelVariable),2)-1;
-                        y2 = y1+size(R.(R.modelVariable),1)-1;
-                        z2 = z1+size(R.(R.modelVariable),3)-1;
+                        if cropModel
+                            % crop the imported model from left
+                            R.(R.modelVariable) = R.(R.modelVariable)(y1:end, x1:end, z1:end);
+                            x1 = 1; y1 = 1; z1 = 1;
+                            if size(R.(R.modelVariable), 2) > obj.mibModel.I{obj.mibModel.Id}.width
+                                R.(R.modelVariable) = R.(R.modelVariable)(:,1:obj.mibModel.I{obj.mibModel.Id}.width,:);
+                                x2 = obj.mibModel.I{obj.mibModel.Id}.width;
+                            else
+                                x2 = size(R.(R.modelVariable), 2);
+                            end
+                            
+                            if size(R.(R.modelVariable), 1) > obj.mibModel.I{obj.mibModel.Id}.height
+                                R.(R.modelVariable) = R.(R.modelVariable)(1:obj.mibModel.I{obj.mibModel.Id}.height,:,:);
+                                y2 = obj.mibModel.I{obj.mibModel.Id}.height;
+                            else
+                                y2 = size(R.(R.modelVariable), 1);
+                            end
+                            
+                            if size(R.(R.modelVariable), 3) > obj.mibModel.I{obj.mibModel.Id}.depth
+                                R.(R.modelVariable) = R.(R.modelVariable)(:,:,1:obj.mibModel.I{obj.mibModel.Id}.depth);
+                                z2 = obj.mibModel.I{obj.mibModel.Id}.depth;
+                            else
+                                z2 = size(R.(R.modelVariable), 3);
+                            end
+                        else
+                            x2 = x1+size(R.(R.modelVariable),2)-1;
+                            y2 = y1+size(R.(R.modelVariable),1)-1;
+                            z2 = z1+size(R.(R.modelVariable),3)-1;
+                        end
                         
                         if x2 > obj.mibModel.I{obj.mibModel.Id}.width || y2 > obj.mibModel.I{obj.mibModel.Id}.height || z2 > obj.mibModel.I{obj.mibModel.Id}.depth
                             errordlg(sprintf('!!! Error !!!\nWrong maximal coordinate of the  bounding box!\n\nFilename: %s', obj.filenames{fnId}), 'Wrong bounding box!');

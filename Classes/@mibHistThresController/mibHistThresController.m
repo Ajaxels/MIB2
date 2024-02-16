@@ -1,5 +1,21 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibHistThresController < handle
-    % @type mibHistThresController class is resposnible for showing the Morphological operations for images 
+    % @type mibHistThresController class is responsible for showing the Morphological operations for images 
     % window, available from MIB->Menu->Tools->Semi-automatic segmentation->Automatic black-and-white thresholding
     %
     % How to use 
@@ -25,14 +41,6 @@ classdef mibHistThresController < handle
     % obj.startController('mibHistThresController', [], NaN);
     % @endcode
     
-	% Copyright (C) 04.02.2019, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-	% 
-	% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-	%
 	% Updates
 	%     
     
@@ -446,6 +454,10 @@ classdef mibHistThresController < handle
             end
             toc
             
+            % count user's points
+            obj.mibModel.preferences.Users.Tiers.numberOfBWThresholdings = obj.mibModel.preferences.Users.Tiers.numberOfBWThresholdings+1;
+            notify(obj.mibModel, 'updateUserScore');     % update score using default obj.mibModel.preferences.Users.singleToolScores increase
+
             if strcmp(obj.BatchOpt.Destination{1}, 'mask'); obj.mibModel.mibMaskShowCheck = 1; end     % display the mask layer
             notify(obj.mibModel, 'plotImage');
             

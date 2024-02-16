@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function [img, logText] = mibDoImageFiltering(img, options)
 % function [img, logText] = ib_doImageFiltering(img, options)
 % Filter image with basic Matlab filters
@@ -28,13 +44,6 @@ function [img, logText] = mibDoImageFiltering(img, options)
 % img: filtered dataset, [1:height, 1:width, 1:color, 1:no_stacks]
 % logText: log text with parameters of the applied filter
 
-% Copyright (C) 13.12.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 19.04.2017, IB added median 3D filter
 % 05.01.2018, IB rearranged filters, added block mode for DNN denoising

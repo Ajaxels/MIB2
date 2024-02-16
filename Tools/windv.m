@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function vector2 = windv(vector1, w_size, AsInSmooth)
 % windv(vector, window size, AsInSmooth)
 % vectorized version of windv()
@@ -19,12 +35,6 @@ function vector2 = windv(vector1, w_size, AsInSmooth)
 % yy(3) = (y(1) + y(2) + y(3) + y(4) + y(5))/5
 % yy(4) = (y(2) + y(3) + y(4) + y(5) + y(6))/5
 
-% Copyright (C) 2005-2010, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
 % 
 % Updates
 % 20.09.2017 IB added AsInSmooth switch
@@ -35,20 +45,20 @@ vl = length(vector1);
 
 vector2 = vector1;
 for index = 1:w_size
-    vector2(1:vl-index)=vector2(1:vl-index)+vector1(index+1:vl);
-    vector2(index+1:vl)=vector2(index+1:vl)+vector1(1:vl-index);
+    vector2(1:vl-index) = vector2(1:vl-index) + vector1(index+1:vl);
+    vector2(index+1:vl) = vector2(index+1:vl) + vector1(1:vl-index);
 end
 
 vector2=vector2./(2*w_size+1);
 
 if AsInSmooth == 0
     for index = 1:w_size
-        vector2(index)=mean(vector1(1:w_size+index));
-        vector2(vl+1-index)=mean(vector1(vl+1-index-w_size:vl));
+        vector2(index) = mean(vector1(1:w_size+index));
+        vector2(vl+1-index) = mean(vector1(vl+1-index-w_size:vl));
     end
 else
     for index = 1:w_size
-        vector2(index)=mean(vector1(1:(index-1)*2+1));
-        vector2(vl+1-index)=mean(vector1(vl-(index-1)*2:vl));
+        vector2(index) = mean(vector1(1:(index-1)*2+1));
+        vector2(vl+1-index) = mean(vector1(vl-(index-1)*2:vl));
     end
 end

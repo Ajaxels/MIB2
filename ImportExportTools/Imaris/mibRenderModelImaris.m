@@ -1,3 +1,21 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+% Written with a help of an old code SurfacesFromSegmentationImage.m by
+% Igor Beati, Bitplane.
+
 function connImaris = mibRenderModelImaris(mibImage, connImaris, options)
 % function connImaris = mibRenderModelImaris(mibImage, connImaris)
 % Render a model in Imaris. 
@@ -25,15 +43,6 @@ function connImaris = mibRenderModelImaris(mibImage, connImaris, options)
 % @b Examples:
 % @code obj.connImaris = mibRenderModelImaris(obj.mibModel.I{obj.mibModel.Id}, obj.connImaris);     // call from mibController; render the model in Imaris @endcode
 
-% Copyright (C) 11.01.2017 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-
-% Written with a help of an old code SurfacesFromSegmentationImage.m by
-% Igor Beati, Bitplane.
 %
 % Updates
 % 25.09.2017 IB updated connection to Imaris

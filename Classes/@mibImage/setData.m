@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function result = setData(obj, type, dataset, orient, col_channel, options)
 % result = setData(obj, type, dataset, orient, col_channel, options)
 % Set dataset
@@ -35,13 +51,6 @@ function result = setData(obj, type, dataset, orient, col_channel, options)
 % @code obj.setData('image', dataset);      // update the complete dataset in the shown orientation @endcode
 % @code obj.setData('image', dataset, 4, 2); // update complete dataset in the XY orientation with only second color channel @endcode
 
-% Copyright (C) 06.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -98,10 +107,14 @@ if blockModeSwitchLocal == 1
     Tlim = [1 obj.time];
     
     % deal with cases when options.x/y/z == 0 
-    if isfield(options, 'x') && options.x(1) == 0; options = rmfield(options, 'x'); end
-    if isfield(options, 'y') && options.y(1) == 0; options = rmfield(options, 'y'); end
-    if isfield(options, 'z') && options.z(1) == 0; options = rmfield(options, 'z'); end
-    if isfield(options, 't') && options.t(1) == 0; options = rmfield(options, 't'); end
+    % if isfield(options, 'x') && options.x(1) == 0; options = rmfield(options, 'x'); end
+    % if isfield(options, 'y') && options.y(1) == 0; options = rmfield(options, 'y'); end
+    % if isfield(options, 'z') && options.z(1) == 0; options = rmfield(options, 'z'); end
+    % if isfield(options, 't') && options.t(1) == 0; options = rmfield(options, 't'); end
+    if isfield(options, 'x') && options.x(1) == 0; options.x(1) = 1; end
+    if isfield(options, 'y') && options.y(1) == 0; options.y(1) = 1; end
+    if isfield(options, 'z') && options.z(1) == 0; options.z(1) = 1; end
+    if isfield(options, 't') && options.t(1) == 0; options.t(1) = 1; end
     
     if orient==1     % xz
         if isfield(options, 'x'); Zlim = [options.x(1) options.x(numel(options.x))]; end

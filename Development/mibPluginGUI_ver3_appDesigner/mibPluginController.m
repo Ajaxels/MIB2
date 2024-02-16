@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibPluginController < handle
     % @type mibPluginController class is a template class for using with
     % GUI developed using appdesigner of Matlab
@@ -22,14 +38,6 @@ classdef mibPluginController < handle
     % obj.startController('mibPluginController', [], NaN);
     % @endcode
     
-    % Copyright (C) 17.09.2019, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-	% 
-	% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-	%
 	% Updates
 	%     
     
@@ -229,7 +237,13 @@ classdef mibPluginController < handle
         % % Additional functions and callbacks
         function Calculate(obj)
             % start main calculation of the plugin
-            if obj.BatchOpt.showWaitbar; wb = waitbar(0, 'Please wait...', 'Name', 'My plugin'); end
+            if obj.BatchOpt.showWaitbar
+                % wb = waitbar(0, 'Please wait...', 'Name', 'My plugin'); 
+                pwb = PoolWaitbar(1, sprintf('Starting calculations\nPlease wait...'), [], ...
+                    'My plugin', ...
+                    obj.View.gui); 
+                pwb.updateMaxNumberOfIterations(3);     % update number of max iterations for the waitbar
+            end
             
             % check for the virtual stacking mode and close the controller if the plugin is not compatible with the virtual stacking mode
             if isprop(obj.mibModel.I{obj.BatchOpt.id}, 'Virtual') && obj.mibModel.I{obj.BatchOpt.id}.Virtual.virtual == 1
@@ -245,10 +259,25 @@ classdef mibPluginController < handle
             text{3} = sprintf('Dropdown: %s', obj.BatchOpt.Dropdown{1});
             text{4} = sprintf('Radio: %s', obj.BatchOpt.Radio{1});
             text{5} = sprintf('Parameter num: %f', obj.BatchOpt.ParameterNumeric{1});
-            obj.View.handles.TextArea.Value = text;
+            % example of an error dialog
+            try
+                obj.View.handles.TextArea.Value = text;
+            catch err
+                mibShowErrorDialog(obj.View.gui, err, 'Error');
+                if obj.BatchOpt.showWaitbar; delete(pwb); end
+            end
             
+            if obj.BatchOpt.showWaitbar
+                if pwb.getCancelState(); delete(pwb); return; end % check for cancel
+                pwb.updateText(sprintf('Updating text\nPlease wait...'));
+                increment(pwb);
+            end
+
             fprintf('calculateBtn_Callback: Calculate button was pressed\n');
-            if obj.BatchOpt.showWaitbar; delete(wb); end
+            if obj.BatchOpt.showWaitbar
+                %delete(wb); 
+                delete(pwb); 
+            end
             
             % redraw the image if needed
             notify(obj.mibModel, 'plotImage');

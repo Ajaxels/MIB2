@@ -44,7 +44,8 @@
 % When working with Amira, the best to save mask in *Amira mesh binary* and
 % resave it from Amira using RLE compression
 % * *Hierarchial Data Format (.h5)*, chunked format suitable for saving masks to Ilastik
-% * *TIF format (.tif)*, standard TIF format
+% * *PNG format (.png)* - save mask as 2D slices using Portable Network Graphic format 
+% * *TIF format (.tif)* - save mask as 2D slices or 3D volumes using Tag Image File format
 % * *Hierarchial Data Format with XML header (.xml)*, generate HDF5 file and XML file with image parameters
 %
 % [/dtls]

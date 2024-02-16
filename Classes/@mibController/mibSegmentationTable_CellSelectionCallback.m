@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibSegmentationTable_CellSelectionCallback(obj, eventdata)
 % mibSegmentationTable_CellSelectionCallback(obj, eventdata)
 % Callback for cell selection in the handles.mibSegmentationTable table of mibGIU.m
@@ -5,13 +21,6 @@ function mibSegmentationTable_CellSelectionCallback(obj, eventdata)
 % Parameters:
 % 
 
-% Copyright (C) 14.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 21.04.2017, IB updated for 65635 type of models
 % 04.08.2017, IB updated to 'e' shortcut use
@@ -36,6 +45,9 @@ if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1
 else
     fontColor = [0, 0, 0];
 end
+
+% store all indices
+userData.selectedIndices = eventdata.Indices;
 
 if Indices(2) == 2        % selection of Material
     selectedMaterial = Indices(1);

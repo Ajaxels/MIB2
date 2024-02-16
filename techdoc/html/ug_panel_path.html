@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Path Panel</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_panel_path.m"><style>
+      --><title>Path Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_panel_path.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -65,6 +65,9 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
+.dropdown {   font-family: monospace; 	border: 1px solid #aaa; 	border-radius: 0.2em; 	background-color: #fff; 	background-color: #e0f5ff; 	background-color: #e8f5e8; 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
 #tooltiptext {
@@ -143,11 +146,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -514,21 +516,22 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
 </div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Path Panel</h1><!--introduction-->
-<p>This panel is used to provide the path to the image dataset.</p>
+<p>The Path Panel is a feature used to provide the path to the image dataset. It allows users to specify the location or directory with the image files.</p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2>
-<div><ul><li><a href="#2">Logical drive combo box.</a></li>
-<li><a href="#3">'...' button</a></li>
-<li><a href="#4">Current path edit box</a></li>
+<div><ul><li><a href="#2">The <span class="dropdown">Logical drive &#9660;</span> dropdown</a></li>
+<li><a href="#3">The <span class="kbd">'...'</span> button</a></li>
+<li><a href="#4">The <span class="dropdown">Current path</span> edit box</a></li>
 <li><a href="#5">List of recent directories</a></li>
-<li><a href="#6">Pixel Info field</a></li>
-<li><a href="#7">Log button</a></li>
-<li><a href="#8">Info button</a></li>
-<li><a href="#9">Zoom Edit box</a></li>
-<li><a href="#10">Help</a></li></ul></div>
-<p><img class="image-fit" src="images\PanelsPath.png" alt=""> </p><h2 id="2">Logical drive combo box.</h2>
-<p>This combo box is used for fast selection of logical drives. It is initialized during the start of <code>MIB</code> and will show only those logical drives that were available during the initialization.
-<br> <b>Note!</b> on MacOS and Linux this combo box has only the '\' option.</p><h2 id="3">'...' button</h2>
-<p>This button is one of the ways to select a folder. It uses <code>uigetdir</code> MATLAB built-in function.</p><h2 id="4">Current path edit box</h2>
+<li><a href="#6">The Pixel Info field</a></li>
+<li><a href="#7">The <span class="kbd">Log</span> button</a></li>
+<li><a href="#8">The <span class="kbd">Info</span> button</a></li>
+<li><a href="#9">The <span class="dropdown">Zoom</span> edit box</a></li>
+<li><a href="#10">Help</a></li>
+<li><a href="#11">Right mouse click opens a dropdown menu</a></li></ul></div>
+<p><img class="image-fit" src="images\PanelsPath.png" alt=""> </p><h2 id="2">The <span class="dropdown">Logical drive &#9660;</span> dropdown</h2>
+<p>The Logical drive dropdown is a feature that allows for fast selection of logical drives. It is initialized during the start of <code>MIB</code> and will show only those logical drives that were available during the initialization.
+<br> <b>Note!</b> on MacOS and Linux this combo box has only the <span class="dropdown">*\* &#9660;</span> option.</p><h2 id="3">The <span class="kbd">'...'</span> button</h2>
+<p>This button is one of the ways to select the current directory. It uses <code>uigetdir</code> MATLAB built-in function.</p><h2 id="4">The <span class="dropdown">Current path</span> edit box</h2>
 <p>Current path edit box shows the path of the current folder. The contents of the folder is shown in the <a href="ug_panel_dir.html"><code>Directory Contents panel</code></a>.</p>
 <p>The right mouse button click opens a context menu with the following options:</p>
 <div><ul><li><b>Copy to clipboard</b>, copy path to the system clipboard</li>
@@ -536,57 +539,67 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <p><img class="image-fit" src="images\PanelsPathDropdown.png" alt=""> </p><h2 id="5">List of recent directories</h2>
 <p>Opens the list of recent directories from where datasets were loaded. A brief demonstration is available in the following video:</p>
 <p>
-<a href="https://youtu.be/xx7pGehTJXA"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/xx7pGehTJXA</a>
-</p><h2 id="6">Pixel Info field</h2>
-<p>Pixel info field provides information about pixel location and intensity of pixels under the mouse pointer in <a href="ug_panel_im_view.html">the Image View panel</a>.
-<br> The format is: <span class="code">X, Y (Red channel:Green channel:Blue channel) / [index of material]</span>.</p>
-<p>The right mouse click starts a context menu, that can be used for jumping to any point of the dataset.</p>
-<p><img class="image-fit" src="images\PanelsPathJumpTo.png" alt=""> </p><h2 id="7">Log button</h2>
-<p>Shows the log of actions that were performed for the current dataset. The action log is stored in the <code>ImageDescription</code> field in the TIF files. Each entry in the log list has a date/time stamp.</p>
+<a href="https://youtu.be/xx7pGehTJXA"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  MIB in brief: list of recent directories (https://youtu.be/xx7pGehTJXA)</a>
+</p><h2 id="6">The Pixel Info field</h2>
+<p>TThe Pixel Info field is a feature that provides information about the pixel location and intensity of pixels under the mouse pointer in the <a href="ug_panel_im_view.html">the Image View panel</a>.
+<br> The format of the Pixel Info field is: <span class="code">X, Y (Red channel:Green channel:Blue channel) / [index of material]</span>. 
+<br> By hovering the mouse pointer over an image in the Image View panel, the Pixel Info field updates in real-time to display the information for the pixel under the cursor. This can be useful for analyzing specific pixel values, identifying color information, or navigating to specific points in the dataset. 
+<br> In addition to displaying pixel information, right-clicking within the Pixel Info field opens a context menu. This menu may provide options for jumping to any point of the dataset:
+<br> <a href="<images\PanelsPathJumpTo.png">&lt;images\PanelsPathJumpTo.png</a>&gt;</p><h2 id="7">The <span class="kbd">Log</span> button</h2>
+<p>The <span class="kbd">Log</span> button is a feature that shows the log of actions that were performed for the current dataset. This log provides a record of the actions taken on the dataset, allowing users to track and review the history of changes made. The action log is stored in the <code>ImageDescription</code> field in the TIF files. Each entry in the log list has a date/time stamp.</p>
 <p>
 A brief demonstration is available in the following video:
 <br>
-<a href="https://youtu.be/1ql4cRxZ334"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/1ql4cRxZ334</a>
+<a href="https://youtu.be/1ql4cRxZ334"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  MIB in brief: Log of performed actions (https://youtu.be/1ql4cRxZ334)</a>
 </p>
 <p><img class="image-fit" src="images\PanelsPathLog.png" alt=""> </p>
 <p>There are number of actions that are possible to do with the action log:</p>
-<div><ul><li><b>Print to MATLAB</b> - prints the action log in the MATLAB command window</li>
-<li><b>Copy to Clipboard</b> - stores the action log in the clipboard, so it can be pasted with Ctrl+V (Windows OS) command.</li>
-<li><b>Insert after</b> - inserts a new entry after the one which is highlighted</li>
-<li><b>Modify</b> - modifies the highlighted entry</li>
-<li><b>Delete</b> - deletes the highlighted entry</li>
-<li><b>Update</b> - the log is not updated automatically, so press this button to update it manually</li></ul></div><h2 id="8">Info button</h2>
-<p>The <code>Info</code> button opens a window with a tree list of parameters for the opened dataset.</p>
+<div><ul><li><b>Print to MATLAB</b>,  this action allows you to print the action log in the MATLAB command window. This can be useful for reviewing the log directly within the MATLAB environment</li>
+<li><b>Copy to Clipboard</b>, this action allows you to store the action log in the clipboard. Once copied, you can paste the log using the Ctrl+V command (on Windows OS) into another application or document. This can be useful for sharing or documenting the log</li>
+<li><b>Insert after</b>, this action allows you to insert a new entry after the one that is currently highlighted in the action log. This can be useful for adding additional information or recording new actions that were performed</li>
+<li><b>Modify</b>, this action allows you to modify the highlighted entry in the action log. You can make changes to the existing entry, such as updating the description or adding additional details</li>
+<li><b>Delete</b>, this action allows you to delete the highlighted entry from the action log. This can be useful for removing unnecessary or incorrect entries from the log</li>
+<li><b>Update</b>, under some circumstances the action log is may not be updated automatically, so pressing this button manually updates the log</li></ul></div><h2 id="8">The <span class="kbd">Info</span> button</h2>
+<p>The Info button opens a window with a tree list of parameters for the opened dataset.</p>
 <p>The XY image resolution is stored in the <code>XResolution</code> and <code>YResolution</code> fields, and in the BoundingBox info in the <code>ImageDescription</code> field. The search field allows to search the metadata for specific value.</p>
-<p><img class="image-fit" src="images\PanelsPathInfo.png" alt=""> </p><h2 id="9">Zoom Edit box</h2>
+<p><img class="image-fit" src="images\PanelsPathInfo.png" alt=""> </p><h2 id="9">The <span class="dropdown">Zoom</span> edit box</h2>
 <p>Zoom Edit box, allows selection of the desired zoom level.</p>
 <p><img class="image-fit" src="images\PanelsPathZoom.png" alt=""> </p><h2 id="10">Help</h2>
-<p>Access to this help page</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a> </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p>Access to this help page</p><h2 id="11">Right mouse click opens a dropdown menu</h2>
+<p>When clicking on an empty area of within this panel an additiona menu appears allowing to hide/show the following panels. This allows to increase space occupied by the Image view panel</p>
+<p><img class="image-fit" src="images\PanelsImageView_dropdown.jpg" alt=""> </p>
+<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p>
+<p></p>
+<p>
+<script>
+  var allDetails = document.getElementsByTagName('details');
+  toggle_details(0);
+</script>
+</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Path Panel
-% This panel is used to provide the path to the image dataset.
-%
+% The Path Panel is a feature used to provide the path to the image dataset. It allows users to specify the location or 
+% directory with the image files.
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
 %%
 % 
 % <<images\PanelsPath.png>>
 % 
-%% Logical drive combo box.
-% This combo box is used for fast selection of logical drives. It is initialized during the start of 
+%% The [class.dropdown]Logical drive &#9660;[/class] dropdown
+%
+% The Logical drive dropdown is a feature that allows for fast selection of logical drives. It is initialized during the start of 
 % |MIB| and will show only those logical drives that were available during
 % the initialization.
 <br>
-% *Note!* on MacOS and Linux this combo box has only
-% the '\' option.
+% *Note!* on MacOS and Linux this combo box has only the [class.dropdown]*\* &#9660;[/class] option.
 %
-%% '...' button
-% This button is one of the ways to select a folder. It uses |uigetdir| MATLAB built-in function.
+%% The [class.kbd]'...'[/class] button
+% This button is one of the ways to select the current directory. It uses |uigetdir| MATLAB built-in function.
 %
-%% Current path edit box
+%% The [class.dropdown]Current path[/class] edit box
 % Current path edit box shows the path of the current folder. The contents of the folder is
 % shown in the <ug_panel_dir.html |Directory Contents panel|>. 
 %
@@ -605,29 +618,37 @@ A brief demonstration is available in the following video:
 % A brief demonstration is available in the following video:
 %
 % <html lang="en">
-% <a href="https://youtu.be/xx7pGehTJXA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/xx7pGehTJXA</a>
+% <a href="https://youtu.be/xx7pGehTJXA"><img style="vertical-align:middle;" src="images\youtube2.png">  MIB in brief: list of recent directories (https://youtu.be/xx7pGehTJXA)</a>
 % </html>
 %
-%% Pixel Info field
-% Pixel info field provides information about pixel location and intensity of pixels under the
-% mouse pointer in <ug_panel_im_view.html the Image View panel>.
+%% The Pixel Info field
+% TThe Pixel Info field is a feature that provides information about the pixel location and intensity of pixels under 
+% the mouse pointer in the <ug_panel_im_view.html the Image View panel>.
 <br>
-% The format is: [class.code]X, Y (Red channel:Green channel:Blue channel) / [index of material][/class]. 
+% The format of the Pixel Info field is: [class.code]X, Y (Red channel:Green channel:Blue channel) / [index of material][/class]. 
 % 
-% The right mouse click starts a context menu, that can be used for jumping
-% to any point of the dataset.
+<br>
+% By hovering the mouse pointer over an image in the Image View panel, the Pixel Info field updates 
+% in real-time to display the information for the pixel under the cursor. This can be useful for analyzing 
+% specific pixel values, identifying color information, or navigating to specific points in the dataset.
 % 
+<br>
+% In addition to displaying pixel information, right-clicking within the Pixel Info field opens a context menu. 
+% This menu may provide options for jumping to any point of the dataset:
+<br>
 % <<images\PanelsPathJumpTo.png>>
 % 
 %
-%% Log button
-% Shows the log of actions that were performed for the current dataset. The
-% action log is stored in the |ImageDescription| field in the TIF files. Each entry in the log list has a date/time stamp.
+%% The [class.kbd]Log[/class] button
+%
+% The [class.kbd]Log[/class] button is a feature that shows the log of actions that were performed for the current dataset. 
+% This log provides a record of the actions taken on the dataset, allowing users to track and review the history of changes made.
+% The action log is stored in the |ImageDescription| field in the TIF files. Each entry in the log list has a date/time stamp.
 %
 % <html lang="en">
 % A brief demonstration is available in the following video:
 <br>
-% <a href="https://youtu.be/1ql4cRxZ334"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/1ql4cRxZ334</a>
+% <a href="https://youtu.be/1ql4cRxZ334"><img style="vertical-align:middle;" src="images\youtube2.png">  MIB in brief: Log of performed actions (https://youtu.be/1ql4cRxZ334)</a>
 % </html>
 %
 % <<images\PanelsPathLog.png>>
@@ -635,15 +656,16 @@ A brief demonstration is available in the following video:
 % There are number of actions that are possible to do with
 % the action log:
 % 
-% * *Print to MATLAB* - prints the action log in the MATLAB command window
-% * *Copy to Clipboard* - stores the action log in the clipboard, so it can be pasted with Ctrl+V (Windows OS) command.
-% * *Insert after* - inserts a new entry after the one which is highlighted
-% * *Modify* - modifies the highlighted entry
-% * *Delete* - deletes the highlighted entry
-% * *Update* - the log is not updated automatically, so press this button to update it manually
+% * *Print to MATLAB*,  this action allows you to print the action log in the MATLAB command window. This can be useful for reviewing the log directly within the MATLAB environment
+% * *Copy to Clipboard*, this action allows you to store the action log in the clipboard. Once copied, you can paste the log using the Ctrl+V command (on Windows OS) into another application or document. This can be useful for sharing or documenting the log
+% * *Insert after*, this action allows you to insert a new entry after the one that is currently highlighted in the action log. This can be useful for adding additional information or recording new actions that were performed
+% * *Modify*, this action allows you to modify the highlighted entry in the action log. You can make changes to the existing entry, such as updating the description or adding additional details
+% * *Delete*, this action allows you to delete the highlighted entry from the action log. This can be useful for removing unnecessary or incorrect entries from the log
+% * *Update*, under some circumstances the action log is may not be updated automatically, so pressing this button manually updates the log
 % 
-%% Info button
-% The |Info| button opens a window with a tree list of parameters for the opened dataset. 
+%% The [class.kbd]Info[/class] button
+%
+% The Info button opens a window with a tree list of parameters for the opened dataset. 
 %
 % The XY image resolution is stored in the |XResolution| and |YResolution|
 % fields, and in the BoundingBox info in the |ImageDescription| field. The
@@ -652,7 +674,7 @@ A brief demonstration is available in the following video:
 % <<images\PanelsPathInfo.png>>
 % 
 %
-%% Zoom Edit box
+%% The [class.dropdown]Zoom[/class] edit box
 % Zoom Edit box, allows selection of the desired zoom level.
 %
 % <<images\PanelsPathZoom.png>>
@@ -661,10 +683,52 @@ A brief demonstration is available in the following video:
 %% Help
 % Access to this help page
 %
+%% Right mouse click opens a dropdown menu
 %
+% When clicking on an empty area of within this panel an additiona menu
+% appears allowing to hide/show the following panels. This allows to
+% increase space occupied by the Image view panel
+% 
+% <<images\PanelsImageView_dropdown.jpg>>
+% 
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+%
 % [cssClasses]
+% .dropdown { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	border-radius: 0.2em; 
+% 	background-color: #fff; 
+% 	background-color: #e0f5ff; 
+% 	background-color: #e8f5e8; 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
 % .code {
 % font-family: monospace;
 % font-size: 10pt;
@@ -672,6 +736,13 @@ A brief demonstration is available in the following video:
 % padding: 1pt 3pt;
 % }
 % [/cssClasses]
+%%
+% <html lang="en">
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>
 
 
 ##### SOURCE END #####

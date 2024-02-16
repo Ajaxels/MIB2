@@ -1,13 +1,22 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibRandomDatasetController < handle
     % classdef mibRandomDatasetController < handle
     % a controller class for chopping the dataset into several smaller ones
-    
-    % Copyright (C) 16.01.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
     
     properties
         mibModel
@@ -134,6 +143,7 @@ classdef mibRandomDatasetController < handle
             includeModels = obj.View.handles.includeModelCheck.Value;   % switch to include or not model files that are placed in the input folders
             includeMasks = obj.View.handles.includeMaskCheck.Value;   % switch to include or not model files that are placed in the input folders
             includeAnnotations = obj.View.handles.includeAnnotationsCheck.Value;   % switch to include or not annotation files that are placed in the input folders
+            includeMeasurements = obj.View.handles.includeMeasurementsCheck.Value;   % switch to include measurements
             filenameExtension = lower(obj.View.handles.filenameExtension.String); % extension for filenames with images
             
             Settings =  struct;     % structure with settings
@@ -148,7 +158,7 @@ classdef mibRandomDatasetController < handle
             Settings.randomSeed = round(str2double(obj.View.handles.randomSeed.String));  % init of a random generator 
             % index = Settings.OutputIndicesSorted{1}(1) - corresponds to Settings.InputImagesCombined(index)
             
-            rng(Settings.randomSeed);   % init the random generator
+            rng(Settings.randomSeed, 'twister');   % init the random generator
             inputModelFilenames = [];    % filenames for the input model files
             
             if isempty(Settings.inputDirName); return; end
@@ -183,6 +193,13 @@ classdef mibRandomDatasetController < handle
                             inputAnnotationsFilenames{dirId} = fullfile(Settings.inputDirName{dirId}, fileList{i});  %#ok<AGROW>
                         end
                     end
+
+                    if includeMeasurements    % find filenames for the measurements
+                        if ismember(ext, {'.measure'})
+                            inputMeasurementsFilenames{dirId} = fullfile(Settings.inputDirName{dirId}, fileList{i});  %#ok<AGROW>
+                        end
+                    end
+
                 end
                 fileList(excludeFiles==1) = [];     % exclude files with '.mat' and '.model' extensions
                 
@@ -226,7 +243,7 @@ classdef mibRandomDatasetController < handle
             end
             
             if includeModels
-                waitbar(0.6, wb, sprintf('Generating the model files\nPlease wait...'));
+                waitbar(0.5, wb, sprintf('Generating the model files\nPlease wait...'));
                 % get model dimensions
                 height = size(InputModels{1}.(InputModels{1}.modelVariable),1);
                 width = size(InputModels{1}.(InputModels{1}.modelVariable),2);
@@ -273,7 +290,7 @@ classdef mibRandomDatasetController < handle
             end
             
             if includeMasks    % randomize also the masks
-                waitbar(0.8, wb, sprintf('Generating the mask files\nPlease wait...'));
+                waitbar(0.7, wb, sprintf('Generating the mask files\nPlease wait...'));
                 % load masks
                 for dirId=1:numel(Settings.inputDirName)   
                     InputModels{dirId} = load(inputMaskFilenames{dirId}, '-mat');
@@ -298,7 +315,7 @@ classdef mibRandomDatasetController < handle
             end
             
             if includeAnnotations    % randomize also the annotations
-                waitbar(0.9, wb, sprintf('Generating the annotation files\nPlease wait...'));
+                waitbar(0.8, wb, sprintf('Generating the annotation files\nPlease wait...'));
                 % load annotations
                 for dirId=1:numel(Settings.inputDirName)   
                     InputModels{dirId} = load(inputAnnotationsFilenames{dirId}, '-mat');
@@ -327,6 +344,43 @@ classdef mibRandomDatasetController < handle
                     
                     annotationFilename = fullfile(Settings.outputDirName{dirId}, sprintf('%s_%.3d.ann', fnTemplate, dirId));
                     save(annotationFilename, 'labelPosition','labelText','labelValue', '-mat', '-v7.3');
+                end
+            end
+
+            % randomize measurements
+            if includeMeasurements
+                waitbar(0.9, wb, sprintf('Generating the measurements files\nPlease wait...'));
+                % load measurements
+                for dirId=1:numel(Settings.inputDirName)   
+                    InputModels{dirId} = load(inputMeasurementsFilenames{dirId}, '-mat');
+                end
+            
+                for dirId = 1:outputDirNum
+                    curDirIndices = Settings.OutputIndicesSorted{dirId};
+                    Data = [];
+
+                    for sliceIndex = 1:numel(curDirIndices)
+                        inputDirIndex = Settings.inputIndices(curDirIndices(sliceIndex));   % index of the input directory with the image
+                        sliceNumber = Settings.InputImagesSliceNumber(curDirIndices(sliceIndex));   % index of the slice in the model
+                        
+                        ind = find([InputModels{inputDirIndex}.Data.Z]==sliceNumber);
+                        if ~isempty(ind)
+                            CurrData = InputModels{inputDirIndex}.Data(ind);
+                            [CurrData.Z] = deal(sliceIndex);
+                            Data = [Data, CurrData]; %#ok<AGROW> 
+                        end
+                    end
+
+                    % update indices
+                    if ~isempty(Data)
+                        for i=1:numel(Data)
+                            Data(i).n = i; %#ok<AGROW>
+                        end
+
+                        % save to a file
+                        measurementsFilename = fullfile(Settings.outputDirName{dirId}, sprintf('%s_%.3d.measure', fnTemplate, dirId));
+                        save(measurementsFilename, 'Data', '-mat', '-v7.3');
+                    end
                 end
             end
             

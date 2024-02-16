@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Data layers of Microscopy Image Browser (Image, Model, Mask, Selection)</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_data_layers.m"><style>
+      --><title>Data layers of Microscopy Image Browser (Image, Model, Mask, Selection)</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_data_layers.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -145,11 +145,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -537,8 +536,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="2">Image layer</h2>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p><h2 id="2">Image layer</h2>
 <p>The <code>Image</code> layer contains 2D-4D microscopy dataset. It is the basic layer that is always present.</p><h2 id="3">Selection layer</h2>
 <p>The <code>Selection</code> layer is required for the image segmentation. It is a temporary layer that can be easily modified using manual or some of the automatic segmentation tools. By default, it is shown in the green color (the color can be selected from <a href="ug_gui_menu_file_preferences.html">the Preferences dialog</a>.</p>
 <p>The segmentation routines affect only the <code>Selection</code> layer (except few automatic routines that modify the <code>Mask</code> layer) and do not affect the <code>Model</code> layer that is defined to store final results of the segmentation. So any mistake done during the segmentation does not affect the existing model and can be potentially fixed using one of the following methods:</p>
@@ -557,7 +556,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Data layers of Microscopy Image Browser (Image, Model, Mask, Selection)

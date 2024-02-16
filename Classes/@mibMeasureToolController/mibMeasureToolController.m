@@ -1,15 +1,24 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibMeasureToolController < handle
     % classdef mibMeasureToolController < handle
     % a controller class for the measurements subwindow available via
     % MIB->Menu->Tools->Measure length->Measure tool
     
-    % Copyright (C) 26.12.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-    %
     % Updates:
     % 04.10.2017, IB added possibility to do not calculate intensity
     % profiles, fix of recalculation bug, when measurements were moved to
@@ -212,6 +221,11 @@ classdef mibMeasureToolController < handle
             userData = obj.View.handles.measureTable.UserData;
             jTable = userData.jTable;   % jTable is initializaed in the beginning of mibGUI.m
             jTable.changeSelection(noRows-1, 1, false, false);    % automatically calls mibSegmentationTable_CellSelectionCallback
+
+            % count user's points
+            obj.mibModel.preferences.Users.Tiers.numberOfMeasurements = obj.mibModel.preferences.Users.Tiers.numberOfMeasurements+1;
+            notify(obj.mibModel, 'updateUserScore');     % update score using default obj.mibModel.preferences.Users.singleToolScores increase
+
 
             %notify(obj.mibModel, 'plotImage');
             %obj.mibController.plotImage();
@@ -661,12 +675,15 @@ classdef mibMeasureToolController < handle
             % load measurements from a file or import from Matlab
             global mibPath;
             
-            button =  questdlg(sprintf('Would you like to load measurements from a file or from the main Matlab workspace?'), ...
-                'Import/Load measurements', 'Load from a file', 'Import from Matlab', 'Cancel', 'Load from a file');
-            switch button
-                case 'Cancel'
-                    return;
-                case 'Import from Matlab'
+            prompts = {'Load import the measurements from:'};
+            defAns = {{'Load from a file', 'Import from MATLAB', 'Combine from individual measure files', 1}};
+            dlgTitle = 'Load / import measurements';
+            options.WindowStyle = 'normal'; 
+            answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+            if isempty(answer); return; end 
+
+            switch answer{1}
+                case 'Import from MATLAB'
                     % get list of available variables
                     availableVars = evalin('base', 'whos');
                     idx = ismember({availableVars.class}, {'struct'});
@@ -688,10 +705,6 @@ classdef mibMeasureToolController < handle
                     if isempty(answer); return; end
                     obj.mibModel.mibDoBackup('measurements', 0);
                     dataIn = evalin('base',answer{1});
-                    % add a field introduced in 2.83
-                    if ~isfield(dataIn, 'info')
-                        [dataIn.info] = deal('');
-                    end
                     obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data = dataIn;
                 case 'Load from a file'
                     [filename, path] = mib_uigetfile(...
@@ -699,18 +712,83 @@ classdef mibMeasureToolController < handle
                         '*.*',  'All Files (*.*)'}, ...
                         'Load measurements...', obj.mibModel.myPath);
                     if isequal(filename, 0); return; end % check for cancel
-                    
+                    filename = filename{1}; 
+
                     obj.mibModel.mibDoBackup('measurements', 0);
                     res = load(fullfile(path, filename),'-mat');
                     if ~isfield(res.Data, 'T')  % loading old measurements before 4D datasets
                         [res.Data.T] = deal(1);
                     end
-                    % add a field introduced in 2.83
-                    if ~isfield(res.Data, 'info')
-                        [res.Data.info] = deal('');
-                    end
+%                     % add a field introduced in 2.83
+%                     if ~isfield(res.Data, 'info')
+%                         [res.Data.info] = deal('');
+%                     end
                     obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data = res.Data;
+                case 'Combine from individual measure files'
+                    [filename, pathIn] = mib_uigetfile(...
+                        {'*.measure;',  'Matlab format (*.measure)'; ...
+                        '*.*',  'All Files (*.*)'}, ...
+                        'Load measurements...', obj.mibModel.myPath, 'on');
+                    if isequal(filename, 0); return; end
+
+                    if ~isfield(obj.mibModel.sessionSettings.measureTool, 'combineFiles')
+                        obj.mibModel.sessionSettings.measureTool.combineFiles.sliceNumbers = '';
+                        obj.mibModel.sessionSettings.measureTool.combineFiles.prefix = 'prefix_';
+                        obj.mibModel.sessionSettings.measureTool.combineFiles.suffix = '_suffix';
+                        obj.mibModel.sessionSettings.measureTool.combineFiles.numNumericChar = '4';
+                    end
+
+                    prompts = {'List slice numbers that correspond to the filename indices; keep empty when number of files correspond to the number of slices'; ...
+                        sprintf('\nExample on how to define filename template:\nPrefix: "prefix_"\nSuffix: "_suffix"\nNumber of numeric charactrers: "4"\nGenerated filename: "prefix_0001_suffix.measure"\n\nTemplate A:'); ...
+                        'TemplateB:'; 'Number of numeric charactrers:'};
+
+                    defAns = {obj.mibModel.sessionSettings.measureTool.combineFiles.sliceNumbers, obj.mibModel.sessionSettings.measureTool.combineFiles.prefix, obj.mibModel.sessionSettings.measureTool.combineFiles.suffix, obj.mibModel.sessionSettings.measureTool.combineFiles.numNumericChar};
+                    dlgTitle = 'Load / import measurements';
+                    options.PromptLines = [2, 8, 1, 1];
+                    options.WindowStyle = 'normal'; 
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                    if isempty(answer); return; end 
+                    
+                    obj.mibModel.sessionSettings.measureTool.combineFiles.sliceNumbers = answer{1};
+                    obj.mibModel.sessionSettings.measureTool.combineFiles.prefix = answer{2};
+                    obj.mibModel.sessionSettings.measureTool.combineFiles.suffix = answer{3};
+                    obj.mibModel.sessionSettings.measureTool.combineFiles.numNumericChar = answer{4};
+
+                    sliceIds = str2num(obj.mibModel.sessionSettings.measureTool.combineFiles.sliceNumbers); %#ok<ST2NM> 
+                    if isempty(sliceIds)
+                        sliceIds = 1:numel(filename);
+                    end
+                    
+                    prefix = obj.mibModel.sessionSettings.measureTool.combineFiles.prefix; %#ok<NASGU> 
+                    suffix = obj.mibModel.sessionSettings.measureTool.combineFiles.suffix; %#ok<NASGU> 
+                    noNumbers = str2double(obj.mibModel.sessionSettings.measureTool.combineFiles.numNumericChar);
+
+                    for zIndex = 1:numel(sliceIds)
+                        z = sliceIds(zIndex);
+                        
+                        % generate filename to load
+                        genStr = sprintf("fnFull = fullfile(pathIn, sprintf('%%s%%.%dd%%s.measure', prefix, z, suffix));", noNumbers);
+                        eval(genStr);
+                        
+                        dummy = load(fnFull, '-mat');
+                        for mId = 1:numel(dummy.Data)
+                            dummy.Data(mId).Z = z;
+                        end
+                    
+                        if zIndex == 1
+                            Data = dummy.Data;
+                        else
+                            Data = [Data, dummy.Data];
+                        end
+                    end
+                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data = Data;
             end
+
+            % add a field introduced in 2.83
+            if ~isfield(obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data, 'info')
+                [obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data.info] = deal('');
+            end
+
             obj.updateTable();
             
             obj.mibController.mibView.handles.mibShowAnnotationsCheck.Value = 1;
@@ -743,19 +821,13 @@ classdef mibMeasureToolController < handle
                 return;
             end
             
-            fn_out = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
-            dotIndex = strfind(fn_out,'.');
-            if ~isempty(dotIndex)
-                fn_out = fn_out(1:dotIndex-1);
-            end
-            if isempty(strfind(fn_out,'/')) && isempty(strfind(fn_out,'\'))
-                fn_out = fullfile(obj.mibModel.myPath, fn_out);
-            end
-            if isempty(fn_out)
-                fn_out = obj.mibModel.myPath;
+            [dirOut, fn_out, extOut] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
+            if isempty(dirOut)
+                dirOut = obj.mibModel.myPath;
             end
             fn_out = [fn_out '_measure'];
-            
+            fn_out = fullfile(dirOut, fn_out);
+
             Filters = {'*.measure',  'Matlab format (*.measure)';...
                        '*.xls',   'Excel format (*.xls)'; };
             
@@ -773,10 +845,23 @@ classdef mibMeasureToolController < handle
                 % Sheet 1
                 s = {sprintf('Measurements for %s', obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));};
                 
-                s(3,1:10) = {'N', 'Type', 'Length', 'Info', 'intensity', 'Integration width', '[tcoords]', '[zcoords]', '[xcoords]', '[ycoords]'};
+                s(3,1:11) = {'Filename', 'N', 'Type', 'Length', 'Info', 'intensity', 'Integration width', '[tcoords]', '[zcoords]', '[xcoords]', '[ycoords]'};
                 roiId = 4;
                 
                 shift = 1;
+                
+                % generate slice names for export
+                if isKey(obj.mibModel.I{obj.mibModel.Id}.meta, 'SliceName') 
+                    if numel(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName')) == obj.mibModel.I{obj.mibModel.Id}.depth
+                        sliceNames = obj.mibModel.I{obj.mibModel.Id}.meta('SliceName');
+                    else
+                        sliceNames = repmat(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName'), [obj.mibModel.I{obj.mibModel.Id}.depth, 1]);
+                    end
+                else
+                    [~, sliceNames, ext] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
+                    sliceNames = repmat({[sliceNames, ext]}, [obj.mibModel.I{obj.mibModel.Id}.depth, 1]);
+                end
+
                 for i=1:numel(obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data)
                     % get the coordinates
                     if strcmp(obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).type,'Circle (R)')
@@ -804,19 +889,20 @@ classdef mibMeasureToolController < handle
                     xstr = [ xstr ']' ];
                     ystr = [ ystr ']' ];
                     
-                    s{roiId+shift, 1} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).n;
-                    s{roiId+shift, 2} = cell2mat(obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).type);
-                    s{roiId+shift, 3} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).value;
-                    s{roiId+shift, 4} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).info;
+                    s(roiId+shift, 1) = sliceNames(obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).Z);
+                    s{roiId+shift, 2} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).n;
+                    s{roiId+shift, 3} = cell2mat(obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).type);
+                    s{roiId+shift, 4} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).value;
+                    s{roiId+shift, 5} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).info;
                     for j=1:numel(obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).intensity)
-                        s{roiId+shift+j-1, 5} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).intensity(j);
+                        s{roiId+shift+j-1, 6} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).intensity(j);
                     end
-                    s{roiId+shift, 6} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).integrateWidth;
+                    s{roiId+shift, 7} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).integrateWidth;
                     
-                    s{roiId+shift, 7} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).T;
-                    s{roiId+shift, 8} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).Z;
-                    s{roiId+shift, 9} = xstr;
-                    s{roiId+shift, 10} = ystr;
+                    s{roiId+shift, 8} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).T;
+                    s{roiId+shift, 9} = obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).Z;
+                    s{roiId+shift, 10} = xstr;
+                    s{roiId+shift, 11} = ystr;
                     
                     shift = shift + numel(obj.mibModel.I{obj.mibModel.Id}.hMeasure.Data(i).intensity);
                 end

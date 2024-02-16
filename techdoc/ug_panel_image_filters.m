@@ -13,16 +13,20 @@
 % Use of filters in a brief video demonstration:<br>
 % <a
 % href="https://youtu.be/VwEPZxObA5U"><img
-% src="images\youtube2.png"></a>
+% src="images\youtube2.png"> MIB in brief: image filters (https://youtu.be/VwEPZxObA5U)</a>
 % </html>
 %
-% *Image filters were heavily updated and it is recommended to use new
+% [class.h3]Image filters were heavily updated and it is recommended to use new
 % filters dialog available upon press of the [class.kbd]New filters[/class] button[br]
-% or from [class.code] <ug_gui_menu_image_filters.html Menu->Image->Image filters> [/class]*
+% or from [class.code] <ug_gui_menu_image_filters.html Menu->Image->Image
+% filters> [/class][/class]
 %
-%% Image Filter combo box.
+%% The [class.dropdown]Image Filter &#9660;[/class] dropdown
 % Allows selection of a filter from a list of 2D and 3D image filters. Depending on the filter type some additional parameters
-% should be specified in the |HSize|, |Sigma|, |lambda|, |Type|, |Angle|, |Iter| edit boxes.
+% should be specified in the [class.dropdown]HSize[/class],
+% [class.dropdown]Sigma[/class], [class.dropdown]lambda[/class],
+% [class.dropdown]Type[/class], [class.dropdown]Angle[/class], and [class.dropdown]Iter[/class]
+% edit boxes.
 %
 %
 % [dtls][smry] *List of available filters:* [/smry]
@@ -72,44 +76,57 @@
 %
 % [/dtls]
 %
-% *Note!* If |HSize| is specified with a single number then
+% *Note!* If [class.dropdown]HSize[/class] is specified with a single number then
 % the size of the 3D Kernel is calculated based on pixel size of the dataset <ug_gui_menu_dataset.html
-% Menu->Dataset->Parameters>. If |HSize| is specified with 2 numbers
+% Menu->Dataset->Parameters>. If [class.dropdown]HSize[/class] is specified with 2 numbers
 % (_i.e._ 3;3) then the Kernel size is [3 x 3 x 3].
 %
-%% Mode combobox
-% The Mode combobox allows to select part of the open dataset to apply the
+%% The [class.dropdown]Mode &#9660;[/class] dropdown
+% The [class.dropdown]Mode &#9660;[/class] dropdown allows to select part of the open dataset to apply the
 % filters.
 % 
 % 
-% * *2D, shown slice*, apply filter only for the currently shown slice
-% * *3D, current stack*, apply filter only for the currently shown stack
-% * *4D, complete volume*, apply filter for complete dataset
+% * [class.dropdown]2D, shown slice &#9660;[/class], apply filter only for the currently shown slice
+% * [class.dropdown]3D, current stack &#9660;[/class], apply filter only for the currently shown stack
+% * [class.dropdown]4D, complete volume &#9660;[/class], apply filter for complete dataset
 % 
-%% Options combobox
-% The Options combobox allows to choose what to do with the dataset after
+%% The [class.dropdown]Options &#9660;[/class] dropdown
+% The [class.dropdown]Options &#9660;[/class] dropdown allows to choose what to do with the dataset after
 % filtration
 % 
-% * *Apply filter*, just filter the image and show result on the screen
-% * *Apply and add to the image*, filter the image and add the result to
-% the original image
-% * *Apply and subtract from the image*, filter the image and subtract the
-% result from the original image
+% * [class.dropdown]Apply filter &#9660;[/class], this option filters the image and shows the result on the screen. It applies the selected filter to the image and displays the filtered image as the output
+% * [class.dropdown]Apply and add to the image &#9660;[/class], this option filters the image and adds the result to the original image. 
+% It applies the selected filter to the image and combines the filtered image with the original image, resulting in a modified image 
+% that includes the filtered effect
+% * [class.dropdown]Apply and subtract from the image &#9660;[/class], this option filters the image and subtracts the result 
+% from the original image. It applies the selected filter to the image and subtracts the filtered image from the 
+% original image, resulting in a modified image that removes or reduces the filtered effect
 % 
 %
 %% Various settings for the filters
-% Here is a set of edit boxes (3D, Type, HSize, lambda, Sigma, beta2, beta3) that define additional parameters for the filters. Depending on the selected filter one or more of
-% these edit boxes may be disabled.
+% Here is a set of edit boxes (3D, Type, HSize, lambda, Sigma, beta2, beta3) that define additional parameters for the filters.
+% Depending on the selected filter one or more of these edit boxes may be disabled.
 %
-%% The Filter button
+%% The [class.kbd]Filter[/class] button
 % Press this button to start the filtering process.
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
 %
 % [cssClasses]
+% .dropdown { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	border-radius: 0.2em; 
+% 	background-color: #fff; 
+% 	background-color: #e0f5ff; 
+% 	background-color: #e8f5e8; 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
 % .kbd { 
-%     font-family: monospace;
+%   font-family: monospace;
 % 	border: 1px solid #aaa; 
 % 	-moz-border-radius: 0.2em; 
 % 	-webkit-border-radius: 0.2em; 
@@ -122,9 +139,14 @@
 % 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
 % 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
 % 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
-% 	padding: 0.2em 0.4em; 
+% 	padding: 0.1em 0.4em; 
 % 	font-family: inherit; 
 % 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
 % }
 % .code {
 % font-family: monospace;

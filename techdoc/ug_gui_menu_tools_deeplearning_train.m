@@ -193,107 +193,98 @@
 % to multiple augmentation filters at the same time, depending on their
 % probability factor.
 %
-% [dtls][smry] *Widgets of the Augmentation design section* [/smry]
-%
 % <html>
 % <ul>
 % <li><span class="kbd">[&#10003;] <b>Augmentation</b></span> - augment
 % data during training. When this checkbox is checked the input image patches are
 % additionally filtered with number of defined filters. The exact
 % augmentation options are available upon hitting the <span
-% class="kbd"><b>2D</b></span> and <span class="kbd">3D</span> buttons</li>
+% class="kbd"><b>2D</b></span> and <span class="kbd"><b>3D</b></span> buttons</li>
 % <li><span class="kbd">2D</span> - press to specify augmentation settings
 % for 2D networks. There are 17 augmentation operations and it is possible
 % to specify fraction of images patches that have to be
-% augmented and set variation and probability for each augmentation filter to be triggered
+% augmented and set variation and probability for each augmentation filter
+% to be triggered. Expand the following section to learn about
+% 2D/3D augmentation settings.
 % </li>
-% </ul>
-% </html>
-% 
-% [dtls][smry] *Details of 2D augmentations* [/smry]
-%
-% The augmentations are specified with 2 or 3 values, where the last
-% value defines probability of each particular augmentation to be
-% triggered.[br]
-% When the augmentation is defined with 2 values, the first value specifies whether it is *on* (==1) or *off* (==0), 
-% alternatively, the first two values define the variation range and a random
-% number is picked between these numbers and will be used as the parameter for
-% the filter.[br]
-% Each specific augmentation may be turned off either by setting its probability (the last value) to 0 
-% or by setting its variation range to be as shown in the
-% [class.code]off=[x,x,x][/class] text in the description above the
-% editbox[br]
-% The augmentation settings can be reset to their default values by
-% hitting *2D:* [class.kbd]Reset[/class] in the _*Options tab*_[br]
-% or disabled by hitting  *2D:* [class.kbd]Disable[/class] 
-% 
-% <<images\DeepLearning_2DAug_settings.jpg>>
-%
-% [/dtls]
-%
-%
-% <html>
-% <ul>
 % <li><span class="kbd"><b>3D</b></span> - press to specify augmentation settings
 % for 3D networks. There are 18 augmentation operations and it is possible
 % to specify fraction of images patches that have to be
-% augmented and set variation and probability for each augmentation filter to be triggered
+% augmented and set variation and probability for each augmentation filter
+% to be triggered. Expand the following section to learn about
+% 2D/3D augmentation settings.
 % </li>
 % </ul>
 % </html>
 % 
-% [dtls][smry] *Details of 3D augmentations* [/smry]
+% [dtls][smry] *2D/3D augmentation settings* [/smry]
 %
-% The augmentations are specified with 2 or 3 values, where the last
-% value defines probability of each particular augmentation to be
-% triggered.[br]
-% When the augmentation is defined with 2 values, the first value specifies whether it is *on* (==1) or *off* (==0), 
-% alternatively, the first two values define the variation range and a random
-% number is picked between these numbers and will be used as the parameter for
-% the filter.[br]
-% Each specific augmentation may be turned off either by setting its probability (the last value) to 0 
-% or by setting its variation range to be as shown in the
-% [class.code]off=[x,x,x][/class] text in the description above the
-% editbox[br]
-% The augmentation settings can be reset to their default values by
-% hitting *3D:* [class.kbd]Reset[/class] in the _*Options tab*_[br]
-% or disabled by hitting  *3D:* [class.kbd]Disable[/class] 
-% 
+% Upon pressing of the [class.kbd]2D[/class] or [class.kbd]3D[/class]
+% buttons, a dialog will be displayed that provides access to select
+% augmentation settings. [br]
+%
 % <<images\DeepLearning_3DAug_settings.jpg>>
 %
-% [/dtls]
+% <html>
+% Each augmentation may be  can be toggled on or off using a checkbox next to its name. 
+% Additionally it is possible to specify the probability for each augmentation
+% to be triggered using yellow spinboxes 
+% (<span class="dropdown" style="background-color: #FAFAD1">probability</span>), 
+% as well as their variation range using light blue spinboxes 
+% (<span class="dropdown">variation</span>).
+% </html>
+%
+% The augmentation settings can be reset to their default states by
+% clicking the [class.kbd]Reset[/class] button or disabled altogether using the
+% [class.kbd]Disable[/class] button.
 %
 % <html>
 % <ul>
-% <li><span class="kbd"><b>Preview</b></span> is used to preview input image patches that are
+% <li><span class="dropdown" style="background-color: #FAFAD1">Fraction</span> allows you to specify the probability
+% that a patch will be augmented. When set to <span class="code">Fraction==1</span>
+% all patches are augmented using the selected set of augmentations.
+% When set to <span class="code">Fraction==0.5</span> only 50% of the patches
+% will be augmented.</li>
+% <li><span class="dropdown" style="background-color: white">FillValue</span> allows you to specify the 
+% background color when patches are downsampled or rotated. When 
+% <span class="code">FillValue==0</span> the background color is black, when 
+% <span class="code">FillValue==255</span> the background color is white
+% (for 8-bit images)</li>
+% <li><img src="images\DeepLearning_3DAug_settings_checkbox.jpg"> use these
+% checkboxes to toggle augmentations on and off</li>
+% <li><img src="images\eye.png"> is used to preview input image patches that are
 % generated using augmentor. It is useful for evaluation of augmenter
-% operations and understanding performance.<br>
-% Number of patches to show and tweaking of various additional settings are possible by pressing the
-% Settings button <img src="images\DeepLearningTrainSettingsBtn.png"> 
-% on the right-hand side of the <span class="kbd">Preview</span> button.<br>
-% It is possible to select preview of all selected augmentations or pick
-% one. In the latter case, the probability parameter is ignored and all
-% patches are shown augmented.
+% operations and understanding performance. Depending on a value in  
+% <span class="dropdown">Radnom seed</span> the same (when set to "0") or a random image patch will be used
 % </li>
-% <li><img src="images\DeepLearningTrainSettingsBtn.png"> - hit to open a
-% dialog to specify settings to preview the selected augmentations</li>
+% <li><img src="images\DeepLearning_3DAug_settings_preview_settings.jpg"> allows to specify
+% parameters used to preview the augmentations.<br>
+% [dtls][smry] <b>Details settings for preview</b> [/smry]
+% Snapshot of settings to preview the selected augmentation operations:<br>
+% <img src="images\DeepLearning_input_patches_gallery_settings.png"><br>
+% Example of augmentations generated by press of the <span
+% class="kbd">Preview</span> button:<br>
+% <img src="images\DeepLearning_input_patches_gallery.jpg">
+% [/dtls]
+% </li>
+% <li><span class="kbd">Help</span> press to jump to the Training details
+% section of the help system</li>
+% <li><span class="dropdown">Random seed</span> when set to "0" a random
+% patch is shown each time the augmentations are previews, when set to any
+% other number a fixed random patch is displayed</li>
+% <li><span class="kbd">Previous seed</span> when using a random seed (<span class="code">Random seed==0</span>)
+% you can restore the previous random seed and populate the <span
+% class="dropdown">Random seed</span> with it. When done like that, the
+% preview patches will be the same as during the previous preview call</li>
+% <li><span class="kbd">OK</span> press to accept the current set of
+% augmentations and close the dialog</li>
+% <li><span class="kbd">Cancel</span>, close the dialog without
+% accepting the updated augmentations</li>
 % </ul>
-% </html>
-%
-% [dtls][smry] *Snapshots with Preview and Settings* [/smry]
-% 
-% Example of augmentations generated by press of the
-% [class.kbd]Preview[/class] button
-%
-% <<images\DeepLearning_input_patches_gallery.jpg>>
-%
-% Snapshot of settings to preview the selected augmentation operations:
-%
-% <<images\DeepLearning_input_patches_gallery_settings.png>>
+% </html> 
 %
 % [/dtls]
 %
-% [/dtls]
 %
 %% Training process design
 %
@@ -337,6 +328,50 @@
 % saved to <span class="code">3_Results\ScoreNetwork</span> directory. DeepMIB uses the
 % network filename as a template and generates a file in MATLAB format
 % (*.score) and several files in CSV format
+% </li>
+% <li><span class="kbd">[&#10003;] <b>Send reports to email</b></span> when
+% ticked information about progress and finishing of the training run is
+% sent to email. Press on the checkbox starts a configuration window to
+% define SMTP server and user details<br>
+% [dtls][smry]<b>Configuration of email notifications</b>[/smry]
+% <img src="images\DeepLearningTrain_traindesign_sendreports.png"><br>
+% Check below the configuration settings for sending email with the
+% progress information of the run.<br>
+% <b>Important!</b><br>
+% Please note that the password for the server is not encoded in any way
+% and stored in the configuration file. Do not use your email account
+% details, but rather use a dedicated services that are providing access to
+% SMTP servers!<br>
+% For example, you can use <a href="https://www.brevo.com">https://www.brevo.com</a> service that we've
+% tested.<br>
+% [dtls][smry]<b>Configuration of brevo.com SMTP server</b>[/smry]
+% <ul>
+% <li>Open <a href="https://www.brevo.com/">https://www.brevo.com</a> in a
+% browser and Sign up for a free account</li>
+% <li>Open the <b>SMTP and API</b> entry in the top right corner menu:<br>
+% <img src="images\DeepLearningTrain_traindesign_sendreports2.png"></li>
+% <li>Press the <span class="kbd">Generate a new SMTP key</span> button to generate a new password
+% to access SMTP server</li>
+% <li>Copy the generated pass-key into the password field in the email
+% configuration settings. You can also check the server details on this page</li>
+% </ul>
+% [/dtls]
+% <ul>
+% <li><span class="dropdown">Destination email</span>, provide email address to which the
+% notifications should be addressed</li>
+% <li><span class="dropdown">STMP server address</span>, address of SMTP server that will be used to send notifications</li>
+% <li><span class="dropdown">STMP server port</span>, port number on the server</li>
+% <li><span class="kbd">[&#10003;] <b>STMP authentication</b></span>, checkbox indicating that the authentification is required by the server</li>
+% <li><span class="kbd">[&#10003;] <b>STMP use starttls</b></span>, checkbox indicating that the server is using secure protocol with Transport Layer Security (TLS) or Secure Sockets Layer(SSL)</li>
+% <li><span class="dropdown">STMP username</span>, username on the STMP server, a user's email for brevo.com</li>
+% <li><span class="dropdown">STMP password</span>, password to access the server. You can use this field to type a new password; the password is hidden with ****, if you want to see it check
+% <span class="kbd">[&#10003;] <b>Check to seethe password in plain text after OK press</b></span></li>
+% <li><span class="kbd">[&#10003;] <b>Send email when training is finished</b></span>, when checked, an email is send at the end of the training run</li>
+% <li><span class="kbd">[&#10003;] <b>Send progress emails</b></span>, when checked, emails with the progress of the run are sent with frequency specified in the checkpoint save parameter 
+% (<b><em>only for the custom training dialog</b></em></li>
+% <li><span class="kbd">Test connection</span>, it is highly recommended to test connection. To do that press <span class="kbd">OK</span> to accept the settings; reopen this dialog and press
+% <span class="kbd">Test connection</span></li>
+% [/dtls]
 % </li>
 % </ul> 
 % </html>

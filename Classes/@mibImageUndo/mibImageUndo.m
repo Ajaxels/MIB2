@@ -1,19 +1,28 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibImageUndo < handle
-    % This class is resposnible to store the previous versions of the dataset, to be used for Undo (Ctrl+Z) command
+    % This class is responsible to store the previous versions of the dataset, to be used for Undo (Ctrl+Z) command
     
-    % The usage of this class is implemented via Ctrl+Z short cut. It allows to return one step back to the previous version of the
-    % dataset. It works with @em do_undo function of mib.m
+    % The usage of this class is implemented via Ctrl+Z short cut. It allows to return one step back to the previous 
+    % version of the dataset. It works with @em do_undo function of mib.m
     % @attention Use of undo, increase memory consumption. The Undo may be switched off in the @em Preferences of
     % mib.m: @em Menu->File->Preferences
 	
-    % Copyright (C) 04.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-	%
-	% Updates
+    % Updates
 	% 
 
     properties (SetAccess = public, GetAccess = public)
@@ -38,6 +47,11 @@ classdef mibImageUndo < handle
         % @li @b .t - coordinates of the stored of the part of the dataset
         % @li @b .viewPort - viewPort structure (only for the 'image')
         % @li @b .id - index of MIB container
+        % @li @b .LinkedData - structure with additional data to be stored
+        % @li @b .LinkedVariable - structure that keeps variable names for data stored in LinkedData
+        % for example (see in mibController.mibSegmentationSAM), 
+        %   .LinkedData.Points = obj.mibModel.sessionSettings.SAMsegmenter.Points;
+        %   .LinkedVariable.Points = 'obj.mibModel.sessionSettings.SAMsegmenter.Points';
         max_steps
         % a variable to limit maximal number of history steps
         max3d_steps
@@ -81,7 +95,11 @@ classdef mibImageUndo < handle
             % @code clearContents(obj); // Call within the class @endcode
             
             obj.type = '';
-            obj.undoList = struct('type', NaN, 'data', NaN, 'meta', NaN, 'orient', NaN, 'x', NaN, 'y', NaN, 'z', NaN, 't', NaN, 'viewPort', [], 'switch3d', NaN, 'options', struct);
+            obj.undoList = struct('type', NaN, 'data', NaN, 'meta', NaN, ...
+                'orient', NaN, 'x', NaN, 'y', NaN, 'z', NaN, 't', NaN, ...
+                'viewPort', [], 'switch3d', NaN, 'options', struct, ...
+                'LinkedData', struct, ...   % additional structure with extra data to store
+                'LinkedVariable', struct);  % additional structure that keeps variable names for data stored in LinkedData
             obj.undoList.data = {NaN};
             obj.undoIndex = 1;
             obj.prevUndoIndex = 0;
@@ -230,6 +248,7 @@ classdef mibImageUndo < handle
             obj.undoList(obj.undoIndex-1).data = data;
             obj.undoList(obj.undoIndex-1).options = options;
             
+
             % containers.Map is a class and should be reinitialized,
             % the plain copy (obj.undoList(obj.undoIndex-1).meta = meta) results in just a new copy of its handle
             if isa(meta, 'double')

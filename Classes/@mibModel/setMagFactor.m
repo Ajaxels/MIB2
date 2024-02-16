@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function setMagFactor(obj, magFactor, id)
 % function setMagFactor(obj, magFactor, id)
 % set magnification for the currently shown or id dataset
@@ -15,13 +31,6 @@ function setMagFactor(obj, magFactor, id)
 % @code obj.mibModel.setMagFactor(2);     // call from mibController: set current magFactor to 2 @endcode
 % @code obj.mibModel.setMagFactor(2, 4);     // call from mibController: set current magFactor to 2 for dataset 4 @endcode
 
-% Copyright (C) 10.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 if nargin < 3; id = obj.Id; end 

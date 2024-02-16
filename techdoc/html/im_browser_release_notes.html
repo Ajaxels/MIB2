@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser Release Notes</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="im_browser_release_notes.m"><style>
+      --><title>Microscopy Image Browser Release Notes</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="im_browser_release_notes.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -146,11 +146,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -520,32 +519,102 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <p><a href="im_browser_product_page.html">Back to Index</a></p><!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
-<div><ul><li><a href="#1">2.84 / 09.12.2022 (new 3D viewer and HDD alignement)</a></li>
-<li><a href="#2">2.831 / 21.06.2022; 2.83 / 19.06.2022 (blockedImage and 2D patch-wise)</a></li>
-<li><a href="#3">2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)</a></li>
-<li><a href="#4">2.81 / 14.10.2021</a></li>
-<li><a href="#5">2.802 / 01.06.2021</a></li>
-<li><a href="#6">2.70 / 18.05.2020</a></li>
-<li><a href="#7">2.66 / 25.04.2020</a></li>
-<li><a href="#8">2.651 / 25.04.2020</a></li>
-<li><a href="#9">2.65 / 23.03.2020</a></li>
-<li><a href="#10">2.601 / 04.11.2019</a></li>
-<li><a href="#11">2.51 / 13.03.2019</a></li>
-<li><a href="#12">2.501 / 21.12.2018</a></li>
-<li><a href="#13">2.50 / 17.12.2018</a></li>
-<li><a href="#14">2.40 / 31.08.2018</a></li>
-<li><a href="#15">2.302 / 18.05.2018 (03.07.2018)</a></li>
-<li><a href="#16">2.22 / 16.03.2018</a></li>
-<li><a href="#17">2.211 / 21.12.2017</a></li>
-<li><a href="#18">2.21 / 04.12.2017</a></li>
-<li><a href="#19">2.20 / 14.11.2017</a></li>
-<li><a href="#20">2.12 / 18.09.2017</a></li>
-<li><a href="#21">2.10 / 01.06.2017</a></li>
-<li><a href="#22">2.01 / 11.04.2017</a></li>
-<li><a href="#23">2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)</a></li></ul></div>
+<div><ul><li><a href="#1">2.90 / 14.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)</a></li>
+<li><a href="#2">2.84 / 09.12.2022 (new 3D viewer and HDD alignement)</a></li>
+<li><a href="#3">2.831 / 21.06.2022; 2.83 / 19.06.2022 (blockedImage and 2D patch-wise)</a></li>
+<li><a href="#4">2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)</a></li>
+<li><a href="#5">2.81 / 14.10.2021</a></li>
+<li><a href="#6">2.802 / 01.06.2021</a></li>
+<li><a href="#7">2.70 / 18.05.2020</a></li>
+<li><a href="#8">2.66 / 25.04.2020</a></li>
+<li><a href="#9">2.651 / 25.04.2020</a></li>
+<li><a href="#10">2.65 / 23.03.2020</a></li>
+<li><a href="#11">2.601 / 04.11.2019</a></li>
+<li><a href="#12">2.51 / 13.03.2019</a></li>
+<li><a href="#13">2.501 / 21.12.2018</a></li>
+<li><a href="#14">2.50 / 17.12.2018</a></li>
+<li><a href="#15">2.40 / 31.08.2018</a></li>
+<li><a href="#16">2.302 / 18.05.2018 (03.07.2018)</a></li>
+<li><a href="#17">2.22 / 16.03.2018</a></li>
+<li><a href="#18">2.211 / 21.12.2017</a></li>
+<li><a href="#19">2.21 / 04.12.2017</a></li>
+<li><a href="#20">2.20 / 14.11.2017</a></li>
+<li><a href="#21">2.12 / 18.09.2017</a></li>
+<li><a href="#22">2.10 / 01.06.2017</a></li>
+<li><a href="#23">2.01 / 11.04.2017</a></li>
+<li><a href="#24">2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)</a></li></ul></div>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="1">2.84 / 09.12.2022 (new 3D viewer and HDD alignement)</h2>
-<details open onclick="state_check('1.1')" id="1.1"><summary> <b>2.8331 / 21.06.2022 (Updated 3D viewer, HDD automatic alignment)</b> </summary>
+<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="1">2.90 / 14.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)</h2>
+<details open onclick="state_check('1.1')" id="1.1"><summary> <b>2.843 / 28.04.2023 (SAM segmentation, Multi-GPU training)</b> </summary>
+<div class="details-div">
+<p></p>
+<div><ul style="margin-bottom:0px;"><li><b>To comply with dependencies the MIB license was updated from GPLv2 to GPLv3</b></li>
+<li>Added Segment anything (Standard and Microscopy) models for manual/semi-automatic segmentation</li>
+<li>Added Rename materials to batch processing operations</li>
+<li>Added possibility to skip loading of metadata</li>
+<li>Added the Cancel button to the progress bar upon loading of images</li>
+<li>Added recoloring of materials for models with 65535+ materials</li>
+<li>Added crop of 3D volumes from 2D objects detected using the Get Statistics window</li>
+<li>Added options to change thickness of model and mask contour lines (Menu-&gt;File-&gt;Preferences-&gt;Colors and styles-&gt;Contours)</li>
+<li>Added drag and drop *.mask files to the Image view panel to load them</li>
+<li>Added drag and drop *.ann files to the Image view panel or the Segmentation table to load annotations</li>
+<li>Added paste of annotation values from clipboard</li>
+<li>Added auto fill switch to the Selection panel to fill the shapes after use of brush</li>
+<li>Added jitter coordinates option into crop out patches for annotations and objects</li>
+<li>Added [F] template for exporting statistics via batch processing</li>
+<li>Added saving of projects, copy to clipboard and open in file explorer for directories in Rename and Shuffle-&gt;Restore</li>
+<li>Added possibility to load measurements (*.measure) from multiple files and added filename to export of measurement in the Excel format</li>
+<li>Added possibility update colors of annotations into the Annotation list window</li>
+<li>Added key shortcuts to zoom in to 100% and fit to view. The shortcuts can be modified using via Menu-&gt;File-&gt;Preferences-&gt;Keyboard shortcuts</li>
+<li>Added key shortcut to rename materials (default F2)</li>
+<li>Added key shortcuts to change the brush size (default '[' and ']')</li>
+<li>Added possibility to hide the Path and the bottom panels (Selection, View settings, Image filters) via a dropdown menu over the Image view panel</li>
+<li>Added filename identifier when exporting object quantification from the Get Statistics window</li>
+<li>Added filename identifier when exporting annotations to Excel or CSV</li>
+<li>Added "Center-top" and "Center-bottom" locations to Add frame (Dataset-&gt;Transform-&gt;Add frame-&gt;Provide new width/height)</li>
+<li>Added "Set value" to the batch modify selected annotations (Menu-&gt;Models-&gt;Annotations-&gt;List of annotations)</li>
+<li>Added interpolation operation to the List of Annotations</li>
+<li>Added options to add annotation names and coordinates to filenames when generating patches from annotations</li>
+<li>Added automatic selection of materials from selected rows in the segmentation table for the remove material operation</li>
+<li>Added option to add multiple empty slices using (Menu-&gt;Dataset-&gt;Slice-&gt;Insert empty slice)</li>
+<li>Added selection of colors for materials into the segmentation table (right mouse click-&gt;Color scheme)</li>
+<li>Added fusing of a larger model into a smaller dataset crop (Menu-&gt;File-&gt;Chopped images-&gt;Import-&gt;Fused...)</li>
+<li>Added possibility to define black and white points lower and higher than the image class allows (Image view panel-&gt;Display)</li>
+<li>Added possibility show masks as filled shapes (Menu-&gt;File-&gt;Preferences-&gt;Colors and styles-&gt;Masks)</li>
+<li>Added an option to add annotation name when exporting them to PSI format</li>
+<li>Added measurements to Rename and Shuffle</li>
+<li>Added save of models and masks to PNG format</li>
+<li>Added the Threshold button to the BW thresholding tool to start thresholding manually</li>
+<li>Added user tiers</li>
+<li>Improved calculation of DistanceMaps in 3D for isotropic voxels</li>
+<li>Changed usage of the Object picker tool, now the object pick is based on the selected row in the segmentation table</li>
+<li>Changed how the object id values are displayed in the Statistics window, now they show the real indices of the detected objects</li>
+<li>Fixed Add frame when dX or dY is 0</li>
+<li>Fixed Resize of models that have more than 255 materials</li>
+<li>Updated Bio-Formats to 7.2.0</li>
+<li>[DeepMIB] Added 2.5D network architectures for semantic segmentation</li>
+<li>[DeepMIB] Added training using Multi-GPU configuration</li>
+<li>[DeepMIB] Added prediction using Multi-GPU configuration for the patchwise workflows</li>
+<li>[DeepMIB] Added new dialog to specify augmentation settings</li>
+<li>[DeepMIB] Added drag-and-drop of "mibCfg" project files into panels of DeepMIB to automatically load the config</li>
+<li>[DeepMIB] Added duplication operation to make a copy of a trained network and its config</li>
+<li>[DeepMIB] Added padding parameter to symmetrically pad the image to eliminate the edge artifacts</li>
+<li>[DeepMIB] Added symmetric padding for prediction using Blocked-image engine to eliminate edge artifacts (R2023a and newer)</li>
+<li>[DeepMIB] Added export of the trained network to TensorFlow format</li>
+<li>[DeepMIB] Added 'MATLAB non-compressed format (range 0-1)' for generating predictions scores in the range from 0 to 1</li>
+<li>[DeepMIB] Added possibility to predict images that are not under Images subfolder (Blocked-mode only)</li>
+<li>[DeepMIB] Added an option to calculate loss excluding Exterior when using the diceCustom segmentation layer</li>
+<li>[DeepMIB] Added sending of email notifications about training progress and when finished</li>
+<li>[DeepMIB] Added preview of a network stored in mibDeep file (Network panel)</li>
+<li>[DeepMIB] Added possibility to mask-away areas without preprocessing (Mask extension: Use 0-s in labels)</li>
+<li>[DeepMIB] Improved handling of directories that are RELATIVE to the project directory</li>
+<li>[DeepMIB] Extended the Evaluate segmentation plot with Class and Dataset metrics</li></ul></div>
+</div>
+</details>
+<br>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="2">2.84 / 09.12.2022 (new 3D viewer and HDD alignement)</h2>
+<details open onclick="state_check('2.1')" id="2.1"><summary> <b>2.8331 / 21.06.2022 (Updated 3D viewer, HDD automatic alignment)</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added Example datasets: Menu-&gt;File-&gt;Example datasets</li>
@@ -582,8 +651,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="2">2.831 / 21.06.2022; 2.83 / 19.06.2022 (blockedImage and 2D patch-wise)</h2>
-<details open onclick="state_check('2.1')" id="2.1"><summary> <b>2.83 / 19.06.2022 (blockedImage and 2D patch-wise)</b> </summary>
+<p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="3">2.831 / 21.06.2022; 2.83 / 19.06.2022 (blockedImage and 2D patch-wise)</h2>
+<details open onclick="state_check('3.1')" id="3.1"><summary> <b>2.83 / 19.06.2022 (blockedImage and 2D patch-wise)</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added generation of image 2D and 3D patches around annotation labels (<span class="code">Annotation list-&gt;Crop out patches around selected annotations</span>)</li>
@@ -618,8 +687,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="3">2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)</h2>
-<details open onclick="state_check('3.1')" id="3.1"><summary> <b>2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)</b> </summary>
+<p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="4">2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)</h2>
+<details open onclick="state_check('4.1')" id="4.1"><summary> <b>2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added generation of kymographs to Measure tool</li>
@@ -649,8 +718,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="4">2.81 / 14.10.2021</h2>
-<details open onclick="state_check('4.1')" id="4.1"><summary> <b>2.81 / 14.10.2021</b> </summary>
+<p onclick="toggle_details(5)" class="collapse-link"><a href="javascript:void(0);" id="Toggle5">collapse all</a></p><h2 id="5">2.81 / 14.10.2021</h2>
+<details open onclick="state_check('5.1')" id="5.1"><summary> <b>2.81 / 14.10.2021</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added contrast adjustment, when 16-bit is converted to 16-bit</li>
@@ -668,8 +737,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(5)" class="collapse-link"><a href="javascript:void(0);" id="Toggle5">collapse all</a></p><h2 id="5">2.802 / 01.06.2021</h2>
-<details open onclick="state_check('5.1')" id="5.1"><summary> <b>2.802 / 01.06.2021</b> </summary>
+<p onclick="toggle_details(6)" class="collapse-link"><a href="javascript:void(0);" id="Toggle6">collapse all</a></p><h2 id="6">2.802 / 01.06.2021</h2>
+<details open onclick="state_check('6.1')" id="6.1"><summary> <b>2.802 / 01.06.2021</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added HDD mode to align datasets that can not be fit into memory (Menu-&gt;Dataset-&gt;Alignment tool-&gt;HDD)</li>
@@ -719,8 +788,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(6)" class="collapse-link"><a href="javascript:void(0);" id="Toggle6">collapse all</a></p><h2 id="6">2.70 / 18.05.2020</h2>
-<details open onclick="state_check('6.1')" id="6.1"><summary> <b>2.70 / 18.05.2020</b> </summary>
+<p onclick="toggle_details(7)" class="collapse-link"><a href="javascript:void(0);" id="Toggle7">collapse all</a></p><h2 id="7">2.70 / 18.05.2020</h2>
+<details open onclick="state_check('7.1')" id="7.1"><summary> <b>2.70 / 18.05.2020</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added Deep MIB for training and prediction of datasets using deep convolutional networks</li>
@@ -732,8 +801,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(7)" class="collapse-link"><a href="javascript:void(0);" id="Toggle7">collapse all</a></p><h2 id="7">2.66 / 25.04.2020</h2>
-<details open onclick="state_check('7.1')" id="7.1"><summary> <b>2.66 / 25.04.2020</b> </summary>
+<p onclick="toggle_details(8)" class="collapse-link"><a href="javascript:void(0);" id="Toggle8">collapse all</a></p><h2 id="8">2.66 / 25.04.2020</h2>
+<details open onclick="state_check('8.1')" id="8.1"><summary> <b>2.66 / 25.04.2020</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added direct conversion from Mask to Model layer (Segmentation panel-&gt;Material table-&gt;right click-&gt;Mask to Material)</li>
@@ -742,8 +811,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(8)" class="collapse-link"><a href="javascript:void(0);" id="Toggle8">collapse all</a></p><h2 id="8">2.651 / 25.04.2020</h2>
-<details open onclick="state_check('8.1')" id="8.1"><summary> <b>2.651 / 25.04.2020</b> </summary>
+<p onclick="toggle_details(9)" class="collapse-link"><a href="javascript:void(0);" id="Toggle9">collapse all</a></p><h2 id="9">2.651 / 25.04.2020</h2>
+<details open onclick="state_check('9.1')" id="9.1"><summary> <b>2.651 / 25.04.2020</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added smoothing of multiple materials of models via batch processing</li>
@@ -753,8 +822,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(9)" class="collapse-link"><a href="javascript:void(0);" id="Toggle9">collapse all</a></p><h2 id="9">2.65 / 23.03.2020</h2>
-<details open onclick="state_check('9.1')" id="9.1"><summary> <b>2.65 / 23.03.2020</b> </summary>
+<p onclick="toggle_details(10)" class="collapse-link"><a href="javascript:void(0);" id="Toggle10">collapse all</a></p><h2 id="10">2.65 / 23.03.2020</h2>
+<details open onclick="state_check('10.1')" id="10.1"><summary> <b>2.65 / 23.03.2020</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added Drag and drop files into the Image View panel</li>
@@ -781,8 +850,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(10)" class="collapse-link"><a href="javascript:void(0);" id="Toggle10">collapse all</a></p><h2 id="10">2.601 / 04.11.2019</h2>
-<details open onclick="state_check('10.1')" id="10.1"><summary> <b>2.601 / 04.11.2019</b> </summary>
+<p onclick="toggle_details(11)" class="collapse-link"><a href="javascript:void(0);" id="Toggle11">collapse all</a></p><h2 id="11">2.601 / 04.11.2019</h2>
+<details open onclick="state_check('11.1')" id="11.1"><summary> <b>2.601 / 04.11.2019</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>The deployed version of MIB comes with R2019b instead of R2017a</li>
@@ -812,8 +881,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(11)" class="collapse-link"><a href="javascript:void(0);" id="Toggle11">collapse all</a></p><h2 id="11">2.51 / 13.03.2019</h2>
-<details open onclick="state_check('11.1')" id="11.1"><summary> <b>2.51 / 13.03.2019</b> </summary>
+<p onclick="toggle_details(12)" class="collapse-link"><a href="javascript:void(0);" id="Toggle12">collapse all</a></p><h2 id="12">2.51 / 13.03.2019</h2>
+<details open onclick="state_check('12.1')" id="12.1"><summary> <b>2.51 / 13.03.2019</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added methods for automatic global black-and-white thresholding (<code>Menu-&gt;Tools-&gt;Semi-automatic segmentation-&gt;Global thresholding</code>)</li>
@@ -837,8 +906,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(12)" class="collapse-link"><a href="javascript:void(0);" id="Toggle12">collapse all</a></p><h2 id="12">2.501 / 21.12.2018</h2>
-<details open onclick="state_check('12.1')" id="12.1"><summary> <b>2.501 / 21.12.2018</b> </summary>
+<p onclick="toggle_details(13)" class="collapse-link"><a href="javascript:void(0);" id="Toggle13">collapse all</a></p><h2 id="13">2.501 / 21.12.2018</h2>
+<details open onclick="state_check('13.1')" id="13.1"><summary> <b>2.501 / 21.12.2018</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added swap slices option (Menu-&gt;Dataset-&gt;Slice-&gt;Swap slices)</li>
@@ -848,8 +917,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(13)" class="collapse-link"><a href="javascript:void(0);" id="Toggle13">collapse all</a></p><h2 id="13">2.50 / 17.12.2018</h2>
-<details open onclick="state_check('13.1')" id="13.1"><summary> <b>2.50 / 17.12.2018</b> </summary>
+<p onclick="toggle_details(14)" class="collapse-link"><a href="javascript:void(0);" id="Toggle14">collapse all</a></p><h2 id="14">2.50 / 17.12.2018</h2>
+<details open onclick="state_check('14.1')" id="14.1"><summary> <b>2.50 / 17.12.2018</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added hardware accelerated 3D volume rendering (Menu-&gt;File-&gt;Render volume-&gt;MIB rendering). The volume rendering can be used also for making snapshots and animations. Requires MATLAB R2018b or newer!</li>
@@ -883,8 +952,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(14)" class="collapse-link"><a href="javascript:void(0);" id="Toggle14">collapse all</a></p><h2 id="14">2.40 / 31.08.2018</h2>
-<details open onclick="state_check('14.1')" id="14.1"><summary> <b>2.40 / 31.08.2018</b> </summary>
+<p onclick="toggle_details(15)" class="collapse-link"><a href="javascript:void(0);" id="Toggle15">collapse all</a></p><h2 id="15">2.40 / 31.08.2018</h2>
+<details open onclick="state_check('15.1')" id="15.1"><summary> <b>2.40 / 31.08.2018</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added virtual mode for datasets that are compatible with the BioFormats library or in HDF5 format</li>
@@ -898,8 +967,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(15)" class="collapse-link"><a href="javascript:void(0);" id="Toggle15">collapse all</a></p><h2 id="15">2.302 / 18.05.2018 (03.07.2018)</h2>
-<details open onclick="state_check('15.1')" id="15.1"><summary> <b>2.302 / 18.05.2018 (03.07.2018)</b> </summary>
+<p onclick="toggle_details(16)" class="collapse-link"><a href="javascript:void(0);" id="Toggle16">collapse all</a></p><h2 id="16">2.302 / 18.05.2018 (03.07.2018)</h2>
+<details open onclick="state_check('16.1')" id="16.1"><summary> <b>2.302 / 18.05.2018 (03.07.2018)</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added Lines3D class for 3D measurements and generation of 3D skeletons and graphs</li>
@@ -921,8 +990,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(16)" class="collapse-link"><a href="javascript:void(0);" id="Toggle16">collapse all</a></p><h2 id="16">2.22 / 16.03.2018</h2>
-<details open onclick="state_check('16.1')" id="16.1"><summary> <b>2.22 / 16.03.2018</b> </summary>
+<p onclick="toggle_details(17)" class="collapse-link"><a href="javascript:void(0);" id="Toggle17">collapse all</a></p><h2 id="17">2.22 / 16.03.2018</h2>
+<details open onclick="state_check('17.1')" id="17.1"><summary> <b>2.22 / 16.03.2018</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added value field for the annotations, thus each annotation can be weighted based on its value</li>
@@ -945,8 +1014,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(17)" class="collapse-link"><a href="javascript:void(0);" id="Toggle17">collapse all</a></p><h2 id="17">2.211 / 21.12.2017</h2>
-<details open onclick="state_check('17.1')" id="17.1"><summary> <b>2.211 / 21.12.2017</b> </summary>
+<p onclick="toggle_details(18)" class="collapse-link"><a href="javascript:void(0);" id="Toggle18">collapse all</a></p><h2 id="18">2.211 / 21.12.2017</h2>
+<details open onclick="state_check('18.1')" id="18.1"><summary> <b>2.211 / 21.12.2017</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Updated TripleAreaIntensity plugin</li>
@@ -958,8 +1027,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(18)" class="collapse-link"><a href="javascript:void(0);" id="Toggle18">collapse all</a></p><h2 id="18">2.21 / 04.12.2017</h2>
-<details open onclick="state_check('18.1')" id="18.1"><summary> <b>2.21 / 04.12.2017</b> </summary>
+<p onclick="toggle_details(19)" class="collapse-link"><a href="javascript:void(0);" id="Toggle19">collapse all</a></p><h2 id="19">2.21 / 04.12.2017</h2>
+<details open onclick="state_check('19.1')" id="19.1"><summary> <b>2.21 / 04.12.2017</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added model with 4294967295 materials for tests</li>
@@ -971,8 +1040,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(19)" class="collapse-link"><a href="javascript:void(0);" id="Toggle19">collapse all</a></p><h2 id="19">2.20 / 14.11.2017</h2>
-<details open onclick="state_check('19.1')" id="19.1"><summary> <b>2.20 / 14.11.2017</b> </summary>
+<p onclick="toggle_details(20)" class="collapse-link"><a href="javascript:void(0);" id="Toggle20">collapse all</a></p><h2 id="20">2.20 / 14.11.2017</h2>
+<details open onclick="state_check('20.1')" id="20.1"><summary> <b>2.20 / 14.11.2017</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added a new 3D Grid mode to the Graphcut tool; when used the fast interactive performance can be achieved even with very large datasets</li>
@@ -1001,8 +1070,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(20)" class="collapse-link"><a href="javascript:void(0);" id="Toggle20">collapse all</a></p><h2 id="20">2.12 / 18.09.2017</h2>
-<details open onclick="state_check('20.1')" id="20.1"><summary> <b>2.12 / 18.09.2017</b> </summary>
+<p onclick="toggle_details(21)" class="collapse-link"><a href="javascript:void(0);" id="Toggle21">collapse all</a></p><h2 id="21">2.12 / 18.09.2017</h2>
+<details open onclick="state_check('21.1')" id="21.1"><summary> <b>2.12 / 18.09.2017</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added a new tool to detect a frame around images (Menu-&gt;Image-&gt;Tools for images-&gt;Select image frame...)</li>
@@ -1031,8 +1100,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(21)" class="collapse-link"><a href="javascript:void(0);" id="Toggle21">collapse all</a></p><h2 id="21">2.10 / 01.06.2017</h2>
-<details open onclick="state_check('21.1')" id="21.1"><summary> <b>2.10 / 01.06.2017</b> </summary>
+<p onclick="toggle_details(22)" class="collapse-link"><a href="javascript:void(0);" id="Toggle22">collapse all</a></p><h2 id="22">2.10 / 01.06.2017</h2>
+<details open onclick="state_check('22.1')" id="22.1"><summary> <b>2.10 / 01.06.2017</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added materials with 65535 maximal number of materials</li>
@@ -1052,8 +1121,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(22)" class="collapse-link"><a href="javascript:void(0);" id="Toggle22">collapse all</a></p><h2 id="22">2.01 / 11.04.2017</h2>
-<details open onclick="state_check('22.1')" id="22.1"><summary> <b>2.01 / 11.04.2017</b> </summary>
+<p onclick="toggle_details(23)" class="collapse-link"><a href="javascript:void(0);" id="Toggle23">collapse all</a></p><h2 id="23">2.01 / 11.04.2017</h2>
+<details open onclick="state_check('23.1')" id="23.1"><summary> <b>2.01 / 11.04.2017</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>Added selection of the model type to Menu-&gt;Models-&gt;Type and removed it from the Preferences dialog</li>
@@ -1066,8 +1135,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(23)" class="collapse-link"><a href="javascript:void(0);" id="Toggle23">collapse all</a></p><h2 id="23">2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)</h2>
-<details open onclick="state_check('23.1')" id="23.1"><summary> <b>2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)</b> </summary>
+<p onclick="toggle_details(24)" class="collapse-link"><a href="javascript:void(0);" id="Toggle24">collapse all</a></p><h2 id="24">2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)</h2>
+<details open onclick="state_check('24.1')" id="24.1"><summary> <b>2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul style="margin-bottom:0px;"><li>With release 2.0 MIB has been rewritten to utilize Controller-View-Model architecture, which brings stability and ease of future development. However, because of that, the system requirements for MATLAB were increased and MIB2 is only available for MATLAB R2014b and older (due to continuous development of MATLAB, the most recent release is always recommended)</li>
@@ -1088,7 +1157,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Microscopy Image Browser Release Notes
@@ -1097,6 +1166,75 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % <im_browser_product_page.html Back to Index>
 %
 %
+%
+%% 2.90 / 14.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)
+% 
+% [dtls]<summary> *2.843 / 28.04.2023 (SAM segmentation, Multi-GPU training)* </summary>
+<div class="details-div">
+%
+% * *To comply with dependencies the MIB license was updated from GPLv2 to GPLv3*
+% * Added Segment anything (Standard and Microscopy) models for manual/semi-automatic segmentation
+% * Added Rename materials to batch processing operations
+% * Added possibility to skip loading of metadata
+% * Added the Cancel button to the progress bar upon loading of images
+% * Added recoloring of materials for models with 65535+ materials
+% * Added crop of 3D volumes from 2D objects detected using the Get Statistics window
+% * Added options to change thickness of model and mask contour lines (Menu->File->Preferences->Colors and styles->Contours)
+% * Added drag and drop *.mask files to the Image view panel to load them
+% * Added drag and drop *.ann files to the Image view panel or the Segmentation table to load annotations
+% * Added paste of annotation values from clipboard
+% * Added auto fill switch to the Selection panel to fill the shapes after use of brush
+% * Added jitter coordinates option into crop out patches for annotations and objects
+% * Added [F] template for exporting statistics via batch processing
+% * Added saving of projects, copy to clipboard and open in file explorer for directories in Rename and Shuffle->Restore
+% * Added possibility to load measurements (*.measure) from multiple files and added filename to export of measurement in the Excel format
+% * Added possibility update colors of annotations into the Annotation list window
+% * Added key shortcuts to zoom in to 100% and fit to view. The shortcuts can be modified using via Menu->File->Preferences->Keyboard shortcuts
+% * Added key shortcut to rename materials (default F2)
+% * Added key shortcuts to change the brush size (default '[' and ']')
+% * Added possibility to hide the Path and the bottom panels (Selection, View settings, Image filters) via a dropdown menu over the Image view panel
+% * Added filename identifier when exporting object quantification from the Get Statistics window
+% * Added filename identifier when exporting annotations to Excel or CSV
+% * Added "Center-top" and "Center-bottom" locations to Add frame (Dataset->Transform->Add frame->Provide new width/height)
+% * Added "Set value" to the batch modify selected annotations (Menu->Models->Annotations->List of annotations)
+% * Added interpolation operation to the List of Annotations
+% * Added options to add annotation names and coordinates to filenames when generating patches from annotations
+% * Added automatic selection of materials from selected rows in the segmentation table for the remove material operation
+% * Added option to add multiple empty slices using (Menu->Dataset->Slice->Insert empty slice)
+% * Added selection of colors for materials into the segmentation table (right mouse click->Color scheme)
+% * Added fusing of a larger model into a smaller dataset crop (Menu->File->Chopped images->Import->Fused...)
+% * Added possibility to define black and white points lower and higher than the image class allows (Image view panel->Display)
+% * Added possibility show masks as filled shapes (Menu->File->Preferences->Colors and styles->Masks)
+% * Added an option to add annotation name when exporting them to PSI format
+% * Added measurements to Rename and Shuffle
+% * Added save of models and masks to PNG format
+% * Added the Threshold button to the BW thresholding tool to start thresholding manually
+% * Added user tiers
+% * Improved calculation of DistanceMaps in 3D for isotropic voxels
+% * Changed usage of the Object picker tool, now the object pick is based on the selected row in the segmentation table
+% * Changed how the object id values are displayed in the Statistics window, now they show the real indices of the detected objects
+% * Fixed Add frame when dX or dY is 0
+% * Fixed Resize of models that have more than 255 materials
+% * Updated Bio-Formats to 7.2.0
+% * [DeepMIB] Added 2.5D network architectures for semantic segmentation
+% * [DeepMIB] Added training using Multi-GPU configuration
+% * [DeepMIB] Added prediction using Multi-GPU configuration for the patchwise workflows
+% * [DeepMIB] Added new dialog to specify augmentation settings
+% * [DeepMIB] Added drag-and-drop of "mibCfg" project files into panels of DeepMIB to automatically load the config
+% * [DeepMIB] Added duplication operation to make a copy of a trained network and its config
+% * [DeepMIB] Added padding parameter to symmetrically pad the image to eliminate the edge artifacts
+% * [DeepMIB] Added symmetric padding for prediction using Blocked-image engine to eliminate edge artifacts (R2023a and newer)
+% * [DeepMIB] Added export of the trained network to TensorFlow format
+% * [DeepMIB] Added 'MATLAB non-compressed format (range 0-1)' for generating predictions scores in the range from 0 to 1
+% * [DeepMIB] Added possibility to predict images that are not under Images subfolder (Blocked-mode only)
+% * [DeepMIB] Added an option to calculate loss excluding Exterior when using the diceCustom segmentation layer
+% * [DeepMIB] Added sending of email notifications about training progress and when finished
+% * [DeepMIB] Added preview of a network stored in mibDeep file (Network panel)
+% * [DeepMIB] Added possibility to mask-away areas without preprocessing (Mask extension: Use 0-s in labels)
+% * [DeepMIB] Improved handling of directories that are RELATIVE to the project directory
+% * [DeepMIB] Extended the Evaluate segmentation plot with Class and Dataset metrics
+%
+% [/dtls]
 %
 %% 2.84 / 09.12.2022 (new 3D viewer and HDD alignement)
 %
@@ -1735,7 +1873,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % padding: 1pt 3pt;
 % }
 % [/cssClasses]
-%%
+%
 % <html lang="en">
 % <script>
 %   var allDetails = document.getElementsByTagName('details');

@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibSegmentationSpot(obj, y, x, modifier, BatchOptIn)
 % mibSegmentationSpot(obj, y, x, modifier, BatchOptIn)
 % Do segmentation using the spot tool
@@ -26,13 +42,6 @@ function mibSegmentationSpot(obj, y, x, modifier, BatchOptIn)
 
 % Return values:
 
-% Copyright (C) 22.02.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -240,4 +249,8 @@ for index = 1:numel(xVec)
     if showWaitbarLocal; wb = waitbar(index/numel(xVec), wb); end
 end
 if showWaitbarLocal; delete(wb); end
+% count user's points
+obj.mibModel.preferences.Users.Tiers.numberOfSpots = obj.mibModel.preferences.Users.Tiers.numberOfSpots+1;
+notify(obj.mibModel, 'updateUserScore');     % update score using default obj.mibModel.preferences.Users.singleToolScores increase
+
 obj.plotImage();

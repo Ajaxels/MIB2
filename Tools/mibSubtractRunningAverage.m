@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function [shiftXOut, shiftYOut, halfwidth, excludePeaks] = mibSubtractRunningAverage(shiftX, shiftY, halfwidth, excludePeaks, useBatchMode)
 % function [shiftXOut, shiftYOut, halfwidth, excludePeaks] = mibSubtractRunningAverage(shiftX, shiftY, halfwidth, excludePeaks, useBatchMode)
 % smooth drift correction using the running average correction
@@ -16,14 +32,6 @@ function [shiftXOut, shiftYOut, halfwidth, excludePeaks] = mibSubtractRunningAve
 % halfwidth: used half-width
 % excludePeaks: excluded peaks value
 
-% Copyright (C) 24.08.2020, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-%
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 %
 
@@ -41,7 +49,8 @@ while notOk
         
         prompts = {'Please enter half-width of the averaging window:'; 'Exclude peaks higher than this value from the running average:'};
         defAns = {num2str(halfwidth), num2str(excludePeaks)};
-        answer = mibInputMultiDlg({mibPath}, prompts, defAns, 'Running average');
+        questOpt.WindowStyle  = 'normal';
+        answer = mibInputMultiDlg({mibPath}, prompts, defAns, 'Running average', questOpt);
         
         if isempty(answer)
             shiftXOut = [];

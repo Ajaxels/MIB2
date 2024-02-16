@@ -1,20 +1,29 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function varargout = mibStatisticsGUI(varargin)
 % function varargout = mibstatisticsgui(varargin)
 % mibstatisticsgui is a GUI tool to generate statistics of 2D or 3D objects in the Model or Mask layers
 %
 % mibstatisticsgui contains MATLAB code for mibstatisticsgui.fig
 
-% Copyright (C) 01.12.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
-% Last Modified by GUIDE v2.5 29-Nov-2021 08:50:07
+% Last Modified by GUIDE v2.5 07-Feb-2024 15:49:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;

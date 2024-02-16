@@ -1,5 +1,21 @@
-function mibSegmentationAnnotation(obj, y, x, z, t, modifier)
-% function mibSegmentationAnnotation(obj, y, x, z, t, modifier)
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
+function mibSegmentationAnnotation(obj, y, x, z, t, modifier, options)
+% function mibSegmentationAnnotation(obj, y, x, z, t, modifier, options)
 % Add text annotation to the dataset
 %
 % Parameters:
@@ -10,22 +26,20 @@ function mibSegmentationAnnotation(obj, y, x, z, t, modifier)
 % modifier: a string, to specify what to do with the generated selection
 % - @em empty - add annotation to the list of annotations (obj.mibModel.I{obj.mibModel.Id}.hLabels as called from mibController)
 % - @em ''control'' - remove closest annotation from the annotation list
-%
+% options: [Optional] structure with additional settings
+%   .samInteractiveModel - logical, indicating that the tool is used to perform segmentation using segment-anything model
 % Return values:
 % 
 
 %| @b Examples:
 % @code obj.mibSegmentationAnnotation(50, 75, 10, 1, '');  // add an annotation to position [y,x,z,t]=50,75,10,1 @endcode
 
-% Copyright (C) 16.12.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 28.02.2018, IB, added compatibility with values
+% 14.04.2023, IB, added options parameter
+
+if nargin < 7; options =  struct(); end
+if ~isfield(options, 'samInteractiveModel'); options.samInteractiveModel = false; end
 
 % check for switch that disables segmentation tools
 if obj.mibModel.disableSegmentation == 1; return; end
@@ -90,4 +104,13 @@ elseif strcmp(modifier, 'control')  % remove the closest to the mouse click anno
     obj.mibModel.I{obj.mibModel.Id}.hLabels.removeLabels(selectedLabelPos);
 end
 notify(obj.mibModel, 'updatedAnnotations');     % notify about updated annotation
+
+% count user's points
+obj.mibModel.preferences.Users.Tiers.numberOfAnnotations = obj.mibModel.preferences.Users.Tiers.numberOfAnnotations+1;
+notify(obj.mibModel, 'updateUserScore');     % update score using default obj.mibModel.preferences.Users.singleToolScores increase
+
+% do SAM interactive segmentation
+if options.samInteractiveModel
+    obj.mibSegmentationSAM();
+end
 end

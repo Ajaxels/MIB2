@@ -1,16 +1,25 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function Prefs = generateDefaultPreferences(obj)
 % function Prefs = generateDefaultPreferences(obj)
 % generate default preferences for MIB and save them to mat file
 %
 % Return values:
 % Prefs: a structure with preferences
-
-% Copyright (C) 04.12.2020 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
 
 %% ----------- USER INTERFACE PANEL -----------
 % type of the mouse wheel action, 'scroll': change slices; 'zoom': zoom in/out
@@ -100,11 +109,11 @@ Prefs.System.RenderingEngine = 'Viewer3d, R2022b';   % default rendering engine 
 % old: preferences.modelMaterialColors
 Prefs.Colors.ModelMaterialColors = ...
     [166 67 33;
-    71 178 126;
     79 107 171;
+    255 204 102;
     150 169 213;
-    26 51 111;
-    255 204 102 ]/255;
+    71 178 126;
+    26 51 111] /255;
 
 % Default LUT for color channels
 % old: preferences.lutColors
@@ -138,6 +147,15 @@ Prefs.Colors.MaskTransparency = 0;
 % old: preferences.Colors.ModelTransparency
 Prefs.Colors.ModelTransparency = 0.75;
 
+% ---------- Contours settings ----------
+% fast or slow method for generating contours, 
+% in the "performance" method when two objects are touching each other the contour is rendered using color of an earlier material
+Prefs.Styles.Contour.ThicknessRendering = 'quality'; % 'performance' or 'quality'
+Prefs.Styles.Contour.ThicknessModels = 1;  % thickness of contour lines for materials of the model
+Prefs.Styles.Contour.ThicknessMasks = 1;  % thickness of contour lines for masks 
+Prefs.Styles.Contour.ThicknessMethodMasks = 'inwards';  % mode for making the thicker contours, 'inwards' and 'outwards'
+
+Prefs.Styles.Masks.ShowAsContours = true;  % show masks as contours, when false as filled shapes
 
 %% ----------- BACKUP AND UNDO PANEL -----------
 
@@ -177,6 +195,9 @@ Prefs.ExternalDirs.bm4dInstallationPath = [];
 
 % DeepMIB network architectures
 Prefs.ExternalDirs.DeepMIBDir = tempdir;
+
+% DeepMIB network architectures
+Prefs.ExternalDirs.PythonInstallationPath = [];
 
 % Bioformats Memoizer
 % old: preferences.dirs.BioFormatsMemoizerMemoDir
@@ -250,6 +271,29 @@ Prefs.SegmTools.Superpixels.NoSLIC = 220;
 % old: preferences.SegmTools.Superpixels.CompactSLIC
 Prefs.SegmTools.Superpixels.CompactSLIC = 99;
 
+% ---------- Segment-anything preferences ----------
+% see mibController.mibSegmSAMPanel_Callbacks for details
+Prefs.SegmTools.SAM.linksFile = ['Resources', filesep, 'sam_links.json'];     % location of sam_links.json file with SAM links settings, relative to MIB path!
+Prefs.SegmTools.SAM.backbone = 'vit_b (0.4Gb)';     % 'vit_h (2.5Gb)', 'vit_l (1.2Gb)', 'vit_b (0.4Gb)'
+Prefs.SegmTools.SAM.environment = 'cuda';     % 'cuda', 'cpu'
+Prefs.SegmTools.SAM.points_per_side = 32;
+Prefs.SegmTools.SAM.points_per_batch = 64;
+Prefs.SegmTools.SAM.pred_iou_thresh =  0.83;
+Prefs.SegmTools.SAM.stability_score_thresh = 0.8;
+Prefs.SegmTools.SAM.box_nms_thresh = 0.7;
+Prefs.SegmTools.SAM.crop_n_layers = 0;
+Prefs.SegmTools.SAM.crop_nms_thresh = 0.7;
+Prefs.SegmTools.SAM.crop_overlap_ratio = 0.3413;
+Prefs.SegmTools.SAM.crop_n_points_downscale_factor = 1;
+% Prefs.SegmTools.SAM.point_grids: Optional[List[np.ndarray]] = None;
+Prefs.SegmTools.SAM.min_mask_region_area = 0;
+% The form masks are returned in. Can be 'binary_mask', 'uncompressed_rle', or 'coco_rle'. 
+% 'coco_rle' requires pycocotools. For large resolutions, 'binary_mask' may consume 
+% large amounts of memory
+% Prefs.SegmTools.SAM.output_mode = "binary_mask";
+Prefs.SegmTools.SAM.sam_installation_path = [];
+Prefs.SegmTools.SAM.showProgressBar = true;     % show or not the progress bar dialog when doing SAM segmentation with points
+
 %% -------------  IMAGE PROCESSING TOOLS ----------
 
 % ---------  Image Arithmetics ---------------------
@@ -305,21 +349,21 @@ Prefs.Deep.RandomGeneratorSeed = 2;
 Prefs.Deep.RelativePaths = false;
 
 Prefs.Deep.TrainingOpt.solverName = 'adam';
-Prefs.Deep.TrainingOpt.MaxEpochs = 50;
+Prefs.Deep.TrainingOpt.MaxEpochs = 500;
 Prefs.Deep.TrainingOpt.Shuffle = 'every-epoch';
-Prefs.Deep.TrainingOpt.InitialLearnRate = 0.0005;
+Prefs.Deep.TrainingOpt.InitialLearnRate = 0.001;
 Prefs.Deep.TrainingOpt.LearnRateSchedule = 'piecewise';
-Prefs.Deep.TrainingOpt.LearnRateDropPeriod = 10;
-Prefs.Deep.TrainingOpt.LearnRateDropFactor = 0.1;
+Prefs.Deep.TrainingOpt.LearnRateDropPeriod = 50;
+Prefs.Deep.TrainingOpt.LearnRateDropFactor = 0.9;
 Prefs.Deep.TrainingOpt.L2Regularization = 0.0001;
 Prefs.Deep.TrainingOpt.Momentum = 0.9;
 Prefs.Deep.TrainingOpt.GradientDecayFactor = 0.9;    % new in version 2.71
 Prefs.Deep.TrainingOpt.SquaredGradientDecayFactor = 0.999; % new in version 2.71
-Prefs.Deep.TrainingOpt.ValidationFrequency = 2;
+Prefs.Deep.TrainingOpt.ValidationFrequency = 0.2;
 Prefs.Deep.TrainingOpt.ValidationPatience = Inf;   % new in version 2.71
 Prefs.Deep.TrainingOpt.Plots = 'training-progress';  
 Prefs.Deep.TrainingOpt.OutputNetwork = 'last-iteration';     % new in v 2.82, requires R2021b
-Prefs.Deep.TrainingOpt.CheckpointFrequency = 1;              % new in v 2.83, requires R2022a
+Prefs.Deep.TrainingOpt.CheckpointFrequency = 200;              % new in v 2.83, requires R2022a
 
 Prefs.Deep.InputLayerOpt.Normalization = 'none';
 Prefs.Deep.InputLayerOpt.Mean = [];
@@ -333,31 +377,10 @@ Prefs.Deep.ActivationLayerOpt.eluLayer.Alpha = 1;
 
 Prefs.Deep.SegmentationLayerOpt.focalLossLayer.Alpha = 0.25;
 Prefs.Deep.SegmentationLayerOpt.focalLossLayer.Gamma = 2;
+Prefs.Deep.SegmentationLayerOpt.dicePixelCustom.ExcludeExerior = false;     % exclude exterior class from calculation of the loss function
 
-Prefs.Deep.AugOpt2D = struct();
-Prefs.Deep.AugOpt2D.Fraction = .9;
-Prefs.Deep.AugOpt2D.FillValue = 255;
-Prefs.Deep.AugOpt2D.RandXReflection = [1 0.05];
-Prefs.Deep.AugOpt2D.RandYReflection = [1 0.05];
-Prefs.Deep.AugOpt2D.Rotation90 = [1 0.05];
-Prefs.Deep.AugOpt2D.ReflectedRotation90 = [1 0.05];
-Prefs.Deep.AugOpt2D.RandRotation = [-10 10 0.05];
-Prefs.Deep.AugOpt2D.RandXScale = [1 1.1 0.05];
-Prefs.Deep.AugOpt2D.RandYScale = [1 1.1 0.05];
-Prefs.Deep.AugOpt2D.RandScale = [1 1.1 0.05];
-Prefs.Deep.AugOpt2D.RandXShear = [-10 10 0.05];
-Prefs.Deep.AugOpt2D.RandYShear = [-10 10 0.05];
-Prefs.Deep.AugOpt2D.HueJitter = [-0.03 0.03 0.05];
-Prefs.Deep.AugOpt2D.SaturationJitter = [-.05 .05 0.05];
-Prefs.Deep.AugOpt2D.BrightnessJitter = [-.1 .1 0.05];
-Prefs.Deep.AugOpt2D.ContrastJitter = [.9 1.1 0.05];
-Prefs.Deep.AugOpt2D.GaussianNoise = [0 0.005 0.05]; % variance
-Prefs.Deep.AugOpt2D.PoissonNoise = [1 0.05];
-Prefs.Deep.AugOpt2D.ImageBlur = [0 .5 0.05];
-
-% settings for 3D augumentation, same as for 2D but with addition of RandZReflection
-Prefs.Deep.AugOpt3D = Prefs.Deep.AugOpt2D;
-Prefs.Deep.AugOpt3D.RandZReflection = [1 0.05];
+Prefs.Deep.AugOpt2D = mibDeepGenerateDefaultAugmentationSettings('2D');
+Prefs.Deep.AugOpt3D = mibDeepGenerateDefaultAugmentationSettings('3D');
 
 Prefs.Deep.DynamicMaskOpt.Method = 'Keep above threshold';  % 'Keep above threshold' or 'Keep below threshold'
 Prefs.Deep.DynamicMaskOpt.ThresholdValue = 0;
@@ -368,6 +391,19 @@ Prefs.Deep.Metrics.BFscore = false;
 Prefs.Deep.Metrics.GlobalAccuracy = true;
 Prefs.Deep.Metrics.IOU = true;
 Prefs.Deep.Metrics.WeightedIOU = true; 
+
+% Settings for sending 
+Prefs.Deep.SendReports.T_SendReports = false;   % main switch send or not the reports
+Prefs.Deep.SendReports.TO_email = 'user@gmail.com';
+Prefs.Deep.SendReports.SMTP_server = 'smtp-relay.brevo.com';
+Prefs.Deep.SendReports.SMTP_port = '587';
+Prefs.Deep.SendReports.SMTP_auth = true;
+Prefs.Deep.SendReports.SMTP_starttls = true;
+Prefs.Deep.SendReports.SMTP_username = 'user@gmail.com';
+Prefs.Deep.SendReports.SMTP_password = '';
+Prefs.Deep.SendReports.sendWhenFinished = false;
+Prefs.Deep.SendReports.sendDuringRun = false;
+
 
 %% ----------- TIP OF THE DAY --------------
 % index of the next tip to show
@@ -390,6 +426,54 @@ Prefs.Tips.Files = [];
 % for i=1:numel(tipsFiles)
 %     Prefs.Tips.Files{i} = fullfile(fullfile(obj.mibPath, 'Resources', 'tips'), tipsFiles(i).name);
 % end
+
+%%  ----------- USER SETTINGS --------------
+Prefs.Users.Tiers.logStartDate = datetime('now');
+Prefs.Users.Tiers.collectedPoints = 0;    % user points accumulated to unlock tiers in MIB
+Prefs.Users.Tiers.mouseTravelDistance = 0;    % in meters, movement of mouse over the screen without painting in meters, directly translated into points
+Prefs.Users.Tiers.brushTravelDistance = 0;    % in meters, movement of mouse during use of brush tool, translated into points as distance x10
+Prefs.Users.Tiers.tierLevel = 1;
+
+% specific tools counts
+Prefs.Users.Tiers.numberOfLoadedDatasets = 0;   
+Prefs.Users.Tiers.numberOfImageFilterings = 0;  
+Prefs.Users.Tiers.numberOfBatchProcessings = 0; 
+Prefs.Users.Tiers.numberOfSnapAndMovies = 0; 
+Prefs.Users.Tiers.numberOfBall3D = 0;   
+Prefs.Users.Tiers.numberOfLine3D = 0;   
+Prefs.Users.Tiers.numberOfAnnotations = 0; 
+Prefs.Users.Tiers.numberOfBWThresholdings = 0; 
+Prefs.Users.Tiers.numberOfDragDropMaterials = 0;    
+Prefs.Users.Tiers.numberOfLassos = 0;   
+Prefs.Users.Tiers.numberOfMagicWands = 0; 
+Prefs.Users.Tiers.numberOfObjectPickers = 0;    
+Prefs.Users.Tiers.numberOfMembraneClickTrackers = 0; 
+Prefs.Users.Tiers.numberOfSAMclicks = 0;    
+Prefs.Users.Tiers.numberOfSpots = 0;    
+Prefs.Users.Tiers.numberOfGraphcuts = 0;    
+Prefs.Users.Tiers.numberOfTrainedDeepNetworks = 0; 
+Prefs.Users.Tiers.numberOfInferencedDeepNetworks = 0; 
+Prefs.Users.Tiers.numberOfMeasurements = 0; 
+Prefs.Users.Tiers.numberOfGetStats = 0;    
+Prefs.Users.Tiers.numberOfKeyShortcuts = 0; % key shortcuts
+
+Prefs.Users.singleToolScores = 0.5;   % score awarded for a single standard tool use (i.e. Ball3D or spot)
+Prefs.Users.tierPointsCoef = 500;  % for points calculations, as nextTier = tierPointsCoef * 2^[userTier];
+                                   % requires to move brush for
+                                   % (500*2^1)/10 meters to reach level 2, i.e. 1 brush meter is equeal to 10 mouse move meters
+                                   % requires to move mouse for (500*2^1)/1 meters to reach level 2
+Prefs.Users.tierLevelRanks = {...
+    '1 - Microbe Enthusiast', ...
+    '2 - Bacterial Boss', ...
+    '3 - Organelle Magician', ...
+    '4 - Mitochondria Navigator', ...
+    '5 - Nucleus Ninja', ...
+    '6 - Synapse Surfer', ...
+    '7 - Cell Explorer', ...
+    '8 - Magnification Maestro', ...
+    '9 - Microscopy Mastermind', ...
+    '10 - MIB Guru' };
+
 
 %% ------------  SAVE TO MAT FILE   ------------
 % outputPath = fileparts(which('mib.m'));

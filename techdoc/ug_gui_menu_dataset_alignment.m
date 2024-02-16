@@ -285,10 +285,15 @@
 %% Reference and Acknowledgements
 % The alignment algorithm is based on 
 % 
-% * JC Russ, The image processing handbook, CRC Press, Boca Raton, FL, 1994
-% * JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free MATLAB Script For Spatial Drift Correction, Microscopy Today ? Volume 22, Number 5, 2014
-% <https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m>
-% * <http://onlinedigeditions.com/publication/?i=223321&p=40 http://onlinedigeditions.com/publication/?i=223321&p=40>
+% <html>
+% <ul>
+% <li> JC Russ, The image processing handbook, CRC Press, Boca Raton, FL, 1994</li>
+% <li> JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free MATLAB Script
+% For Spatial Drift Correction, Microscopy Today, Volume 22, Number 5,
+% 2014<br>
+% <a href="https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m">https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m</a></li>
+% </ul>
+% </html>
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_dataset.html *Dataset*>

@@ -112,6 +112,9 @@
 %
 % [/dtls]
 %
+% * [class.dropdown]Padding, %%[/class], when predicting
+% pad the image from the sides using symmetrical padding. This operation
+% helps to reduce possible artefacts that may appear at the edges.
 % * [class.dropdown]Batch size for prediction...[/class], this editbox
 % allows to specify number of input image patches that are processed by GPU
 % at the same time. The larger the value, the quicker prediction takes, but
@@ -151,6 +154,11 @@
 % [class.code]*.mibImg[/class] extension. The score files can be loaded to
 % MIB or to MATLAB using [class.code]model = load('filename.mibImg',
 % '-mat');[/class] command
+% * [class.dropdown]Use Matlab non-compressed format (range 0-1) &#9660;[/class],
+% the score files are generated in MATLAB non-compressed format without
+% scaling, i.e. in the range from 0 to 1. The file extension is 
+% [class.code]*.mibImg[/class] and these files can not be opened in MIB. The score files can be loaded to
+% MATLAB using [class.code]model = load('filename.mat');[/class] command
 %
 % [/dtls]
 %
@@ -212,7 +220,7 @@
 % <li><span class="kbd">Load prediction scores</span> press to load the resulting score images (probabilities)
 % into the currently active buffer of MIB</li>
 % <li><span class="kbd">Evaluate segmentation</span>. When the datasets for prediction are accompanied with 
-% ground truth models (<b> requires a model file in the Labels directory
+% ground truth labels (<b> requires a label file(s) in the Labels directory
 % under Prediction images directory; it is important that the model materials names match those for the training data!</b>).
 % </li>
 % </ul>
@@ -226,11 +234,13 @@
 % <img src='images\DeepLearning_Evaluation.jpg'></li>
 % <li>As result of the evaluation a table with the confusion matrix will be
 % shown. The confusion matrix displays how well the predicted classes are
-% matching classes defined in the ground truth models. The values are
-% scaled from 0 (bad) to 100 (excelent):<br>
+% matching classes defined in the ground truth labels. The values are
+% scaled from 0 (bad) to 100 (excelent). <br>
+% In addition, the calculated class metrics (Accuracy, IoU, MeanBGScore) as
+% well as the global dataset metrics are shown.<br>
 % <img src='images\DeepLearning_Evaluation2.jpg'></li>
 % <li>In addition, it is possible to calculate occurrence of labels and Sørensen-Dice similarity coefficient in the
-% generated and ground truth models. These options are available from a
+% generated and ground truth labels. These options are available from a
 % dropdown located in the right-bottom corner of the <em>Evaluation
 % results</em> window:<br>
 % <img src='images\DeepLearning_Evaluation3.jpg'></li>

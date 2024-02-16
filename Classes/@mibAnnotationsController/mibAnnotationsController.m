@@ -1,14 +1,23 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibAnnotationsController < handle
     % classdef mibAnnotationsController < handle
     % a controller class for the list of annotations available via
     % MIB->Menu->Models->Annotations->List of annotations
-    
-    % Copyright (C) 26.12.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
     
     % Updates
     % 28.02.2018, IB, updated to be compatible with values
@@ -121,6 +130,15 @@ classdef mibAnnotationsController < handle
                     'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)'};
             obj.BatchOpt.CropObjectsOutputName = 'CropOut';     % name of the variable template or directory for the object crop
             obj.BatchOpt.SingleMaskObjectPerDataset = false;    % check to remove all other objects that may apper within the clipping box of the main detected object
+            
+            obj.BatchOpt.CropObjectsJitter = false;     % enable jitter for centroids
+            if ~isfield(obj.mibModel.sessionSettings, 'annotationsCropPatches') || ~isfield(obj.mibModel.sessionSettings.annotationsCropPatches, 'CropObjectsJitterVariation')
+                obj.mibModel.sessionSettings.annotationsCropPatches.CropObjectsJitterVariation = '50';
+                obj.mibModel.sessionSettings.annotationsCropPatches.CropObjectsJitterSeed = '0';
+            end
+            obj.BatchOpt.CropObjectsJitterVariation = obj.mibModel.sessionSettings.annotationsCropPatches.CropObjectsJitterVariation;   % variation of the jitter in pixels
+            obj.BatchOpt.CropObjectsJitterSeed = obj.mibModel.sessionSettings.annotationsCropPatches.CropObjectsJitterSeed;    % initialization of the random generator, when 0-random
+            
             obj.BatchOpt.showWaitbar = true;
         end
         
@@ -229,7 +247,7 @@ classdef mibAnnotationsController < handle
                         '*.*',  'All Files (*.*)'}, ...
                         'Load annotations...', obj.mibModel.myPath);
                     if isequal(filename, 0); return; end % check for cancel
-                    fullFilename = fullfile(path, filename);
+                    fullFilename = fullfile(path, filename{1});
                     
                     obj.mibModel.mibDoBackup('labels', 0);
                     switch indx
@@ -351,6 +369,8 @@ classdef mibAnnotationsController < handle
             % labelPosition: a matrix with coordinates for the annotations
             % labelValue: an array with annotation values
             
+            global mibPath;
+            
             fn_out = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
             dotIndex = strfind(fn_out,'.');
             if ~isempty(dotIndex)
@@ -374,6 +394,12 @@ classdef mibAnnotationsController < handle
             
             fn_out = fullfile(path, filename);
             
+            if ~isfield(obj.mibModel.sessionSettings, 'Annotations'); obj.mibModel.sessionSettings.Annotations = struct(); end
+            if ~isfield(obj.mibModel.sessionSettings.Annotations, 'recalculateCoordinates')
+                obj.mibModel.sessionSettings.Annotations.recalculateCoordinates = 1;
+                obj.mibModel.sessionSettings.Annotations.addLabelToFilename = true;
+            end
+                    
             switch Filters{FilterIndex,2}
                 case 'Matlab format (*.ann)'   % matlab format
                     options.format = 'ann';
@@ -382,10 +408,22 @@ classdef mibAnnotationsController < handle
                 case 'Excel format (*.xls)'    % excel format
                     options.format = 'xls';
                 case 'PSI format ASCII(*.psi)'    % PSI format, compatible with Amira
-                    recalcCoordinates = questdlg(sprintf('Recalculate annotations with respect to the current bounding box or save as they are?'),...
-                        'Recalculate coordinates', 'Recalculate', 'Save as they are', 'Recalculate');
+                    prompts = {'Recalculate annotations with respect to the current bounding box or save as they are?'; 'Add annotation label to filename'};
+                    defAns = {{'Recalculate', 'Save as they are', obj.mibModel.sessionSettings.Annotations.recalculateCoordinates}; obj.mibModel.sessionSettings.Annotations.addLabelToFilename};
+                    dlgTitle = 'Export annotations in PSI format';
+                    options.WindowStyle = 'normal';      
+                    options.PromptLines = [2, 1];   
+                    options.WindowWidth = 1.2;    
+                    [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                    if isempty(answer); return; end
+                    
+                    % update session settings
+                    obj.mibModel.sessionSettings.Annotations.recalculateCoordinates = selIndex(1);
+                    obj.mibModel.sessionSettings.Annotations.addLabelToFilename = logical(answer{2});
+
+                    options.addLabelToFilename = obj.mibModel.sessionSettings.Annotations.addLabelToFilename;
                     options.format = 'psi';
-                    if strcmp(recalcCoordinates, 'Recalculate')
+                    if strcmp(answer{1}, 'Recalculate')
                         options.convertToUnits = true;
                         options.boundingBox = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
                         options.pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
@@ -413,6 +451,21 @@ classdef mibAnnotationsController < handle
             options.labelText = labelText;
             options.labelPosition = labelPosition;
             options.labelValue = labelValue;
+
+            % generate slice names for export
+            if isKey(obj.mibModel.I{obj.mibModel.Id}.meta, 'SliceName')
+                if numel(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName')) == obj.mibModel.I{obj.mibModel.Id}.depth
+                    sliceNames = obj.mibModel.I{obj.mibModel.Id}.meta('SliceName');
+                else
+                    sliceNames = repmat(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName'), [max(options.labelPosition(:,1)), 1]);
+                end
+            else
+                [~, sliceNames, ext] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
+                sliceNames = repmat({[sliceNames, ext]}, [max(options.labelPosition(:,1)), 1]);
+            end
+
+            options.sliceNames = sliceNames(round(options.labelPosition(:,1)));
+
             obj.mibModel.I{obj.mibModel.Id}.hLabels.saveToFile(fn_out, options);
         end
         
@@ -489,10 +542,12 @@ classdef mibAnnotationsController < handle
             % ''Jump'' - jump to the selected annotation
             % ''Count'' - count annotations
             % ''Clipboard'' - copy selected annotations to the system clipboard
+            % ''CropPatches'' - crop patches from image around selected annotations
             % ''Mask'' - copy selected annotations to the mask layer
+            % ''Interpolate'' - interpolate between two selected annotations; add result as new annotations
             % ''Export'' - export/save annotations to matlab or to a file
             % ''Imaris'' - export annotations to Imaris
-            %% ''OrderTop'', ''OrderUp'', ''OrderDown'', ''OrderBottom'' - change order of the annotation in the list
+            % ''OrderTop'', ''OrderUp'', ''OrderDown'', ''OrderBottom'' - change order of the annotation in the list
             % ''Delete'' - delete selected annotations
             
             global mibPath;
@@ -569,7 +624,7 @@ classdef mibAnnotationsController < handle
                     notify(obj.mibModel, 'plotImage');  % notify to plot the image
                 case 'Modify'   % batch modify selected annotations
                     if isempty(obj.indices); return; end
-                    operations = {'Add', 'Subtract', 'Multiply', 'Divide', 'Round', 'Floor', 'Ceil'};
+                    operations = {'Set value', 'Add', 'Subtract', 'Multiply', 'Divide', 'Round', 'Floor', 'Ceil'};
                     inputDlgOptions.Title = sprintf('Select dedired operation modify selected values using the provided factor:');
                     inputDlgOptions.TitleLines = 2;
                     inputDlgOptions.WindowWidth = 1.2;
@@ -599,6 +654,8 @@ classdef mibAnnotationsController < handle
                         end
                         
                         switch obj.batchModifyExpressionOperation
+                            case 'Set value'
+                                A(:) = value;
                             case 'Add'
                                 A = A + value;
                             case 'Subtract'
@@ -631,7 +688,7 @@ classdef mibAnnotationsController < handle
                     notify(obj.mibModel, 'plotImage');  % notify to plot the image
                 case 'Rename'
                     if isempty(obj.indices); return; end
-                    rowId = obj.indices(:, 1);
+                    rowId = unique(obj.indices(:, 1));
                     
                     currentName = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsById(rowId(1));
                     if isempty(currentName); return; end
@@ -717,6 +774,50 @@ classdef mibAnnotationsController < handle
                     d = data(unique(obj.indices(:,1)), min(obj.indices(:,2)):max(obj.indices(:,2)));
                     cell2clip(d);    % copy to clipboard
                     fprintf('Annotations: %d rows were copied to the system clipboard\n', size(d, 2));
+                case 'ClipboardPaste'
+                    if isempty(obj.indices); return; end
+                    % do backup
+                    obj.mibModel.mibDoBackup('labels', 1);
+
+                    startIndex = obj.indices(1, 1);
+                    if obj.indices(1, 2) == 1 % update label text
+                        values = clipboard('paste');
+                        if isempty(values); return; end
+                        values = strsplit(values)';
+                        values(cellfun(@(x) isempty(x), values)) = [];
+                        
+                        endIndex = startIndex + numel(values) - 1;
+
+                        listOfIds = startIndex:endIndex;
+                        [labelsList, labelValues, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsById(listOfIds');
+                        labelsList = values;
+                        obj.mibModel.I{obj.mibModel.Id}.hLabels.updateLabels(listOfIds', labelsList, labelPositions, labelValues);
+                    elseif obj.indices(1, 2) == 2 % values    
+                        % convert to values
+                        values = str2num(clipboard('paste')); %#ok<ST2NM>
+                        if isempty(values); return; end
+                        endIndex = startIndex + numel(values) - 1;
+                        listOfIds = startIndex:endIndex;
+                        [labelsList, labelValues, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsById(listOfIds');
+                        labelValues = values;
+                        obj.mibModel.I{obj.mibModel.Id}.hLabels.updateLabels(listOfIds', labelsList, labelPositions, labelValues);
+                    else                     % update positions
+                        % convert to values
+                        values = str2num(clipboard('paste')); %#ok<ST2NM>
+                        if isempty(values); return; end
+                        endIndex = startIndex + numel(values) - 1;
+                        listOfIds = startIndex:endIndex;
+                        [labelsList, labelValues, labelPositions] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsById(listOfIds');
+                        labelPositions(:, obj.indices(1, 2)-2) = values;
+                        obj.mibModel.I{obj.mibModel.Id}.hLabels.updateLabels(listOfIds', labelsList, labelPositions, labelValues);
+                    end
+
+                    jScrollPosition = obj.jScroll.getViewport.getViewPosition(); % store the view position of the table
+                    obj.updateWidgets();
+                    notify(obj.mibModel, 'plotImage');  % notify to plot the image
+                    drawnow;
+                    obj.jScroll.getViewport.setViewPosition(jScrollPosition);
+                    obj.jScroll.repaint;
                 case 'Mask'
                     if isempty(obj.indices); return; end
                     
@@ -779,22 +880,82 @@ classdef mibAnnotationsController < handle
                             return
                     end
                     notify(obj.mibModel, 'showMask');
+                case 'Interpolate'
+                    if isempty(obj.indices) || size(obj.indices, 1) == 1; return; end
+                    % get selected annotations
+                    [labelNames, labelValues, labelPosition, labelIndices] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsById(obj.indices(:,1));
+                    
+                    % makesure that there is a single annotation per slice
+                    if numel(unique(labelPosition(:,1))) ~= size(obj.indices, 1)
+                        errordlg(sprintf('!!! Error !!!\n\nPlease make sure that the selected annotations have only 1 annotation per slice!'));
+                        return;
+                    end
+                    
+                    % define interpolation settings
+                    interpolationMethod = {'linear'};
+                    selIndex = 1;
+                    if size(obj.indices, 1) >  2; interpolationMethod = [interpolationMethod, {'cubic'}]; end
+                    if size(obj.indices, 1) >  3; interpolationMethod = [interpolationMethod, {'spline'}]; end
+                    if size(obj.indices, 1) >  2
+                        interpolationMethod{end+1} = 1;
+                        prompts = {'Specify interpolation method:'};
+                        defAns = {interpolationMethod};
+                        dlgTitle = 'Interpolation method';
+                        options.msgBoxOnly = false;
+                        [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                        if isempty(answer); return; end 
+                    end
+                    interpolationMethod = interpolationMethod{selIndex};
+                    % do backup
+                    obj.mibModel.mibDoBackup('labels', 0);
+                    
+                    % sort annotations based on Z and define their range
+                    [~, ids] = sort(labelPosition, 1);
+                    labelPosition = labelPosition(ids(:,1), :);
+                    labelValues = labelValues(ids(:,1));
+                    labelNames = labelNames(ids(:,1));
+                    
+                    z_range = min(labelPosition(:,1)):max(labelPosition(:,1));  % between min and max Z
+                    % Interpolate x and y values for each z value
+                    x_interp = interp1(labelPosition(:, 1), labelPosition(:, 2), z_range, interpolationMethod);     % x_interp = interp1([z1 z2], [x1 x2], z_range);
+                    y_interp = interp1(labelPosition(:, 1), labelPosition(:, 3), z_range, interpolationMethod);     % y_interp = interp1([z1 z2], [y1 y2], z_range);
+                    v_interp = interp1(labelPosition(:, 1), labelValues, z_range, interpolationMethod);   % values
+                    newPositions = [z_range', x_interp', y_interp', repmat(labelPosition(1,4), [numel(z_range), 1])];
+                  
+                    % generate new labels
+                    newLabelName = [];
+                    for zId = 1:size(labelPosition(:,1),1)-1
+                        noSlices = labelPosition(zId+1,1)-1 - labelPosition(zId,1) + 1; 
+                        newLabelName = [newLabelName; repmat(labelNames(zId), [noSlices, 1])]; %#ok<AGROW>
+                    end
+                    newLabelName(end+1) = labelNames(zId+1);
+
+                    % remove selected labels
+                    obj.mibModel.I{obj.mibModel.Id}.hLabels.removeLabels(labelIndices);
+                    % add new interpolated labels
+                    obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(newLabelName, newPositions, v_interp);
+                    
+                    obj.updateWidgets();
+                    notify(obj.mibModel, 'plotImage');  % notify to plot the image
                 case 'Export'
                     if isempty(obj.indices); return; end
-                    labelText = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelText(obj.indices(:,1));
-                    labelValue = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelValue(obj.indices(:,1));
-                    labelPosition = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelPosition(obj.indices(:,1), :);
+                    indList = unique(obj.indices(:,1));
+                    labelText = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelText(indList);
+                    labelValue = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelValue(indList);
+                    labelPosition = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelPosition(indList, :);
                     obj.saveAnnotationsToFile(labelText, labelPosition, labelValue);
                 case 'CropPatches' % crop patches from image around selected annotations
                     if isempty(obj.indices); return; end
-                    labelPosition = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelPosition(obj.indices(:,1), :);     % [z, x, y, t];
+                    indList = unique(obj.indices(:,1));
+                    annotationLabels.positions = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelPosition(indList, :);     % [z, x, y, t];
+                    annotationLabels.names = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelText(indList);
                     BatchModeSwitch = false;
-                    obj.startController('mibCropObjectsController', obj, BatchModeSwitch, labelPosition);
+                    obj.startController('mibCropObjectsController', obj, BatchModeSwitch, annotationLabels);
                 case 'Imaris' % export annotations to Imaris
                     if isempty(obj.indices); return; end
                     data = obj.View.handles.annotationTable.Data;
                     if isempty(data); return; end
-                    annIds = obj.indices(:,1);
+                    annIds = unique(obj.indices(:,1));
                     
                     labelText = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelText(annIds);
                     labelValue = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelValue(annIds);
@@ -834,7 +995,7 @@ classdef mibAnnotationsController < handle
                     data = obj.View.handles.annotationTable.Data;
                     if isempty(data); return; end
                     
-                    rowId = obj.indices(:, 1);
+                    rowId = unique(obj.indices(:, 1));
                     if numel(rowId) == 1
                         button =  questdlg(sprintf('Delete the following annotation?\n\nLabel: %s\n\nCoordinates (z,x,y,t): %s %s %s %s', data{rowId,1},data{rowId,2},data{rowId,3},data{rowId,4},data{rowId,5}),'Delete annotation','Delete','Cancel','Cancel');
                     else
@@ -850,7 +1011,23 @@ classdef mibAnnotationsController < handle
             end
         end
         
+        function mibAnnotationsGUI_KeyPressFcn(obj, eventdata)
+            % function mibAnnotationsGUI_KeyPressFcn(obj, eventdata)
+            % callback from key presses within the mibAnnotationsGUI
+            
+            if ismember('control', eventdata.Modifier)
+                switch lower(eventdata.Key)
+                    case 'z'
+                        %notify(obj.mibModel, 'undoneBackup');  % notify to do undo
+                        %obj.updateWidgets();
+                end
+            end
+        end
+
         function annotationTable_KeyPressFcn(obj, eventdata)
+            % function annotationTable_KeyPressFcn(obj, eventdata)
+            % callback from key pressed within the obj.View.handles.annotationTable
+
             if ismember('control', eventdata.Modifier)
                 if ismember('shift', eventdata.Modifier)
                     switch eventdata.Key
@@ -867,9 +1044,7 @@ classdef mibAnnotationsController < handle
                             obj.tableContextMenu_cb('OrderDown');
                     end
                 end
-            
             end
-           
         end
         
         
@@ -937,25 +1112,33 @@ classdef mibAnnotationsController < handle
             % define additional settings for the annotations
             global mibPath;
             
-            prompts = {sprintf('Show annotations for extra slices (positive integer):'), 'Annotation size:'};
-                defAns = {sprintf('%d', obj.mibModel.preferences.SegmTools.Annotations.ShownExtraDepth); ...
-                    {'1 (pt 8)', '2 (pt 10)', '3 (pt 12)', '4 (pt 14)', '5 (pt 16)', '6 (pt 18)', '7 (pt 20)', obj.mibModel.preferences.SegmTools.Annotations.FontSize}; ...
-                    };
-                dlgTitle = 'Annotation settings';
-                options.WindowStyle = 'normal';       % [optional] style of the window
-                options.PromptLines = [2; 1];   % [optional] number of lines for widget titles
-                %options.Title = 'Title';
-                %options.TitleLines = 1;
-                %options.Columns = 2;    % [optional] make window x1.2 times wider
-                options.WindowWidth = 1.2;    % [optional] make window x1.2 times wider
-                %options.Focus = 1;      % [optional] define index of the widget to get focus
-                [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
-                if isempty(answer); return; end
+            prompts = {sprintf('Show annotations for extra slices (positive integer):'), 'Annotation size:', 'Pick new color:'};
+            defAns = {sprintf('%d', obj.mibModel.preferences.SegmTools.Annotations.ShownExtraDepth); ...
+                {'1 (pt 8)', '2 (pt 10)', '3 (pt 12)', '4 (pt 14)', '5 (pt 16)', '6 (pt 18)', '7 (pt 20)', obj.mibModel.preferences.SegmTools.Annotations.FontSize}; ...
+                false; ...
+                };
+            dlgTitle = 'Annotation settings';
+            options.WindowStyle = 'normal';       % [optional] style of the window
+            options.PromptLines = [2; 1; 1];   % [optional] number of lines for widget titles
+            options.WindowWidth = 1.2;    % [optional] make window x1.2 times wider
+            [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+            if isempty(answer); return; end
+            
             value = str2double(answer{1});
             if isnan(value)
                 errordlg(sprintf('!!! Error !!!\n\nA wrong value ("%s") was provided!\nPlease enter positive integer or 0', answer{1}), 'Wrong value');
                 return
             end
+            
+            % get new color for the annotations
+            if answer{3}
+                sel_color = obj.mibModel.preferences.SegmTools.Annotations.Color;
+                c = uisetcolor(sel_color, 'Annotations color');
+                if length(c) > 1
+                    obj.mibModel.preferences.SegmTools.Annotations.Color = c;
+                end
+            end
+            
             obj.mibModel.preferences.SegmTools.Annotations.ShownExtraDepth = abs(round(value));
             obj.mibModel.preferences.SegmTools.Annotations.FontSize = selIndex(2);
             notify(obj.mibModel, 'plotImage');

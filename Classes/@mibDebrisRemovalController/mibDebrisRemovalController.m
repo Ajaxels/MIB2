@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibDebrisRemovalController < handle
     % @type mibDebrisRemovalController class is a template class for using with
     % GUI developed using appdesigner of Matlab
@@ -22,14 +38,6 @@ classdef mibDebrisRemovalController < handle
     % obj.startController('mibDebrisRemovalController', [], NaN);
     % @endcode
     
-    % Copyright (C) 17.09.2019, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-	% 
-	% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-	%
 	% Updates
 	%     
     
@@ -148,13 +156,13 @@ classdef mibDebrisRemovalController < handle
             % update font and size
             % you may need to replace "obj.View.handles.text1" with tag of any text field of your own GUI
             % % this function is not yet
-%             global Font;
-%             if ~isempty(Font)
-%               if obj.View.handles.text1.FontSize ~= Font.FontSize ...
-%                     || ~strcmp(obj.View.handles.text1.FontName, Font.FontName)
-%                   mibUpdateFontSize(obj.View.gui, Font);
-%               end
-%             end
+            global Font;
+            if ~isempty(Font)
+              if obj.View.handles.Intensitythreshold.FontSize ~= Font.FontSize + 4 ...  % guide font size is 4 points smaller than in appdesigner
+                    || ~strcmp(obj.View.handles.Intensitythreshold.FontName, Font.FontName)
+                  mibUpdateFontSize(obj.View.gui, Font);
+              end
+            end
             
 			obj.updateWidgets();
 			obj.View.Figure.Figure.Visible = 'on';

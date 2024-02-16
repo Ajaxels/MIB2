@@ -56,6 +56,9 @@
 % * *Include annotations*, same as above but for annotations. *Note!* It
 % is important that each folder contains only a single file in the
 % _*.ann_ format
+% * *Include measurements*, same as above but for measurements. *Note!* It
+% is important that each folder contains only a single file in the
+% _*.measure_ format
 % * *Random seed*, a positive number defining a seed for random number
 % generator; the files will be sorted in the same way when the random seed
 % value stays unchanged
@@ -92,9 +95,13 @@
 % Upon the loading of the project file the |Directory with shuffled
 % images| and |Destination directories| list boxes are populated. It is
 % possible to use the right mouse button to start a popup menu to modify
-% the directory names. 
+% the directories, copy directory name to the system clipboard or to open
+% the directory in file explorer.
 %
+% The updated project with the new directory names can be saved to a disk
+% using the [class.kbd]Save[/class] button.
 % 
+%
 % When the masks or annotation are also present in the directories with the shuffled
 % image files, they can also be restored to the destination directories.
 %

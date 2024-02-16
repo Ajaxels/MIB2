@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function [par, img_info, dim_xyczt] = getAmiraMeshHeader(filename)
 % function [par, img_info, dim_xyczt] = getAmiraMeshHeader(filename)
 % Get header of Amira Mesh file
@@ -12,25 +28,21 @@ function [par, img_info, dim_xyczt] = getAmiraMeshHeader(filename)
 % img_info: -> in the format compatible with imageData.img_info containers.Map
 % dim_xyczt: -> dimensions of the dataset
 
-% Copyright (C) 27.01.2012 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 09.01.2018, IB added extraction of embedded containers in the amiramesh headers
 % 30.01.2019, IB updated to be compatible with version 3
 
+par = [];
 img_info = containers.Map;
+dim_xyczt = [];
+
 if nargin < 1
     [filename, pathname] = mib_uigetfile( ...
         {'*.am','Amira mesh labels(*.am)';
          '*.*',  'All Files (*.*)'}, ...
          'Pick a file');
-    if filename == 0; return; end
-    filename = [pathname filename];
+    if isequal(filename, 0); return; end
+    filename = [pathname filename{1}];
 end
 %fid = fopen(filename, 'r');
 fid = fopen(filename, 'r', 'n', 'UTF-8');
@@ -117,7 +129,7 @@ while numel(strfind(tline, 'Lattice')) == 0
         
         value = tline(spaces(1)+1:end);
         
-        if value(end) ~= ',' && ~strcmp(parField,'CoordType')
+        if value(end) ~= ',' && value(end) ~= '"' && ~strcmp(parField,'CoordType')
             tline2 = strtrim(fgetl(fid));
             if tline2(1) ~= '}'
                 value = sprintf('%s \t %s', value, tline2);
@@ -165,6 +177,14 @@ while numel(strfind(tline,'# Data section follows')) == 0
         elseif numel(strfind(tline,'int')) ~= 0
             classType(dataIndex) = cellstr('uint32');
         end
+
+        % check for zip compression
+        if strfind(tline, 'HxZip')
+            errordlg(sprintf('!!! Error !!!\n\nUnfortunately MIB is not yet compatible with Zip-compressed AM files; please use BioFormats reader instead!\n\n- Check the Directory contents panel->Bio checkbox\n- Right mouse click over "all known"\n- Select "Register extension"\n- Add "am" to the "Bioformats file reader" editbox')); 
+            par = [];
+            return;
+        end
+
         % define number of colors
         openBlock = strfind(tline,'[');
         closeBlock = strfind(tline,']');
@@ -206,7 +226,7 @@ end
 
 if isKey(img_info, 'ImageDescription')
     curr_text = img_info('ImageDescription');
-    bb_info_exist = strfind(curr_text,'BoundingBox');
+    bb_info_exist = strfind(curr_text, 'BoundingBox');
     if bb_info_exist == 1
         spaces = strfind(curr_text,' ');
         if numel(spaces) < 7; spaces(7) = numel(curr_text); end
@@ -214,6 +234,16 @@ if isKey(img_info, 'ImageDescription')
         if isempty(tab_pos); tab_pos = strfind(curr_text,sprintf('|')); end
         % 12    14    21    23    28    30
         pos = min([spaces(7) tab_pos]);
+        img_info('ImageDescription') = ['BoundingBox ' bb curr_text(pos:end)];
+    elseif bb_info_exist > 1 % a case when MIB TIF was saved as AM from Fiji
+        curr_text = curr_text(bb_info_exist:end);
+        spaces = strfind(curr_text,' ');
+        if numel(spaces) < 7; spaces(7) = numel(curr_text); end
+        tab_pos = strfind(curr_text,sprintf('\t'));
+        if isempty(tab_pos); tab_pos = strfind(curr_text,sprintf('|')); end
+        % 12    14    21    23    28    30
+        pos = min([spaces(7) tab_pos]);
+        bb = curr_text(1:pos);
         img_info('ImageDescription') = ['BoundingBox ' bb curr_text(pos:end)];
     else
         img_info('ImageDescription') = ['BoundingBox ' bb curr_text];

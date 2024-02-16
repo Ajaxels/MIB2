@@ -1,21 +1,27 @@
 <productinfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:noNamespaceSchemaLocation="optional">
+    xsi:noNamespaceSchemaLocation="optional">
     <?xml-stylesheet type="text/xsl"href="optional"?>
     <!-- info.xml file for the Microscopy Image Browser -->
     <!-- Author: Ilya Belevich -->
-    <!-- Copyright 2010-2022 Electron Microscopy Unit, Institute of Biotechnology, University of Helsinki -->
+    <!-- Copyright 2010-2023 Electron Microscopy Unit, Institute of Biotechnology, University of Helsinki -->
     
-    <!-- Release element is not used, but provides documentation -->
-    <matlabrelease>2014b</matlabrelease>
-    <!-- (Required) The name element appears in the Contents pane -->
+    <!-- Supply the following six elements in the order specified -->
+    <!-- (Required) Release of MATLAB. Not currently used but required -->
+    <!-- to parse the file -->
+    <matlabrelease>2023b</matlabrelease>
+    <!-- (Required) Title of toolbox. Appears in the Contents pane -->
     <name>Microscopy Image Browser</name>
-    <!-- (Required) The type elementidentifies your package; pick one: -->
+    <!-- (Required) Label for the toolbox. pick one: -->
     <!-- matlab, toolbox, simulink, blockset, links_targets  -->
     <type>other</type>
-    <!-- The icon element is used in the Start button -->
+    <!-- (Required) Icon file to display in the Start button. Not currently used -->
+    <!-- but required to parse the file -->
     <icon>$toolbox/matlab/icons/matlabicon.gif</icon>
-    <!-- (Required) The help_location is relative path to help (HTML) file folder -->
+    <!-- (Required if you supply help) Relative path to help (HTML) folder -->
     <help_location>html</help_location>
+    <!-- (Required if you supply help) Icon used in the Help browser TOC -->
+    <!-- Ignored in R2015a and later -->
+    <help_contents_icon></help_contents_icon>
     
     <!-- - - - - - - - - - - - -  Start menu - - - - - - - - - - - - - - - -->
     <!-- Optional list of entries to display on Start Menu -->

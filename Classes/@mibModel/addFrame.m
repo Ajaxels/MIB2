@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function BatchOptOut = addFrame(obj, BatchOpt)
 % function BatchOptOut = addFrame(obj, BatchOpt)
 % Add a frame around the dataset
@@ -15,13 +31,6 @@ function BatchOptOut = addFrame(obj, BatchOpt)
 % Return values:
 % BatchOptOut: structure with parameters used in the function
 
-% Copyright (C) 13.03.2018 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 13.03.2019
 
@@ -51,6 +60,7 @@ if nargin < 2
     dlgTitle = 'Add frame';
     options.Title = 'Please provide width and height for the frame; when both values are negative the dataset is trimmed from the sides using this value';
     options.TitleLines = 3;
+    options.WindowStyle = 'normal';
     options.PromptLines = [1, 1, 2, 1, 1];   % [optional] number of lines for widget titles
     [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
     if isempty(answer); return; end
@@ -95,13 +105,15 @@ else    % pre or post
 end
 imgOut = zeros(outputDims, class(obj.I{obj.Id}.img{1}(1)));
 
-if BatchOptOut.showWaitbar; wb = waitbar(0,sprintf('Adding a frame to the image\nPlease wait...'),...
-        'Name', 'Add frame', 'WindowStyle', 'modal'); end
+if BatchOptOut.showWaitbar
+    wb = waitbar(0,sprintf('Adding a frame to the image\nPlease wait...'),...
+        'Name', 'Add frame', 'WindowStyle', 'modal'); 
+end
 
 % transpose the image layer
 for t=1:tMax
     img = cell2mat(obj.getData3D('image', t, 4, 0, options));   % get z-stack (image)
-    if extW > 0 && extH > 0
+    if extW >= 0 && extH >= 0
         if strcmp(method, 'use the pad value')    % use the pad value
             imgOut(:,:,:,:,t) = padarray(img, [extH, extW], padval, direction);
         else
@@ -121,7 +133,7 @@ if obj.I{obj.Id}.modelType == 63 && obj.I{obj.Id}.enableSelection == 1
     img = obj.I{obj.Id}.model{1};  % get everything
     obj.I{obj.Id}.model{1} = zeros([outputDims(1), outputDims(2), outputDims(4), outputDims(5)], 'uint8');
     for t=1:tMax
-        if extW > 0 && extH > 0
+        if extW >= 0 && extH >= 0
             if strcmp(method, 'use the pad value')    % use the pad value
                 imgOut = padarray(img(:,:,:,t), [extH, extW], 0, direction);
             else
@@ -139,7 +151,7 @@ elseif obj.I{obj.Id}.enableSelection == 1
     img = obj.I{obj.Id}.selection{1};  % get selection
     obj.I{obj.Id}.selection{1} = zeros([outputDims(1), outputDims(2), outputDims(4), outputDims(5)], 'uint8');
     for t=1:tMax
-        if extW > 0 && extH > 0
+        if extW >= 0 && extH >= 0
             if strcmp(method, 'use the pad value')    % use the pad value
                 imgOut = padarray(img(:,:,:,t), [extH, extW], 0, direction);
             else
@@ -158,7 +170,7 @@ elseif obj.I{obj.Id}.enableSelection == 1
         img = obj.I{obj.Id}.maskImg{1};  % get mask
         obj.I{obj.Id}.maskImg{1} = zeros([outputDims(1), outputDims(2), outputDims(4), outputDims(5)], 'uint8');
         for t=1:tMax
-            if extW > 0 && extH > 0
+            if extW >= 0 && extH >= 0
                 if strcmp(method, 'use the pad value')    % use the pad value
                     imgOut = padarray(img(:,:,:,t), [extH, extW], 0, direction);
                 else
@@ -178,7 +190,7 @@ elseif obj.I{obj.Id}.enableSelection == 1
         img = obj.I{obj.Id}.model{1};  % get model
         obj.I{obj.Id}.model{1} = zeros([outputDims(1), outputDims(2), outputDims(4), outputDims(5)], 'uint8');
         for t=1:tMax
-            if extW > 0 && extH > 0
+            if extW >= 0 && extH >= 0
                 if strcmp(method, 'use the pad value')    % use the pad value
                     imgOut = padarray(img(:,:,:,t), [extH, extW], 0, direction);
                 else

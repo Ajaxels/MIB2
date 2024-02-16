@@ -5,6 +5,74 @@
 %
 %
 %
+%% 2.90 / 14.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)
+% 
+% [dtls][smry] *2.843 / 28.04.2023 (SAM segmentation, Multi-GPU training)* [/smry]
+%
+% * *To comply with dependencies the MIB license was updated from GPLv2 to GPLv3*
+% * Added Segment anything (Standard and Microscopy) models for manual/semi-automatic segmentation
+% * Added Rename materials to batch processing operations
+% * Added possibility to skip loading of metadata
+% * Added the Cancel button to the progress bar upon loading of images
+% * Added recoloring of materials for models with 65535+ materials
+% * Added crop of 3D volumes from 2D objects detected using the Get Statistics window
+% * Added options to change thickness of model and mask contour lines (Menu->File->Preferences->Colors and styles->Contours)
+% * Added drag and drop *.mask files to the Image view panel to load them
+% * Added drag and drop *.ann files to the Image view panel or the Segmentation table to load annotations
+% * Added paste of annotation values from clipboard
+% * Added auto fill switch to the Selection panel to fill the shapes after use of brush
+% * Added jitter coordinates option into crop out patches for annotations and objects
+% * Added [F] template for exporting statistics via batch processing
+% * Added saving of projects, copy to clipboard and open in file explorer for directories in Rename and Shuffle->Restore
+% * Added possibility to load measurements (*.measure) from multiple files and added filename to export of measurement in the Excel format
+% * Added possibility update colors of annotations into the Annotation list window
+% * Added key shortcuts to zoom in to 100% and fit to view. The shortcuts can be modified using via Menu->File->Preferences->Keyboard shortcuts
+% * Added key shortcut to rename materials (default F2)
+% * Added key shortcuts to change the brush size (default '[' and ']')
+% * Added possibility to hide the Path and the bottom panels (Selection, View settings, Image filters) via a dropdown menu over the Image view panel
+% * Added filename identifier when exporting object quantification from the Get Statistics window
+% * Added filename identifier when exporting annotations to Excel or CSV
+% * Added "Center-top" and "Center-bottom" locations to Add frame (Dataset->Transform->Add frame->Provide new width/height)
+% * Added "Set value" to the batch modify selected annotations (Menu->Models->Annotations->List of annotations)
+% * Added interpolation operation to the List of Annotations
+% * Added options to add annotation names and coordinates to filenames when generating patches from annotations
+% * Added automatic selection of materials from selected rows in the segmentation table for the remove material operation
+% * Added option to add multiple empty slices using (Menu->Dataset->Slice->Insert empty slice)
+% * Added selection of colors for materials into the segmentation table (right mouse click->Color scheme)
+% * Added fusing of a larger model into a smaller dataset crop (Menu->File->Chopped images->Import->Fused...)
+% * Added possibility to define black and white points lower and higher than the image class allows (Image view panel->Display)
+% * Added possibility show masks as filled shapes (Menu->File->Preferences->Colors and styles->Masks)
+% * Added an option to add annotation name when exporting them to PSI format
+% * Added measurements to Rename and Shuffle
+% * Added save of models and masks to PNG format
+% * Added the Threshold button to the BW thresholding tool to start thresholding manually
+% * Added user tiers
+% * Improved calculation of DistanceMaps in 3D for isotropic voxels
+% * Changed usage of the Object picker tool, now the object pick is based on the selected row in the segmentation table
+% * Changed how the object id values are displayed in the Statistics window, now they show the real indices of the detected objects
+% * Fixed Add frame when dX or dY is 0
+% * Fixed Resize of models that have more than 255 materials
+% * Updated Bio-Formats to 7.2.0
+% * [DeepMIB] Added 2.5D network architectures for semantic segmentation
+% * [DeepMIB] Added training using Multi-GPU configuration
+% * [DeepMIB] Added prediction using Multi-GPU configuration for the patchwise workflows
+% * [DeepMIB] Added new dialog to specify augmentation settings
+% * [DeepMIB] Added drag-and-drop of "mibCfg" project files into panels of DeepMIB to automatically load the config
+% * [DeepMIB] Added duplication operation to make a copy of a trained network and its config
+% * [DeepMIB] Added padding parameter to symmetrically pad the image to eliminate the edge artifacts
+% * [DeepMIB] Added symmetric padding for prediction using Blocked-image engine to eliminate edge artifacts (R2023a and newer)
+% * [DeepMIB] Added export of the trained network to TensorFlow format
+% * [DeepMIB] Added 'MATLAB non-compressed format (range 0-1)' for generating predictions scores in the range from 0 to 1
+% * [DeepMIB] Added possibility to predict images that are not under Images subfolder (Blocked-mode only)
+% * [DeepMIB] Added an option to calculate loss excluding Exterior when using the diceCustom segmentation layer
+% * [DeepMIB] Added sending of email notifications about training progress and when finished
+% * [DeepMIB] Added preview of a network stored in mibDeep file (Network panel)
+% * [DeepMIB] Added possibility to mask-away areas without preprocessing (Mask extension: Use 0-s in labels)
+% * [DeepMIB] Improved handling of directories that are RELATIVE to the project directory
+% * [DeepMIB] Extended the Evaluate segmentation plot with Class and Dataset metrics
+%
+% [/dtls]
+%
 %% 2.84 / 09.12.2022 (new 3D viewer and HDD alignement)
 %
 % [dtls][smry] *2.8331 / 21.06.2022 (Updated 3D viewer, HDD automatic alignment)* [/smry]
@@ -619,7 +687,7 @@
 % padding: 1pt 3pt;
 % }
 % [/cssClasses]
-%%
+%
 % <html>
 % <script>
 %   var allDetails = document.getElementsByTagName('details');

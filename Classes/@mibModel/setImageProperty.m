@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function setImageProperty(obj, propertyName, propertyValue, id)
 % function setImageProperty(obj, propertyName, propertyValue, id)
 % set desired property for the currently shown or id dataset
@@ -16,13 +32,6 @@ function setImageProperty(obj, propertyName, propertyValue, id)
 % @code obj.mibModel.setImageProperty('orientation', 4);     // call from mibController: set current orientation to 4 @endcode
 % @code obj.mibModel.setImageProperty(2, 4);     // call from mibController: set orientation to 4 to dataset 4 @endcode
 
-% Copyright (C) 28.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 if nargin < 4; id = obj.Id; end 

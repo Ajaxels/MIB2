@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibDoUndo(obj, newIndex)
 % function mibDoUndo(obj, newIndex)
 % Undo the recent changes with Ctrl+Z shortcut
@@ -8,13 +24,6 @@ function mibDoUndo(obj, newIndex)
 % Return values:
 %
 
-% Copyright (C) 23.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 %
 
@@ -39,9 +48,27 @@ obj.mibModel.U.prevUndoIndex = newDataIndex;
 [type2, ~, ~, ~] = obj.mibModel.U.undo(newDataIndex);
 
 % delete data in the stored entry
-storeOptions.blockModeSwitch=0;
+storeOptions.blockModeSwitch = 0;
 getDataOptions = storeOptions;
+
+% update LinkedData / LinkedVariable with the current situation
+if isfield(storeOptions, 'LinkedData') 
+    linkedFields = fieldnames(storeOptions.LinkedData);
+    for fieldId = 1:numel(linkedFields)
+        % get the current state of the LinkedData
+        comStr = sprintf('currentLinkedData = %s;', storeOptions.LinkedVariable.(linkedFields{fieldId}));
+        eval(comStr);
+        % restore LinkedData from the previous state 
+        comStr = sprintf('%s = storeOptions.LinkedData.%s;', storeOptions.LinkedVariable.(linkedFields{fieldId}), linkedFields{fieldId});
+        eval(comStr);
+        % update storeOptions to store the currentState
+        comStr = sprintf('storeOptions.LinkedData.%s = currentLinkedData;', linkedFields{fieldId});
+        eval(comStr);
+    end
+end
+
 obj.mibModel.U.replaceItem(newIndex, NaN, {NaN}, NaN, storeOptions); %index, type, data, meta, options
+
 if obj.mibModel.preferences.Undo.Max3dUndoHistory <= 1 && storeOptions.switch3d  % tweak for storing a single 3D dataset
     if ~strcmp(type, 'mibImage')
         % store the current situation

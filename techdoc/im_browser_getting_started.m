@@ -2,38 +2,36 @@
 %
 % *Back to* <im_browser_product_page.html *Index*>
 %% Brief description
-% Rapid development of multidimensional microscopy imaging techniques during recent 
-% years has raised number of questions about effective image processing, 
-% visualization and analysis of the obtained datasets. Most universities 
-% worldwide provide access to the modern imaging techniques so that descriptive 
-% multidimensional datasets of the desired specimen can be fairly easily obtained by any researcher.
+% Rapid development of multidimensional microscopy imaging techniques in recent years has raised a number 
+% of questions about effective image processing, visualization, and analysis of the obtained datasets.
 %
-% After acquisition the datasets have to be analyzed and quite often the detailed 
-% analysis is impossible without segmentation (creating of a model) of objects 
-% of interest out of the multidimensional data. It seems that the segmentation is the 
-% most time consuming part of the image analysis routine. For example, it may take 
-% up to a month to properly segment a single electron tomogram. The slowness 
-% of the process is caused by two main factors: limited variety of good
-% software tools (even commercial ones) and good user-friendly segmentation 
-% algorithms that can be applied to facilitate the modeling. As a result, amount 
-% of collected and not properly processed data is much higher than the amount of produced results. 
+% Most universities worldwide provide access to modern imaging techniques, allowing 
+% researchers to easily obtain descriptive multidimensional datasets of their desired specimens.
+% After acquisition, the datasets need to be analyzed, and often detailed analysis is impossible without 
+% segmentation (creating a model) of objects of interest from the multidimensional data. Segmentation 
+% is often the most time-consuming part of the image analysis routine. For example, properly segmenting 
+% a single electron tomogram can take up to a month. The slowness of this process can be attributed to 
+% two main factors: a limited variety of good software tools (even commercial ones) and a lack of 
+% user-friendly segmentation algorithms that can facilitate the modeling. As a result, the amount 
+% of collected data that is not properly processed is much higher than the amount of produced results. 
 %
-% With development of Microscopy Image Browser (MIB) we address this problem 
-% and present a open-source software package, which can be used for image 
-% processing, analysis, segmentation and visualization of multidimensional datasets. 
-% The program is designed to work in both MATLAB environment and as stand-alone instance. 
+% To address this problem, we have developed Microscopy Image Browser (MIB), an open-source software 
+% package that can be used for image processing, analysis, segmentation, and visualization of 
+% multidimensional datasets. MIB is designed to work in both the MATLAB
+% environment and as a stand-alone package.
 %
-% *Please note* that the compiled version of MIB is limited to academic research and may not have all
-% features available in the MATLAB version.
+% *Please note* that the distributed compiled version of MIB has been compiled using an academic license 
+% of MATLAB. As a result, it is limited to academic research and also may
+% not have all the features available in the full MATLAB version.
 %
 %% Starting the program
 % 
-% Please follow the steps described in the <im_browser_installation.html Installation section> to install the program. 
-%
-% Start Microscopy Image Browser by typing
+% To install the program, please follow the steps described in the
+% <im_browser_installation.html Installation section>.
+% 
+% To start Microscopy Image Browser, type the following command in the main MATLAB window:
 % [class.codeinput]>> mib[/class]
-% command in the main MATLAB window and refer to the following sections for details of
-% functioning; especially the *User Guide* section.
+% For detailed information on the functioning of the program, refer to the following links, especially the *User Guide* section.
 % [br20]
 %
 %

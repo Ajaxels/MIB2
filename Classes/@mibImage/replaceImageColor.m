@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function replaceImageColor(obj, type, color_id, channel_id, slice_id, time_pnt, options)
 % function replaceImageColor(obj, type, color_id, channel_id, slice_id, time_pnt, options)
 % Replace image intensities in the @em Masked or @em Selected areas with new intensity value
@@ -12,19 +28,12 @@ function replaceImageColor(obj, type, color_id, channel_id, slice_id, time_pnt, 
 % @li .showWaitbar - logical, show or not the waitbar
 %
 % Return values:
-% 
+%
 
 %| 
 % @b Examples:
 % @code obj.mibModel.I{obj.mibModel.Id}.replaceImageColor('mask', 0, 1, 0, 1);  // call from mibController; to replace the Masked areas with black color for all slices of time point 1 @endcode
 
-% Copyright (C) 10.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 

@@ -1,14 +1,22 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef Labels < matlab.mixin.Copyable
-    % @type Labels class is resposnible for keeping Labels/Annotations of the model
+    % @type Labels class is responsible for keeping Labels/Annotations of the model
     
-	% Copyright (C) 16.12.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-	% 
-	% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-	%
 	% Updates
 	% 16.12.2017, IB, adapted for MIB2
     % 28.02.2018, IB, updated to be compatible with values
@@ -204,7 +212,7 @@ classdef Labels < matlab.mixin.Copyable
                 if numel(rangeZ) == 1
                     selIndices = find(round(labelPositions(:,1))==rangeZ);
                 else
-                    selIndices = find(labelPositions(:,1) >= rangeZ(1) & labelPositions(:,1) <= rangeZ(2));
+                    selIndices = find(round(labelPositions(:,1)) >= rangeZ(1) & round(labelPositions(:,1)) <= rangeZ(2));
                 end
                 labelsList = labelsList(selIndices);
                 labelValues = labelValues(selIndices);
@@ -215,7 +223,7 @@ classdef Labels < matlab.mixin.Copyable
                 if numel(rangeX) == 1
                     selIndices = find(round(labelPositions(:,2))==rangeX);
                 else
-                    selIndices = find(labelPositions(:,2) >= rangeX(1) & labelPositions(:,2) <= rangeX(2));
+                    selIndices = find(round(labelPositions(:,2)) >= rangeX(1) & round(labelPositions(:,2)) <= rangeX(2));
                 end
                 labelsList = labelsList(selIndices);
                 labelValues = labelValues(selIndices);
@@ -226,7 +234,7 @@ classdef Labels < matlab.mixin.Copyable
                 if numel(rangeY) == 1
                     selIndices = find(round(labelPositions(:,3))==rangeY);
                 else
-                    selIndices = find(labelPositions(:,3) >= rangeY(1) & labelPositions(:,3) <= rangeY(2));
+                    selIndices = find(round(labelPositions(:,3)) >= rangeY(1) & round(labelPositions(:,3)) <= rangeY(2));
                 end
                 labelsList = labelsList(selIndices);
                 labelValues = labelValues(selIndices);
@@ -237,7 +245,7 @@ classdef Labels < matlab.mixin.Copyable
                 if numel(rangeT) == 1
                     selIndices = find(round(labelPositions(:, 4))==rangeT);
                 else
-                    selIndices = find(labelPositions(:,4) >= rangeT(1) & labelPositions(:,4) <= rangeT(2));
+                    selIndices = find(round(labelPositions(:,4)) >= rangeT(1) & round(labelPositions(:,4)) <= rangeT(2));
                 end
                 labelsList = labelsList(selIndices);
                 labelValues = labelValues(selIndices);
@@ -585,12 +593,15 @@ classdef Labels < matlab.mixin.Copyable
             %  .labelText - [@em optional], instead of obj.labelText save provided labelText
             %  .labelPosition - [@em optional], instead of obj.labelPosition save provided labelPosition
             %  .labelValue - [@em optional], instead of obj.labelValue save provided labelValue
-            
+            %  .sliceNames - [@em optional], cell array with filenames, used for export to excel and csv
+            %  .addLabelToFilename - [@em optional], logical add annotation label to filename, default = false
+
             if nargin < 3; options = struct(); end
             if nargin < 2; filename = []; end
             if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1; end
             if ~isfield(options, 'outputDir'); options.outputDir = ''; end
             if ~isfield(options, 'convertToUnits'); options.convertToUnits = 0; end
+            if ~isfield(options, 'addLabelToFilename'); options.addLabelToFilename = false; end
             
             if options.convertToUnits   % check for required bounding box and pixSize 
                 if ~isfield(options, 'boundingBox') || ~isfield(options, 'pixSize') 
@@ -651,6 +662,13 @@ classdef Labels < matlab.mixin.Copyable
                 labelValue = options.labelValue;
             end
             
+            % add label of the first annotation to filename
+            if options.addLabelToFilename
+                [path, fn, ext] = fileparts(filename);
+                fn = [fn '_' labelText{1}];
+                filename = fullfile(path, [fn ext]);
+            end
+            
             switch options.format
                 case 'ann'
                     save(filename, 'labelText', 'labelValue', 'labelPosition', '-mat', '-v7.3');
@@ -661,6 +679,13 @@ classdef Labels < matlab.mixin.Copyable
                     LabelPositionYpx = labelPosition(:,3);
                     LabelPositionZpx = labelPosition(:,1);
                     LabelPositionTpx = labelPosition(:,4);
+
+                    if isfield(options, 'sliceNames')
+                        Filename = options.sliceNames;
+                    else
+                        Filename = cell(size(LabelPositionTpx));
+                    end
+
                     % convert to coordinates to physical units
                     if isfield(options, 'boundingBox')
                         bb = options.boundingBox;
@@ -668,10 +693,12 @@ classdef Labels < matlab.mixin.Copyable
                         LabelPositionYunits = labelPosition(:,3)*options.pixSize.y + bb(3) - options.pixSize.y/2;
                         LabelPositionZunits = labelPosition(:,1)*options.pixSize.z + bb(5) - options.pixSize.z;
                         LabelPositionTunits = labelPosition(:,4);
-                        T = table(LabelText, LabelValue, LabelPositionXpx, LabelPositionYpx, LabelPositionZpx, LabelPositionTpx,...
+                        T = table(Filename, ...
+                            LabelText, LabelValue, LabelPositionXpx, LabelPositionYpx, LabelPositionZpx, LabelPositionTpx,...
                             LabelPositionXunits, LabelPositionYunits, LabelPositionZunits, LabelPositionTunits);
                     else
-                        T = table(LabelText, LabelValue, LabelPositionXpx, LabelPositionYpx, LabelPositionZpx, LabelPositionTpx);
+                        T = table(Filename, ...
+                            LabelText, LabelValue, LabelPositionXpx, LabelPositionYpx, LabelPositionZpx, LabelPositionTpx);
                     end
                     % save results as CSV
                     writetable(T, filename);
@@ -680,33 +707,37 @@ classdef Labels < matlab.mixin.Copyable
                     % Sheet 1
                     s = {'Annotations export'};
                     s(3,1) = {'Annotation'};
-                    s(4,1) = {'Text'};
-                    s(4,2) = {'Value'};
-                    s(3,4) = {'Coordinates, pixels'};
-                    s(4,3) = {'Z'};
-                    s(4,4) = {'X'};
-                    s(4,5) = {'Y'};
-                    s(4,6) = {'T'};
+                    s(4,1) = {'Filename'};
+                    s(4,2) = {'Text'};
+                    s(4,3) = {'Value'};
+                    s(3,5) = {'Coordinates, pixels'};
+                    s(4,4) = {'Z'};
+                    s(4,5) = {'X'};
+                    s(4,6) = {'Y'};
+                    s(4,7) = {'T'};
                     
                     noAnn = numel(labelText);
                     rowId = 5;
-                    s(rowId:rowId+noAnn-1, 1) = labelText;
-                    s(rowId:rowId+noAnn-1, 2) = num2cell(labelValue);
-                    s(rowId:rowId+noAnn-1, 3:6) = num2cell(labelPosition);
+                    if isfield(options, 'sliceNames')
+                        s(rowId:rowId+noAnn-1, 1) = options.sliceNames;
+                    end
+                    s(rowId:rowId+noAnn-1, 2) = labelText;
+                    s(rowId:rowId+noAnn-1, 3) = num2cell(labelValue);
+                    s(rowId:rowId+noAnn-1, 4:7) = num2cell(labelPosition);
                     
                     % convert to coordinates to physical units
                     if isfield(options, 'boundingBox')
-                        s(3,8) = {sprintf('Coordinates, %s', options.pixSize.units)};
-                        s(4,8) = {'Z'};
-                        s(4,9) = {'X'};
-                        s(4,10) = {'Y'};
-                        s(4,11) = {'T'};
+                        s(3,9) = {sprintf('Coordinates, %s', options.pixSize.units)};
+                        s(4,9) = {'Z'};
+                        s(4,10) = {'X'};
+                        s(4,11) = {'Y'};
+                        s(4,12) = {'T'};
                         bb = options.boundingBox; 
                         labelPositionsOut(:, 1) = labelPosition(:, 1)*options.pixSize.z + bb(5) - options.pixSize.z;
                         labelPositionsOut(:, 2) = labelPosition(:, 2)*options.pixSize.x + bb(1) - options.pixSize.x/2;
                         labelPositionsOut(:, 3) = labelPosition(:, 3)*options.pixSize.y + bb(3) - options.pixSize.y/2;
-                        s(rowId:rowId+noAnn-1, 8:10) = num2cell(labelPositionsOut);
-                        s(rowId:rowId+noAnn-1, 11) = num2cell(labelPosition(:, 4));
+                        s(rowId:rowId+noAnn-1, 9:11) = num2cell(labelPositionsOut);
+                        s(rowId:rowId+noAnn-1, 12) = num2cell(labelPosition(:, 4));
                     end
                     if options.showWaitbar; waitbar(0.3, wb); end
                     

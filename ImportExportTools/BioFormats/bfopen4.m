@@ -15,12 +15,13 @@ function [result] = bfopen4(r, seriesNumber, sliceNo, options)
 %   seriesNumber: - number of selected serie starting from 1
 %   sliceNo: - [optional] desired slice number from the series
 %   options: - [optional] a structure with a subset of the image to obtain.
-%   Warning! not yet completely tested
 %       .BioFormatsMemoizerMemoDir - directory to store Memoizer memo files
 %       .x1 - starting x position
 %       .y1 - starting y position
 %       .dx - width
 %       .dy - height
+%       .waitbarHandle - optional handle to an existing waitbar, otherwise []
+%       .waitbarUpdateFrequency - optional frequency to update the waitbar
 %
 % Return values:
 %   result -> Structure with the selected serie
@@ -47,6 +48,7 @@ function [result] = bfopen4(r, seriesNumber, sliceNo, options)
 %     to loci_tools.zip. If this happens, rename it back to loci_tools.jar.
 %
 % 30.01.2019 Ilya Belevich, adaptation for use with Memoizer
+% 13.12.2023 Ilya Belevich, added cancel upon waitbar cancel click
 
 if nargin < 4;     options = struct;   end
 if nargin < 3;     sliceNo = NaN;   end
@@ -54,6 +56,10 @@ if nargin < 3;     sliceNo = NaN;   end
 if ~isfield(options, 'DimensionOrder')
     options.DimensionOrder = '';
 end
+% check whether the waitbar handle is provided
+if ~isfield(options, 'waitbarHandle'); options.waitbarHandle = []; end
+% define update frequency for the waitbar
+if ~isfield(options, 'waitbarUpdateFrequency'); options.waitbarUpdateFrequency = 1; end
 
 if isa(r, 'loci.formats.Memoizer')  % r is a filename
    filename = [];
@@ -127,6 +133,9 @@ colorID = 1;
 sliceID = 1;
 timeID = 1;
 
+% define number of slices
+noSlices = endSlice-startSlice+1;
+
 result.ColorType = NaN;
 index = 1;
 for i = startSlice:endSlice
@@ -189,6 +198,18 @@ for i = startSlice:endSlice
                 timeID = timeID + 1;
             end
     end
+
+    % update waitbar
+    if ~isempty(options.waitbarHandle) && mod(index, options.waitbarUpdateFrequency)==0
+        if getappdata(options.waitbarHandle, 'canceling')
+            result = [];
+            delete(options.waitbarHandle);
+            fprintf('\n');
+            return;
+        end
+        waitbar(index/noSlices, options.waitbarHandle);
+    end
+
     index = index + 1;
 end
 

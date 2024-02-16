@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function status = convertImage(obj, format, options)
 % function status = convertImage(obj, format)
 % Convert image to specified format: 'grayscale', 'truecolor', 'indexed' and 'uint8', 'uint16', 'uint32' class
@@ -21,13 +37,6 @@ function status = convertImage(obj, format, options)
 % @b Examples:
 % @code status = obj.mibModel.I{obj.mibModel.Id}.convertImage(obj, 'grayscale');   // Call from mibController; convert dataset to the grayscale type @endcode
 
-% Copyright (C) 03.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -43,6 +52,7 @@ if strcmp(format, 'grayscale')   % -> grayscale
     switch obj.meta('ColorType')
         case 'grayscale'        % grayscale->
             if options.showWaitbar; delete(wb); end
+            status = 1;
             return;
         case 'truecolor'    % truecolor->grayscale
             from = 'truecolor';
@@ -123,6 +133,7 @@ elseif strcmp(format, 'truecolor')   % ->truecolor
             if options.showWaitbar; waitbar(.85,wb); end
         case 'truecolor'    % truecolor->truecolor
             if options.showWaitbar; delete(wb); end
+            status = 1;
             return;
         case 'hsvcolor'    % hsvcolor->truecolor
             from = 'hsvcolor';
@@ -179,6 +190,7 @@ elseif strcmp(format,'hsvcolor')   % ->hsvcolor
             if options.showWaitbar; waitbar(.85,wb); end
         case 'hsvcolor'
             if options.showWaitbar; delete(wb); end
+            status = 1;
             return;            
         case 'indexed'      % indexed->hsvcolor
             if options.showWaitbar; delete(wb); end
@@ -189,6 +201,7 @@ elseif strcmp(format,'hsvcolor')   % ->hsvcolor
 elseif strcmp(format,'indexed')   % ->indexed
     if strcmp(obj.meta('ColorType'), 'indexed') % indexed->indexed
         if options.showWaitbar; delete(wb); end
+        status = 1;
         return;
     end
     if strcmp(obj.meta('ColorType'), 'hsvcolor') % hsvcolor->indexed
@@ -271,6 +284,7 @@ elseif strcmp(format, 'uint8')   % -> uint8
     switch obj.meta('imgClass')
         case 'uint8'
             if options.showWaitbar; delete(wb); end
+            status = 1;
             return;
         case 'uint16'       % uint16->uint8 
             from = obj.meta('imgClass');
@@ -361,6 +375,8 @@ elseif strcmp(format,'uint16')   % -> uint16
                 log_text = regexprep(log_text,' +',' ');
                 obj.updateImgInfo(log_text);
             else
+                if options.showWaitbar; delete(wb); end
+                status = 1;
                 return
             end
         case 'uint8'       % uint8->uint16 
@@ -431,6 +447,7 @@ elseif strcmp(format,'uint32')   % -> uint32
     switch obj.meta('imgClass')
         case 'uint32'
             if options.showWaitbar; delete(wb); end
+            status = 1;
             return;
         case 'uint8'       % uint8->uint32 
             from = obj.meta('imgClass');

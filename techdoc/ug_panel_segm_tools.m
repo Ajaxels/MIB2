@@ -1,6 +1,7 @@
 %% Segmentation Tools
 % This panel hosts different tools that are used for the image
-% segmentation. 
+% segmentation. These tools are designed to help you separate and identify
+% different regions or objects within an image.
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| 
 % <ug_gui_panels.html *Panels*> |*-->*| <ug_panel_segm.html *Segmentation Panel*>
@@ -9,20 +10,26 @@
 %% The 3D ball
 %
 % <html>
-% <table style="border: 0px">
+% <table style="border: 0px; line-height:1.5">
 % <tr>
 % <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationTools3DBall.png">
 % </td>
 % <td style="border: 0px">
-% Makes selection as a spherical object in the 3D space with a radius taken from the
-% <b>Radius, px</b> edit box. The <b>Eraser, x</b> edit box modifies
-% increse of the 3D ball eraser, when holding the <span class="kbd">Clrl</span> key.<br>
+% The <b>3D ball</b> tool is a segmentation tool that allows you to make a
+% selection in the form of a spherical object in a 3D space.<br>
+% To use the "3D ball" tool, you need to specify the radius of the spherical object.
+% The radius is taken from the <span class="dropdown">Radius, px</span> edit box, which allows you to define the size of the sphere. 
+% The larger the radius, the larger the selection will be.<br>
+% Additionally, there is an <span class="dropdown">Eraser, x</span> edit box that modifies the increase of the 3D ball eraser. 
+% This means that when you hold the  <span class="kbd">^ Ctrl</span> key and use the eraser, the size of the eraser 
+% will increase based on the value specified in the <span class="dropdown">Eraser, x</span> edit box.
 % A brief demonstration is available in the following video:<br>
 % <a href="https://youtu.be/ZcJQb59YzUA?t=1s"><img
-% style="vertical-align:middle;" src="images\youtube2.png">
-% https://youtu.be/ZcJQb59YzUA?t=1s</a><br><br>
-% <b>Note!</b> The depth of 3D ball is defined by the pixel dimensions,<br>see <em>Dataset Parameters</em> in <a href="ug_gui_menu_dataset.html">Menu->Dataset->Parameters</a>
+% style="vertical-align:middle;" src="images\youtube.png">
+% MIB in brief: Manual segmentation tools (https://youtu.be/ZcJQb59YzUA?t=1s)</a><br><br>
+% <b>Note!</b> The aspect ratio for the depth size of the 3D ball is defined by the pixel dimensions,<br>see <em>Dataset Parameters</em> in 
+% <a href="ug_gui_menu_dataset.html">Menu->Dataset->Parameters</a>
 % </td>
 % </tr>
 % </table>
@@ -41,23 +48,29 @@
 % [target1]
 %
 % <html>
-% <table style="border: 0px">
+% <table style="border: 0px;line-height:1.5">
 % <tr>
 % <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationTools3DLines.png">
 % </td>
 % <td style="border: 0px">
-% The 3D lines tool can be used to draw lines in 3D and arrange them as
-% graphs or skeletons. The 3D lines composed of Nodes (Vertices) 
-% connected with Edges (a line that connect two nodes). Separated from each
-% other sets of 3D lines organized into separate trees. <br>
-% A demonstration is available on: 
-% <a href=""><img style="vertical-align:middle;" src="images\youtube2.png">
-% https://youtu.be/DNRUePJiCbE</a><br>
+% The "3D lines" tool is a powerful tool that allows you to draw lines in a 
+% 3D space and arrange them as graphs or skeletons.<br>
+% The 3D lines are composed of nodes (vertices) that are connected with edges (lines that connect two nodes). 
+% These nodes and edges form the basis of the graph or skeleton structure. The nodes represent
+% specific points or locations in the 3D space, while the edges represent the connections
+% or relationships between these points. <br>
+% The 3D lines can be organized into separate trees, where each tree represents a distinct set of 3D lines.
+% This allows for better organization and management of complex
+% structures.<br>
+% A demonstration is available on:<br> 
+% <a href=""><img style="vertical-align:middle;" src="images\youtube.png">
+% Use of 3D lines for skeletons and measurements (https://youtu.be/DNRUePJiCbE)</a><br>
 % <br>
-% Modification of nodes is possible using mouse clicks. To increase
-% flexibility, the clicks can be extended with key-modifiers, such as
-% <span class="kbd">&#8679; Shift</span>, <span class="kbd">Ctrl</span>, <span class="kbd">Alt</span>. 
+% To modify the nodes in the 3D lines, you can use mouse clicks. 
+% The tool provides flexibility by allowing you to extend the mouse clicks with key 
+% modifiers such as <span class="kbd">&#8679; Shift</span>, <span class="kbd">^ Ctrl</span>, and <span class="kbd">Alt</span>. 
+% These key modifiers can be used to perform different actions or operations on the nodes, depending on your needs.
 % Each action can be configured depending on needs. Please refer to a
 % table below for various options.
 % </td>
@@ -69,20 +82,20 @@
 % 
 % <html>
 % <ul>
-% <li><b>Add node</b>, add a new node to the active tree; the new point will be connected to the active point (shown in red) of the tree</li>
-% <li><b>Assign active node</b>, assign the closest node to position of the mouse click, as a new active node</li>
-% <li><b>Connect to node</b>, connect active node to another existing node</li>
-% <li><b>Delete node</b>, delete the closest node to position of the mouse click; the edges will be rearranged to prevent splitting of the tree</li>
-% <li><b>Insert node after active</b>, insert a new node after the active node</li>
-% <li><b>Modify active node</b>, change position of the active node</li>
-% <li><b>New tree</b>, add a new node and assign it to a new tree, which is not connected to other trees</li>
-% <li><b>Split tree</b>, delete the closest node to position of the mouse click and split the tree at this point</li>
+% <li>[class.dropdown]Add node &#9660;[/class], add a new node to the active tree. This will create a new point in the 3D space and connect it to the active point (shown in red) of the tree. The new node will become part of the active tree</li>
+% <li>[class.dropdown]Assign active node &#9660;[/class] allows you to assign the closest node to the position of the mouse click as the new active node. This can be useful when you want to change the active node to perform specific operations or modifications</li>
+% <li>[class.dropdown]Connect to node &#9660;[/class], connects active node to another existing node. This will create an edge between the active node and the selected node, establishing a connection between them</li>
+% <li>[class.dropdown]Delete node &#9660;[/class], this will remove the closest node to the position of the mouse click. The edges of the tree will be rearranged to prevent splitting of the tree</li>
+% <li>[class.dropdown]Insert node after active &#9660;[/class],  allows you to insert a new node after the active node. This can be useful when you want to add a new node in a specific position within the tree</li>
+% <li>[class.dropdown]Modify active node &#9660;[/class], this will allow you to move the active node to a new position in the 3D space using a mouse click</li>
+% <li>[class.dropdown]New tree &#9660;[/class], add a new node and assign it to a new tree. This new tree will not be connected to any other trees, providing a separate structure</li>
+% <li>[class.dropdown]Split tree &#9660;[/class], if you want to split a tree at a specific point, you can use the <b>Split tree</b> option. This will delete the closest node to the position of the mouse click and split the tree at that point.</li>
 % </ul>
-% Use the <span class="kbd">[&#10003;] <b>Show lines</b></span> checkbox to toggle visibility of the lines in
+% Use the <span class="kbd">[&#10003;] <b>Show lines</b></span> checkbox to toggle visibility of the lines (edges) of the 3D line object displayed in
 % the Image View panel.
 % <br>
-% Press the <span class="kbd">Table view</span> button to start a window which tables that
-% describe the 3D lines (see below).
+% Press the <span class="kbd">Table view</span> button to open a window that displays tables describing the 3D lines. 
+% This can provide additional information and details about the structure of the lines (see below).
 % </html>
 %
 % [/dtls]
@@ -90,22 +103,22 @@
 % [class.h3]Lines 3D View[/class]
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="width: 800px; border: 0px; line-height:1.5">
 % <tr>
 % <td style="border: 0px">
 %   <img src = "images\PanelsSegmentationTools3DLinesDlg.png">
 % </td>
 % <td style="border: 0px">
 % <b>Table with the list of trees</b><br>
-% The upper table shows the list of trees and number of nodes that compose
-% each tree. <b><em>Each tree should have an unique name!</b></em><br><br>
-% Right mouse click starts a popup menu with various options:
+% The upper table in the <b>Lines 3D View</b> window shows the list of trees and the number of nodes 
+% that compose each tree. <b><em>It is important to note that each tree should have a unique name</b></em><br>
+% To access additional options for a tree, you can right-click on it. This will open a popup menu with various options:
 % <ul>
-% <li><b>Rename selected tree...</b>, rename selected in the table tree; tree name should be unique!</li>
-% <li><b>Find tree by node...</b>, find a tree which has a node with provided index</li>
-% <li><b>Visualize in 3D selected tree(s)</b>, plot the selected trees in 3D</li>
-% <li><b>Save/export selected tree(s)</b>, export to MATLAB or save to a file the selected trees, see the Tools panel below for the list of available file formats</li>
-% <li><b>Delete selected tree(s)</b>, delete selected tree from the table</li>
+% <li><b>Rename selected tree...</b>, allows you to rename the selected tree in the table. The tree name should be unique!</li>
+% <li><b>Find tree by node...</b>, if you provide an index, this option will help you find a tree that has a node with that specific index.</li>
+% <li><b>Visualize in 3D selected tree(s)</b>, selecting this option will plot the selected trees in a 3D visualization</li>
+% <li><b>Save/export selected tree(s)</b>, This option allows you to export the selected trees to MATLAB or save them to a file. The <b>Tools panel</b> below will provide you with a list of available file formats</li>
+% <li><b>Delete selected tree(s)</b>, selecting this option will delete the selected tree(s) from the table</li>
 % </ul>
 % </td>
 % </tr>
@@ -116,42 +129,43 @@
 % 
 % * *Active tree*, an index of the active tree
 % * *Active node*, an index of the active node
-% * *Table*, a combo box to select what should be shown in the lower table: Nodes or Edges
-% * *Field*, a combo box to define an additional field that should be shown the lower table. 
-% By default, only the Radius and Weights fields are available
-% * *Auto jump*, when selected, auto jump to the selected node
-% * *Auto refresh*, automatically refresh the tables, may be quite slow with many nodes
+% * The [class.dropdown]Table &#9660;[/class] dropdown can be used to select what should be shown in the lower table below: *Nodes* or *Edges*
+% * The [class.dropdown]Field &#9660;[/class] dropdown can be used to define an additional field that should be added to the lower table. 
+% By default, only the *Radius* and *Weights* fields are available
+% * [class.kbd][&#10003;] *Auto jump*[/class], when selected, auto jump to
+% the selected node and show it in the Image View panel.
+% * [class.kbd][&#10003;] *Auto refresh*[/class], automatically refresh the tables, may be quite slow with many nodes
 %
 % [/dtls]
 %
-% [dtls][smry] *Nodes table* [/smry]
+% [dtls][smry] *The Nodes table* [/smry]
 % 
 % The table shows list of nodes and offers multiple actions via a popup
 % menu:
 %
-% * *Jump to the node*, jumps to the selected node and put it in the center of the Image View panel
-% * *Set as active node*, makes the selected node active
-% * *Rename selected nodes...*, assign a new name for the selected nodes
-% * *Show coordinates in pixels...*, by default, the coordinates of the nodes are shown in the physical units of the dataset, 
+% * [class.dropdown]Jump to the node &#9660;[/class], jumps to the selected node and put it in the center of the Image View panel
+% * [class.dropdown]Set as active node &#9660;[/class], makes the selected node active
+% * [class.dropdown]Rename selected nodes... &#9660;[/class], assign a new name for the selected nodes
+% * [class.dropdown]Show coordinates in pixels... &#9660;[/class], by default, the coordinates of the nodes are shown in the physical units of the dataset, 
 % _i.e._ with respect to <ug_gui_menu_dataset.html#8 the bounding box> ; this action shows coordinate of the node in pixels
-% * *New annotations from nodes*, generate a new annotations from the position of nodes
-% * *Add nodes to annotations*, add selected nodes to the existing annotations
-% * *Delete nodes from annotations*, delete selected nodes from the existing annotations
-% * *Delete nodes...*, delete selected nodes
+% * [class.dropdown]New annotations from nodes &#9660;[/class], generate a new annotations from the position of nodes
+% * [class.dropdown]Add nodes to annotations &#9660;[/class], add selected nodes to the existing annotations
+% * [class.dropdown]Delete nodes from annotations &#9660;[/class], delete selected nodes from the existing annotations
+% * [class.dropdown]Delete nodes... &#9660;[/class], delete selected nodes
 %
 % [/dtls]
 %
-% [dtls][smry] *Edges table* [/smry]
+% [dtls][smry] *The Edges table* [/smry]
 % The table shows list of edges; certain actions available via a popup menu:
 %
-% * *Jump to the node*, jumps to the selected node and put it in the center of the Image View panel
-% * *Set as active node*, makes the selected node active
+% * [class.dropdown]Jump to the node &#9660;[/class], jumps to the selected node and put it in the center of the Image View panel
+% * [class.dropdown]Set as active node &#9660;[/class], makes the selected node active
 %
 % [/dtls]
 %
 % [dtls][smry] *Tools panel*[/smry]
 %
-% * *[class.kbd]Load[/class]*, load 3D lines from a file in matlab-compatible lines3d format
+% * *[class.kbd]Load[/class]*, load 3D lines from a file in MATLAB-compatible lines3d format
 % * *[class.kbd]Save[/class]*, export to MATLAB or save 3D lines to a file:
 %
 % <html>   
@@ -173,7 +187,7 @@
 %% Annotations
 %
 % <html>
-% <table style="border: 0px">
+% <table style="border: 0px; line-height:1.5">
 % <tr>
 % <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsAnnotations.png">
@@ -182,9 +196,9 @@
 % A set of tools to add/remove annotations. Each annotation allows to mark
 % specific location in the dataset, assign a label and a value to it<br><br>
 % Brief demonstration is available in the following videos:<br>
-% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube.png"> MIB in brief: Annotations (https://youtu.be/3lARjx9dPi0)</a>
 % <br>
-% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/6otBey1eJ0U</a>
+% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube.png"> MIB in brief: Annotations (https://youtu.be/6otBey1eJ0U)</a>
 % <br><br>
 % <b> Addition and removal of annotations</b><br>
 % <ul>
@@ -229,7 +243,7 @@
 % [class.h3]List of annotations window[/class]
 %
 % <html>
-% <table style="border: 0px">
+% <table style="border: 0px; line-height:1.5">
 % <tr>
 % <td style="width: 400px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsAnnotationsTable.png">
@@ -241,17 +255,28 @@
 %       <li><em><b>Jump to annotation</em></b>, moves the image so that the selected annotation is in the middle of the Image View panel</li>
 %       <li><em><b>Add annotation</em></b>, manually add annotation to the list, position of the first and second fields are defined by the <span class="kbd">[&#10003;] <b>Value eccentric</b></span> checkbox of the Annotation panel, see above</li>
 %       <li><em><b>Rename selected annotations</em></b>, rename names of the selected annotations</li>
-%       <li><em><b>Batch modify selected annotations</em></b>, modify annotation values or coordinates using a provided expression</li>
+%       <li><em><b>Batch modify selected annotations</em></b>, modify annotation values or coordinates using a provided expression (<em>e.g.</em> set value, multiply, add, subtract, round, etc...)</li>
 %       <li><em><b>Count selected annotations</em></b>, calculate occurance of each annotation in the list of selected annotations. 
 %           The results are displayed in the MATLAB command window and copied to the system clipboard 
 %           <a href="https://youtu.be/rqZbH3Jpru8"><img style="vertical-align:middle;" src="images\youtube.png"></a>
 %           </li>
 %       <li><em><b>Copy selected annotations to clipboard</em></b>, the selected annotations are copied to the system clipboard as a text string ready to be pasted to Excel</li>
+%       <li><em><b>Paste from clipboard to column</em></b>, paste selected column of values from Excel to the table. You need to select the starting cell and all the pasted values will be added to this cell and the cells below it</li>
 %       <li><em><b>Convert selected annotations to Mask...</em></b>, generate 2D/3D Mask spots centered at each annotation marker. The
 %           size of the spot can either be fixed or scaled from the value field of the selected annotations<br>
 %           <img src="images\PanelsSegmentationToolsAnnotationsTableToMask.png"></li>
-%       <li><em><b>Crop out patches around selected annotations</em></b>, 2D/3D patch of the predefined size is generated when this operation is used
-%           <a href="https://youtu.be/QrKHgP76_R0"><img style="vertical-align:middle;" src="images\youtube.png"></a></li>
+%       <li><em><b>Crop out patches around selected annotations</em></b>, when this operation is used, 2D/3D patches 
+%           of the predefined width, height, and depth are 
+%           generated. It is possible to include the annotation name, X, Y, Z coordinates, and use the slice name as 
+%           a filename template <a href="https://youtu.be/QrKHgP76_R0"><img style="vertical-align:middle;" src="images\youtube.png"></a>
+%           <br>In addition, it is possible to introduce XY jitter to
+%           coordinates to perform crops at random positions relative to
+%           the annotation coordinates.
+%       </li>
+%       <li><em><b>Interpolate between selected annotations</em></b>, interpolate between selected annotations and add 
+%           annotations on slices between the selected annotations. When two annotations are selected, the linear interpolation 
+%           method is used. When more than two annotations are selected, the interpolation method can 
+%           be chosen from linear, cubic, or spline</li>    
 %       <li><em><b>Export selected annotations</em></b>, export selected annotations in the MATLAB format, landmarks for Amira (<em><b>Note!</em> only the coordinates are exported to Amira!</b>), PSI format for Amira and Excel</li>
 %       <li><em><b>Export selected annotations to Imaris</em></b>, export selected annotations to Imaris (<em><b>Note!</em> please first export the dataset!</b>)</li>
 %       <li><em><b>Order</b></em>, subitems of the Order entry can be used to move annotations towards the top or the bottom of the list</li>
@@ -273,6 +298,7 @@
 % <ul>
 % <li><b>Show annotations for extra slices</b>, extra slices to display annotation, when this value 0 annotations only belonging to the current slice are displayed, when a positive number from -value to +value depth</li>
 % <li><b>Annotation size</b>, size of the annotation marker from 8 to 20pt</li>
+% <li><b>Annotation color</b>, check to start a color selection dialog</li>
 % </ul>
 % </li>
 % <li>The <span class="kbd">Refresh table</span> button updates the list of annotations</li>
@@ -288,7 +314,7 @@
 %% The Brush tool 
 %
 % <html>
-% <table style="border: 0px">
+% <table style="border: 0px; line-height:1.5">
 % <tr>
 % <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsBrush.png">
@@ -298,23 +324,30 @@
 % the <b>Radius, px</b> edit box
 % <br>
 % A brief demonstration is available in the following videos:<br>
-% <a href="https://youtu.be/VlTCxVAUxFc"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/VlTCxVAUxFc</a>
-% <a href="https://youtu.be/ZcJQb59YzUA?t=37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=37s</a>
-% <br>
+% <a href="https://youtu.be/VlTCxVAUxFc"><img
+% style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/VlTCxVAUxFc</a><br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=37s"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/ZcJQb59YzUA?t=37s</a>
 % <br><br>Objects from different image slices may be connected
-% using the <em>Interpolation</em> function (shortcut <b>i</b> or via <em>Menu->Selection->Interpolate</em>),
+% using the <em>Interpolation</em> function (shortcut <span class="kbd"><b>i</b></span> or via <span class="code">Menu->Selection->Interpolate</span>),
 % see more in the <a href="ug_gui_menu_selection.html">Selection menu</a> section.
 % </td>
 % </tr>
 % </table>
 % </html>
 %
-% [dtls][smry] *Brush mouse controls* [/smry]
+% [dtls][smry] *Controls* [/smry]
 %
-% * [class.kbd]Ctrl[/class] + [class.kbd]Mouse wheel[/class],  change brush size
-% * [class.kbd]None[/class] / [class.kbd]&#8679; Shift[/class] + [class.kbd]left mouse click[/class], paint with brush
-% * [class.kbd]Ctrl[/class] + [class.kbd]left mouse click[/class], start eraser. The brush radius in the
-% eraser mode could be amplifier using the *Eraser, x* edit box.
+% <html>
+% <ul>
+% <li> <span class="kbd">^ Ctrl</span> + <span class="kbd">Mouse wheel</span>,  change brush size</li>
+% <li> <span class="kbd">None</span> / <span class="kbd">&#8679; Shift</span> + <span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, 
+% paint with brush</li>
+% <li> <span class="kbd">^ Ctrl</span> + <span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, start eraser. The brush radius in the
+% eraser mode could be amplifier using the <span class="dropdown">Eraser, x</span> edit box.</li>
+% <li> The <span class="kbd">[&#10003;] <b>auto fill</b></span> checkbox in
+% the <b>Selection panel</b> allows to perform automatic filling of areas after use of brush</li>
+% </ul>
+% </html>
 %
 % [/dtls]
 % 
@@ -399,7 +432,7 @@
 %
 %
 % <html>
-% <table style="border: 0px">
+% <table style="border: 0px; line-height:1.5">
 % <tr>
 % <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsBWThres.png">
@@ -407,9 +440,11 @@
 % <td style="border: 0px">
 % Makes black and white thresholding of the current image slice or the
 % whole dataset (depending on status of the <span class="kbd">[&#10003;] <b>3D</b></span> and <span class="kbd">[&#10003;] <b>4D</b></span> checkboxes). 
+% The black-and-white thresholding is initiated upon change of sliders,
+% modification of editboxes or by hittin <span class="kbd">Threshold</span>
 % <br><br>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/ZcJQb59YzUA?t=4m37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m37s</a>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=4m37s"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/ZcJQb59YzUA?t=4m37s</a>
 % </td>
 % </tr>
 % </table>
@@ -418,8 +453,9 @@
 % [dtls][smry] *Parameters and controls* [/smry]
 %
 % Use the *Low* and *High* sliders and edit boxes to provide
-% threshold values tha will be used to select pixels with intensities
-% between these values.
+% threshold values that will be used to select pixels with intensities
+% between these values. The thresholding process is automatically initiated
+% upon interaction with these widgets.
 % [br8]
 % If the *Masked area* check box is selected the thresholding is 
 % performed only for the masked areas of the image, which is very convenient for local black and white thresholding.
@@ -436,7 +472,7 @@
 % * start in 2D mode by unchecking [class.kbd][&#10003;] *3D*[/class] and [class.kbd][&#10003;] *4D*[/class] checkboxes
 % * adjust parameters using the currently shown slice
 % * when parameters are chosen, tick [class.kbd][&#10003;] *3D*[/class] or [class.kbd][&#10003;] *4D*[/class] checkbox 
-% * select |Low| or |High| editbboxe and hit [class.kbd]Enter[/class] to apply thresholding values for the whole dataset
+% * Press the [class.kbd]Threshold[/class] button to start black-and-white thresholding
 %
 % [/dtls]
 % [br8]
@@ -444,7 +480,7 @@
 %% Drag & Drop material
 %
 % <html>
-% <table style="border: 0px">
+% <table style="border: 0px; line-height:1.5">
 % <tr>
 % <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsDragDrop.png">
@@ -458,7 +494,7 @@
 % in the panel move the selected layer left/right/up/down by the specified number of pixels.
 % <br><br>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/NGudNrxBbi0"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/NGudNrxBbi0</a>
+% <a href="https://youtu.be/NGudNrxBbi0"><img style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/NGudNrxBbi0</a>
 % <br><br>
 % </td>
 % </tr>
@@ -490,7 +526,7 @@
 %% The Lasso tool
 %
 % <html>
-% <table style="width: 800px; border: 0px">
+% <table style="width: 800px; border: 0px; line-height:1.5">
 % <tr>
 % <td style="border: 0px">
 %   <img src = "images\PanelsSegmentationToolsLasso.png">
@@ -499,7 +535,7 @@
 % Selection with a <em>lasso, rectangle, ellipse or polyline</em> tools.
 % <br>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/OHFdGj9uBro"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/OHFdGj9uBro</a>
+% <a href="https://youtu.be/OHFdGj9uBro"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/OHFdGj9uBro</a>
 % </td>
 % </tr>
 % </table>
@@ -526,7 +562,7 @@
 %% The Magic Wand + Region Growing tool
 % 
 % <html>
-% <table style="border: 0px">
+% <table style="border: 0px; line-height:1.5">
 % <tr>
 % <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsMagicWand.png">
@@ -537,7 +573,7 @@
 % selected pixel and two threshold values from the |Variation| edit boxes.
 % <br><br>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/ZcJQb59YzUA?t=1m50s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=1m50s</a>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=1m50s"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/ZcJQb59YzUA?t=1m50s</a>
 % </td>
 % </tr>
 % </table>
@@ -567,7 +603,7 @@
 %% The Membrane Click Tracker tool
 %
 % <html>
-% <table style="border: 0px">
+% <table style="border: 0px; line-height:1.5">
 % <tr>
 % <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsMembraneClick.png">
@@ -576,10 +612,10 @@
 % This tool tracks membrane-type objects by using 2 mouse clicks that define start and end point of the membrane domain. 
 % <br><br>
 % A brief demonstration for 2D is available in the following video:<br>
-% <a href="https://youtu.be/ZcJQb59YzUA?t=3m14s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=3m14s</a>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=3m14s"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/ZcJQb59YzUA?t=3m14s</a>
 % <br>
 % A brief demonstration for 3D is available in the following video:<br>
-% <a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
 % </td>
 % </tr>
 % </table>
@@ -622,22 +658,22 @@
 %% Object Picker
 %
 % <html>
-% <table style="border: 0px">
+% <table style="border: 0px; line-height:1.5">
 % <tr>
 % <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsObjectPicker.png">
 % </td>
 % <td style="border: 0px">
-% This mode allows fast selection of objects from the |Mask| or |Model|
-% layers. When the |Mask| and |Model| radio buttons define the target layer
-% for selection.<br><br>
+% This mode allows fast selection of objects from the <em>Mask</em> or
+% <em>Model</em> layers depending on what row is selected in the segmentation table. 
+% <br><br>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/mzILHpbg89E"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/mzILHpbg89E</a>
+% <a href="https://youtu.be/mzILHpbg89E"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/mzILHpbg89E</a>
 % <br>
 % Works also in <em>3D</em> (select the <b>3D</b> check box in the <a href="ug_panel_selection.html">Selection panel</a>).
 % <br><br>
 % <b>Note!</b> The 3D mode requires calculating statistics for the objects. Please select the material in the 
-% <a href="ug_panel_segm.html">Select from</a> list box and press the <span class="kbd">Recalc. Stats</span> button (the button becomes available when the 
+% <a href="ug_panel_segm.html">Select from</a> list box and press the <span class="kbd">Recalculate stats for 3D objects</span> button (the button becomes available when the 
 % <a href="ug_panel_selection.html>3D check box</a> is checked).
 % <br><br>
 % <b>Note!</b> Some advanced mask or model filtering may be done via 
@@ -695,10 +731,200 @@
 % [/dtls]
 % [br8]
 %
+%% Segment-anything model
+%
+% <html>
+% <table style="border: 0px; line-height:1.5">
+% <tr>
+% <td style="width: 300px; border: 0px">
+%   <img src = "images\PanelsSegmentationToolsSAM.png">
+% </td>
+% <td style="border: 0px">
+% Use Segment-anything model for object segmentation using one or few <em>mouse click</em><br><br>
+% An extensive tutorial covering installation and usage:<br>
+% <a href="https://youtu.be/J3pivV4udGU"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/J3pivV4udGU</a>
+% </td>
+% </tr>
+% </table>
+% </html>
+%
+%
+% [dtls][smry] *General information and reference* [/smry]
+%
+% <html>
+% Segment-anything model (SAM) is developed by <a href="https://ai.facebook.com/research">Meta AI Research, FAIR research team</a>. 
+% It can be used to segment individual objects or the whole image using one or few mouse click. Details of the research and interactive demo
+% is available here: <a href="https://segment-anything.com">https://segment-anything.com</a>
+% <br>
+% Implementation of SAM in MIB is done via utilization of an external Python interpreter, please check the <b>Requirements and installation</b> section below 
+% for detailed instructions.<br><br>
+% <b>Important!</b> even though SAM can work on CPU, GPU is highly recommended as it is x30-60 faster.
+% <br><br>
+% <b>List of original SAM available in MIB:</b>
+% <ul>
+% <li><b>vit_b (0.4Gb)</b>, fastest (x1) but gives less precise results</li>
+% <li><b>vit_l (1.2Gb)</b>, moderate speed (~x1.4 slower), better predictions</li>
+% <li><b>vit_h (2.5Gb)</b>, slowest (x2.0 slower), best predictions</li>
+% </ul>
+% <b>Reference</b>
+% <ul><li>
+% Alexander Kirillov, Eric Mintun, Nikhila Ravi, Hanzi Mao, Chloe Rolland, Laura Gustafson, Tete Xiao, Spencer Whitehead, Alexander C. Berg, 
+% Wan-Yen Lo, Piotr Dollar, Ross Girshick<br>
+% Segment Anything arXiv:2304.02643, <a href="https://doi.org/10.48550/arXiv.2304.02643">https://doi.org/10.48550/arXiv.2304.02643</a> 
+% </li></ul>
+% To extend application of SAM for microscopy images four additional pretrained networks
+% for light and electron microscopy for tests are included:
+% <br>
+% <ul>
+% <li><b>vit_b Electron Microscopy (0.4Gb)</b>, the lightest implementation for fast response of SAM trained on electron microscopy datasets</li>
+% <li><b>vit_b Light Microscopy (0.4Gb)</b>, the lightest implementation for fast response of SAM trained on light microscopy datasets</li>
+% <li><b>vit_h Electron Microscopy (2.5Gb)</b>, the extensive implementation for best results of SAM trained on electron microscopy datasets</li>
+% <li><b>vit_h Light Microscopy (2.5Gb)</b>, the extensive implementation for best results of SAM trained on light microscopy datasets</li>
+% <li><b>vit_b for EM Generalist (0.4Gb)</b>, pretrained for detection of mitochondria from EM datasets</li>
+% <li><b>vit_b for EM Boundaries (0.4Gb)</b>, pretrained for detection of membrane encapsulated organelles from EM datasets</li>
+% </ul>
+% <b>Reference</b>
+% <ul><li>
+% Anwai Archit, Sushmita Nair, Nabeel Khalid, Paul Hilt, Vikas Rajashekar, Marei Freitag, Sagnik Gupta, Andreas Dengel, Sheraz Ahmed, Constantin Pape<br>
+% Segment Anything for Microscopy, bioRxiv, doi: https://doi.org/10.1101/2023.08.21.554208; <a href="https://www.biorxiv.org/content/10.1101/2023.08.21.554208v1">link</a> 
+% </li></ul>
+% <b>Download links and configuration file</b><br>
+% SAM networks are automatically connected to MIB; it is possible to
+% configure any custom SAM network for use in MIB. To do so, please modify
+% <span class="code">sam_links.json</span> located by default under <span
+% class="code">Resources</span> subfolder within MIB. It is also possible
+% to link this file from anywhere, in this case use segment-anything
+% settings in MIB to provide a new location.
+% </html>
+%
+% [/dtls] 
+%
+% [dtls][smry] *Requirements and installation instructions* [/smry]
+% 
+% <html>
+% Segment-anything is not available by default and it needs to be
+% installed!<br><br>
+% Before the installation keep in mind the following requirements:
+% <ul>
+% <li>MATLAB R2022a or newer (tested on R2022a, R2022b, R2023a)</li>
+% <li>Python 3.8, 3.9, 3.10; tested on 3.9</li>
+% <li><a href="https://se.mathworks.com/support/requirements/python-compatibility.html">Here is a list</a> of Python versions compatible with various MATLAB releases</li>
+% <li>CUDA-compatible GPU is highly recommended, CPU can also be used but it is significantly slower</li>
+% </ul>
+% <br>
+% Installation details available from <a href="https://mib.helsinki.fi/downloads_systemreq_sam.html">https://mib.helsinki.fi/downloads_systemreq_sam.html</a>
+% </html>
+%
+% [/dtls] 
+%
+% [dtls][smry] *How to use* [/smry]
+%
+% <html>
+% <span class="h3">SAM segmentation in MIB has 3 different options for use.</span><br><br>
+% <h2>Interactive</h2>
+% It is a default operation mode of SAM in MIB. In this mode the
+% segmentation is performed on the part of the image that is visible to the
+% user. To start segmentation do following:
+% <ul>
+% <li> Use the <span class="dropdown">Destination &#9660;</span> dropdown to define the destination layer:
+% <b>selection</b>, <b>mask</b>, <b>model</b>. Depending on this, the
+% results of the segmentation procedure are automatically assigned to the selected
+% layer</li>
+% <li> Use the <span class="dropdown">Mode &#9660;</span> dropdown to define the operation that needs to
+% be applied to the segmentation results:
+% <ul>
+% <li><b>Replace</b>, replace the objects of the destination layer with the
+% new segmentation results</li>
+% <li><b>Add</b>, add segmentation results to the objects of the selected
+% destination layer</li>
+% <li><b>Subtract</b>, subtract segmentation results from the objects of
+% the selected destination layer</li>
+% <li><b>add, +next material</b>, (<em><b>only for models with 65535+
+% materials and destination: model</b></em>). Add segmentation results to
+% the selected material and add a new material to the model. </li>
+% </ul>
+% <li>Use <span class="kbd"><img style="height: 1em"
+% src="images\LMB_click.svg"> left mouse click</span> to specify a point on
+% the image that belongs to an object to be segmented.<br>
+% If the object was not segmented with a single click:
+% <ul>
+% <li><span class="kbd">&#8679; Shift</span> + <span class="kbd"><img style="height: 1em"
+% src="images\LMB_click.svg"> Left mouse click</span>, expands the object
+% so that the new area under the click is added to the object</li>
+% <li><span class="kbd">Ctrl</span> + <span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> Left mouse click</span>
+% to deselect the selected area from the object</li>
+% </ul>
+% </li>
+% </ul>
+% <h2>Landmarks</h2>
+% This mode can be used to process full images. The idea that the key
+% points are provided as annotations:
+% <ul>
+% <li>Use the <span class="dropdown">Dataset &#9660;</span> dropdown to
+% define portion of the image stack to process</li>
+% <li>Use the <span class="dropdown">Destination &#9660;</span> and <span
+% class="dropdown">Mode &#9660;</span> dropdowns to define destination
+% layer and the mode (see the <b>Interactive</b> mode above for
+% details)</li>
+% <li> Use <span class="kbd"><img style="height: 1em"
+% src="images\LMB_click.svg"> Left mouse click</span> to add annotations. 
+% The annotation value defines whether the annotation's location defines object (<b>Value=1</b>) 
+% or background (<b>Value=0</b>)<br>
+% <ul><b>Hints:</b>
+% <li><b>Hint 1:</b> use <span class="dropdown">Annotations &#9660;</span>->
+% <span class="kbd">[&#10003;] <b>Focus on Value</b></span> to focus the
+% value instead of the annotation label</li>
+% <li><b>Hint 2:</b> uncheck <span class="dropdown">Annotations &#9660;</span>->
+% <span class="kbd">[&#10003;] <b>show prompt</b></span> to switch off the dialog asking for annotation label and value</li>
+% <li><b>Hint 3:</b> use <span class="kbd">Ctrl</span> + <span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> Left mouse click</span>
+% to remove the closest to the mouse click annotation</li>
+% <li><b>Hint 4:</b> it is possible to access the list of annotation by pressing <img src="images\icons_annotations"></li>
+% </ul>
+% <li>Press<span class="kbd">Segment</span> to do segmentation</li>
+% </ul>
+% <h2>Automatic everything</h2>
+% In this mode, MIB is using SAM to segment all objects automatically and
+% assigns them to a new model:
+% <ul>
+% <li>Use the the <span class="dropdown">Dataset &#9660;</span> dropdown to
+% define portion of the image stack to process</li>
+% <li>Press<span class="kbd">Segment</span> to do segmentation</li>
+% </ul>
+% </html>
+%
+% [/dtls] 
+%
+% [dtls][smry] *SAM settings* [/smry]
+%
+% <html>
+% Press <img src="images\icons_settings.jpg"> to open the settings
+% dialog.<br>
+% There are various settings that can be affected to finetune the
+% segmetation process. Here the list of the most important parameters:
+% <ul>
+% There are various settings that can be affected to finetune the
+% segmetation process. Here the list of the most important parameters
+% <li><span class="dropdown">Backbone &#9660;</span>, define a pretrained backbone to
+% be used. There are 7 backbones of different sizes, the larger the size -
+% the longer it takes to get predictions, but the quality of the prediction
+% is better. See the <b>General information and reference</b> section above for details</li>
+% <li><span class="dropdown">Execution environment &#9660;</span>, define
+% whether GPU (the <b>cuda</b> mode) or CPU should be used. The CPU mode is
+% significantly slower than the GPU mode</li>
+% <li><span class="kbd">[&#10003;] <b>Show the progress bar in the
+% interactive mode</b></span>, uncheck to switch off showing of the
+% progress bar during segmentation</li>
+% <li><span class="dropdown">PATH to segment-anything installation</span>, location where segment-anything package was unzipped. 
+% You can click <span class="kbd">[&#10003;] <b>Check to select path to segment-anything</b></span> to open a directory selection dialog to specify this folder</li>
+% </ul>
+% </html>
+%
+% [/dtls] 
+%
 %% The Spot tool 
 %
 % <html>
-% <table style="border: 0px">
+% <table style="border: 0px; line-height:1.5">
 % <tr>
 % <td style="width: 300px; border: 0px">
 %   <img src = "images\PanelsSegmentationToolsSpot.png">
@@ -706,7 +932,7 @@
 % <td style="border: 0px">
 % Adds a spot - a circular object with a <em>mouse click</em><br><br>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/AlCzjKuyJww"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/AlCzjKuyJww</a>
+% <a href="https://youtu.be/AlCzjKuyJww"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/AlCzjKuyJww</a>
 % </td>
 % </tr>
 % </table>
@@ -734,8 +960,19 @@
 % <ug_gui_panels.html *Panels*> |*-->*| <ug_panel_segm.html *Segmentation Panel*>
 %
 % [cssClasses]
+% .dropdown { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	border-radius: 0.2em; 
+% 	background-color: #fff; 
+% 	background-color: #e0f5ff; 
+% 	background-color: #e8f5e8; 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
 % .kbd { 
-%     font-family: monospace;
+%   font-family: monospace;
 % 	border: 1px solid #aaa; 
 % 	-moz-border-radius: 0.2em; 
 % 	-webkit-border-radius: 0.2em; 

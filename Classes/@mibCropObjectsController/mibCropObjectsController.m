@@ -1,15 +1,23 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibCropObjectsController < handle
     % classdef mibCropObjectsController < handle
     % a controller class for the crop objects to file options of the context menu of the Get Statistics window
-    
-    % Copyright (C) 26.12.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-    
-    
+        
     properties
         mibModel
         % handles to the model
@@ -25,10 +33,12 @@ classdef mibCropObjectsController < handle
         % output variable for export to Matlab
         storedBatchOpt 
         % stored BatchOpt, because some of the parameters gets overwritten in the crop function
-        labelPosition
-        % matrix with center coordinates of patches to be cropped out from
-        % the image, it is used by mibAnnotationsController. Format:
-        % [pntId][z, x, y, t]
+        annotationLabels
+        % structure with additional information about annotations
+        % .names - cell array with label (annotation) names
+        % .positions - matrix with center coordinates of patches to be cropped out from
+        % the image, it is used by mibAnnotationsController. 
+        % Format: [pntId][z, x, y, t]
     end
     
     events
@@ -47,26 +57,29 @@ classdef mibCropObjectsController < handle
     end
     
     methods
-        function obj = mibCropObjectsController(mibModel, mibStatisticsController, BatchModeSwitch, labelPosition)
-            % function obj = mibCropObjectsController(mibModel, mibStatisticsController, BatchModeSwitch, labelPosition)
+        function obj = mibCropObjectsController(mibModel, mibStatisticsController, batchModeSwitch, annotationLabels)
+            % function obj = mibCropObjectsController(mibModel, mibStatisticsController, batchModeSwitch, annotationLabels)
             % constructor of the class
             % Parameters:
             % mibStatisticsController: a handle to the mibStatisticsController class
-            % BatchModeSwitch: a logical switch to use the batch mode instead of GUI mode
-            % labelPosition: matrix with center coordinates of patches to crop out from the image [pntId][z, x, y, t]. It is used by mibAnnotationsController.
-            if nargin < 4; labelPosition = []; end
-            if nargin < 3; BatchModeSwitch = 0; end
+            % batchModeSwitch: a logical switch to use the batch mode instead of GUI mode
+            % annotationLabels: structure with additional information about annotations
+            % .names - cell array with label (annotation) names
+            % .positions - matrix with center coordinates of patches to be cropped out from the image, it is used by mibAnnotationsController. 
+            % Format: [pntId][z, x, y, t]
+            if nargin < 4; annotationLabels = []; end
+            if nargin < 3; batchModeSwitch = 0; end
             
             obj.mibModel = mibModel;    % assign model
             obj.mibStatisticsController = mibStatisticsController;
-            obj.labelPosition = labelPosition;
+            obj.annotationLabels = annotationLabels;
             obj.storedBatchOpt = obj.mibStatisticsController.BatchOpt;  % store BatchOpt, because some of the parameters gets overwritten
             
             [~, obj.outputVar] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));  % to be used below in eval block
-            if BatchModeSwitch == 1
+            if batchModeSwitch == 1
                 if verLessThan('matlab',' 9.3'); obj.mibStatisticsController.BatchOpt.SingleMaskObjectPerDataset = false; end
                 if obj.mibStatisticsController.runId(2) ~= -1; obj.mibStatisticsController.BatchOpt.SingleMaskObjectPerDataset = false; end
-                obj.cropBtn_Callback(BatchModeSwitch);
+                obj.cropBtn_Callback(batchModeSwitch);
                 return;
             end
             
@@ -80,7 +93,7 @@ classdef mibCropObjectsController < handle
             obj.updateWidgets();
             %obj.View.gui.WindowStyle = 'modal';     % make window modal
             
-            if isempty(obj.labelPosition)   % standard call from mibStatisticsController
+            if isempty(obj.annotationLabels)   % standard call from mibStatisticsController
                 if verLessThan('matlab',' 9.3')
                     if obj.mibStatisticsController.View.handles.Shape3D.Value == 1
                         obj.View.handles.SingleMaskObjectPerDataset.Enable = 'off';     % because it is using bwselect3 function available in R2017b and newer
@@ -90,6 +103,7 @@ classdef mibCropObjectsController < handle
 
                 if obj.mibStatisticsController.View.handles.Shape3D.Value == 1
                     obj.View.handles.Generate3DPatches.Value = true;
+                    obj.View.handles.marginZEdit.Enable = 'on';
                 end
                 
                 % runId is a vector runId(1) index of the dataset, runId(2) index of material runId(2)==1 is mask
@@ -99,6 +113,7 @@ classdef mibCropObjectsController < handle
                     obj.View.handles.SingleMaskObjectPerDataset.Enable = 'off';     % because the objects were not detected from the mask
                     obj.mibStatisticsController.BatchOpt.SingleMaskObjectPerDataset = false;
                 end
+                obj.View.handles.Generate3DPatches.Enable = 'on';
             else % check for alternative call from mibAnnotationsController
                 obj.View.handles.marginXYtext.String = 'Width, px';
                 obj.View.handles.marginXYtext.Tooltip = 'width of the cropped block in pixels';
@@ -108,20 +123,25 @@ classdef mibCropObjectsController < handle
                 obj.View.handles.marginZEdit.Tooltip = 'width of the cropped block in pixels';
                 obj.View.handles.SingleMaskObjectPerDataset.Enable = 'off';     % because it is using bwselect3 function available in R2017b and newer
                 obj.mibStatisticsController.BatchOpt.SingleMaskObjectPerDataset = false; 
+                obj.View.handles.marginZEdit.Enable = 'on';
                 obj.View.handles.Generate3DPatches.Enable = 'on';
                 obj.mibStatisticsController.BatchOpt.Generate3DPatches = false;
 
                 obj.View.handles.marginXYEdit.String = obj.mibStatisticsController.BatchOpt.CropObjectsMarginXY;
                 obj.View.handles.marginZEdit.String = obj.mibStatisticsController.BatchOpt.CropObjectsMarginZ;
                 obj.View.handles.CropObjectsDepth.String = obj.mibStatisticsController.BatchOpt.CropObjectsDepth;
-
+               
                 % when elements GIU needs to be updated, update obj.BatchOpt
                 % structure and after that update elements of GUI by the
                 % following function
                 % obj.View = updateGUIFromBatchOpt_Shared(obj.View, obj.mibStatisticsController.BatchOpt);    %
-
             end
-            
+
+            % crop objects jitter settings
+            obj.View.handles.jitterEnableCheckbox.Value = obj.mibStatisticsController.BatchOpt.CropObjectsJitter;
+            obj.View.handles.jitterVariationEditbox.String = obj.mibStatisticsController.BatchOpt.CropObjectsJitterVariation;
+            obj.View.handles.jitterSeedEditbox.String = obj.mibStatisticsController.BatchOpt.CropObjectsJitterSeed;
+
             % add listner to obj.mibModel and call controller function as a callback
             obj.listener{1} = addlistener(obj.mibModel, 'Id', 'PostSet', @(src,evnt) obj.ViewListner_Callback(obj, src, evnt));     % for static
         end
@@ -155,9 +175,41 @@ classdef mibCropObjectsController < handle
             if obj.mibModel.getImageProperty('modelExist') == 0
                 obj.View.handles.cropModelCheck.Enable = 'off';
             end
+
+            % update jitter widgets
+            if obj.mibStatisticsController.BatchOpt.CropObjectsJitter
+                obj.View.handles.jitterVariationEditbox.Enable = 'on';
+                obj.View.handles.jitterSeedEditbox.Enable = 'on';
+            else
+                obj.View.handles.jitterVariationEditbox.Enable = 'off';
+                obj.View.handles.jitterSeedEditbox.Enable = 'off';
+            end
         end
         
-        
+        function generate3DPatches_Callback(obj)
+            % function generate3DPatches_Callback(obj)
+            % callback for selection of crop 3D objects checkbox
+            
+            if isempty(obj.annotationLabels)   % standard call from mibStatisticsController
+                if obj.View.handles.Generate3DPatches.Value == true
+                    obj.View.handles.marginZEdit.Enable = 'on';
+                else
+                    obj.View.handles.marginZEdit.Enable = 'off';
+                    obj.View.handles.marginZEdit.String = '0';
+                    obj.updateBatchParameters('CropObjectsMarginZ', obj.View.handles.marginZEdit.String);
+                end
+            else % check for alternative call from mibAnnotationsController
+                obj.View.handles.marginZEdit.Enable = 'on';
+                if obj.View.handles.Generate3DPatches.Value == true
+                    obj.View.handles.CropObjectsDepth.Enable = 'on';
+                else 
+                    obj.View.handles.CropObjectsDepth.Enable = 'off';
+                end
+            end
+            obj.updateBatchParameters('Generate3DPatches', obj.View.handles.Generate3DPatches.Value);
+        end
+
+
         function selectDirBtn_Callback(obj)
             % function selectDirBtn_Callback(obj)
             % a callback for press of obj.View.handles.selectDirBtn to select
@@ -196,9 +248,10 @@ classdef mibCropObjectsController < handle
             switch type
                 case {'CropObjectsTo','CropObjectsIncludeModel','CropObjectsIncludeMask'}
                     obj.mibStatisticsController.BatchOpt.(type){1} = newValue;
-                case {'CropObjectsMarginXY', 'CropObjectsMarginZ', 'SingleMaskObjectPerDataset', 'CropObjectsDepth'}
+                case {'CropObjectsMarginXY', 'CropObjectsMarginZ', 'SingleMaskObjectPerDataset', 'CropObjectsDepth', ...
+                        'CropObjectsJitterVariation', 'CropObjectsJitterSeed'}
                     obj.mibStatisticsController.BatchOpt.(type) = newValue;
-                case 'Generate3DPatches'
+                case {'Generate3DPatches', 'CropObjectsJitter'}
                     obj.mibStatisticsController.BatchOpt.(type) = newValue;
                 otherwise
                     error('wrong value!');
@@ -209,10 +262,33 @@ classdef mibCropObjectsController < handle
             % function generatePatches(obj)
             % generate image patches using annotations as center
             % coordinates. The coordinates are provided in
-            % obj.labelPosition as [pntId][z,x,y,t]
+            % obj.annotationLabels as structure with 
+            % .names - cell array with label (annotation) names
+            % .positions - matrix with center coordinates of patches to be cropped out from the image, it is used by mibAnnotationsController. 
+
+            global mibPath;
+            % switches indicating whether the Z, X, or Y coordinate of
+            % annotations should be added to filenames
+            includeZ = false;
+            includeX = false;
+            includeY = false;
+
+            if obj.mibStatisticsController.BatchOpt.CropObjectsJitter
+                % initialize random generator
+                randSeed = str2double(obj.mibStatisticsController.BatchOpt.CropObjectsJitterSeed);
+                if randSeed == 0
+                    rng('shuffle');
+                else
+                    rng(randSeed, 'twister');
+                end
+                % add jitter to coordinates
+                randVariation = str2double(obj.mibStatisticsController.BatchOpt.CropObjectsJitterVariation);
+                varMatrix = randi(randVariation*2, [size(obj.annotationLabels.positions,1), 2]) - randVariation;
+                obj.annotationLabels.positions(:, 2:3) = obj.annotationLabels.positions(:, 2:3) + varMatrix;
+            end
 
             % round label coordinates
-            obj.labelPosition = round(obj.labelPosition);
+            obj.annotationLabels.positions = round(obj.annotationLabels.positions);
 
             % generate extension
             extensionPosition = strfind(obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}, '*.');
@@ -220,31 +296,97 @@ classdef mibCropObjectsController < handle
             if ~isempty(extensionPosition)
                 ext = obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}(extensionPosition+1:end-1);     % to be used below in eval block
             end
+
+            dimOpt.blockModeSwitch = 0;
+            [h, w, ~, z, tMax] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, NaN, dimOpt);
+
             if strcmp(obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}, 'Crop to Matlab')
-                Path = '';
+                outputPath = '';
                 fnTemplate = obj.outputVar;
             else
-                [Path, fnTemplate] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));  % to be used below in eval block
+                if ~isfield(obj.mibModel.sessionSettings, 'annotationsCropPatches') || ~isfield(obj.mibModel.sessionSettings.annotationsCropPatches, 'includeName')
+                    obj.mibModel.sessionSettings.annotationsCropPatches.includeName = false;
+                    obj.mibModel.sessionSettings.annotationsCropPatches.includeZ = false;
+                    obj.mibModel.sessionSettings.annotationsCropPatches.includeX = false;
+                    obj.mibModel.sessionSettings.annotationsCropPatches.includeY = false;
+                    obj.mibModel.sessionSettings.annotationsCropPatches.useSliceNameIdentifier = false;
+                    obj.mibModel.sessionSettings.annotationsCropPatches.cropOutAllMaterials = 1;
+                end
+
+                % obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{max([1 obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2])}
+                
+                prompts = {'Include annotation name'; 
+                           'Include Z coordinate';
+                           'Include X coordinate';
+                           'Include Y coordinate';
+                           'Use slice names as filename templates';
+                           sprintf('Would you like to export all materials or only selected?\n(when Crop model selected)')};
+                if ~isempty(obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames)
+                    modelText1 = 'All materials';
+                    modelText2 = sprintf('Selected materials (%s)', obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{max([1 obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2])});
+                else
+                    modelText1 = 'not used';
+                    modelText2 = '';
+                    obj.mibModel.sessionSettings.annotationsCropPatches.cropOutAllMaterials = 1;
+                end
+                
+                defAns = {obj.mibModel.sessionSettings.annotationsCropPatches.includeName; 
+                          obj.mibModel.sessionSettings.annotationsCropPatches.includeZ; 
+                          obj.mibModel.sessionSettings.annotationsCropPatches.includeX; 
+                          obj.mibModel.sessionSettings.annotationsCropPatches.includeY;
+                          obj.mibModel.sessionSettings.annotationsCropPatches.useSliceNameIdentifier;
+                          {modelText1, modelText2, obj.mibModel.sessionSettings.annotationsCropPatches.cropOutAllMaterials}; 
+                          };
+                dlgTitle = 'Crop patches settings';
+                options.WindowStyle = 'normal';
+                options.PromptLines = [1, 1, 1, 1, 1, 2]; 
+                options.Title = 'Specify additional parameters to be added to filenames'; 
+                options.TitleLines = 2; 
+                options.WindowWidth = 1.2;
+                [answer, selValue] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                if isempty(answer); obj.View.handles.cropBtn.BackgroundColor = [0, 1, 0]; return; end 
+
+                obj.mibModel.sessionSettings.annotationsCropPatches.includeName = logical(answer{1});
+                obj.mibModel.sessionSettings.annotationsCropPatches.includeZ = logical(answer{2});
+                obj.mibModel.sessionSettings.annotationsCropPatches.includeX = logical(answer{3});
+                obj.mibModel.sessionSettings.annotationsCropPatches.includeY = logical(answer{4});
+                obj.mibModel.sessionSettings.annotationsCropPatches.useSliceNameIdentifier = logical(answer{5});
+                obj.mibModel.sessionSettings.annotationsCropPatches.cropOutAllMaterials = selValue(6);
+
+                [outputPath, fnTemplate] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));  %#ok<ASGLU> % to be used below in eval block
+                fnTemplate =  repmat({fnTemplate}, [z, 1]); %#ok<NASGU>
+
+                if obj.mibModel.sessionSettings.annotationsCropPatches.useSliceNameIdentifier
+                    if isKey(obj.mibModel.I{obj.mibModel.Id}.meta, 'SliceName')
+                        sliceNames = obj.mibModel.I{obj.mibModel.Id}.meta('SliceName');
+                        if numel(sliceNames) == z
+                            [~, fnTemplate] = fileparts(sliceNames); %#ok<ASGLU>
+                        end
+                    end
+                end
             end
 
             % define materials for export
             if obj.View.handles.cropModelCheck.Value == 1
-                button = questdlg(sprintf('Would you like to export all materials or only selected?'), 'Select material to export', ...
-                    'All materials', sprintf('Material "%s"', obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{max([1 obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2])}), 'Cancel', 'All materials');
-                switch button
-                    case 'Cancel'
-                        obj.View.handles.cropBtn.BackgroundColor = [0, 1, 0];
-                        return;
-                    case 'All materials'
-                        obj.mibStatisticsController.BatchOpt.CropObjectsIncludeModelMaterialIndex = 'NaN';
-                    otherwise
-                        obj.mibStatisticsController.BatchOpt.CropObjectsIncludeModelMaterialIndex = num2str(max([1 obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2]));
+                if obj.mibModel.sessionSettings.annotationsCropPatches.cropOutAllMaterials == 1 % 'All materials'
+                    obj.mibStatisticsController.BatchOpt.CropObjectsIncludeModelMaterialIndex = 'NaN';
+                else
+                    obj.mibStatisticsController.BatchOpt.CropObjectsIncludeModelMaterialIndex = num2str(max([1 obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2]));
                 end
+                
+                % button = questdlg(sprintf('Would you like to export all materials or only selected?'), 'Select material to export', ...
+                %     'All materials', sprintf('Material "%s"', obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{max([1 obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2])}), 'Cancel', 'All materials');
+                % switch button
+                %     case 'Cancel'
+                %         obj.View.handles.cropBtn.BackgroundColor = [0, 1, 0];
+                %         return;
+                %     case 'All materials'
+                %         obj.mibStatisticsController.BatchOpt.CropObjectsIncludeModelMaterialIndex = 'NaN';
+                %     otherwise
+                %         obj.mibStatisticsController.BatchOpt.CropObjectsIncludeModelMaterialIndex = num2str(max([1 obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2]));
+                % end
             end
-
             material_id = str2double(obj.mibStatisticsController.BatchOpt.CropObjectsIncludeModelMaterialIndex);
-            dimOpt.blockModeSwitch = 0;
-            [h, w, ~, z, tMax] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, NaN, dimOpt);
         
             if obj.mibStatisticsController.BatchOpt.Generate3DPatches == 0
                 obj.mibStatisticsController.BatchOpt.CropObjectsDepth = '1';
@@ -258,22 +400,40 @@ classdef mibCropObjectsController < handle
             if obj.mibStatisticsController.BatchOpt.showWaitbar; wb = waitbar(0, 'Please wait...', 'Name', 'Saving objects'); end
             
             % get unique time points
-            noPoints = size(obj.labelPosition, 1);  % get number of annotation points
+            noPoints = size(obj.annotationLabels.positions, 1);  % get number of annotation points
             objDigits = numel(num2str(noPoints));   % get number of digits for objects
 
             for pntId = 1:noPoints
                 % generate filename
-                cmdText = ['filename = fullfile(obj.outputDir, sprintf(''%s_%0' num2str(objDigits) 'd%s'',  fnTemplate, pntId, ext));'];
-                eval(cmdText);
+                annZ = obj.annotationLabels.positions(pntId, 1); % z-coordinate of the annotation
 
-                z1 = obj.labelPosition(pntId, 1);
-                t1 = obj.labelPosition(pntId, 4);
+                if strcmp(obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}, 'Crop to Matlab')
+                    cmdText = ['filename = fullfile(obj.outputDir, sprintf(''%s_%0' num2str(objDigits) 'd%s'',  fnTemplate, pntId, ext));'];
+                    eval(cmdText);
+                else
+                    cmdText = ['filename = fullfile(obj.outputDir, sprintf(''%s_%0' num2str(objDigits) 'd'',  fnTemplate{annZ}, pntId));'];
+                    eval(cmdText);
+                    if obj.mibModel.sessionSettings.annotationsCropPatches.includeName
+                        filename = sprintf('%s_%s', filename, obj.annotationLabels.names{pntId});
+                    end
+                    if obj.mibModel.sessionSettings.annotationsCropPatches.includeZ
+                        depthDigits = numel(num2str(z));   % get number of digits for objects
+                        cmdText = ['filename = sprintf(''%s_z%0' num2str(depthDigits) 'd'', filename, obj.annotationLabels.positions(pntId, 1));']; 
+                        eval(cmdText);
+                    end
+                    if obj.mibModel.sessionSettings.annotationsCropPatches.includeX; filename = sprintf('%s_x%d', filename, obj.annotationLabels.positions(pntId, 2)); end
+                    if obj.mibModel.sessionSettings.annotationsCropPatches.includeY; filename = sprintf('%s_y%d', filename, obj.annotationLabels.positions(pntId, 3)); end
+                    filename = sprintf('%s%s', filename, ext);
+                end
+
+                z1 = obj.annotationLabels.positions(pntId, 1);
+                t1 = obj.annotationLabels.positions(pntId, 4);
                 getDataOpt.t = [t1 t1];
                 getDataOpt.z = [z1-floor(depth/2) z1-floor(depth/2)];
             
-                x1 = obj.labelPosition(pntId, 2) - floor(width/2);
-                y1 = obj.labelPosition(pntId, 3) - floor(height/2);
-                z1 = obj.labelPosition(pntId, 1) - floor(depth/2);
+                x1 = obj.annotationLabels.positions(pntId, 2) - floor(width/2);
+                y1 = obj.annotationLabels.positions(pntId, 3) - floor(height/2);
+                z1 = obj.annotationLabels.positions(pntId, 1) - floor(depth/2);
                 if x1 < 1; x1 = 1; end
                 if x1 > w-width+1; x1 = w-width+1; end
                 if y1 < 1; y1 = 1; end
@@ -304,8 +464,7 @@ classdef mibCropObjectsController < handle
 
                 switch obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}
                     case 'Crop to Matlab'
-                        %matlabVarName = sprintf('%s_%06d%s',  fnTemplate, objId);
-                        if BatchModeSwitch == 0; [~, obj.outputVar] = fileparts(filename); end
+                        [~, obj.outputVar] = fileparts(filename);
                         matlabVar.img = imgOut2.img{1};
                         matlabVar.meta = containers.Map(keys(imgOut2.meta), values(imgOut2.meta));
                     case 'Amira Mesh binary (*.am)'  % Amira Mesh
@@ -485,15 +644,18 @@ classdef mibCropObjectsController < handle
             obj.closeWindow(); 
         end
 
-        function cropBtn_Callback(obj, BatchModeSwitch)
+        function cropBtn_Callback(obj, batchModeSwitch)
             % function cropBtn_Callback(obj)
             % a callback for press of obj.View.handles.cropBtn to start cropping            
             % Parameters:
-            % BatchModeSwitch: a logical switch indicating start of the function using the batch mode
-            if nargin < 2; BatchModeSwitch = 0; end
+            % batchModeSwitch: a logical switch indicating start of the function using the batch mode
+            if nargin < 2; batchModeSwitch = 0; end
             global mibPath; % path to mib installation folder
             
-            if ~isempty(obj.labelPosition) % alternative call from mibAnnotationsController
+            obj.mibModel.sessionSettings.annotationsCropPatches.CropObjectsJitterVariation = obj.mibStatisticsController.BatchOpt.CropObjectsJitterVariation;   % variation of the jitter in pixels
+            obj.mibModel.sessionSettings.annotationsCropPatches.CropObjectsJitterSeed = obj.mibStatisticsController.BatchOpt.CropObjectsJitterSeed;    % initialization of the random generator, when 0-random
+            
+            if isfield(obj.annotationLabels, 'positions') % alternative call from mibAnnotationsController
                 obj.generatePatches();
                 return;
             end
@@ -505,18 +667,20 @@ classdef mibCropObjectsController < handle
                 ext = obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}(extensionPosition+1:end-1);     % to be used below in eval block
             end
             if strcmp(obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}, 'Crop to Matlab')
-                Path = '';
+                outputPath = '';
                 fnTemplate = obj.outputVar;
             else
-                [Path, fnTemplate] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));  % to be used below in eval block
+                [outputPath, fnTemplate] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));  % to be used below in eval block
             end
             
-            if BatchModeSwitch == 0
+            if batchModeSwitch == 0
                 obj.View.handles.cropBtn.BackgroundColor = [1, 0, 0];
                 
                 data = obj.mibStatisticsController.View.handles.statTable.Data;
                 % find uniqueTime - unique time points and their indices uniqueIndex
                 selectedIndices = unique(obj.mibStatisticsController.indices(:,1));
+                % linear object indices, i.e. in a sequence how they were detected
+                objIndices = str2num(cell2mat(obj.mibStatisticsController.View.handles.statTable.RowName(selectedIndices)));
                 [uniqueTime, ~, uniqueIndex] = unique(data(selectedIndices,4));
                 
                 % define materials for export
@@ -537,16 +701,19 @@ classdef mibCropObjectsController < handle
                 % generate data table, similar to the Statistics table of mibStatisticsController window
                 data = zeros(numel(obj.mibStatisticsController.STATS),4);
                 if numel(data) ~= 0
-                    [data(:,2), data(:,1)] = sort(cat(1,obj.mibStatisticsController.STATS.(obj.mibStatisticsController.BatchOpt.Property{1})), 'descend');
+                    [data(:,2), sortingRowIndex] = sort(cat(1,obj.mibStatisticsController.STATS.(obj.mibStatisticsController.BatchOpt.Property{1})), 'descend');
+                    % add object Ids
+                    data(:, 1) = [obj.mibStatisticsController.STATS(sortingRowIndex).ObjectId];
+
                     w1 = obj.mibModel.getImageProperty('width');
                     h1 = obj.mibModel.getImageProperty('height');
                     d1 = obj.mibModel.getImageProperty('depth');
-                    for row = 1:size(data,1)
-                        pixelId = max([1 floor(numel(obj.mibStatisticsController.STATS(data(row,1)).PixelIdxList)/2)]);  % id of the voxel to get a slice number
+                    for row = 1:size(data, 1)
+                        pixelId = max([1 floor(numel(obj.mibStatisticsController.STATS(sortingRowIndex(row)).PixelIdxList)/2)]);  % id of the voxel to get a slice number
                         [~, ~, data(row,3)] = ind2sub([w1, h1, d1], ...
-                            obj.mibStatisticsController.STATS(data(row,1)).PixelIdxList(pixelId));
+                            obj.mibStatisticsController.STATS(sortingRowIndex(row)).PixelIdxList(pixelId));
                     end
-                    data(:, 4) = [obj.mibStatisticsController.STATS(data(:,1)).TimePnt];
+                    data(:, 4) = [obj.mibStatisticsController.STATS(sortingRowIndex(row)).TimePnt];
                 end
                 selectedIndices = 1:numel(obj.mibStatisticsController.STATS);
                 [uniqueTime, ~, uniqueIndex] = unique([obj.mibStatisticsController.STATS.TimePnt]);
@@ -556,8 +723,8 @@ classdef mibCropObjectsController < handle
                     if obj.mibStatisticsController.BatchOpt.CropObjectsOutputName(1) ~= filesep % add slash before the filename
                         obj.mibStatisticsController.BatchOpt.CropObjectsOutputName = [filesep obj.mibStatisticsController.BatchOpt.CropObjectsOutputName]; 
                     end  
-                    if isempty(Path); Path = obj.mibModel.myPath; end
-                    obj.outputDir = [Path, obj.mibStatisticsController.BatchOpt.CropObjectsOutputName];
+                    if isempty(outputPath); outputPath = obj.mibModel.myPath; end
+                    obj.outputDir = [outputPath, obj.mibStatisticsController.BatchOpt.CropObjectsOutputName];
                     if exist(obj.outputDir, 'dir') == 0; mkdir(obj.outputDir); end  % create a new directory for the output
                 else
                     fnTemplate = obj.mibStatisticsController.BatchOpt.CropObjectsOutputName;
@@ -576,6 +743,8 @@ classdef mibCropObjectsController < handle
                     CC.Connectivity = 8;
                 end
                 CC.ImageSize = [h, w];
+                jitterWidthIndex = 3;   % index of the object width in S.BoundingBox for coordinates jitter 
+                jitterHeightIndex = 4;  % index of the object height in S.BoundingBox
             else            % 3D mode
                 if strcmp(obj.mibStatisticsController.BatchOpt.Connectivity{1}, '4/6 connectivity')
                     CC.Connectivity = 6;
@@ -583,6 +752,8 @@ classdef mibCropObjectsController < handle
                     CC.Connectivity = 26;
                 end
                 CC.ImageSize = [h, w, z];
+                jitterWidthIndex = 4;   % index of the object width in S.BoundingBox for coordinates jitter 
+                jitterHeightIndex = 5;  % index of the object height in S.BoundingBox
             end
             CC.NumObjects = 1;
             
@@ -594,6 +765,21 @@ classdef mibCropObjectsController < handle
             timeIter = 1;
             if obj.mibStatisticsController.BatchOpt.showWaitbar; wb = waitbar(0, 'Please wait...', 'Name', 'Saving objects'); end
             
+            % define random generator for the jitter of coordinates
+            if obj.mibStatisticsController.BatchOpt.CropObjectsJitter
+                % initialize random generator
+                randSeed = str2double(obj.mibStatisticsController.BatchOpt.CropObjectsJitterSeed);
+                if randSeed == 0
+                    rng('shuffle');
+                else
+                    rng(randSeed, 'twister');
+                end
+                % acquire variation for the jitter
+                randVariation = str2double(obj.mibStatisticsController.BatchOpt.CropObjectsJitterVariation);
+            end
+
+            objectDigits = numel(num2str(numel(obj.mibStatisticsController.STATS))); % get number of digits for objects
+
             for t=uniqueTime'   % has to be a horizontal vector
                 if obj.mibStatisticsController.BatchOpt.showWaitbar; waitbar(0, wb, sprintf('Time point: %d\nPlease wait...', t)); end
                 
@@ -605,10 +791,11 @@ classdef mibCropObjectsController < handle
                 end
                 
                 curTimeObjIndices = selectedIndices(uniqueIndex==timeIter);     % find indices of objects for the current time point t
+                
                 for rowId = 1:numel(curTimeObjIndices)
-                    objId = data(curTimeObjIndices(rowId), 1);
+                    %objId = data(curTimeObjIndices(rowId), 1);
+                    objId = str2double(obj.mibStatisticsController.View.handles.statTable.RowName(curTimeObjIndices(rowId)));
                     
-                    objectDigits = numel(num2str(max(data(curTimeObjIndices, 1))));    % get number of digits for objects
                     if strcmp(obj.mibStatisticsController.BatchOpt.Shape{1}, 'Shape2D')  % 2D mode
                         sliceDigits = numel(num2str(z));    % get number of digits for slices
                         sliceNumber = data(curTimeObjIndices(rowId), 3); %#ok<NASGU>
@@ -644,13 +831,27 @@ classdef mibCropObjectsController < handle
                     % get bounding box
                     S = regionprops(CC, 'BoundingBox');
                     
+                    % add jitter
+                    if obj.mibStatisticsController.BatchOpt.CropObjectsJitter
+                        varJitterX = randi(randVariation*2)-randVariation;
+                        varJitterY = randi(randVariation*2)-randVariation;
+                        
+                        % check border cases
+                        if S.BoundingBox(1) + varJitterX < 0.5; varJitterX = 0; end
+                        if S.BoundingBox(2) + varJitterY < 0.5; varJitterY = 0; end
+                        if S.BoundingBox(1)+S.BoundingBox(jitterWidthIndex)+varJitterX > w; varJitterX = 0; end
+                        if S.BoundingBox(2)+S.BoundingBox(jitterHeightIndex)+varJitterY > h; varJitterY = 0; end
+                        S.BoundingBox(1) = S.BoundingBox(1) + varJitterX;
+                        S.BoundingBox(2) = S.BoundingBox(2) + varJitterY;
+                    end
+
                     if strcmp(obj.mibStatisticsController.BatchOpt.Shape{1}, 'Shape2D')  % 2D mode
                         xMin = ceil(S.BoundingBox(1))-marginXY;
                         yMin = ceil(S.BoundingBox(2))-marginXY;
                         xMax = xMin+floor(S.BoundingBox(3))-1+marginXY*2;
                         yMax = yMin+floor(S.BoundingBox(4))-1+marginXY*2;
-                        zMin = sliceNumber;
-                        zMax = sliceNumber;
+                        zMin = sliceNumber-marginZ;
+                        zMax = sliceNumber+marginZ;
                     else
                         xMin = ceil(S.BoundingBox(1))-marginXY;
                         yMin = ceil(S.BoundingBox(2))-marginXY;
@@ -696,7 +897,7 @@ classdef mibCropObjectsController < handle
                     switch obj.mibStatisticsController.BatchOpt.CropObjectsTo{1}
                         case 'Crop to Matlab'
                             %matlabVarName = sprintf('%s_%06d%s',  fnTemplate, objId);
-                            if BatchModeSwitch == 0; [~, obj.outputVar] = fileparts(filename); end
+                            if batchModeSwitch == 0; [~, obj.outputVar] = fileparts(filename); end
                             matlabVar.img = imgOut2.img{1};
                             matlabVar.meta = containers.Map(keys(imgOut2.meta), values(imgOut2.meta));
                         case 'Amira Mesh binary (*.am)'  % Amira Mesh
@@ -918,7 +1119,7 @@ classdef mibCropObjectsController < handle
             if obj.mibStatisticsController.BatchOpt.showWaitbar; delete(wb); end
             %obj.View.handles.cropBtn.BackgroundColor = [0 1 0];
             
-            if BatchModeSwitch == 0
+            if batchModeSwitch == 0
                 % for batch need to generate an event and send the BatchOptLoc
                 % structure with it to the macro recorder / mibBatchController
                 obj.mibStatisticsController.BatchOpt.ExportResultsTo{1} = 'Do not export';

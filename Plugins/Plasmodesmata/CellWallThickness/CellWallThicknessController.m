@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef CellWallThicknessController < handle
     % demo https://youtu.be/dIl1dt_cSqE
     properties
@@ -469,7 +485,7 @@ classdef CellWallThicknessController < handle
 
                 if generateRandomPoints     % generate random points
                     waitbar(0.5, wb, sprintf('Calculating the random points\nPlease wait...'));
-                    rng(randomGenerator);   % initialize random number generator
+                    rng(randomGenerator, 'twister');   % initialize random number generator
                     randgensettings = rng();   % obtain used generator settings
                     CellWallThickness.RendomGenSeed = randgensettings.Seed;
                     

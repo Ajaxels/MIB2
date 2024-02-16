@@ -83,6 +83,10 @@ Y{:,2}=rand(1000,1);
 violin(Y,'facecolor',[1 1 0;0 1 0;.3 .3 .3;0 0.3 0.1],'edgecolor','none','bw',0.1,'mc','k','medc','r-.')
 ylabel('\Delta [yesno^{-2}]','FontSize',14)
 %}
+
+%% Updates
+% 09.06.2023 Ilya Belevich, added handling of NaNs
+
 %%
 function[h,L,MX,MED,bw]=violin(Y,varargin)
 
@@ -163,11 +167,16 @@ end
 %% Calculate the kernel density
 i=1;
 for i=1:size(Y,2)
-    
-    if isempty(b)==0
-        [f, u, bb]=ksdensity(Y{i},'bandwidth',b(i));
-    elseif isempty(b)
-        [f, u, bb]=ksdensity(Y{i});
+    try
+        if isempty(b)==0
+            [f, u, bb]=ksdensity(Y{i}, 'bandwidth', b(i));
+        elseif isempty(b)
+            [f, u, bb]=ksdensity(Y{i});
+        end
+    catch err
+        f = NaN([size(F,1), 1]);
+        u = NaN([size(F,1), 1]);
+        bb = 0;
     end
     
     f=f/max(f)*0.3; %normalize
@@ -215,19 +224,21 @@ for i=i:size(Y,2)
         end
     end
     hold on
-    if setX == 0
-        if plotmean == 1
-            p(1)=plot([interp1(U(:,i),F(:,i)+i,MX(:,i)), interp1(flipud(U(:,i)),flipud(i-F(:,i)),MX(:,i)) ],[MX(:,i) MX(:,i)],mc,'LineWidth',linewidth);
-        end
-        if plotmedian == 1
-            p(2)=plot([interp1(U(:,i),F(:,i)+i,MED(:,i)), interp1(flipud(U(:,i)),flipud(i-F(:,i)),MED(:,i)) ],[MED(:,i) MED(:,i)],medc,'LineWidth',linewidth);
-        end
-    elseif setX == 1
-        if plotmean == 1
-            p(1)=plot([interp1(U(:,i),F(:,i)+i,MX(:,i))+x(i)-i, interp1(flipud(U(:,i)),flipud(i-F(:,i)),MX(:,i))+x(i)-i],[MX(:,i) MX(:,i)],mc,'LineWidth',linewidth);
-        end
-        if plotmedian == 1
-            p(2)=plot([interp1(U(:,i),F(:,i)+i,MED(:,i))+x(i)-i, interp1(flipud(U(:,i)),flipud(i-F(:,i)),MED(:,i))+x(i)-i],[MED(:,i) MED(:,i)],medc,'LineWidth',linewidth);
+    if ~isnan(F(1,i))
+        if setX == 0
+            if plotmean == 1
+                p(1)=plot([interp1(U(:,i),F(:,i)+i,MX(:,i)), interp1(flipud(U(:,i)),flipud(i-F(:,i)),MX(:,i)) ],[MX(:,i) MX(:,i)],mc,'LineWidth',linewidth);
+            end
+            if plotmedian == 1
+                p(2)=plot([interp1(U(:,i),F(:,i)+i,MED(:,i)), interp1(flipud(U(:,i)),flipud(i-F(:,i)),MED(:,i)) ],[MED(:,i) MED(:,i)],medc,'LineWidth',linewidth);
+            end
+        elseif setX == 1
+            if plotmean == 1
+                p(1)=plot([interp1(U(:,i),F(:,i)+i,MX(:,i))+x(i)-i, interp1(flipud(U(:,i)),flipud(i-F(:,i)),MX(:,i))+x(i)-i],[MX(:,i) MX(:,i)],mc,'LineWidth',linewidth);
+            end
+            if plotmedian == 1
+                p(2)=plot([interp1(U(:,i),F(:,i)+i,MED(:,i))+x(i)-i, interp1(flipud(U(:,i)),flipud(i-F(:,i)),MED(:,i))+x(i)-i],[MED(:,i) MED(:,i)],medc,'LineWidth',linewidth);
+            end
         end
     end
 end

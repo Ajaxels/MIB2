@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibSegmentationDragAndDrop(obj, y, x, modifier)
 % mibSegmentationDragAndDrop(y, x, modifier)
 % Fix segmentation or mask/selection layers by dragging individual 2D/3D
@@ -15,13 +31,6 @@ function mibSegmentationDragAndDrop(obj, y, x, modifier)
 %| @b Examples:
 % @code obj.mibSegmentationDragAndDrop(50, 75, 'control');  // start the drag and drop tool from position [y,x]=50,75,10 @endcode
 
-% Copyright (C) 05.08.2019 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -74,6 +83,10 @@ elseif strcmp(modifier, 'control')
     selarea = bwselect(selarea,x,y);
     obj.mibView.brushSelection = selarea;
 end
+
+% count user's points
+obj.mibModel.preferences.Users.Tiers.numberOfDragDropMaterials = obj.mibModel.preferences.Users.Tiers.numberOfDragDropMaterials+1;
+notify(obj.mibModel, 'updateUserScore');     % update score using default obj.mibModel.preferences.Users.singleToolScores increase
 
 obj.mibView.updateCursor('solid');   % set the brush cursor in the drawing mode
 obj.mibView.gui.WindowButtonDownFcn = [];

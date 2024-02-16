@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Rename and shuffle (randomize files)...</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_file_rename_and_shuffle.m"><style>
+      --><title>Rename and shuffle (randomize files)...</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_file_rename_and_shuffle.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -145,11 +145,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -553,6 +552,7 @@ A demonstration is available in the following video:
 <li><b>Include model</b>, when model is already present for the input images, it can also be randomized according to the shuffled image files. <b>Note!</b> It is important that each folder contains only a single file in the <i>*.model</i> format</li>
 <li><b>Include mask</b>, same as above but for masks. <b>Note!</b> It is important that each folder contains only a single file in the <i>*.mask</i> format</li>
 <li><b>Include annotations</b>, same as above but for annotations. <b>Note!</b> It is important that each folder contains only a single file in the <i>*.ann</i> format</li>
+<li><b>Include measurements</b>, same as above but for measurements. <b>Note!</b> It is important that each folder contains only a single file in the <i>*.measure</i> format</li>
 <li><b>Random seed</b>, a positive number defining a seed for random number generator; the files will be sorted in the same way when the random seed value stays unchanged</li>
 <li><b>Filename extension</b>, provide extension for filenames with images</li>
 <li><b>Filename templalte</b>, define filename template for the shuffled images</li>
@@ -575,7 +575,8 @@ A demonstration is available in the following video:
 </details>
 <br>
 <p>To start the process it is required to select the project file by pressing the <span class="kbd">...</span> button and selection a project file that was stored under the directory, where the images were originally shuffled. The project file has <code>*.mibShuffle</code> extension.</p>
-<p>Upon the loading of the project file the <code>Directory with shuffled images</code> and <code>Destination directories</code> list boxes are populated. It is possible to use the right mouse button to start a popup menu to modify the directory names.</p>
+<p>Upon the loading of the project file the <code>Directory with shuffled images</code> and <code>Destination directories</code> list boxes are populated. It is possible to use the right mouse button to start a popup menu to modify the directories, copy directory name to the system clipboard or to open the directory in file explorer.</p>
+<p>The updated project with the new directory names can be saved to a disk using the <span class="kbd">Save</span> button.</p>
 <p>When the masks or annotation are also present in the directories with the shuffled image files, they can also be restored to the destination directories.</p>
 <p>Press the <span class="kbd">Restore shuffled</span> button to start the process. As result, new '_Labels_RestoreRand_YYMMDD.model_' and '_Mask_RestoreRand_YYMMDD.mask_' files will be created at each of the descination directories. The 'YYMMDD' string denotes a date when the restore procedure is done.</p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_file.html"><b>File Menu</b></a></p>
@@ -586,7 +587,7 @@ A demonstration is available in the following video:
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Rename and shuffle (randomize files)...
@@ -650,6 +651,9 @@ A demonstration is available in the following video:
 % * *Include annotations*, same as above but for annotations. *Note!* It
 % is important that each folder contains only a single file in the
 % _*.ann_ format
+% * *Include measurements*, same as above but for measurements. *Note!* It
+% is important that each folder contains only a single file in the
+% _*.measure_ format
 % * *Random seed*, a positive number defining a seed for random number
 % generator; the files will be sorted in the same way when the random seed
 % value stays unchanged
@@ -687,9 +691,13 @@ A demonstration is available in the following video:
 % Upon the loading of the project file the |Directory with shuffled
 % images| and |Destination directories| list boxes are populated. It is
 % possible to use the right mouse button to start a popup menu to modify
-% the directory names. 
+% the directories, copy directory name to the system clipboard or to open
+% the directory in file explorer.
 %
+% The updated project with the new directory names can be saved to a disk
+% using the [class.kbd]Save[/class] button.
 % 
+%
 % When the masks or annotation are also present in the directories with the shuffled
 % image files, they can also be restored to the destination directories.
 %

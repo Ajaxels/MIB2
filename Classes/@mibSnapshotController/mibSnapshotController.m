@@ -1,14 +1,23 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibSnapshotController < matlab.mixin.Copyable
     % classdef mibSnapshotController < matlab.mixin.Copyable
     % a controller class for the snapshots subwindow available via
     % MIB->Menu->File->Make snapshot
-    
-    % Copyright (C) 26.12.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
     
     % Updates
     % 16.11.2018, IB updated for making snapshots from volume viewer
@@ -720,6 +729,11 @@ classdef mibSnapshotController < matlab.mixin.Copyable
             end
             delete(wb);
             
+            % count user's points
+            obj.mibModel.preferences.Users.Tiers.numberOfSnapAndMovies = obj.mibModel.preferences.Users.Tiers.numberOfSnapAndMovies+1;
+            eventdata = ToggleEventData(2);    % scale scoring by factor 5
+            notify(obj.mibModel, 'updateUserScore', eventdata);
+
             obj.View.handles.snapshotBtn.BackgroundColor = 'g';
         end
         

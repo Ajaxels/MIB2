@@ -1,21 +1,30 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function varargout = mibAnnotationsGUI(varargin)
 % function varargout = mibAnnotationsGUI(varargin)
 % mibAnnotationsGUI is a GUI tool to show list of labels
 
-% Copyright (C) 16.05.2014, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 25.01.2016, updated for 4D
 
 
 % Edit the above text to modify the response to help mibAnnotationsGUI
 
-% Last Modified by GUIDE v2.5 27-Apr-2021 16:49:44
+% Last Modified by GUIDE v2.5 06-Feb-2024 18:16:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -61,9 +70,11 @@ uimenu(handles.labelsTable_cm, 'Label', 'Rename selected annotations...', 'Callb
 uimenu(handles.labelsTable_cm, 'Label', 'Batch modify selected annotations...', 'Callback', {@tableContextMenu_cb, 'Modify'});
 uimenu(handles.labelsTable_cm, 'Label', 'Count selected annotations', 'Callback', {@tableContextMenu_cb, 'Count'});
 uimenu(handles.labelsTable_cm, 'Label', 'Copy selected annotations to clipboard', 'Callback', {@tableContextMenu_cb, 'Clipboard'}, 'Separator', 'on');
+uimenu(handles.labelsTable_cm, 'Label', 'Paste from clipboard to column', 'Callback', {@tableContextMenu_cb, 'ClipboardPaste'});
 uimenu(handles.labelsTable_cm, 'Label', 'Convert selected annotations to Mask...', 'Callback', {@tableContextMenu_cb, 'Mask'});
 uimenu(handles.labelsTable_cm, 'Label', 'Crop out patches around selected annotation...', 'Callback', {@tableContextMenu_cb, 'CropPatches'});
-uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations...', 'Callback', {@tableContextMenu_cb, 'Export'});
+uimenu(handles.labelsTable_cm, 'Label', 'Interpolate between selected annotations...', 'Callback', {@tableContextMenu_cb, 'Interpolate'});
+uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations...', 'Separator','on', 'Callback', {@tableContextMenu_cb, 'Export'});
 uimenu(handles.labelsTable_cm, 'Label', 'Export selected annotations to Imaris', 'Callback', {@tableContextMenu_cb, 'Imaris'});
 m09 = uimenu(handles.labelsTable_cm, 'Label', 'Order', 'Separator','on');
 uimenu(handles.labelsTable_cm, 'Parent', m09, 'Label', 'Move to top  (Ctrl+Shift+Up)', 'Callback', {@tableContextMenu_cb, 'OrderTop'});
@@ -198,4 +209,17 @@ end
 % --- Executes on button press in settingsButton.
 function settingsButton_Callback(hObject, eventdata, handles)
 handles.winController.settingsBtn_Callback();
+end
+
+
+% --- Executes on key press with focus on mibAnnotationsGUI and none of its controls.
+function mibAnnotationsGUI_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to mibAnnotationsGUI (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+handles.winController.mibAnnotationsGUI_KeyPressFcn(eventdata);
 end

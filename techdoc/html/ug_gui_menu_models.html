@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Model Menu</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_models.m"><style>
+      --><title>Model Menu</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_models.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -145,11 +145,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -564,27 +563,28 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="3">New model</h2>
-<p>Allocate space for a new model. Use this menu entry when you want to start a new model or to delete the existing one. Alternatively it is possible to use the <span class="kbd">Create</span> button in the <a href="ug_panel_segm.html">Segmentation Panel</a>. 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p><h2 id="3">New model</h2>
+<p>Allocate space for a new model. Use this menu entry when you want to start a new model or to delete the existing one. Alternatively it is possible to use the <span class="kbd">Create</span> button in the <a href="ug_panel_segm.html">Segmentation Panel</a>. <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="4">Load model</h2>
-<p>Load model from the disk. By default <code>MIB</code> tries to read the models in the MATLAB format (.model), but it is also possible to specify other formats as well 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p>Load model from the disk. By default <code>MIB</code> tries to read the models in the MATLAB format (.model), but it is also possible to specify other formats as well <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <details open onclick="state_check('2.1')" id="2.1"><summary> <b>List of compatible model types</b> </summary>
 <div class="details-div">
 <p></p>
 <div><ul><li><b>.AM, Amira Mesh</b> - as Amira Mesh label field for models saved in <a href="http://www.vsg3d.com/amira/overview">Amira</a> format</li>
 <li><b>.NRRD, Nearly Raw Raster Data</b> - a data format compatible with <a href="www.slicer.org">3D slicer</a>.</li>
 <li><b>.MRC, Medical Research Council format</b> - a data format compatible with IMOD <a href="http://bio3d.colorado.edu/imod">http://bio3d.colorado.edu/imod</a>. When using this mode, it is possible to provide a list of MRC files, where each object is encoded using its number in a separate MRC-file; after that MIB will assemble and merge all these individual objects together into a single model.</li>
-<li><b>.TIF, TIF format</b></li></ul></div>
+<li><b>.PNG, PNG format</b> - save models as 2D slices using Portable Network Graphic format</li>
+<li><b>.TIF, TIF format</b> - save models as 2D slices or 3D volumes using Tag Image File format</li></ul></div>
 <p><b>Note!</b> almost any standard image format can be loaded as a model, please choose <span class="code">All files (<b>.</b>)</span> filter in the Open model dialog.</p>
 </div>
 </details>
 <br>
-<p>Alternatively it is possible to use the <span class="kbd">Load</span> button in the <a href="ug_panel_segm.html">Segmentation Panel</a>. 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p>Alternatively it is possible to use the <span class="kbd">Load</span> button in the <a href="ug_panel_segm.html">Segmentation Panel</a>. <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="5">Import model from MATLAB</h2>
 <p>Imports model from the main MATLAB workspace. Please provide a variable name from the main MATLAB workspace with the model. The variable could be either a matrix with dimensions similar to those of the loaded dataset <span class="code">[1:height, 1:width, 1:no-slices]</span> of the <span class="code">uint8</span> class or a structure with fields specified below.</p>
@@ -599,8 +599,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="6">Export model to...</h2>
 <p>Exports model from MIB to other programs.</p>
@@ -612,8 +612,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(5)" class="collapse-link"><a href="javascript:void(0);" id="Toggle5">collapse all</a></p><h2 id="7">Save model</h2>
 <p>Saves model to a file in the MATLAB format; the file name is not asked</p>
@@ -626,8 +626,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(6)" class="collapse-link"><a href="javascript:void(0);" id="Toggle6">collapse all</a></p><h2 id="8">Save model as...</h2>
 <p>Provide filename and file format and save the model to a file</p>
@@ -640,13 +640,14 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li><b>.MOD, IMOD format</b> - contours for IMOD</li>
 <li><b>.MRC, IMOD format</b> - volume for IMOD</li>
 <li><b>.NRRD, Nearly Raw Raster Data</b> - a data format compatible with <a href="www.slicer.org">3D slicer</a>.</li>
+<li><b>.PNG</b> - save models as 2D slices using Portable Network Graphic format</li>
 <li><b>.STL, STL format</b> - triangulated mesh for use with visualization programs such as Blender.</li>
 <li><b>.TIF, TIF format</b></li></ul></div>
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(7)" class="collapse-link"><a href="javascript:void(0);" id="Toggle7">collapse all</a></p><h2 id="9">Render model...</h2>
 <p>The segmented models can be rendered directly from MIB using one of the following methods:</p>
@@ -776,8 +777,8 @@ With ImarisXT <a href="https://youtu.be/yODGYJUzTr0"><img class="image-fit" styl
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="12">Annotations...</h2>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p><h2 id="12">Annotations...</h2>
 <p>Use this menu to modify the <code>Annotations</code> layer</p>
 <p>
 A brief demonstration is available in the following video:
@@ -796,7 +797,7 @@ A brief demonstration is available in the following video:
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Model Menu
@@ -879,7 +880,8 @@ A brief demonstration is available in the following video:
 % possible to provide a list of MRC files, where each object is encoded
 % using its number in a separate MRC-file; after that MIB will assemble and merge all these
 % individual objects together into a single model.
-% * *.TIF, TIF format*
+% * *.PNG, PNG format* - save models as 2D slices using Portable Network Graphic format 
+% * *.TIF, TIF format* - save models as 2D slices or 3D volumes using Tag Image File format
 % 
 % *Note!* almost any standard image format can be loaded as a model, please
 % choose [class.code]All files (*.*)[/class] filter in the Open model dialog.
@@ -953,6 +955,7 @@ A brief demonstration is available in the following video:
 % * *.MOD, IMOD format* - contours for IMOD 
 % * *.MRC, IMOD format* - volume for IMOD 
 % * *.NRRD, Nearly Raw Raster Data* - a data format compatible with <www.slicer.org 3D slicer>.
+% * *.PNG* - save models as 2D slices using Portable Network Graphic format 
 % * *.STL, STL format* - triangulated mesh for use with visualization
 % programs such as Blender.
 % * *.TIF, TIF format*

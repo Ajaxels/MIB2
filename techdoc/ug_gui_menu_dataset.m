@@ -10,6 +10,7 @@
 % <<images\menuDataset.png>>
 % 
 %% Alignment tool...
+%
 % Can be used to align the slices of the opened dataset or to align two
 % separate datasets. See details <ug_gui_menu_dataset_alignment.html *here*>.
 % 
@@ -26,7 +27,7 @@
 %
 % <html>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/PQtpYUuJwG8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PQtpYUuJwG8</a>
+% <a href="https://youtu.be/PQtpYUuJwG8"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/PQtpYUuJwG8</a>
 % </html>
 % 
 % <<images/MenuDatasetCrop.png>>
@@ -52,7 +53,7 @@
 %
 % <html>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/26-HROwg_JM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/26-HROwg_JM</a>
+% <a href="https://youtu.be/26-HROwg_JM"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/26-HROwg_JM</a>
 % </html>
 %
 %%
@@ -113,9 +114,9 @@
 % <td>- physically transpose the dataset, so that the Z (depth) orienation, becomes C (color)</td></tr>
 % </table>
 % A brief demonstration is available in the following videos:<br>
-% Flip: <a href="https://youtu.be/lGjhB-NJZMk"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/lGjhB-NJZMk</a><br>
-% Rotate: <a href="https://youtu.be/WFbZn0rfb5I"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/WFbZn0rfb5I</a><br>
-% Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/PyEXX7j6pnc</a><br>
+% Flip: <a href="https://youtu.be/lGjhB-NJZMk"><img style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/lGjhB-NJZMk</a><br>
+% Rotate: <a href="https://youtu.be/WFbZn0rfb5I"><img style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/WFbZn0rfb5I</a><br>
+% Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/PyEXX7j6pnc</a><br>
 % </html>
 %
 % [br8]
@@ -125,18 +126,20 @@
 %
 % [dtls][smry] *The following actions are possible* [/smry]
 % 
-% * *Copy slice...* - allows to copy slice from one
-% position to another position within the same dataset (the 'Replace'
-% options) or to insert one slice to another position in the dataset (the
-% 'Insert' option). <https://youtu.be/iGA4US2PHXw A short demo>.
-% * *Insert an empty slice* - insert a uniformly colored slice to any
-% position inside the dataset. <https://youtu.be/iGA4US2PHXw A short demo>.
-% * *Delete slice(s)...* - removes desired slice(s) from a Z-stack of the
-% dataset. _For example, type " |5:10| " to delete all slices from slice 5 to
-% slice 10._
-% * *Delete frame(s)...* - removes desired frame(s) from a time series of the
-% dataset.
-% * *Swap slices...* - spaw two or more slices
+% <html>
+% <ul>
+% <li> <b>Copy slice...</b> - allows to copy slice from one
+% position to another position within the same dataset (the 'Replace' options) or to insert one slice to another position in the dataset 
+% (the 'Insert' option). <a href="https://youtu.be/iGA4US2PHXw"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/iGA4US2PHXw</a>. </li>
+% <li> <b>Insert empty slice(s)...</b> - insert a uniformly colored slice (or slices) to any
+% position inside the dataset <a href="https://youtu.be/iGA4US2PHXw"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/iGA4US2PHXw</a>.</li>
+% <li> <b>Interval slicing...</b> - replace the current dataset with extract of each N-th slice from the dataset</li>
+% <li> <b>Swap slices...</b> - spaw two or more slices</li>
+% <li> <b>Delete slice(s)...</b> - removes desired slice(s) from a Z-stack of the
+% dataset. For example, type <span class="code"> 5:10 </span> to delete all slices from slice 5 to slice 10.</li>
+% <li> <b>Delete frame(s)...</b> - removes desired frame(s) from a time series of the dataset.</li>
+% </ul>
+% </html>
 %
 % [/dtls]
 % [br8]
@@ -147,7 +150,7 @@
 %
 % <html>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/NZO0HG1d8ys"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/NZO0HG1d8ys</a>
+% <a href="https://youtu.be/NZO0HG1d8ys"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/NZO0HG1d8ys</a>
 % </html>
 % 
 % 
@@ -165,7 +168,7 @@
 % 
 % <html>
 % A brief demonstration is available in the following video:<br>
-% <a href="https://youtu.be/lY0XjNy4Dr8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/lY0XjNy4Dr8</a>
+% <a href="https://youtu.be/lY0XjNy4Dr8"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/lY0XjNy4Dr8</a>
 % </html>
 %
 % <<images/MenuDatasetBoundingBox.png>>

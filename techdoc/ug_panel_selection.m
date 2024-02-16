@@ -96,7 +96,9 @@
 % [br8]
 %
 %%  The *[class.kbd]F[/class]* button
-% Press to fill holes in the |Selection| layer.
+% Press to fill holes in the |Selection| layer. The operation can be
+% triggered automatically when [class.kbd][&#10003;] *auto fill*[/class] is
+% checked.
 %  
 % <<images\SelectionPanelOperationsFill.png>>
 %
@@ -158,6 +160,10 @@
 % Check it to do some of the image and |Mask/Model| manipulations in
 % |3D|.
 %
+%% The [class.kbd][&#10003;] *auto fill*[/class] checkbox
+% Check it to fill shapes drawn using the brush tool (and eraser)
+% automatically after release of the left mouse button
+%
 %% The [class.kbd][&#10003;] *adapt.*[/class] checkbox
 %
 % Select to perform adaptive dilation or selection of the supervoxels when using the <ug_panel_segm_tools.html Brush tool>. 
@@ -174,7 +180,14 @@
 % The size of the |Strel| element can be specified as a single number or as two semi-colon separated numbers. For example
 % entering [ *3; 5* ] defines size of the Strel element as *XY = 3 x 5* pixels for 2D, or as *3 x 3 x 5* pixels for 3D.
 %
+%% Right mouse click opens a dropdown menu
 %
+% When clicking on an empty area of within this panel an additiona menu
+% appears allowing to hide/show the following panels. This allows to
+% increase space occupied by the Image view panel
+% 
+% <<images\PanelsImageView_dropdown.jpg>>
+% 
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
 %

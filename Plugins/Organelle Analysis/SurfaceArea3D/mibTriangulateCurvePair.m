@@ -1,3 +1,26 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+% Mostly based on triangulateCurvePair.m a part of matGeom by David Legland
+% https://github.com/mattools/matGeom
+% Author: David Legland
+% e-mail: david.legland@inra.fr
+% Created: 2017-05-18,    using Matlab 9.1.0.441655 (R2016b)
+% Copyright 2017 INRA - Cepia Software Platform.
+
+
 function [vertices, facets] = mibTriangulateCurvePair(curve1, curve2, threshold)
 % [vertices, facets] = mibTriangulateCurvePair(curve1, curve2, threshold)
 % Compute triangulation between a pair of 3D curves
@@ -14,20 +37,6 @@ function [vertices, facets] = mibTriangulateCurvePair(curve1, curve2, threshold)
 % vertices: coordinates of vertices
 % facets:   connection between the vertices
 
-% Mostly based on triangulateCurvePair.m a part of matGeom by David Legland
-% https://github.com/mattools/matGeom
-% Author: David Legland
-% e-mail: david.legland@inra.fr
-% Created: 2017-05-18,    using Matlab 9.1.0.441655 (R2016b)
-% Copyright 2017 INRA - Cepia Software Platform.
-
-% Copyright (C) 01.08.2017 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 %
 

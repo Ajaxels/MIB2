@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Deep MIB - Predict tab</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_predict.m"><style>
+      --><title>Deep MIB - Predict tab</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_predict.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -146,11 +146,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -617,7 +616,8 @@ currently shown in the <b>Image View</b> panel of MIB</li>
 </div>
 </details>
 <br>
-<div><ul><li><span class="dropdown">Batch size for prediction...</span>, this editbox allows to specify number of input image patches that are processed by GPU at the same time. The larger the value, the quicker prediction takes, but the max value is limited by the total memory available on GPU.</li>
+<div><ul><li><span class="dropdown">Padding, %%</span>, when predicting pad the image from the sides using symmetrical padding. This operation helps to reduce possible artefacts that may appear at the edges.</li>
+<li><span class="dropdown">Batch size for prediction...</span>, this editbox allows to specify number of input image patches that are processed by GPU at the same time. The larger the value, the quicker prediction takes, but the max value is limited by the total memory available on GPU.</li>
 <li><span class="dropdown">Model files &#9660;</span>, specify output format for the generated model files. For the patch-wise workflow CSV files are created.</li></ul></div>
 <details open onclick="state_check('1.4')" id="1.4"><summary> <b>List of available image formats for the model files</b> </summary>
 <div class="details-div">
@@ -635,7 +635,8 @@ currently shown in the <b>Image View</b> panel of MIB</li>
 <div><ul style="margin-bottom:0px;"><li><span class="dropdown">Do not generate &#9660;</span>, skip generation of score files improving performance and minimizing disk usage</li>
 <li><span class="dropdown">Use AM format &#9660;</span>, AmiraMesh format, compatible with MIB, Fiji or Amira</li>
 <li><span class="dropdown">Use Matlab non-compressed format &#9660;</span>, resulting score files are generated in MATLAB uncompressed format with <span class="code">*.mibImg</span> extension. The score files can be loaded to MIB or to MATLAB using <span class="code">model = load('filename.mibImg', '-mat');</span> command</li>
-<li><span class="dropdown">Use Matlab compressed format &#9660;</span>, resulting score files are generated in MATLAB compressed format with <span class="code">*.mibImg</span> extension. The score files can be loaded to MIB or to MATLAB using <span class="code">model = load('filename.mibImg', '-mat');</span> command</li></ul></div>
+<li><span class="dropdown">Use Matlab compressed format &#9660;</span>, resulting score files are generated in MATLAB compressed format with <span class="code">*.mibImg</span> extension. The score files can be loaded to MIB or to MATLAB using <span class="code">model = load('filename.mibImg', '-mat');</span> command</li>
+<li><span class="dropdown">Use Matlab non-compressed format (range 0-1) &#9660;</span>, the score files are generated in MATLAB non-compressed format without scaling, i.e. in the range from 0 to 1. The file extension is <span class="code">*.mibImg</span> and these files can not be opened in MIB. The score files can be loaded to MATLAB using <span class="code">model = load('filename.mat');</span> command</li></ul></div>
 </div>
 </details>
 <br>
@@ -691,7 +692,7 @@ to load the resulting segmentations over already loaded image in MIB</li>
 <li><span class="kbd">Load prediction scores</span> press to load the resulting score images (probabilities)
 into the currently active buffer of MIB</li>
 <li><span class="kbd">Evaluate segmentation</span>. When the datasets for prediction are accompanied with
-ground truth models (<b> requires a model file in the Labels directory
+ground truth labels (<b> requires a label file(s) in the Labels directory
 under Prediction images directory; it is important that the model materials names match those for the training data!</b>).
 </li>
 </ul>
@@ -704,12 +705,15 @@ under Prediction images directory; it is important that the model materials name
 <img class="image-fit" src='images\DeepLearning_Evaluation.jpg'></li>
 <li>As result of the evaluation a table with the confusion matrix will be
 shown. The confusion matrix displays how well the predicted classes are
-matching classes defined in the ground truth models. The values are
-scaled from 0 (bad) to 100 (excelent):
+matching classes defined in the ground truth labels. The values are
+scaled from 0 (bad) to 100 (excelent). 
+<br>
+In addition, the calculated class metrics (Accuracy, IoU, MeanBGScore) as
+well as the global dataset metrics are shown.
 <br>
 <img class="image-fit" src='images\DeepLearning_Evaluation2.jpg'></li>
 <li>In addition, it is possible to calculate occurrence of labels and SÃ¸rensen-Dice similarity coefficient in the
-generated and ground truth models. These options are available from a
+generated and ground truth labels. These options are available from a
 dropdown located in the right-bottom corner of the <em>Evaluation
 results</em> window:
 <br>
@@ -737,7 +741,7 @@ function</a></li>
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Deep MIB - Predict tab
@@ -869,6 +873,9 @@ function</a></li>
 %
 % [/dtls]
 %
+% * [class.dropdown]Padding, %%[/class], when predicting
+% pad the image from the sides using symmetrical padding. This operation
+% helps to reduce possible artefacts that may appear at the edges.
 % * [class.dropdown]Batch size for prediction...[/class], this editbox
 % allows to specify number of input image patches that are processed by GPU
 % at the same time. The larger the value, the quicker prediction takes, but
@@ -910,6 +917,11 @@ function</a></li>
 % [class.code]*.mibImg[/class] extension. The score files can be loaded to
 % MIB or to MATLAB using [class.code]model = load('filename.mibImg',
 % '-mat');[/class] command
+% * [class.dropdown]Use Matlab non-compressed format (range 0-1) &#9660;[/class],
+% the score files are generated in MATLAB non-compressed format without
+% scaling, i.e. in the range from 0 to 1. The file extension is 
+% [class.code]*.mibImg[/class] and these files can not be opened in MIB. The score files can be loaded to
+% MATLAB using [class.code]model = load('filename.mat');[/class] command
 %
 % [/dtls]
 %
@@ -977,7 +989,7 @@ function</a></li>
 % <li><span class="kbd">Load prediction scores</span> press to load the resulting score images (probabilities)
 % into the currently active buffer of MIB</li>
 % <li><span class="kbd">Evaluate segmentation</span>. When the datasets for prediction are accompanied with 
-% ground truth models (<b> requires a model file in the Labels directory
+% ground truth labels (<b> requires a label file(s) in the Labels directory
 % under Prediction images directory; it is important that the model materials names match those for the training data!</b>).
 % </li>
 % </ul>
@@ -993,12 +1005,15 @@ function</a></li>
 % <img src='images\DeepLearning_Evaluation.jpg'></li>
 % <li>As result of the evaluation a table with the confusion matrix will be
 % shown. The confusion matrix displays how well the predicted classes are
-% matching classes defined in the ground truth models. The values are
-% scaled from 0 (bad) to 100 (excelent):
+% matching classes defined in the ground truth labels. The values are
+% scaled from 0 (bad) to 100 (excelent). 
+<br>
+% In addition, the calculated class metrics (Accuracy, IoU, MeanBGScore) as
+% well as the global dataset metrics are shown.
 <br>
 % <img src='images\DeepLearning_Evaluation2.jpg'></li>
 % <li>In addition, it is possible to calculate occurrence of labels and SÃ¸rensen-Dice similarity coefficient in the
-% generated and ground truth models. These options are available from a
+% generated and ground truth labels. These options are available from a
 % dropdown located in the right-bottom corner of the <em>Evaluation
 % results</em> window:
 <br>

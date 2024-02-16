@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>The View Settings Panel</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_panel_view_settings.m"><style>
+      --><title>The View Settings Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_panel_view_settings.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -145,11 +145,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -527,7 +526,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li><a href="#6">5. The Annotations check box</a></li>
 <li><a href="#7">6. Display</a></li>
 <li><a href="#8">7. The Auto button and checkboxes</a></li>
-<li><a href="#9">8. The Transparency sliders</a></li></ul></div>
+<li><a href="#9">8. The Transparency sliders</a></li>
+<li><a href="#10">Right mouse click opens a dropdown menu</a></li></ul></div>
 <p><img class="image-fit" src="images\PanelsViewSettings.png" alt=""> </p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="2">1. The Colors table and the <span class="kbd">[&#10003;] <b>LUT</b></span> checkbox</h2>
@@ -551,24 +551,26 @@ A brief demonstration of work with color channels is available in the following 
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="3">2. The Show Model check box</h2>
-<p>Switch on/off the <code>Model</code> layer. This check box has a shortcut <span class="kbd">space</span>. 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="4">3. The Show Mask check box</h2>
-<p>Switch on/off <code>Mask</code> layer. This check box has a shortcut <span class="kbd">Ctrl</span> + <span class="kbd">space</span>. 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="5">4. The Hide image check box</h2>
-<p>Switch on/off display of the <code>Image</code> layer. 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="6">5. The Annotations check box</h2>
-<p>Switch on/off <a href="ug_panel_segm_tools.html#3">Annotation layer</a> and <a href="ug_gui_menu_tools_measure.html">measurements</a>. 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="7">6. Display</h2>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p><h2 id="3">2. The Show Model check box</h2>
+<p>Switch on/off the <code>Model</code> layer. This check box has a shortcut <span class="kbd">space</span>. <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p><h2 id="4">3. The Show Mask check box</h2>
+<p>Switch on/off <code>Mask</code> layer. This check box has a shortcut <span class="kbd">Ctrl</span> + <span class="kbd">space</span>. <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p><h2 id="5">4. The Hide image check box</h2>
+<p>Switch on/off display of the <code>Image</code> layer. <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p><h2 id="6">5. The Annotations check box</h2>
+<p>Switch on/off <a href="ug_panel_segm_tools.html#3">Annotation layer</a> and <a href="ug_gui_menu_tools_measure.html">measurements</a>. <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p><h2 id="7">6. Display</h2>
 <p>Press to start display adjustments GUI tool, <a href="ug_panel_adjustments.html"><b>see more here</b></a>.</p>
 <p><img class="image-fit" src="images\PanelsViewSettingsDisplay.png" alt=""> </p><h2 id="8">7. The Auto button and checkboxes</h2>
 <p><b>The Auto button</b> Auto brightness adjustment of complete dataset. The function asks for saturation parameters for both low and high intensity borders. As a result, the image intensities are <i><b>recalculated</b></i> to increase the contrast. <b>Note</b>, the function behaviour is affected by the <code>stack</code> switch. When the <code>stack</code> switch is <code>off</code> the brightness is individually adjusted for each frame of the dataset. Alternatively, when checked, the function first finds minimal and maximal stretching parameters for the whole dataset and then uses these values to adjust the contrast.</p>
-<p><b>The <span class="kbd">[&#10003;] *on fly</b></span> checkbox automatically adjust contrast for each shown image without recalculation of intensities of the actual data. 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="9">8. The Transparency sliders</h2>
+<p><b>The <span class="kbd">[&#10003;] *on fly</b></span> checkbox automatically adjust contrast for each shown image without recalculation of intensities of the actual data. <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p><h2 id="9">8. The Transparency sliders</h2>
 <div><ul><li><b>The top trasparency slider</b> regulates transparency of the <code>Model</code> layer from opaque (slider in the left position) to transparent (slider in the right position).</li>
 <li><b>The middle transparency slider</b> changes transparency values for the <code>Mask</code> layers from opaque to transparent.</li>
-<li><b>The lower trasparency slider</b> change transparency values for the <code>Selection</code> layer from opaque to transparent.</li></ul></div>
+<li><b>The lower trasparency slider</b> change transparency values for the <code>Selection</code> layer from opaque to transparent.</li></ul></div><h2 id="10">Right mouse click opens a dropdown menu</h2>
+<p>When clicking on an empty area of within this panel an additiona menu appears allowing to hide/show the following panels. This allows to increase space occupied by the Image view panel</p>
+<p><img class="image-fit" src="images\PanelsImageView_dropdown.jpg" alt=""> </p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p>
 <p></p>
 <p>
@@ -577,7 +579,7 @@ A brief demonstration of work with color channels is available in the following 
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% The View Settings Panel
@@ -665,7 +667,14 @@ A brief demonstration of work with color channels is available in the following 
 % * *The lower trasparency slider* change transparency values for
 % the |Selection| layer from opaque to transparent.
 %
+%% Right mouse click opens a dropdown menu
 %
+% When clicking on an empty area of within this panel an additiona menu
+% appears allowing to hide/show the following panels. This allows to
+% increase space occupied by the Image view panel
+% 
+% <<images\PanelsImageView_dropdown.jpg>>
+% 
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
 %

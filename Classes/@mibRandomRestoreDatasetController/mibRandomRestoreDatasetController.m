@@ -1,13 +1,22 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibRandomRestoreDatasetController < handle
     % classdef mibRandomRestoreDatasetController < handle
     % a controller class for chopping the dataset into several smaller ones
-    
-    % Copyright (C) 16.01.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
     
     properties
         mibModel
@@ -110,9 +119,9 @@ classdef mibRandomRestoreDatasetController < handle
             end
             
             [filename, path] = mib_uigetfile('*.mibShuffle', 'Select a project file', filename);
-            if filename == 0; return; end
+            if isequal(filename, 0); return; end
             
-            obj.inputFilename = fullfile(path, filename);
+            obj.inputFilename = fullfile(path, filename{1});
             obj.View.handles.projectFilenameEdit.String = obj.inputFilename;
             obj.View.handles.projectFilenameEdit.TooltipString = obj.inputFilename;
             
@@ -127,6 +136,39 @@ classdef mibRandomRestoreDatasetController < handle
             obj.updateWidgets();
         end
         
+        function copyShowDirectory(obj, listId, parameter)
+            % callback from a dropdown menu with the directory lists
+            %
+            % Parameters:
+            % listId: [string] identifying the list - "randomDirsList", "destinationDirsList"
+            % parameter: [string]
+            %   'clipboard' - copy the directory address to the system clipboard
+            %   'fileexplorer' - open the directory in file explorer
+
+            dirName = obj.View.handles.(listId).String{obj.View.handles.(listId).Value};
+            
+            switch parameter
+                case 'clipboard'
+                    clipboard('copy', dirName);
+                case 'fileexplorer'
+                    if isfolder(dirName)
+                        if ispc     % for pc
+                            system(sprintf('explorer.exe "%s"', dirName));
+                        elseif ismac    % for linux
+                            system(sprintf('open %s &', dirName));
+                        else    % for linux
+                            try
+                                unix(sprintf('caja %s &', dirName));     % try Caja first
+                            catch err
+                                unix(sprintf('xterm -e cd %s &', dirName));
+                            end
+                        end
+                    else
+                        errordlg(sprintf('Wrong directory!\n\n%s', dirName));
+                    end
+            end
+        end
+
         function updateDir(obj, parameter)
             % function updateDir(obj, parameter)
             % update directory name for restore
@@ -157,7 +199,24 @@ classdef mibRandomRestoreDatasetController < handle
             obj.updateWidgets();
         end
                 
+        function resaveProject(obj)    
+            % function resaveProject(obj)    
+            % resave the project with the updated directories
             
+            if isempty(fieldnames(obj.Settings))
+                msgbox(sprintf('!!! Error !!!\n\nPlease select the project file first!'), ...
+                    'The project is missing', 'Error', 'error');
+                return;
+            end
+            
+            [file, path] = uiputfile({'*.mibShuffle', 'MIB shuffle project files (*.mibShuffle)';
+                                          '*.*',  'All Files (*.*)'}, 'Select new project filename', obj.inputFilename);
+            if file == 0; return; end
+
+            fnOut = fullfile(path, file);
+            Settings = obj.Settings;
+            save(fnOut, 'Settings');
+        end
         
         function restoreBtn_Callback(obj)
             % function restoreBtn_Callback(obj)
@@ -336,8 +395,9 @@ classdef mibRandomRestoreDatasetController < handle
                     indexShift = indexShift + numel(outputIndices);     % add index shift
 
                     % generate the data-tag for the model filenames
-                    formatOut = 'yymmdd';
-                    dateTag = datestr(now, formatOut);
+                    %formatOut = 'yymmdd';
+                    %dateTag = datestr(now, formatOut);
+                    dateTag = char(datetime('now', 'format', 'yyMMdd'));
 
                     % generate model filename
                     modelFilename = fullfile(obj.Settings.inputDirName{dirId}, sprintf('Labels_RestoreRand_%s.model', dateTag));

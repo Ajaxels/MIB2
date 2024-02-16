@@ -1,0 +1,37 @@
+License for compiled application of Microscopy Image Browser
+By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to the terms of
+- the disclaimer below
+- the MATLAB Compiler Runtime (MCR) libraries license
+- applicable parts of the MathWorks, Inc. Software License Agreement
+- as Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited
+The corresponding license files are also included into the MIB distribution under MIB/licenses directory.
+
+Developed during 2010-2023 by
+Core developer:
+	Ilya Belevich
+Developers:
+	Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
+
+Electron Microscopy Unit
+Institute of Biotechnology
+PO Box 56 (Viikinkaari 9)
+00014, University of Helsinki
+Finland
+
+Microscopy Image Browser (MIB)
+image segmentation and beyond
+Copyright (c) 2010-2023
+Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
+http://mib.helsinki.fi
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>

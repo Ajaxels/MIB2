@@ -3,18 +3,21 @@
 % *Back to* <im_browser_product_page.html *Index*>
 %
 %% Computer
-% Microscopy Image Browser is a program written under MATLAB environment and it
-% was tested to work under Windows/Linux/Mac installation of MATLAB.
+% Microscopy Image Browser is a program written in the MATLAB environment and has been tested to 
+% work on Windows, Linux, and Mac installations of MATLAB
 %
 %
-% In addition compiled (standalone) versions of MIB are available for Windows and Mac 64-bit OS. 
-% The standalone versions of MIB may not have complete functionality of the original program but do not require to purchase 
-% MATLAB license when used for academic research. [br]
+% In addition to the MATLAB version , there are also compiled (standalone) versions of Microscopy Image Browser 
+% available for Windows, Mac and Linux 64-bit operating systems. 
+% These standalone versions may not have the complete functionality of the full MATLAB version but can be used for 
+% academic research without requiring the purchase of a MATLAB license. [br]
+%
 % The standalone MIB requires
 % <http://www.mathworks.se/products/compiler/mcr/ MATLAB Compiler Runtime
 % (MCR)> that is automatically installed during installation. 
 %
 % It is highly recommended to use 64-bit operating system with sufficient amount of memory.
+%
 %% MATLAB
 % *MATLAB, Release 2014b*, (original MIB version 2.00; the newer versions of MIB may require R2017a or newer). 
 % [br]MIB was tested with MATLAB R2014b - R2022a.
@@ -36,17 +39,25 @@
 % Deep MIB (MATLAB R2019b or newer, MIB version 2.70)
 % 
 % 
-%% Bio-Formats
-% The Bio-Formats library brings support of multiple microscopy image formats. To use the library check the [class.kbd][&#10003;] *Bio*[/class] checkbox in the Directory Contents panel of MIB.
+%% Bio-Formats Library for Microscopy Image Formats
+% The Bio-Formats library is a software tool developed by the Open Microscopy Environment (<https://www.openmicroscopy.org/ OME>)
+% that provides support for reading and writing multiple microscopy image
+% formats. 
 %
-% *<http://openmicroscopy.org/info/bio-formats Bio-formats>* java library (_optional_) is provided in the
+% In the context of MIB, you can enable the Bio-Formats library by checking the [class.kbd][&#10003;] *Bio*[/class] checkbox 
+% in the <ug_panel_dir.html Directory Contents> panel. This allows MIB to
+% utilize the Bio-Formats library to read and import microscopy image data in various formats.
+%
+% *<http://openmicroscopy.org/info/bio-formats Bio-formats>* java library is provided in the
 % |ImportExportTools/BioFormats| folder.
 %
 %% BMxD Image Filters
-% When installed MIB can use BM3D and BM4D filters to filter datasets. The
-% filters are not supplied with MIB due to license limitations and have to
-% be installed separetly.
-% 
+% MIB has the capability to use <http://www.cs.tut.fi/~foi/GCF-BM3D BM3D and BM4D> filters for filtering and enhancing your 
+% microscopy image datasets filter datasets. 
+% However, it's important to note that these filters are not supplied with MIB due to license limitations. 
+% Therefore, if you want to use BM3D and BM4D filters with MIB, you will
+% need to install them separately.
+%
 % [dtls][smry] *Installation instructions* [/smry]
 %
 % 
@@ -130,7 +141,7 @@
 %
 % [/dtls]
 %
-% [dtls][smry] *Additiona notes* [/smry]
+% [dtls][smry] *Additional notes* [/smry]
 %
 % *Note:* it is recommended to put |ImarisLib.jar| to the static Java
 % path of MATLAB. To do that:

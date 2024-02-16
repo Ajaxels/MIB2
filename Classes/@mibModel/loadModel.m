@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function loadModel(obj, model, BatchOptIn)
 % function loadModel(obj, model, BatchOptIn)
 % load model from a file or import when model variable is provided
@@ -31,22 +47,16 @@ function loadModel(obj, model, BatchOptIn)
 % @code obj.mibModel.loadModel();     // call from mibController; load a model @endcode
 % @code obj.mibModel.loadModel(model, BatchOptIn);     // call from mibController; import a model @endcode
  
-% Copyright (C) 02.09.2019 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
+% 10.07.2023, added loading of models that are larger than the stack size
 
 if nargin < 3; BatchOptIn = struct(); end
 if nargin < 2; model = []; end
 
 %% Declaration of the BatchOpt structure
 BatchOpt = struct();
-BatchOpt.DirectoryName = {obj.myPath};   % specify the target directory
-BatchOpt.DirectoryName{2} = {obj.myPath, 'Inherit from dataset filename'};  % this option forces the directories to be provided from the Dir/File loops
+BatchOpt.DirectoryName = {'Inherit from dataset filename'};   % specify the target directory
+BatchOpt.DirectoryName{2} = {'Inherit from dataset filename', obj.myPath};  % this option forces the directories to be provided from the Dir/File loops
 BatchOpt.FilenameFilter = 'Labels_[F].model';
 BatchOpt.showWaitbar = true;   % show or not the waitbar
 BatchOpt.id = obj.Id;   % optional, id
@@ -75,7 +85,18 @@ if nargin == 3  % batch mode
     else
         % add/update BatchOpt with the provided fields in BatchOptIn
         % combine fields from input and default structures
-        BatchOpt = updateBatchOptCombineFields_Shared(BatchOpt, BatchOptIn);
+        if isfield(BatchOptIn, 'FilenameFilter') && iscell(BatchOptIn.FilenameFilter)
+            % when drag and drop for model files is used, the list of files
+            % comes as a cell array, which conflicts with the standard
+            % logic
+            filenameFilter = BatchOptIn.FilenameFilter;
+            filename = BatchOptIn.FilenameFilter;
+            BatchOptIn = rmfield(BatchOptIn, 'FilenameFilter');
+            BatchOpt = updateBatchOptCombineFields_Shared(BatchOpt, BatchOptIn);
+            BatchOpt.FilenameFilter = filenameFilter;
+        else
+            BatchOpt = updateBatchOptCombineFields_Shared(BatchOpt, BatchOptIn);
+        end
         
         % additional tweaks, otherwise only the first element is taken
         if isfield(BatchOptIn, 'modelMaterialNames')
@@ -94,33 +115,50 @@ if nargin == 3  % batch mode
                 BatchOpt.DirectoryName{1} = path;
             end
         end
-        subFolders = strfind(BatchOpt.FilenameFilter, filesep);     % check for presence of subfolders
-        if ~isempty(subFolders)
-            BatchOpt.DirectoryName{1} = fullfile(BatchOpt.DirectoryName{1}, BatchOpt.FilenameFilter(1:subFolders(end)));
-            BatchOpt.FilenameFilter = BatchOpt.FilenameFilter(subFolders(end)+1:end);
-        end
+        
+        if ~iscell(BatchOpt.FilenameFilter)
+            % standard use case, when the BatchOpt.FilenameFilter is a
+            % single filename or a file mask
+            subFolders = strfind(BatchOpt.FilenameFilter, filesep);     % check for presence of subfolders
+            if ~isempty(subFolders)
+                BatchOpt.DirectoryName{1} = fullfile(BatchOpt.DirectoryName{1}, BatchOpt.FilenameFilter(1:subFolders(end)));
+                BatchOpt.FilenameFilter = BatchOpt.FilenameFilter(subFolders(end)+1:end);
+            end
     
-        templateDetection = strfind(BatchOpt.FilenameFilter, '[');  % detect [F] template
-        if ~isempty(templateDetection)
-            [path, fn] = fileparts(obj.I{BatchOpt.id}.meta('Filename'));
-            BatchOpt.FilenameFilter = sprintf('%s%s%s', ...
-                BatchOpt.FilenameFilter(1:templateDetection(1)-1), fn, BatchOpt.FilenameFilter(templateDetection(1)+3:end));
-        end
+            templateDetection = strfind(BatchOpt.FilenameFilter, '[');  % detect [F] template
+            if ~isempty(templateDetection)
+                [path, fn] = fileparts(obj.I{BatchOpt.id}.meta('Filename'));
+                BatchOpt.FilenameFilter = sprintf('%s%s%s', ...
+                    BatchOpt.FilenameFilter(1:templateDetection(1)-1), fn, BatchOpt.FilenameFilter(templateDetection(1)+3:end));
+            end
     
-        filename = dir(fullfile(BatchOpt.DirectoryName{1}, BatchOpt.FilenameFilter));   % get list of files
-        filename2 = arrayfun(@(filename) fullfile(BatchOpt.DirectoryName{1}, filename.name), filename, 'UniformOutput', false);  % generate full paths
-        notDirsIndices = arrayfun(@(filename2) ~isdir(cell2mat(filename2)), filename2);     % get indices of not directories
-        fn = filename2(notDirsIndices);     % generate full path file names
-        filename = {filename(notDirsIndices).name}';
-        if isempty(filename)
-            errordlg(sprintf('!!! Error !!!\n\nLoad model: wrong model name:\n%s', fullfile(BatchOpt.DirectoryName{1}, BatchOpt.FilenameFilter)));
-            notify(obj, 'stopProtocol');
-            return;
+            % get list of files
+            filename = dir(fullfile(BatchOpt.DirectoryName{1}, BatchOpt.FilenameFilter));
+            % generate full paths
+            filename2 = arrayfun(@(filename) fullfile(BatchOpt.DirectoryName{1}, filename.name), filename, 'UniformOutput', false);
+            notDirsIndices = arrayfun(@(filename2) ~isdir(cell2mat(filename2)), filename2);     % get indices of not directories
+            %fn = filename2(notDirsIndices);     % generate full path file names
+            filename = {filename(notDirsIndices).name}';
+            if isempty(filename)
+                errordlg(sprintf('!!! Error !!!\n\nLoad model: wrong model name:\n%s', fullfile(BatchOpt.DirectoryName{1}, BatchOpt.FilenameFilter)));
+                notify(obj, 'stopProtocol');
+                return;
+            end
+        else
+            % generate full paths
+            %filename2 = fullfile(BatchOpt.DirectoryName(1), BatchOpt.FilenameFilter);
+            %filename = fullfile(BatchOpt.DirectoryName(1), BatchOpt.FilenameFilter);
         end
     end
     tryToLoadModel = true;  % switch to load the model despite different XY dimension
     batchModeSwitch = 1;    % indicates that the function is running in the batch mode
 else
+    if strcmp(BatchOpt.DirectoryName{1}, 'Inherit from dataset filename')   % update model directory name
+        defaultPath = fileparts(obj.I{BatchOpt.id}.meta('Filename'));
+    else
+        defaultPath =  BatchOpt.DirectoryName{1};
+    end
+
     [filename, BatchOpt.DirectoryName{1}] = mib_uigetfile(...
         {'*.model;',  'Matlab format (*.model)'; ...
         '*.mat;',  'Matlab format (*.mat)'; ...
@@ -132,9 +170,8 @@ else
         '*.tif;',  'TIF format (*.tif)'; ...
         '*.xml',   'Hierarchical Data Format with XML header (*.xml)'; ...
         '*.*',  'All Files (*.*)'}, ...
-        'Open model data...', BatchOpt.DirectoryName{1}, 'on');
+        'Open model data...', defaultPath, 'on');
     if isequal(filename, 0); return; end % check for cancel
-    if ischar(filename); filename = cellstr(filename); end     % convert to cell type
     filename = sort(filename);    % re-sort filenames to arrange as with dir
     
     batchModeSwitch = 0;    % indicates that the function is running in the gui mode
@@ -168,8 +205,9 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
     
     if BatchOpt.showWaitbar
         warning('off', 'MATLAB:handle_graphics:exceptions:SceneNode');
-        wb = waitbar(0,sprintf('%s\nPlease wait.',filename{1}), 'Name', 'Loading model', 'WindowStyle', 'modal');
+        wb = waitbar(0, '', 'Name', 'Loading model', 'WindowStyle', 'modal');
         wb.Children.Title.Interpreter = 'none';
+        waitbar(0, wb, sprintf('%s\nPlease wait.',filename{1}));
         drawnow;
     end
     z1 = 1;     % z counter for models, when loaded multiple 3D *.model files
@@ -333,6 +371,26 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
                 model = model(:, 1:obj.I{BatchOpt.id}.width, :);
             end
         end
+
+        % check if model has more slices than the dataset
+        if size(model, 3) > obj.I{BatchOpt.id}.depth
+            if tryToLoadModel == false
+                answer = questdlg(sprintf('Model and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nModel (HxWxZ) = %d x %d x %d pixels',...
+                     obj.I{BatchOpt.id}.height, obj.I{BatchOpt.id}.width, obj.I{BatchOpt.id}.depth, size(model,1), size(model,2), size(model,3)), ...
+	                'Warning!', ...
+	                sprintf('Try to load first %d slices', obj.I{BatchOpt.id}.depth), 'Cancel', 'Cancel');
+                if strcmp(answer, 'Cancel')
+                    if BatchOpt.showWaitbar; delete(wb); end
+                    notify(obj, 'stopProtocol');
+                    return;
+                end
+                tryToLoadModel = true;
+            end
+            if tryToLoadModel
+                % load the cropped model
+                model = model(:,:,1:obj.I{BatchOpt.id}.depth);
+            end
+        end
         
 %         if size(model,3) ~= obj.I{BatchOpt.id}.depth && size(model,3) > 1
 %             if BatchOpt.showWaitbar; delete(wb); end
@@ -411,11 +469,16 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
                 z1 = z1+size(model,3);
                 obj.setData3D('model', {model}, NaN, 4, NaN, BatchOpt);
             else
-                if BatchOpt.showWaitbar; delete(wb); end
-                notify(obj, 'stopProtocol');
-                msgbox(sprintf('Model and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nModel (HxWxZ) = %d x %d x %d pixels',...
-                    obj.I{BatchOpt.id}.height, obj.I{BatchOpt.id}.width, obj.I{BatchOpt.id}.depth, size(model,1), size(model,2), size(model,3)),'Error!','error','modal');
-                return;
+                if tryToLoadModel
+                    BatchOpt.z = [1, size(model,3)];
+                    obj.setData3D('model', {model}, NaN, 4, NaN, BatchOpt);
+                else
+                    if BatchOpt.showWaitbar; delete(wb); end
+                    notify(obj, 'stopProtocol');
+                    msgbox(sprintf('Model and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nModel (HxWxZ) = %d x %d x %d pixels',...
+                        obj.I{BatchOpt.id}.height, obj.I{BatchOpt.id}.width, obj.I{BatchOpt.id}.depth, size(model,1), size(model,2), size(model,3)),'Error!','error','modal');
+                    return;
+                end
             end
         end
         if BatchOpt.showWaitbar; waitbar(fnId/numel(filename),wb); end

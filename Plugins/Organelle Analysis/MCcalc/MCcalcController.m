@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef MCcalcController < handle
     properties
         mibModel
@@ -256,6 +272,10 @@ classdef MCcalcController < handle
             %             ax2 = axes(fh);
             %             ax2.Position = [.1, .1, .8, .2];
             
+            
+            % for development to calculate the distances using distmap
+            useDistanceMap = false;
+
             objId = 1;  % counter for objects
             sliceCounter = 1;   % counter for slices
             maxSlice = obj.mibModel.I{obj.mibModel.Id}.time*obj.mibModel.I{obj.mibModel.Id}.depth;
@@ -281,7 +301,11 @@ classdef MCcalcController < handle
                         selection = zeros(size(M1), 'uint8');    % allocate space for selection layer
                     end
                     
-                    
+                    if useDistanceMap
+                        % calculate distrance map
+                        M2dist = bwdist(M2, 'euclidean');
+                    end
+
                     % loop via main objects
                     for objIndex=1:CC.NumObjects
                         % get min and max values for the bounding box
@@ -343,8 +367,15 @@ classdef MCcalcController < handle
                             % is only available in the curve fitting toolbox
                             %Boundary(:,1) =  smooth(Boundary(:,1), smoothing);
                             %Boundary(:,2) =  smooth(Boundary(:,2), smoothing);
-                            Boundary(:,1) =  windv(Boundary(:,1), floor(smoothing/2), 1);
-                            Boundary(:,2) =  windv(Boundary(:,2), floor(smoothing/2), 1);
+
+                            % fix smoothing
+                            extBoundary = repmat(Boundary, [3,1]);
+                            extBoundary(:,1) =  windv(extBoundary(:,1), floor(smoothing/2), 1);
+                            extBoundary(:,2) =  windv(extBoundary(:,2), floor(smoothing/2), 1);
+                            Boundary = extBoundary(size(Boundary,1)+1:size(Boundary,1)*2, :);
+
+                            %Boundary(:,1) =  windv(Boundary(:,1), floor(smoothing/2), 1);
+                            %Boundary(:,2) =  windv(Boundary(:,2), floor(smoothing/2), 1);
                             
                             %                             figure(101);
                             %                             clf
@@ -401,200 +432,10 @@ classdef MCcalcController < handle
 %                         ax.XTick = [];
 %                         ax.YTick = [];
 %                         
-                        N = LineNormals2D(B);   % calculate normal vectors for each point of the main object perimeter
-                        % remove normals that are NaNs, quite rare when pixel is sticking
-                        % out as below, so it is better to smooth surfaces before the
-                        % calculation
-                        % 0 0 1
-                        % 1 1 1
-                        % 0 0 1
-                        
-                        nanVecY = find(isnan(N(:,1)));
-                        nanVecX = find(isnan(N(:,2)));
-                        nanVec = unique([nanVecY; nanVecX]);
-                        N(nanVec, :) = [];
-                        B(nanVec, :) = [];
-                        
-%                                 % test of boundaries tracing
-%                         figure(102);
-%                         clf;
-%                         imshow(M1c,[]);
-%                         hold on;
-%                         plot(B(:, 2), B(:, 1), 'r', 'LineWidth', 1);
-%                         plot(Boundary(:, 2), Boundary(:, 1), '.r', Boundary([1 end], 2), Boundary([1 end], 1), '.g');
-                        %
-                        % convert B matrix to Bx1, Bx2, By1, By2 vectors
-                        Bx1 = B(:, 2);
-                        Bx2 = B(:, 2) + range*N(:, 2);
-                        By1 = B(:, 1);
-                        By2 = B(:, 1) + range*N(:, 1);
-                        
-                        if extendRays == 1
-                            Bx1 = [Bx1; Bx1(1)];    %#ok<AGROW> % loop the coordinates, otherwise there will be a gap at the point when the main object tracing has started
-                            Bx2 = [Bx2; Bx2(1)]; %#ok<AGROW>
-                            By1 = [By1; By1(1)]; %#ok<AGROW>
-                            By2 = [By2; By2(1)]; %#ok<AGROW>
-                            
-                            % find difs
-                            pntDiff = sqrt(diff(Bx2).^2 + diff(By2).^2);    % distance between the points on at the ray destination
-                            pntDiffN_Orgn = sqrt(diff(Bx1).^2 + diff(By1).^2);   % distance between the points on at the ray origin, needed to find removed borders at the image edges
-                            
-                            dN_ind = find(pntDiff > extendRaysFactor);
-                            Border_ind = find(pntDiffN_Orgn >= 2);  % indices of the contour with brakes when the object touches the image edge
-                            
-                            noExtraPoints = sum(abs(floor(pntDiff(dN_ind)/extendRaysFactor))) + numel(dN_ind)*2;     % number of points to be added
-                            B2x1 = nan([numel(Bx1)+noExtraPoints, 1]);
-                            B2x2 = nan([numel(Bx1)+noExtraPoints, 1]);
-                            B2y1 = nan([numel(Bx1)+noExtraPoints, 1]);
-                            B2y2 = nan([numel(Bx1)+noExtraPoints, 1]);
-                            
-                            newIndex = 1;
-                            diffVecIndex = 1;
-                            for i=1:numel(Bx1)
-                                if isempty(find(dN_ind==i, 1)) || sum(ismember(Border_ind, [i, i+1])) > 0
-                                    B2x1(newIndex) = Bx1(i);
-                                    B2x2(newIndex) = Bx2(i);
-                                    B2y1(newIndex) = By1(i);
-                                    B2y2(newIndex) = By2(i);
-                                    newIndex = newIndex + 1;
-                                    %if sum(ismember(Border_ind, [i, i+1])) > 0
-                                    %if ismember(Border_ind, i+1) == 1
-                                    if ismember(i+1, Border_ind) == 1
-                                        diffVecIndex = diffVecIndex + 1;
-                                    end
-                                else
-                                    extraNsX = linspace(Bx2(dN_ind(diffVecIndex)), Bx2(dN_ind(diffVecIndex)+1), floor(abs(pntDiff(dN_ind(diffVecIndex)))/extendRaysFactor)+2);
-                                    extraNsY = linspace(By2(dN_ind(diffVecIndex)), By2(dN_ind(diffVecIndex)+1), floor(abs(pntDiff(dN_ind(diffVecIndex)))/extendRaysFactor)+2);
-                                    
-                                    noExtraNs = numel(extraNsX);
-                                    B2x1(newIndex:newIndex+noExtraNs-1) = Bx1(i);    % duplicate the points
-                                    B2y1(newIndex:newIndex+noExtraNs-1) = By1(i);
-                                    B2x2(newIndex:newIndex+noExtraNs-1) = extraNsX';    % duplicate the points
-                                    B2y2(newIndex:newIndex+noExtraNs-1) = extraNsY';
-                                    
-                                    newIndex = newIndex + noExtraNs;
-                                    diffVecIndex = diffVecIndex + 1;
-                                end
-                            end
-                            
-                            NaN_index = find(isnan(B2x1(:,1)) == 1,1);    % remove NaNs
-                            Bx1 = B2x1(1:NaN_index-1);
-                            Bx2 = B2x2(1:NaN_index-1);
-                            By1 = B2y1(1:NaN_index-1);
-                            By2 = B2y2(1:NaN_index-1);
-                            B = By1;
-                            B(:, 2) = Bx1;
+                        if useDistanceMap
+                        else
+                            [results, B, rayDestinationPosX, rayDestinationPosY, Bx1, Bx2, By1, By2] = obj.raytraceObject(B, D2, range, pixSize);
                         end
-                        
-                        
-                        %                         % test ray vectors
-%                                                 figure(102)
-%                                                 clf;
-%                                                 D3 = D2;
-%                                                 D3(M1c == 1) = 0;
-%                                                 D3(~M2c) = 0;
-%                                                 imshow(D3,[0, 200]);
-%                                                 hold on;
-%                                                 %%imshow(255-D2,[]);
-%                                                 hPl = plot(B(:, 2), B(:, 1), 'r.', 'LineWidth', 1);
-%                                                 hPl.MarkerSize = 10;
-%                                                 plot([Bx1 Bx2]', [By1 By2]'); % x-vector, y-vector
-%                                                 ax = gca;
-%                                                 ax.XTick = [];
-%                                                 ax.YTick = [];
-                        
-                        % loop via each point of the mitochondria boundary
-                        % to detect the closest point where the ray hits ER
-                        results = Inf(size(B,1), 1);    % allocate space for results
-                        rayDestinationPosX = zeros(size(B,1), 1);    % allocate space for X-coordinate of the min points
-                        rayDestinationPosY = zeros(size(B,1), 1);    % allocate space for Y-coordinate of the min points
-                        
-                        %                         % This is a test code below that is using
-                        %                         % intersectPolylines or intersectLinePolyline
-                        %                         % functions from https://github.com/mattools/matGeom/
-                        %                         % performance is about 3-10 time slower
-                        %                         BoundarySec = bwboundaries(M2c, 8);     % trace boundary of the secondary objects on the image, result is cell array
-                        %                         tic
-                        %                         for point=1:size(B,1)
-                        %                             combinedPnts = [];
-                        %                             for secObjId = 1:numel(BoundarySec)
-                        %                                 %point = 3;
-                        %                                 rayPolyline = [Bx1(point), By1(point); Bx2(point), By2(point)];  % xy,
-                        %                                 pnts = intersectPolylines(BoundarySec{secObjId}, rayPolyline);
-                        %                                 combinedPnts = [combinedPnts; pnts];
-                        %
-                        %                                 %rayLine = [B(point,2), B(point,1), N(point, 2), N(point, 1)];  % [x0,y0,dx,dy]
-                        %                                 %pnts = intersectLinePolyline(rayLine, BoundarySec{secObjId});
-                        %                                 %combinedPnts = [combinedPnts; pnts];
-                        %                             end
-                        %                             if isempty(combinedPnts); continue; end
-                        %                             % have to add sorting of points here, to pickup
-                        %                             % only the closest one
-                        %                         end
-                        %                         t1=toc;
-                        
-                        for point=1:size(B,1)
-                            % calculate ray pixels
-                            dx = Bx2(point) - Bx1(point);
-                            dy = By2(point) - By1(point);
-                            nPnts = max([abs(dx) abs(dy)])+1;
-                            linSpacing = linspace(0, 1, nPnts);
-                            
-                            xVal = round(Bx1(point) + linSpacing*dx);
-                            yVal = round(By1(point) + linSpacing*dy);
-                            
-                            % remove coordinates that are out of the image
-                            indicesX1 = find(xVal < 1);        % x < 1
-                            indicesX2 = find(xVal > cWidth);   % x > width
-                            indicesY1 = find(yVal < 1);        % y < 1
-                            indicesY2 = find(yVal > cHeight);  % y > height
-                            indices = unique([indicesX1, indicesX2, indicesY1, indicesY2]);  % find unique indices
-                            xVal(indices) = [];
-                            yVal(indices) = [];
-                            
-                            % calculate the closest distance between main and secondary objects
-                            linIndices = sub2ind([cHeight, cWidth], yVal, xVal);    % convert coordinates of ray vector to linear indices
-                            minVal = min(min(D2(linIndices)));  % find minimal value for the distance
-                            if minVal ~= Inf    % do nothing if no hit
-                                results(point) = minVal*pixSize;    % calculate minimal distance in desired units
-                                pointIndex = find(D2(linIndices) == minVal);    % find a point that has minimal distance
-                                if numel(pointIndex) == 1
-                                    rayDestinationPosY(point) = yVal(pointIndex);  % find it's coordinates
-                                    rayDestinationPosX(point) = xVal(pointIndex);
-                                else    % sometimes there are more than one hit, if so find the closest hit to the starting point of the ray vector
-                                    point2 = 1;
-                                    dist1 = sqrt( (By1(point)-yVal(pointIndex(point2)))^2 + (Bx1(point)-xVal(pointIndex(point2)))^2 );
-                                    for ind2=2:numel(pointIndex)
-                                        dist2 = sqrt( (By1(point)-yVal(pointIndex(ind2)))^2 + (Bx1(point)-xVal(pointIndex(ind2)))^2 );
-                                        if dist2 < dist1
-                                            dist1=dist2;
-                                            point2 = ind2;
-                                        end
-                                    end
-                                    rayDestinationPosY(point) = yVal(pointIndex(point2));  % find it's coordinates
-                                    rayDestinationPosX(point) = xVal(pointIndex(point2));
-                                end
-                            end
-                        end
-                        
-                        %                                                 if objId == 11
-                        %                                                     0;
-                        %                                                 end
-                        %                         figure(102)
-                        %                         clf;
-                        %                         D3 = D2;
-                        %                         D3(M1c == 1) = 0;
-                        %                         D3(~M2c) = 0;
-                        %                         imshow(D3,[0, 100]);
-                        %                         hold on;
-                        %                         hPl = plot(B(:, 2), B(:, 1), 'r.', 'LineWidth', 1);
-                        %                         hPl.MarkerSize = 10;
-                        %                         hPl2 = plot(rayDestinationPosX,rayDestinationPosY, 'y.', 'LineWidth', 1);
-                        %                         hPl2.MarkerSize = 10;
-                        %                         ax = gca;
-                        %                         ax.XTick = [];
-                        %                         ax.YTick = [];
-                        
                         
                         if MCcalcExport(1).contactCutOff > 0
                             try
@@ -933,6 +774,208 @@ classdef MCcalcController < handle
             notify(obj.mibModel, 'plotImage');
             
             delete(wb);
+        end
+
+        function [results, B, rayDestinationPosX, rayDestinationPosY, Bx1, Bx2, By1, By2] = raytraceObject(obj, B, D2, range, pixSize)
+            % function [results, B, rayDestinationPosX, rayDestinationPosY, Bx1, Bx2, By1, By2] = raytraceObject(obj, B, D2, range, pixSize)
+            % use raytracing to find hits
+
+            % Parameters:
+            % B: matrix [N](x,y) with coordinates of the main object boundary
+            % D2: distance map from mainObj to secObj, where only distances
+            % that for secObj is specified, all other positions have Inf
+            % value
+            % range: number of pixels to generate the ray
+            % pixSize: value of the pixel size
+            %
+            % Return values:
+            % results: matrix with detected distances for each point of the mainObj
+            % B: updated B-matrix with 
+            % rayDestinationPosX: x-coordinates of the destination of the rays
+            % rayDestinationPosY: y-coordinates of the destination of the rays
+            % Bx1, Bx2, By1, By2: vectors with x and y coordinates of begining and the destination of all generated rays
+
+            extendRays = logical(obj.View.handles.extendRays.Value);   % extend rays with additional vector rays
+            extendRaysFactor = str2double(obj.View.handles.extendRaysFactor.String);  % precision at the end of the ray
+            
+            cWidth = size(D2, 2);    % width of the cropped image
+            cHeight = size(D2, 1);   % height of the cropped image
+
+            N = LineNormals2D(B);   % calculate normal vectors for each point of the main object perimeter
+            % remove normals that are NaNs, quite rare when pixel is sticking
+            % out as below, so it is better to smooth surfaces before the
+            % calculation
+            % 0 0 1
+            % 1 1 1
+            % 0 0 1
+
+            nanVecY = find(isnan(N(:,1)));
+            nanVecX = find(isnan(N(:,2)));
+            nanVec = unique([nanVecY; nanVecX]);
+            N(nanVec, :) = [];
+            B(nanVec, :) = [];
+
+            %                         % test of boundaries tracing
+            %                         figure(102);
+            %                         clf;
+            %                         imshow(M1c,[]);
+            %                         hold on;
+            %                         plot(B(:, 2), B(:, 1), 'r', 'LineWidth', 1);
+            %                         plot(Boundary(:, 2), Boundary(:, 1), '.r', Boundary([1 end], 2), Boundary([1 end], 1), '.g');
+            
+            % convert B matrix to Bx1, Bx2, By1, By2 vectors
+            Bx1 = B(:, 2);
+            Bx2 = B(:, 2) + range*N(:, 2);
+            By1 = B(:, 1);
+            By2 = B(:, 1) + range*N(:, 1);
+
+            if extendRays == 1
+                Bx1 = [Bx1; Bx1(1)]; %#ok<AGROW> % loop the coordinates, otherwise there will be a gap at the point when the main object tracing has started
+                Bx2 = [Bx2; Bx2(1)]; %#ok<AGROW>
+                By1 = [By1; By1(1)]; %#ok<AGROW>
+                By2 = [By2; By2(1)]; %#ok<AGROW>
+
+                % find difs
+                pntDiff = sqrt(diff(Bx2).^2 + diff(By2).^2);    % distance between the points on at the ray destination
+                pntDiffN_Orgn = sqrt(diff(Bx1).^2 + diff(By1).^2);   % distance between the points on at the ray origin, needed to find removed borders at the image edges
+
+                dN_ind = find(pntDiff > extendRaysFactor);
+                Border_ind = find(pntDiffN_Orgn >= 2);  % indices of the contour with brakes when the object touches the image edge
+
+                noExtraPoints = sum(abs(floor(pntDiff(dN_ind)/extendRaysFactor))) + numel(dN_ind)*2;     % number of points to be added
+                B2x1 = nan([numel(Bx1)+noExtraPoints, 1]);
+                B2x2 = nan([numel(Bx1)+noExtraPoints, 1]);
+                B2y1 = nan([numel(Bx1)+noExtraPoints, 1]);
+                B2y2 = nan([numel(Bx1)+noExtraPoints, 1]);
+
+                newIndex = 1;
+                diffVecIndex = 1;
+                for i=1:numel(Bx1)
+                    if isempty(find(dN_ind==i, 1)) || sum(ismember(Border_ind, [i, i+1])) > 0
+                        B2x1(newIndex) = Bx1(i);
+                        B2x2(newIndex) = Bx2(i);
+                        B2y1(newIndex) = By1(i);
+                        B2y2(newIndex) = By2(i);
+                        newIndex = newIndex + 1;
+                        %if sum(ismember(Border_ind, [i, i+1])) > 0
+                        %if ismember(Border_ind, i+1) == 1
+                        if ismember(i+1, Border_ind) == 1
+                            diffVecIndex = diffVecIndex + 1;
+                        end
+                    else
+                        extraNsX = linspace(Bx2(dN_ind(diffVecIndex)), Bx2(dN_ind(diffVecIndex)+1), floor(abs(pntDiff(dN_ind(diffVecIndex)))/extendRaysFactor)+2);
+                        extraNsY = linspace(By2(dN_ind(diffVecIndex)), By2(dN_ind(diffVecIndex)+1), floor(abs(pntDiff(dN_ind(diffVecIndex)))/extendRaysFactor)+2);
+
+                        noExtraNs = numel(extraNsX);
+                        B2x1(newIndex:newIndex+noExtraNs-1) = Bx1(i);    % duplicate the points
+                        B2y1(newIndex:newIndex+noExtraNs-1) = By1(i);
+                        B2x2(newIndex:newIndex+noExtraNs-1) = extraNsX';    % duplicate the points
+                        B2y2(newIndex:newIndex+noExtraNs-1) = extraNsY';
+
+                        newIndex = newIndex + noExtraNs;
+                        diffVecIndex = diffVecIndex + 1;
+                    end
+                end
+
+                NaN_index = find(isnan(B2x1(:,1)) == 1,1);    % remove NaNs
+                Bx1 = B2x1(1:NaN_index-1);
+                Bx2 = B2x2(1:NaN_index-1);
+                By1 = B2y1(1:NaN_index-1);
+                By2 = B2y2(1:NaN_index-1);
+                B = By1;
+                B(:, 2) = Bx1;
+            end
+
+            % % test ray vectors, D2, M1c needs to be taken into the function
+            % from the parent one
+            % figure(102)
+            % clf;
+            % D3 = D2;
+            % D3(M1c == 1) = 0;
+            % D3(~M2c) = 0;
+            % imshow(D3,[0, 200]);
+            % hold on;
+            % %%imshow(255-D2,[]);
+            % hPl = plot(B(:, 2), B(:, 1), 'r.', 'LineWidth', 1);
+            % hPl.MarkerSize = 10;
+            % plot([Bx1 Bx2]', [By1 By2]'); % x-vector, y-vector
+            % ax = gca;
+            % ax.XTick = [];
+            % ax.YTick = [];
+
+            % loop via each point of the mitochondria boundary
+            % to detect the closest point where the ray hits ER
+            results = Inf(size(B,1), 1);    % allocate space for results
+            rayDestinationPosX = zeros(size(B,1), 1);    % allocate space for X-coordinate of the min points
+            rayDestinationPosY = zeros(size(B,1), 1);    % allocate space for Y-coordinate of the min points
+
+            %                         % This is a test code below that is using
+            %                         % intersectPolylines or intersectLinePolyline
+            %                         % functions from https://github.com/mattools/matGeom/
+            %                         % performance is about 3-10 time slower
+            %                         BoundarySec = bwboundaries(M2c, 8);     % trace boundary of the secondary objects on the image, result is cell array
+            %                         tic
+            %                         for point=1:size(B,1)
+            %                             combinedPnts = [];
+            %                             for secObjId = 1:numel(BoundarySec)
+            %                                 %point = 3;
+            %                                 rayPolyline = [Bx1(point), By1(point); Bx2(point), By2(point)];  % xy,
+            %                                 pnts = intersectPolylines(BoundarySec{secObjId}, rayPolyline);
+            %                                 combinedPnts = [combinedPnts; pnts];
+            %
+            %                                 %rayLine = [B(point,2), B(point,1), N(point, 2), N(point, 1)];  % [x0,y0,dx,dy]
+            %                                 %pnts = intersectLinePolyline(rayLine, BoundarySec{secObjId});
+            %                                 %combinedPnts = [combinedPnts; pnts];
+            %                             end
+            %                             if isempty(combinedPnts); continue; end
+            %                             % have to add sorting of points here, to pickup
+            %                             % only the closest one
+            %                         end
+            %                         t1=toc;
+
+            for point=1:size(B,1)
+                % calculate ray pixels
+                dx = Bx2(point) - Bx1(point);
+                dy = By2(point) - By1(point);
+                nPnts = max([abs(dx) abs(dy)])+1;
+                linSpacing = linspace(0, 1, nPnts);
+
+                xVal = round(Bx1(point) + linSpacing*dx);
+                yVal = round(By1(point) + linSpacing*dy);
+
+                % remove coordinates that are out of the image
+                indicesX1 = find(xVal < 1);        % x < 1
+                indicesX2 = find(xVal > cWidth);   % x > width
+                indicesY1 = find(yVal < 1);        % y < 1
+                indicesY2 = find(yVal > cHeight);  % y > height
+                indices = unique([indicesX1, indicesX2, indicesY1, indicesY2]);  % find unique indices
+                xVal(indices) = [];
+                yVal(indices) = [];
+
+                % calculate the closest distance between main and secondary objects
+                linIndices = sub2ind([cHeight, cWidth], yVal, xVal);    % convert coordinates of ray vector to linear indices
+                minVal = min(min(D2(linIndices)));  % find minimal value for the distance
+                if minVal ~= Inf    % do nothing if no hit
+                    results(point) = minVal*pixSize;    % calculate minimal distance in desired units
+                    pointIndex = find(D2(linIndices) == minVal);    % find a point that has minimal distance
+                    if numel(pointIndex) == 1
+                        rayDestinationPosY(point) = yVal(pointIndex);  % find it's coordinates
+                        rayDestinationPosX(point) = xVal(pointIndex);
+                    else    % sometimes there are more than one hit, if so find the closest hit to the starting point of the ray vector
+                        point2 = 1;
+                        dist1 = sqrt( (By1(point)-yVal(pointIndex(point2)))^2 + (Bx1(point)-xVal(pointIndex(point2)))^2 );
+                        for ind2=2:numel(pointIndex)
+                            dist2 = sqrt( (By1(point)-yVal(pointIndex(ind2)))^2 + (Bx1(point)-xVal(pointIndex(ind2)))^2 );
+                            if dist2 < dist1
+                                dist1=dist2;
+                                point2 = ind2;
+                            end
+                        end
+                        rayDestinationPosY(point) = yVal(pointIndex(point2));  % find it's coordinates
+                        rayDestinationPosX(point) = xVal(pointIndex(point2));
+                    end
+                end
+            end
         end
         
         function saveToExcel(obj, MCcalcExport, outFn)

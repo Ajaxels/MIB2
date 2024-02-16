@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function [img, img_info] = mibGetImages(files, img_info, options)
 % function [img, img_info] = mibGetImages(files, img_info, options)
 % Generate image dataset from the files structure and the img_info containers.Map.
@@ -35,13 +51,6 @@ function [img, img_info] = mibGetImages(files, img_info, options)
 %   img: -> image dataset [1:height, 1:width, 1:color, 1:z]
 %   img_info: -> modified containers.Map with details of the dataset
 
-% Copyright (C) 25.06.2014 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 14.04.2022, IB, added loading of subregions from TIF files
 
@@ -65,6 +74,7 @@ end
 if strcmp(files(1).object_type,'bioformats')    % adjust number of sections, for bio-formats, when more than one serie was selected
     maxZ = maxZ * numel(files(1).seriesName);
 end
+if isempty(maxZ); return; end
 
 imgClass = files(1).imgClass;
 if strcmp(imgClass, 'int16'); imgClass = 'uint16'; end
@@ -75,14 +85,30 @@ else
     img = zeros([height, width, color, maxZ, time],imgClass);
 end
 
+% calculate coefficient to update the waitbar 
+pixPerSlice = size(img,1)*size(img,2);    % number of pixels in a slice
+waitbarUpdateFrequency = max([1 round(4096^2 / pixPerSlice)]);
+
 layer_id = 1;   % z-slice index
 no_files = numel(files);
 
 if options.waitbar
     drawnow;
-    wb = waitbar(0, sprintf('Loading images\nPlease wait...'), 'Name', 'Loading images...', 'WindowStyle', 'modal'); 
+    wb = waitbar(0, sprintf('Loading images\nPlease wait...'), 'Name', 'Loading images...', ...
+        'CreateCancelBtn','setappdata(gcbf, ''canceling'', 1)');
 end
+
 for fn_index = 1:no_files
+    % Check for clicked Cancel button
+    if options.waitbar
+        if getappdata(wb, 'canceling')
+            if options.waitbar; delete(wb); end
+            img = NaN;
+            img_info = containers.Map;
+            return;
+        end
+    end
+
     maxY = min([height files(fn_index).height]);
     maxX = min([width files(fn_index).width]);
     maxC = min([color files(fn_index).color]);
@@ -93,6 +119,16 @@ for fn_index = 1:no_files
         for subLayer=1:xyloObj.NumberOfFrames
             I = read(xyloObj, subLayer);
             img(1:maxY,1:maxX,1:maxC,layer_id) = I(1:maxY,1:maxX,1:maxC);
+
+            % update waitbar
+            if options.waitbar && mod(subLayer, waitbarUpdateFrequency)==0
+                if getappdata(wb, 'canceling')
+                    img = NaN;
+                    delete(wb);
+                    return;
+                end
+                waitbar(subLayer/xyloObj.NumberOfFrames, wb);
+            end
             layer_id = layer_id + 1;
         end
         if options.waitbar; waitbar(layer_id/maxZ, wb); end
@@ -109,15 +145,35 @@ for fn_index = 1:no_files
         end
         
         img(1:maxY,1:maxX,1:maxC,layer_id:layer_id+files(fn_index).noLayers-1) = I.data;
+
+        % update waitbar
+        if options.waitbar && mod(layer_id, waitbarUpdateFrequency)==0
+            if getappdata(wb, 'canceling')
+                img = NaN;
+                delete(wb);
+                return;
+            end
+            waitbar(layer_id/maxZ, wb);
+        end
+
         layer_id = layer_id + files(fn_index).noLayers;
-        if options.waitbar; waitbar(layer_id/maxZ, wb); end
     elseif strcmp(files(fn_index).object_type,'bdv.hdf5')        % BigDataViewer format
         opt.level = img_info('ReturnedLevel');
         imgIn = loadBigDataViewerFormat(files(fn_index).filename, opt, img_info);
         img(1:maxY, 1:maxX, 1:maxC, layer_id:layer_id+files(fn_index).noLayers-1, 1:maxT) = imgIn(1:maxY,1:maxX,1:maxC,1:files(fn_index).noLayers, 1:maxT);
         clear imgIn;
+
+        % update waitbar
+        if options.waitbar && mod(layer_id, waitbarUpdateFrequency)==0
+            if getappdata(wb, 'canceling')
+                img = NaN;
+                delete(wb);
+                return;
+            end
+            waitbar(layer_id/maxZ, wb);
+        end
+
         layer_id = layer_id + files(fn_index).noLayers;
-        if options.waitbar; waitbar(layer_id/maxZ, wb); end
     elseif strcmp(files(fn_index).object_type,'hdf5_image') || strcmp(files(fn_index).object_type,'matlab.hdf5')        % HDF5 format
         hdf5_image = h5read(files(fn_index).filename, cell2mat(files(fn_index).seriesName));
         if iscell(hdf5_image)   % if the data is not numerical
@@ -154,8 +210,17 @@ for fn_index = 1:no_files
         end
         img(1:maxY,1:maxX,1:maxC,layer_id:layer_id+files(fn_index).noLayers-1,1:maxT) = hdf5_image;
         clear hdf5_image;
+
+        % update waitbar
+        if options.waitbar && mod(layer_id, waitbarUpdateFrequency)==0
+            if getappdata(wb, 'canceling')
+                img = NaN;
+                delete(wb);
+                return;
+            end
+            waitbar(layer_id/maxZ, wb);
+        end
         layer_id = layer_id + files(fn_index).noLayers;
-        if options.waitbar; waitbar(layer_id/maxZ, wb); end
     elseif strcmp(files(fn_index).object_type,'amiramesh')        % Amira Mesh
         if options.waitbar
             options.hWaitbar = wb;
@@ -267,10 +332,16 @@ for fn_index = 1:no_files
                 end
             end
             img(1:maxY,1:maxX,1:size(I,3),layer_id) = I(1:maxY,1:maxX,1:size(I,3));
-            layer_id = layer_id + 1;
-            if options.waitbar && mod(layer_id, ceil(maxZ/20))==0
-                waitbar(layer_id/maxZ,wb);
+            % update waitbar
+            if options.waitbar && mod(layer_id, waitbarUpdateFrequency)==0
+                if getappdata(wb, 'canceling')
+                    img = NaN;
+                    delete(wb);
+                    return;
+                end
+                waitbar(layer_id/maxZ, wb);
             end
+            layer_id = layer_id + 1;
         end
     elseif strcmp(files(fn_index).object_type,'mrc_image')        % IMOD mrc/rec image
         mrcFile = MRCImage(files(fn_index).filename, 1);
@@ -302,8 +373,13 @@ for fn_index = 1:no_files
             for subLayer=1:files(fn_index).noLayers
                 img(1:maxY,1:maxX,1:maxC,layer_id) = flip(mrc_image(:,:,subLayer)', 1);
                 layer_id = layer_id + 1;
-                if options.waitbar && mod(layer_id, ceil(maxZ/20))==0
-                    waitbar(layer_id/maxZ,wb);
+                if options.waitbar && mod(layer_id, waitbarUpdateFrequency)==0
+                    if getappdata(wb, 'canceling')
+                        img = NaN;
+                        delete(wb);
+                        return;
+                    end
+                    waitbar(layer_id/maxZ, wb);
                 end
             end
         else
@@ -315,19 +391,32 @@ for fn_index = 1:no_files
         close(mrcFile);
     elseif strcmp(files(fn_index).object_type,'bioformats')        % bioformats images
         bfopenOptions.BioFormatsMemoizerMemoDir = files(fn_index).BioFormatsMemoizerMemoDir;
+        if options.waitbar
+            bfopenOptions.waitbarHandle = wb;
+            bfopenOptions.waitbarUpdateFrequency = waitbarUpdateFrequency;
+        end
         if isfield(files, 'DimensionOrder')
             bfopenOptions.DimensionOrder = files(fn_index).DimensionOrder;
         end
         for serieIndex=1:numel(files(fn_index).seriesName)
             I  = bfopen4(files(fn_index).origFilename, files(fn_index).seriesName(serieIndex), NaN, bfopenOptions);
-            
+            if isempty(I)
+                img = NaN;
+                return;
+            end
+
             for subLayer=1:files(fn_index).noLayers        % filling image Info structure
                 img(1:maxY,1:maxX,1:maxC,layer_id,1:maxT) = I.img(1:maxY,1:maxX,1:maxC,subLayer,1:maxT);
                 img_info('ColorType') = I.ColorType;
                 img_info('ColorMap') = I.ColorMap;
                 layer_id = layer_id + 1;
-                if options.waitbar && mod(layer_id, ceil(maxZ/20))==0
-                    waitbar(layer_id/maxZ,wb);
+                if options.waitbar && mod(layer_id, waitbarUpdateFrequency)==0
+                    if getappdata(wb, 'canceling')
+                        img = NaN;
+                        delete(wb);
+                        return;
+                    end
+                    waitbar(layer_id/maxZ, wb);
                 end
             end
         end
@@ -342,6 +431,16 @@ for fn_index = 1:no_files
     end
 end
 
+% Check for clicked Cancel button; repeat check here to take care of
+% loading of large single files
+if options.waitbar
+    if getappdata(wb, 'canceling')
+        delete(wb);
+        img = NaN;
+        img_info = containers.Map;
+        return;
+    end
+end
 
 if isa(img, 'uint32') && options.imgStretch==1  % convert to 16 bit image format
     maxVal = max(max(max(max(img))));

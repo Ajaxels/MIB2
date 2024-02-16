@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function varargout = mibInputMultiDlg(varargin)
 % function [answer, selectedIndices] = mibInputMultiDlg(mibPath, prompts, defaultAns, dlg_title, options)
 % custom input dialog
@@ -27,8 +43,12 @@ function varargout = mibInputMultiDlg(varargin)
 % .Focus - define index of the widget to get focused
 % .okBtnText -  text for the OK button
 % .helpBtnText -  text for the Help button
-% .HelpUrl - URL to the help page, when provided a Help button is displayed, press of the button opens the url in a browser
+% .HelpUrl - URL to the help page, when provided a Help button is displayed, 
+% press of the button opens the url in a browser (requires 'http' in the
+% beginning of the url link). Alternatively, it can be a command to
+% execute.
 % .msgBoxOnly - logical, to mimic message box without input fields
+% .Icon - string ('question'-default, 'celebrate', 'call4help'), an icon to use
 %
 % Return values:
 % answer: a cell array with the entered values, or @em empty, when cancelled
@@ -52,18 +72,11 @@ function varargout = mibInputMultiDlg(varargin)
 % options.HelpUrl = 'http:\\mib.helsinki.fi'; // [optional], an url for the Help button
 % options.LastItemColumns = 1; // [optional] force the last entry to be on a single column
 % options.msgBoxOnly = false; // [optional] mimic message box without input fields
+% options.Icon = 'question'; // [optional] icon to use: "question" (default), "celebrate", "call4help"
 % [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
 % if isempty(answer); return; end 
 % @endcode
 
-
-% Copyright (C) 04.10.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 13.01.2021, added syntax: prompt = 'text'; defAns = NaN to draw an empty placeholder without a widget
 
@@ -140,7 +153,8 @@ else
 end
 
 % add default values for the options structure
-if ~isfield(options, 'WindowStyle'); options.WindowStyle = 'modal'; end
+if ~isfield(options, 'Icon'); options.Icon = 'question'; end
+if ~isfield(options, 'WindowStyle'); options.WindowStyle = 'normal'; end
 if ~isfield(options, 'Columns'); options.Columns = 1; end
 if ~isfield(options, 'Focus'); options.Focus = 1; end
 if ~isfield(options, 'LastItemColumns'); options.LastItemColumns = 0; end
@@ -172,12 +186,80 @@ end
 
 set(handles.mibInputMultiDlg,'Name', titleStr);
 
-posText = handles.textString.Position;
+% make the window wider
+handles.mibInputMultiDlg.Visible = 'on';
+% handles.mibInputMultiDlg.Units = 'pixels';
+% ch = handles.mibInputMultiDlg.Children;
+% for i=1:numel(ch); ch(i).Units = 'pixels'; end
+
+if isfield(options, 'WindowWidth')
+    defaultWidth = handles.mibInputMultiDlg.Position(3);
+    handles.mibInputMultiDlg.Position(3) = handles.mibInputMultiDlg.Position(3)*options.WindowWidth;
+    handles.okBtn.Position(1) = handles.okBtn.Position(1) + handles.mibInputMultiDlg.Position(3)-defaultWidth;
+    handles.cancelBtn.Position(1) = handles.cancelBtn.Position(1) + handles.mibInputMultiDlg.Position(3)-defaultWidth;
+    handles.textString.Position(3) = handles.textString.Position(3)+ handles.mibInputMultiDlg.Position(3)-defaultWidth;
+end
+
 posEdit = handles.textEdit.Position;
 posButton = handles.okBtn.Position;
+de = posEdit(4);    % standard height for the edits/combos/checkboxes
+
+% load the icon and
+% correct the image axes depending on the image size
+switch options.Icon
+    case 'question'
+        iconFilename = 'mib_question.png';
+    case 'celebrate'
+        iconFilename = 'mib_celebrate.jpg';
+    case 'call4help'
+        iconFilename = 'mib_call4help.jpg';
+end
+
+% load the icon
+[~, ~, iconExt] = fileparts(iconFilename);
+mibDir = handles.mibPath;
+if isempty(handles.mibPath)
+    if isdeployed % Stand-alone mode.
+        [~, result] = system('path');
+        mibDir = char(regexpi(result, 'Path=(.*?);', 'tokens', 'once'));
+    else % MATLAB mode.
+        mibDir = fileparts(which('mib'));
+    end
+end
+% old code for GIF
+%[IconData, IconCMap] = imread(fullfile(mibDir, 'Resources', 'mib_quest.gif'), 'BackgroundColor', handles.mibInputMultiDlg.Color);
+switch iconExt
+    case '.png'
+        [IconData, IconCMap] = imread(fullfile(mibDir, 'Resources', iconFilename), 'BackgroundColor', handles.mibInputMultiDlg.Color);
+    case '.jpg'
+        [IconData, IconCMap] = imread(fullfile(mibDir, 'Resources', iconFilename));
+end
+
+switch options.Icon
+    case 'question'     % use default axes box for the image, i.e. without resizing
+        %axShiftX = 0;
+    case {'celebrate', 'call4help'}
+        % increase the axes size for the image
+        origAxPositions = handles.axes1.Position;
+        handles.axes1.Units = 'pixels';
+        handles.axes1.Position(3) = size(IconData, 2);
+        handles.axes1.Position(4) = size(IconData, 1);
+        handles.axes1.Units = 'points';
+        % correct X1 and Y1 position for the image axes
+        handles.axes1.Position(1) = de/4;
+        handles.axes1.Position(2) = posButton(2)+posButton(4)+handles.textString.Position(4)/2; %handles.mibInputMultiDlg.Position(4) - handles.axes1.Position(4) + handles.axes1.Position(4);
+        % calculate how much the image axes were increased
+        axShiftX = handles.axes1.Position(3) - origAxPositions(3);
+        % decrese the size of the referenced handles.textString
+        handles.textString.Position(1) = handles.textString.Position(1) + axShiftX;
+        handles.textString.Position(3) = handles.textString.Position(3) - axShiftX;
+        % increase window height to keep the image
+        handles.mibInputMultiDlg.Position(4) = max([handles.mibInputMultiDlg.Position(4) handles.axes1.Position(4)+de*2]);
+end
+
+posText = handles.textString.Position;
 x1 = posText(1);    % left point for positioning the widgets
 dt = posText(4);    % standard height for the prompts
-de = posEdit(4);    % standard height for the edits/combos/checkboxes
 
 widthFull = posText(3);     % standard width of the widgets
 if options.Columns > 1
@@ -228,6 +310,7 @@ for elementId = 1:numel(prompts)
     widgetId = widgetId + 1;
     maxShiftY = max([maxShiftY shiftY]);
 end
+
 if options.msgBoxOnly == false  % add input widgets
     if min(posVec(:,2)) < 0
         posVec(:,2) = posVec(:,2) - min(posVec(:,2));
@@ -298,7 +381,7 @@ else
 end
 
 % resize the figure
-handles.mibInputMultiDlg.Position(4) = y1 + de/2;
+handles.mibInputMultiDlg.Position(4) = max([y1 + de/2 handles.mibInputMultiDlg.Position(4)]);
 
 % Choose default command line output for mibInputMultiDlg
 handles.output = defAns;
@@ -326,31 +409,21 @@ hObject = moveWindowOutside(hObject, 'center', 'center');
 pos = handles.mibInputMultiDlg.Position;
 handles.dialogHeight = pos(4);
 
-% add icon
-if ~isempty(handles.mibPath)
-    [IconData, IconCMap] = imread(fullfile(handles.mibPath, 'Resources', 'mib_quest.gif'));        
-else
-    if isdeployed % Stand-alone mode.
-        [~, result] = system('path');
-        currentDir = char(regexpi(result, 'Path=(.*?);', 'tokens', 'once'));
-    else % MATLAB mode.
-        currentDir = fileparts(which('mib'));
-    end
-    [IconData, IconCMap] = imread(fullfile(currentDir, 'Resources', 'mib_quest.gif'));    
-end
-
 Img = image(IconData, 'Parent', handles.axes1);
-IconCMap(IconData(1,1)+1,:) = handles.mibInputMultiDlg.Color;   % replace background color
-handles.mibInputMultiDlg.Colormap = IconCMap;
-
-handles.axes1.Position(2) = handles.mibInputMultiDlg.Position(4) - handles.axes1.Position(4) - handles.axes1.Position(4)/2;
-
+% update colormap for GIF
+if ~isempty(IconCMap)
+    IconCMap(IconData(1,1)+1,:) = handles.mibInputMultiDlg.Color;   % replace background color
+    handles.mibInputMultiDlg.Colormap = IconCMap;
+end
 handles.axes1.Visible = 'off';
 handles.axes1.YDir = 'reverse';
 handles.axes1.XLim = Img.XData;
 handles.axes1.YLim = Img.YData;
 handles.axes1.DataAspectRatioMode = 'manual';
 handles.axes1.DataAspectRatio = [1, 1, 1];
+
+% update y-position of the image axes
+handles.axes1.Position(2) = handles.mibInputMultiDlg.Position(4)-handles.axes1.Position(4) - dt;
 
 % update WindowKeyPressFcn
 handles.mibInputMultiDlg.WindowKeyPressFcn = {@mibInputMultiDlg_KeyPressFcn, handles};
@@ -365,7 +438,9 @@ end
 % % define the tab order and set the widgets to normalized for resizing
 ch = handles.mibInputMultiDlg.Children;
 for i=1:numel(ch)
-    ch(i).Units = 'normalized';
+    %if ~isa(ch(i), 'matlab.graphics.axis.Axes')
+        ch(i).Units = 'normalized';
+    %end
 end
 % for i=1:numel(ch)-3
 %    uistack(ch(i), 'top'); 
@@ -379,10 +454,10 @@ end
 guidata(hObject, handles);
 drawnow;
 
-% make the window wider
-if isfield(options, 'WindowWidth')
-    handles.mibInputMultiDlg.Position(3) = handles.mibInputMultiDlg.Position(3)*options.WindowWidth;
-end
+% % make the window wider
+% if isfield(options, 'WindowWidth')
+%     handles.mibInputMultiDlg.Position(3) = handles.mibInputMultiDlg.Position(3)*options.WindowWidth;
+% end
 handles.mibInputMultiDlg.Visible = 'on';
 
 % highlight text in the edit box
@@ -538,5 +613,9 @@ function Help_Callback(hObject, eventdata, handles)
 % hObject    handle to Help (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-web(handles.HelpUrl, '-browser');
+if strcmp(handles.HelpUrl(1:4), 'http')
+    web(handles.HelpUrl, '-browser');
+else
+    eval(handles.HelpUrl);
+end
 end

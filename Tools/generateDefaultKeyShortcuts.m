@@ -1,20 +1,31 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function KeyShortcuts = generateDefaultKeyShortcuts()
 % function KeyShortcuts = generateDefaultKeyShortcuts()
 % generate KeyShortcuts structure with defauld key shortcuts
 
-% Copyright (C) 04.12.2020 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-
 % define keyboard shortcuts
-maxShortCutIndex = 32;  % total number of shortcuts
+maxShortCutIndex = 37;  % total number of shortcuts
 
 KeyShortcuts.shift(1:maxShortCutIndex) = 0;
+KeyShortcuts.overrideShift(1:maxShortCutIndex) = 0;     % here should be indices of operations that are used with Shifts, such as shift+a, shift+s...
 KeyShortcuts.control(1:maxShortCutIndex) = 0;
 KeyShortcuts.alt(1:maxShortCutIndex) = 0;
+KeyShortcuts.overrideAlt(1:maxShortCutIndex) = 0;     % here should be indices of operations that are used with Alt, such as alt+a...
 
 KeyShortcuts.Key{1} = '1';
 KeyShortcuts.Action{1} = 'Switch dataset to XY orientation';
@@ -37,36 +48,55 @@ KeyShortcuts.control(5) = 1;
 
 KeyShortcuts.Key{6} = 'a';
 KeyShortcuts.Action{6} = 'Add to selection to material';
+KeyShortcuts.overrideShift(6) = 1;
 
 KeyShortcuts.Key{7} = 's';
 KeyShortcuts.Action{7} = 'Subtract from material';
+KeyShortcuts.overrideShift(7) = 1;
+KeyShortcuts.overrideAlt(7) = 1;
 
 KeyShortcuts.Key{8} = 'r';
 KeyShortcuts.Action{8} = 'Replace material with current selection';
+KeyShortcuts.overrideShift(8) = 1;
+KeyShortcuts.overrideAlt(8) = 1;
 
 KeyShortcuts.Key{9} = 'c';
 KeyShortcuts.Action{9} = 'Clear selection';
+KeyShortcuts.overrideShift(9) = 1;
+KeyShortcuts.overrideAlt(9) = 1;
 
 KeyShortcuts.Key{10} = 'f';
 KeyShortcuts.Action{10} = 'Fill the holes in the Selection layer';
+KeyShortcuts.overrideShift(10) = 1;
+KeyShortcuts.overrideAlt(10) = 1;
 
 KeyShortcuts.Key{11} = 'z';
 KeyShortcuts.Action{11} = 'Erode the Selection layer';
+KeyShortcuts.overrideShift(11) = 1;
+KeyShortcuts.overrideAlt(11) = 1;
 
 KeyShortcuts.Key{12} = 'x';
 KeyShortcuts.Action{12} = 'Dilate the Selection layer';
+KeyShortcuts.overrideShift(12) = 1;
+KeyShortcuts.overrideAlt(12) = 1;
 
 KeyShortcuts.Key{13} = 'q';
 KeyShortcuts.Action{13} = 'Zoom out/Previous slice';
+KeyShortcuts.overrideShift(13) = 1;
+KeyShortcuts.overrideAlt(13) = 1;
 
 KeyShortcuts.Key{14} = 'w';
 KeyShortcuts.Action{14} = 'Zoom in/Next slice';
+KeyShortcuts.overrideShift(14) = 1;
+KeyShortcuts.overrideAlt(14) = 1;
 
 KeyShortcuts.Key{15} = 'downarrow';
 KeyShortcuts.Action{15} = 'Previous slice';
+KeyShortcuts.overrideShift(15) = 1;
 
 KeyShortcuts.Key{16} = 'uparrow';
 KeyShortcuts.Action{16} = 'Next slice';
+KeyShortcuts.overrideShift(16) = 1;
 
 KeyShortcuts.Key{17} = 'space';
 KeyShortcuts.Action{17} = 'Show/hide the Model layer';
@@ -123,9 +153,33 @@ KeyShortcuts.Key{31} = 'e';
 KeyShortcuts.control(31) = 1;
 KeyShortcuts.Action{31} = 'Toggle current and previous buffer';
 
+KeyShortcuts.Key{32} = '';
+KeyShortcuts.Action{32} = 'Zoom to 100% view';
+
+KeyShortcuts.Key{33} = '';
+KeyShortcuts.Action{33} = 'Zoom to fit the view';
+
+KeyShortcuts.Key{34} = 'leftbracket';
+KeyShortcuts.Action{34} = 'Brush size decrease';
+KeyShortcuts.overrideShift(34) = 1;
+
+KeyShortcuts.Key{35} = 'rightbracket';
+KeyShortcuts.Action{35} = 'Brush size increase';
+KeyShortcuts.overrideShift(35) = 1;
+
+KeyShortcuts.Key{36} = 'f2';
+KeyShortcuts.Action{36} = 'Rename material';
+
 % add a new key shortcut to the end of the list
 KeyShortcuts.Key{maxShortCutIndex} = 'n';
 KeyShortcuts.Action{maxShortCutIndex} = 'Increse active material index by 1 for models with 65535 materials';
 
-
+% resort the shortcuts to be alphabetical
+[KeyShortcuts.Action, sortedIds] = sort(KeyShortcuts.Action);
+KeyShortcuts.shift = KeyShortcuts.shift(sortedIds);
+KeyShortcuts.overrideShift = KeyShortcuts.overrideShift(sortedIds);
+KeyShortcuts.control = KeyShortcuts.control(sortedIds);
+KeyShortcuts.alt = KeyShortcuts.alt(sortedIds);
+KeyShortcuts.overrideAlt = KeyShortcuts.overrideAlt(sortedIds);
+KeyShortcuts.Key = KeyShortcuts.Key(sortedIds);
 

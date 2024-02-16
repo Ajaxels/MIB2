@@ -1,16 +1,24 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibImageAdjController < handle
-    % @type mibImageAdjController class is resposnible for showing the
+    % @type mibImageAdjController class is responsible for showing the
     % dataset adjustment window, available from MIB->View settings
     % panel->Display
     
-	% Copyright (C) 20.01.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-	% 
-	% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-	%
 	% Updates
 	% 
     
@@ -223,7 +231,6 @@ classdef mibImageAdjController < handle
             obj.updateSliders();
         end
         
-        
         function minSlider_Callback(obj)
             % function minSlider_Callback(obj)
             % a callback for obj.View.handles.minSlider
@@ -257,9 +264,11 @@ classdef mibImageAdjController < handle
             if val >= obj.mibModel.I{obj.mibModel.Id}.viewPort.max(channel)
                 obj.mibModel.I{obj.mibModel.Id}.viewPort.min(channel) = obj.mibModel.I{obj.mibModel.Id}.viewPort.max(channel) - 1;
             elseif val < 0
-                obj.mibModel.I{obj.mibModel.Id}.viewPort.min(channel) = 0;
+                obj.mibModel.I{obj.mibModel.Id}.viewPort.min(channel) = val;
+                obj.View.handles.minSlider.Min = val;
             else
                 obj.mibModel.I{obj.mibModel.Id}.viewPort.min(channel) = val;
+                obj.View.handles.minSlider.Min = 0;
             end
             
             obj.View.handles.minSlider.Value = obj.mibModel.I{obj.mibModel.Id}.viewPort.min(channel);
@@ -277,6 +286,7 @@ classdef mibImageAdjController < handle
                 obj.View.handles.maxSlider.Value = min_val+3;
                 current_value = min_val + 3;
             end
+            
             obj.View.handles.minSlider.Max = current_value;
             obj.updateSettings();
             notify(obj.mibModel, 'plotImage');
@@ -294,10 +304,12 @@ classdef mibImageAdjController < handle
                 obj.View.handles.maxEdit.String = num2str(obj.mibModel.I{obj.mibModel.Id}.viewPort.max(channel));
                 return;
             end
+
             if val <= obj.mibModel.I{obj.mibModel.Id}.viewPort.min(channel)
-                obj.mibModel.I{obj.mibModel.Id}.viewPort.max(channel) = obj.mibModel.I{obj.mibModel.Id}.viewPort.min(channel) + 1;
+                obj.mibModel.I{obj.mibModel.Id}.viewPort.max(channel) = obj.mibModel.I{obj.mibModel.Id}.viewPort.min(channel) + 1;      
             elseif val >= obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt')
-                obj.mibModel.I{obj.mibModel.Id}.viewPort.max(channel) = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
+                obj.mibModel.I{obj.mibModel.Id}.viewPort.max(channel) = val;
+                obj.View.handles.maxSlider.Max = val;
             else
                 obj.mibModel.I{obj.mibModel.Id}.viewPort.max(channel) = val;
             end
@@ -502,6 +514,7 @@ classdef mibImageAdjController < handle
             % function minSlider_ButtonDownFcn(obj)
             % a callback for button press over obj.View.handles.minSlider
             obj.View.handles.minSlider.Value = 0;
+            obj.View.handles.minSlider.Min = 0;
             obj.minSlider_Callback();
         end
         
@@ -509,6 +522,7 @@ classdef mibImageAdjController < handle
             % function maxSlider_ButtonDownFcn(obj)
             % a callback for button press over obj.View.handles.maxSlider
             obj.View.handles.maxSlider.Value = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
+            obj.View.handles.maxSlider.Max = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
             obj.maxSlider_Callback();
         end
         
@@ -596,12 +610,24 @@ classdef mibImageAdjController < handle
             
             obj.View.handles.minSlider.Min = 0;
             obj.View.handles.minSlider.Max = max_val;
-            obj.View.handles.minSlider.Value = min_val;
+            if min_val >= 0
+                obj.View.handles.minSlider.Value = min_val; 
+                obj.View.handles.minSlider.Min = 0;
+            else
+                obj.View.handles.minSlider.Min = min_val;
+                obj.View.handles.minSlider.Value = min_val; 
+            end
             obj.View.handles.minEdit.String = num2str(min_val);
             
             obj.View.handles.maxSlider.Min = min_val;
             obj.View.handles.maxSlider.Max = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
-            obj.View.handles.maxSlider.Value = max_val;
+            if max_val <= obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt')
+                obj.View.handles.maxSlider.Value = max_val;
+                obj.View.handles.maxSlider.Max = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
+            else
+                obj.View.handles.maxSlider.Max = max_val;
+                obj.View.handles.maxSlider.Value = max_val;
+            end
             obj.View.handles.maxEdit.String = num2str(max_val);
             
             obj.View.handles.gammaSlider.Value = gamma;
@@ -614,11 +640,7 @@ classdef mibImageAdjController < handle
             global mibPath;
             
             % start help page
-            if isdeployed
-                web(fullfile(mibPath, 'techdoc/html/ug_panel_adjustments.html'), '-helpbrowser');
-            else
-                web(fullfile(mibPath, 'techdoc/html/ug_panel_adjustments.html'), '-helpbrowser');
-            end
+            web(fullfile(mibPath, 'techdoc/html/ug_panel_adjustments.html'), '-helpbrowser');
         end
         
         % --- Executes on button press in applyBtn.
@@ -648,11 +670,15 @@ classdef mibImageAdjController < handle
             channel = obj.View.handles.colorChannelCombo.Value;
             viewPort = obj.mibModel.getImageProperty('viewPort');
             waitbarStep = round(maxT*maxZ/20);
+
+            % get stretching coefficients
+            [lowIn, highIn, lowOut, highOut] = obj.mibModel.I{obj.mibModel.Id}.getImAdjustStretchCoef(channel);
+
             for t=1:maxT
                 for i=1:maxZ
                     obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,channel,i,t) = imadjust(obj.mibModel.I{obj.mibModel.Id}.img{1}(:,:,channel,i,t),...
-                        [viewPort.min(channel)/max_int viewPort.max(channel)/max_int],...
-                        [0 1], viewPort.gamma(channel));
+                        [lowIn, highIn], [lowOut, highOut], viewPort.gamma(channel));
+
                     if obj.BatchOpt.showWaitbar; if mod(i, waitbarStep) == 0; waitbar(i/(maxZ*maxT), wb); end; end  % update waitbar
                 end
             end
@@ -691,9 +717,9 @@ classdef mibImageAdjController < handle
             slice = cell2mat(obj.mibModel.getData2D('image', NaN, NaN, channel, getDataOptions));
             viewPort = obj.mibModel.getImageProperty('viewPort');
             
-            slice = imadjust(slice,...
-                [viewPort.min(channel)/max_int viewPort.max(channel)/max_int],...
-                [0 1], viewPort.gamma(channel));
+            [lowIn, highIn, lowOut, highOut] = obj.mibModel.I{obj.mibModel.Id}.getImAdjustStretchCoef(channel);
+            slice = imadjust(slice,[lowIn, highIn], [lowOut, highOut], viewPort.gamma(channel));
+
             obj.mibModel.setData2D('image', {slice}, NaN, NaN, channel, getDataOptions);
             obj.mibModel.I{obj.mibModel.Id}.viewPort.min(channel) = 0;
             obj.mibModel.I{obj.mibModel.Id}.viewPort.max(channel) = max_int;

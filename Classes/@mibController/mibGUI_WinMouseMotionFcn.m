@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibGUI_WinMouseMotionFcn(obj)
 % function mibGUI_WinMouseMotionFcn(obj)
 % returns coordinates and image intensities under the mouse cursor
@@ -5,13 +21,6 @@ function mibGUI_WinMouseMotionFcn(obj)
 % Parameters:
 % 
 
-% Copyright (C) 06.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -33,6 +42,18 @@ separatingPanelPos2 = obj.mibView.handles.mibSeparatingPanel2.Position;
 if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer within the current axes
     obj.mibView.handles.mibGUI.Pointer = 'crosshair';
     
+    % calculate mouse travel distance
+    if obj.mibModel.sessionSettings.prevCursorCoordinate(1) > 0
+        mouseDist = sqrt((obj.mibModel.sessionSettings.prevCursorCoordinate(1)-x)^2 + (obj.mibModel.sessionSettings.prevCursorCoordinate(2)-y)^2) *...
+            obj.mibModel.sessionSettings.metersPerPixel;
+        obj.mibModel.preferences.Users.Tiers.mouseTravelDistance = obj.mibModel.preferences.Users.Tiers.mouseTravelDistance + mouseDist;
+        obj.mibModel.preferences.Users.Tiers.collectedPoints = obj.mibModel.preferences.Users.Tiers.collectedPoints + mouseDist;
+    end
+    obj.mibModel.sessionSettings.prevCursorCoordinate = [x, y];     % store the previous coordinate of the cursor
+    
+    %fprintf('Mouse travel distance: %f meters\n', obj.mibModel.preferences.Users.mouseTravelDistance);
+    %fprintf('Collected points: %f\n', obj.mibModel.preferences.Users.Tiers.collectedPoints);
+
     if x > 0 && y > 0 && x<=size(obj.mibView.Ishown,2) && y<=size(obj.mibView.Ishown,1) && ~isempty(obj.mibView.imh.CData) % mouse pointer inside the image dimensions
         if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
             % in the virtual mode intensity of pixels is obtained from obj.mibView.Iraw, which is a raw dataset displayed on the screen 
@@ -102,11 +123,14 @@ if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer with
     end
 elseif x2>separatingPanelPos(1) && x2<separatingPanelPos(1)+separatingPanelPos(3) && y2>separatingPanelPos(2) && y2<separatingPanelPos(2)+separatingPanelPos(4) % mouse pointer within the current axes
     obj.mibView.gui.Pointer = 'left';
+    obj.mibModel.sessionSettings.prevCursorCoordinate = 0; % clear the previous mouse coordinate when leaving the image axes
 elseif x2>separatingPanelPos2(1) && x2<separatingPanelPos2(1)+separatingPanelPos2(3) && y2>separatingPanelPos2(2) && y2<separatingPanelPos2(2)+separatingPanelPos2(4) % mouse pointer within the current axes
     obj.mibView.gui.Pointer = 'top';
+    obj.mibModel.sessionSettings.prevCursorCoordinate = 0; % clear the previous mouse coordinate when leaving the image axes
 else
     obj.mibView.gui.Pointer = 'arrow';
     obj.mibView.handles.mibPixelInfoTxt2.String = 'XXXX:YYYY (RRR:GGG:BBB)';
+    obj.mibModel.sessionSettings.prevCursorCoordinate = 0; % clear the previous mouse coordinate when leaving the image axes
 end
 
 % recalculate brush cursor positions

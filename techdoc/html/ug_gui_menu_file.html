@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>File Menu</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_file.m"><style>
+      --><title>File Menu</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_file.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -146,11 +146,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -541,7 +540,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="3">Example datasets</h2>
 <p>This menu entry provides quick access to several MIB demo datasets and full projects for image segmentation using deep learning. The datasets are grouped by techniques used for data collection.</p>
-<details open onclick="state_check('1.1')" id="1.1"><summary> <b>DeepMIB projects-&gt;Syntetic 2D large spots</b> </summary>
+<details open onclick="state_check('1.1')" id="1.1"><summary> <b>DeepMIB projects-&gt;Synthetic 2D large spots</b> </summary>
 <div class="details-div">
 <p></p>
 A complete DeepMIB project with a synthetic dataset generated for quick tests of semantic
@@ -559,10 +558,14 @@ of large spots on a black background. The network can be opened by loading
   <td><img class="image-fit" src = "images\examplesDeepMIB_large_spots.png"></td>
 </tr></table>
 
+<b>Reference:</b>
+<br>
+<a href="https://doi.org/10.5281/zenodo.10203188"><img class="image-fit-svg" src="images\zenodo.10203188.svg" alt="https://doi.org/10.5281/zenodo.10203188"></a>
+
 </div>
 </details>
 <br>
-<details open onclick="state_check('1.2')" id="1.2"><summary> <b>DeepMIB projects-&gt;Syntetic 2D small spots</b> </summary>
+<details open onclick="state_check('1.2')" id="1.2"><summary> <b>DeepMIB projects-&gt;Synthetic 2D small spots</b> </summary>
 <div class="details-div">
 <p></p>
 A complete DeepMIB project with a synthetic dataset generated for quick tests of semantic
@@ -580,10 +583,53 @@ of small random spots of 2 colors on a black background. The network can be open
   <td><img class="image-fit" src = "images\examplesDeepMIB_small_spots.png"></td>
 </tr></table>
 
+<b>Reference:</b>
+<br>
+<a href="https://doi.org/10.5281/zenodo.10203764"><img class="image-fit-svg" src="images\zenodo.10203764.svg" alt="https://doi.org/10.5281/zenodo.10203764"></a>
+
 </div>
 </details>
 <br>
-<details open onclick="state_check('1.3')" id="1.3"><summary> <b>DeepMIB projects-&gt;Syntetic 2D patch-wise</b> </summary>
+<details open onclick="state_check('1.3')" id="1.3"><summary> <b>DeepMIB projects-&gt;Synthetic 2.5D large spots</b> </summary>
+<div class="details-div">
+<p></p>
+A complete DeepMIB project with a synthetic dataset generated for quick tests of 2.5D depth-to-color semantic
+segmentation approaches
+<br>
+The dataset includes a trained 2.5D DeepLabV3-Resnet18 and 2.5D U-net networks, where the 5-slice subvolumes
+were used for segmentation of large 3D spots on a black background. In
+addition, there are 2D spots that should not be segmented.
+<br>
+<br>
+The trained networks are
+<br>
+<ul>
+<li><b>Spots_25D_DLv3RN18_Z2C_xy200z5</b> - DeepLabV3-based
+2.5D Depth-to-Color network with patches of 200x200x5</li>
+<li><b>Spots_25D_Unet_Z2C_xy200z5</b> - U-net-based
+2.5D Depth-to-Color network with patches of 200x200x5</li>
+</ul>
+The networks can be loaded by opening their config files by
+<ul>
+<li><span class="code">Menu->Tools->Deep learning segmentation->Options
+tab->Config files->Load</span></li>
+<li>Drag and drop of the config file into DeepMIB window</li>
+</ul>
+
+<br>
+<table><tr>
+  <td><img class="image-fit" src = "images\examplesDeepMIB_25D_large_spots_tree.png"></td>
+  <td><img class="image-fit" src = "images\examplesDeepMIB_25D_large_spots.png"></td>
+</tr></table>
+
+<b>Reference:</b>
+<br>
+<a href="https://doi.org/10.5281/zenodo.10212417"><img class="image-fit-svg" src="images\zenodo.10212417.svg" alt="https://doi.org/10.5281/zenodo.10212417"></a>
+
+</div>
+</details>
+<br>
+<details open onclick="state_check('1.4')" id="1.4"><summary> <b>DeepMIB projects-&gt;Synthetic 2D patch-wise</b> </summary>
 <div class="details-div">
 <p></p>
 A complete DeepMIB project with a synthetic dataset generated for quick tests of the patch-wise segmentation approaches
@@ -602,10 +648,14 @@ The network can be opened by loading
   <td><img class="image-fit" src = "images\examplesDeepMIB_patchwise.png"></td>
 </tr></table>
 
+<b>Reference:</b>
+<br>
+<a href="https://doi.org/10.5281/zenodo.10203861"><img class="image-fit-svg" src="images\zenodo.10203861.svg" alt="https://doi.org/10.5281/zenodo.10203861"></a>
+
 </div>
 </details>
 <br>
-<details open onclick="state_check('1.4')" id="1.4"><summary> <b>DeepMIB projects-&gt;2D EM membranes</b> </summary>
+<details open onclick="state_check('1.5')" id="1.5"><summary> <b>DeepMIB projects-&gt;2D EM membranes</b> </summary>
 <div class="details-div">
 <p></p>
 A complete DeepMIB project with a segmentation of membranes from serial-section TEM images
@@ -631,7 +681,7 @@ The network can be opened by loading
 </div>
 </details>
 <br>
-<details open onclick="state_check('1.5')" id="1.5"><summary> <b>DeepMIB projects-&gt;2D LM nuclei</b> </summary>
+<details open onclick="state_check('1.6')" id="1.6"><summary> <b>DeepMIB projects-&gt;2D LM nuclei</b> </summary>
 <div class="details-div">
 <p></p>
 A complete DeepMIB project with a segmentation of nuclei, their boundaries and touching edges
@@ -656,7 +706,7 @@ The network can be opened by loading
 </div>
 </details>
 <br>
-<details open onclick="state_check('1.6')" id="1.6"><summary> <b>DeepMIB projects-&gt;3D EM mitochondria</b> </summary>
+<details open onclick="state_check('1.7')" id="1.7"><summary> <b>DeepMIB projects-&gt;3D EM mitochondria</b> </summary>
 <div class="details-div">
 <p></p>
 A complete DeepMIB project with a segmentation of mitochondria
@@ -681,7 +731,7 @@ The network can be opened by loading
 </div>
 </details>
 <br>
-<details open onclick="state_check('1.7')" id="1.7"><summary> <b>DeepMIB projects-&gt;3D LM inner hair cells</b> </summary>
+<details open onclick="state_check('1.8')" id="1.8"><summary> <b>DeepMIB projects-&gt;3D LM inner hair cells</b> </summary>
 <div class="details-div">
 <p></p>
 A complete DeepMIB project with a segmentation of inner hear cells, nuclei and synapses
@@ -706,7 +756,7 @@ The network can be opened by loading
 </div>
 </details>
 <br>
-<details open onclick="state_check('1.8')" id="1.8"><summary> <b>LM-&gt;3D SIM ER</b> </summary>
+<details open onclick="state_check('1.9')" id="1.9"><summary> <b>LM-&gt;3D SIM ER</b> </summary>
 <div class="details-div">
 <p></p>
 <p>
@@ -719,7 +769,7 @@ reticulum
 </div>
 </details>
 <br>
-<details open onclick="state_check('1.9')" id="1.9"><summary> <b>LM-&gt;3D STED</b> </summary>
+<details open onclick="state_check('1.10')" id="1.10"><summary> <b>LM-&gt;3D STED</b> </summary>
 <div class="details-div">
 <p></p>
 <p>
@@ -732,7 +782,7 @@ A 3D super-resolution Stimulated emission depletion (STED) microscopy dataset
 </div>
 </details>
 <br>
-<details open onclick="state_check('1.10')" id="1.10"><summary> <b>LM-&gt;WF ER photobleaching</b> </summary>
+<details open onclick="state_check('1.11')" id="1.11"><summary> <b>LM-&gt;WF ER photobleaching</b> </summary>
 <div class="details-div">
 <p></p>
 <p>
@@ -746,7 +796,7 @@ photo-bleaching effect
 </div>
 </details>
 <br>
-<details open onclick="state_check('1.11')" id="1.11"><summary> <b>SBEM-&gt;Huh-7 and model</b> </summary>
+<details open onclick="state_check('1.12')" id="1.12"><summary> <b>SBEM-&gt;Huh-7 and model</b> </summary>
 <div class="details-div">
 <p></p>
 <p>
@@ -761,7 +811,7 @@ reticulum, mitochondria and lipid droplets.
 </div>
 </details>
 <br>
-<details open onclick="state_check('1.12')" id="1.12"><summary> <b>SBEM-&gt;Trypanosoma and model</b> </summary>
+<details open onclick="state_check('1.13')" id="1.13"><summary> <b>SBEM-&gt;Trypanosoma and model</b> </summary>
 <div class="details-div">
 <p></p>
 <p>
@@ -775,7 +825,7 @@ reticulum, mitochondria, vesicles, lipid droplets and cytoplasm.
 </div>
 </details>
 <br>
-<details open onclick="state_check('1.13')" id="1.13"><summary> <b>MRI-&gt;MATLAB Brain and model</b> </summary>
+<details open onclick="state_check('1.14')" id="1.14"><summary> <b>MRI-&gt;MATLAB Brain and model</b> </summary>
 <div class="details-div">
 <p></p>
 <p>
@@ -936,8 +986,8 @@ A brief demonstration is available in the following video:
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a></p>
 <p></p>
 <p>
@@ -946,7 +996,7 @@ A brief demonstration is available in the following video:
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% File Menu
@@ -985,7 +1035,7 @@ A brief demonstration is available in the following video:
 % full projects for image segmentation using deep learning. The datasets
 % are grouped by techniques used for data collection. 
 %
-% [dtls]<summary> *DeepMIB projects->Syntetic 2D large spots* </summary>
+% [dtls]<summary> *DeepMIB projects->Synthetic 2D large spots* </summary>
 <div class="details-div">
 % 
 % <html lang="en">
@@ -1003,11 +1053,16 @@ A brief demonstration is available in the following video:
 %   <td><img src = "images\examplesDeepMIB_large_spots_tree.png"></td>
 %   <td><img src = "images\examplesDeepMIB_large_spots.png"></td>
 % </tr></table>
+% 
+<br>
+% <b>Reference:</b>
+<br>
+% <a href="https://doi.org/10.5281/zenodo.10203188"><img src="images\zenodo.10203188.svg" alt="https://doi.org/10.5281/zenodo.10203188"></a>
 % </html>
 %
 % [/dtls]
 %
-% [dtls]<summary> *DeepMIB projects->Syntetic 2D small spots* </summary>
+% [dtls]<summary> *DeepMIB projects->Synthetic 2D small spots* </summary>
 <div class="details-div">
 %
 % <html lang="en">
@@ -1025,11 +1080,57 @@ A brief demonstration is available in the following video:
 %   <td><img src = "images\examplesDeepMIB_small_spots_tree.png"></td>
 %   <td><img src = "images\examplesDeepMIB_small_spots.png"></td>
 % </tr></table>
+% 
+<br>
+% <b>Reference:</b>
+<br>
+% <a href="https://doi.org/10.5281/zenodo.10203764"><img src="images\zenodo.10203764.svg" alt="https://doi.org/10.5281/zenodo.10203764"></a>
 % </html>
 %
 % [/dtls]
 %
-% [dtls]<summary> *DeepMIB projects->Syntetic 2D patch-wise* </summary>
+% [dtls]<summary> *DeepMIB projects->Synthetic 2.5D large spots* </summary>
+<div class="details-div">
+% 
+% <html lang="en">
+% A complete DeepMIB project with a synthetic dataset generated for quick tests of 2.5D depth-to-color semantic
+% segmentation approaches
+<br>
+% The dataset includes a trained 2.5D DeepLabV3-Resnet18 and 2.5D U-net networks, where the 5-slice subvolumes 
+% were used for segmentation of large 3D spots on a black background. In
+% addition, there are 2D spots that should not be segmented.
+<br>
+<br>
+% The trained networks are
+<br>
+% <ul>
+% <li><b>Spots_25D_DLv3RN18_Z2C_xy200z5</b> - DeepLabV3-based
+% 2.5D Depth-to-Color network with patches of 200x200x5</li>
+% <li><b>Spots_25D_Unet_Z2C_xy200z5</b> - U-net-based
+% 2.5D Depth-to-Color network with patches of 200x200x5</li>
+% </ul>
+% The networks can be loaded by opening their config files by
+% <ul>
+% <li><span class="code">Menu->Tools->Deep learning segmentation->Options
+% tab->Config files->Load</span></li>
+% <li>Drag and drop of the config file into DeepMIB window</li>
+% </ul>
+% 
+<br>
+% <table><tr>
+%   <td><img src = "images\examplesDeepMIB_25D_large_spots_tree.png"></td>
+%   <td><img src = "images\examplesDeepMIB_25D_large_spots.png"></td>
+% </tr></table>
+% 
+<br>
+% <b>Reference:</b>
+<br>
+% <a href="https://doi.org/10.5281/zenodo.10212417"><img src="images\zenodo.10212417.svg" alt="https://doi.org/10.5281/zenodo.10212417"></a>
+% </html>
+%
+% [/dtls]
+%
+% [dtls]<summary> *DeepMIB projects->Synthetic 2D patch-wise* </summary>
 <div class="details-div">
 %
 % <html lang="en">
@@ -1048,6 +1149,11 @@ A brief demonstration is available in the following video:
 %   <td><img src = "images\examplesDeepMIB_patchwise_tree.png"></td>
 %   <td><img src = "images\examplesDeepMIB_patchwise.png"></td>
 % </tr></table>
+% 
+<br>
+% <b>Reference:</b>
+<br>
+% <a href="https://doi.org/10.5281/zenodo.10203861"><img src="images\zenodo.10203861.svg" alt="https://doi.org/10.5281/zenodo.10203861"></a>
 % </html>
 %
 % [/dtls]

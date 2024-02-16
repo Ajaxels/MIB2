@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Image View Panel</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_panel_im_view.m"><style>
+      --><title>Image View Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_panel_im_view.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -65,7 +65,9 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.kbd {     font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.2em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.dropdown {   font-family: monospace; 	border: 1px solid #aaa; 	border-radius: 0.2em; 	background-color: #fff; 	background-color: #e0f5ff; 	background-color: #e8f5e8; 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
 #tooltiptext {
@@ -144,11 +146,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -515,48 +516,79 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
 </div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Image View Panel</h1><!--introduction-->
-<p>This panel displays slices of the opened dataset. The shown slices may be in the XY, ZX, or ZY dimension, depending on selected mode in the <a href="ug_gui_toolbar.html">Toolbar</a>. The change of slices is done using the slider/edit box on the left-hand side of the panel. When the opened dataset has only a single slice, the slider and the edit box are not displayed.</p>
+<p>The Image View Panel is a component that displays slices of the opened dataset. The slices can be in the XY, ZX, or ZY dimension, depending on the selected mode in the <a href="ug_gui_toolbar.html">Toolbar</a>. The panel provides a slider and an edit box on the left-hand side, which allow you to change the displayed slices. When the opened dataset has only a single slice, the slider and the edit box are not displayed.</p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2>
 <div><ul><li><a href="#1">List of possible image layers that may be simultaneously shown in <code>MIB</code>:</a></li>
 <li><a href="#2">Mouse actions</a></li>
-<li><a href="#3">Key actions</a></li>
-<li><a href="#4">Extra parameters for the change slices slider.</a></li></ul></div><h2 id="1">List of possible image layers that may be simultaneously shown in <code>MIB</code>:</h2>
+<li><a href="#4">Key actions</a></li>
+<li><a href="#5">Drag and drop files</a></li>
+<li><a href="#6">Extra parameters for the change slices slider.</a></li></ul></div><h2 id="1">List of possible image layers that may be simultaneously shown in <code>MIB</code>:</h2>
 <p><img class="image-fit" src="images\PanelsImageView.jpg" alt=""> </p>
-<div><ul><li><b>Grayscale or multi-channel image</b></li>
-<li><b>Model layer</b> , that contain information about materials of the segmented model, or difference map for correlation analysis. <a href="ug_gui_data_layers.html">Click to see more about the image layers</a></li>
+<div><ul><li><b>Grayscale or multi-channel image</b>, this layer displays the original grayscale or multi-channel image that is being analyzed</li>
+<li><b>Model layer</b>, the model layer contains information about the materials of the segmented model or a difference map for correlation analysis (<a href="ug_gui_data_layers.html">click to see more about the image layers</a>)</li>
 <li><b>Mask layer</b>, mask layer is a black and white (bitmap) mask that is generated by some of the filters. The mask is a service layer that may be used as a source of shapes for segmentation or as an area for local black-and-white thresholding with the <a href="ug_panel_segm.html">BW Thresholding tool</a>.</li>
-<li><b>Selection layer</b>, is a temporery layer used for segmentation. This layer may be easily modified and in the end should be sent to the <code>Mask</code> or <code>Model</code> layers.</li>
-<li><b>ROI layer</b>, if ROIs are enabled, they may be also seen in the <code>Image View panel</code></li></ul></div>
+<li><b>Selection layer</b> is a temporary layer used for segmentation. It can be easily modified and is eventually sent to the Mask or Model layers for further analysis</li>
+<li><b>ROI layer</b>, if Regions of Interest (ROIs) are enabled, they can also be seen in the Image View panel. ROIs allow for the selection and analysis of specific regions within the image.</li></ul></div>
 <p><img class="image-fit" src="images\mib_layers.jpg" alt=""> </p>
-<p>Colors and transparencies of the <code>Model</code>, <code>Mask</code>, and <code>Selection</code> layers may be individually adjusted using the sliders in the <a href="ug_panel_view_settings.html">View Settings panel</a> and in the <a href="ug_gui_menu_file_preferences.html">Preference dialog</a>.</p><h2 id="2">Mouse actions</h2>
-<div><ul><li><span class="kbd">move mouse around the image</span> to see pixel information and coordinates in the <a href="ug_panel_path.html"><code>Path Panel</code></a></li>
-<li><span class="kbd">Left mouse click</span>, selection of pixels in the image based on specified method in the <a href="ug_panel_segm.html">Segmentation Panel</a></li>
-<li><span class="kbd">Right mouse press + mouse move</span>, turns on the pan mode to move the image left/right and up/down</li>
-<li><span class="kbd">&#8679; Shift</span> + <span class="kbd">Left mouse click</span>, adds selection to the existing selection</li>
-<li><span class="kbd">Ctrl</span> + <span class="kbd">Left mouse click</span>, removes selection to the existing selection</li>
-<li><span class="kbd">Ctrl</span> + <span class="kbd">mouse wheel (Ctrl + Shift + mouse wheel)</span> , changes size of the brush and other selection tools</li>
-<li><span class="kbd">Mouse wheel</span>, changes slices or zooms in/zooms out, depending on the settings in the <a href="ug_gui_menu_file_preferences.html">Preferences dialog</a></li>
-<li><span class="kbd">&#8679; Shift</span> + <span class="kbd">Mouse wheel</span>, jumps to 10 slices, number of slices can be defined from a popup menu that appears during the right mouse click above the slices slider in the <a href="ug_panel_im_view.html">Image View Panel</a></li></ul></div><h2 id="3">Key actions</h2>
-<div><ul><li><span class="kbd">w</span> key, zoom in to the area under the cursor</li>
-<li><span class="kbd">q</span> key, zoom out away from the area under the cursor</li>
-<li><span class="kbd">mouse wheel</span>, <span class="kbd">&#8679; Shift+mouse wheel</span> show next/previous slice</li>
-<li><span class="kbd">&#8679; Shift</span>+<span class="kbd">mouse wheel</span> jump 10 slices forward/back (<a href="#target1">to change this step, see below</a>)</li>
-<li><span class="kbd">up arrow</span>, show next slice</li>
-<li><span class="kbd">down arrow</span>, show previous slice</li>
-<li><span class="kbd">right arrow</span>, show next time point</li>
-<li><span class="kbd">left arrow</span>, show previous time point</li></ul></div>
+<p>Additionally, the colors and transparencies of the <code>Model</code>, <code>Mask</code>, and <code>Selection</code> layers can be individually adjusted using the sliders in the <a href="ug_panel_view_settings.html">View Settings panel</a> and in the <a href="ug_gui_menu_file_preferences.html">Preferences dialog</a> (<span class="code">Menu-&gt;File-&gt;Preferences-&gt;Colors</span>). This allows for customization of the visual representation of these layers</p><h2 id="2">Mouse actions</h2>
+<p>The Image View Panel allows for various mouse actions to interact with the displayed image. Here are some common mouse actions and their functionalities:</p>
+<ul>
+<li><span class="kbd">move mouse</span>, by moving the mouse around the image, you can see pixel information and coordinates in
+the <a href="ug_panel_path.html">Path Panel</a>. This provides details about the specific location of the cursor within the image</li>
+<li><span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, clicking the left mouse button enables the selection of pixels in the image
+based on a specified method in the <a href="ug_panel_segm.html">Segmentation Panel</a>. This allows for the identification and marking
+of specific areas of interest</li>
+<li><span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> + <span class="kbd">move mouse</span>, holding down the right
+mouse button and moving the mouse activates the pan mode. This allows you to move the image left/right and up/down, providing a way to navigate and explore different parts of the image</li>
+<li><span class="kbd">^ Ctrl</span> + <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>,
+holding down the <span class="kbd">^ Ctrl</span> key while clicking the left mouse button removes the selection from the existing selection (i.e. the eraser mode).
+This is helpful for deselecting specific areas or refining the selection</li>
+<li><span class="kbd">^ Ctrl</span> + <span class="kbd">mouse wheel (Ctrl + Shift + mouse wheel)</span>, changes the size of the brush and other selection tools.
+This allows for adjusting the size of the selection tool to suit the specific requirements</li>
+<li><span class="kbd">Mouse wheel</span>, scrolling the mouse wheel up or down can perform different actions depending on the settings in the
+<a href="ug_gui_menu_file_preferences.html">Preferences dialog</a>.
+It can change slices, allowing you to navigate through different slices of a 3D image, or zoom in and out of the image for a closer or wider view</li>
+<li><span class="kbd">&#8679; Shift</span> + <span class="kbd">Mouse wheel</span>, holding down <span class="kbd">&#8679; Shift</span> while scrolling
+the mouse wheel jumps to 10 slices at a time. The number of slices can be defined from a popup menu that appears during a
+right mouse click above the slices slider in the Image View Panel. This provides a faster way to navigate through multiple slices</li>
+</ul>
+<p><span class="h3">Right mouse click opens a dropdown menu</span></p>
+<p>When clicking on an empty area of within this panel an additiona menu appears allowing to hide/show the following panels. This allows to increase space occupied by the Image view panel</p>
+<p><img class="image-fit" src="images\PanelsImageView_dropdown.jpg" alt=""> </p><h2 id="4">Key actions</h2>
+<ul>
+<li> <span class="kbd">W</span> key, zoom in to the area under the cursor</li>
+<li> <span class="kbd">Q</span> key, zoom out away from the area under the cursor</li>
+<li> <span class="kbd">mouse wheel</span>, <span class="kbd">&#8679; Shift</span> + <span class="kbd">mouse wheel</span> show next/previous slice</li>
+<li> <span class="kbd">&#8679; Shift</span> + <span class="kbd">mouse wheel</span> jump 10 slices forward/back (to change this step, see below)</li>
+<li> <span class="kbd">&#8593; up</span>, show next slice</li>
+<li> <span class="kbd">&#8595; down</span>, show previous slice</li>
+<li> <span class="kbd">right &#8594; </span>, show next time point</li>
+<li> <span class="kbd">left &#8592; </span>, show previous time point</li>
+</ul>
 <p>Key shortcuts can be reassigned in <a href="ug_gui_menu_file_preferences.html">Menu-&gt;File-&gt;Preferences-&gt;Keyboard shortcuts</a> 
-<br> For full list of key shortcut consult with <a href="ug_gui_shortcuts.html">List of key and mouse shortcuts</a> .</p><h2 id="4">Extra parameters for the change slices slider.</h2>
+<br> For full list of key shortcut consult with <a href="ug_gui_shortcuts.html">List of key and mouse shortcuts</a> .</p><h2 id="5">Drag and drop files</h2>
+<div><ul><li><b>Images</b>, image files can be loaded by selecting them in a file explorer and drag and drop them into the Image View panel.</li>
+<li><b>Models</b>, model files with the <span class="kbd">*.model</span> extension can also be drag-and-dropped to this panel to be loaded as a new model. When model files with labels have other extensions, they also can be drag-and-dropped into MIB for loading, but the destination should be the Segmentation table in the Segmentation panel.</li>
+<li><b>Masks</b>, mask files with the <span class="kbd">*.mask</span> extension can be automatically loaded by drag-and-drop them into the Image view panel.</li>
+<li><b>Annotations</b>, annotation files <span class="kbd">*.ann</span> files can be automatically loaded by drag-and-drop them into the Image view panel.</li></ul></div><h2 id="6">Extra parameters for the change slices slider.</h2>
 <p><a id="target1"></a> This slider is only shown when 3D or 4D datasets are loaded. By default, each iteration of the mouse wheel changes the shown image by 1. It is possible to modify this. Press <i>the right mouse button</i> on the slider to set the desired step.</p>
 <p><img class="image-fit" src="images\PanelsImageViewContext.png" alt=""> </p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p>
 <p></p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p>
+<script>
+  var allDetails = document.getElementsByTagName('details');
+  toggle_details(0);
+</script>
+</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Image View Panel
-% This panel displays slices of the opened dataset. The shown slices may be in the XY, ZX, or ZY dimension, depending on selected mode in the <ug_gui_toolbar.html Toolbar>.
-% The change of slices is done using the slider/edit box on the left-hand side of the panel. When the opened dataset has only a
+% The Image View Panel is a component that displays slices of the opened dataset. 
+% The slices can be in the XY, ZX, or ZY dimension, depending on the selected mode in the <ug_gui_toolbar.html Toolbar>. 
+% The panel provides a slider and an edit box on the left-hand side, which
+% allow you to change the displayed slices. When the opened dataset has only a
 % single slice, the slider and the edit box are not displayed.
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
@@ -566,49 +598,94 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % 
 % <<images\PanelsImageView.jpg>>
 %
-% * *Grayscale or multi-channel image*
-% * *Model layer* , that contain information about materials of the segmented model,
-% or difference map for correlation analysis. <ug_gui_data_layers.html Click to see more about the image layers>
+% * *Grayscale or multi-channel image*, this layer displays the original grayscale or multi-channel image that is being analyzed
+% * *Model layer*, the model layer contains information about the materials of the segmented model or a difference map 
+% for correlation analysis (<ug_gui_data_layers.html click to see more
+% about the image layers>)
 % * *Mask layer*, mask layer is a black and white (bitmap) mask that is
 % generated by some of the filters. The mask is a service layer that may be used as a source of shapes for
 % segmentation or as an area for local black-and-white thresholding with the <ug_panel_segm.html BW Thresholding tool>.
-% * *Selection layer*, is a temporery layer used for segmentation. This layer may be easily modified and in the end should be sent to the |Mask| or |Model| layers.
-% * *ROI layer*, if ROIs are enabled, they may be also seen in the |Image View
-% panel|
+% * *Selection layer* is a temporary layer used for segmentation. It can be easily modified and is eventually sent to the Mask or Model layers for further analysis
+% * *ROI layer*, if Regions of Interest (ROIs) are enabled, they can also be seen in the Image View panel. 
+% ROIs allow for the selection and analysis of specific regions within the image.
 %
 % 
 % <<images\mib_layers.jpg>>
 % 
 %
-% Colors and transparencies of the |Model|, |Mask|, and |Selection| layers may be
-% individually adjusted using the sliders in the <ug_panel_view_settings.html View Settings panel> and in the <ug_gui_menu_file_preferences.html Preference dialog>.
+% Additionally, the colors and transparencies of the |Model|, |Mask|, and |Selection| layers can be individually 
+% adjusted using the sliders in the <ug_panel_view_settings.html View Settings panel> and in the <ug_gui_menu_file_preferences.html Preferences dialog> 
+% ([class.code]Menu->File->Preferences->Colors[/class]). This allows for customization of the visual representation of these layers
 %
 %% Mouse actions 
 % 
-% * [class.kbd]move mouse around the image[/class] to see pixel information and coordinates in the <ug_panel_path.html |Path Panel|>
-% * [class.kbd]Left mouse click[/class], selection of pixels in the image based on specified method in the <ug_panel_segm.html Segmentation Panel>
-% * [class.kbd]Right mouse press + mouse move[/class], turns on the pan mode to move the image left/right and up/down
-% * [class.kbd]&#8679; Shift[/class] + [class.kbd]Left mouse click[/class], adds selection to the existing selection
-% * [class.kbd]Ctrl[/class] + [class.kbd]Left mouse click[/class], removes selection to the existing selection
-% * [class.kbd]Ctrl[/class] + [class.kbd]mouse wheel (Ctrl + Shift + mouse wheel)[/class] , changes size of the brush and other selection tools
-% * [class.kbd]Mouse wheel[/class], changes slices or zooms in/zooms out, depending on the settings in the <ug_gui_menu_file_preferences.html Preferences dialog>
-% * [class.kbd]&#8679; Shift[/class] + [class.kbd]Mouse wheel[/class], jumps to 10 slices, number of slices can be defined from a popup menu that appears during the right mouse click above the slices slider in the 
-% <ug_panel_im_view.html Image View Panel>
+% The Image View Panel allows for various mouse actions to interact with the displayed image. 
+% Here are some common mouse actions and their functionalities:
 %
+% <html lang="en">
+% <ul>
+% <li><span class="kbd">move mouse</span>, by moving the mouse around the image, you can see pixel information and coordinates in 
+% the <a href="ug_panel_path.html">Path Panel</a>. This provides details about the specific location of the cursor within the image</li>
+% <li><span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, clicking the left mouse button enables the selection of pixels in the image 
+% based on a specified method in the <a href="ug_panel_segm.html">Segmentation Panel</a>. This allows for the identification and marking 
+% of specific areas of interest</li>
+% <li><span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> + <span class="kbd">move mouse</span>, holding down the right 
+% mouse button and moving the mouse activates the pan mode. This allows you to move the image left/right and up/down, providing a way to navigate and explore different parts of the image</li>
+% <li><span class="kbd">^ Ctrl</span> + <span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, 
+% holding down the <span class="kbd">^ Ctrl</span> key while clicking the left mouse button removes the selection from the existing selection (i.e. the eraser mode). 
+% This is helpful for deselecting specific areas or refining the selection</li>
+% <li><span class="kbd">^ Ctrl</span> + <span class="kbd">mouse wheel (Ctrl + Shift + mouse wheel)</span>, changes the size of the brush and other selection tools. 
+% This allows for adjusting the size of the selection tool to suit the specific requirements</li>
+% <li><span class="kbd">Mouse wheel</span>, scrolling the mouse wheel up or down can perform different actions depending on the settings in the 
+% <a href="ug_gui_menu_file_preferences.html">Preferences dialog</a>.
+% It can change slices, allowing you to navigate through different slices of a 3D image, or zoom in and out of the image for a closer or wider view</li>
+% <li><span class="kbd">&#8679; Shift</span> + <span class="kbd">Mouse wheel</span>, holding down <span class="kbd">&#8679; Shift</span> while scrolling 
+% the mouse wheel jumps to 10 slices at a time. The number of slices can be defined from a popup menu that appears during a 
+% right mouse click above the slices slider in the Image View Panel. This provides a faster way to navigate through multiple slices</li>
+% </ul>
+% </html>
+% 
+% [class.h3]Right mouse click opens a dropdown menu[/class]
+%
+%% 
+% When clicking on an empty area of within this panel an additiona menu
+% appears allowing to hide/show the following panels. This allows to
+% increase space occupied by the Image view panel
+% 
+% <<images\PanelsImageView_dropdown.jpg>>
+% 
 %
 %% Key actions
-% * [class.kbd]w[/class] key, zoom in to the area under the cursor
-% * [class.kbd]q[/class] key, zoom out away from the area under the cursor
-% * [class.kbd]mouse wheel[/class], [class.kbd]&#8679; Shift+mouse wheel[/class] show next/previous slice
-% * [class.kbd]&#8679; Shift[/class]+[class.kbd]mouse wheel[/class] jump 10 slices forward/back ([jumpto1]to change this step, see below[/jumpto])
-% * [class.kbd]up arrow[/class], show next slice
-% * [class.kbd]down arrow[/class], show previous slice
-% * [class.kbd]right arrow[/class], show next time point
-% * [class.kbd]left arrow[/class], show previous time point
+%
+% <html lang="en">
+% <ul>
+% <li> <span class="kbd">W</span> key, zoom in to the area under the cursor</li>
+% <li> <span class="kbd">Q</span> key, zoom out away from the area under the cursor</li>
+% <li> <span class="kbd">mouse wheel</span>, <span class="kbd">&#8679; Shift</span> + <span class="kbd">mouse wheel</span> show next/previous slice</li>
+% <li> <span class="kbd">&#8679; Shift</span> + <span class="kbd">mouse wheel</span> jump 10 slices forward/back (to change this step, see below)</li>
+% <li> <span class="kbd">&#8593; up</span>, show next slice</li>
+% <li> <span class="kbd">&#8595; down</span>, show previous slice</li>
+% <li> <span class="kbd">right &#8594; </span>, show next time point</li>
+% <li> <span class="kbd">left &#8592; </span>, show previous time point</li>
+% </ul>
+% </html>
 %
 % Key shortcuts can be reassigned in <ug_gui_menu_file_preferences.html Menu->File->Preferences->Keyboard shortcuts> 
 <br>
 % For full list of key shortcut consult with <ug_gui_shortcuts.html List of key and mouse shortcuts> .
+%
+%% Drag and drop files
+% 
+% * *Images*, image files can be loaded by selecting them in a file
+% explorer and drag and drop them into the Image View panel.
+% * *Models*, model files with the [class.kbd]*.model[/class] extension can
+% also be drag-and-dropped to this panel to be loaded as a new model. When
+% model files with labels have other extensions, they also can be
+% drag-and-dropped into MIB for loading, but the destination should be the
+% Segmentation table in the Segmentation panel.
+% * *Masks*, mask files with the [class.kbd]*.mask[/class] extension can be
+% automatically loaded by drag-and-drop them into the Image view panel.
+% * *Annotations*, annotation files [class.kbd]*.ann[/class] files can be automatically loaded by drag-and-drop them into the Image view panel.
 %
 %% Extra parameters for the change slices slider.
 % [target1] This slider is only shown when 3D or 4D datasets are loaded. By default,
@@ -625,8 +702,19 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
 %
 % [cssClasses]
+% .dropdown { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	border-radius: 0.2em; 
+% 	background-color: #fff; 
+% 	background-color: #e0f5ff; 
+% 	background-color: #e8f5e8; 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
 % .kbd { 
-%     font-family: monospace;
+%   font-family: monospace;
 % 	border: 1px solid #aaa; 
 % 	-moz-border-radius: 0.2em; 
 % 	-webkit-border-radius: 0.2em; 
@@ -639,9 +727,14 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
 % 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
 % 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
-% 	padding: 0.2em 0.4em; 
+% 	padding: 0.1em 0.4em; 
 % 	font-family: inherit; 
 % 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
 % }
 % .code {
 % font-family: monospace;
@@ -650,7 +743,13 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % padding: 1pt 3pt;
 % }
 % [/cssClasses]
-
+%%
+% <html lang="en">
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>
 ##### SOURCE END #####
 --><script>
 var allDetails   = document.getElementsByTagName('details');

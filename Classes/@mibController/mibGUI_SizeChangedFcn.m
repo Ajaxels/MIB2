@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibGUI_SizeChangedFcn(obj, resizeParameters)
 % function mibGUI_SizeChangedFcn(obj, resizeParameters)
 % resizing for panels of MIB
@@ -7,17 +23,10 @@ function mibGUI_SizeChangedFcn(obj, resizeParameters)
 % (mibView.handles.mibSeparatingPanel) and horizontal
 % (mibView.handles.mibSeparatingPanel2) resize panel sliders
 % .name - a string with name of the panel
-% .panelShift - a number with shift of the panel
+% .panelShift - a number with shift of the panel or true/false state to show or hide the top and bottom panels
 
-% Copyright (C) 28.02.2017 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
-% 
+% 09.03.2023 added hiding/showing of the top and bottom panels
 
 if isempty(obj.mibView); return; end
 
@@ -48,6 +57,20 @@ if isfield(resizeParameters, 'name')
             separatingPanelPos2(2) = resizeParameters.panelShift;
             obj.mibView.handles.mibSeparatingPanel2.Position = separatingPanelPos2;
             horizontalPanelShift = resizeParameters.panelShift;
+        case 'mibPathPanel'
+            if resizeParameters.panelShift == true  % show panel
+                % restore default height
+                obj.mibView.handles.mibPathPanel.Position(4) = obj.mibView.guiPositions.mibPathPanel(4);  
+            else    % hide panel
+                obj.mibView.handles.mibPathPanel.Position(4) = 0;   
+            end
+        case 'mibToolsPanel'
+            if resizeParameters.panelShift == true  % show panel
+                % restore default height
+                obj.mibView.handles.mibToolsPanel.Position(4) = obj.mibView.guiPositions.mibToolsPanel(4);   
+            else    % hide panel
+                obj.mibView.handles.mibToolsPanel.Position(4) = 0;   
+            end
     end
 end
 
@@ -56,24 +79,10 @@ obj.mibView.handles.mibImageAxes.Units = 'normalized';
 figPos = obj.mibView.handles.mibGUI.Position;
 
 % resize bottom panels
-toolsPanPos = obj.mibView.handles.toolsPanel.Position;
+toolsPanPos = obj.mibView.handles.mibToolsPanel.Position;
 toolsPanPos(1) = verticalPanelShift;
 toolsPanPos(3) = figPos(3)-verticalPanelShift;
-obj.mibView.handles.toolsPanel.Position = toolsPanPos;
-
-% % figure can't be too small or off the screen
-% if figPos(3) < 950 || figPos(4) < 700
-%     figPos(3) = max([750 figPos(3)]);
-%     figPos(4) = max([500 figPos(4)]);
-%     screenSize = get(0, 'ScreenSize');
-%     if figPos(1)+figPos(3) > screenSize(3)
-%         figPos(1) = screenSize(3) - figPos(3) - 50;
-%     end
-%     if figPos(2)+figPos(4) > screenSize(4)
-%         figPos(2) = screenSize(4) - figPos(4) - 50;
-%     end
-%     set(obj.mibView.handles.im_browser, 'position', figPos);
-% end
+obj.mibView.handles.mibToolsPanel.Position = toolsPanPos;
 
 % resize the path panel
 obj.mibView.handles.mibPathPanel.Position(1) = checkH/5;
@@ -85,7 +94,7 @@ obj.mibView.handles.mibPathSubPanel.Position(1) = obj.mibView.handles.mibPathPan
 obj.mibView.handles.mibPathEdit.Position(3) = obj.mibView.handles.mibPathSubPanel.Position(1) - obj.mibView.handles.mibPathEdit.Position(1)-checkH/2;
 
 obj.mibView.handles.mibPathSubPanel.Position(2) = checkH/6.5;
-obj.mibView.handles.mibPathSubPanel.Position(4) = obj.mibView.handles.mibPathPanel.Position(4)-checkH/2;
+obj.mibView.handles.mibPathSubPanel.Position(4) = max([0 obj.mibView.handles.mibPathPanel.Position(4)-checkH/2]);
 
 % resize the directory contents panel
 obj.mibView.handles.mibDirectoryPanel.Position(1) = checkH/5;
@@ -126,10 +135,10 @@ obj.mibView.handles.mibSegmentationTable.Position(4) = obj.mibView.handles.mibSe
 obj.mibView.handles.mibRoiPanel.Position = obj.mibView.handles.mibSegmentationPanel.Position; 
 
 % resize image view panel
-obj.mibView.handles.mibViewPanel.Position(1) = obj.mibView.handles.toolsPanel.Position(1)+checkH/5;
-obj.mibView.handles.mibViewPanel.Position(2) = obj.mibView.handles.toolsPanel.Position(2)+obj.mibView.handles.toolsPanel.Position(4);
+obj.mibView.handles.mibViewPanel.Position(1) = obj.mibView.handles.mibToolsPanel.Position(1)+checkH/5;
+obj.mibView.handles.mibViewPanel.Position(2) = obj.mibView.handles.mibToolsPanel.Position(2)+obj.mibView.handles.mibToolsPanel.Position(4);
 obj.mibView.handles.mibViewPanel.Position(3) = figPos(3)-verticalPanelShift-checkH/2;
-obj.mibView.handles.mibViewPanel.Position(4) = figPos(4)-obj.mibView.handles.toolsPanel.Position(4)-obj.mibView.handles.mibPathPanel.Position(4);
+obj.mibView.handles.mibViewPanel.Position(4) = figPos(4)-obj.mibView.handles.mibToolsPanel.Position(4)-obj.mibView.handles.mibPathPanel.Position(4);
 
 obj.mibView.handles.mibImageAxes.Units = 'points';
 axPos = ceil(obj.mibView.handles.mibImageAxes.Position);

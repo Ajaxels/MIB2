@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function result = mibImage2png(filename, imageS, options)
 % function result = mibImage2png(filename, imageS, options)
 % Save image in PNG format, 2D slices
@@ -15,17 +31,11 @@ function result = mibImage2png(filename, imageS, options)
 % - .ResolutionUnit: Units for the resolution
 % - .Reshape: a switch to reshape dataset before saving
 % - .SliceName: [optional] A cell array with filenames without path
+% - .useOriginals: when SliceName is provided and useOriginals==1, those filenames are used
 %
 % Return values:
 % result: result of the function: @b 1 - success, @b 0 - fail
 
-% Copyright (C) 11.11.2013 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % ver 1.01 - 17.04.2014, modified to allow saving files using the original filename
 
@@ -38,22 +48,22 @@ end
 if nargin < 3
     options = struct('overwrite', 1,'Comment', 'Microscopy Image Browser'); 
 end
-if ~isfield(options, 'overwrite'); options.overwrite = 0;    end;
-if ~isfield(options, 'Comment');     options.Comment = '';    end;
-if ~isfield(options, 'cmap'); options.cmap = NaN;    end;
-if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1;    end;
-if ~isfield(options, 'XResolution'); options.XResolution = 72;    end;
-if ~isfield(options, 'YResolution'); options.YResolution = 72;    end;
-if ~isfield(options, 'ResolutionUnit'); options.ResolutionUnit = 'Unknown';    end;
-if ~isfield(options, 'Reshape'); options.Reshape = 1;    end;
+if ~isfield(options, 'overwrite'); options.overwrite = 0;    end
+if ~isfield(options, 'Comment');     options.Comment = '';    end
+if ~isfield(options, 'cmap'); options.cmap = NaN;    end
+if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1;    end
+if ~isfield(options, 'XResolution'); options.XResolution = 72;    end
+if ~isfield(options, 'YResolution'); options.YResolution = 72;    end
+if ~isfield(options, 'ResolutionUnit'); options.ResolutionUnit = 'Unknown';    end
+if ~isfield(options, 'Reshape'); options.Reshape = 1;    end
 
-if isempty(options.Comment); options.Comment = 'Microscopy Image Browser'; end;
+if isempty(options.Comment); options.Comment = 'Microscopy Image Browser'; end
 
 if options.overwrite == 0
     if exist(filename,'file') == 2
         reply = input('File exists! Overwrite? [y/N]:','s');
-        if ~strcmp(reply,'y'); disp('Cancel, nothing was saved!'); return; end;
-    end;
+        if ~strcmp(reply,'y'); disp('Cancel, nothing was saved!'); return; end
+    end
 end
 curInt = get(0, 'DefaulttextInterpreter'); 
 set(0, 'DefaulttextInterpreter', 'none'); 
@@ -73,24 +83,32 @@ elseif size(imageS,3) > 3
 end
 
 files_no = size(imageS,4);
-if options.showWaitbar;
+if options.showWaitbar
     wb = waitbar(0,sprintf('%s\nPlease wait...',filename),'Name','Saving images','WindowStyle','modal');
     waitbar(0, wb);
-end;
+end
 
 sequentialFn = 1;
-if isfield(options, 'SliceName')
-%     choice = questdlg('Would you like to use original or sequential filenaming?','Save as PNG...','Original','Sequential','Cancel','Sequential');
-%     switch choice
-%         case 'Cancel'
-%             disp('Cancelled!')
-%             return;
-%         case 'Original'
-%             sequentialFn = 0;
-%         case 'Sequential'
-%             sequentialFn = 1;
-%     end
-    sequentialFn = 0;
+if isfield(options, 'SliceName') && numel(options.SliceName) > 1
+    if isfield(options, 'useOriginals')
+        if options.useOriginals == 1
+            sequentialFn = 0;
+        else
+            sequentialFn = 1;
+        end
+    else
+        choice = questdlg('Would you like to use original or sequential filenaming?','Save as PNG...', 'Original', 'Sequential', 'Cancel', 'Sequential');
+        switch choice
+            case 'Cancel'
+                disp('Cancelled!')
+                if options.showWaitbar; delete(wb); end
+                return;
+            case 'Original'
+                sequentialFn = 0;
+            case 'Sequential'
+                sequentialFn = 1;
+        end
+    end
 end
 
 [pathstr, name] = fileparts(filename);
@@ -135,12 +153,12 @@ for num = 1:files_no
         imwrite(imageS(:,:,:,num),options.cmap,options.SliceName{num},'png', 'Comment', options.Comment,...
             'XResolution', options.XResolution,  'YResolution', options.YResolution, 'ResolutionUnit', options.ResolutionUnit);
     end
-    if options.showWaitbar; waitbar(num/files_no,wb); end;
+    if options.showWaitbar; waitbar(num/files_no,wb); end
 end
 
-if options.showWaitbar; waitbar(1); end;
+if options.showWaitbar; waitbar(1); end
 disp(['image2png: ' options.SliceName{1} ' was/were created!']);
-if options.showWaitbar; delete(wb); end;
+if options.showWaitbar; delete(wb); end
 set(0, 'DefaulttextInterpreter', curInt); 
 result = 1;
 end

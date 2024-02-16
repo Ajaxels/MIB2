@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibSegmentationToolPopup_Callback(obj)
 % function mibSegmentationToolPopup_Callback(obj)
 % a callback to the handles.mibSegmentationToolPopup, allows to select tool for the segmentation
@@ -7,13 +23,6 @@ function mibSegmentationToolPopup_Callback(obj)
 % Return values:
 %
 
-% Copyright (C) 23.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -30,6 +39,7 @@ obj.mibView.handles.mibSegmSpotPanel.Visible = 'off';
 obj.mibView.handles.mibSegmThresPanel.Visible = 'off';
 obj.mibView.handles.mibSegmMembTracerPanel.Visible = 'off';
 obj.mibView.handles.mibSegmDragDropPanel.Visible = 'off';
+obj.mibView.handles.mibSegmSAMPanel.Visible = 'off';
 obj.mibView.showBrushCursor = 0;
 
 if ~isempty(find(obj.mibModel.preferences.SegmTools.PreviousTool == val, 1)) % the selected tool is also a fast access tool for the 'd' shortcut
@@ -101,6 +111,13 @@ switch selectedTool
         obj.mibView.handles.mibSegmThresPanel.Visible = 'on';
     case 'Membrane ClickTracker'
         obj.mibView.handles.mibSegmMembTracerPanel.Visible = 'on';
+    case 'Segment-anything model'
+        % add serice variables
+        if ~isfield(obj.mibModel.sessionSettings, 'SAMsegmenter')
+            obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [];
+            obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [];
+        end
+        obj.mibView.handles.mibSegmSAMPanel.Visible = 'on';
 end
 obj.mibView.updateCursor();
 end

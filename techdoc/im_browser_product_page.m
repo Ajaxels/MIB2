@@ -57,14 +57,15 @@
 % </table>
 % </html>
 % 
-% API class reference can be accessed from the |MIB->Menu->Help->Class reference|
+% API class reference can be accessed from the
+% [class.code]MIB->Menu->Help->Class reference[/class]
 %
 % Also see the <http://mib.helsinki.fi Microscopy Image Browser home page> 
 %
 %%
 % 
 % <html>
-% Developed during 2010-2022 by<br>
+% Developed during 2010-2023 by<br>
 % Core developer:<br>
 % <a href="http://www.biocenter.helsinki.fi/~ibelev/">Ilya Belevich</a><br>
 % Developers:<br>
@@ -80,3 +81,42 @@
 %
 % *Back to* <im_browser_product_page.html *Index*>
 % [themesEnabled]
+%
+% [cssClasses]
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

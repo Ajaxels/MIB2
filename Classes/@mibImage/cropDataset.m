@@ -1,9 +1,27 @@
-function result = cropDataset(obj, cropF)
-% function result = cropDataset(obj, cropF)
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
+function result = cropDataset(obj, cropF, options)
+% function result = cropDataset(obj, cropF, options)
 % Crop image and all corresponding layers of the opened dataset
 %
 % Parameters:
 % cropF: a vector [x1, y1, dx, dy, z1, dz, t1, dt] with parameters of the crop. @b Note! The units are pixels!
+% options: [@em optional] - structure with additional parameters
+% @li .showWaitbar - logical show or not the waitbar (default=true)
 %
 % Return values:
 % result: status of the operation, 1-success, 0-cancel
@@ -13,23 +31,20 @@ function result = cropDataset(obj, cropF)
 % @code cropF = [100 512 200 512 5 20];  // define parameters of the crop  @endcode
 % @code obj.mibModel.I{obj.mibModel.Id}.cropDataset(cropF);  // call from mibController; do the crop @endcode
 
-% Copyright (C) 01.02.2017, Ilya Belevich (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 12.12.2018 - fix of cropping of the selection layer for models with more than 63 materials
-
+% 12.09.2023, added options parameter
 
 result = 0;
-wb = waitbar(0,'Please wait...', 'Name', 'Cropping...');
+
+if nargin < 3; 	options = struct(); end
+if ~isfield(options, 'showWaitbar'); options.showWaitbar = true; end
+
+if options.showWaitbar; wb = waitbar(0,'Please wait...', 'Name', 'Cropping...'); end
 
 % define time points
 if numel(cropF) < 7; cropF(7:8) = [1, obj.time]; end
-waitbar(.05, wb);
+if options.showWaitbar; waitbar(.05, wb); end
 
 %viewPort = obj.viewPort;    % store viewport information, to keep the contrast after the crop
 
@@ -38,14 +53,14 @@ if obj.Virtual.virtual == 0
     %[x1, y1, dx, dy, z1, dz, t1, dt]
     obj.img{1} = obj.img{1}(cropF(2):cropF(2)+cropF(4)-1, cropF(1):cropF(1)+cropF(3)-1, :, ...
                 cropF(5):cropF(5)+cropF(6)-1, cropF(7):cropF(7)+cropF(8)-1);
-    waitbar(.4, wb);
+    if options.showWaitbar; waitbar(.4, wb); end
     clear newI;
     if obj.modelType ~= 63
         if obj.modelExist % crop model
             obj.model{1} = obj.model{1}(cropF(2):cropF(2)+cropF(4)-1, cropF(1):cropF(1)+cropF(3)-1, ...
                 cropF(5):cropF(5)+cropF(6)-1, cropF(7):cropF(7)+cropF(8)-1);
         end
-        waitbar(.7, wb);
+        if options.showWaitbar; waitbar(.7, wb); end
         if obj.maskExist     % crop mask
             obj.maskImg{1} = obj.maskImg{1}(cropF(2):cropF(2)+cropF(4)-1, cropF(1):cropF(1)+cropF(3)-1, ...
                 cropF(5):cropF(5)+cropF(6)-1, cropF(7):cropF(7)+cropF(8)-1);
@@ -69,7 +84,10 @@ else    % virtual stacking mode
     %obj.Virtual.virtual = 0;    % turn off virtual mode
     %obj.closeVirtualDataset();    % close open virtual datasets
     newMode = obj.switchVirtualStackingMode(0);   % switch to the memory resident mode
-    if isempty(newMode); delete(wb); return; end
+    if isempty(newMode) 
+        if options.showWaitbar; delete(wb); end
+        return; 
+    end
     
     % to preserve meta data do not use mibImage.switchVirtualStackingMode
     % function
@@ -96,7 +114,7 @@ else    % virtual stacking mode
         obj.maskImg{1} = NaN;
     end
 end
-waitbar(.9, wb);
+if options.showWaitbar; waitbar(.9, wb); end
 % restore view port
 %obj.viewPort = viewPort;
 
@@ -135,7 +153,7 @@ end
 xyzShift = [(cropF(1)-1)*obj.pixSize.x (cropF(2)-1)*obj.pixSize.y (cropF(5)-1)*obj.pixSize.z];
 % update BoundingBox Coordinates
 obj.updateBoundingBox(NaN, xyzShift);
-waitbar(1, wb);
-delete(wb);
+if options.showWaitbar; waitbar(1, wb); end
+if options.showWaitbar; delete(wb); end
 result = 1;
 end

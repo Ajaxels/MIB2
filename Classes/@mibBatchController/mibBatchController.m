@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibBatchController < handle
     % classdef mibBatchController < handle
     % This a template class for making GUI windows for MIB
@@ -158,6 +174,8 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.deleteSlice([], [], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Slice -> Insert an empty slice';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.insertEmptySlice(Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Slice -> Stride reslicing';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.resliceDataset([], [], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Slice -> Swap slices';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.copySwapSlice([], [], ''swap'', Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Bounding Box';
@@ -212,6 +230,8 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.menuModelsImport_Callback(Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Export model';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.menuModelsExport_Callback([], Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Rename material';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.renameMaterial(Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Save model';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.saveModel([], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Interpolate material';
@@ -303,6 +323,8 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibSegmentationPanelCheckboxes(Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Add material';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibAddMaterialBtn_Callback(Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Rename material';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.renameMaterial(Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Remove material';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibRemoveMaterialBtn_Callback(Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = '3D ball';
@@ -311,6 +333,8 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibSegmentationBlackWhiteThreshold([], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Drag & Drop materials';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibGUI_WindowButtonUpDragAndDropFcn([], [], [], Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Segment-anything model';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibSegmentationSAM([], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Spot';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibSegmentationSpot([], [], [], Batch);'; actionId = actionId + 1;
             
@@ -355,12 +379,12 @@ classdef mibBatchController < handle
             secIndex = secIndex + 1;
             obj.Sections(secIndex).Name = 'Panel -> Image filters';
             if verLessThan('Matlab', '9.8')
-                FiltersList = {'Average', 'Disk', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'MathOps', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std',...
+                FiltersList = {'Average', 'Disk', 'DistanceMap', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'MathOps', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std',...
                     'AnisotropicDiffusion', 'Bilateral', 'DNNdenoise', 'Median', 'NonLocalMeans', 'Wiener',...
                     'AddNoise', 'FastLocalLaplacian', 'FlatfieldCorrection', 'LocalBrighten', 'LocalContrast', 'ReduceHaze', 'UnsharpMask',...
                     'Edge', 'SlicClustering', 'WatershedClustering'};
             else
-                FiltersList = {'Average', 'Disk', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'MathOps', 'Mode', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std',...
+                FiltersList = {'Average', 'Disk', 'DistanceMap', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'MathOps', 'Mode', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std',...
                     'AnisotropicDiffusion', 'Bilateral', 'DNNdenoise', 'Median', 'NonLocalMeans', 'Wiener',...
                     'AddNoise', 'FastLocalLaplacian', 'FlatfieldCorrection', 'LocalBrighten', 'LocalContrast', 'ReduceHaze', 'UnsharpMask',...
                     'Edge', 'SlicClustering', 'WatershedClustering'};
@@ -958,9 +982,9 @@ classdef mibBatchController < handle
             [filename, path] = mib_uigetfile(...
                 {'*.mibProtocol',  'Matlab format (*.mibProtocol)'; ...
                 '*.*',  'All Files (*.*)'}, ...
-                'Load a protocol...',path);
+                'Load a protocol...', path);
             if isequal(filename,0); return; end % check for cancel
-            res = load(fullfile(path, filename), '-mat');
+            res = load(fullfile(path, filename{1}), '-mat');
             obj.BackupProtocol();   % store the current protocol
             obj.Protocol = res.Protocol;
             obj.protocolListIndex = 1;
@@ -1145,6 +1169,12 @@ classdef mibBatchController < handle
                     finishStep = numel(obj.Protocol);
                     obj.View.handles.runProtocolBtn.String = 'Stop protocol';
                     obj.View.handles.runProtocolBtn.BackgroundColor = 'r';
+
+                    % count user's points
+                    obj.mibModel.preferences.Users.Tiers.numberOfBatchProcessings = obj.mibModel.preferences.Users.Tiers.numberOfBatchProcessings+1;
+                    eventdata = ToggleEventData(3);    % scale scoring by factor 5
+                    notify(obj.mibModel, 'updateUserScore', eventdata);
+                    timerProtocolStart = tic;
                 case 'from'
                     startStep = obj.protocolListIndex;
                     if strcmp(obj.Protocol(startStep).mibBatchActionName, 'STOP EXECUTION')
@@ -1181,9 +1211,11 @@ classdef mibBatchController < handle
                     end
 
                     % show dirloop waitbar
+                    showDirLoopWaitbar = false;     % do not show the dir-loop waitbar
                     if obj.Protocol(stepId).Batch.DirLoopWaitbar 
                         dirLoopWaitbar = waitbar(0, 'Please wait...', 'Name', 'Processing directories'); 
                         set(findall(dirLoopWaitbar, 'type', 'text'), 'Interpreter', 'none'); 
+                        showDirLoopWaitbar = true;  % show dir-loop waitbar, disable other waitbars
                     end
                     
                     for dirId = 1:numel(obj.Protocol(stepId).Batch.DirectoriesList{2})
@@ -1225,6 +1257,7 @@ classdef mibBatchController < handle
                                     %    break
                                 otherwise
                                     SteploopSettings.DirectoryName = obj.Protocol(stepId).Batch.DirectoriesList{2}{dirId};
+                                    SteploopSettings.FileLoopWaitbar = showDirLoopWaitbar;
                                     status = obj.doBatchStep(stepId2, SteploopSettings);    % make a single step
                                     if status == 0
                                         notify(obj.mibModel, 'stopProtocol');
@@ -1287,6 +1320,9 @@ classdef mibBatchController < handle
             
             obj.View.handles.runProtocolBtn.String = 'Start protocol';
             obj.View.handles.runProtocolBtn.BackgroundColor = 'g';
+            if strcmp(parameter, 'complete')
+                fprintf('Protocol finished; elapsed time: %f seconds\n', toc(timerProtocolStart));
+            end
         end
         
         function status = doSeriesLoop(obj, startStep, finishStep)

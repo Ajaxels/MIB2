@@ -1,3 +1,20 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+% based based on Miji written by Jacques Pecreaux, Johannes Schindelin, Jean-Yves Tinevez \<jeanyves.tinevez at gmail.com\.
+
 function Miji_deploy(open_imagej)
 % function Miji_deploy(open_imagej)
 % is a modified Miji.m function adapted for the deployed version of im_browser. Mainly the javaaddpath is removed
@@ -8,17 +25,8 @@ function Miji_deploy(open_imagej)
 % Parameters:
 % open_imagej: a parameter of the original Miji function
 
-% Copyright (C) 12.08.2013 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
-
-% based based on Miji written by Jacques Pecreaux, Johannes Schindelin, Jean-Yves Tinevez \<jeanyves.tinevez at gmail.com\.
 
 % 
 % This script sets up the classpath to Fiji and optionally starts MIJ

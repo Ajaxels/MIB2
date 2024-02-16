@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibRemoveMaterialBtn_Callback(obj, BatchOptIn)
 % function mibRemoveMaterialBtn_Callback(obj, BatchOptIn)
 % callback to the obj.mibView.handles.mibRemoveMaterialBtn, remove material from the model
@@ -17,13 +33,6 @@ function mibRemoveMaterialBtn_Callback(obj, BatchOptIn)
 % @b Examples:
 % @code obj.mibRemoveMaterialBtn_Callback();     // add material to the model @endcode
  
-% Copyright (C) 29.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 16.08.2017 IB added waitbar
 % 15.11.2018, IB, added selection of materials
@@ -41,7 +50,8 @@ BatchOpt.showWaitbar = true;   % show or not the waitbar
 BatchOpt.id = obj.mibModel.Id;   % optional, id
 
 if obj.mibModel.I{BatchOpt.id}.selectedMaterial >= 3
-    BatchOpt.MaterialIndices = num2str(obj.mibModel.I{BatchOpt.id}.getSelectedMaterialIndex());
+    %BatchOpt.MaterialIndices = num2str(obj.mibModel.I{BatchOpt.id}.getSelectedMaterialIndex());
+    BatchOpt.MaterialIndices = num2str(obj.mibView.handles.mibSegmentationTable.UserData.selectedIndices(:,1)'-2);
 end  
 
 BatchOpt.mibBatchSectionName = 'Panel -> Segmentation';    % section name for the Batch

@@ -1,15 +1,23 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibGraphcutController  < handle
-    % @type mibGraphcutController class is resposnible for showing the graphcut segmentation window,
+    % @type mibGraphcutController class is responsible for showing the graphcut segmentation window,
     % available from MIB->Menu->Tools->Graphcut segmentation
     
-	% Copyright (C) 27.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-	% 
-	% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-	%
 	% Updates
 	% 02.11.2017 taken from Graphcut/watershed into a separate tool
     
@@ -523,6 +531,8 @@ classdef mibGraphcutController  < handle
                 obj.mibModel.I{obj.mibModel.Id}.clearMask();   
             end
             
+            singleToolScores = 1; % scoring factor for user operations
+
             if obj.View.handles.mode2dCurrentRadio.Value
                 % initialize
                 negIds = []; 
@@ -765,6 +775,7 @@ classdef mibGraphcutController  < handle
                     end
                     index = index + 1;
                 end
+                singleToolScores = 4; % scoring factor for user operations
             else        % do it for 3D
                 % initialize
                 negIds = []; 
@@ -1010,10 +1021,16 @@ classdef mibGraphcutController  < handle
                     Mask = mibResize3d(Mask, [], resizeOptions);
                 end
                 obj.mibModel.setData3D('mask', Mask, NaN, 4, NaN, getDataOptions);   % set dataset
+                singleToolScores = 4; % scoring factor for user operations
             end
             if obj.timerElapsed > obj.timerElapsedMax
                 delete(wb);
             end
+
+            % count user's points
+            obj.mibModel.preferences.Users.Tiers.numberOfGraphcuts = obj.mibModel.preferences.Users.Tiers.numberOfGraphcuts+1;
+            eventdata = ToggleEventData(singleToolScores);    % scale scoring by factor 5
+            notify(obj.mibModel, 'updateUserScore', eventdata);
         end
         
         function superpixelsBtn_Callback(obj, usePrecomputedSlic)
@@ -1656,11 +1673,12 @@ classdef mibGraphcutController  < handle
                             {'*.graph;',  'Matlab format (*.graph)'}, ...
                             'Load Graphcut data...', obj.mibModel.myPath);
                         if isequal(filename, 0); return; end % check for cancel
+
                         wb = waitbar(0.05,sprintf('Loading preprocessed Graphcut\nPlease wait...'));
                         tic;
                         obj.clearPreprocessBtn_Callback();
 
-                        res = load(fullfile(path, filename),'-mat');
+                        res = load(fullfile(path, filename{1}),'-mat');
                         Graphcut = res.Graphcut;
                         %           % comment this for a while due to bad memory performance with
                         %           large datasets

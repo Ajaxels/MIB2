@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function moveLayers(obj, SourceLayer, DestinationLayer, DatasetType, ActionType, BatchOptIn)
 % function moveLayers(obj, SourceLayer, DestinationLayer, DatasetType, ActionType, BatchOptIn)
 % to move datasets between the layers (image, model, mask, selection)
@@ -42,13 +58,6 @@ function moveLayers(obj, SourceLayer, DestinationLayer, DatasetType, ActionType,
 % @code obj.mibModel.moveLayers('selection', 'mask', '3D, Stack', 'add');     // add selection to mask for  @endcode
 % @code obj.mibModel.moveLayers('selection', 'mask', '3D, Stack', 'add');     // remove selection from mask  @endcode
 
-% Copyright (C) 17.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-% 
 % Updates
 % 26.06.2019, function was moved from mibController to mibModel class
 

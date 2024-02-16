@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Selection Panel</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_panel_selection.m"><style>
+      --><title>Selection Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_panel_selection.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -145,11 +145,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -529,9 +528,11 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li><a href="#8">The <b><span class="kbd">Dilate</span></b> button</a></li>
 <li><a href="#9">Color channel combo box</a></li>
 <li><a href="#10">The <span class="kbd">[&#10003;] <b>3D</b></span> checkbox</a></li>
-<li><a href="#11">The <span class="kbd">[&#10003;] <b>adapt.</b></span> checkbox</a></li>
-<li><a href="#12">The <span class="kbd">[&#10003;] <b>difference</b></span> checkbox</a></li>
-<li><a href="#13">The <b>Strel</b> edit box</a></li></ul></div>
+<li><a href="#11">The <span class="kbd">[&#10003;] <b>auto fill</b></span> checkbox</a></li>
+<li><a href="#12">The <span class="kbd">[&#10003;] <b>adapt.</b></span> checkbox</a></li>
+<li><a href="#13">The <span class="kbd">[&#10003;] <b>difference</b></span> checkbox</a></li>
+<li><a href="#14">The <b>Strel</b> edit box</a></li>
+<li><a href="#15">Right mouse click opens a dropdown menu</a></li></ul></div>
 <p><img class="image-fit" src="images\PanelsSelection.png" alt=""> </p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="2">The <b><span class="kbd">A</span></b> button</h2>
@@ -546,8 +547,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="3">The <b><span class="kbd">S</span></b> button</h2>
 <p>Press to subtract <code>Selection</code> layer from the selected <code>Model</code> or <code>Mask</code> layer, the layer for subtraction is selected using <code>Add to</code> list box in the <a href="ug_panel_segm.html">Segmentation panel</a>.</p>
@@ -579,8 +580,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="4">The <b><span class="kbd">R</span></b> button</h2>
 <p>Press to replace the selected in the <code>Add to</code> list box material (that could be either marerial of the model or the <code>Mask</code> layer) with the contents of the <code>Selection</code> layer. The <code>Add to</code> list box is located in the <a href="ug_panel_segm.html">Segmentation panel</a>. <b><i>Note!</i></b> The Replace is sensitive to the state of the <span class="kbd">[&#10003;] <b>Masked area</b></span> checkbox in the <a href="ug_panel_segm.html">Segmentation panel</a>.</p>
@@ -594,8 +595,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="5">The <b><span class="kbd">C</span></b> button</h2>
 <p>Press to clear the <code>Selection</code> layer.</p>
@@ -609,11 +610,11 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(5)" class="collapse-link"><a href="javascript:void(0);" id="Toggle5">collapse all</a></p><h2 id="6">The <b><span class="kbd">F</span></b> button</h2>
-<p>Press to fill holes in the <code>Selection</code> layer.</p>
+<p>Press to fill holes in the <code>Selection</code> layer. The operation can be triggered automatically when <span class="kbd">[&#10003;] <b>auto fill</b></span> is checked.</p>
 <p><img class="image-fit" src="images\SelectionPanelOperationsFill.png" alt=""> </p>
 <details open onclick="state_check('5.1')" id="5.1"><summary> <b>Shortcuts</b> </summary>
 <div class="details-div">
@@ -624,8 +625,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(6)" class="collapse-link"><a href="javascript:void(0);" id="Toggle6">collapse all</a></p><h2 id="7">The <b><span class="kbd">Erode</span></b> button</h2>
 <p>Press to perform binary erosion=shrinkage (<code>imerode</code> MATLAB function) of the <code>Selection</code> layer with the Strel size defined in the <code>Strel</code> edit box. The erotion works also in 3D, check the <code>3D</code> check box. To get result as a difference between the current and the eroded selections check the <span class="kbd">[&#10003;] <b>difference</b></span> checkbox.</p>
@@ -639,8 +640,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(7)" class="collapse-link"><a href="javascript:void(0);" id="Toggle7">collapse all</a></p><h2 id="8">The <b><span class="kbd">Dilate</span></b> button</h2>
 <p>Press to perform binary dilation (expansion) (<code>imdilate</code> MATLAB function) of the <code>Selection</code> layer with the Strel size defined in the <code>Strel</code> edit box. To dilate in 3D check the <span class="kbd">[&#10003;] <b>3D</b></span> checkbox in the <code>Selection</code> panel. To get result as a difference between the current and the dilated selections check the <span class="kbd">[&#10003;] <b>difference</b></span> checkbox.</p>
@@ -655,13 +656,16 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="9">Color channel combo box</h2>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p><h2 id="9">Color channel combo box</h2>
 <p>This combo box defines the color channel that will be used for the selection with the tools in the <a href="ug_panel_segm.html"><code>Segmentation</code> panel</a>.</p><h2 id="10">The <span class="kbd">[&#10003;] <b>3D</b></span> checkbox</h2>
-<p>Check it to do some of the image and <code>Mask/Model</code> manipulations in <code>3D</code>.</p><h2 id="11">The <span class="kbd">[&#10003;] <b>adapt.</b></span> checkbox</h2>
-<p>Select to perform adaptive dilation or selection of the supervoxels when using the <a href="ug_panel_segm_tools.html">Brush tool</a>. When the shapes are dilated or supervoxels are selected the function calculates mean intensity values and standard deviation within the original shape. During dilation/brush only pixels that have intensities mean+-standard deviation multiplied with <code>Adapt.</code> coefficients are taken.</p><h2 id="12">The <span class="kbd">[&#10003;] <b>difference</b></span> checkbox</h2>
-<p>When checked the results of <code>Erosion</code> and <code>Dilation</code> will be the differences between existing and eroded/dilated <code>Selection</code> layers.</p><h2 id="13">The <b>Strel</b> edit box</h2>
-<p>Defines size of the structural element that is used during erosion (the <b>Erode</b> button) and dilation (the <b>Dilate</b> button). The size of the <code>Strel</code> element can be specified as a single number or as two semi-colon separated numbers. For example entering [ <b>3; 5</b> ] defines size of the Strel element as <b>XY = 3 x 5</b> pixels for 2D, or as <b>3 x 3 x 5</b> pixels for 3D.</p>
+<p>Check it to do some of the image and <code>Mask/Model</code> manipulations in <code>3D</code>.</p><h2 id="11">The <span class="kbd">[&#10003;] <b>auto fill</b></span> checkbox</h2>
+<p>Check it to fill shapes drawn using the brush tool (and eraser) automatically after release of the left mouse button</p><h2 id="12">The <span class="kbd">[&#10003;] <b>adapt.</b></span> checkbox</h2>
+<p>Select to perform adaptive dilation or selection of the supervoxels when using the <a href="ug_panel_segm_tools.html">Brush tool</a>. When the shapes are dilated or supervoxels are selected the function calculates mean intensity values and standard deviation within the original shape. During dilation/brush only pixels that have intensities mean+-standard deviation multiplied with <code>Adapt.</code> coefficients are taken.</p><h2 id="13">The <span class="kbd">[&#10003;] <b>difference</b></span> checkbox</h2>
+<p>When checked the results of <code>Erosion</code> and <code>Dilation</code> will be the differences between existing and eroded/dilated <code>Selection</code> layers.</p><h2 id="14">The <b>Strel</b> edit box</h2>
+<p>Defines size of the structural element that is used during erosion (the <b>Erode</b> button) and dilation (the <b>Dilate</b> button). The size of the <code>Strel</code> element can be specified as a single number or as two semi-colon separated numbers. For example entering [ <b>3; 5</b> ] defines size of the Strel element as <b>XY = 3 x 5</b> pixels for 2D, or as <b>3 x 3 x 5</b> pixels for 3D.</p><h2 id="15">Right mouse click opens a dropdown menu</h2>
+<p>When clicking on an empty area of within this panel an additiona menu appears allowing to hide/show the following panels. This allows to increase space occupied by the Image view panel</p>
+<p><img class="image-fit" src="images\PanelsImageView_dropdown.jpg" alt=""> </p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p>
 <p></p>
 <p>
@@ -670,7 +674,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Selection Panel
@@ -777,7 +781,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % [br8]
 %
 %%  The *[class.kbd]F[/class]* button
-% Press to fill holes in the |Selection| layer.
+% Press to fill holes in the |Selection| layer. The operation can be
+% triggered automatically when [class.kbd][&#10003;] *auto fill*[/class] is
+% checked.
 %  
 % <<images\SelectionPanelOperationsFill.png>>
 %
@@ -842,6 +848,10 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % Check it to do some of the image and |Mask/Model| manipulations in
 % |3D|.
 %
+%% The [class.kbd][&#10003;] *auto fill*[/class] checkbox
+% Check it to fill shapes drawn using the brush tool (and eraser)
+% automatically after release of the left mouse button
+%
 %% The [class.kbd][&#10003;] *adapt.*[/class] checkbox
 %
 % Select to perform adaptive dilation or selection of the supervoxels when using the <ug_panel_segm_tools.html Brush tool>. 
@@ -858,7 +868,14 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % The size of the |Strel| element can be specified as a single number or as two semi-colon separated numbers. For example
 % entering [ *3; 5* ] defines size of the Strel element as *XY = 3 x 5* pixels for 2D, or as *3 x 3 x 5* pixels for 3D.
 %
+%% Right mouse click opens a dropdown menu
 %
+% When clicking on an empty area of within this panel an additiona menu
+% appears allowing to hide/show the following panels. This allows to
+% increase space occupied by the Image view panel
+% 
+% <<images\PanelsImageView_dropdown.jpg>>
+% 
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
 %

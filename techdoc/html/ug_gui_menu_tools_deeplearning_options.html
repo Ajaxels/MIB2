@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Options tab</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_options.m"><style>
+      --><title>Options tab</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_options.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -146,11 +146,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -524,8 +523,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
 <div><ul><li><a href="#1">Custom training plot section</a></li>
 <li><a href="#2">Config files section</a></li>
-<li><a href="#3">Tools section</a></li>
-<li><a href="#4">Augmentation section</a></li></ul></div><h2 id="1">Custom training plot section</h2>
+<li><a href="#3">Tools section</a></li></ul></div><h2 id="1">Custom training plot section</h2>
 Settings for the custom training progress plot showing the loss function
 during training.
 <ul>
@@ -550,18 +548,20 @@ specifies that only 1% of image patches are displayed in the progress plot windo
 <h2 id="2">Config files section</h2>
 <p>This panel brings access to loading or saving Deep MIB config files.
 <br> The config files contain all settings of DeepMIB including the network name and input and output directories but excluding the actual trained network. Normally, these files are automatically created during the training process and stored next to the network <span class="code">*.mibDeep</span> files also in MATLAB format using the <span class="code">*.mibCfg</span> extension.
-<br> Alternatively, the files can be saved manually by pressing the <span class="kbd">Save</span> button. 
-<br style="display:block; content:''; margin-top:16px;"></p>
+<br> Alternatively, the files can be saved manually by pressing the <span class="kbd">Save</span> button. <span style="line-height:8px; display:block; vertical-align:top">
+<br></span> The config files can be loaded by drag-and-droping the file over panels in DeepMIB <span style="line-height:8px; display:block; vertical-align:top">
+<br></span> <span class="kbd">Duplicate</span>, press to copy network and its config to a new network (<span class="code">*.mibDeep</span>) and config (<span class="code">*.mibCfg</span>). It is useful to create backup versions of a trained network and its config file. This operation copy files and updates network name in the new config file. <span style="line-height:16px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="3">Tools section</h2>
 <div><ul><li><span class="kbd">Import network</span>, press to import a network designed or trained elsewhere. At the moment, the function only supports network in MATLAB format. 
 <br> In a typical workflow, a network can be designed using MATLAB Deep Network Designer and after that imported into DeepMIB for training or prediction. During the import process <span class="code">*.mibCfg</span> and <span class="code">*.mibDeep</span> files are generated.</li>
-<li><span class="kbd">Export network to ONNX</span>, press to export the trained network outside of MATLAB using the ONNX format.</li></ul></div>
-<details open onclick="state_check('1.1')" id="1.1"><summary> <b>Additional details of ONNX export</b> </summary>
+<li><span class="kbd">Export network</span>, press to export the trained network outside of MATLAB using the ONNX format or TensorFlow formats.</li></ul></div>
+<details open onclick="state_check('1.1')" id="1.1"><summary> <b>Additional details of the export process</b> </summary>
 <div class="details-div">
 <p></p>
 <p><img class="image-fit" src="images\DeepLearningOptionsONNX.png" alt=""> </p>
-<p>During ONNX export, it is possible to choose following options:</p>
+<p>During export, it is possible to choose following options:</p>
 <div><ul><li><span class="dropdown">Version of ONNX operator set &#9660;</span>, supported operator set versions are 6, 7, 8, 9</li>
 <li><span class="dropdown">Alter the final segmentation layer as &#9660;</span>; use this option to modify the last segmentation layer used during training. For example, the CustomDice classification layer is not standard and thus not supported in ONNX. Instead, as this layer is not needed after training, it can be replaced with a standard segmentation layer or removed.</li></ul></div>
 <details open onclick="state_check('1.2')" id="1.2"><summary> <b>List of available options</b> </summary>
@@ -596,22 +596,7 @@ specifies that only 1% of image patches are displayed in the progress plot windo
 <p>The function is driven by <a href="https://se.mathworks.com/help/vision/ref/balancepixellabels.html">balancepixellabels</a> function.</p>
 </div>
 </details>
-<br><h2 id="4">Augmentation section</h2>
-<p>Supporting functions that are used to reset or disable augmentations.</p>
-<ul>
-<li><b>2D</b>, modify augmentations for 2D networks
-<ul>
-<li><span class="kbd">Reset</span>, press to reset 2D augmentations to their default values</li>
-<li><span class="kbd">Disable</span>, press to disable all 2D augmentations</li>
-</ul>
-</li>
-<li><b>3D</b>, modify augmentations for 3D networks
-<ul>
-<li><span class="kbd">Reset</span>, press to reset 3D augmentations to their default values</li>
-<li><span class="kbd">Disable</span>, press to disable all 3D augmentations</li>
-</ul>
-</li>
-</ul>
+<br>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a></p>
 <p></p>
 <p>
@@ -620,7 +605,7 @@ specifies that only 1% of image patches are displayed in the progress plot windo
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Options tab
@@ -672,6 +657,13 @@ specifies that only 1% of image patches are displayed in the progress plot windo
 <br>
 % Alternatively, the files can be saved manually by pressing the
 % [class.kbd]Save[/class] button.
+% [br8]
+% The config files can be loaded by drag-and-droping the file over panels
+% in DeepMIB
+% [br8]
+% [class.kbd]Duplicate[/class], press to copy network and its config to a new network ([class.code]*.mibDeep[/class]) and config ([class.code]*.mibCfg[/class]). It is useful
+% to create backup versions of a trained network and its config file. This
+% operation copy files and updates network name in the new config file.
 % [br16]
 %
 %% Tools section
@@ -684,15 +676,15 @@ specifies that only 1% of image patches are displayed in the progress plot windo
 % Network Designer and after that imported into DeepMIB for training or
 % prediction. During the import process [class.code]*.mibCfg[/class] and
 % [class.code]*.mibDeep[/class] files are generated.
-% * [class.kbd]Export network to ONNX[/class], press to export the trained
-% network outside of MATLAB using the ONNX format. 
+% * [class.kbd]Export network[/class], press to export the trained
+% network outside of MATLAB using the ONNX format or TensorFlow formats. 
 %
-% [dtls]<summary> *Additional details of ONNX export* </summary>
+% [dtls]<summary> *Additional details of the export process* </summary>
 <div class="details-div">
 %
 % <<images\DeepLearningOptionsONNX.png>>
 % 
-% During ONNX export, it is possible to choose following options:
+% During export, it is possible to choose following options:
 %
 % * [class.dropdown]Version of ONNX operator set &#9660;[/class], supported
 % operator set versions are 6, 7, 8, 9
@@ -755,25 +747,6 @@ specifies that only 1% of image patches are displayed in the progress plot windo
 %
 % [/dtls]
 %
-%% Augmentation section
-% Supporting functions that are used to reset or disable augmentations.
-% 
-% <html lang="en">
-% <ul>
-% <li><b>2D</b>, modify augmentations for 2D networks
-% <ul>
-% <li>[class.kbd]Reset[/class], press to reset 2D augmentations to their default values</li>
-% <li>[class.kbd]Disable[/class], press to disable all 2D augmentations</li>
-% </ul>
-% </li>
-% <li><b>3D</b>, modify augmentations for 3D networks
-% <ul>
-% <li>[class.kbd]Reset[/class], press to reset 3D augmentations to their default values</li>
-% <li>[class.kbd]Disable[/class], press to disable all 3D augmentations</li>
-% </ul>
-% </li>
-% </ul>
-% </html>
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 
 % |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_tools.html *Tools

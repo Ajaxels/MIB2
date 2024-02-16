@@ -15,8 +15,8 @@ for i=1:numel(list_of_files)
     if strcmp(list_of_files(i).name,'im_browser_release_notes_doxygen.m'); fprintf('skipped!\n'); continue; end  % this file is for doxegen documentation
     if strcmp(list_of_files(i).name,'MatlabDocMaker.m'); fprintf('skipped!\n'); continue; end
     publish(list_of_files(i).name, 'html'); 
-    [~, fnOnly] = fileparts(list_of_files(i).name);
-    prettify_MATLAB_html(fullfile('html', [fnOnly '.html']), false);
+    %[~, fnOnly] = fileparts(list_of_files(i).name);
+    %prettify_MATLAB_html(fullfile('html', [fnOnly '.html']), false);
     fprintf('done!\n');
 end
 db_path = [path '\html'];

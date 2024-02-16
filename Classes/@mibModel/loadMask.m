@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function loadMask(obj, mask, BatchOptIn)
 % function loadMask(obj, mask, BatchOptIn)
 % load mask from a file or import when mask variable is provided
@@ -24,13 +40,6 @@ function loadMask(obj, mask, BatchOptIn)
 % @code obj.mibModel.loadMask();     // call from mibController; load a mask @endcode
 % @code obj.mibModel.loadMask(mask, BatchOptIn);     // call from mibController; import a mask @endcode
  
-% Copyright (C) 11.09.2019 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -50,6 +59,8 @@ BatchOpt.mibBatchActionName = 'Load mask';
 BatchOpt.mibBatchTooltip.DirectoryName = sprintf('Directory name, where the mask file is located, use the right mouse click over the Parameters table to modify the directory');
 BatchOpt.mibBatchTooltip.FilenameFilter = sprintf('Filter for filenames: template with [F] - indicates filename of the open dataset; could also be a filename');
 BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the waitbar');
+
+tryToLoadMask = false; % switch to load the mask despite different XY dimension
 
 %% Batch mode check actions
 if nargin == 3  % batch mode 
@@ -102,6 +113,7 @@ if nargin == 3  % batch mode
         end
     end
     batchModeSwitch = 1;    % indicates that the function is running in the batch mode
+    tryToLoadMask = true;  % switch to load the mask despite different XY dimension
 else
     [filename, BatchOpt.DirectoryName{1}] = mib_uigetfile(...
     {'*.mask;',  'Matlab format (*.mask)'; ...
@@ -113,7 +125,6 @@ else
     'Open mask data...',  BatchOpt.DirectoryName{1}, 'on');        
 
     if isequal(filename, 0); return; end % check for cancel
-    if ischar(filename); filename = cellstr(filename); end     % convert to cell type
     filename = sort(filename);    % re-sort filenames to arrange as in dir
     
     batchModeSwitch = 0;    % indicates that the function is running in the gui mode
@@ -156,11 +167,14 @@ if obj.I{BatchOpt.id}.maskExist == 0 && ...
     obj.I{BatchOpt.id}.maskExist = 1;
 end
 
+z1 = 1;     % z counter for models, when loaded multiple 3D *.mask files
+
 if isempty(mask) % mask and BatchOpt were not provided, load mask from a file
     if BatchOpt.showWaitbar
         warning('off', 'MATLAB:handle_graphics:exceptions:SceneNode');
-        wb = waitbar(0,sprintf('%s\nPlease wait.',filename{1}), 'Name', 'Loading mask', 'WindowStyle', 'modal');
+        wb = waitbar(0, '', 'Name', 'Loading mask', 'WindowStyle', 'modal');
         wb.Children.Title.Interpreter = 'none';
+        waitbar(0, wb, sprintf('%s\nPlease wait.',filename{1}));
         drawnow;
     end
     
@@ -188,61 +202,121 @@ if isempty(mask) % mask and BatchOpt were not provided, load mask from a file
         end
         
         % check dimensions
-        if size(mask,1) == height && size(mask,2) == width
+        if size(mask, 1) == height && size(mask, 2) == width
             % do nothing
         elseif size(mask,1) == width && size(mask,2) == height
             % permute
             mask = permute(mask, [2 1 3 4]);
         else
-            msgbox('Mask image and loaded image dimensions mismatch!', 'Error!', 'error', 'modal');
+            msgbox('Mask image height/width and loaded image dimensions mismatch!', 'Error!', 'error', 'modal');
             if BatchOpt.showWaitbar; delete(wb); end
             notify(obj, 'stopProtocol');
             return;
         end
-        
-        if size(mask, 4) > 1 && size(mask, 4) == time   % update complete 4D dataset
-            obj.setData4D('mask', mask, 4, 0, setDataOptions);
-        elseif size(mask, 4) == 1 && size(mask,3) == depth  % update complete 3D dataset
-            if numel(filename) > 1
-                obj.setData3D('mask', mask, fnId, 4, 0, setDataOptions);
-            else
-                obj.setData3D('mask', mask, NaN, 4, 0, setDataOptions);
-            end
-        elseif size(mask, 4) == 1 && size(mask,3) < depth  % mask is smaller than the dataset
-            setDataOptions.z = [1 size(mask,3)];
-            if batchModeSwitch == 0
-                answer = questdlg(sprintf('!!! Warning !!!\n\nDepth of the Mask is smaller than the size of the dataset\nDataset dimensions:\nheight x width x colors x depth x time: %d x %d x %d x %d x %d\n\nMask dimensions: %s\n\nWould you like to load it?', ...
-                    height, width, color, depth, time, num2str(size(mask))), 'Load a mask', 'Load', 'Cancel', 'Load');
+
+        % check if mask has more slices than the dataset
+        if size(mask, 3) > depth || size(mask, 3) < depth
+            if tryToLoadMask == false
+                buttonText = sprintf('Try to load first %d slices', depth);
+                if size(mask, 3) < depth
+                    buttonText = sprintf('Try to use first %d slices', size(mask, 3));
+                end
+                answer = questdlg(sprintf('Mask and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nMask (HxWxZ) = %d x %d x %d pixels',...
+                     height, width, depth, size(mask, 1), size(mask, 2), size(mask, 3)), ...
+	                'Warning!', ...
+	                buttonText, 'Cancel', 'Cancel');
                 if strcmp(answer, 'Cancel')
                     if BatchOpt.showWaitbar; delete(wb); end
-                    return; 
+                    notify(obj, 'stopProtocol');
+                    return;
                 end
+                tryToLoadMask = true;
             end
-            
+            if tryToLoadMask && size(mask, 3) > depth
+                % load the cropped mask
+                mask = mask(:, :, 1:depth);
+            end
+        end
+
+        if size(mask, 4) > 1 && size(mask, 4) == obj.I{BatchOpt.id}.time   % update complete 4D dataset
+            obj.setData4D('mask', {mask}, 4, NaN, setDataOptions);
+        elseif size(mask, 4) == 1 && size(mask,3) == obj.I{BatchOpt.id}.depth  % update complete 3D dataset
             if numel(filename) > 1
-                obj.setData3D('mask', mask, fnId, 4, 0, setDataOptions);
+                obj.setData3D('mask', {mask}, fnId, 4, NaN, setDataOptions);
             else
-                obj.setData3D('mask', mask, NaN, 4, 0, setDataOptions);
-            end
-        elseif size(mask, 4) == 1 && size(mask,3) > depth  % mask is larger than the dataset
-            if batchModeSwitch == 0
-                answer = questdlg(sprintf('!!! Warning !!!\n\nDepth of the Mask is larger than the size of the dataset\nDataset dimensions:\nheight x width x colors x depth x time: %d x %d x %d x %d x %d\n\nMask dimensions: %s\n\nWould you like to load it?', ...
-                    height, width, color, depth, time, num2str(size(mask))), 'Load a mask', 'Load', 'Cancel', 'Load');
-                if strcmp(answer, 'Cancel'); if BatchOpt.showWaitbar; delete(wb); end; return; end
-            end
-            
-            if numel(filename) > 1
-                obj.setData3D('mask', mask, fnId(1:depth), 4, 0, setDataOptions);
-            else
-                obj.setData3D('mask', mask(:,:,1:depth), NaN, 4, 0, setDataOptions);
+                obj.setData3D('mask', {mask}, NaN, 4, NaN, setDataOptions);
             end
         elseif size(mask, 3) == 1
             if numel(filename) > 1
-                obj.setData2D('mask', mask, fnId, 4, 0, setDataOptions);
+                obj.setData2D('mask', {mask}, fnId, 4, NaN, setDataOptions);
             else
-                obj.setData2D('mask', mask, NaN, 4, 0, setDataOptions);
+                obj.setData2D('mask', {mask}, NaN, 4, NaN, setDataOptions);
+            end
+        elseif size(mask, 3) > 1
+            if numel(filename) > 1
+                setDataOptions.z = [z1, z1+size(mask,3)-1];
+                z1 = z1 + size(mask,3);
+                obj.setData3D('mask', {mask}, NaN, 4, NaN, setDataOptions);
+            else
+                if tryToLoadMask
+                    setDataOptions.z = [1, size(mask, 3)];
+                    obj.setData3D('mask', {mask}, NaN, 4, NaN, setDataOptions);
+                else
+                    if BatchOpt.showWaitbar; delete(wb); end
+                    notify(obj, 'stopProtocol');
+                    msgbox(sprintf('Mask and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nMask (HxWxZ) = %d x %d x %d pixels',...
+                        height, width, depth, size(mask,1), size(mask,2), size(mask,3)), 'Error!', 'error', 'modal');
+                    return;
+                end
             end
         end
+
+        % if size(mask, 4) > 1 && size(mask, 4) == time   % update complete 4D dataset
+        %     obj.setData4D('mask', mask, 4, 0, setDataOptions);
+        % elseif size(mask, 4) == 1 && size(mask,3) == depth  % update complete 3D dataset
+        %     if numel(filename) > 1
+        %         obj.setData3D('mask', mask, fnId, 4, 0, setDataOptions);
+        %     else
+        %         obj.setData3D('mask', mask, NaN, 4, 0, setDataOptions);
+        %     end
+        % elseif size(mask, 4) == 1 && size(mask,3) < depth  % mask is smaller than the dataset
+        %     setDataOptions.z = [1 size(mask,3)];
+        %     if batchModeSwitch == 0
+        %         if tryToLoadMask == false
+        %             answer = questdlg(sprintf('!!! Warning !!!\n\nDepth of the Mask is smaller than the size of the dataset\nDataset dimensions:\nheight x width x colors x depth x time: %d x %d x %d x %d x %d\n\nMask dimensions: %s\n\nWould you like to load it?', ...
+        %                 height, width, numel(color), depth, time, num2str(size(mask))), 'Load a mask', 'Load', 'Cancel', 'Load');
+        %             if strcmp(answer, 'Cancel')
+        %                 if BatchOpt.showWaitbar; delete(wb); end
+        %                 return; 
+        %             end
+        %             tryToLoadMask = true;
+        %         end
+        %     end
+        % 
+        %     if numel(filename) > 1
+        %         obj.setData3D('mask', mask, fnId, 4, 0, setDataOptions);
+        %     else
+        %         obj.setData3D('mask', mask, NaN, 4, 0, setDataOptions);
+        %     end
+        % elseif size(mask, 4) == 1 && size(mask,3) > depth  % mask is larger than the dataset
+        %     if batchModeSwitch == 0
+        %         answer = questdlg(sprintf('!!! Warning !!!\n\nDepth of the Mask is larger than the size of the dataset\nDataset dimensions:\nheight x width x colors x depth x time: %d x %d x %d x %d x %d\n\nMask dimensions: %s\n\nWould you like to load it?', ...
+        %             height, width, color, depth, time, num2str(size(mask))), 'Load a mask', 'Load', 'Cancel', 'Load');
+        %         if strcmp(answer, 'Cancel'); if BatchOpt.showWaitbar; delete(wb); end; return; end
+        %     end
+        % 
+        %     if numel(filename) > 1
+        %         obj.setData3D('mask', mask, fnId(1:depth), 4, 0, setDataOptions);
+        %     else
+        %         obj.setData3D('mask', mask(:,:,1:depth), NaN, 4, 0, setDataOptions);
+        %     end
+        % elseif size(mask, 3) == 1
+        %     if numel(filename) > 1
+        %         obj.setData2D('mask', mask, fnId, 4, 0, setDataOptions);
+        %     else
+        %         obj.setData2D('mask', mask, NaN, 4, 0, setDataOptions);
+        %     end
+        % end
         if BatchOpt.showWaitbar; waitbar(fnId/numel(filename), wb); end
     end
     obj.I{BatchOpt.id}.maskImgFilename = fullfile(BatchOpt.DirectoryName{1}, filename{1});

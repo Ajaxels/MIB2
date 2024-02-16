@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibSegmentationBlackWhiteThreshold(obj, parameter, BatchOptIn)
 % function mibSegmentationBlackWhiteThreshold(obj, parameter, BatchOptIn)
 % Perform black and white thresholding for @em BW @em Threshold tool of the 'Segmentation
@@ -9,6 +25,7 @@ function mibSegmentationBlackWhiteThreshold(obj, parameter, BatchOptIn)
 % - ''mibSegmHighEdit'' - callback after enter a new value to the obj.mibView.handles.mibSegmHighEdit editbox
 % - ''mibSegmLowSlider'' - callback after interacting with the obj.mibView.handles.mibSegmLowSlider slider
 % - ''mibSegmHighSlider'' - callback after interacting with the obj.mibView.handles.mibSegmHighSlider slider
+% - ''mibSegmThresPanelThreshold'' - callback after press of the Threshold button
 % BatchOptIn: a structure for batch processing mode, when NaN return
 %   a structure with default options via "syncBatch" event, see Declaration of the BatchOpt structure below for details, the function
 %   variables are preferred over the BatchOptIn variables
@@ -26,13 +43,6 @@ function mibSegmentationBlackWhiteThreshold(obj, parameter, BatchOptIn)
 % Return values:
 % 
 
-% Copyright (C) 19.12.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 03.10.2019 updated for the batch mode
 
@@ -106,7 +116,10 @@ if nargin == 3  % batch mode
         backgroundColor = obj.mibView.handles.mibSegmThresPanelLowText.BackgroundColor;
     end
 else
+    backgroundColor = obj.mibView.handles.mibSegmThresPanelLowText.BackgroundColor;
     switch parameter
+        case 'mibSegmThresPanelThreshold'
+            %backgroundColor = obj.mibView.handles.mibSegmThresPanelLowText.BackgroundColor;
         case 'mibSegmLowEdit'
             val = round(str2double(obj.mibView.handles.mibSegmLowEdit.String));
             if val > maxVal
@@ -114,7 +127,7 @@ else
                 obj.mibView.handles.mibSegmLowEdit.String = num2str(val);
             end
             obj.mibView.handles.mibSegmLowSlider.Value = val;
-            backgroundColor = [1 1 1];
+            %backgroundColor = [1 1 1];
         case 'mibSegmHighEdit'
             val = round(str2double(obj.mibView.handles.mibSegmHighEdit.String));
             if val > maxVal
@@ -122,7 +135,7 @@ else
                 obj.mibView.handles.mibSegmHighEdit.String = num2str(val);
             end
             obj.mibView.handles.mibSegmHighSlider.Value = val;
-            backgroundColor = [1 1 1];
+            %backgroundColor = [1 1 1];
         case 'mibSegmLowSlider'
             val = round(obj.mibView.handles.mibSegmLowSlider.Value);
             if val > maxVal
@@ -130,7 +143,7 @@ else
                 obj.mibView.handles.mibSegmLowSlider.Value = val;
             end
             obj.mibView.handles.mibSegmLowEdit.String = num2str(val);
-            backgroundColor = obj.mibView.handles.mibSegmThresPanelLowText.BackgroundColor;
+            %backgroundColor = obj.mibView.handles.mibSegmThresPanelLowText.BackgroundColor;
         case 'mibSegmHighSlider'
             val = round(obj.mibView.handles.mibSegmHighSlider.Value);
             if val > maxVal
@@ -138,7 +151,7 @@ else
                 obj.mibView.handles.mibSegmHighSlider.Value = val;
             end
             obj.mibView.handles.mibSegmHighEdit.String = num2str(val);
-            backgroundColor = obj.mibView.handles.mibSegmThresPanelLowText.BackgroundColor;
+            %backgroundColor = obj.mibView.handles.mibSegmThresPanelLowText.BackgroundColor;
     end
     BatchOpt.MinValue = num2str(round(obj.mibView.handles.mibSegmLowSlider.Value));
     BatchOpt.MaxValue = num2str(round(obj.mibView.handles.mibSegmHighSlider.Value));    
@@ -152,7 +165,8 @@ if obj.mibModel.I{BatchOpt.id}.Virtual.virtual == 1
     return;
 end
 
-obj.mibView.handles.mibSegmLowSlider.BackgroundColor = [1 0 0];
+obj.mibView.handles.mibSegmThresPanelThreshold.BackgroundColor = [1 0 0];
+obj.mibView.handles.mibSegmThresPanelThreshold.String = 'Thresholding...';
 drawnow;
 
 val1 = str2double(BatchOpt.MinValue);
@@ -279,6 +293,11 @@ if strcmp(BatchOpt.Mode{1}, '3D, Stack') || strcmp(BatchOpt.Mode{1}, '4D, Datase
         if BatchOpt.showWaitbar; waitbar(t/(t2-t1), wb); end
     end
     if BatchOpt.showWaitbar; delete(wb); end
+    
+    % count user's points
+    obj.mibModel.preferences.Users.Tiers.numberOfBWThresholdings = obj.mibModel.preferences.Users.Tiers.numberOfBWThresholdings+1;
+    eventdata = ToggleEventData(2);    % scale scoring by factor 5
+    notify(obj.mibModel, 'updateUserScore', eventdata);
 else    % do segmentation for the current slice only
     obj.mibModel.mibDoBackup(BatchOpt.Target{1}, 0, getDataOptions);
     img = squeeze(cell2mat(obj.mibModel.getData2D('image', NaN, NaN, color_channel, getDataOptions)));
@@ -304,7 +323,8 @@ else    % do segmentation for the current slice only
     end
     obj.mibModel.setData2D(BatchOpt.Target{1}, {selection}, NaN, NaN, NaN, getDataOptions);
 end
-obj.mibView.handles.mibSegmLowSlider.BackgroundColor = backgroundColor;
+obj.mibView.handles.mibSegmThresPanelThreshold.BackgroundColor = backgroundColor;
+obj.mibView.handles.mibSegmThresPanelThreshold.String = 'Threshold';
 
 % notify the batch mode
 BatchOpt = rmfield(BatchOpt, 'id');     % remove id field

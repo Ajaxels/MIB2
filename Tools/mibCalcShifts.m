@@ -1,3 +1,26 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+% based on algorithms descibed in
+% - JC Russ, The image processing handbook, CRC Press, Boca Raton, FL, 1994
+% - JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free Matlab Script For
+% Spatial Drift Correction, Microscopy Today — Volume 22, Number 5, 2014
+% https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m
+% http://onlinedigeditions.com/publication/?i=223321&p=40
+
+
 function [shiftX, shiftY] = mibCalcShifts(I, options)
 % function [shiftX, shiftY] = mibCalcShifts(I, options)
 % Calculate alignment shifts between slices in I
@@ -14,20 +37,6 @@ function [shiftX, shiftY] = mibCalcShifts(I, options)
 % shiftX: a vector with absolute shifts in the X-plane, the shifts are calculated relative to the first slice
 % shiftY: a vector with absolute shifts in the Y-plane, the shifts are calculated relative to the first slice
 
-% Copyright (C) 30.01.2017 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% based on algorithms descibed in
-% - JC Russ, The image processing handbook, CRC Press, Boca Raton, FL, 1994
-% - JD Sugar, AW Cummings, BW Jacobs, DB Robinson, A Free Matlab Script For
-% Spatial Drift Correction, Microscopy Today — Volume 22, Number 5, 2014
-% https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m
-% http://onlinedigeditions.com/publication/?i=223321&p=40
-%
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 

@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibSegmentationTable_cm_Callback(obj, hObject, type)
 % function mibSegmentationTable_cm_Callback(obj, hObject, type)
 % a callback to the context menu of mibView.handles.mibSegmentationTable
@@ -14,15 +30,8 @@ function mibSegmentationTable_cm_Callback(obj, hObject, type)
 % @li ''isosurface2imaris'' - render isosurface in Matlab and export to Imaris
 % @li ''volumeFiji'' - Show as volume (Fiji)
 
-% Copyright (C) 29.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
-%
+% 23.12.2022 updated rename material to be compatible with the batch mode
 
 global mibPath; % path to mib installation folder
 
@@ -36,19 +45,8 @@ switch type
             hObject.Checked = 'off';
         end
     case 'rename'
-        contIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2;   % do not change to obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex() here!
-        if contIndex < 1; return; end  % do not rename Mask/Exterior
-        segmList = obj.mibModel.getImageProperty('modelMaterialNames');
-        answer = mibInputDlg({mibPath}, sprintf('Please add a new name for this material:'), 'Rename material', segmList{contIndex});
-        if ~isempty(answer)
-            if obj.mibModel.I{obj.mibModel.Id}.modelType > 255
-                materialId = round(str2double(answer{1}));
-                if isnan(materialId); errordlg(sprintf('!!! Error !!!\n\nWrong material index\nWhen worlPlease enter a number!'), 'Wrong material index', 'modal'); return; end;
-            end
-            segmList(contIndex) = answer(1);
-            obj.mibModel.setImageProperty('modelMaterialNames', segmList);
-            obj.updateSegmentationTable();
-        end
+        obj.mibModel.renameMaterial();
+        return;
     case 'set color'
         contIndex = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial;
         if contIndex == 1   % set color for the mask layer

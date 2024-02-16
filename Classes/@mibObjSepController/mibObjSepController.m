@@ -1,15 +1,23 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibObjSepController  < handle
-    % @type mibObjSepController class is resposnible for showing the object separation window,
+    % @type mibObjSepController class is responsible for showing the object separation window,
     % available from MIB->Menu->Tools->Object separation
     
-	% Copyright (C) 27.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-	% 
-	% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-	%
 	% Updates
 	%     
     
@@ -491,12 +499,16 @@ classdef mibObjSepController  < handle
                         W = watershed(W);
                         W(~img) = 0;
                         
+                        %W2 = img;
+                        %W2(W==0) = 0;
+                        %W3 = bwlabeln(img);
+
                         % have to calculate the connected components because some objects without
                         % the seeds have indeces equal to those that have seeds
                         W = bwlabeln(W);
                         
                         objInd = unique(W(seedImg~=0));
-                        W = uint8(ismember(W,objInd));
+                        W = uint8(ismember(W, objInd));
                         
                         if binVal(1) ~= 1   % re-bin mask
                             W = imresize(W, [max(height)-min(height)+1, max(width)-min(width)+1], 'nearest');

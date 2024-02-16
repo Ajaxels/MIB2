@@ -1,4 +1,20 @@
-function [bitmap, par] = amiraMesh2bitmap(filename, options)
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
+function [bitmap, par, status] = amiraMesh2bitmap(filename, options)
 % function [bitmap, par] = amiraMesh2bitmap(filename, options)
 % Converts Amira Mesh to bitmap matrix [1:height, 1:width, 1:colors, 1:no_stacks]
 %
@@ -18,14 +34,8 @@ function [bitmap, par] = amiraMesh2bitmap(filename, options)
 % Return values:
 % bitmap: - dataset, [1:height, 1:width, 1:colors, 1:no_stacks]
 % par: - structure with parameters from Amira Mesh file
+% status: - logical switch indicating success of the function
 
-% Copyright (C) 27.01.2012 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % ver 1.01 - 10.02.2012, memory performance improvement, added waitbar
 % ver 1.02 - 14.02.2012, read binary data performance increase up to 8 times
@@ -36,6 +46,7 @@ function [bitmap, par] = amiraMesh2bitmap(filename, options)
 % ver 1.07 - 09.01.2018, added extraction of embedded containers in the amiramesh headers
 % ver 1.08 - 30.01.2019, updated to be compatible with version AM 3
 % ver 1.09 - 22.04.2022, fixed loading of parts of AM files with step==1 (added: && dataBlock < dataIndex - 1)
+% ver 1.10 - 10.02.2023, added cancel to the progress bar and status return argument
 
 % -- debug block starts --
 %filename = '.am';
@@ -43,6 +54,7 @@ function [bitmap, par] = amiraMesh2bitmap(filename, options)
 % -- debug block ends --
 
 bitmap = NaN;
+status = false; 
 if nargin < 2; options = struct(); end
 if ~isfield(options, 'hWaitbar');    options.hWaitbar = NaN; end
 if ~isfield(options, 'getMeta');    options.getMeta = true; end
@@ -56,8 +68,8 @@ if nargin < 1
         {'*.am','Amira mesh labels(*.am)';
         '*.*',  'All Files (*.*)'}, ...
         'Pick a file');
-    if filename == 0; return; end
-    filename = [pathname filename];
+    if isequal(filename, 0); return; end
+    filename = [pathname filename{1}];
 end
 %fid = fopen(filename, 'r');
 fid = fopen(filename, 'r', 'n', 'UTF-8');
@@ -226,6 +238,10 @@ else
     maxZ = options.maxZ;
 end
 
+% calculate coefficient to update the waitbar 
+pixPerSlice = size(bitmap,1)*size(bitmap,2);    % number of pixels in a slice
+waitbarUpdateFrequency = max([1 round(4096^2 / pixPerSlice)]);
+
 color_id = 0;
 for dataBlock = 1:dataIndex - 1
     tline = fgetl(fid); % @1
@@ -271,8 +287,13 @@ for dataBlock = 1:dataIndex - 1
             end
         end
         %if ~isnan(options.hWaitbar) && mod(zIndex, ceil(maxZ/20))==0;
-        if ishandle(options.hWaitbar) && mod(zIndex, ceil(maxZ/20))==0          
-            waitbar((zIndex)/maxZ,options.hWaitbar);
+        if ishandle(options.hWaitbar) && mod(zIndex, waitbarUpdateFrequency)==0
+            if getappdata(options.hWaitbar, 'canceling')
+                fclose(fid);
+                bitmap = NaN;
+                return;
+            end
+            waitbar((zIndex)/maxZ, options.hWaitbar);
         end
         zIndex = zIndex + 1;
     end
@@ -281,7 +302,7 @@ for dataBlock = 1:dataIndex - 1
     end
 end
 fclose(fid);
-
+status = true; 
 if options.verbose; disp(['amiraMesh2bitmap: ' filename ' was loaded!']); end
 end
 

@@ -1,13 +1,22 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibModel < handle
     % classdef mibModel < handle
     % the main model class of MIB
-    
-    % Copyright (C) 04.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
     
     properties 
         I
@@ -44,6 +53,8 @@ classdef mibModel < handle
         % define whether or not dispay the model layer (used in obj.getRGBimage) a status of mibCpontroller.mibView.handles.mibModelShowCheck.Value 
         mibPrevId
         % id of the previously selected mibModel container
+        mibPython
+        % link to python environment started from MIB
         mibShowAnnotationsCheck
         % show or not the annotations
         mibShowLines3DCheck
@@ -71,6 +82,10 @@ classdef mibModel < handle
     end
         
     events
+        modelNotify
+        % generic notification event to make the list of listners smaller,
+        % call it as notify(obj, 'modelNotify', eventdata); see in mibModel.renameMaterial 
+        % eventdata; motifyEvent.Name = has description of the event
         changeSlice
         % change of a slice number using the slider
         changeTime
@@ -110,12 +125,20 @@ classdef mibModel < handle
         % event that the lines3D class was updated for use with mibLines3DController
         updateROI
         % event after change number of ROIs
+        updateSegmentationTable
+        % update the segmentation table
         updateGuiWidgets
         % event after update of GuiWidgets of mibController
         updateLayerSlider
         % event to trigger update of mibView.handles.mibChangeLayerSlider based on provided value, see mibAnnotationController.tableContextMenu_cb
         updateTimeSlider
         % event to trigger update of mibView.handles.mibTimeSlider based on provided value, see mibAnnotationController.tableContextMenu_cb
+        updateUserScore
+        % event to trigger counting user scores
+        % @code
+        % eventdata = ToggleEventData(5);   // increase the user score by x5 times of Prefs.Users.singleToolScores value
+        % notify(obj.mibModel, 'updateUserScore', eventdata);
+        % @endcode
     end
     
     methods
@@ -187,10 +210,14 @@ classdef mibModel < handle
         
         mibDoBackup(obj, type, switch3d, storeOptions)        % store the dataset for Undo
         
-        mibImg = mibImageDeepCopy(obj, fromId, toId)        % copy mibImage class from one container to another; used in mibBufferToggleContext_Callback, duplicate
+        mibImg = mibImageDeepCopy(obj, fromId, toId, options)        % copy mibImage class from one container to another; used in mibBufferToggleContext_Callback, duplicate
         
         moveLayers(obj, SourceLayer, DestinationLayer, DatasetType, ActionType, BatchOptIn)  % to move datasets between the layers (image, model, mask, selection)
         
+        renameMaterial(obj, BatchOptIn)         % rename selected or any specified material of the model
+
+        resliceDataset(obj, sliceNumbers, orientation, BatchOptIn)  % reslice the dataset so that the selected slices are kept and all others are removed
+
         rotateDataset(obj, mode, showWaitbar)        % Rotate dataset in 90 or -90 degrees
         
         fnOut = saveImageAsDialog(obj, filename, BatchOptIn)        % save image to a file
@@ -207,6 +234,8 @@ classdef mibModel < handle
         
         result = setData4D(obj, type, dataset, orient, col_channel, options)        % Set complete 4D dataset with colors [height:width:colors:depth:time]
         
+        setDefaultSegmentationColorPalette(obj, paletteName, noColors)          % set default color palette for materials of the model
+
         setImageProperty(obj, propertyName, propertyValue, id)        % set desired property for the currently shown or id dataset
         
         setMagFactor(obj, magFactor, id)        % set magnification for the currently shown or id dataset
@@ -242,6 +271,7 @@ classdef mibModel < handle
                 obj.I{i}= mibImage();
             end
             obj.U = mibImageUndo();    % create instanse for keeping undo information
+            obj.mibPython = [];     % Python environment for MIB
         end
     end
     

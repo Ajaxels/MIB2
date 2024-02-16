@@ -1,7 +1,6 @@
 %% Microscopy Image Browser
-% Image below shows the general overview of |MIB| and explains names
-% for the different parts of the program. Please refer to the table below
-% for detailed description of each element.
+% Please refer to the table below
+% for fast navigation towards detailed description of each element of MIB.
 %
 % *Back to* <im_browser_product_page.html *Index*> 
 %%

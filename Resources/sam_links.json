@@ -1,0 +1,100 @@
+[
+	{	
+	"info": "Standard SAM vit_h model",
+	"name": "vit_h (2.5Gb)",
+	"backbone": "vit_h",
+	"checkpointFilename": "sam_vit_h_4b8939.pth",
+	"onnxFilename": "sam_vit_h_4b8939_quantized.onnx",
+	"checkpointLink_url_1": "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth",
+	"checkpointLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam_vit_h_4b8939.pth",
+	"onnxLink": "http://mib.helsinki.fi/web-update/sam/vit_h.zip"
+	}
+,
+	{	
+	"info": "Standard SAM vit_l model",
+	"name": "vit_l (1.2Gb)",
+	"backbone": "vit_l",
+	"checkpointFilename": "sam_vit_l_0b3195.pth",
+	"onnxFilename": "sam_vit_l_0b3195_quantized.onnx",
+	"checkpointLink_url_1": "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth",
+	"checkpointLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam_vit_l_0b3195.pth",
+	"onnxLink": "http://mib.helsinki.fi/web-update/sam/vit_l.zip"
+	}
+,
+{	
+	"info": "Standard SAM vit_b model",
+	"name": "vit_b (0.4Gb)",
+	"backbone": "vit_b",
+	"checkpointFilename": "sam_vit_b_01ec64.pth",
+	"onnxFilename": "sam_vit_b_01ec64_quantized.onnx",
+	"checkpointLink_url_1": "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth",
+	"checkpointLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam_vit_b_01ec64.pth",
+	"onnxLink": "http://mib.helsinki.fi/web-update/sam/vit_b.zip"
+	}
+,
+{	
+	"info": "Micro SAM vit_h for EM https://github.com/computational-cell-analytics/micro-sam",
+	"name": "vit_h Electron Microscopy (2.5Gb)",
+	"backbone": "vit_h",
+	"checkpointFilename": "vit_h_em.pth",
+	"onnxFilename": "vit_h_em_quantized.onnx",
+	"checkpointLink_url_1": "https://zenodo.org/record/8250291/files/vit_h_em.pth?download=1",
+	"checkpointLink_url_2": "https://zenodo.org/record/8250291/files/vit_h_em.pth?download=1",
+	"onnxLink": "http://mib.helsinki.fi/web-update/sam/vit_h_em.zip"
+	}
+,	
+{	
+	"info": "Micro SAM vit_h for LM https://github.com/computational-cell-analytics/micro-sam",
+	"name": "vit_h Light Microscopy (2.5Gb)",
+	"backbone": "vit_h",
+	"checkpointFilename": "vit_h_lm.pth",
+	"onnxFilename": "vit_h_lm_quantized.onnx",
+	"checkpointLink_url_1": "https://zenodo.org/record/8250299/files/vit_h_lm.pth?download=1",
+	"checkpointLink_url_2": "https://zenodo.org/record/8250299/files/vit_h_lm.pth?download=1",
+	"onnxLink": "http://mib.helsinki.fi/web-update/sam/vit_h_lm.zip"
+	}
+,
+{	
+	"info": "Micro SAM vit_b for EM https://github.com/computational-cell-analytics/micro-sam",
+	"name": "vit_b Electron Microscopy (0.4Gb)",
+	"backbone": "vit_b",
+	"checkpointFilename": "vit_b_em.pth",
+	"onnxFilename": "vit_b_em_quantized.onnx",
+	"checkpointLink_url_1": "https://zenodo.org/record/8250260/files/vit_b_em.pth?download=1",
+	"checkpointLink_url_2": "https://zenodo.org/record/8250260/files/vit_b_em.pth?download=1",
+	"onnxLink": "http://mib.helsinki.fi/web-update/sam/vit_b_em.zip"
+	}
+,	
+{	
+	"info": "Micro SAM vit_b for LM https://github.com/computational-cell-analytics/micro-sam",
+	"name": "vit_b Light Microscopy (0.4Gb)",
+	"backbone": "vit_b",
+	"checkpointFilename": "vit_b_lm.pth",
+	"onnxFilename": "vit_b_lm_quantized.onnx",
+	"checkpointLink_url_1": "https://zenodo.org/record/8250281/files/vit_b_lm.pth?download=1",
+	"checkpointLink_url_2": "https://zenodo.org/record/8250281/files/vit_b_lm.pth?download=1",
+	"onnxLink": "http://mib.helsinki.fi/web-update/sam/vit_b_lm.zip"
+	}
+,
+{	
+	"info": "Micro SAM vit_b for EM Generalist https://github.com/computational-cell-analytics/micro-sam",
+	"name": "vit_b for EM Generalist (0.4Gb)",
+	"backbone": "vit_b",
+	"checkpointFilename": "vit_b_em_organelles.pth",
+	"onnxFilename": "vit_b_em_organelles_quantized.onnx",
+	"checkpointLink_url_1": "https://zenodo.org/records/10524828/files/vit_b_em_organelles.pth?download=1",
+	"checkpointLink_url_2": "https://zenodo.org/records/10524828/files/vit_b_em_organelles.pth?download=1",
+	"onnxLink": "http://mib.helsinki.fi/web-update/sam/vit_b_em_organelles.zip"
+	}
+,
+{	
+	"info": "Micro SAM vit_b for EM Boundaries https://github.com/computational-cell-analytics/micro-sam",
+	"name": "vit_b for EM Boundaries (0.4Gb)",
+	"backbone": "vit_b",
+	"checkpointFilename": "vit_b_em_boundaries.pth",
+	"onnxFilename": "vit_b_em_boundaries_quantized.onnx",
+	"checkpointLink_url_1": "https://zenodo.org/records/10524894/files/vit_b_em_boundaries.pth?download=1",
+	"checkpointLink_url_2": "https://zenodo.org/records/10524894/files/vit_b_em_boundaries.pth?download=1",
+	"onnxLink": "http://mib.helsinki.fi/web-update/sam/vit_b_em_boundaries.zip"
+	}
+]

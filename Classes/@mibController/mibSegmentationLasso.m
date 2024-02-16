@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibSegmentationLasso(obj, modifier)
 % function mibSegmentationLasso(obj, modifier)
 % Do segmentation using the lasso tool
@@ -10,13 +26,6 @@ function mibSegmentationLasso(obj, modifier)
 % Return values:
 % 
 
-% Copyright (C) 19.12.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 28.11.2018, IB added modification of ROIs after placing them
 
@@ -133,3 +142,8 @@ else    % 2d case
         obj.mibModel.setData2D('selection', {currSelection}, NaN, NaN, selcontour, getDataOptions);
     end
 end
+
+% count user's points
+obj.mibModel.preferences.Users.Tiers.numberOfLassos = obj.mibModel.preferences.Users.Tiers.numberOfLassos+1;
+notify(obj.mibModel, 'updateUserScore');     % update score using default obj.mibModel.preferences.Users.singleToolScores increase
+

@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function dilateImage(obj, BatchOptIn)
 % function dilateImage(obj, BatchOptIn)
 % dilate image
@@ -15,16 +31,10 @@ function dilateImage(obj, BatchOptIn)
 % @li .AdaptiveCoef -> [Adaptive mode] expansion coefficient for the adaptive dilation
 % @li .AdaptiveColorChannel -> [Adaptive mode] color channel for adaptive dilation
 % @li .AdaptiveSmoothing -> [Adaptive mode] logical, additional smoothing during adaplive dilation
+% @li .MaterialIndex -> string, index of material of the model to be eroded; only for TargetLayer="model"
+% @li .Use2DParallelComputing -> logical, use parallel processing to erode images in 2D'
 % @li .showWaitbar -> logical, show or not the progress bar during execution
 
-
-% Copyright (C) 15.09.2019, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 %
 
@@ -92,11 +102,11 @@ else
     % add/update BatchOpt with the provided fields in BatchOptIn
     % combine fields from input and default structures
     BatchOpt = updateBatchOptCombineFields_Shared(BatchOpt, BatchOptIn);
-    if isfield(BatchOptIn, 'mibBatchSectionName'); batchModeSwitch = 1; end
+    if isfield(BatchOptIn, 'mibBatchTooltip'); batchModeSwitch = 1; end
 end
 
 %% start of the function
-% do nothing is selection is disabled
+% do nothing if selection is disabled
 if obj.I{BatchOpt.id}.enableSelection == 0; notify(obj, 'stopProtocol'); return; end
 tic
 
@@ -106,10 +116,28 @@ if strcmp(BatchOpt.DatasetType{1}, '4D, Dataset') && obj.I{BatchOpt.id}.time == 
 end
 
 getDataOptions.id = BatchOpt.id;
-if (strcmp(BatchOpt.DilateMode{1}, '3D') && ~strcmp(BatchOpt.DatasetType{1}, '4D, Dataset') ) || strcmp(BatchOpt.DatasetType{1}, '3D, Stack')
-    obj.mibDoBackup(BatchOpt.TargetLayer{1}, 1, getDataOptions);
+% do not make backup in the batch processing mode
+if ~batchModeSwitch
+    if (strcmp(BatchOpt.DilateMode{1}, '3D') && ~strcmp(BatchOpt.DatasetType{1}, '4D, Dataset') ) || strcmp(BatchOpt.DatasetType{1}, '3D, Stack')
+        obj.mibDoBackup(BatchOpt.TargetLayer{1}, 1, getDataOptions);
+    else
+        obj.mibDoBackup(BatchOpt.TargetLayer{1}, 0, getDataOptions);
+    end
+end
+
+% define parallel processing settings
+% when not in the batch mode, when parpool is present use it
+if ~batchModeSwitch
+    p = gcp('nocreate');
+    if ~isempty(p); BatchOpt.Use2DParallelComputing = true; end
+end
+
+% check for parallel processing options
+if BatchOpt.Use2DParallelComputing
+    parforArg = obj.cpuParallelLimit;    % Maximum number of workers running in parallel
+    if isempty(gcp('nocreate')); parpool(parforArg); end % create parpool
 else
-    obj.mibDoBackup(BatchOpt.TargetLayer{1}, 0, getDataOptions);
+    parforArg = 0;
 end
 
 % define the time points
@@ -128,7 +156,7 @@ if numel(seSize) == 2  % when 2 values are provided take them
 else                    % when only 1 value - calculate the second from the pixSize
     if strcmp(BatchOpt.DilateMode{1}, '3D')
         se_size(1) = seSize; % for y and x
-        se_size(2) = round(se_size(1)*obj.I{BatchOpt.id}.pixSize.x/obj.I{BatchOpt.id}.pixSize.z); % for z
+        se_size(2) = max([round(se_size(1)*obj.I{BatchOpt.id}.pixSize.x/obj.I{BatchOpt.id}.pixSize.z) 1]); % for z
     else
         se_size(1) = seSize; % for y
         se_size(2) = se_size(1);    % for x
@@ -207,7 +235,15 @@ else  % do in 2d layer by layer
     % when not in the batch mode, when parpool is present use it
     if batchModeSwitch == 0
         p = gcp('nocreate');
-        if ~isempty(p); BatchOpt.use2DParallelComputing = true; end
+        if ~isempty(p); use2DParallelComputing = true; end
+    end
+
+    % setup number of CPUs
+    if use2DParallelComputing
+        parforArg = obj.cpuParallelLimit;    % Maximum number of workers running in parallel
+        if isempty(gcp('nocreate')); parpool(parforArg); end % create parpool
+    else
+        parforArg = 0;
     end
 
     showWaitbar = BatchOpt.showWaitbar;
@@ -234,13 +270,6 @@ else  % do in 2d layer by layer
             pw = PoolWaitbar(max_size2, sprintf('Dilating selection...\nStrel size: %dx%d px', se_size(1),se_size(2)), [], 'Dilating...');
             pw.setIncrement(10);
         end
-    end
-
-    % setup number of CPUs
-    if use2DParallelComputing
-        parforArg = obj.cpuParallelLimit;    % Maximum number of workers running in parallel
-    else
-        parforArg = 0;
     end
 
     options.id = BatchOpt.id;

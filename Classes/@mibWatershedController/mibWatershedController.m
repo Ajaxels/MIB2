@@ -1,15 +1,23 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibWatershedController  < handle
-    % @type mibWatershedController class is resposnible for showing the watershed/graphcut segmentation window,
+    % @type mibWatershedController class is responsible for showing the watershed/graphcut segmentation window,
     % available from MIB->Menu->Tools->Watershed/Graphcut segmentation
     
-	% Copyright (C) 27.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-	% 
-	% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-	%
 	% Updates
 	% 06.11.2017, taken to a separate function    
     
@@ -651,7 +659,7 @@ classdef mibWatershedController  < handle
                     waitbar(.4, wb);
                     W = watershed(W);
                     if isa(W,'dip_image')
-                        warndlg(sprintf('!!! Warning !!!\n\nThis tool requires watershed function of Matlab. It seems that the currenly used function is coming from the dip-lib library!\n\nTo fix, place the dip-lib directory to the bottom of the Matlab path:\nMatlab->Home->Set path->Highlight directories containing DIPimage->Move to Bottom->Save'), 'Wrong watershed');
+                        warndlg(sprintf('!!! Warning !!!\n\nThis tool requires watershed function of Matlab. It seems that the currently used function is coming from the dip-lib library!\n\nTo fix, place the dip-lib directory to the bottom of the Matlab path:\nMatlab->Home->Set path->Highlight directories containing DIPimage->Move to Bottom->Save'), 'Wrong watershed');
                         delete(wb);
                         return;
                     end

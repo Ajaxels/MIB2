@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Key &amp; mouse shortcuts</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_shortcuts.m"><style>
+      --><title>Key &amp; mouse shortcuts</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_shortcuts.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -145,11 +145,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -534,7 +533,7 @@ A brief demonstration is available in the following video:
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<table>
+<table style="line-height: 2;">
 <tr>
   <td style="width: 120pt"><span class="kbd">move cursor</span></td>
   <td>to dispay intensity information and cursor coordinates;
@@ -547,7 +546,7 @@ A brief demonstration is available in the following video:
 <tr>
   <td><span class="kbd">&#8679; Shift</span>+<span class="kbd">mouse wheel</span></td>
   <td>jump to 10 slices up/down,
-<br>number of slices can be defined from a popup menu that appears during the <span class="kbd">right click</span> above the slices slider in the
+<br>number of slices can be defined from a popup menu that appears during the <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> above the slices slider in the
 <a href="ug_panel_im_view.html">Image View Panel</a></td>
 </tr>
 <tr>
@@ -557,21 +556,21 @@ A brief demonstration is available in the following video:
 <tr>
   <td><span class="kbd">Alt</span>+<span class="kbd">&#8679; Shift</span>+<span class="kbd">mouse wheel</span></td>
   <td>jump to 10 time points,
-<br>number of time points can be defined from a popup menu that appears during the <span class="kbd">right click</span> above the slices slider in the
+<br>number of time points can be defined from a popup menu that appears during the <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> above the slices slider in the
       <a href="ug_panel_im_view.html">Image View Panel</a></td>
 </tr>
 <tr>
-  <td><span class="kbd">left-click</span></td>
+  <td><span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> left mouse click</span></td>
   <td>select pixels in the image based on specified method specified in the <a href="ug_panel_segm.html">Segmentation Panel</a></td>
 </tr>
 <tr>
-  <td><span class="kbd">right-click</span>+<span class="kbd">drag</span>
-<br><span class="kbd">Alt</span>+<span class="kbd">&#8679; Shift</span>+<span class="kbd">right-click</span>+<span class="kbd">drag</span>
+  <td><span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\RMB_click.svg"> right mouse click</span>+<span class="kbd">drag</span>
+<br><span class="kbd">Alt</span>+<span class="kbd">&#8679; Shift</span>+<span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\RMB_click.svg"> right mouse click</span>+<span class="kbd">drag</span>
 <br></td>
   <td>turns on the pan mode to move the image left/right and up/down</td>
 </tr>
 <tr>
-  <td><span class="kbd">&#8679; Shift</span>+<span class="kbd">left-click</span></td>
+  <td><span class="kbd">&#8679; Shift</span>+<span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> left mouse click</span></td>
   <td>add selection to the existing selection</td>
 </tr>
 <tr>
@@ -579,7 +578,13 @@ A brief demonstration is available in the following video:
   <td>remove selection to the existing selection, eraser</td>
 </tr>
 <tr>
-  <td><span class="kbd">^ Ctrl</span>+<span class="kbd">mouse wheel</span></td>
+  <td><span class="kbd">^ Ctrl</span>+<span class="kbd">mouse wheel</span>
+<br>
+      <span class="kbd">[</span> and <span class="kbd">]</span>
+<br>
+<br>
+      <span class="kbd">&#8679; Shift</span> + <span class="kbd">[</span> and <span class="kbd">]</span>
+  </td>
   <td>change size of the brush and other selection tools</td>
 </tr>
 <tr>
@@ -621,20 +626,20 @@ for (var i = 0; i < jumpLinks.length; i++){
   href = jumpLinks[i].getAttribute("href");
   if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
 </script></body>
-<p>
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="3">Interaction with ROIs</h2>
+<p><span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p><h2 id="3">Interaction with ROIs</h2>
 <head>
 <link rel="stylesheet" type="text/css" href="../style.css">
 </head>
 <body>
-To interact with ROIs (for example to change its size or position) please use <span class="kbd">right click</span> over the ROI name in the ROI List of <a href="ug_panel_roi.html"> the ROI Panel</a> to start a popup menu. Choose <b>Edit</b> to modify the selected ROI.
+To interact with ROIs (for example to change its size or position) please use <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> over the ROI name in the ROI List of <a href="ug_panel_roi.html"> the ROI Panel</a> to start a popup menu. Choose <b>Edit</b> to modify the selected ROI.
 
 <br>
 <br>
 When the Edit mode is enabled the following actions are available:
 <ul>
 <li><span class="kbd">left click</span>+<span class="kbd">drag</span> to change position of the selected ROI</li>
-<li><span class="kbd">right click</span> on a vertex of the selected ROI to delete it</li>
+<li><span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> on a vertex of the selected ROI to delete it</li>
 <li>hold <span class="kbd">A</span>+<span class="kbd">left click</span> on an edge of the selected ROI to add a new vertex</li>
 <li><span class="kbd">double click</span> to accept changes</li>
 </ul>
@@ -678,7 +683,7 @@ for (var i = 0; i < jumpLinks.length; i++){
 <link rel="stylesheet" type="text/css" href="../style.css">
 </head>
 <body>
-<table>
+<table style="line-height: 2;">
 <tr>
   <td style="width: 100pt"><span class="kbd">&#8592;</span>, <span class="kbd">&#8594;</span>
 <br>
@@ -832,6 +837,13 @@ selected (in the <b>Select from</b> list, <a href="ug_panel_segm.html">Segmentat
   <td>dilate (expand) (<em>for all slices and all time points</em>) the <em>Selection</em> layer in 2D</td>
 </tr>
 <tr>
+  <td><span class="kbd">[</span> and <span class="kbd">]</span>
+<br>
+  <span class="kbd">&#8679; Shift</span> + <span class="kbd">[</span> and <span class="kbd">]</span>
+  </td>
+  <td>change size of the brush and other selection tools in bigger increments. This also can be done using <span class="kbd">^ Ctrl</span>+<span class="kbd">&#8679; Shift</span>+<span class="kbd">mouse wheel</span></td>
+</tr>
+<tr>
   <td><span class="kbd">D</span></td>
   <td>swap between the preferable fast-access selection tools, see
           more in the <a href="ug_panel_segm.html">6. The <span class="kbd">[&#10003;] <b>"D"</b></span> checkbox, to select fast access tools</a></td>
@@ -876,6 +888,10 @@ selected (in the <b>Select from</b> list, <a href="ug_panel_segm.html">Segmentat
   <td><span class="kbd">Alt</span>+<span class="kbd">3</span></td>
   <td>switch the view to the XZ plane using the image coordinates under the mouse cursor</td>
 </tr>
+<tr>
+  <td><span class="kbd">F2</span></td>
+  <td>rename selected in the Segmentation table material</td>
+</tr>
 </table>
 <script>
 var allDetails   = document.getElementsByTagName('details');
@@ -919,7 +935,7 @@ for (var i = 0; i < jumpLinks.length; i++){
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Key & mouse shortcuts
@@ -955,7 +971,7 @@ for (var i = 0; i < jumpLinks.length; i++){
 % <link rel="stylesheet" type="text/css" href="style.css">
 % </head>
 % <body>
-% <table>
+% <table style="line-height: 2;">
 % <tr>
 %   <td style="width: 120pt"><span class="kbd">move cursor</span></td>
 %   <td>to dispay intensity information and cursor coordinates;
@@ -968,7 +984,7 @@ for (var i = 0; i < jumpLinks.length; i++){
 % <tr>
 %   <td><span class="kbd">&#8679; Shift</span>+<span class="kbd">mouse wheel</span></td>
 %   <td>jump to 10 slices up/down,
-<br>number of slices can be defined from a popup menu that appears during the <span class="kbd">right click</span> above the slices slider in the 
+<br>number of slices can be defined from a popup menu that appears during the <span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> above the slices slider in the 
 % <a href="ug_panel_im_view.html">Image View Panel</a></td>
 % </tr>
 % <tr>
@@ -978,21 +994,21 @@ for (var i = 0; i < jumpLinks.length; i++){
 % <tr>
 %   <td><span class="kbd">Alt</span>+<span class="kbd">&#8679; Shift</span>+<span class="kbd">mouse wheel</span></td>
 %   <td>jump to 10 time points,
-<br>number of time points can be defined from a popup menu that appears during the <span class="kbd">right click</span> above the slices slider in the 
+<br>number of time points can be defined from a popup menu that appears during the <span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> above the slices slider in the 
 %       <a href="ug_panel_im_view.html">Image View Panel</a></td>
 % </tr>
 % <tr>
-%   <td><span class="kbd">left-click</span></td>
+%   <td><span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span></td>
 %   <td>select pixels in the image based on specified method specified in the <a href="ug_panel_segm.html">Segmentation Panel</a></td>
 % </tr>
 % <tr>
-%   <td><span class="kbd">right-click</span>+<span class="kbd">drag</span>
-<br><span class="kbd">Alt</span>+<span class="kbd">&#8679; Shift</span>+<span class="kbd">right-click</span>+<span class="kbd">drag</span>
+%   <td><span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span>+<span class="kbd">drag</span>
+<br><span class="kbd">Alt</span>+<span class="kbd">&#8679; Shift</span>+<span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span>+<span class="kbd">drag</span>
 <br></td>
 %   <td>turns on the pan mode to move the image left/right and up/down</td>
 % </tr>
 % <tr>
-%   <td><span class="kbd">&#8679; Shift</span>+<span class="kbd">left-click</span></td>
+%   <td><span class="kbd">&#8679; Shift</span>+<span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span></td>
 %   <td>add selection to the existing selection</td>
 % </tr>
 % <tr>
@@ -1000,7 +1016,13 @@ for (var i = 0; i < jumpLinks.length; i++){
 %   <td>remove selection to the existing selection, eraser</td>
 % </tr>
 % <tr>
-%   <td><span class="kbd">^ Ctrl</span>+<span class="kbd">mouse wheel</span></td>
+%   <td><span class="kbd">^ Ctrl</span>+<span class="kbd">mouse wheel</span>
+<br>
+%       <span class="kbd">[</span> and <span class="kbd">]</span>
+<br>
+<br>
+%       <span class="kbd">&#8679; Shift</span> + <span class="kbd">[</span> and <span class="kbd">]</span>
+%   </td>
 %   <td>change size of the brush and other selection tools</td>
 % </tr>
 % <tr>
@@ -1055,14 +1077,14 @@ for (var i = 0; i < jumpLinks.length; i++){
 % <link rel="stylesheet" type="text/css" href="../style.css">
 % </head>
 % <body>
-% To interact with ROIs (for example to change its size or position) please use <span class="kbd">right click</span> over the ROI name in the ROI List of <a href="ug_panel_roi.html"> the ROI Panel</a> to start a popup menu. Choose <b>Edit</b> to modify the selected ROI.
+% To interact with ROIs (for example to change its size or position) please use <span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> over the ROI name in the ROI List of <a href="ug_panel_roi.html"> the ROI Panel</a> to start a popup menu. Choose <b>Edit</b> to modify the selected ROI.
 % 
 <br>
 <br>
 % When the Edit mode is enabled the following actions are available:
 % <ul>
 % <li><span class="kbd">left click</span>+<span class="kbd">drag</span> to change position of the selected ROI</li>
-% <li><span class="kbd">right click</span> on a vertex of the selected ROI to delete it</li>
+% <li><span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> on a vertex of the selected ROI to delete it</li>
 % <li>hold <span class="kbd">A</span>+<span class="kbd">left click</span> on an edge of the selected ROI to add a new vertex</li>
 % <li><span class="kbd">double click</span> to accept changes</li>
 % </ul>
@@ -1115,7 +1137,7 @@ for (var i = 0; i < jumpLinks.length; i++){
 % <link rel="stylesheet" type="text/css" href="../style.css">
 % </head>
 % <body>
-% <table>
+% <table style="line-height: 2;">
 % <tr>
 %   <td style="width: 100pt"><span class="kbd">&#8592;</span>, <span class="kbd">&#8594;</span>
 <br>
@@ -1269,6 +1291,13 @@ for (var i = 0; i < jumpLinks.length; i++){
 %   <td>dilate (expand) (<em>for all slices and all time points</em>) the <em>Selection</em> layer in 2D</td>
 % </tr>
 % <tr>
+%   <td><span class="kbd">[</span> and <span class="kbd">]</span>
+<br>
+%   <span class="kbd">&#8679; Shift</span> + <span class="kbd">[</span> and <span class="kbd">]</span>
+%   </td>
+%   <td>change size of the brush and other selection tools in bigger increments. This also can be done using <span class="kbd">^ Ctrl</span>+<span class="kbd">&#8679; Shift</span>+<span class="kbd">mouse wheel</span></td>
+% </tr>
+% <tr>
 %   <td><span class="kbd">D</span></td>
 %   <td>swap between the preferable fast-access selection tools, see
 %           more in the <a href="ug_panel_segm.html">6. The <span class="kbd">[&#10003;] <b>"D"</b></span> checkbox, to select fast access tools</a></td>
@@ -1312,6 +1341,10 @@ for (var i = 0; i < jumpLinks.length; i++){
 % <tr>
 %   <td><span class="kbd">Alt</span>+<span class="kbd">3</span></td>
 %   <td>switch the view to the XZ plane using the image coordinates under the mouse cursor</td>
+% </tr>
+% <tr>
+%   <td><span class="kbd">F2</span></td>
+%   <td>rename selected in the Segmentation table material</td>
 % </tr>
 % </table>
 % <script>

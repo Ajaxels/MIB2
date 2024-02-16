@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser System Requirements</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="im_browser_system_requirements.m"><style>
+      --><title>Microscopy Image Browser System Requirements</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="im_browser_system_requirements.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -145,11 +145,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -522,7 +521,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <div><ul><li><a href="#1">Computer</a></li>
 <li><a href="#2">MATLAB</a></li>
 <li><a href="#3">Toolboxes</a></li>
-<li><a href="#5">Bio-Formats</a></li>
+<li><a href="#5">Bio-Formats Library for Microscopy Image Formats</a></li>
 <li><a href="#6">BMxD Image Filters</a></li>
 <li><a href="#7">FIJI: volume rendering and connection</a></li>
 <li><a href="#8">FRANGI: compiled Frangi mask filter</a></li>
@@ -533,9 +532,10 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li><a href="#13">Random Forest Classifier</a></li>
 <li><a href="#15">SLIC superpixels, supervoxels and maxflow the Brush tool with supervoxels and for Graph-cut and Classifier</a></li>
 <li><a href="#16">Software Volume Rendering in MIB</a></li></ul></div><h2 id="1">Computer</h2>
-<p>Microscopy Image Browser is a program written under MATLAB environment and it was tested to work under Windows/Linux/Mac installation of MATLAB.</p>
-<p>In addition compiled (standalone) versions of MIB are available for Windows and Mac 64-bit OS. The standalone versions of MIB may not have complete functionality of the original program but do not require to purchase MATLAB license when used for academic research. 
-<br> The standalone MIB requires <a href="http://www.mathworks.se/products/compiler/mcr/">MATLAB Compiler Runtime (MCR)</a> that is automatically installed during installation.</p>
+<p>Microscopy Image Browser is a program written in the MATLAB environment and has been tested to work on Windows, Linux, and Mac installations of MATLAB</p>
+<p>In addition to the MATLAB version , there are also compiled (standalone) versions of Microscopy Image Browser available for Windows, Mac and Linux 64-bit operating systems. These standalone versions may not have the complete functionality of the full MATLAB version but can be used for academic research without requiring the purchase of a MATLAB license. 
+<br></p>
+<p>The standalone MIB requires <a href="http://www.mathworks.se/products/compiler/mcr/">MATLAB Compiler Runtime (MCR)</a> that is automatically installed during installation.</p>
 <p>It is highly recommended to use 64-bit operating system with sufficient amount of memory.</p><h2 id="2">MATLAB</h2>
 <p><b>MATLAB, Release 2014b</b>, (original MIB version 2.00; the newer versions of MIB may require R2017a or newer). 
 <br>MIB was tested with MATLAB R2014b - R2022a. 
@@ -547,12 +547,13 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li><a href="http://se.mathworks.com/products/statistics/">Statistics and Machine Learning Toolbox</a> (<i>optional</i>) for alternative to the Random Forest classifiers</li>
 <li><a href="http://se.mathworks.com/products/statistics/">Statistics Toolbox</a> (<i>optional</i>) for alternative to the Random Forest classifiers</li>
 <li><a href="http://se.mathworks.com/products/optimization/">Optimization Toolbox</a> (<i>optional</i>) for alternative to the Random Forest classifiers</li>
-<li><a href="https://se.mathworks.com/help/vision/index.html">Computer Vision System Toolbox</a> for automatic alignement using detected image features and for Deep MIB (MATLAB R2019b or newer, MIB version 2.70)</li></ul></div><h2 id="5">Bio-Formats</h2>
-<p>The Bio-Formats library brings support of multiple microscopy image formats. To use the library check the <span class="kbd">[&#10003;] <b>Bio</b></span> checkbox in the Directory Contents panel of MIB.</p>
-<p><b><a href="http://openmicroscopy.org/info/bio-formats">Bio-formats</a></b> java library (<i>optional</i>) is provided in the <code>ImportExportTools/BioFormats</code> folder.</p>
+<li><a href="https://se.mathworks.com/help/vision/index.html">Computer Vision System Toolbox</a> for automatic alignement using detected image features and for Deep MIB (MATLAB R2019b or newer, MIB version 2.70)</li></ul></div><h2 id="5">Bio-Formats Library for Microscopy Image Formats</h2>
+<p>The Bio-Formats library is a software tool developed by the Open Microscopy Environment (<a href="https://www.openmicroscopy.org/">OME</a>) that provides support for reading and writing multiple microscopy image formats.</p>
+<p>In the context of MIB, you can enable the Bio-Formats library by checking the <span class="kbd">[&#10003;] <b>Bio</b></span> checkbox in the <a href="ug_panel_dir.html">Directory Contents</a> panel. This allows MIB to utilize the Bio-Formats library to read and import microscopy image data in various formats.</p>
+<p><b><a href="http://openmicroscopy.org/info/bio-formats">Bio-formats</a></b> java library is provided in the <code>ImportExportTools/BioFormats</code> folder.</p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="6">BMxD Image Filters</h2>
-<p>When installed MIB can use BM3D and BM4D filters to filter datasets. The filters are not supplied with MIB due to license limitations and have to be installed separetly.</p>
+<p>MIB has the capability to use <a href="http://www.cs.tut.fi/~foi/GCF-BM3D">BM3D and BM4D</a> filters for filtering and enhancing your microscopy image datasets filter datasets. However, it's important to note that these filters are not supplied with MIB due to license limitations. Therefore, if you want to use BM3D and BM4D filters with MIB, you will need to install them separately.</p>
 <details open onclick="state_check('1.1')" id="1.1"><summary> <b>Installation instructions</b> </summary>
 <div class="details-div">
 <p></p>
@@ -613,7 +614,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </div>
 </details>
 <br>
-<details open onclick="state_check('4.2')" id="4.2"><summary> <b>Additiona notes</b> </summary>
+<details open onclick="state_check('4.2')" id="4.2"><summary> <b>Additional notes</b> </summary>
 <div class="details-div">
 <p></p>
 <p><b>Note:</b> it is recommended to put <code>ImarisLib.jar</code> to the static Java path of MATLAB. To do that:</p>
@@ -696,7 +697,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Microscopy Image Browser System Requirements
@@ -704,19 +705,22 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % *Back to* <im_browser_product_page.html *Index*>
 %
 %% Computer
-% Microscopy Image Browser is a program written under MATLAB environment and it
-% was tested to work under Windows/Linux/Mac installation of MATLAB.
+% Microscopy Image Browser is a program written in the MATLAB environment and has been tested to 
+% work on Windows, Linux, and Mac installations of MATLAB
 %
 %
-% In addition compiled (standalone) versions of MIB are available for Windows and Mac 64-bit OS. 
-% The standalone versions of MIB may not have complete functionality of the original program but do not require to purchase 
-% MATLAB license when used for academic research. 
+% In addition to the MATLAB version , there are also compiled (standalone) versions of Microscopy Image Browser 
+% available for Windows, Mac and Linux 64-bit operating systems. 
+% These standalone versions may not have the complete functionality of the full MATLAB version but can be used for 
+% academic research without requiring the purchase of a MATLAB license. 
 <br>
+%
 % The standalone MIB requires
 % <http://www.mathworks.se/products/compiler/mcr/ MATLAB Compiler Runtime
 % (MCR)> that is automatically installed during installation. 
 %
 % It is highly recommended to use 64-bit operating system with sufficient amount of memory.
+%
 %% MATLAB
 % *MATLAB, Release 2014b*, (original MIB version 2.00; the newer versions of MIB may require R2017a or newer). 
 % 
@@ -740,17 +744,25 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % Deep MIB (MATLAB R2019b or newer, MIB version 2.70)
 % 
 % 
-%% Bio-Formats
-% The Bio-Formats library brings support of multiple microscopy image formats. To use the library check the [class.kbd][&#10003;] *Bio*[/class] checkbox in the Directory Contents panel of MIB.
+%% Bio-Formats Library for Microscopy Image Formats
+% The Bio-Formats library is a software tool developed by the Open Microscopy Environment (<https://www.openmicroscopy.org/ OME>)
+% that provides support for reading and writing multiple microscopy image
+% formats. 
 %
-% *<http://openmicroscopy.org/info/bio-formats Bio-formats>* java library (_optional_) is provided in the
+% In the context of MIB, you can enable the Bio-Formats library by checking the [class.kbd][&#10003;] *Bio*[/class] checkbox 
+% in the <ug_panel_dir.html Directory Contents> panel. This allows MIB to
+% utilize the Bio-Formats library to read and import microscopy image data in various formats.
+%
+% *<http://openmicroscopy.org/info/bio-formats Bio-formats>* java library is provided in the
 % |ImportExportTools/BioFormats| folder.
 %
 %% BMxD Image Filters
-% When installed MIB can use BM3D and BM4D filters to filter datasets. The
-% filters are not supplied with MIB due to license limitations and have to
-% be installed separetly.
-% 
+% MIB has the capability to use <http://www.cs.tut.fi/~foi/GCF-BM3D BM3D and BM4D> filters for filtering and enhancing your 
+% microscopy image datasets filter datasets. 
+% However, it's important to note that these filters are not supplied with MIB due to license limitations. 
+% Therefore, if you want to use BM3D and BM4D filters with MIB, you will
+% need to install them separately.
+%
 % [dtls]<summary> *Installation instructions* </summary>
 <div class="details-div">
 %
@@ -839,7 +851,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 %
 % [/dtls]
 %
-% [dtls]<summary> *Additiona notes* </summary>
+% [dtls]<summary> *Additional notes* </summary>
 <div class="details-div">
 %
 % *Note:* it is recommended to put |ImarisLib.jar| to the static Java

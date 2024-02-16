@@ -1,16 +1,24 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibSupervoxelClassifierController < handle
-    % @type mibSupervoxelClassifierController class is resposnible for showing the supervoxel classifier,
+    % @type mibSupervoxelClassifierController class is responsible for showing the supervoxel classifier,
     % available from MIB->Menu->Tools->Classifiers->Supervoxel
     % classification
     
-	% Copyright (C) 28.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-	% 
-	% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-	%
 	% Updates
 	%     
     
@@ -1304,11 +1312,11 @@ classdef mibSupervoxelClassifierController < handle
             % load classifier from the disk
             
             tempDir = obj.View.handles.tempDirEdit.String;
-            [FileName,PathName,FilterIndex] = ...
+            [fileName, pathName, FilterIndex] = ...
                 mib_uigetfile('*.forest', 'Select trained classifier', tempDir, 'off');
-            if FileName==0; return; end
+            if isequal(fileName, 0); return; end
             
-            fn = fullfile(PathName, FileName);
+            fn = fullfile(pathName, fileName{1});
             res = load(fn, '-mat');
             localForest = res.localForest;
             obj.Forest = localForest;

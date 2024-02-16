@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function varargout = mibCropObjectsGUI(varargin)
 % mibCropObjectsGUI MATLAB code for mibCropObjectsGUI.fig
 %      mibCropObjectsGUI, by itself, creates a new mibCropObjectsGUI or raises the existing
@@ -20,17 +36,10 @@ function varargout = mibCropObjectsGUI(varargin)
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Copyright (C) 16.05.2015 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 07.03.2016, IB, updated for 4D datasets
 
-% Last Modified by GUIDE v2.5 25-May-2022 10:20:16
+% Last Modified by GUIDE v2.5 19-Nov-2023 11:35:42
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -226,6 +235,12 @@ switch hObject.Tag
     case 'marginZEdit'
         type = 'CropObjectsMarginZ';
         newValue = hObject.String;
+    case 'jitterVariationEditbox'
+        type = 'CropObjectsJitterVariation';
+        newValue = hObject.String;
+    case 'jitterSeedEditbox'
+        type = 'CropObjectsJitterSeed';
+        newValue = hObject.String;
     otherwise
         type = hObject.Tag;
         newValue = hObject.String;
@@ -233,14 +248,16 @@ end
 handles.winController.updateBatchParameters(type, newValue);
 end
 
-
 % --- Executes on button press in Generate3DPatches.
 function Generate3DPatches_Callback(hObject, eventdata, handles)
-
-if handles.Generate3DPatches.Value == true
-    handles.CropObjectsDepth.Enable = 'on';
-else
-    handles.CropObjectsDepth.Enable = 'off';
+handles.winController.generate3DPatches_Callback();
 end
-handles.winController.updateBatchParameters('Generate3DPatches', handles.Generate3DPatches.Value);
+
+
+% --- Executes on button press in jitterEnableCheckbox.
+function jitterEnableCheckbox_Callback(hObject, eventdata, handles)
+type = 'CropObjectsJitter';
+newValue = logical(hObject.Value);
+handles.winController.updateBatchParameters(type, newValue);
+handles.winController.updateWidgets();
 end

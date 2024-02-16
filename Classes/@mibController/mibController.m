@@ -1,13 +1,21 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibController < handle
     % main controller for MIB
-    
-    % Copyright (C) 04.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-    %
     
     properties
         mibVersion % = 'ver. 2.601 / 04.11.2019';  % ATTENTION! it is important to have the version number between "ver." and "/"
@@ -60,6 +68,25 @@ classdef mibController < handle
 %             end
 %         end
         
+        function listner_ModelEvent_Callback(obj, src, evnt)
+            % callback function for detection of mibModel callbacks
+            % this function is recommended to use
+            if ~ismember('Parameter', fieldnames(evnt))
+                errordlg(sprintf('!!! Listner error !!!\n\nParameter field is required!\n\nExample,\nmotifyEvent.Name = "updateSegmentationTable";\neventdata = ToggleEventData(motifyEvent);\nnotify(obj, "modelNotify", eventdata);'), ...
+                'Listner error', 'non-modal');
+                return;
+            end
+            switch evnt.EventName
+                case 'modelNotify'
+                    % generic notification event to make the list of listners smaller,
+                    % call it as notify(obj, 'modelNotify', eventdata); see in mibModel.renameMaterial 
+                    switch evnt.Parameter.Name
+                        case 'updateSegmentationTable'  % update the segmentation table
+                            obj.updateSegmentationTable();
+                    end
+            end
+        end
+
         function Listner2_Callback(obj, src, evnt)
             switch evnt.EventName
                 case 'updateId'
@@ -111,6 +138,14 @@ classdef mibController < handle
                 case 'keyPressEvent'
                     % evnt.Parameter.eventdata provides presesed key info
                     obj.mibGUI_WindowKeyPressFcn(evnt.Parameter.eventdata);
+                case 'updateUserScore'
+                    % increase user score after use of a segmentation tool
+                    % or performing operations in MIB
+                    scalingFactor = 1;
+                    if ismember('Parameter', fieldnames(evnt)); scalingFactor = evnt.Parameter; end
+                    obj.mibModel.preferences.Users.Tiers.collectedPoints = ...
+                        obj.mibModel.preferences.Users.Tiers.collectedPoints+obj.mibModel.preferences.Users.singleToolScores*scalingFactor;
+                    % fprintf('Collected points: %f\n', obj.mibModel.preferences.Users.Tiers.collectedPoints);
             end
         end
     end
@@ -275,6 +310,8 @@ classdef mibController < handle
         
         mibPixelInfo_Callback(obj, parameter, BatchOptIn)        % center image to defined position it is callback from a popup menu above the pixel information field of the Path panel
         
+        mibRecolorLabels(obj)       % recolor color map for 65535+ models
+        
         mibRemoveMaterialBtn_Callback(obj, BatchOptIn)        % callback to the obj.mibView.handles.mibRemoveMaterialBtn, remove material from the model
         
         mibRoiAddBtn_Callback(obj)        % callback to handles.mibRoiAddBtn, adds a roi to a dataset
@@ -295,7 +332,7 @@ classdef mibController < handle
         
         mibSegmentation3dBall(obj, y, x, z, modifier, BatchOptIn)        % Do segmentation using the 3D ball tool
         
-        mibSegmentationAnnotation(obj, y, x, z, t, modifier)        % Add text annotation to the dataset
+        mibSegmentationAnnotation(obj, y, x, z, t, modifier, options)        % Add text annotation to the dataset
         
         mibSegmAnnDeleteAllBtn_Callback(obj)        % callback to Menu->Models->Annotations...->Delete all annotations; delete all annotations of the model
         
@@ -321,6 +358,10 @@ classdef mibController < handle
         
         mibSegmentationRegionGrowing(obj, yxzCoordinate, modifier)        % Do segmentation using the Region Growing method
         
+        mibSegmentationSAM(obj, extraOptions, BatchOptIn)         % Perform segmentation using segment-anything model https://segment-anything.com
+
+        status = mibSegmentationSAM_requirements(obj)         % Check for files required to run segmentation using segment-anything model
+        
         mibSegmentationSpot(obj, y, x, modifier, BatchOptIn)        % Do segmentation using the spot tool
         
         mibSegmentationTable_CellSelectionCallback(obj, eventdata)        % callback for cell selection in the handles.mibSegmentationTable table of mibGIU.m
@@ -330,6 +371,8 @@ classdef mibController < handle
         mibSegmentationToolPopup_Callback(obj)        % callback to the handles.mibSegmentationToolPopup, allows to select tool for the segmentation
         
         mibSegmFavToolCheck_Callback(obj)        % callback to the obj.mibView.handles.mibSegmFavToolCheck, to add the selected tool to the list of favourites
+        
+        mibSegmSAMPanel_Callbacks(obj, tag)     % callbacks for widgets of obj.mibView.handles.mibSegmSAMPanel
         
         mibSegmSelectedOnlyCheck_Callback(obj)        % callback to the mibGUI.handles.mibSegmSelectedOnlyCheck, allows to toggle state of the 'Fix selection to material'
         
@@ -345,6 +388,8 @@ classdef mibController < handle
         
         mibSelectionPanelCheckboxes(obj, BatchOptIn) % a function of the batch mode that allow to tweak the status of checkboxes of the Selection panel
         
+        mibShowMilestoneDialog(obj, mode)   % show milestone dialog to a user
+
         mibToolbar_ZoomBtn_ClickedCallback(obj, hObject, recenterSwitch)        % modifies magnification using the zoom buttons in the toolbar of MIB
         
         mibToolbarPlaneToggle(obj, hObject, moveMouseSw)        % callback to the change orientation buttons in the toolbar of MIB; it toggles viewing plane: xy, zx, or zy direction
@@ -569,7 +614,7 @@ classdef mibController < handle
             obj.mibView = mibView(obj);
             
             % add icons for buttons
-            imageList = {'plus', 'minus', 'settings', 'next', 'step', 'step_and_advance', 'eye', 'shrink'};
+            imageList = {'plus', 'minus', 'settings', 'next', 'step', 'step_and_advance', 'eye', 'shrink', 'bulleted_list', 'color_wheel'};
             for fnId=1:numel(imageList)
                 fn = fullfile(mibPath, 'Resources', [imageList{fnId} '.png']);
                 [I, map, transparency] = imread(fn);
@@ -580,6 +625,9 @@ classdef mibController < handle
             end
             obj.mibView.handles.mibRemoveMaterialBtn.CData = obj.mibModel.sessionSettings.guiImages.minus;
             obj.mibView.handles.mibBrushPanelInterpolationSettingsBtn.CData = obj.mibModel.sessionSettings.guiImages.settings;
+            obj.mibView.handles.mibSegmSAMSettings.CData = obj.mibModel.sessionSettings.guiImages.settings;
+            obj.mibView.handles.mibSegmSAMAnnotations.CData = obj.mibModel.sessionSettings.guiImages.bulleted_list;
+            obj.mibView.handles.mibSegmentationRecolor.CData = obj.mibModel.sessionSettings.guiImages.color_wheel;
             
             % update parameters for mibImages
             for i=1:obj.mibModel.maxId
@@ -628,7 +676,9 @@ classdef mibController < handle
             obj.listener{7} = addlistener(obj.mibModel, 'showModel', @(src,evnt) mibController.Listner2_Callback(obj,src,evnt));
             obj.listener{8} = addlistener(obj.mibModel, 'newDatasetLite', @(src,evnt) mibController.Listner2_Callback(obj, src, evnt));
             obj.listener{9} = addlistener(obj.mibModel, 'keyPressEvent', @(src,evnt) mibController.Listner2_Callback(obj, src, evnt));
-            
+            obj.listener{10} = addlistener(obj.mibModel, 'updateUserScore', @(src,evnt) mibController.Listner2_Callback(obj, src, evnt));
+            obj.listener{11} = addlistener(obj.mibModel, 'modelNotify', @(src,evnt) mibController.listner_ModelEvent_Callback(obj, src, evnt));
+
             % update version specific elements
             if verLessThan('matlab', '9') % obj.matlabVersion < 9
                 obj.mibView.handles.mibSegmThresPanelAdaptiveCheck.Enable = 'off';
@@ -673,6 +723,10 @@ classdef mibController < handle
                 fprintf('Drag and drop of files to the Image View panel: DISABLED\n');
             end
             
+            % store default positions of some panels
+            obj.mibView.guiPositions.mibPathPanel = obj.mibView.handles.mibPathPanel.Position;
+            obj.mibView.guiPositions.mibToolsPanel = obj.mibView.handles.mibToolsPanel.Position;
+
             if exist('frame','var')     % close splash window
                 %frame.hide;
                 frame.dispose();

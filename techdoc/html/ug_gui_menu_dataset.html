@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Dataset Menu</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_dataset.m"><style>
+      --><title>Dataset Menu</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_dataset.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -145,11 +145,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -543,7 +542,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <p>
 A brief demonstration is available in the following video:
 <br>
-<a href="https://youtu.be/PQtpYUuJwG8"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PQtpYUuJwG8</a>
+<a href="https://youtu.be/PQtpYUuJwG8"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/PQtpYUuJwG8</a>
 </p>
 <p><img class="image-fit" src="images/MenuDatasetCrop.png" alt=""> </p>
 <p>When the interactive mode is selected it is possible to draw (by pressing and holding left mouse button) a rectangle area a top of the image. This area can then be used for cropping.</p>
@@ -554,7 +553,7 @@ A brief demonstration is available in the following video:
 <p>
 A brief demonstration is available in the following video:
 <br>
-<a href="https://youtu.be/26-HROwg_JM"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/26-HROwg_JM</a>
+<a href="https://youtu.be/26-HROwg_JM"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/26-HROwg_JM</a>
 </p>
 <p><img class="image-fit" src="images/MenuDatasetResample.png" alt=""> </p><h2 id="6">Transform</h2>
 <p>Transformation of dataset: image and all other layers. The following modes are possible</p>
@@ -609,35 +608,43 @@ Position of the frame can be specified with the direction parameter:
 </table>
 A brief demonstration is available in the following videos:
 <br>
-Flip: <a href="https://youtu.be/lGjhB-NJZMk"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/lGjhB-NJZMk</a>
+Flip: <a href="https://youtu.be/lGjhB-NJZMk"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/lGjhB-NJZMk</a>
 <br>
-Rotate: <a href="https://youtu.be/WFbZn0rfb5I"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/WFbZn0rfb5I</a>
+Rotate: <a href="https://youtu.be/WFbZn0rfb5I"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/WFbZn0rfb5I</a>
 <br>
-Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/PyEXX7j6pnc</a>
+Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/PyEXX7j6pnc</a>
 <br>
-<p>
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p><span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="7">Slice</h2>
 <p>Manipulations with individual slices of the dataset.</p>
 <details open onclick="state_check('2.1')" id="2.1"><summary> <b>The following actions are possible</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><b>Copy slice...</b> - allows to copy slice from one position to another position within the same dataset (the 'Replace' options) or to insert one slice to another position in the dataset (the 'Insert' option). <a href="https://youtu.be/iGA4US2PHXw">A short demo</a>.</li>
-<li><b>Insert an empty slice</b> - insert a uniformly colored slice to any position inside the dataset. <a href="https://youtu.be/iGA4US2PHXw">A short demo</a>.</li>
-<li><b>Delete slice(s)...</b> - removes desired slice(s) from a Z-stack of the dataset. <i>For example, type " <code>5:10</code> " to delete all slices from slice 5 to slice 10.</i></li>
-<li><b>Delete frame(s)...</b> - removes desired frame(s) from a time series of the dataset.</li>
-<li><b>Swap slices...</b> - spaw two or more slices</li></ul></div>
+<ul>
+<li> <b>Copy slice...</b> - allows to copy slice from one
+position to another position within the same dataset (the 'Replace' options) or to insert one slice to another position in the dataset
+(the 'Insert' option). <a href="https://youtu.be/iGA4US2PHXw"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/iGA4US2PHXw</a>. </li>
+<li> <b>Insert empty slice(s)...</b> - insert a uniformly colored slice (or slices) to any
+position inside the dataset <a href="https://youtu.be/iGA4US2PHXw"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/iGA4US2PHXw</a>.</li>
+<li> <b>Interval slicing...</b> - replace the current dataset with extract of each N-th slice from the dataset</li>
+<li> <b>Swap slices...</b> - spaw two or more slices</li>
+<li> <b>Delete slice(s)...</b> - removes desired slice(s) from a Z-stack of the
+dataset. For example, type <span class="code"> 5:10 </span> to delete all slices from slice 5 to slice 10.</li>
+<li> <b>Delete frame(s)...</b> - removes desired frame(s) from a time series of the dataset.</li>
+</ul>
+
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="8">Scale bar</h2>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p><h2 id="8">Scale bar</h2>
 <p>Scale bar is a tool that allows to use a scale bar printed on the image to calibrate physical size (X and Y) for pixels in MIB.</p>
 <p>
 A brief demonstration is available in the following video:
 <br>
-<a href="https://youtu.be/NZO0HG1d8ys"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/NZO0HG1d8ys</a>
+<a href="https://youtu.be/NZO0HG1d8ys"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/NZO0HG1d8ys</a>
 </p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="9">Bounding Box...</h2>
@@ -646,7 +653,7 @@ A brief demonstration is available in the following video:
 <p>
 A brief demonstration is available in the following video:
 <br>
-<a href="https://youtu.be/lY0XjNy4Dr8"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/lY0XjNy4Dr8</a>
+<a href="https://youtu.be/lY0XjNy4Dr8"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/lY0XjNy4Dr8</a>
 </p>
 <p><img class="image-fit" src="images/MenuDatasetBoundingBox.png" alt=""> </p>
 <details open onclick="state_check('3.1')" id="3.1"><summary> <b>Widgets and parameters</b> </summary>
@@ -697,8 +704,8 @@ A brief demonstration is available in the following video:
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p><h2 id="10">Parameters</h2>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p><h2 id="10">Parameters</h2>
 <p>Modifies parameters of the dataset: voxels sizes, frame rate for movies and units. Enter of new voxels results in recalculation of the bounding box.</p>
 <p><img class="image-fit" src="images/menuDatasetParameters.png" alt=""> </p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a></p>
@@ -709,7 +716,7 @@ A brief demonstration is available in the following video:
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Dataset Menu
@@ -724,6 +731,7 @@ A brief demonstration is available in the following video:
 % <<images\menuDataset.png>>
 % 
 %% Alignment tool...
+%
 % Can be used to align the slices of the opened dataset or to align two
 % separate datasets. See details <ug_gui_menu_dataset_alignment.html *here*>.
 % 
@@ -742,7 +750,7 @@ A brief demonstration is available in the following video:
 % <html lang="en">
 % A brief demonstration is available in the following video:
 <br>
-% <a href="https://youtu.be/PQtpYUuJwG8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PQtpYUuJwG8</a>
+% <a href="https://youtu.be/PQtpYUuJwG8"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/PQtpYUuJwG8</a>
 % </html>
 % 
 % <<images/MenuDatasetCrop.png>>
@@ -769,7 +777,7 @@ A brief demonstration is available in the following video:
 % <html lang="en">
 % A brief demonstration is available in the following video:
 <br>
-% <a href="https://youtu.be/26-HROwg_JM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/26-HROwg_JM</a>
+% <a href="https://youtu.be/26-HROwg_JM"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/26-HROwg_JM</a>
 % </html>
 %
 %%
@@ -832,11 +840,11 @@ A brief demonstration is available in the following video:
 % </table>
 % A brief demonstration is available in the following videos:
 <br>
-% Flip: <a href="https://youtu.be/lGjhB-NJZMk"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/lGjhB-NJZMk</a>
+% Flip: <a href="https://youtu.be/lGjhB-NJZMk"><img style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/lGjhB-NJZMk</a>
 <br>
-% Rotate: <a href="https://youtu.be/WFbZn0rfb5I"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/WFbZn0rfb5I</a>
+% Rotate: <a href="https://youtu.be/WFbZn0rfb5I"><img style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/WFbZn0rfb5I</a>
 <br>
-% Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/PyEXX7j6pnc</a>
+% Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/PyEXX7j6pnc</a>
 <br>
 % </html>
 %
@@ -848,18 +856,20 @@ A brief demonstration is available in the following video:
 % [dtls]<summary> *The following actions are possible* </summary>
 <div class="details-div">
 % 
-% * *Copy slice...* - allows to copy slice from one
-% position to another position within the same dataset (the 'Replace'
-% options) or to insert one slice to another position in the dataset (the
-% 'Insert' option). <https://youtu.be/iGA4US2PHXw A short demo>.
-% * *Insert an empty slice* - insert a uniformly colored slice to any
-% position inside the dataset. <https://youtu.be/iGA4US2PHXw A short demo>.
-% * *Delete slice(s)...* - removes desired slice(s) from a Z-stack of the
-% dataset. _For example, type " |5:10| " to delete all slices from slice 5 to
-% slice 10._
-% * *Delete frame(s)...* - removes desired frame(s) from a time series of the
-% dataset.
-% * *Swap slices...* - spaw two or more slices
+% <html lang="en">
+% <ul>
+% <li> <b>Copy slice...</b> - allows to copy slice from one
+% position to another position within the same dataset (the 'Replace' options) or to insert one slice to another position in the dataset 
+% (the 'Insert' option). <a href="https://youtu.be/iGA4US2PHXw"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/iGA4US2PHXw</a>. </li>
+% <li> <b>Insert empty slice(s)...</b> - insert a uniformly colored slice (or slices) to any
+% position inside the dataset <a href="https://youtu.be/iGA4US2PHXw"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/iGA4US2PHXw</a>.</li>
+% <li> <b>Interval slicing...</b> - replace the current dataset with extract of each N-th slice from the dataset</li>
+% <li> <b>Swap slices...</b> - spaw two or more slices</li>
+% <li> <b>Delete slice(s)...</b> - removes desired slice(s) from a Z-stack of the
+% dataset. For example, type <span class="code"> 5:10 </span> to delete all slices from slice 5 to slice 10.</li>
+% <li> <b>Delete frame(s)...</b> - removes desired frame(s) from a time series of the dataset.</li>
+% </ul>
+% </html>
 %
 % [/dtls]
 % [br8]
@@ -871,7 +881,7 @@ A brief demonstration is available in the following video:
 % <html lang="en">
 % A brief demonstration is available in the following video:
 <br>
-% <a href="https://youtu.be/NZO0HG1d8ys"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/NZO0HG1d8ys</a>
+% <a href="https://youtu.be/NZO0HG1d8ys"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/NZO0HG1d8ys</a>
 % </html>
 % 
 % 
@@ -890,7 +900,7 @@ A brief demonstration is available in the following video:
 % <html lang="en">
 % A brief demonstration is available in the following video:
 <br>
-% <a href="https://youtu.be/lY0XjNy4Dr8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/lY0XjNy4Dr8</a>
+% <a href="https://youtu.be/lY0XjNy4Dr8"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/lY0XjNy4Dr8</a>
 % </html>
 %
 % <<images/MenuDatasetBoundingBox.png>>

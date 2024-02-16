@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function varargout = mibRandomDatasetGUI(varargin)
 % MIBRANDOMDATASETGUI MATLAB code for mibRandomDatasetGUI.fig
 %      MIBRANDOMDATASETGUI, by itself, creates a new MIBRANDOMDATASETGUI or raises the existing
@@ -20,19 +36,12 @@ function varargout = mibRandomDatasetGUI(varargin)
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Copyright (C) 16.05.2015 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 25.01.2016, updated for 4D
 
 % Edit the above text to modify the response to help mibRandomDatasetGUI
 
-% Last Modified by GUIDE v2.5 26-May-2020 15:15:16
+% Last Modified by GUIDE v2.5 28-Sep-2023 22:22:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -163,3 +172,10 @@ if handles.includeAnnotationsCheck.Value == 1
 end
 end
 
+
+% --- Executes on button press in includeMeasurementsCheck.
+function includeMeasurementsCheck_Callback(hObject, eventdata, handles)
+if handles.includeMeasurementsCheck.Value == 1
+    warndlg(sprintf('!!! Warning !!!\n\nPlease make sure:\n1. Each folder has only one measurement file in the *.measure format'));
+end
+end

@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function [img, logText] = mibDoImageFiltering2(img, BatchOpt, cpuParallelLimit)
 % function [img, logText] = mibDoImageFiltering2(img, BatchOpt)
 % Filter the image, alternative version of mibDoImageFiltering with more
@@ -13,13 +29,6 @@ function [img, logText] = mibDoImageFiltering2(img, BatchOpt, cpuParallelLimit)
 % img: filtered dataset, [1:height, 1:width, 1:color, 1:no_stacks]
 % logText: log text with parameters of the applied filter
 
-% Copyright (C) 26.10.2019 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 %
 
@@ -30,6 +39,7 @@ if nargin < 1; errordlg(sprintf('!!! Error !!!\n\nmibApplyImageFilter: the img i
 
 if ~isfield(BatchOpt, 'ActionToResult'); BatchOpt.ActionToResult = {'Fitler image'}; end
 if ~isfield(BatchOpt, 'UseParallelComputing'); BatchOpt.UseParallelComputing = false; end
+if ~isfield(BatchOpt, 'showWaitbar'); BatchOpt.showWaitbar = false; end
 
 maxVal = double(intmax(class(img(1))));
 if ~strcmp(BatchOpt.SourceLayer{1}, 'image')   % reshape image, for selection and mask
@@ -71,7 +81,11 @@ if BatchOpt.Mode3D  % perform the 3D filters
                 img(:,:,colCh,:) = permute(imfilter(squeeze(img(:,:,colCh,:)), h, Padding, BatchOpt.FilteringMode{1}), [1 2 4 3]);
             case 'DistanceMap'
                 % calculate distance transform
-                img = bwdistsc(squeeze(img), str2num(BatchOpt.AspectRatio3D));
+                if sum(str2num(BatchOpt.AspectRatio3D)) == 3
+                    img = bwdist(squeeze(img), BatchOpt.Method{1});
+                else
+                    img = bwdistsc(squeeze(img), str2num(BatchOpt.AspectRatio3D));
+                end
                 maxVal = max(img(:));
                 if maxVal < 256
                     img = uint8(img);
@@ -256,6 +270,7 @@ else    % perform 2D filters
     % define usage of parallel computing
     if BatchOpt.UseParallelComputing
         parforArg = cpuParallelLimit;
+        if isempty(gcp('nocreate')); parpool(parforArg); end % create parpool
     else
         parforArg = 0;
     end

@@ -4,7 +4,7 @@
 %%
 % 
 % <html>
-% Developed during 2010-2021 by<br>
+% Developed during 2010-2023 by<br>
 % Core developer:<br>
 % Ilya Belevich<br>
 % Developers:<br>
@@ -16,53 +16,151 @@
 % Finland</i>
 % <br><br>
 % <h4>Microscopy Image Browser source code</h4>
-% MIB in MATLAB source code form is licensed under the GNU General Public License (<a href="http://mib.helsinki.fi/GNU2_license.txt">GPL2</a>), see GPL license of Microscopy Image Browser source code section below.<br>
+% MIB in MATLAB source code form is licensed under the GNU General Public License (<a href="http://mib.helsinki.fi/GNU3_license.txt">GPLv3</a>), 
+% see GPL license of Microscopy Image Browser source code section below.<br>
 % <br>
 % <h4>Microscopy Image Browser as standalone version</h4>
 % The deployed application is governed by the <a href="http://mib.helsinki.fi/Matlab_MCR_license.txt">MathWorks MCR license</a> 
 % and applicable parts of <a
 % href="http://mib.helsinki.fi/Matlab_license.txt">The MathWorks, Inc.
 % Software License Agreement</a>.<br>
-% Using the Microscopy Image Browser deployed application for commercial purposes is prohibited.
+% Please note that Microscopy Image Browser was compiled using an Academic license, and its distribution, made 
+% by the Electron Microscopy Unit, University of Helsinki is intended only for non-commercial academic research purposes
+% <br><br>
 % </html>
 %
 %
 %% License for Microscopy Image Browser source code
-% <html>
-% Microscopy Image Browser (MIB)
-% <br><em>image segmentation and beyond</em><br>
-% Copyright (c) 2010-2020<br>
-% Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br>
-% <a href="http://mib.helsinki.fi">http://mib.helsinki.fi</a><br>
-% </html>
-% 
-% This program is free software; you can redistribute it and/or modify it under the terms of the 
-% <http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License> as published by the Free Software 
-% Foundation; either version 2 of the License, or (at your option) any later version. 
-% 
-% This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-% without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 %
-% <http://www.gnu.org/licenses/gpl-2.0.html See the GNU General Public License for more details>. 
-% 
-% You should have received a copy of the GNU General Public License along with this program; 
-% if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA. 
+% <html>
+% The source code of Microscopy Image Browser (MIB) is licensed under the <a href="https://www.gnu.org/licenses/gpl-3.0.html">
+% GNU General Public License v3 (GPLv3)</a>.<br><br>
+% By using MIB in <b>MATLAB source code form</b>, you agree to the terms of<br>
+% <ul>
+% <li>the GNU General Public License, version 3 (the license text is available below or here:
+% <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">https://www.gnu.org/licenses/gpl-3.0.en.html</a>)</li>
+% <li>The external packages used by MIB are also subject to their respective licenses (see below)</a></li>
+% <li>the following disclaimer:</li>
+% <br>
+% <span style="overflow:auto; width:auto; font-size:9pt;font-family:courier;">
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% <br>
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% <br>
+% You should have received a copy of the GNU General Public License
+% along with this program. If not, see <a href="https://www.gnu.org/licenses/"> https://www.gnu.org/licenses</a>.
+% </span>
+% </ul>
+% <br>
+% Microscopy Image Browser *.m-files are licensed under version 3 of the License, or (at your option) any later version,
+% see the file <span class="code">MIB/licenses/LICENSE_MIB_for_MATLAB</span> or refer to the document below for details.<br>
+% Initially, the software was licensed under GPLv2, but it has been upgraded to GPLv3 in order to comply with new external packages.
+% <br>
+% <p></p>
+% <table>
+% <tr>
+% <td>
+% Developed during 2010-2023 by<br>
+% <b>Core developer:</b><br>
+% Ilya Belevich<br>
+% <b>Developers:</b><br>
+% Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br>
+% </td>
+% <td>
+% <a href="http://www.biocenter.helsinki.fi/bi/em">Electron Microscopy Unit</a><br>
+% Institute of Biotechnology<br>
+% PO Box 56 (Viikinkaari 9)<br>
+% 00014, University of Helsinki<br>
+% Finland<br>
+% </td>
+% </tr>
+% </table>
+% <p></p>
+% <span style="overflow:auto; width:auto; font-size:9pt;font-family:courier;">
+% Microscopy Image Browser (MIB)<br>
+% image segmentation and beyond<br>
+% Copyright (c) 2010-2023<br>
+% Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br>
+% http://mib.helsinki.fi
+% <br><br>
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% <br><br>
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <a href="https://www.gnu.org/licenses/"> https://www.gnu.org/licenses</a>
+% <br><br>
+% </span>
+% <br>
+% </html>
 %
 %% License for compiled application of Microscopy Image Browser
-% By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to the terms of the disclaimer below, 
-% the <http://mib.helsinki.fi/Matlab_MCR_license.txt MATLAB Compiler Runtime (MCR) libraries license> and applicable parts of the MathWorks, Inc. 
-% <http://mib.helsinki.fi/Matlab_license.txt Software License Agreement>.
+% <html>
+% By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to the following terms:
+% <ul>
+% <li>the disclaimer below</li>
+% <li><a href="http://mib.helsinki.fi/Matlab_MCR_license.txt">the MATLAB Compiler Runtime (MCR) libraries license</a></li>
+% <li>applicable parts of the MathWorks, Inc. <a href="http://mib.helsinki.fi/Matlab_license.txt">Software License Agreement</a></li>
+% <li>The external packages used by MIB are also subject to their respective licenses (see below)</li>
+% <li>Please note that Microscopy Image Browser was compiled using an Academic license, and its distribution, made
+% by the Electron Microscopy Unit, University of Helsinki is intended only for non-commercial academic research purposes</li>
+% </ul>
 % The corresponding license files are also included into the MIB distribution
-% under techdoc directory.
-% As Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited. 
+% under <code>MIB/licenses</code> directory.
+% <br><br>
+% <p></p>
+% <table>
+% <tr>
+% <td>
+% Developed during 2010-2023 by<br>
+% <b>Core developer:</b><br>
+% Ilya Belevich<br>
+% <b>Developers:</b><br>
+% Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br>
+% </td>
+% <td>
+% <a href="http://www.biocenter.helsinki.fi/bi/em">Electron Microscopy Unit</a><br>
+% Institute of Biotechnology<br>
+% PO Box 56 (Viikinkaari 9)<br>
+% 00014, University of Helsinki<br>
+% Finland<br>
+% </td>
+% </tr>
+% </table>
+% <p></p>
+% <span style="overflow:auto; width:auto; font-size:9pt;font-family:courier;">
+% Microscopy Image Browser (MIB)<br>
+% image segmentation and beyond<br>
+% Copyright (c) 2010-2023<br>
+% Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo<br>
+% http://mib.helsinki.fi
+% <br>
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% <br>
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% <br>
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <a href="https://www.gnu.org/licenses/gpl-3.0.html"> https://www.gnu.org/licenses/gpl-3.0.html</a>.
+% </span>
+% </html>                    
 %
-% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
-% INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-% IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-% CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
-% OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-% NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
-% MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.
 %
 %% EXTERNAL PACKAGES
 % 
@@ -72,15 +170,15 @@
 % Abbreviations:
 %
 %
+% * <https://www.apache.org/licenses/LICENSE-2.0 *Apache-2.0*>, Apache 2.0 license, GPLv3 compatible
 % * <https://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_.28.22Simplified_BSD_License.22_or_.22FreeBSD_License.22.29 *FreeBSD*>, Berkeley Software Distribution, 2-clause license, GPL compatible
-% * <http://www.gnu.org/licenses/gpl-2.0.html *GPL*>, GNU General Public License, version 2
+% * <http://www.gnu.org/licenses/gpl-2.0.html *GPL2*>, GNU General Public License, version 2
 % * <https://www.gnu.org/licenses/gpl-3.0.en.html *GPL3*>, GNU General Public License, version 3
-% * <https://en.wikipedia.org/wiki/BSD_licenses#3-clause_license_.28.22Revised_BSD_License.22.2C_.22New_BSD_License.22.2C_or_.22Modified_BSD_License.22.29 *ModifiedBSD*>, Berkeley Software Distribution, 3-clause license, GPL compatible 
+% * <https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License *LGPL*>, GNU Lesser General Public License
+% * <https://en.wikipedia.org/wiki/BSD_licenses#3-clause_license_.28.22Revised_BSD_License.22.2C_.22New_BSD_License.22.2C_or_.22Modified_BSD_License.22.29 *ModifiedBSD*>, Berkeley Software Distribution, 3-clause license, GPL compatible
 % * <http://en.wikipedia.org/wiki/MIT_License *MIT*>, a free software license originating at the Massachusetts Institute of Technology, GPL compatible
 % * <https://creativecommons.org/licenses/by-nd/3.0/ *CC BY-ND 3.0*>, Attribution-NoDerivs 3.0 Unported
 % * *ND*, no data
-%
-%%
 % 
 % <html>
 % <table style="width: 800px; text-align: center;" cellspacing=2px cellpadding=2px >
@@ -109,7 +207,7 @@
 %   <td style="font-weight: bold">Bio-Formats</td>
 %   <td>Melissa Linkert, Curtis Rueden et al.</td>
 %   <td><a href="http://loci.wisc.edu/software/bio-formats">web site</a></td>
-%   <td>GPL,<br> 2002-2013</td>
+%   <td>GPLv2,<br> 2002-2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
@@ -130,8 +228,16 @@
 %   <td style="font-weight: bold">Cell migration in scratch wound assays</td>
 %   <td>Constantino Carlos Reyes-Aldasoro, City, University of London</td>
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays">via MATLAB Exchange</a></td>
-%   <td>GPL3,<br> 2018</td>
+%   <td>GPLv3,<br> 2018</td>
 %   <td>2.65-</td>
+% </tr>
+% <tr style="">
+%   <td style="font-weight: bold">DnD_uifigure: drag & drop functionality for AppDesigner components</td>
+%   <td>Xiangrui Li<br>
+%   The Ohio State University</td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/80656-uifilednd">via MATLAB Exchange</a></td>
+%   <td>MIT,<br> 2020-2023</td>
+%   <td>2.90-</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Drag & Drop functionality for JAVA GUI components</td>
@@ -169,7 +275,7 @@
 %   <td style="font-weight: bold">Extrema functions</td>
 %   <td>Carlos Adrian Vargas Aguilera, Universidad de Guadalajara</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/12275-extrema-m-extrema2-m">via MATLAB Exchange</a></td>
-%   <td>ND,<br> 2006-2007</td>
+%   <td>FreeBSD,<br> 2006-2007</td>
 %   <td>0.x-1.x</td>
 % </tr>
 % <tr style="">
@@ -220,13 +326,13 @@
 %   <td style="font-weight: bold">Highly portable JSON-input parser</td>
 %   <td>Nedialko</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/25713-highly-portable-json-input-parser">via MATLAB Exchange</a></td>
-%   <td>GPL,<br> 2013</td>
+%   <td>FreeBSD,<br> 2009</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">HistThresh toolbox</td>
 %   <td>Antti Niemist&ouml;, Tampere University of Technology, Finland</td>
-%   <td><a href="https://github.com/carandraug/histthresh">Github</a></td>
+%   <td><a href="https://github.com/carandraug/histthresh">GitHub</a></td>
 %   <td>GPLv3,<br>2014</td>
 %   <td>2.51 - </td>
 % </tr>
@@ -234,7 +340,7 @@
 %   <td style="font-weight: bold">IceImarisConnector</td>
 %   <td>Aaron C. Ponti, ETH Zurich</td>
 %   <td><a href="http://www.scs2.net/next/index.php?id=110">web link</a></td>
-%   <td>GPL,<br> 2013</td>
+%   <td>GPLv2,<br> 2013</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
@@ -276,7 +382,7 @@
 %   <td style="font-weight: bold">Local Normalization</td>
 %   <td>Guanglei Xiong at Tsinghua University, Beijing</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/8303-local-normalization">via MATLAB Exchange</a></td>
-%   <td>ND,<br> 2005</td>
+%   <td>FreeBSD,<br> 2005</td>
 %   <td>0.x-1.x</td>
 % </tr>
 % <tr style="">
@@ -290,14 +396,14 @@
 %   <td style="font-weight: bold">MatTomo, a part of PEET</td>
 %   <td>Boulder Laboratory for 3-D Electron Microscopy of Cells</td>
 %   <td><a href="http://bio3d.colorado.edu/PEET/index.html">web site</a></td>
-%   <td>GPL,<br> 2006-2010</td>
+%   <td>GPLv2,<br> 2006-2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">MAXFLOW/MINCUT algorithm v2.22</td>
 %   <td>Yuri Boykov, University of Western Ontario and Vladimir Kolmogorov, Microsoft research, Cambridge</td>
 %   <td><a href="http://pub.ist.ac.at/~vnk/software.html">web site</a></td>
-%   <td>GPL,<br> 2001-2014</td>
+%   <td>GPLv2,<br> 2001-2014</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
@@ -311,7 +417,7 @@
 %   <td style="font-weight: bold">Membrane detection with Random Forest</td>
 %   <td>Verena Kaynig, Harvard School of Engineering and Applied Sciences</td>
 %   <td><a href="http://www.kaynig.de/demos.html">web link</a></td>
-%   <td>GPL,<br>2010</td>
+%   <td>GPLv2,<br>2010</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
@@ -346,7 +452,7 @@
 %   <td style="font-weight: bold">OMERO MATLAB bindings</td>
 %   <td>The Open Microscopy Environment</td>
 %   <td><a href="https://www.openmicroscopy.org/omero/">OME website</a></td>
-%   <td>GPL,<br>2019</td>
+%   <td>GPLv2,<br>2019</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
@@ -367,14 +473,14 @@
 %   <td style="font-weight: bold">Projects:MATLABSlicerExampleModule, to read NRRD format</td>
 %   <td>John Melonakos</td>
 %   <td><a href="http://www.na-mic.org/Wiki/index.php/Projects:MATLABSlicerExampleModule">web link</a></td>
-%   <td>GPL,<br>2012</td>
+%   <td>GPLv2,<br>2012</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">Random Forest MATLAB</td>
 %   <td>Abhishek Jaiantilal</td>
 %   <td><a href="https://code.google.com/p/randomforest-matlab/">web link</a></td>
-%   <td>GPL,<br> 2012</td>
+%   <td>GPLv2,<br> 2012</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
@@ -406,9 +512,23 @@
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
+%   <td style="font-weight: bold">Segment-anything, models</td>
+%   <td>Kirillov A, Mintun E, Ravi N, Mao H, Rolland C, Gustafson L, Xiao T, Whitehead S, Berg AC, Lo W-Y, Dollar P, Girshick R, Meta AI</td>
+%   <td><a href="https://segment-anything.com">web-site</a></td>
+%   <td>Apache-2.0,<br> 2023</td>
+%   <td>2.90-</td>
+% </tr>
+% <tr style="">
+%   <td style="font-weight: bold">Segment-anything for Microscopy, models</td>
+%   <td>Archit A, Nair S, Khalid N, Hilt P, Rajashekar V, Freitag M, Gupta S, Dengel A, Ahmed S, Pape C</td>
+%   <td><a href="https://github.com/computational-cell-analytics/micro-sam">GitHub</a></td>
+%   <td>MIT,<br> 2023</td>
+%   <td>2.90-</td>
+% </tr>
+% <tr style="">
 %   <td style="font-weight: bold">SLIC (Simple Linear Iterative Clustering)</td>
 %   <td>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, 
-% Pascal Fua, and Sabine S?sstrunk<br>Ecole Polytechnique Federale de
+% Pascal Fua, and Sabine Susstrunk<br>Ecole Polytechnique Federale de
 % Lausanne (EPFL), Switzerland</td>
 %   <td><a href="https://www.epfl.ch/labs/ivrl/research/slic-superpixels">authors' website</a></td>
 %   <td>ModifiedBSD,<br> 2015</td>
@@ -426,6 +546,13 @@
 %   <td>Wouter Falkena, Delft University of Technology</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/28639-struct2xml">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br> 2010</td>
+%   <td>0.x-2.x</td>
+% </tr>
+% <tr style="">
+% <td style="font-weight: bold">TEEM.DLL for MATLABSlicerExampleModule</td>
+%   <td>Gordon Kindlmann</td>
+%   <td><a href="https://teem.sourceforge.net">authors' website</a></td>
+%   <td>LGPL plus  static linking exception<br>2012</td>
 %   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
@@ -448,6 +575,13 @@
 %   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/45134-violin-plot">via MATLAB Exchange</a></td>
 %   <td>FreeBSD,<br>2015</td>
 %   <td>2.65-</td>
+% </tr>
+% <tr style="">
+%   <td style="font-weight: bold">VTKPNG.DLL for MATLABSlicerExampleModule</td>
+%   <td>Ken Martin, Will Schroeder, Bill Lorensen</td>
+%   <td><a href="https://vtk.org/about/">authors' website</a></td>
+%   <td>ModifiedBSD<br>2012</td>
+%   <td>0.x-2.x</td>
 % </tr>
 % <tr style="">
 %   <td style="font-weight: bold">XLWRITE: Generate XLS(X) files without Excel on Mac/Linux/Win</td>
@@ -505,3 +639,54 @@
 % </html>
 %
 % *Back to* <im_browser_product_page.html *Index*>
+%
+%
+% [cssClasses]
+% .dropdown { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	border-radius: 0.2em; 
+% 	background-color: #fff; 
+% 	background-color: #e0f5ff; 
+% 	background-color: #e8f5e8; 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .kbd { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	-moz-border-radius: 0.2em; 
+% 	-webkit-border-radius: 0.2em; 
+% 	border-radius: 0.2em; 
+% 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	box-shadow: 0.1em 0.2em 0.2em #ddd; 
+% 	background-color: #f9f9f9; 
+% 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 
+% 	background-image: linear-gradient(&#91;&#91;:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
+% .h3 {
+% color: #E65100;
+% font-size: 12px;
+% font-weight: bold;
+% }
+% .code {
+% font-family: monospace;
+% font-size: 10pt;
+% background: #eee;
+% padding: 1pt 3pt;
+% }
+% [/cssClasses]
+%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>

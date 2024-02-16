@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function net = generateDeepLabV3Network(obj, imageSize, numClasses, targetNetwork)
 % function generateDeepLabV3Network(obj, imageSize, numClasses, targetNetwork)
 % generate DeepLab v3+ convolutional neural network for semantic image
@@ -10,13 +26,6 @@ function net = generateDeepLabV3Network(obj, imageSize, numClasses, targetNetwor
 % targetNetwork: string defining the base architecture for the initialization
 %   'resnet18' - resnet18 network
 
-% Copyright (C) 12.01.2022, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -32,15 +41,16 @@ global mibPath;
 if nargin < 4; targetNetwork = 'resnet18'; end
 
 % generate template network
-
-if strcmp(targetNetwork, 'xception') || strcmp(targetNetwork, 'inceptionresnetv2')  % 'resnet50', 'xception', 'inceptionresnetv2'
+downsamplingFactor = 16; % 8 or 16
+%if ismember(targetNetwork, {'xception', 'inceptionresnetv2', 'resnet50'}) % 'resnet18', 'resnet50', 'xception', 'inceptionresnetv2'
+if ismember(targetNetwork, {'xception', 'inceptionresnetv2'}) % 'resnet18', 'resnet50', 'xception', 'inceptionresnetv2'
     % define parameters for dummy initialization
     if imageSize(3) == 3
-        net = deeplabv3plusLayers(imageSize, numClasses, targetNetwork, 'DownsamplingFactor', 16);
+        net = deeplabv3plusLayers(imageSize, numClasses, targetNetwork, 'DownsamplingFactor', downsamplingFactor);
         return;
     end
     dummyImageSize = [imageSize([1 2]), 3];
-    lgraph = deeplabv3plusLayers(dummyImageSize, numClasses, targetNetwork, 'DownsamplingFactor', 16);
+    lgraph = deeplabv3plusLayers(dummyImageSize, numClasses, targetNetwork, 'DownsamplingFactor', downsamplingFactor);
 else
     switch targetNetwork
         case 'resnet18'
@@ -57,7 +67,10 @@ else
         dlgTitle = 'Download network template';
         options.WindowStyle = 'normal';       % [optional] style of the window
         options.PromptLines = 1;   % [optional] number of lines for widget titles
-        options.Title = sprintf('!!! Warning !!!\n\nGeneration of CNN using the "2D DeepLabV3 %s" architecture requires a templete file!\n\nThe file will be downloaded and placed to\n%s\nThis destination directory can be changed from\nMenu->File->Preferences->External directories', targetNetwork, obj.mibModel.preferences.ExternalDirs.DeepMIBDir);
+        options.Title = sprintf(['!!! Warning !!!\n\nGeneration of CNN using the "2D DeepLabV3 %s" architecture requires a templete file!\n\n' ...
+            'The file will be downloaded and placed to\n%s\n' ...
+            'This destination directory can be changed from\n' ...
+            'Menu->File->Preferences->External directories'], targetNetwork, strrep(obj.mibModel.preferences.ExternalDirs.DeepMIBDir, '\','/'));
         options.TitleLines = 9;                   % [optional] make it twice tall, number of text lines for the title
         options.WindowWidth = 1.5; 
         options.HelpUrl = 'http://mib.helsinki.fi/help/main2/ug_gui_menu_tools_deeplearning.html';
@@ -71,9 +84,12 @@ else
                 fnTemplate = [fnTemplate '_pathology'];
         end
 
-        if obj.BatchOpt.showWaitbar; waitbar(0, obj.wb, sprintf('Downloading network\nPlease wait...')); end
+        if obj.BatchOpt.showWaitbar
+            obj.wb.Value = 0;
+            obj.wb.Message = 'Downloading network...'; 
+        end
         unzip(sprintf('http://mib.helsinki.fi/tutorials/deepmib/%s.zip', fnTemplate), obj.mibModel.preferences.ExternalDirs.DeepMIBDir);
-        if obj.BatchOpt.showWaitbar; waitbar(0.5, obj.wb, sprintf('Generating network\nPlease wait...')); end
+        if obj.BatchOpt.showWaitbar; obj.wb.Message = 'Generating network...'; obj.wb.Value = 0.5; end
     end
     load(fullfile(obj.mibModel.preferences.ExternalDirs.DeepMIBDir, netName), 'lgraph');
 end
@@ -132,7 +148,7 @@ for layerId = 1:noLayers
                     elseif size(lgraph.Layers(layerId).(props{propId}), 3) > imageSize(3)
                         layer.(props{propId}) = mean(lgraph.Layers(layerId).(props{propId}), 3);
                     elseif size(lgraph.Layers(layerId).(props{propId}), 3) < imageSize(3)
-                        layer.(props{propId}) = repmat(lgraph.Layers(layerId).(props{propId}), [1 1 imageSize(3) 1]);
+                        layer.(props{propId}) = repmat(mean(lgraph.Layers(layerId).(props{propId}), 3), [1 1 imageSize(3) 1]);
                     end
                 %if layerId == 2 && imageSize(3) == 1 && strcmp(props{propId}, 'Weights')  % this is an old code that handles case when the template network is trained with 3 colors
                 %    layer.(props{propId}) = mean(lgraph.Layers(layerId).(props{propId}), 3);
@@ -245,18 +261,23 @@ for layerId = 1:noLayers
     end
     %net = [net; layer];
     net = addLayers(net, layer);
-    if obj.BatchOpt.showWaitbar && mod(layerId, 20) == 1; waitbar(layerId/(noLayers*2), obj.wb); end
+    if obj.BatchOpt.showWaitbar && mod(layerId, 20) == 1; obj.wb.Value = layerId/(noLayers*2); end
 end
 
 % connect layers
 % rename layers to match general names of DeepMIB
-if obj.BatchOpt.showWaitbar; waitbar(0.5, obj.wb, sprintf('Connecting layers\nPlease wait...')); end
+if obj.BatchOpt.showWaitbar; obj.wb.Message = 'Connecting layers...'; obj.wb.Value = 0.5; end
 sourceLayers = lgraph.Connections.Source;
 destinationLayers = lgraph.Connections.Destination;
 switch targetNetwork
     case {'resnet18', 'resnet50'}
-        sourceLayers(ismember(sourceLayers, 'data')) = {'ImageInputLayer'};
-        destinationLayers(ismember(destinationLayers, 'data')) = {'ImageInputLayer'};
+        if max(ismember(sourceLayers, 'data')) == 1     % pre-trained nets
+            sourceLayers(ismember(sourceLayers, 'data')) = {'ImageInputLayer'};
+            destinationLayers(ismember(destinationLayers, 'data')) = {'ImageInputLayer'};
+        else    % generated with deeplabv3plusLayers nets
+            sourceLayers(ismember(sourceLayers, 'input_1')) = {'ImageInputLayer'};
+            destinationLayers(ismember(destinationLayers, 'input_1')) = {'ImageInputLayer'};
+        end
     case {'inceptionresnetv2', 'xception'}
         sourceLayers(ismember(sourceLayers, 'input_1')) = {'ImageInputLayer'};
         destinationLayers(ismember(destinationLayers, 'input_1')) = {'ImageInputLayer'};
@@ -267,7 +288,7 @@ destinationLayers(ismember(destinationLayers, 'classification')) = {'Segmentatio
 noSourceLayers = numel(sourceLayers);
 for connectId = 1:noSourceLayers
     net = connectLayers(net, sourceLayers{connectId}, destinationLayers{connectId});
-    if obj.BatchOpt.showWaitbar && mod(layerId, 20) == 1; waitbar(0.5+(connectId/(noSourceLayers*2)), obj.wb);  end
+    if obj.BatchOpt.showWaitbar && mod(layerId, 20) == 1; obj.wb.Value = 0.5+(connectId/(noSourceLayers*2));  end
 end
 
 end

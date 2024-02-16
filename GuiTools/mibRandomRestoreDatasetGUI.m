@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function varargout = mibRandomRestoreDatasetGUI(varargin)
 % MIBRANDOMRESTOREDATASETGUI MATLAB code for mibRandomRestoreDatasetGUI.fig
 %      MIBRANDOMRESTOREDATASETGUI, by itself, creates a new MIBRANDOMRESTOREDATASETGUI or raises the existing
@@ -20,19 +36,12 @@ function varargout = mibRandomRestoreDatasetGUI(varargin)
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Copyright (C) 16.05.2015 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 25.01.2016, updated for 4D
 
 % Edit the above text to modify the response to help mibRandomRestoreDatasetGUI
 
-% Last Modified by GUIDE v2.5 11-Feb-2019 16:03:21
+% Last Modified by GUIDE v2.5 02-Mar-2023 16:43:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -76,10 +85,14 @@ end
 
 handles.randomDirsList_cm = uicontextmenu('Parent', handles.mibRandomRestoreDatasetGUI);
 uimenu(handles.randomDirsList_cm, 'Label', 'Update directory', 'Callback', {@randomDirsList_cm_Callback, 'updatedir'});
+uimenu(handles.randomDirsList_cm, 'Label', 'Copy path to clipboard', 'Separator', 'on', 'Callback', {@randomDirsList_cm_Callback, 'clipboard'});
+uimenu(handles.randomDirsList_cm, 'Label', 'Open directory in the file explorer', 'Callback', {@randomDirsList_cm_Callback, 'fileexplorer'});
 handles.randomDirsList.UIContextMenu = handles.randomDirsList_cm;
 
 handles.destinationDirsList_cm = uicontextmenu('Parent', handles.mibRandomRestoreDatasetGUI);
 uimenu(handles.destinationDirsList_cm, 'Label', 'Update directory', 'Callback', {@destinationDirsList_cm_Callback, 'updatedir'});
+uimenu(handles.destinationDirsList_cm, 'Label', 'Copy path to clipboard', 'Separator', 'on', 'Callback', {@destinationDirsList_cm_Callback, 'clipboard'});
+uimenu(handles.destinationDirsList_cm, 'Label', 'Open directory in the file explorer', 'Callback', {@destinationDirsList_cm_Callback, 'fileexplorer'});
 handles.destinationDirsList.UIContextMenu = handles.destinationDirsList_cm;
 
 % rescale widgets for Mac and Linux
@@ -142,6 +155,8 @@ handles = guidata(hObject);
 switch parameter
     case 'updatedir'
         handles.winController.updateDir('randomDirsList');
+    case {'clipboard', 'fileexplorer'}
+        handles.winController.copyShowDirectory('randomDirsList', parameter);
 end
 end
 
@@ -150,6 +165,8 @@ handles = guidata(hObject);
 switch parameter
     case 'updatedir'
         handles.winController.updateDir('destinationDirsList');
+    case {'clipboard', 'fileexplorer'}
+        handles.winController.copyShowDirectory('destinationDirsList', parameter);
 end
 end
 
@@ -201,4 +218,10 @@ handles.upperSubPanel.Position(2) = handles.lowerSubPanel.Position(2) + handles.
 handles.upperSubPanel.Position(3) = (optW - handles.helpBtn.Position(4)/2);
 handles.projectFilenameEdit.Position(3) = handles.upperSubPanel.Position(3) - handles.projectFilenameEdit.Position(1)*2;
 
+end
+
+
+% --- Executes on button press in resaveProjectBtn.
+function resaveProjectBtn_Callback(hObject, eventdata, handles)
+handles.winController.resaveProject();
 end

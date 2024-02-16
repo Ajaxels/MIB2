@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibGUI_WindowBrushMotionFcn(obj, selection_layer, structElement, currMask, varargin)
 % function mibGUI_WindowBrushMotionFcn(obj, selection_layer, structElement, currMask)
 % This function draws the brush trace during use of the brush tool
@@ -7,13 +23,6 @@ function mibGUI_WindowBrushMotionFcn(obj, selection_layer, structElement, currMa
 % structElement: a structural element to be used with the brush, similar to the one generated with Matlab @em strel function
 % currMask: is a bitmap with the Mask image, needed for selection_layer == ''mask''
 
-% Copyright (C) 15.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-% 
 % Updates
 % 
 
@@ -41,6 +50,9 @@ yv = obj.mibView.cursor.YData + diffY;
 obj.mibView.cursor.XData = xv;
 obj.mibView.cursor.YData = yv;
 
+% calculate brush mouse distance
+obj.mibView.brushSelection{1}.travelPathInPixels = obj.mibView.brushSelection{1}.travelPathInPixels + sqrt(diffX^2 + diffY^2);
+
 selarea = logical(zeros([YLim, XLim], 'uint8'));      %#ok<LOGL> % needs logicals for performance
 
 if abs(pos(1,1)-obj.mibView.brushPrevXY(1)) > abs(pos(1,2)-obj.mibView.brushPrevXY(2))     % horizontal movement
@@ -58,7 +70,8 @@ if abs(pos(1,1)-obj.mibView.brushPrevXY(1)) > abs(pos(1,2)-obj.mibView.brushPrev
         
         %strelH2 = floor(size(structElement,1)/2);
         %strelW2 = floor(size(structElement,2)/2);
-        %selarea(y-strelH2:y+strelH2, x-strelW2:x+strelW2) = uint8(selarea(y-strelH2:y+strelH2, x-strelW2:x+strelW2)) | uint8(structElement);
+        %selarea(y-strelH2:y+strelH2, x-strelW2:x+strelW2) = uint8(sel
+        % area(y-strelH2:y+strelH2, x-strelW2:x+strelW2)) | uint8(structElement);
     end
 else    % vertical movement
     if pos(1,2) < obj.mibView.brushPrevXY(2)
@@ -104,7 +117,7 @@ CData = obj.mibView.imh.CData;
 
 if numel(obj.mibView.brushSelection) > 1
     if obj.mibView.handles.mibAdaptiveDilateCheck.Value == 1
-        diffSelarea = uint8(selarea1 - obj.mibView.brushSelection{1});
+        diffSelarea = uint8(selarea1 - obj.mibView.brushSelection{1}.selection);
         newIndices = unique(obj.mibView.brushSelection{2}.slic(diffSelarea==1));
         
         outIndices = zeros([numel(newIndices),1]);
@@ -121,7 +134,7 @@ if numel(obj.mibView.brushSelection) > 1
         if ~isempty(outIndices)
             selarea2 = ismember(obj.mibView.brushSelection{2}.slic, outIndices);
         else
-            selarea2 = zeros(size(obj.mibView.brushSelection{1}),'uint8');
+            selarea2 = zeros(size(obj.mibView.brushSelection{1}.selection),'uint8');
         end
     else
         slicIndices = unique(obj.mibView.brushSelection{2}.slic(selarea1));  % get indices of new superpixels where the brush is currently in
@@ -138,14 +151,14 @@ if numel(obj.mibView.brushSelection) > 1
     end
     obj.mibView.brushSelection{2}.selectedSlic(selarea2==1)=1;
     CData(obj.mibView.brushSelection{2}.selectedSlic==1) = intmax(class(obj.mibView.Ishown))*.4;
-    obj.mibView.brushSelection{1}(selarea1==1)=1;
+    obj.mibView.brushSelection{1}.selection(selarea1==1)=1;
 else        % normal brush
     if strcmp(selection_layer,'mask')
         selarea1 = selarea1 & currMask;
     end
-    %obj.mibView.brushSelection{1}(selarea1==1)=1;
-    obj.mibView.brushSelection{1} = obj.mibView.brushSelection{1} | selarea1;
-    CData(obj.mibView.brushSelection{1}==1) = intmax(class(obj.mibView.Ishown))*.4;
+    %obj.mibView.brushSelection{1}.selection(selarea1==1)=1;
+    obj.mibView.brushSelection{1}.selection = obj.mibView.brushSelection{1}.selection | selarea1;
+    CData(obj.mibView.brushSelection{1}.selection==1) = intmax(class(obj.mibView.Ishown))*.4;
 end
 
 obj.mibView.imh.CData = CData;

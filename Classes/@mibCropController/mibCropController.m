@@ -1,15 +1,23 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibCropController  < handle
-    % @type mibCropController class is resposnible for showing the dataset
+    % @type mibCropController class is responsible for showing the dataset
     % crop window, available from MIB->Menu->Dataset->Crop 
     
-	% Copyright (C) 09.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-	% 
-	% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-	%
 	% Updates
 	% 
     
@@ -29,6 +37,8 @@ classdef mibCropController  < handle
         % a string with the selected crop mode: 'Interactive','Manual','ROI'
         BatchOpt
         % a structure compatible with batch operation, see details in the contsructor
+        batchProcessingSwitch
+        % logical indicating whether the batch processing mode is used
     end
     
     events
@@ -49,6 +59,8 @@ classdef mibCropController  < handle
     methods
         function obj = mibCropController(mibModel, mibImageAxes, varargin)
             obj.mibModel = mibModel;    % assign model
+            
+            obj.batchProcessingSwitch = false;  % indicating whether the batch processing mode is used
             
             getDataOpt.blockModeSwitch = 0;
             [height, width, ~, depth, time] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, NaN, getDataOpt);
@@ -77,7 +89,8 @@ classdef mibCropController  < handle
             obj.BatchOpt.Destination{2} = destBuffers;
             obj.BatchOpt.SelectROI = {'All'};
             obj.BatchOpt.SelectROI{2} = ROIlist;
-            
+            obj.BatchOpt.showWaitbar = true;   % show or not the waitbar
+
             % add section name and action name for the batch tool
             obj.BatchOpt.mibBatchSectionName = 'Menu -> Dataset';
             obj.BatchOpt.mibBatchActionName = 'Crop dataset';
@@ -91,6 +104,7 @@ classdef mibCropController  < handle
             obj.BatchOpt.mibBatchTooltip.Manual = sprintf('Width, Height, Depth, Time fields to crop the image');
             obj.BatchOpt.mibBatchTooltip.Destination = sprintf('Destination container');
             obj.BatchOpt.mibBatchTooltip.SelectROI = sprintf('[ROI mode only]\nSelected ROI for the cropping');
+            obj.BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');
             
             % add here a code for the batch mode, for example
             % when the BatchOpt stucture is provided the controller will
@@ -140,7 +154,8 @@ classdef mibCropController  < handle
                 if ~isempty(strfind(obj.BatchOpt.Time, 'end'))
                     obj.BatchOpt.Time = strrep(obj.BatchOpt.Time, 'end', num2str(obj.mibModel.I{obj.mibModel.Id}.time));
                 end
-                    
+                obj.batchProcessingSwitch =  true;
+                
                 obj.cropBtn_Callback();
                 return;
             end
@@ -485,11 +500,11 @@ classdef mibCropController  < handle
             if ~strcmp(BatchOptLoc.Destination{1}, sprintf('Container %d', obj.mibModel.Id)) && ~strcmp(BatchOptLoc.Destination{1}, 'Current')
                 bufferId = str2double(BatchOptLoc.Destination{1}(end));
                 % copy dataset to the destination buffer
-                obj.mibModel.mibImageDeepCopy(obj.mibModel.Id, bufferId);
+                obj.mibModel.mibImageDeepCopy(obj.mibModel.Id, bufferId, BatchOptLoc);
             else
                 bufferId = obj.mibModel.Id;
                 % do full backup
-                obj.mibModel.mibDoBackup('mibImage');
+                if ~obj.batchProcessingSwitch; obj.mibModel.mibDoBackup('mibImage'); end
             end
             
             cropDim = str2num(BatchOptLoc.Time); %#ok<ST2NM>
@@ -498,8 +513,11 @@ classdef mibCropController  < handle
             
             crop_factor = [crop_factor tMin tMax-tMin+1];
             obj.mibModel.I{bufferId}.enableSelection = obj.mibModel.preferences.System.EnableSelection;  % should be before cropDataset
-            result = obj.mibModel.I{bufferId}.cropDataset(crop_factor);
+            
+            % do the crop
+            result = obj.mibModel.I{bufferId}.cropDataset(crop_factor, BatchOptLoc);
             if result == 0; notify(obj.mibModel, 'stopProtocol'); return; end
+            
             obj.mibModel.I{bufferId}.hROI.crop(crop_factor);
             obj.mibModel.I{bufferId}.hLabels.crop(crop_factor);
             log_text = ['ImCrop: [x1 y1 dx dy z1 dz t1 dt]: [' num2str(crop_factor) ']'];

@@ -74,7 +74,8 @@
 % possible to provide a list of MRC files, where each object is encoded
 % using its number in a separate MRC-file; after that MIB will assemble and merge all these
 % individual objects together into a single model.
-% * *.TIF, TIF format*
+% * *.PNG, PNG format* - save models as 2D slices using Portable Network Graphic format 
+% * *.TIF, TIF format* - save models as 2D slices or 3D volumes using Tag Image File format
 % 
 % *Note!* almost any standard image format can be loaded as a model, please
 % choose [class.code]All files (*.*)[/class] filter in the Open model dialog.
@@ -144,6 +145,7 @@
 % * *.MOD, IMOD format* - contours for IMOD 
 % * *.MRC, IMOD format* - volume for IMOD 
 % * *.NRRD, Nearly Raw Raster Data* - a data format compatible with <www.slicer.org 3D slicer>.
+% * *.PNG* - save models as 2D slices using Portable Network Graphic format 
 % * *.STL, STL format* - triangulated mesh for use with visualization
 % programs such as Blender.
 % * *.TIF, TIF format*

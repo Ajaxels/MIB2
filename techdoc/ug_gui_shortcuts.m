@@ -30,7 +30,7 @@
 % <link rel="stylesheet" type="text/css" href="style.css">
 % </head>
 % <body>
-% <table>
+% <table style="line-height: 2;">
 % <tr>
 %   <td style="width: 120pt"><span class="kbd">move cursor</span></td>
 %   <td>to dispay intensity information and cursor coordinates;<br>shown in the <a href="ug_panel_path.html">Path Panel</a></td>
@@ -41,7 +41,7 @@
 % </tr>
 % <tr>
 %   <td><span class="kbd">&#8679; Shift</span>+<span class="kbd">mouse wheel</span></td>
-%   <td>jump to 10 slices up/down,<br>number of slices can be defined from a popup menu that appears during the <span class="kbd">right click</span> above the slices slider in the 
+%   <td>jump to 10 slices up/down,<br>number of slices can be defined from a popup menu that appears during the <span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> above the slices slider in the 
 % <a href="ug_panel_im_view.html">Image View Panel</a></td>
 % </tr>
 % <tr>
@@ -50,19 +50,19 @@
 % </tr>
 % <tr>
 %   <td><span class="kbd">Alt</span>+<span class="kbd">&#8679; Shift</span>+<span class="kbd">mouse wheel</span></td>
-%   <td>jump to 10 time points,<br>number of time points can be defined from a popup menu that appears during the <span class="kbd">right click</span> above the slices slider in the 
+%   <td>jump to 10 time points,<br>number of time points can be defined from a popup menu that appears during the <span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> above the slices slider in the 
 %       <a href="ug_panel_im_view.html">Image View Panel</a></td>
 % </tr>
 % <tr>
-%   <td><span class="kbd">left-click</span></td>
+%   <td><span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span></td>
 %   <td>select pixels in the image based on specified method specified in the <a href="ug_panel_segm.html">Segmentation Panel</a></td>
 % </tr>
 % <tr>
-%   <td><span class="kbd">right-click</span>+<span class="kbd">drag</span><br><span class="kbd">Alt</span>+<span class="kbd">&#8679; Shift</span>+<span class="kbd">right-click</span>+<span class="kbd">drag</span><br></td>
+%   <td><span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span>+<span class="kbd">drag</span><br><span class="kbd">Alt</span>+<span class="kbd">&#8679; Shift</span>+<span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span>+<span class="kbd">drag</span><br></td>
 %   <td>turns on the pan mode to move the image left/right and up/down</td>
 % </tr>
 % <tr>
-%   <td><span class="kbd">&#8679; Shift</span>+<span class="kbd">left-click</span></td>
+%   <td><span class="kbd">&#8679; Shift</span>+<span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span></td>
 %   <td>add selection to the existing selection</td>
 % </tr>
 % <tr>
@@ -70,7 +70,10 @@
 %   <td>remove selection to the existing selection, eraser</td>
 % </tr>
 % <tr>
-%   <td><span class="kbd">^ Ctrl</span>+<span class="kbd">mouse wheel</span></td>
+%   <td><span class="kbd">^ Ctrl</span>+<span class="kbd">mouse wheel</span><br>
+%       <span class="kbd">[</span> and <span class="kbd">]</span><br><br>
+%       <span class="kbd">&#8679; Shift</span> + <span class="kbd">[</span> and <span class="kbd">]</span>
+%   </td>
 %   <td>change size of the brush and other selection tools</td>
 % </tr>
 % <tr>
@@ -92,12 +95,12 @@
 % <link rel="stylesheet" type="text/css" href="../style.css">
 % </head>
 % <body>
-% To interact with ROIs (for example to change its size or position) please use <span class="kbd">right click</span> over the ROI name in the ROI List of <a href="ug_panel_roi.html"> the ROI Panel</a> to start a popup menu. Choose <b>Edit</b> to modify the selected ROI.
+% To interact with ROIs (for example to change its size or position) please use <span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> over the ROI name in the ROI List of <a href="ug_panel_roi.html"> the ROI Panel</a> to start a popup menu. Choose <b>Edit</b> to modify the selected ROI.
 % <br><br>
 % When the Edit mode is enabled the following actions are available:
 % <ul>
 % <li><span class="kbd">left click</span>+<span class="kbd">drag</span> to change position of the selected ROI</li>
-% <li><span class="kbd">right click</span> on a vertex of the selected ROI to delete it</li>
+% <li><span class="kbd"><img style="height: 1em" src="images\RMB_click.svg"> right mouse click</span> on a vertex of the selected ROI to delete it</li>
 % <li>hold <span class="kbd">A</span>+<span class="kbd">left click</span> on an edge of the selected ROI to add a new vertex</li>
 % <li><span class="kbd">double click</span> to accept changes</li>
 % </ul>
@@ -117,7 +120,7 @@
 % <link rel="stylesheet" type="text/css" href="../style.css">
 % </head>
 % <body>
-% <table>
+% <table style="line-height: 2;">
 % <tr>
 %   <td style="width: 100pt"><span class="kbd">&#8592;</span>, <span class="kbd">&#8594;</span><br><br>
 %     <span class="kbd">Alt</span>+<span class="kbd">Q</span> / <span class="kbd">Alt</span>+<span class="kbd">W</span>      </td>
@@ -258,6 +261,12 @@
 %   <td>dilate (expand) (<em>for all slices and all time points</em>) the <em>Selection</em> layer in 2D</td>
 % </tr>
 % <tr>
+%   <td><span class="kbd">[</span> and <span class="kbd">]</span><br>
+%   <span class="kbd">&#8679; Shift</span> + <span class="kbd">[</span> and <span class="kbd">]</span>
+%   </td>
+%   <td>change size of the brush and other selection tools in bigger increments. This also can be done using <span class="kbd">^ Ctrl</span>+<span class="kbd">&#8679; Shift</span>+<span class="kbd">mouse wheel</span></td>
+% </tr>
+% <tr>
 %   <td><span class="kbd">D</span></td>
 %   <td>swap between the preferable fast-access selection tools, see
 %           more in the <a href="ug_panel_segm.html">6. The <span class="kbd">[&#10003;] <b>"D"</b></span> checkbox, to select fast access tools</a></td>
@@ -299,6 +308,10 @@
 % <tr>
 %   <td><span class="kbd">Alt</span>+<span class="kbd">3</span></td>
 %   <td>switch the view to the XZ plane using the image coordinates under the mouse cursor</td>
+% </tr>
+% <tr>
+%   <td><span class="kbd">F2</span></td>
+%   <td>rename selected in the Segmentation table material</td>
 % </tr>
 % </table>
 % </body>

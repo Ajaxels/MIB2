@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibGUI_ScrollWheelFcn(obj, eventdata) 
 % function mibGUI_ScrollWheelFcn(obj, eventdata) 
 % Control callbacks from mouse scroll wheel 
@@ -15,17 +31,25 @@ function mibGUI_ScrollWheelFcn(obj, eventdata)
 % Parameters:
 % eventdata: additinal parameters
 
-% Copyright (C) 10.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
 modifier = obj.mibView.gui.CurrentModifier;    % detect control to change size of the brush tool
+if isprop(eventdata, 'Parameter')
+    % call of the function using ToggleEventData from key shortcuts
+    verticalScrollCount = eventdata.Parameter.VerticalScrollCount;
+    verticalScrollAmount = eventdata.Parameter.VerticalScrollAmount;
+    if strcmp(modifier, 'shift')
+        modifier = {'shiftcontrol'};
+    else
+        modifier = {'control'};
+    end
+else
+    % standard call using mouse scroll wheel
+    verticalScrollCount = eventdata.VerticalScrollCount;
+    verticalScrollAmount = eventdata.VerticalScrollAmount;
+end
+
 
 if strcmp(modifier, 'control') | strcmp(cell2mat(modifier), 'shiftcontrol') | strcmp(cell2mat(modifier), 'controlalt') | strcmp(cell2mat(modifier), 'shiftcontrolalt') %#ok<OR2>
     step = 1;   % step of the brush size change
@@ -72,7 +96,7 @@ if strcmp(modifier, 'control') | strcmp(cell2mat(modifier), 'shiftcontrol') | st
         obj.mibView.updateCursor();
     end
     
-    if eventdata.VerticalScrollCount < 0
+    if verticalScrollCount < 0
         val = val + step;
     else
         val = val - step;
@@ -127,7 +151,7 @@ if strcmp(obj.mibView.handles.mouseWheelToolbarSw.State,'on') & ...
         shift = 1;
     end
 
-    new_index = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1) - eventdata.VerticalScrollCount*shift;
+    new_index = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1) - verticalScrollCount*shift;
     if new_index < 1;  new_index = 1; end
     if new_index > obj.mibModel.I{obj.mibModel.Id}.time; new_index = obj.mibModel.I{obj.mibModel.Id}.time; end
     obj.mibView.handles.mibChangeTimeSlider.Value = new_index;     % update slider value
@@ -140,7 +164,7 @@ elseif strcmp(obj.mibView.handles.mouseWheelToolbarSw.State,'off')              
     %             ch = get(handles.im_browser, 'CurrentCharacter');
     %             if ch == '`'    % change size of the brush
     %                 brush = str2double(get(handles.segmSpotSizeEdit,'String'));
-    %                 brush = max([1 brush+eventdata.VerticalScrollCount]);
+    %                 brush = max([1 brush+verticalScrollCount]);
     %                 set(handles.segmSpotSizeEdit,'String',num2str(brush));
     %                 set(handles.im_browser, 'CurrentCharacter', '1');
     %                 return;
@@ -170,7 +194,7 @@ elseif strcmp(obj.mibView.handles.mouseWheelToolbarSw.State,'off')              
     curPt2 = [-(1+curPt2).*[rngXhalf, rngYhalf];...
                (1-curPt2).*[rngXhalf, rngYhalf]];           % new image half-sizes without zooming
     
-    r = C^(eventdata.VerticalScrollCount*eventdata.VerticalScrollAmount);
+    r = C^(verticalScrollCount*verticalScrollAmount);
     newLimSpan = r * curPt2;
     
     % Determine new limits based on r
@@ -191,7 +215,7 @@ else    % slice change with the mouse wheel
     else
         shift = 1;
     end
-    new_index = obj.mibModel.I{obj.mibModel.Id}.slices{obj.mibModel.I{obj.mibModel.Id}.orientation}(1) - eventdata.VerticalScrollCount*shift;
+    new_index = obj.mibModel.I{obj.mibModel.Id}.slices{obj.mibModel.I{obj.mibModel.Id}.orientation}(1) - verticalScrollCount*shift;
     if new_index < 1;  new_index = 1; end
     if new_index > obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation); new_index = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation); end
     

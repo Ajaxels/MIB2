@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibSegmentation3dBall(obj, y, x, z, modifier, BatchOptIn)
 % function mibSegmentation3dBall(obj, y, x, z, modifier, BatchOptIn)
 % Do segmentation using the 3D ball tool
@@ -28,13 +44,6 @@ function mibSegmentation3dBall(obj, y, x, z, modifier, BatchOptIn)
 %| @b Examples:
 % @code obj.mibSegmentation3dBall(50, 75, 10, '');  // call from mibController; add a 3D ball to position [y,x,z]=50,75,10 @endcode
 
-% Copyright (C) 16.12.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 %
 
@@ -141,6 +150,10 @@ if BatchOpt.showWaitbar && numel(xVec) > 1
     showWaitbarLocal = 1;
 end
 if showWaitbarLocal; wb = waitbar(0, 'Please wait...', 'Name', '3D ball segmentation'); end
+
+% count user's points
+obj.mibModel.preferences.Users.Tiers.numberOfBall3D = obj.mibModel.preferences.Users.Tiers.numberOfBall3D+1;
+notify(obj.mibModel, 'updateUserScore');     % update score using default obj.mibModel.preferences.Users.singleToolScores increase
 
 max_rad = max(max(radius));
 [x1,y1,z1] = meshgrid(-max_rad:max_rad,-max_rad:max_rad,-max_rad:max_rad);

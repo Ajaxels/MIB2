@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function [img_info, files, pixSize] = mibGetImageMetadata(filenames, options)
 % function [img_info, files, pixSize] = mibGetImageMetadata(filenames, options, handles)
 % Get metadata for images
@@ -39,13 +55,6 @@ function [img_info, files, pixSize] = mibGetImageMetadata(filenames, options)
 % - .xyStep -> optional for loading of a region within the image, XY step, pixels between are skipped
 % pixSize: a structure with voxel dimensions (.x, .y, .z, .units, .t, .tunits)
 
-% Copyright (C) 06.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 14.04.2022, IB, added loading of subregions from TIF files
 
@@ -77,9 +86,21 @@ image_formats = imformats();  % get readable image formats
 no_files = numel(filenames);
 layer_id = 1;
 
-if options.waitbar==1; wb = waitbar(0, sprintf('Loading metadata\nPlease wait...'), 'Name', 'Metadata import'); end
+if options.waitbar==1
+    if options.mibBioformatsCheck || options.virtual
+        wb = waitbar(0, sprintf('Loading metadata\nPlease wait...'), 'Name', 'Metadata import');
+    else
+        wb = waitbar(0, sprintf('Loading metadata\nPlease wait...'), 'Name', 'Metadata import', ...
+            'CreateCancelBtn','setappdata(gcbf, ''canceling'', 1)'); 
+        if strcmp(wb.Children(1).Style, 'pushbutton')
+            wb.Children(1).String = 'All same';
+            wb.Children(1).Tooltip = 'Press to skip metadata check; meta from the first file will be taken';
+            drawnow;
+        end
+    end
+end
 
-files = struct();   % structure that keeps info about each file in the series
+files(no_files) = struct();   % structure that keeps info about each file in the series
 % .object_type -> 'movie', 'hdf5_image', 'image'
 % .filename
 % .seriesName -> name of the series for HDF5/Bioformats
@@ -92,7 +113,6 @@ files = struct();   % structure that keeps info about each file in the series
 % .imgClass -> class of the image
 % .dim_xyczt -> dimensions for hdf5_image and Bioformats
 % .hDataset -> handle to Bioformats dataset
-
 for fn_index = 1:no_files
     if exist(filenames{fn_index}, 'file') == 0
         errordlg(sprintf('!!! Error !!!\n\nThe required file\n %s\nwas not found!', filenames{fn_index}), ...
@@ -102,6 +122,18 @@ for fn_index = 1:no_files
         return;
     end
     
+    % Check for clicked Cancel button
+    if options.waitbar==1
+        if getappdata(wb,'canceling')
+            files(1:no_files) = files(1);
+            [files.filename] = filenames{:};
+            [~, ~, ext] = fileparts(filenames);
+            [files.extension] = ext{:};
+            fn_index = no_files;
+            continue;
+        end
+    end
+
     [dirId, fnId, ext] = fileparts(filenames{fn_index});
     ext = lower(ext);
     files(fn_index).extension = ext;
@@ -368,7 +400,9 @@ for fn_index = 1:no_files
     elseif numel(strfind('am', ext(2:end))) > 0 && options.mibBioformatsCheck == 0     % Amira Mesh
         files(fn_index).filename = cell2mat(filenames(fn_index));
         files(fn_index).object_type = 'amiramesh';
-        [~, info, dim_xyczt] = getAmiraMeshHeader(files(fn_index).filename);
+        [par, info, dim_xyczt] = getAmiraMeshHeader(files(fn_index).filename);
+        if isempty(par); if options.waitbar==1; delete(wb); end; return; end
+        
         if isKey(img_info, 'ColorType')
             if ~strcmp(img_info('ColorType'), info('ColorType'))
                 img_info = containers.Map;
@@ -497,7 +531,12 @@ for fn_index = 1:no_files
     elseif strfind(cell2mat([image_formats.ext]), ext(2:end)) > 0 & options.mibBioformatsCheck == 0 %#ok<AND2> % standard image types
         files(fn_index).filename = cell2mat(filenames(fn_index));
         files(fn_index).object_type = 'image';
-        info = imfinfo(files(fn_index).filename);
+        try
+            info = imfinfo(files(fn_index).filename);
+        catch err
+            if options.waitbar==1; delete(wb); end
+            return;
+        end
         if fn_index == 1    % extra check for tif files with pyramids
             if numel(info) > 1 && (strcmpi(ext(2:end), 'tif') || strcmpi(ext(2:end), 'tiff'))
                 if info(1).Width ~= info(2).Width 
@@ -668,8 +707,12 @@ for fn_index = 1:no_files
                                 pixSize.x = str2double(pixSizeText) * scaleFactor;
                                 pixSize.y = pixSize.x;
                                 pixSize.units = metaStr(spacesPos(end)+1:end);
+                                if double(pixSize.units(1)) == 181 % convert to um from mu
+                                    pixSize.units(1) = 'u';
+                                end
                             catch err
-                            
+                                if options.waitbar==1; delete(wb); end
+                                return;
                             end
                         end
                         % look for Pixel size can be seen under the "Image pixel size" field 
@@ -752,9 +795,14 @@ for fn_index = 1:no_files
         if fn_index == 1
             %r = bfGetReader(filenames{fn_index});       % init the reader
             % Cache the initialized readers for each file and close the reader
-            filesTemp.hDataset = loci.formats.Memoizer(bfGetReader(), 0, java.io.File(options.BioFormatsMemoizerMemoDir));
-            filesTemp.hDataset.setId(filenames{fn_index});
-            numSeries = filesTemp.hDataset.getSeriesCount();
+            try
+                filesTemp.hDataset = loci.formats.Memoizer(bfGetReader(), 0, java.io.File(options.BioFormatsMemoizerMemoDir));
+                filesTemp.hDataset.setId(filenames{fn_index});
+                numSeries = filesTemp.hDataset.getSeriesCount();
+            catch err
+                if options.waitbar==1; delete(wb); end
+                return;
+            end
             if numSeries > 1
                 if ~isfield(options, 'BioFormatsIndices')
                     [filesTemp.seriesIndex, filesTemp.hDataset, metaSwitch, filesTemp.dim_xyczt, filesTemp.seriesRealName] = ...
@@ -996,7 +1044,7 @@ for fn_index = 1:no_files
                     pixSize.z = double(omeMeta.getPixelsPhysicalSizeZ(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));   % in um
                 end
                 tVal = omeMeta.getPixelsTimeIncrement(filesTemp.seriesIndex(fileSubIndex)-1);
-                if ~isempty(zVal)
+                if ~isempty(tVal)
                     pixSize.t = double(tVal.value(ome.units.UNITS.SECOND));   % in seconds
                 end
             catch err
@@ -1056,8 +1104,8 @@ for fn_index = 1:no_files
         return;
     end
     
-    if options.waitbar==1 && mod(layer_id, ceil(no_files/20))==0
-        waitbar(fn_index/no_files,wb);
+    if options.waitbar==1 && mod(fn_index, ceil(no_files/50))==0
+        waitbar(fn_index/no_files, wb);
     end
 end
 
@@ -1068,7 +1116,7 @@ if options.customSections && strcmpi(ext(2:end), 'tif')
     dlgTitle = 'Define region to load';
     options.Title = 'Provide image range to load';   % additional text at the top of the window
     answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
-    if isempty(answer); img_info = containers.Map; return; end
+    if isempty(answer); if options.waitbar==1; delete(wb); end; img_info = containers.Map; return; end
 
     xMin = str2double(answer{1});
     xMax = str2double(answer{2});
@@ -1131,7 +1179,6 @@ if isKey(img_info,'ImageDescription') && ~isempty(img_info('ImageDescription'))
         end
     end
 end
-
 
 switch files(1).imgClass
     case {'single', 'double'}

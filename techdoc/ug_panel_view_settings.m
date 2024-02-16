@@ -81,7 +81,14 @@
 % * *The lower trasparency slider* change transparency values for
 % the |Selection| layer from opaque to transparent.
 %
+%% Right mouse click opens a dropdown menu
 %
+% When clicking on an empty area of within this panel an additiona menu
+% appears allowing to hide/show the following panels. This allows to
+% increase space occupied by the Image view panel
+% 
+% <<images\PanelsImageView_dropdown.jpg>>
+% 
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
 %

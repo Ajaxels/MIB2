@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function menuFileExamples_Callback(obj, BatchOptIn)
 % function menuFileExamples_Callback(obj, BatchOptIn)
 % a callback to Menu->File->Example datasets, import an example dataset
@@ -10,20 +26,13 @@ function menuFileExamples_Callback(obj, BatchOptIn)
 % .Dataset -> [cell], dataset name as listed in MIB->Menu->File->Example datasets
 % .DirectoryName -> [cell], output directory only for DeepMIB projects
 
-% Copyright (C) 25.10.2022, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 %
 
 % specify default BatchOptIn
 BatchOpt = struct();
 BatchOpt.Dataset = {'Huh7 and model'};
-BatchOpt.Dataset{2} = {'Syntetic 2D Large spots','Syntetic 2D small spots','Syntetic 2D patch-wise',...
+BatchOpt.Dataset{2} = {'Syntetic 2D Large spots', 'Syntetic 2D small spots', 'Synthetic 2.5D large spots', 'Syntetic 2D patch-wise',...
     '2D EM membranes','2D LM nuclei','3D EM mitochondria','3D LM hair cells',...
     'LM 3D SIM ER','LM 3D STED','LM WF ER photobleaching',...
     'Huh7 and model','Trypanosoma and model', ...
@@ -61,7 +70,7 @@ else
     if strcmp(BatchOpt.DirectoryName{1}, 'Current MIB path'); BatchOpt.DirectoryName{1} = obj.mibModel.myPath; end
 end
 
-if ismember(BatchOpt.Dataset{1}, {'Syntetic 2D Large spots','Syntetic 2D small spots','Syntetic 2D patch-wise',...
+if ismember(BatchOpt.Dataset{1}, {'Synthetic 2D Large spots','Synthetic 2D small spots','Synthetic 2.5D large spots','Synthetic 2D patch-wise',...
              '2D EM membranes','2D LM nuclei','3D EM mitochondria','3D LM hair cells'})
     BatchOpt.DirectoryName{1} = uigetdir(BatchOpt.DirectoryName{1}, 'Select directory to unzip the project');
     if BatchOpt.DirectoryName{1} == 0; return; end
@@ -70,14 +79,16 @@ end
 if BatchOpt.showWaitbar; wb = waitbar(0, sprintf('Importing %s dataset\nPlease wait...', BatchOpt.Dataset{1}), 'Name', 'Example dataset'); end
 
 switch BatchOpt.Dataset{1}
-    case {'Syntetic 2D Large spots','Syntetic 2D small spots','Syntetic 2D patch-wise',...
+    case {'Synthetic 2D Large spots','Synthetic 2D small spots','Synthetic 2.5D large spots','Synthetic 2D patch-wise',...
              '2D EM membranes','2D LM nuclei','3D EM mitochondria','3D LM hair cells'}
         switch BatchOpt.Dataset{1}
-            case 'Syntetic 2D small spots'
+            case 'Synthetic 2D small spots'
                 url = 'http://mib.helsinki.fi/tutorials/datasets/2D_SmallSpots_3cl_Unet.zip';
-            case 'Syntetic 2D Large spots'
+            case 'Synthetic 2D Large spots'
                 url = 'http://mib.helsinki.fi/tutorials/datasets/2D_LargeSpots_2cl_DeepLabV3.zip';
-            case 'Syntetic 2D patch-wise'
+            case 'Synthetic 2.5D large spots'
+                url = 'http://mib.helsinki.fi/tutorials/datasets/25D_LargeSpots.zip';
+            case 'Synthetic 2D patch-wise'
                 url = 'http://mib.helsinki.fi/tutorials/datasets/2D_LargeSpots_Patchwise_DeepLabV3.zip';
             case '2D EM membranes'
                 url = 'http://mib.helsinki.fi/tutorials/deepmib/1_2DEM_Files.zip';

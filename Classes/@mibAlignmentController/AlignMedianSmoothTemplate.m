@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function AlignMedianSmoothTemplate(obj, parameters)
 % function AlignMedianSmoothTemplate(obj, parameters)
 % perform automatic alignment to the median-smoothed template dataset
@@ -11,13 +27,6 @@ function AlignMedianSmoothTemplate(obj, parameters)
 % .imgWidthForAnalysis - width of the image used for analysis, the datasets are downsampled to this value
 % .cpuParallelLimit - max value of parallel workers to use for parallel processing
 
-% Copyright (C) 20.01.2020, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 %
 
@@ -149,6 +158,7 @@ if loadShifts == 0
     % define usage of parallel computing
     if obj.BatchOpt.UseParallelComputing
         parforArg = parameters.cpuParallelLimit;    % Maximum number of workers running in parallel
+        if isempty(gcp('nocreate')); parpool(parforArg); end % create parpool
     else
         parforArg = 0;      % Maximum number of workers running in parallel
     end

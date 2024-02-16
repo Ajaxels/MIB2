@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function varargout = volrenAnimationGUI(varargin)
 % VOLRENANIMATIONGUI MATLAB code for volrenAnimationGUI.fig
 %      VOLRENANIMATIONGUI, by itself, creates a new VOLRENANIMATIONGUI or raises the existing
@@ -106,10 +122,10 @@ end
 
 % --- Executes when volrenAnimationGUI is resized.
 function volrenAnimationGUI_SizeChangedFcn(hObject, eventdata, handles)
-handles.toolsPanel.Position(1) = 5;
-handles.toolsPanel.Position(3) = handles.volrenAnimationGUI.Position(3)-10;
+handles.mibToolsPanel.Position(1) = 5;
+handles.mibToolsPanel.Position(3) = handles.volrenAnimationGUI.Position(3)-10;
 handles.keyFrameTable.Position(3) = handles.volrenAnimationGUI.Position(3)-10;
-handles.keyFrameTable.Position(2) = handles.toolsPanel.Position(2) + handles.toolsPanel.Position(4) + 10;
+handles.keyFrameTable.Position(2) = handles.mibToolsPanel.Position(2) + handles.mibToolsPanel.Position(4) + 10;
 handles.keyFrameTable.Position(4) = max([1 handles.volrenAnimationGUI.Position(4) - handles.keyFrameTable.Position(2) - 5]);
 end
 

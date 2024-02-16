@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function fnOut = saveMask(obj, filename, options)
 % function fnOut = saveMask(obj, filename, options)
 % save mask to a file
@@ -9,22 +25,16 @@ function fnOut = saveMask(obj, filename, options)
 % options: an optional structure with additional parameters
 % @li .Format - string with the output format, as in the Formats variable below, for example 'Matlab format (*.mask)'
 % @li .DestinationDirectory - string, with destination directory, if filename has no full path
-% @li .Saving3DPolicy - string, [TIF only] save images as 3D TIF file or as
-% a sequence of 2D files ('3D stack', '2D sequence')
+% @li .Saving3DPolicy - string, [TIF only] save images as 3D TIF file or as a sequence of 2D files ('3D stack', '2D sequence')
+% @li .FilenamePolicy - string, [mibCat, TIF, PNG only] policy for
+% generation of filenames ('Use existing name', 'Use new provided name')
 % @li .MaskColor - vector numeric [r g b] from 0 to 1 with the mask color
 % @li .showWaitbar - logical, show or not the waitbar
 % @li .silent  - logical, do not ask any questions and use default parameters
 %
 % Return values:
 % fnOut -> output mask filename
-%
-% Copyright (C) 10.09.2019, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
+
 % Updates
 %
 
@@ -43,6 +53,7 @@ Formats = {'*.mask',  'Matlab format (*.mask)'; ...
     '*.am',  'Amira mesh binary (*.am)'; ...
     '*.am',  'Amira mesh binary RLE compression SLOW (*.am)'; ...
     '*.h5',   'Hierarchical Data Format (*.h5)'; ...
+    '*.png',   'PNG format (*.png)'; ...
     '*.tif',  'TIF format (*.tif)'; ...
     '*.xml',   'Hierarchical Data Format with XML header (*.xml)'; ...
     '*.*',  'All Files (*.*)'
@@ -139,8 +150,9 @@ tic
 warning('off', 'MATLAB:handle_graphics:exceptions:SceneNode');
 if strcmp(options.Format, 'Matlab format (*.mask)')
     if options.showWaitbar
-        wb = waitbar(0, sprintf('%s\nPlease wait...', fnOut), 'Name', 'Saving the mask', 'WindowStyle', 'modal');
+        wb = waitbar(0, '', 'Name', 'Saving the mask', 'WindowStyle', 'modal');
         wb.Children.Title.Interpreter = 'none';
+        waitbar(0, wb, sprintf('%s\nPlease wait...', fnOut));
         drawnow;
     end
     maskImg = obj.getData('mask', 4, NaN);
@@ -175,8 +187,9 @@ else
     if options.showWaitbar
         if t1 ~= t2
             showLocalWaitbar = 1;
-            wb = waitbar(0, sprintf('Saving %s\nPlease wait...', options.Format), 'Name', 'Saving images...', 'WindowStyle', 'modal');
+            wb = waitbar(0, '', 'Name', 'Saving images...', 'WindowStyle', 'modal');
             wb.Children.Title.Interpreter = 'none';
+            waitbar(0, wb, sprintf('Saving %s\nPlease wait...', options.Format));
             drawnow;
             dT = t2-t1+1;
         end
@@ -278,6 +291,33 @@ else
                         HDFoptions.order = 'yxczt';
                         image2hdf5(fullfile(path, [filename '.h5']), mask, HDFoptions);
                 end
+            case 'PNG format (*.png)'
+                ImageDescription = {obj.meta('ImageDescription')};
+                resolution(1) = obj.meta('XResolution');
+                resolution(2) = obj.meta('YResolution');
+                if exist('savingOptions', 'var') == 0   % define parameters for the first time use
+                    savingOptions = struct('overwrite', 1, 'Comment', ImageDescription,...
+                        'XResolution', resolution(1), 'YResolution', resolution(2), ...
+                        'ResolutionUnit', 'Unknown', 'Reshape', 0);
+                    savingOptions.cmap = NaN;
+                end
+                savingOptions.showWaitbar = showWaitbar;
+                if isKey(obj.meta, 'SliceName') && numel(obj.meta('SliceName'))==size(mask,3)
+                    if t1 == t2
+                        savingOptions.SliceName = arrayfun(@(fn) sprintf('Mask_%s', cell2mat(fn)), obj.meta('SliceName'), 'UniformOutput', false);
+                    else
+                        savingOptions.SliceName = arrayfun(@(t, fn) sprintf('Mask_t%.3d_%s', t, cell2mat(fn)), repmat(t, [size(mask,3), 1]), obj.meta('SliceName'), 'UniformOutput', false);
+                    end
+                    if isfield(options, 'FilenamePolicy') && strcmp(options.FilenamePolicy, 'Use existing name')
+                        savingOptions.useOriginals = true;
+                    end
+                end
+                if isfield(options, 'FilenamePolicy') && strcmp(options.FilenamePolicy, 'Use new provided name')
+                    savingOptions.useOriginals = false;
+                end
+                mask = reshape(mask, [size(mask,1) size(mask,2) 1 size(mask,3)]);
+
+                result = mibImage2png(fullfile(path, fnOutLocal), mask, savingOptions);
             case 'TIF format (*.tif)'
                 ImageDescription = {obj.meta('ImageDescription')};
                 resolution(1) = obj.meta('XResolution');
@@ -292,9 +332,24 @@ else
                         end
                     end
                 end
+                if isKey(obj.meta, 'SliceName') && numel(obj.meta('SliceName'))==size(mask,3)
+                    if t1 == t2
+                        savingOptions.SliceName = arrayfun(@(fn) sprintf('Mask_%s', cell2mat(fn)), obj.meta('SliceName'), 'UniformOutput', false);
+                    else
+                        savingOptions.SliceName = arrayfun(@(t, fn) sprintf('Mask_t%.3d_%s', t, cell2mat(fn)), repmat(t, [size(mask,3), 1]), obj.meta('SliceName'), 'UniformOutput', false);
+                    end
+                    if isfield(options, 'FilenamePolicy') && strcmp(options.FilenamePolicy, 'Use existing name')
+                        savingOptions.useOriginals = true;
+                    end
+                end
+                if isfield(options, 'FilenamePolicy') && strcmp(options.FilenamePolicy, 'Use new provided name')
+                    savingOptions.useOriginals = false;
+                end
+                
                 savingOptions.showWaitbar = showWaitbar;  % show or not waitbar in ib_image2tiff
-                mask = reshape(mask,[size(mask,1) size(mask,2) 1 size(mask,3)]);
+                mask = reshape(mask, [size(mask,1) size(mask,2) 1 size(mask,3)]);
                 [result, savingOptions] = mibImage2tiff(fullfile(path, fnOutLocal), mask, savingOptions, ImageDescription);
+                if isfield(savingOptions, 'SliceName'); savingOptions = rmfield(savingOptions, 'SliceName'); end % remove SliceName field when saving series of 2D files
         end
         if showLocalWaitbar;    waitbar(t/dT, wb);    end
     end

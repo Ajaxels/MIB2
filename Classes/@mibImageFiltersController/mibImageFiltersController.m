@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibImageFiltersController < handle
     % @type mibImageFiltersController class is a template class for using with
     % GUI developed using appdesigner of Matlab
@@ -22,14 +38,6 @@ classdef mibImageFiltersController < handle
     % obj.startController('mibImageFiltersController', [], NaN);
     % @endcode
     
-    % Copyright (C) 17.09.2019, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-	% 
-	% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-	%
 	% Updates
 	%     
     
@@ -129,6 +137,10 @@ classdef mibImageFiltersController < handle
             % update certain parameters
             obj.ImageFilters.Bilateral.degreeOfSmoothing = num2str(obj.mibModel.I{obj.BatchOpt.id}.meta('MaxInt')^2*.01);
             
+            % WARNING!
+            % When adding filters, please also add them to mibBatchController.m
+            % after "obj.Sections(secIndex).Name = 'Panel -> Image filters';" line
+
             if verLessThan('Matlab', '9.8')
                 obj.BasicFiltersList = {'Average', 'Disk', 'DistanceMap', 'ElasticDistortion', 'Entropy', 'Frangi', 'Gaussian', 'Gradient', 'LoG', 'MathOps', 'Motion','Prewitt','Range', 'SaltAndPepper','Sobel','Std'};
             else
@@ -266,13 +278,13 @@ classdef mibImageFiltersController < handle
             % update font and size
             % you may need to replace "obj.View.handles.text1" with tag of any text field of your own GUI
             % % this function is not yet
-%             global Font;
-%             if ~isempty(Font)
-%               if obj.View.handles.text1.FontSize ~= Font.FontSize ...
-%                     || ~strcmp(obj.View.handles.text1.FontName, Font.FontName)
-%                   mibUpdateFontSize(obj.View.gui, Font);
-%               end
-%             end
+            global Font;
+            if ~isempty(Font)
+              if obj.View.handles.DatasetType.FontSize ~= Font.FontSize + 4 ...         % guide font size is 4 points smaller than in appdesigner
+                    || ~strcmp(obj.View.handles.DatasetType.FontName, Font.FontName)
+                  mibUpdateFontSize(obj.View.gui, Font);
+              end
+            end
             
 			obj.updateWidgets();
             
@@ -398,12 +410,85 @@ classdef mibImageFiltersController < handle
             obj.FilterNameValueChanged();
         end
         
+        function scrollWheel_Callback(obj, event)
+            % verticalScrollAmount = event.VerticalScrollAmount;
+            verticalScrollCount = event.VerticalScrollCount;
+            h = obj.View.gui.CurrentObject;
+            if isempty(h); return; end
+            
+            if obj.View.Figure.isControlPressed==0 && obj.View.Figure.isShiftPressed==0
+                return;
+            end
+
+            % define multiplierFactor
+            if obj.View.Figure.isControlPressed && obj.View.Figure.isShiftPressed
+                multiplierFactor = 10;
+            elseif obj.View.Figure.isControlPressed
+                multiplierFactor = 0.1;
+            elseif obj.View.Figure.isShiftPressed
+                multiplierFactor = 1;
+            end
+            
+            switch h.Type
+                case 'uieditfield'
+                    value = str2num(h.Value); %#ok<ST2NM>
+                    if numel(value) > 1; return; end
+                    
+                    % splitVal = strsplit(h.Value, '.');
+                    % multiplierFactor = 1;
+                    % if numel(splitVal) == 2
+                    %     nDigits = numel(splitVal{2});
+                    %     multiplierFactor = multiplierFactor / 10^nDigits;
+                    % end
+                    
+                    h.Value = num2str(value - verticalScrollCount*multiplierFactor);
+                % case 'uinumericeditfield'
+                %     splitVal = strsplit(num2str(h.Value), '.');
+                %     multiplierFactor = 1;
+                %     nDigits = 0;
+                %     if numel(splitVal) == 2
+                %         nDigits = numel(splitVal{2});
+                %         multiplierFactor = multiplierFactor / 10^nDigits;
+                %     end
+                %     value = round(h.Value - verticalScrollCount*multiplierFactor, nDigits);
+                %     value = max([h.Limits(1) value]);
+                %     value = min([h.Limits(2) value]);
+                %     h.Value = value;
+                case {'uispinner', 'uinumericeditfield'}
+                    % find number of floating digits
+                    % splitVal = strsplit(num2str(h.Value), '.');
+                    % multiplierFactor = 1;
+                    % nDigits = 0;
+                    % if numel(splitVal) == 2
+                    %     nDigits = numel(splitVal{2});
+                    %     multiplierFactor = multiplierFactor / 10^nDigits;
+                    % end
+                    % value = round(h.Value - verticalScrollCount*multiplierFactor, nDigits);
+                    if multiplierFactor < 1
+                        value = round(h.Value - verticalScrollCount*multiplierFactor, 3);
+                    else
+                        value = h.Value - verticalScrollCount*multiplierFactor;
+                    end
+                    value = max([h.Limits(1) value]);
+                    value = min([h.Limits(2) value]);
+                    h.Value = value;
+            end
+            obj.updateImageFiltersParameters(h, event);
+        end
+
         function updateImageFiltersParameters(obj, hWidget, event)
             % update obj.ImageFilters structure with parameters of filters
             subBatchOpt = obj.ImageFilters.(obj.View.handles.FilterName.Value);
             obj.ImageFilters.(obj.View.handles.FilterName.Value) = updateBatchOptFromGUI_Shared(subBatchOpt, hWidget);
-            obj.renderThumbnailPreview();
-            if obj.View.handles.AutopreviewCheckBox.Value; obj.PreviewButtonPushed(); end     % auto preview
+            try
+                obj.renderThumbnailPreview();
+                if obj.View.handles.AutopreviewCheckBox.Value % auto preview
+                    obj.PreviewButtonPushed(); 
+                end  
+            catch err
+
+            end
+
         end
         
         
@@ -421,7 +506,7 @@ classdef mibImageFiltersController < handle
                 obj.ParaHandles = {};
             end
             
-            if obj.MatlabR2019b
+            if obj.MatlabR2019b     % MatlabR2019b or newer
                 noRows = numel(obj.View.handles.GridLayoutParameters.RowHeight);    % get number of rows in the grid layout
                 hParent = obj.View.handles.GridLayoutParameters;
             else
@@ -481,9 +566,14 @@ classdef mibImageFiltersController < handle
                             else
                                 Limits = [-Inf Inf];
                             end
-                            obj.ParaHandles{index} = uieditfield(hParent, 'numeric', ...
-                                'Value', paraList.(paraNames{widgetId}){1}, 'Limits', Limits, 'RoundFractionalValues', RoundFractionalValues,...
-                                'Tooltip', Tooltips.(paraNames{widgetId}), ...
+                            % obj.ParaHandles{index} = uieditfield(hParent, 'numeric', ...
+                            %     'Value', paraList.(paraNames{widgetId}){1}, 'Limits', Limits, 'RoundFractionalValues', RoundFractionalValues,...
+                            %     'Tooltip', Tooltips.(paraNames{widgetId}), ...
+                            %     'ValueChangedFcn', @obj.updateImageFiltersParameters);
+                            obj.ParaHandles{index} = uispinner(hParent, ...
+                                'Value', paraList.(paraNames{widgetId}){1}, 'Limits', Limits, ...
+                                'RoundFractionalValues', RoundFractionalValues,...
+                                'Tooltip', Tooltips.(paraNames{widgetId}), ...                                %'UserData', userData, ...
                                 'ValueChangedFcn', @obj.updateImageFiltersParameters);
                         end
                     case 'logical'
@@ -664,6 +754,29 @@ classdef mibImageFiltersController < handle
                     notify(obj.mibModel, 'plotImage', eventdata);
                     obj.mibModel.preferences.Colors.ModelTransparency = currTransparency;
                 otherwise
+                    % convert to 8bit
+                    if ~isa(img, 'uint8')
+                        currViewPort = obj.mibModel.I{obj.mibModel.Id}.viewPort;
+                        max_int = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
+                        if ~obj.mibModel.mibLiveStretchCheck
+                            % convert to the 8bit image
+                            if size(img, 3) == 1
+                                colCh = obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel;
+                                if currViewPort.min(colCh) ~= 0 || currViewPort.max(colCh) ~= max_int || currViewPort.gamma(colCh) ~= 1
+                                    img = imadjust(img, [currViewPort.min(colCh)/max_int currViewPort.max(colCh)/max_int], [0 1], currViewPort.gamma(colCh));
+                                end
+                            else
+                                if max(currViewPort.min) > 0 || min(currViewPort.max) ~= max_int || sum(currViewPort.gamma) ~= 3
+                                    for colCh=1:3
+                                        img(:,:,colCh) = imadjust(img(:,:,colCh), ...
+                                            [currViewPort.min(colCh)/max_int currViewPort.max(colCh)/max_int], [0 1], currViewPort.gamma(colCh));
+                                    end
+                                end
+                            end
+                            img = uint8(img/256);
+                        end
+                    end
+
                     eventdata = ToggleEventData(img);   % send image to show in  mibView.handles.mibImageAxes as ToggleEventData class
                     notify(obj.mibModel, 'plotImage', eventdata);
             end

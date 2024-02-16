@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function getDefaultParameters(obj)
 % function getDefaultParameters()
 % Set default or/and stored from a previous session parameters of MIB
@@ -14,13 +30,6 @@ function getDefaultParameters(obj)
 % @code mibController.getDefaultParameters();  // get default parameters and restore preferences @endcode
 % @code obj.getDefaultParameters();   // Call within the class; get default parameters and restore preferences @endcode
 
-% Copyright (C) 04.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 %
 global mibPath;
@@ -32,6 +41,7 @@ if exist(prefsFn, 'file') ~= 0
     load(prefsFn); %#ok<LOAD>
     disp(['MIB parameters file: ', prefsFn]);
 end
+
 if ispc
     start_path = 'C:';
 else
@@ -52,9 +62,24 @@ if exist('mib_pars', 'var') && isfield(mib_pars, 'mibVersion')  %#ok<NODEF> % % 
             % fijiInstallationPath was used instead of FijiInstallationPath
             mib_pars.preferences = rmfield(mib_pars.preferences, 'ExternalDirs');
         end
+        % fix the keyshortcuts
+        if numel(mib_pars.preferences.KeyShortcuts.Action) < numel(obj.mibModel.preferences.KeyShortcuts.Action)
+            mib_pars.preferences.KeyShortcuts = obj.mibModel.preferences.KeyShortcuts;
+        end
+
         obj.mibModel.preferences = mibConcatenateStructures(obj.mibModel.preferences, mib_pars.preferences);
     elseif mib_pars.mibVersion == obj.mibVersionNumeric
         obj.mibModel.preferences = mib_pars.preferences; 
+        %obj.mibModel.preferences = mibConcatenateStructures(obj.mibModel.preferences, mib_pars.preferences);
+    end
+end
+
+% restore user's brushTravelDistance
+brushFn = fullfile(prefdir, 'mib_user.mat');
+if exist(brushFn, 'file') ~= 0
+    load(brushFn, 'Tiers');  % load Tiers variable
+    if exist('Tiers', 'var')
+        obj.mibModel.preferences.Users.Tiers = mibConcatenateStructures(obj.mibModel.preferences.Users.Tiers, Tiers);
     end
 end
 
@@ -202,6 +227,8 @@ end
 
 %% Define session settings structure
 % define default parameters for filters
+obj.mibModel.sessionSettings.prevCursorCoordinate = 0; % previous coordinate of mouse over the image axes to calculate mouse travel distance
+
 if ~isfield(obj.mibModel.sessionSettings, 'ImageFilters') || ~isfield(obj.mibModel.sessionSettings.ImageFilters, 'TestImg')
     % preload an image used for filter previews
     obj.mibModel.sessionSettings.ImageFilters.TestImg = imread(fullfile(mibPath, 'Resources', 'test_img_for_previews.png'));
@@ -752,6 +779,9 @@ obj.mibModel.sessionSettings.CLAHE.NBins = 256;
 obj.mibModel.sessionSettings.CLAHE.Distribution = 'uniform';
 obj.mibModel.sessionSettings.CLAHE.Alpha = 0.4;
 
+% add physical pixel size in meters
+pixelsPerInch = get(0, 'ScreenPixelsPerInch');
+obj.mibModel.sessionSettings.metersPerPixel = 0.0254/pixelsPerInch;
 end
 
 

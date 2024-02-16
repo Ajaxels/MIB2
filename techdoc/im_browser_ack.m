@@ -47,10 +47,10 @@
 % * <http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/#anisodiff *ANISODIFF*> function written by Peter Kovesi, 2000-2002 is used for anisotropic diffusion filtering of images 
 % * <http://www.loci.wisc.edu/software/bio-formats *BIO-FORMATS*> by Melissa Linkert, Curtis Rueden et al. 2002-2013  is utilized for reading of proprietary microscopy image formats using the <code>Bio</code> checkbox
 % * <http://www.cs.tut.fi/~foi/GCF-BM3D/ *BMxD external filters*> by Kostadin Dabov et al., Tampere University of Technology, Finland 2007-2014 can be used with MIB, when separately installed on the system to filter the images
-% *
-% <http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio *BWDISTSC*> for 3D Euclidean distance transform for variable data aspect ratio written by Yuriy Mishchenko (Toros University, 2007-2013) is used for separation of anisotropic objects in 3D and calculation of distance maps
+% * <http://www.mathworks.se/matlabcentral/fileexchange/15455-3d-euclidean-distance-transform-for-variable-data-aspect-ratio *BWDISTSC*> for 3D Euclidean distance transform for variable data aspect ratio written by Yuriy Mishchenko (Toros University, 2007-2013) is used for separation of anisotropic objects in 3D and calculation of distance maps
 % * <https://se.mathworks.com/matlabcentral/fileexchange/38703-custom-ginput *Custom GINPUT*>, written by Jiro Doke (MathWorks 2016) to get coordinates of a clicked point
-% * <https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays CELL MIGRATION IN SCRATCH WOUND ASSAYS*> by Constantino Carlos Reyes-Aldasoro, City, University of London was used for the wound healing assay tool
+% * <https://se.mathworks.com/matlabcentral/fileexchange/67932-cell-migration-in-scratch-wound-assays *CELL MIGRATION IN SCRATCH WOUND ASSAYS*> by Constantino Carlos Reyes-Aldasoro, City, University of London was used for the wound healing assay tool
+% * <https://se.mathworks.com/matlabcentral/fileexchange/80656-uifilednd *DnD_uifigure: drag & drop functionality for AppDesigner components*> written by Xiangrui Li (the Ohio State University, 2020-2023)
 % * <https://se.mathworks.com/matlabcentral/fileexchange/53511-drag-drop-functionality-for-java-gui-components *Drag & Drop functionality for JAVA GUI components*> written by Maarten van der Seijs (Delft University of Technology, the Netherlands, 2015)
 % * <http://www.peterkovesi.com/projects/segmentation/ *DRAWREGIONBOUNDARIES*> a function to draw boundaries of labeled regions in an image when working with brush, written by Peter Kovesi (Centre for Exploration Targeting, School of Earth and Environment, The University of Western Australia, 2013)
 % * <https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m *DRIFTY_SHIFTY_DELUXE*>, written by Joshua D. Sugar (Sandia National Laboratories, Livermore, CA 2014); part of code from this function was adopted in mibCalcShifts.m
@@ -85,6 +85,8 @@
 % * <http://www.mathworks.com/matlabcentral/fileexchange/26940-render-rgb-text-over-rgb-or-grayscale-image *RENDERTEXT*> function by Davide Di Gloria (Universita di Genova, 2010) is utilized for addition of text to image
 % * Rendering with Fiji is based on <http://www.mathworks.com/matlabcentral/fileexchange/32344-hardware-accelerated-3d-viewer-for-matlab *Hardware accelerated 3D viewer for MATLAB*> written by Jean-Yves Tinevez (Institut Pasteur, 2011)
 % * Rendering with MATLAB is using <http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m *VIEW3D*> function written by Torsten Vogel, 1999  
+% * SAM segmentation is using networks and code from <https://segment-anything.com/ *Segment-anything*> written by Kirillov A, Mintun E, Ravi N, Mao H, Rolland C, Gustafson L, Xiao T, Whitehead S, Berg AC, Lo W-Y, Dollar P, Girshick R, Meta AI, 2023
+% * SAM segmentation is using networks and code from <https://github.com/computational-cell-analytics/micro-sam *Segment-anything for Microscopy*> written by Archit A, Nair S, Khalid N, Hilt P, Rajashekar V, Freitag M, Gupta S, Dengel A, Ahmed S, Pape C, 2023
 % * <https://www.epfl.ch/labs/ivrl/research/slic-superpixels *SLIC (Simple Linear Iterative Clustering)*> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland, 2015 was utilized for the superpixels mode of the Brush tool and for the Graphcut segmentation.
 % * <http://www.mathworks.com/matlabcentral/fileexchange/20922-stlwrite-filename--varargin- *STLWRITE*> by Sven Holcombe (University of Michigan 2008-2015) for saving models using the STL format
 % * <https://se.mathworks.com/matlabcentral/fileexchange/32555-uigetfile_n_dir-select-multiple-files-and-directories *UIGETFILE_N_DIR*> by Tiago / Peugas is used for selection of multiple directories
@@ -105,8 +107,11 @@
 % * <https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/ Sasha Trubetskoy, List of 20 Simple, Distinct Colors>
 %
 %
-% Some icons used in MIB were provided by Icons8.com
+% *ICONS AND IMAGES*
+% 
+% * Some icons used in MIB were provided by Icons8.com
 % (<https://icons8.com https://icons8.com>), <https://icons8.com/license/ license information>
+% * Some images were generated using <https://stability.ai/blog/stable-diffusion-public-release stable-diffusion> image generative AI
 %
 % *OLDER SCRIPTS*
 %%

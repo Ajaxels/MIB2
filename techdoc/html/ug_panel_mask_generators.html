@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Mask Generators panel</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_panel_mask_generators.m"><style>
+      --><title>Mask Generators panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_panel_mask_generators.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -65,6 +65,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
+.dropdown {   font-family: monospace; 	border: 1px solid #aaa; 	border-radius: 0.2em; 	background-color: #fff; 	background-color: #e0f5ff; 	background-color: #e8f5e8; 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
 .kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
@@ -145,11 +146,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -516,7 +516,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
 </div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Mask Generators panel</h1><!--introduction-->
-<p>This panel hosts several ways of automatic mask generation. Specific areas of interest from the generated mask may further be selected for segmentation. <a href="ug_gui_data_layers.html">See more about masks</a>.</p>
+<p>The Mask Generators panel is a feature that provides several methods for automatic mask generation. It allows users to generate masks automatically based on specific criteria or algorithms. These masks can then be used for various purposes, such as segmentation or selecting specific areas of interest (<a href="ug_gui_data_layers.html">see more about masks</a>)</p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
@@ -526,31 +526,26 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li><a href="#6">Strel Filter</a></li></ul></div><h2 id="1">Common fields</h2>
 <p>There are several common fields that do not depend on type of the selected mask generator.</p>
 <p><img class="image-fit" src="images\PanelsMaskGeneratorCommon.jpg" alt=""> </p>
-<div><ul><li>1. The <b>Filter type</b> combo box, allows to select one of the possible mask generators</li>
-<li>2. The <b>Mode</b> radio buttons:</li></ul></div>
+<div><ul><li>1. The <span class="dropdown">Filter type &#9660;</span>, allows to select one of the possible mask generators</li>
+<li>2. The <span class="kbd">&#9673; <b>Mode</b></span> radio buttons:</li></ul></div>
 <ul style="position:relative; left:35px;">
-<li><b>current</b>, generate mask for the currently shown slice;</li>
-<li><b>2D all</b>, generate mask for the whole dataset using the 2D mode,
-<em>i.e.</em> slice by slice;</li>
-<li><b>3D</b>, generate mask for the whole dataset using the 3D mode;</li>
+<li><span class="kbd">&#9673; <b>current</b></span>, this mode generates a mask specifically for the currently shown slice. It focuses on the selected slice and creates a mask based on the criteria or algorithm chosen</li>
+<li><span class="kbd">&#9673; <b>2D all</b></span>, in this mode, the mask is generated for the whole dataset using the 2D approach. It generates masks slice by slice, considering each slice individually</li>
+<li><span class="kbd">&#9673; <b>3D</b></span>, this mode generates a mask for the entire dataset using the 3D approach. It takes into account the entire volume of the dataset to create a comprehensive mask</li>
 </ul>
-<p>the whole dataset in the 2D mode, <i>i.e.</i> slice by slice; <i>3D</i> use the 3D mode for the mask generation</p>
-<p>3. <b>Do it</b> button:</p>
+<p>3. The <span class="kbd">Do it</span> button:</p>
 <ul style="position:relative; left:35px;">
-<li>
--<b>left mouse click</b>, starts the selected generator. The existing mask will be deleted.
-</li>
-<li>
--<b>right mouse click + Do new mask</b>, starts the selected generator.
-The existing mask will be deleted.
+<li><b>the left mouse click</b>, on the button starts the selected generator. The existing mask will be deleted</li>
+<li><b>right mouse click + Do new mask</b>, starts the selected generator. The existing mask will be deleted
 <br>
-<img class="image-fit" src="images\PanelsMaskGeneratorDropdown.png">
-</li>
-<li>
--<b>right mouse click + Generate new mask and add it to the existing mask</b>, the generated mask will be added to the existing mask.
-This option may be
-used for multi-dimensional filtering: 1. run Generator for XY; 2. Change
-dimension by pressing |'XZ'| or |'YZ'| button in the Toolbar; 3. Run Generator again with the |Generate new mask and add it to the existing mask| option.
+<img class="image-fit" src="images\PanelsMaskGeneratorDropdown.png"></li>
+<li><b>right mouse click + Generate new mask and add it to the existing mask</b>, the generated mask will be added to the existing mask.
+This option may be used for multi-dimensional filtering:
+<ol>
+<li>run Generator for XY</li>
+<li>Change dimension by pressing |'XZ'| or |'YZ'| button in the Toolbar</li>
+<li>Run Generator again with the |Generate new mask and add it to the existing mask| option</li>
+</ol>
 </li>
 </ul>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
@@ -583,7 +578,7 @@ dimension by pressing |'XZ'| or |'YZ'| button in the Toolbar; 3. Run Generator a
 <div><ul><li><b>H-minima transform</b> - suppresses all minima in the grayscale image whose depth is less than H-value. Regional minima are connected components of pixels with a constant intensity value (t) whose external boundary pixels all have a value greater than t. The resulting image is then thresholded using the provided <code>Threshold</code> value.</li></ul></div>
 <div><ul><li><b>Regional maxima</b> - based on <code>imregionalmax</code> function of MATLAB. Returns the binary mask that identifies the locations of the regional maxima in the image. In mask, pixels that are set to 1 identify regional maxima; all other pixels are set to 0. Regional maxima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a lower value.</li></ul></div>
 <div><ul><li><b>Regional minima</b> - based on <code>imregionalmin</code> function of MATLAB. The output binary mask has value 1 corresponding to the pixels of the image that belong to regional minima and 0 otherwise. Regional minima are connected components of pixels with a constant intensity value, and whose external boundary pixels all have a higher value.</li></ul></div><h2 id="6">Strel Filter</h2>
-<p>Generate mask based on morphological image opening and black-and-white thresholding. The function first performs morphological bottom-hat (<code>Black on white</code> is checked) or top-hat (<code>Black on white</code> is unchecked) filtering of the image. The top-hat filtering computes the morphological opening of the image (using <code>imopen</code>) and then subtracts the result from the original image. The result is then black and white thresholded with parameter in the <code>B/W threshold</code> edit box.</p>
+<p>Generate mask based on morphological image opening and black-and-white thresholding. The function first performs morphological bottom-hat (<span class="kbd">[&#10003;] <b>Black on white</b></span> is checked) or top-hat (<span class="kbd">[&#10003;] <b>Black on white</b></span> is unchecked) filtering of the image. The top-hat filtering computes the morphological opening of the image (using <code>imopen</code>) and then subtracts the result from the original image. The result is then black and white thresholded with parameter in the <span class="dropdown">B/W threshold</span> edit box.</p>
 <p><img class="image-fit" src="images\PanelsMaskGeneratorStrel.png" alt=""> </p>
 <div><ol><li><b>Strel size</b>, defines size of the structural element (<code>disk</code> type) for <code>imtophat</code> and <code>imbothat</code> filtering.</li>
 <li>The <span class="kbd">[&#10003;] <b>Fill</b></span> checkbox, check it to fill holes in the resulted <code>Mask</code> image.</li>
@@ -598,56 +593,53 @@ dimension by pressing |'XZ'| or |'YZ'| button in the Toolbar; 3. Run Generator a
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Mask Generators panel
-% This panel hosts several ways of automatic mask generation. Specific areas of interest from the generated mask may 
-% further be selected for segmentation. <ug_gui_data_layers.html See more about masks>.
+% The Mask Generators panel is a feature that provides several methods for automatic mask generation. It allows users to generate masks automatically based on specific criteria or algorithms. 
+% These masks can then be used for various purposes, such as segmentation or selecting specific areas of interest
+% (<ug_gui_data_layers.html see more about masks>)
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+%
 %% Common fields
+%
 % There are several common fields that do not depend on type of the selected mask
 % generator.
 %
 % <<images\PanelsMaskGeneratorCommon.jpg>>
 % 
-% * 1. The *Filter type* combo box, allows to select one of the possible mask
+% * 1. The [class.dropdown]Filter type &#9660;[/class], allows to select one of the possible mask
 % generators
-% * 2. The *Mode* radio buttons:
+% * 2. The [class.kbd]&#9673; *Mode*[/class] radio buttons:
 %
 %
 % <html lang="en">
 % <ul style="position:relative; left:35px;">
-% <li><b>current</b>, generate mask for the currently shown slice;</li>
-% <li><b>2D all</b>, generate mask for the whole dataset using the 2D mode,
-% <em>i.e.</em> slice by slice;</li>
-% <li><b>3D</b>, generate mask for the whole dataset using the 3D mode;</li>
+% <li><span class="kbd">&#9673; <b>current</b></span>, this mode generates a mask specifically for the currently shown slice. It focuses on the selected slice and creates a mask based on the criteria or algorithm chosen</li>
+% <li><span class="kbd">&#9673; <b>2D all</b></span>, in this mode, the mask is generated for the whole dataset using the 2D approach. It generates masks slice by slice, considering each slice individually</li>
+% <li><span class="kbd">&#9673; <b>3D</b></span>, this mode generates a mask for the entire dataset using the 3D approach. It takes into account the entire volume of the dataset to create a comprehensive mask</li>
 % </ul>
 % </html>
 %
-% the whole dataset in the 2D mode, _i.e._ slice by slice; _3D_ use the 3D mode for the mask generation
-%
-% 3. *Do it* button:
+% 3. The [class.kbd]Do it[/class] button:
 %
 %
 % <html lang="en">
 % <ul style="position:relative; left:35px;">
-% <li> 
-% -<b>left mouse click</b>, starts the selected generator. The existing mask will be deleted.
-% </li>
-% <li> 
-% -<b>right mouse click + Do new mask</b>, starts the selected generator.
-% The existing mask will be deleted.
+% <li><b>the left mouse click</b>, on the button starts the selected generator. The existing mask will be deleted</li>
+% <li><b>right mouse click + Do new mask</b>, starts the selected generator. The existing mask will be deleted
 <br>
-% <img src="images\PanelsMaskGeneratorDropdown.png">
-% </li>
-% <li> 
-% -<b>right mouse click + Generate new mask and add it to the existing mask</b>, the generated mask will be added to the existing mask.
-% This option may be
-% used for multi-dimensional filtering: 1. run Generator for XY; 2. Change
-% dimension by pressing |'XZ'| or |'YZ'| button in the Toolbar; 3. Run Generator again with the |Generate new mask and add it to the existing mask| option.
+% <img src="images\PanelsMaskGeneratorDropdown.png"></li>
+% <li><b>right mouse click + Generate new mask and add it to the existing mask</b>, the generated mask will be added to the existing mask.
+% This option may be used for multi-dimensional filtering:
+% <ol>
+% <li>run Generator for XY</li>
+% <li>Change dimension by pressing |'XZ'| or |'YZ'| button in the Toolbar</li>
+% <li>Run Generator again with the |Generate new mask and add it to the existing mask| option</li>
+% </ol>
 % </li>
 % </ul>
 % </html>
@@ -722,12 +714,11 @@ dimension by pressing |'XZ'| or |'YZ'| button in the Toolbar; 3. Run Generator a
 %
 %% Strel Filter
 % Generate mask based on morphological image opening and black-and-white
-% thresholding. The function first performs morphological bottom-hat (|Black on white| is checked)
-% or top-hat (|Black on white| is unchecked) filtering of the image. 
+% thresholding. The function first performs morphological bottom-hat ([class.kbd][&#10003;] *Black on white*[/class] is checked)
+% or top-hat ([class.kbd][&#10003;] *Black on white*[/class] is unchecked) filtering of the image. 
 % The top-hat filtering computes the morphological opening of the image (using |imopen|)
 % and then subtracts the result from the original image. The result is then
-% black and white thresholded with parameter in the |B/W threshold| edit
-% box.
+% black and white thresholded with parameter in the [class.dropdown]B/W threshold[/class] edit box.
 %
 % <<images\PanelsMaskGeneratorStrel.png>>
 %
@@ -744,6 +735,17 @@ dimension by pressing |'XZ'| or |'YZ'| button in the Toolbar; 3. Run Generator a
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
 %%
 % [cssClasses]
+% .dropdown { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	border-radius: 0.2em; 
+% 	background-color: #fff; 
+% 	background-color: #e0f5ff; 
+% 	background-color: #e8f5e8; 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
 % .kbd { 
 %   font-family: monospace;
 % 	border: 1px solid #aaa; 

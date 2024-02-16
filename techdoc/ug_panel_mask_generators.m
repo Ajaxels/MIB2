@@ -1,49 +1,46 @@
 %% Mask Generators panel
-% This panel hosts several ways of automatic mask generation. Specific areas of interest from the generated mask may 
-% further be selected for segmentation. <ug_gui_data_layers.html See more about masks>.
+% The Mask Generators panel is a feature that provides several methods for automatic mask generation. It allows users to generate masks automatically based on specific criteria or algorithms. 
+% These masks can then be used for various purposes, such as segmentation or selecting specific areas of interest
+% (<ug_gui_data_layers.html see more about masks>)
 %
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
+%
 %% Common fields
+%
 % There are several common fields that do not depend on type of the selected mask
 % generator.
 %
 % <<images\PanelsMaskGeneratorCommon.jpg>>
 % 
-% * 1. The *Filter type* combo box, allows to select one of the possible mask
+% * 1. The [class.dropdown]Filter type &#9660;[/class], allows to select one of the possible mask
 % generators
-% * 2. The *Mode* radio buttons:
+% * 2. The [class.kbd]&#9673; *Mode*[/class] radio buttons:
 %
 %
 % <html>
 % <ul style="position:relative; left:35px;">
-% <li><b>current</b>, generate mask for the currently shown slice;</li>
-% <li><b>2D all</b>, generate mask for the whole dataset using the 2D mode,
-% <em>i.e.</em> slice by slice;</li>
-% <li><b>3D</b>, generate mask for the whole dataset using the 3D mode;</li>
+% <li><span class="kbd">&#9673; <b>current</b></span>, this mode generates a mask specifically for the currently shown slice. It focuses on the selected slice and creates a mask based on the criteria or algorithm chosen</li>
+% <li><span class="kbd">&#9673; <b>2D all</b></span>, in this mode, the mask is generated for the whole dataset using the 2D approach. It generates masks slice by slice, considering each slice individually</li>
+% <li><span class="kbd">&#9673; <b>3D</b></span>, this mode generates a mask for the entire dataset using the 3D approach. It takes into account the entire volume of the dataset to create a comprehensive mask</li>
 % </ul>
 % </html>
 %
-% the whole dataset in the 2D mode, _i.e._ slice by slice; _3D_ use the 3D mode for the mask generation
-%
-% 3. *Do it* button:
+% 3. The [class.kbd]Do it[/class] button:
 %
 %
 % <html>
 % <ul style="position:relative; left:35px;">
-% <li> 
-% -<b>left mouse click</b>, starts the selected generator. The existing mask will be deleted.
-% </li>
-% <li> 
-% -<b>right mouse click + Do new mask</b>, starts the selected generator.
-% The existing mask will be deleted.<br>
-% <img src="images\PanelsMaskGeneratorDropdown.png">
-% </li>
-% <li> 
-% -<b>right mouse click + Generate new mask and add it to the existing mask</b>, the generated mask will be added to the existing mask.
-% This option may be
-% used for multi-dimensional filtering: 1. run Generator for XY; 2. Change
-% dimension by pressing |'XZ'| or |'YZ'| button in the Toolbar; 3. Run Generator again with the |Generate new mask and add it to the existing mask| option.
+% <li><b>the left mouse click</b>, on the button starts the selected generator. The existing mask will be deleted</li>
+% <li><b>right mouse click + Do new mask</b>, starts the selected generator. The existing mask will be deleted<br>
+% <img src="images\PanelsMaskGeneratorDropdown.png"></li>
+% <li><b>right mouse click + Generate new mask and add it to the existing mask</b>, the generated mask will be added to the existing mask.
+% This option may be used for multi-dimensional filtering:
+% <ol>
+% <li>run Generator for XY</li>
+% <li>Change dimension by pressing |'XZ'| or |'YZ'| button in the Toolbar</li>
+% <li>Run Generator again with the |Generate new mask and add it to the existing mask| option</li>
+% </ol>
 % </li>
 % </ul>
 % </html>
@@ -117,12 +114,11 @@
 %
 %% Strel Filter
 % Generate mask based on morphological image opening and black-and-white
-% thresholding. The function first performs morphological bottom-hat (|Black on white| is checked)
-% or top-hat (|Black on white| is unchecked) filtering of the image. 
+% thresholding. The function first performs morphological bottom-hat ([class.kbd][&#10003;] *Black on white*[/class] is checked)
+% or top-hat ([class.kbd][&#10003;] *Black on white*[/class] is unchecked) filtering of the image. 
 % The top-hat filtering computes the morphological opening of the image (using |imopen|)
 % and then subtracts the result from the original image. The result is then
-% black and white thresholded with parameter in the |B/W threshold| edit
-% box.
+% black and white thresholded with parameter in the [class.dropdown]B/W threshold[/class] edit box.
 %
 % <<images\PanelsMaskGeneratorStrel.png>>
 %
@@ -139,6 +135,17 @@
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
 %%
 % [cssClasses]
+% .dropdown { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	border-radius: 0.2em; 
+% 	background-color: #fff; 
+% 	background-color: #e0f5ff; 
+% 	background-color: #e8f5e8; 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
 % .kbd { 
 %   font-family: monospace;
 % 	border: 1px solid #aaa; 

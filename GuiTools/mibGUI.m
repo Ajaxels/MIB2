@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function varargout = mibGUI(varargin)
 % MIBGUI MATLAB code for mibGUI.fig
 %      MIBGUI, by itself, creates a new MIBGUI or raises the existing
@@ -22,7 +38,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 25-Oct-2022 18:34:08
+% Last Modified by GUIDE v2.5 12-Feb-2024 16:00:54
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -58,11 +74,6 @@ if ~verLessThan('matlab', '8.4') % handles.mibController.matlabVersion >= 8.4 % 
 else
     handles.mibGUI.Renderer = 'opengl';
 end
-title = ['Microscopy Image Browser ' handles.mibController.mibVersion];
-if isdeployed
-    title = [title ' deployed version']; 
-end
-handles.mibGUI.Name = title;
 
 % disable widgets that are not compatible with mac and linux
 if ~ispc()
@@ -153,8 +164,28 @@ set(handles.mibPixelInfoTxt2, 'uicontextmenu', handles.mibPixelInfo_cm);
 % adding context menus for Materials table
 handles.mibSegmentationTable_cm = uicontextmenu('Parent',handles.mibGUI);
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show selected material only', 'Callback', {@mibSegmentationTable_cm_Callback, 'showselected'});
-uimenu(handles.mibSegmentationTable_cm, 'Label', 'Rename...', 'Separator', 'on', 'Callback', {@mibSegmentationTable_cm_Callback, 'rename'});
+uimenu(handles.mibSegmentationTable_cm, 'Label', 'Rename... (F2)', 'Separator', 'on', 'Callback', {@mibSegmentationTable_cm_Callback, 'rename'});
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Set color...', 'Callback', {@mibSegmentationTable_cm_Callback, 'set color'});
+
+h0=uimenu(handles.mibSegmentationTable_cm,'label','Color scheme...');
+uimenu(h0,'label','Default, 6 colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Default, 6 colors'});
+uimenu(h0,'label','Distinct colors, 20 colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Distinct colors, 20 colors'});
+uimenu(h0,'label','Random Colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Random Colors'});
+uimenu(h0,'label','Qualitative (Monte Carlo->Half Baked), 3-12 colors', 'Separator','on', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Qualitative (Monte Carlo->Half Baked), 3-12 colors'});
+uimenu(h0,'label','Diverging (Deep Bronze->Deep Teal), 3-11 colors','Separator','on', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Diverging (Deep Bronze->Deep Teal), 3-11 colors'});
+uimenu(h0,'label','Diverging (Ripe Plum->Kaitoke Green), 3-11 colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Diverging (Ripe Plum->Kaitoke Green), 3-11 colors'});
+uimenu(h0,'label','Diverging (Bordeaux->Green Vogue), 3-11 colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Diverging (Bordeaux->Green Vogue), 3-11 colors'});
+uimenu(h0,'label','Diverging (Carmine->Bay of Many), 3-11 colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Diverging (Carmine->Bay of Many), 3-11 colors'});
+uimenu(h0,'label','Sequential (Kaitoke Green), 3-9 colors', 'Separator','on', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Sequential (Kaitoke Green), 3-9 colors'});
+uimenu(h0,'label','Sequential (Catalina Blue), 3-9 colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Sequential (Catalina Blue), 3-9 colors'});
+uimenu(h0,'label','Sequential (Maroon), 3-9 colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Sequential (Maroon), 3-9 colors'});
+uimenu(h0,'label','Sequential (Astronaut Blue), 3-9 colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Sequential (Astronaut Blue), 3-9 colors'});
+uimenu(h0,'label','Sequential (Downriver), 3-9 colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Sequential (Downriver), 3-9 colors'});
+uimenu(h0,'label','Matlab Jet', 'Separator','on', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Matlab Jet'});
+uimenu(h0,'label','Matlab HSV', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Matlab HSV'});
+uimenu(h0,'label','Make these colors as default', 'Separator','on', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'current2default'});
+uimenu(h0,'label','Update colors from default', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'default2current'});
+
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Get statistics...', 'Callback', {@mibSegmentationTable_cm_Callback, 'statistics'});
 h1=uimenu(handles.mibSegmentationTable_cm,'label','Material to Selection...','Separator','on');
 uimenu(h1,'label','NEW (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'model', 'selection', '2D, Slice', 'replace'});
@@ -226,6 +257,17 @@ handles.mibMaskGenBtn.UIContextMenu = handles.mask_cm;
 
 handles.mibSegmDragDropInfoText.String = sprintf('Control+Mouse -> move selected object\nShift+Mouse -> move all objects');
 
+% addinig context menu to main panels
+handles.mibMainPanels_cm = uicontextmenu('Parent', handles.mibGUI);
+uimenu(handles.mibMainPanels_cm, 'Label', 'Show the Path panel', 'Checked', 'on', 'Callback', {@mibHidePanels, 'path'});
+uimenu(handles.mibMainPanels_cm, 'Label', 'Show the Selection, View settings and Image filter panels', 'Checked', 'on', 'Callback', {@mibHidePanels, 'bottom'});
+handles.mibViewPanel.UIContextMenu = handles.mibMainPanels_cm;
+handles.mibPathPanel.UIContextMenu = handles.mibMainPanels_cm;
+handles.mibSelectionPanel.UIContextMenu = handles.mibMainPanels_cm;
+handles.mibViewSettingsPanel.UIContextMenu = handles.mibMainPanels_cm;
+handles.mibToolsPanel.UIContextMenu = handles.mibMainPanels_cm;
+
+
 %%
 % Populate the recent directories popupmenu
 if ~isempty(handles.mibController.mibModel.preferences.System.Dirs.RecentDirs)
@@ -287,6 +329,8 @@ handles.mibSegmObjectPickerPanel.Parent = handles.mibSegmentationPanel;
 handles.mibSegmObjectPickerPanel.Position = pos;
 handles.mibSegmObjectPickerPanelSub2.Parent = handles.mibSegmObjectPickerPanelSub.Parent;
 handles.mibSegmObjectPickerPanelSub2.Position = handles.mibSegmObjectPickerPanelSub.Position;
+handles.mibSegmSAMPanel.Parent = handles.mibSegmentationPanel;
+handles.mibSegmSAMPanel.Position = pos;
 
 % Mask generator panels
 handles.mibStrelPanel.Parent = handles.mibFrangiPanel.Parent;
@@ -328,7 +372,7 @@ if numel(customContents1) > 2
                         % add labels for plugins, add spaces between
                         % capital latters and make all letters except first
                         % to small
-                        if ~strcmp(customContents2(customDirIdx2).name, 'MCcalc')   % keep MCcalc as an exception
+                        if ~strcmp(customContents2(customDirIdx2).name, 'MCcalc') && ~strcmp(customContents2(customDirIdx2).name, 'MCcalc2')  % keep MCcalc as an exception
                             uimenu(hSubmenu,'Label', [customContents2(customDirIdx2).name(1) regexprep(customContents2(customDirIdx2).name(2:end), '([A-Z][a-z])', ' ${lower($1)}')], 'Callback', (@(src, event) handles.mibController.startPlugin(customContents2(customDirIdx2).name)));
                         else    
                             uimenu(hSubmenu,'Label', customContents2(customDirIdx2).name, 'Callback', (@(src, event) handles.mibController.startPlugin(customContents2(customDirIdx2).name)));
@@ -638,13 +682,23 @@ handles.mibPathEdit.String = selectedDir;
 mibPathEdit_Callback(handles.mibPathEdit, eventdata, handles);
 end
 
-function mibSegmentationTable_cm_Callback(hObject, ~, parameter)
+function mibSegmentationTable_cm_Callback(hObject, ~, parameter, parameter2)
 % a callback for context menu for handles.mibSegmentationTable_cm
+%
+% Parameters:
+% parameter: string specifying the function that has been selected
+% parameter2: string with additional parameter, for example, selected default color scheme
+if nargin < 4; parameter2 = []; end
+
 handles = guidata(hObject);
 if isstruct(parameter)   % call from the Models menu entry
     parameter = 'statistics';
 end
-handles.mibController.mibSegmentationTable_cm_Callback(hObject, parameter);
+if strcmp(parameter, 'setColorScheme')
+    handles.mibController.mibModel.setDefaultSegmentationColorPalette(parameter2);
+else
+    handles.mibController.mibSegmentationTable_cm_Callback(hObject, parameter);
+end
 end
 
 function mibPixelInfo_Callback(hObject, ~, parameter)
@@ -858,6 +912,28 @@ handles.mibChangeTimeSlider.UserData = options;
 guidata(handles.mibGUI, handles);
 end
 
+function mibHidePanels(hObject, ~, parameter)
+% function mibHidePanels(hObject, ~, parameter)
+% callbacks to hide/show path panel at the top as well as a block of bottom
+% panels in MIB (Selection, View settings, Image filters)
+handles = guidata(hObject);
+if strcmp(hObject.Checked, 'on')
+    hObject.Checked = 'off';
+    resizeParameters.panelShift = false;     % set fakse to hide the panels
+else
+    hObject.Checked = 'on';
+    resizeParameters.panelShift = true;    % set true to show the panels        
+end
+   
+switch parameter
+    case 'path'
+        resizeParameters.name = 'mibPathPanel';
+    case 'bottom'
+        resizeParameters.name = 'mibToolsPanel'; % the bottom panel with tools
+end
+handles.mibController.mibGUI_SizeChangedFcn(resizeParameters);
+end
+
 %% --------------------- SEGMENTATION PANEL CALLBACKS ---------------------
 function mibCreateModelBtn_Callback(~, ~, handles)
 % --- Executes on button press in mibCreateModelBtn.
@@ -879,7 +955,7 @@ function mibRemoveMaterialBtn_Callback(~, ~, handles)
 handles.mibController.mibRemoveMaterialBtn_Callback();
 end
 
-function mibSegmentationTable_CellSelectionCallback(~, eventdata, handles)
+function mibSegmentationTable_CellSelectionCallback(hObject, eventdata, handles)
 % --- Executes when selected cell(s) is changed in mibSegmentationTable.
 handles.mibController.mibSegmentationTable_CellSelectionCallback(eventdata);
 end
@@ -1005,7 +1081,7 @@ switch parameter
         end
         defaultAnswer = {num2str(round(sliderStep(1)*maxVal))};
         answer = mibInputDlg({mibPath}, prompt, 'Set step...', defaultAnswer);
-        if isempty(answer); return; end;
+        if isempty(answer); return; end
         
         if str2double(answer{1})/maxVal > 1 || str2double(answer{1}) <= 0
             errordlg(sprintf('The step should be between 1 and %d!', maxVal),'Wrong step!');
@@ -1090,7 +1166,6 @@ else        % region growing
 end
 end
 
-
 % --- Executes on button press in mibSegmDragDropShift buttons.
 function mibSegmDragDropShift_Callback(hObject, eventdata, handles)
 modifier = handles.mibGUI.CurrentModifier;   % change size of the brush tool, when the Ctrl key is pressed
@@ -1114,6 +1189,18 @@ if handles.mibActions3dCheck.Value == 1 || strcmp(modifier, 'shift')
 else
     handles.mibController.mibGUI_WindowButtonUpDragAndDropFcn('2D, Slice', dX, dY);
 end
+end
+
+function mibSegmSAMPanel_Callbacks(hObject, eventdata, handles)
+% callbacks for widgets of handles.mibSegmSAMPanel
+parameter = hObject.Tag;
+handles.mibController.mibSegmSAMPanel_Callbacks(parameter);
+end
+
+% --- Executes on button press in mibSegmentationRecolor.
+function mibSegmentationRecolor_Callback(hObject, eventdata, handles)
+% recolor color map for 65535+ models
+handles.mibController.mibRecolorLabels();
 end
 
 %% --------------------- ROI PANEL CALLBACKS ---------------------
@@ -1715,7 +1802,6 @@ handles = guidata(hObject);
 handles.mibController.mibMaskGenerator(type);
 end
 
-
 % --- Executes on button press in mibSegmThresPanelAdaptiveCheck.
 function mibSegmThresPanelAdaptiveCheck_Callback(hObject, eventdata, handles)
 if handles.mibSegmThresPanelAdaptiveCheck.Value == 1    % adaptive mode
@@ -1745,8 +1831,8 @@ function mibFijiSelectFileBtn_Callback(hObject, eventdata, handles)
     {'*.txt;',  'Text file (*.txt)'; ...
     '*.*',  'All Files (*.*)'}, ...
     'Select file...', handles.mibPathEdit.String);
-if isequal(filename,0); return; end % check for cancel
-handles.mibFijiMacroEdit.String = fullfile(path, filename);
+if isequal(filename, 0); return; end % check for cancel
+handles.mibFijiMacroEdit.String = fullfile(path, filename{1});
 end
 
 % --- Executes on button press in mibExportFijiBtn.
@@ -2225,22 +2311,29 @@ switch parameter
         end
     case 'call'
         link = 'http://mib.helsinki.fi/web-update/call4help.json';
-        urlText = urlread(link, 'Timeout', 4);
-        call4help = jsondecode(urlText);
-        
-        fieldNames = fieldnames(call4help);
-        infoText = '';
-        for i=1:numel(fieldNames)
-            infoText = sprintf('%s%s: %s\n', infoText, fieldNames{i}, call4help.(fieldNames{i}));
+        try
+            urlText = urlread(link, 'Timeout', 4);
+            call4help = jsondecode(urlText);
+
+            fieldNames = fieldnames(call4help);
+            infoText = '';
+            for i=1:numel(fieldNames)
+                infoText = sprintf('%s%s: %s\n', infoText, fieldNames{i}, call4help.(fieldNames{i}));
+            end
+        catch err
+            infoText = sprintf('If you need help please join a personal zoom support sessions\n\nReservation calendar is available on the main page of mib.helsinki.fi\nUnder the Call4Help section on the right-hand side');
+            call4help.Link = 'http:\\mib.helsinki.fi';
         end
         
+        
         options.Title = infoText;
-        options.TitleLines = 10;
-        options.WindowWidth = 1.2;   
+        options.TitleLines = 14;
+        options.WindowWidth = 1.6;
         options.HelpUrl = call4help.Link;
         options.msgBoxOnly = true;
-        options.okBtnText = 'To clipboard';
-        options.helpBtnText = 'Start the meeting';
+        options.okBtnText = 'Copy to clipboard';
+        options.helpBtnText = 'Calendar';
+        options.Icon = 'call4help';
         answer = mibInputMultiDlg({mibPath}, [], [], 'MIB Call4Help', options);
         clipboard('copy', call4help.Link);
         
@@ -2250,6 +2343,9 @@ switch parameter
         handles.mibController.startController('mibUpdateCheckController', handles.mibController);
     case 'about'
         handles.mibController.startController('mibAboutController', handles.mibGUI.Name);
+    case 'enthusiasm'
+        % show the user's stats
+        handles.mibController.mibShowMilestoneDialog('currentStats');
 end
 end
 

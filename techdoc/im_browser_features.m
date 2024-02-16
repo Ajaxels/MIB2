@@ -18,7 +18,7 @@
 %%
 % 
 % * Works as a MATLAB program under Windows/Linux/MacOS MATLAB, or as a standalone application (Windows 64bit/MacOS/Linux)
-% * Open source licensed under <im_browser_license.html#2 GPLv2 license> 
+% * Open source licensed under <im_browser_license.html#2 GPLv3 license> 
 % * Compiled version is <im_browser_license.html#3 licensed for academic research> 
 % * Extendable with custom plugins (<http://mib.helsinki.fi/tutorials_programming.html tutorials>)
 % * Load/Import multiple image and video formats using standard and custom-made readers, <http://www.mathworks.com Bio-Formats (LOCI) reader>, 
@@ -41,8 +41,18 @@
 %
 %% Scheme of Microscopy Image Browser
 %
-% Connection diagram of available tools and layers. The opened images may be filtered and adjusted with number of standard/custom 
-% functions and further segmented either via the |Mask| route or directly with for example the brush tool and interpolation technique.
+% The connection diagram that illustrates the available tools and layers for image processing, segmentation, and visualization. 
+% This diagram showcases the workflow and interactions between different components in the software. 
+%
+% When working with opened images in Microscopy Image Browser, you have the flexibility to apply various filters 
+% and adjustments using a range of standard and custom functions. These functions enable you to enhance 
+% and modify the images according to your requirements.
+%
+% Furthermore, MIB provides options for segmenting the images using variety of manual, semi-automatic and automatic techniques, 
+% including state of the art deep learning approaches.
+%
+% The connection diagram below helps you understand the relationships between the different tools and layers, 
+% facilitating a seamless workflow for image processing and analysis.
 %
 %%
 % 

@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function header = getMRCheader(filename)
 % function header = getMRCheader(filename)
 % Read header of MRC/REC file
@@ -12,13 +28,6 @@ function header = getMRCheader(filename)
 %      http://bio3d.colorado.edu/imod/doc/mrc_format.txt
 %      http://ami.scripps.edu/software/mrctools/mrc_specification.php
 
-% Copyright (C) 2010 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -28,8 +37,8 @@ if nargin < 1
         {'*.rec; *.mrc','MRC file (*.mrc; *.rec)';
          '*.*',  'All Files (*.*)'}, ...
          'Pick a file');
-    if filename == 0; return; end
-    filename = fullfile(pathname, filename);
+    if isequal(filename, 0); return; end
+    filename = [pathname filename{1}];
 end
 
 [fid,message]=fopen(filename,'r');

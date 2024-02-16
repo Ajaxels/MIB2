@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function img = Filter(obj, img, batchModeSwitch)
 % function Filter(obj, img, batchModeSwitch)
 % filter image using the selected filter
@@ -263,6 +279,11 @@ if ~strcmp(BatchOptOut.FilterGroup{1}, 'Image Binarization') && ~ismember(BatchO
 end
 toc(t1);
 %if obj.BatchOpt.showWaitbar; delete(wb); end
+
+% count user's points
+obj.mibModel.preferences.Users.Tiers.numberOfLine3D = obj.mibModel.preferences.Users.Tiers.numberOfLine3D+1;
+eventdata = ToggleEventData(2);    % scale scoring by factor 2
+notify(obj.mibModel, 'updateUserScore', eventdata);
 
 % redraw the image if needed
 notify(obj.mibModel, 'plotImage');

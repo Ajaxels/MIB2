@@ -1,4 +1,4 @@
-function mib()
+function controller = mib()
 % @mainpage Microscopy Image Browser
 % @section intro Introduction
 % @b Microscopy @b Image @b Browser is is a high-performance software package for advanced image processing, segmentation and visualization of multidimentional (2D-4D) datasets.
@@ -34,12 +34,20 @@ function mib()
 % Please follow instructions on Microscopy Image Browser web page:
 % http://mib.helsinki.fi
 
-% Copyright (C) 2010-2022 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% Date: 2010-2023
 
 % add path to other directories
 tic
@@ -67,6 +75,7 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'ImportExportTools','nrrd'));
     addpath(fullfile(func_dir, 'Resources'));
     addpath(fullfile(func_dir, 'techdoc'));
+	addpath(fullfile(func_dir, 'techdoc', 'publish overload'));
     addpath(fullfile(func_dir, 'Tools'));
     addpath(fullfile(func_dir, 'Tools','CellMigration'));
     addpath(fullfile(func_dir, 'Tools','FastMarching'));
@@ -77,6 +86,7 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'Tools','matGeom'));
     addpath(fullfile(func_dir, 'Tools','matGeom','geom2d'));
     addpath(fullfile(func_dir, 'Tools','matGeom','geom3d'));
+    addpath(fullfile(func_dir, 'Tools','mibDeepSupport'));
     addpath(fullfile(func_dir, 'Tools','RandomForest'));
     addpath(fullfile(func_dir, 'Tools', 'RandomForest','RF_Class_C'));
     addpath(fullfile(func_dir, 'Tools', 'RandomForest','RF_Reg_C'));
@@ -85,7 +95,7 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'Tools', 'Supervoxels'));
 end
 
-mibVersion = 'ver. 2.84 / 09.12.2022';  % ATTENTION! it is important to have the version number between "ver." and "/"
+mibVersion = 'ver. 2.90 / 14.02.2024';  % ATTENTION! it is important to have the version number between "ver." and "/"
 
 % define max number of parallel workers for deployed versions
 % define workers for parallel pools

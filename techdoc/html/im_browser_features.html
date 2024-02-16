@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser Features</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="im_browser_features.m"><style>
+      --><title>Microscopy Image Browser Features</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="im_browser_features.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -142,11 +142,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -521,7 +520,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li><a href="#4">Scheme of Microscopy Image Browser</a></li></ul></div><h2 id="1">List of all features</h2>
 <p>Please check <a href="http://mib.helsinki.fi/features_all.html">the list of all features page</a> for more detailed description and video examples</p><h2 id="2">List of Key Features:</h2>
 <div><ul><li>Works as a MATLAB program under Windows/Linux/MacOS MATLAB, or as a standalone application (Windows 64bit/MacOS/Linux)</li>
-<li>Open source licensed under <a href="im_browser_license.html#2">GPLv2 license</a></li>
+<li>Open source licensed under <a href="im_browser_license.html#2">GPLv3 license</a></li>
 <li>Compiled version is <a href="im_browser_license.html#3">licensed for academic research</a></li>
 <li>Extendable with custom plugins (<a href="http://mib.helsinki.fi/tutorials_programming.html">tutorials</a>)</li>
 <li>Load/Import multiple image and video formats using standard and custom-made readers, <a href="http://www.mathworks.com">Bio-Formats (LOCI) reader</a>, <a href="http://www.openmicroscopy.org/site">OMERO server</a>, and direct import from <a href="http://fiji.sc/Fiji">Fiji</a> and <a href="http://www.bitplane.com">Imaris</a></li>
@@ -539,10 +538,13 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li>Customizable Undo option</li>
 <li>Customizable Keyboard shortcuts</li>
 <li>Colorblind friendly default color modeling scheme</li></ul></div><h2 id="4">Scheme of Microscopy Image Browser</h2>
-<p>Connection diagram of available tools and layers. The opened images may be filtered and adjusted with number of standard/custom functions and further segmented either via the <code>Mask</code> route or directly with for example the brush tool and interpolation technique.</p>
+<p>The connection diagram that illustrates the available tools and layers for image processing, segmentation, and visualization. This diagram showcases the workflow and interactions between different components in the software.</p>
+<p>When working with opened images in Microscopy Image Browser, you have the flexibility to apply various filters and adjustments using a range of standard and custom functions. These functions enable you to enhance and modify the images according to your requirements.</p>
+<p>Furthermore, MIB provides options for segmenting the images using variety of manual, semi-automatic and automatic techniques, including state of the art deep learning approaches.</p>
+<p>The connection diagram below helps you understand the relationships between the different tools and layers, facilitating a seamless workflow for image processing and analysis.</p>
 <p><img class="image-fit" src="images/im_browser_scheme.jpg" alt=""> </p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Microscopy Image Browser Features
@@ -565,7 +567,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 %%
 % 
 % * Works as a MATLAB program under Windows/Linux/MacOS MATLAB, or as a standalone application (Windows 64bit/MacOS/Linux)
-% * Open source licensed under <im_browser_license.html#2 GPLv2 license> 
+% * Open source licensed under <im_browser_license.html#2 GPLv3 license> 
 % * Compiled version is <im_browser_license.html#3 licensed for academic research> 
 % * Extendable with custom plugins (<http://mib.helsinki.fi/tutorials_programming.html tutorials>)
 % * Load/Import multiple image and video formats using standard and custom-made readers, <http://www.mathworks.com Bio-Formats (LOCI) reader>, 
@@ -588,8 +590,18 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 %
 %% Scheme of Microscopy Image Browser
 %
-% Connection diagram of available tools and layers. The opened images may be filtered and adjusted with number of standard/custom 
-% functions and further segmented either via the |Mask| route or directly with for example the brush tool and interpolation technique.
+% The connection diagram that illustrates the available tools and layers for image processing, segmentation, and visualization. 
+% This diagram showcases the workflow and interactions between different components in the software. 
+%
+% When working with opened images in Microscopy Image Browser, you have the flexibility to apply various filters 
+% and adjustments using a range of standard and custom functions. These functions enable you to enhance 
+% and modify the images according to your requirements.
+%
+% Furthermore, MIB provides options for segmenting the images using variety of manual, semi-automatic and automatic techniques, 
+% including state of the art deep learning approaches.
+%
+% The connection diagram below helps you understand the relationships between the different tools and layers, 
+% facilitating a seamless workflow for image processing and analysis.
 %
 %%
 % 

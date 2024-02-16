@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>DeepMIB - Network panel</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_network.m"><style>
+      --><title>DeepMIB - Network panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_network.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -146,11 +146,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -517,22 +516,27 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
 </div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>DeepMIB - Network panel</h1><!--introduction-->
-<p>The upper part of Deep MIB is occupied with the <i>Network panel</i>. This panel is used to select workflow and convolutional network architecture to be used during training</p>
+<p>The upper part of DeepMIB is occupied with the <i>Network panel</i>. This panel is used to select workflow and convolutional network architecture to be used during training</p>
 <p><img class="image-fit" src="images\DeepLearningNetwork.png" alt=""> </p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a></p><!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
 <div><ul><li><a href="#1">Workflows</a></li>
 <li><a href="#2">2D Semantic workflow</a></li>
-<li><a href="#3">3D Semantic workflow</a></li>
-<li><a href="#4">2D Patch-wise workflow</a></li>
-<li><a href="#5">Network filename</a></li>
-<li><a href="#6">The <span class="dropdown">GPU  &#9660;</span> dropdown</a></li></ul></div><h2 id="1">Workflows</h2>
+<li><a href="#3">2.5D Semantic workflow</a></li>
+<li><a href="#4">3D Semantic workflow</a></li>
+<li><a href="#5">2D Patch-wise workflow</a></li>
+<li><a href="#6">Network filename</a></li>
+<li><a href="#7">The <span class="dropdown">GPU  &#9660;</span> dropdown</a></li>
+<li><a href="#8">The Eye button</a></li></ul></div><h2 id="1">Workflows</h2>
 <b><em>Start a new project with selection of the workflow</b></em>:
 <br>
 <ul>
 <li><b>2D Semantic</b> segmentation, where 2D image pixels that belong
 to the same material are clustered together.
+<li><b>2.5D Semantic</b> segmentation, where 2D network architectures are used as a template to process
+small (3-9 stacks) subvolumes, where only the central slice is
+segmented</li>
 <li><b>3D Semantic</b> segmentation, where 3D image voxels that belong
 to the same material are clustered together.
 <li><b>2D Patch-wise</b> segmentation, where 2D image is predicted in
@@ -633,12 +637,84 @@ Computer Vision - ECCV 2018, 833-851. Munic, Germany: ECCV, 2018. (<a href="http
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="3">3D Semantic workflow</h2>
+<p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="3">2.5D Semantic workflow</h2>
+<details open onclick="state_check('2.1')" id="2.1"><summary> <b>Architectures available in 2.5D workflows</b> </summary>
+<div class="details-div">
+<p></p>
+<h2>Depth to Color</h2>
+In this mode subslices are arranged as color channels for sstandard 2D
+architectures. Typically, this improves the segmentation results but with
+the cost of x1.4-1.6 slower training.
+
+<br> A scheme below illustrates this:
+<br>
+<img class="image-fit" src="images\DeepLearningNetwork25Z2C.jpg">
+
+<br>
+Comparison of segmentation results achieved using 2.5D vs 2D
+architectures:
+<br>
+<img class="image-fit" src="images\DeepLearning_25D_comparison.jpg">
+
+<br>
+Available Depth to color architectures (for details please check the 2D semantic segmentation section above):
+<br>
+<ul>
+<li><b>Z2C + U-net</b>, a standard U-net architecture is used as the template</li>
+<li><b>Z2C + DLv3 Resnet18</b>, DeepLab v3 architecture based on Resnet 18</li>
+<li><b>Z2C + DLv3 Resnet50</b>, DeepLab v3 architecture based on Resnet 50</li>
+</ul>
+
+<br>
+<h2>3D convolutions for substacks</h2>
+in this mode the substacks are processed using 3D convolutions. As the 3D
+convolutions are quite slow, this mode is significantly slower than 2D or
+2.5 Z2C approaches.
+
+<br>
+<b>Available architectures:</b>
+<ul>
+<li><b>3DC + DLv3 Resnet 18</b>, an adapted for 2.5D approach DeepLab v3
+architecture based on Resnet 18</li>
+</ul>
+
+</div>
+</details>
+<br>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
+<details open onclick="state_check('2.2')" id="2.2"><summary> <b>Notes on application of 2.5D workflows</b> </summary>
+<div class="details-div">
+<p></p>
+<p>
+Work with the 2.5D workflows is essentially the same as with the 2D
+workflows, however there
+<ul>
+<li><b>Input images and labels</b>, should be a small (3-9 sections) substacks, where only the central slice is segmented.
+Each substack should be saved in a separate file</li>
+<li><b>Preprocessing</b> is not implemented</li>
+<li><b>Generation of patches for training</b>, the subvolumes for
+traininig can be automatocally generated using:
+<ul>
+<li>From models: <em>Menu->Models(or
+Masks)->Model (Mask) statistics->detect obkects->right mouse click->Crop
+to a file</em></li>
+<li>From annotations: <em>Menu->Models->Annotations->right mouse click over the selected
+annotations->Crop out patches around selected annotations</em></li>
+<li>Check this youtube video: <a href="https://youtu.be/QrKHgP76_R0?si=j_58ipCpp6Sn7r11">https://youtu.be/QrKHgP76_R0?si=j_58ipCpp6Sn7r11</a>
+</p>
+</div>
+</details>
+<br>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
+<p style="margin:0px; line-height:0;">&nbsp;</p>
+<p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="4">3D Semantic workflow</h2>
 <p>3D Semantic workflow is suitable for anisotropic and slightly anisotropic 3D datasets, where information from multiple sections is utilized to train a network for better prediction of 3D structures.</p>
-<details open onclick="state_check('2.1')" id="2.1"><summary> <b>List of available network architectures for 3D semantic segmentation</b> </summary>
+<details open onclick="state_check('3.1')" id="3.1"><summary> <b>List of available network architectures for 3D semantic segmentation</b> </summary>
 <div class="details-div">
 <p></p>
 The following architectures are available for 3D semantic segmentation:
@@ -662,7 +738,7 @@ Springer, Cham (<a href="https://arxiv.org/abs/1606.06650">link</a>)
 max pooling operation, while the rest of the steps are done in 3D. As
 result, it is better suited for datasets with anisotropic voxels
 </ul>
-<details open onclick="state_check('2.2')" id="2.2"><summary> <b>Architecture of 3D U-net anisotropic</b> </summary>
+<details open onclick="state_check('3.2')" id="3.2"><summary> <b>Architecture of 3D U-net anisotropic</b> </summary>
 <div class="details-div">
 <p></p>
 <p><img class="image-fit" src="images\deeplearning_3d_Unet_Ani.png" alt=""> </p>
@@ -671,14 +747,14 @@ result, it is better suited for datasets with anisotropic voxels
 <br>
 </div>
 </details>
-<p>
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p><span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="4">2D Patch-wise workflow</h2>
+<p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="5">2D Patch-wise workflow</h2>
 <p>In the patch-wise workflow the training is done on patches of images, where each image contains an example of a specific class. 
-<br> During prediction, the images are processed in blocks (with or without an overlap) and each block is assigned to one or another class.
-<br style="display:block; content:''; margin-top:16px;"> This workflow may be useful to quickly find areas where the object of interest is located or to target semantic segmentation to some specific aras.</p>
-<details open onclick="state_check('3.1')" id="3.1"><summary> <b>Detection of nuclei using the 2D patch-wise workflow</b> </summary>
+<br> During prediction, the images are processed in blocks (with or without an overlap) and each block is assigned to one or another class.<span style="line-height:16px; display:block; vertical-align:top">
+<br></span> This workflow may be useful to quickly find areas where the object of interest is located or to target semantic segmentation to some specific aras.</p>
+<details open onclick="state_check('4.1')" id="4.1"><summary> <b>Detection of nuclei using the 2D patch-wise workflow</b> </summary>
 <div class="details-div">
 <p></p>
 <p>Examples of patches for detection of nuclei using the 2D patch-wise workflow:</p>
@@ -692,7 +768,7 @@ result, it is better suited for datasets with anisotropic voxels
 </div>
 </details>
 <br>
-<details open onclick="state_check('3.2')" id="3.2"><summary> <b>Detection of spots using the 2D patch-wise workflow</b> </summary>
+<details open onclick="state_check('4.2')" id="4.2"><summary> <b>Detection of spots using the 2D patch-wise workflow</b> </summary>
 <div class="details-div">
 <p></p>
 <p>The images below show examples of patches of two classes: "spots" and "background" using for training.</p>
@@ -702,10 +778,10 @@ result, it is better suited for datasets with anisotropic voxels
 </div>
 </details>
 <br>
-<details open onclick="state_check('3.3')" id="3.3"><summary> <b>List of available networks for the 2D patch-wise workflow</b> </summary>
+<details open onclick="state_check('4.3')" id="4.3"><summary> <b>List of available networks for the 2D patch-wise workflow</b> </summary>
 <div class="details-div">
 <p></p>
-<details open onclick="state_check('3.4')" id="3.4"><summary> <b>Comparison of different network architectures</b> </summary>
+<details open onclick="state_check('4.4')" id="4.4"><summary> <b>Comparison of different network architectures</b> </summary>
 <div class="details-div">
 <p> Indicative plot of the relative speeds of the different networks (credit: Mathworks Inc.):</p>
 <p><img class="image-fit" src="https://se.mathworks.com/help/deeplearning/ug/pretrained_20b.png" alt=""> </p>
@@ -736,7 +812,7 @@ result, it is better suited for datasets with anisotropic voxels
 <li>Chollet, F., 2017. "Xception: Deep Learning with Depthwise Separable Convolutions." arXiv preprint, pp.1610-02357.</li></ul></div>
 </div>
 </details>
-<br><h2 id="5">Network filename</h2>
+<br><h2 id="6">Network filename</h2>
 The <b>Network filename</b> button allows to choose a file for saving the
 network or for loading the pretrained network from a disk.
 <br>
@@ -749,15 +825,15 @@ button defines a file for saving the network</li>
 pretrained network to be used for prediction</li>
 </ul>
 For ease of navigation the button is color-coded to match the active tab
-<p>
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p><span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="6">The <span class="dropdown">GPU  &#9660;</span> dropdown</h2>
+<p onclick="toggle_details(5)" class="collapse-link"><a href="javascript:void(0);" id="Toggle5">collapse all</a></p><h2 id="7">The <span class="dropdown">GPU  &#9660;</span> dropdown</h2>
 <p>define execution environment for training and prediction</p>
 <ul>
 <li><b>Name of a GPU to use</b>, the dropdown menu starts with the list
 of available GPUs to use; select one that should be used for deep learning application</li>
-<li><b>Multi-GPU</b> (<b>under development</b>),  use multiple GPUs on one machine, using a local parallel pool based on your default cluster profile.
+<li><b>Multi-GPU</b>,  use multiple GPUs on one machine, using a local parallel pool based on your default cluster profile.
 If there is no current parallel pool, the software starts a parallel pool
 with pool size equal to the number of available GPUs. <em>This option is
 only shown when multiple GPUs are present on the system</em></li>
@@ -769,13 +845,15 @@ If the pool does not have GPUs, then training takes place on all available CPU w
 </ul>
 Press the "<b>?</b>" button to see GPU info dialog
 <br>
-<details open onclick="state_check('4.1')" id="4.1"><summary> <b>GPU information dialog</b> </summary>
+<details open onclick="state_check('5.1')" id="5.1"><summary> <b>GPU information dialog</b> </summary>
 <div class="details-div">
 <p></p>
 <p><img class="image-fit" src="images\DeepLearningNetwork_GPUinfo.png" alt=""> </p>
 </div>
 </details>
-<br>
+<br><h2 id="8">The Eye button</h2>
+<p>Load the network file specified in the <span class="dropdown">Network filename</span> field and perform its check.
+<br> This operation differs from pressing the <span class="kbd">Check network</span> button in the 'Train' panel. When you press this button, the network stored in the file is loaded instead of generating it using the parameters in the 'Train' panel.</p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a></p>
 <p></p>
 <p>
@@ -784,11 +862,11 @@ Press the "<b>?</b>" button to see GPU info dialog
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% DeepMIB - Network panel
-% The upper part of Deep MIB is occupied with the _Network panel_. This
+% The upper part of DeepMIB is occupied with the _Network panel_. This
 % panel is used to select workflow and convolutional network architecture to be used during training
 %
 % <<images\DeepLearningNetwork.png>>
@@ -806,6 +884,9 @@ Press the "<b>?</b>" button to see GPU info dialog
 % <ul>
 % <li><b>2D Semantic</b> segmentation, where 2D image pixels that belong
 % to the same material are clustered together. 
+% <li><b>2.5D Semantic</b> segmentation, where 2D network architectures are used as a template to process
+% small (3-9 stacks) subvolumes, where only the central slice is
+% segmented</li>
 % <li><b>3D Semantic</b> segmentation, where 3D image voxels that belong
 % to the same material are clustered together. 
 % <li><b>2D Patch-wise</b> segmentation, where 2D image is predicted in
@@ -906,6 +987,77 @@ Press the "<b>?</b>" button to see GPU info dialog
 <br>
 % </li>
 % </ul>
+% </html>
+%
+% [/dtls]
+% [br8]
+%
+%% 2.5D Semantic workflow
+%
+% [dtls]<summary> *Architectures available in 2.5D workflows* </summary>
+<div class="details-div">
+% 
+% <html lang="en">
+% <h2>Depth to Color</h2>
+% In this mode subslices are arranged as color channels for sstandard 2D
+% architectures. Typically, this improves the segmentation results but with
+% the cost of x1.4-1.6 slower training.
+% 
+<br> A scheme below illustrates this:
+<br>
+% <img src="images\DeepLearningNetwork25Z2C.jpg">
+% 
+<br>
+% Comparison of segmentation results achieved using 2.5D vs 2D
+% architectures:
+<br>
+% <img src="images\DeepLearning_25D_comparison.jpg">
+% 
+<br>
+% Available Depth to color architectures (for details please check the 2D semantic segmentation section above):
+<br>
+% <ul>
+% <li><b>Z2C + U-net</b>, a standard U-net architecture is used as the template</li>
+% <li><b>Z2C + DLv3 Resnet18</b>, DeepLab v3 architecture based on Resnet 18</li>
+% <li><b>Z2C + DLv3 Resnet50</b>, DeepLab v3 architecture based on Resnet 50</li>
+% </ul>
+% 
+<br>
+% <h2>3D convolutions for substacks</h2>
+% in this mode the substacks are processed using 3D convolutions. As the 3D
+% convolutions are quite slow, this mode is significantly slower than 2D or
+% 2.5 Z2C approaches.
+% 
+<br>
+% <b>Available architectures:</b>
+% <ul>
+% <li><b>3DC + DLv3 Resnet 18</b>, an adapted for 2.5D approach DeepLab v3
+% architecture based on Resnet 18</li>
+% </ul>
+% </html>
+%
+% [/dtls]
+% [br8]
+%
+% [dtls]<summary> *Notes on application of 2.5D workflows* </summary>
+<div class="details-div">
+% 
+% <html lang="en">
+% Work with the 2.5D workflows is essentially the same as with the 2D
+% workflows, however there
+% <ul>
+% <li><b>Input images and labels</b>, should be a small (3-9 sections) substacks, where only the central slice is segmented. 
+% Each substack should be saved in a separate file</li>
+% <li><b>Preprocessing</b> is not implemented</li>
+% <li><b>Generation of patches for training</b>, the subvolumes for
+% traininig can be automatocally generated using:
+% <ul>
+% <li>From models: <em>Menu->Models(or
+% Masks)->Model (Mask) statistics->detect obkects->right mouse click->Crop
+% to a file</em></li>
+% <li>From annotations: <em>Menu->Models->Annotations->right mouse click over the selected
+% annotations->Crop out patches around selected annotations</em></li>
+% <li>Check this youtube video: <a href="https://youtu.be/QrKHgP76_R0?si=j_58ipCpp6Sn7r11">https://youtu.be/QrKHgP76_R0?si=j_58ipCpp6Sn7r11</a>
 % </html>
 %
 % [/dtls]
@@ -1095,7 +1247,7 @@ Press the "<b>?</b>" button to see GPU info dialog
 % <ul>
 % <li><b>Name of a GPU to use</b>, the dropdown menu starts with the list
 % of available GPUs to use; select one that should be used for deep learning application</li>
-% <li><b>Multi-GPU</b> (<b>under development</b>),  use multiple GPUs on one machine, using a local parallel pool based on your default cluster profile. 
+% <li><b>Multi-GPU</b>,  use multiple GPUs on one machine, using a local parallel pool based on your default cluster profile. 
 % If there is no current parallel pool, the software starts a parallel pool
 % with pool size equal to the number of available GPUs. <em>This option is
 % only shown when multiple GPUs are present on the system</em></li>
@@ -1116,6 +1268,12 @@ Press the "<b>?</b>" button to see GPU info dialog
 %
 % [/dtls]
 %
+%% The Eye button
+% Load the network file specified in the [class.dropdown]Network
+% filename[/class] field and perform its check.
+<br>
+% This operation differs from pressing the [class.kbd]Check network[/class] button in the 'Train' panel. 
+% When you press this button, the network stored in the file is loaded instead of generating it using the parameters in the 'Train' panel.
 %
 % 
 % *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> 

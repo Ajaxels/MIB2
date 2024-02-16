@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibFilesListbox_Callback(obj)
 % function mibFilesListbox_Callback(obj)
 % navigation in the file list, i.e. open file or change directory
@@ -5,13 +21,6 @@ function mibFilesListbox_Callback(obj)
 % Parameters:
 %
 
-% Copyright (C) 04.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -72,6 +81,10 @@ switch obj.mibView.handles.mibGUI.SelectionType
                 notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details
                 
                 obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection = [2 1];  % last selected contour for use with the 'e' button
+
+                % count user's points
+                obj.mibModel.preferences.Users.Tiers.numberOfLoadedDatasets = obj.mibModel.preferences.Users.Tiers.numberOfLoadedDatasets+1;
+                notify(obj.mibModel, 'updateUserScore');     % update score using default obj.mibModel.preferences.Users.singleToolScores increase
             else
                 %obj.mibView.handles = obj.mibView.handles.Img{obj.mibView.handles.Id}.I.updateAxesLimits(obj.mibView.handles, 'resize');
                 %obj.mibView.handles.Img{obj.mibView.handles.Id}.I.updateDisplayParameters();

@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function varargout = mibDatasetInfoGUI(varargin)
 % function varargout = mibdatasetinfogui(varargin)
 % mibdatasetinfogui is a GUI window that shows parameters of the dataset
@@ -6,13 +22,6 @@ function varargout = mibDatasetInfoGUI(varargin)
 % mibdatasetinfogui.m contains MATLAB code for mibdatasetinfogui.fig
 %
 
-% Copyright (C) 07.11.2013, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 22.04.2016, IB, updated to use uiTree class instead of a table
 % 11.10.2016, fix of structures in sub elements

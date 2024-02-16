@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function img = mibInterpolateLines(img, max_pnts, lineWidth)
 % function img = mibInterpolateLines(img, max_pnts, lineWidth)
 % Interpolate lines between the slices
@@ -15,13 +31,6 @@ function img = mibInterpolateLines(img, max_pnts, lineWidth)
 % img: -> binary image dataset, for example the 'Selection' layer [1:height, 1:width, 1:z]
 % @see ib_interpolateShapes
 
-% Copyright (C) 16.08.2012 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % v1.01 06.03.2014, fixed the interpolation for the last slice in sequence
 % and added removal of consecutive slices from interpolation

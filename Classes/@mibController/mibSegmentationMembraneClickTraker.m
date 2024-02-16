@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function output = mibSegmentationMembraneClickTraker(obj, yxzCoordinate, yx, modifier)
 % output = mibSegmentationMembraneClickTraker(obj, yxzCoordinate, yx, modifier)
 % Trace membranes and draw a straight lines in 2d and 3d
@@ -14,13 +30,6 @@ function output = mibSegmentationMembraneClickTraker(obj, yxzCoordinate, yx, mod
 % - @em ''continue'' - continue with the script
 % - @em ''return'' - stop execution and return
 
-% Copyright (C) 22.12.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -58,7 +67,7 @@ if switch3d
         if isnan(obj.mibView.trackerYXZ(1))
             msgbox('Please use Shift+Mouse click to define the starting point!','Missing the starting point');
             return;
-        end;
+        end
         
         obj.mibView.trackerYXZ = obj.mibView.trackerYXZ(:,end);
         [height, width, ~, thick] = obj.mibModel.getImageMethod('getDatasetDimensions', NaN, 'image', 4);
@@ -194,3 +203,7 @@ else
     end
     obj.mibModel.setData2D('selection', bitor(currentSelection, selarea), NaN, NaN, NaN, options);
 end
+
+% count user's points
+obj.mibModel.preferences.Users.Tiers.numberOfMembraneClickTrackers = obj.mibModel.preferences.Users.Tiers.numberOfMembraneClickTrackers+1;
+notify(obj.mibModel, 'updateUserScore');     % update score using default obj.mibModel.preferences.Users.singleToolScores increase

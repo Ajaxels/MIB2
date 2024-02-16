@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function insertSlice(obj, img, insertPosition, meta, options)
 % function insertSlice(obj, img, insertPosition, meta, options)
 % Insert a slice or a dataset into the existing volume
@@ -25,13 +41,6 @@ function insertSlice(obj, img, insertPosition, meta, options)
 % obj.mibModel.I{obj.mibModel.Id}.insertSlice(img, insertPosition, img_info, options); // call from mibController class; add img as a new time point
 % @endcode
 
-% Copyright (C) 10.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 30.10.2017, IB updated for 5D datasets: fixed insert in Z and added insert in T
 % 25.08.2018, updated for virtual stacks for the z-dimension
@@ -69,6 +78,7 @@ if obj.meta('Height') ~= meta('Height') || obj.meta('Width') ~= meta('Width') ||
         return;
     end
 end
+
 if strcmp(options.dim, 'depth')
     if isnan(insertPosition) || insertPosition > obj.depth    % define start position at the end of the opened dataset
         insertPosition = obj.depth + 1;
@@ -107,6 +117,7 @@ if strcmp(options.dim, 'depth')
         else
             imgOut = zeros([yMax, xMax, cMax, D1_z+D2_z, tMax], obj.meta('imgClass'));
         end
+
         if options.showWaitbar; waitbar(.05, wb); end
         if insertPosition == 1  % insert dataset in the beginning of the opened dataset
             Z1_part1 = [D2_z+1 D2_z+D1_z];
@@ -328,7 +339,7 @@ if isKey(obj.meta, 'SliceName')
     else
         sliceNamesNew = meta('SliceName');
     end
-    if numel(sliceNamesNew) == 1; sliceNamesNew = repmat(sliceNamesNew,[D2_z 1]);   end
+    if numel(sliceNamesNew) == 1; sliceNamesNew = repmat(sliceNamesNew, [D2_z 1]);   end
     
     if insertPosition == D1_z+1     % end of the dataset
         sliceNames = [sliceNames; sliceNamesNew];

@@ -1,13 +1,22 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibLines3DController < handle
     % classdef mibLines3DController < handle
     % a controller class for the table views of lines 3d 
-    
-    % Copyright (C) 20.04.2018, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
     
     % Updates
     % 
@@ -447,6 +456,7 @@ classdef mibLines3DController < handle
                         '*.*',  'All Files (*.*)'}, ...
                         'Load 3D lines...', obj.mibModel.myPath);
                     if isequal(filename, 0); return; end % check for cancel
+                    filename = filename{1};
                     
                     obj.mibModel.mibDoBackup('lines3d');
                     
@@ -999,9 +1009,11 @@ classdef mibLines3DController < handle
                         switch curTable
                             case 'Nodes'
                                 obj.mibModel.I{obj.mibModel.Id}.hLines3D.activeNodeId = max(nodeIds);
+                                %obj.mibModel.I{obj.mibModel.Id}.hLines3D.activeNodeId = min(nodeIds);
                                 isActiveInTheTree = numel(nodeIds);
                             case 'Edges'
-                                obj.mibModel.I{obj.mibModel.Id}.hLines3D.activeNodeId = max(nodeIds(:));
+                                %obj.mibModel.I{obj.mibModel.Id}.hLines3D.activeNodeId = max(nodeIds(:));
+                                obj.mibModel.I{obj.mibModel.Id}.hLines3D.activeNodeId = min(nodeIds(:));
                                 [isActiveInTheTree, posX] = find(nodeIds == obj.mibModel.I{obj.mibModel.Id}.hLines3D.activeNodeId); %#ok<EFIND>
                         end
                     end

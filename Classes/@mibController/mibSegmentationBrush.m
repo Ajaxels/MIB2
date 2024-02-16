@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibSegmentationBrush(obj, y, x, modifier)
 % mibSegmentation_Brush(obj, y, x, modifier)
 % Do segmentation using the brush tool
@@ -15,13 +31,6 @@ function mibSegmentationBrush(obj, y, x, modifier)
 %| @b Examples:
 % @code obj.mibSegmentation_Brush(50, 75, '');  // start the brush tool from position [y,x]=50,75,10 @endcode
 
-% Copyright (C) 15.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -54,7 +63,7 @@ end
 
 selection_layer = 'image';
 obj.mibView.brushSelection = {};
-obj.mibView.brushSelection{1} = logical(zeros([size(obj.mibView.Ishown,1) size(obj.mibView.Ishown,2)], 'uint8')); %#ok<LOGL>
+obj.mibView.brushSelection{1}.selection = logical(zeros([size(obj.mibView.Ishown,1) size(obj.mibView.Ishown,2)], 'uint8')); %#ok<LOGL>
 
 % generate the structural element for the brush
 radius = radius - 1;
@@ -74,14 +83,14 @@ structElement = zeros(se_size*2+1, se_size*2+1);
 ball = sqrt(((xx/se_size).^2) + (yy/se_size).^2);
 structElement(ball<=1) = 1;
 
-obj.mibView.brushSelection{1}(y,x) = 1;
+obj.mibView.brushSelection{1}.selection(y,x) = 1;
 
 % when the brush is large use bwdist function instead of imdilate
 % update! in some cases imdilate becomes terribly slow
 if size(structElement,2) < 10
-    obj.mibView.brushSelection{1} = imdilate(obj.mibView.brushSelection{1}, structElement);
+    obj.mibView.brushSelection{1}.selection = imdilate(obj.mibView.brushSelection{1}.selection, structElement);
 else
-    obj.mibView.brushSelection{1} = bwdist(obj.mibView.brushSelection{1})<=size(structElement,1)/2; 
+    obj.mibView.brushSelection{1}.selection = bwdist(obj.mibView.brushSelection{1}.selection)<=size(structElement,1)/2; 
 end
 
 % enable superpixels mode, not for eraser
@@ -102,7 +111,7 @@ if (obj.mibView.handles.mibBrushSuperpixelsCheck.Value == 1 || ...
     end
     getDataOptions.blockModeSwitch = 1;
     sImage = cell2mat(obj.mibModel.getData2D('image', NaN, NaN, col_channel, getDataOptions));
-    sImage = imresize(sImage, size(obj.mibView.brushSelection{1}));
+    sImage = imresize(sImage, size(obj.mibView.brushSelection{1}.selection));
     noLables = str2double(obj.mibView.handles.mibSuperpixelsNumberEdit.String);
     compactFactor = str2double(obj.mibView.handles.mibSuperpixelsCompactEdit.String);
     
@@ -189,19 +198,21 @@ if (obj.mibView.handles.mibBrushSuperpixelsCheck.Value == 1 || ...
         
         STATS = regionprops(obj.mibView.brushSelection{2}.slic, sImage, 'MeanIntensity');
         obj.mibView.brushSelection{3}.meanVals = [STATS.MeanIntensity];
-        obj.mibView.brushSelection{3}.mean = mean(sImage(obj.mibView.brushSelection{1}==1));
-        obj.mibView.brushSelection{3}.std = std(double(sImage(obj.mibView.brushSelection{1}==1)));
+        obj.mibView.brushSelection{3}.mean = mean(sImage(obj.mibView.brushSelection{1}.selection==1));
+        obj.mibView.brushSelection{3}.std = std(double(sImage(obj.mibView.brushSelection{1}.selection==1)));
         obj.mibView.brushSelection{3}.factor = str2double(obj.mibView.handles.mibDilateAdaptCoefEdit.String);
         obj.mibView.brushSelection{3}.CData = obj.mibView.imh.CData;
         obj.mibView.gui.WindowScrollWheelFcn = (@(hObject, eventdata, handles) obj.mibGUI_Brush_scrollWheelFcn(eventdata)); 
     end
     obj.mibView.gui.WindowKeyPressFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowKeyPressFcn_BrushSuperpixel(eventdata));   % turn ON callback for the keys
     
-    selectedSlicIndices = unique(obj.mibView.brushSelection{2}.slic(obj.mibView.brushSelection{1}));
+    selectedSlicIndices = unique(obj.mibView.brushSelection{2}.slic(obj.mibView.brushSelection{1}.selection));
     obj.mibView.brushSelection{2}.selectedSlic = ismember(obj.mibView.brushSelection{2}.slic, selectedSlicIndices);   % SLIC based image
     obj.mibView.brushSelection{2}.selectedSlicIndices = selectedSlicIndices;     % list of indices of the currently selected superpixels
     obj.mibView.brushSelection{2}.CData = CData;     % store original CData with Boundaries of the superpixels
 end
+obj.mibView.brushSelection{1}.travelPathInPixels = 0;   % counter for distance that brush travelled
+
 obj.mibView.updateCursor('solid');   % set the brush cursor in the drawing mode
 obj.mibView.gui.WindowButtonDownFcn = [];
 

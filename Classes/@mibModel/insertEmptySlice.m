@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function insertEmptySlice(obj, BatchOptIn)
 % function insertEmptySlice(obj, BatchOptIn)
 % Insert an empty slice into the existing volume
@@ -7,6 +23,7 @@ function insertEmptySlice(obj, BatchOptIn)
 % a structure with default options via "syncBatch" event
 % @li .Dimension - a cell string with targeted dimension: {'depth', 'time'}; 
 % @li .InsertPosition - char, position where to insert the new slice/volume starting from @b 1, when @em 0 - add img to the end of the dataset
+% @li .NumberOfSlices - char, number of slices to add
 % @li .BackgroundColor = char, intensity of the background color
 % @li .showWaitbar = true;   % logical, show or not the waitbar
 % @li .id -> [@em optional], an index dataset from 1 to 9, defalt = currently shown dataset
@@ -19,17 +36,11 @@ function insertEmptySlice(obj, BatchOptIn)
 % @code 
 % BatchOptIn.Dimension = {'time'};     // define add a dataset as a new time point
 % BatchOptIn.InsertPosition = '2';     // define to insert the empty image to the second frame
+% BatchOptIn.NumberOfSlices = '10';     // insert 10 slices
 % BatchOptIn.BackgroundColor = '128';     // define background intensity
 % obj.mibModel.insertEmptySlice(BatchOptIn); // call from mibController class; add img as a new time point
 % @endcode
 
-% Copyright (C) 09.05.2019 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 
 global mibPath; % path to mib installation folder
@@ -39,6 +50,7 @@ BatchOpt = struct();
 BatchOpt.Dimension = {'depth'}; % a cell string with targeted dimension
 BatchOpt.Dimension{2} = {'depth', 'time'};  % cell array with options
 BatchOpt.InsertPosition = num2str(obj.I{obj.Id}.getCurrentSliceNumber());    % char, position where to insert the new slice/volume starting from @b 1, when @em 0 - add img to the end of the dataset
+BatchOpt.NumberOfSlices = '1';  % 1 slice is by default
 BatchOpt.BackgroundColor = num2str(intmax(obj.I{obj.Id}.meta('imgClass')));   % char, intensity of the background color
 BatchOpt.showWaitbar = true;   % logical, show or not the waitbar
 BatchOpt.id = obj.Id;   % optional, id
@@ -80,32 +92,35 @@ maxSlice = obj.I{BatchOpt.id}.dim_yxczt(orientation);    % maximal available sli
 if nargin < 2
     prompt = {'Dimension:',...
         'Destination slice index (use 0 to insert a slice into the end of the dataset):', ...
+        'Number of slices to insert', ...
         sprintf('Intensity of background (0 for black-%d for white)', maxIntValue)};
     
     defAns = {[BatchOpt.Dimension{2}, find(ismember(BatchOpt.Dimension{2}, BatchOpt.Dimension{1})==1)],...
                BatchOpt.InsertPosition, ...
+               BatchOpt.NumberOfSlices, ...
                BatchOpt.BackgroundColor};
     
-    mibInputMultiDlgOptions.Title = sprintf('Please enter the slice number (1-%d) and background intensity', maxSlice);
+    mibInputMultiDlgOptions.Title = sprintf('Please enter the slice number (1:%d) and background intensity', maxSlice);
     mibInputMultiDlgOptions.TitleLines = 2;
-    mibInputMultiDlgOptions.PromptLines = [1, 2, 1];
-    answer = mibInputMultiDlg({mibPath}, prompt, defAns, 'Insert an empty slice', mibInputMultiDlgOptions);
+    mibInputMultiDlgOptions.PromptLines = [1, 2, 1, 1];
+    answer = mibInputMultiDlg({mibPath}, prompt, defAns, 'Insert empty slice(s)', mibInputMultiDlgOptions);
     if isempty(answer); return; end
     
-    if isnan(str2double(answer{2})) || isnan(str2double(answer{3}))
+    if isnan(str2double(answer{2})) || isnan(str2double(answer{3})) || isnan(str2double(answer{4}))
         errordlg(sprintf('!!! Error !!!\n\nWrong number!'));
         return;
     end
     
     BatchOpt.Dimension(1) = answer(1);
     BatchOpt.InsertPosition = answer{2};
-    BatchOpt.BackgroundColor = answer{3};
+    BatchOpt.NumberOfSlices = answer{3};
+    BatchOpt.BackgroundColor = answer{4};
 end
 
 getDataOpt.blockmodeSwitch = 0;
 [height, width] = obj.I{BatchOpt.id}.getDatasetDimensions('image', NaN, NaN, getDataOpt);
 colors = obj.I{BatchOpt.id}.colors;
-img = zeros([height, width, colors], obj.I{BatchOpt.id}.meta('imgClass')) + str2double(BatchOpt.BackgroundColor);
+img = zeros([height, width, colors, str2double(BatchOpt.NumberOfSlices)], obj.I{BatchOpt.id}.meta('imgClass')) + str2double(BatchOpt.BackgroundColor);
 
 insertDataOptions.dim = BatchOpt.Dimension{1};
 insertDataOptions.BackgroundColorIntensity = str2double(BatchOpt.BackgroundColor);

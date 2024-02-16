@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function bitmap = amiraMeshSlice2bitmap(filename, sliceNo, x1, y1, x2, y2, options)
 % function bitmap = amiraMeshSlice2bitmap(filename, sliceNo, x1, y1, x2, y2)
 % Extracts a slice or its subsection from Amira Mesh to bitmap matrix [1:height, 1:width, 1:colors]
@@ -19,13 +35,6 @@ function bitmap = amiraMeshSlice2bitmap(filename, sliceNo, x1, y1, x2, y2, optio
 % Return values:
 % bitmap: - dataset, [1:height, 1:width, 1:colors]
 
-% Copyright (C) 21.06.2018 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 
 bitmap = [];
@@ -36,8 +45,8 @@ if nargin < 1
         {'*.am','Amira mesh labels(*.am)';
         '*.*',  'All Files (*.*)'}, ...
         'Pick a file');
-    if filename == 0; return; end
-    filename = [pathname filename];
+    if isequal(filename, 0); return; end
+    filename = [pathname filename{1}];
 end
 %fid = fopen(filename, 'r');
 fid = fopen(filename, 'r', 'n', 'UTF-8');

@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function fnOut = saveMask(obj, filename, BatchOptIn)
 % function fnOut = saveMask(obj, filename, BatchOptIn)
 % save mask to a file
@@ -12,14 +28,7 @@ function fnOut = saveMask(obj, filename, BatchOptIn)
 %
 % Return values:
 % fnOut: a string with the output mask filename
-%
-% Copyright (C) 10.09.2019, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
+
 % Updates
 % 
 
@@ -54,6 +63,7 @@ BatchOpt.Format{2} = {'Matlab format (*.mask)', ...
                       'Amira mesh binary (*.am)',...
                       'Amira mesh binary RLE compression SLOW (*.am)', ...
                       'Hierarchical Data Format (*.h5)', ...
+                      'PNG format (*.png)',...
                       'TIF format (*.tif)', ...
                       'Hierarchical Data Format with XML header (*.xml)'};
 BatchOpt.OutputDirectoryPolicy = {'Same as image'};
@@ -161,6 +171,7 @@ end
 saveImageOptions.Format = BatchOpt.Format{1};
 saveImageOptions.DestinationDirectory = BatchOpt.DestinationDirectory;
 saveImageOptions.Saving3DPolicy = BatchOpt.Saving3DPolicy{1};
+saveImageOptions.FilenamePolicy = BatchOpt.FilenamePolicy{1};
 saveImageOptions.showWaitbar = BatchOpt.showWaitbar;
 saveImageOptions.silent = true;
 saveImageOptions.MaskColor = obj.preferences.Colors.MaskColor;

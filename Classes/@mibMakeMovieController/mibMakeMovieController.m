@@ -1,14 +1,23 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibMakeMovieController < handle
     % classdef mibMakeMovieController < handle
     % controller class for the render movie window available via
     % MIB->Menu->File->Make movie
-    
-    % Copyright (C) 26.12.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
     
     % Updates
     % 17.01.2018, IB imporoved performance with the ROI mode
@@ -756,12 +765,17 @@ classdef mibMakeMovieController < handle
             close(writerObj);
             toc
             
+            % count user's points
+            obj.mibModel.preferences.Users.Tiers.numberOfSnapAndMovies = obj.mibModel.preferences.Users.Tiers.numberOfSnapAndMovies+1;
+            eventdata = ToggleEventData(2);    % scale scoring by factor 2
+            notify(obj.mibModel, 'updateUserScore', eventdata);
+
             disp(['MIB: movie saved, ' obj.movieFilename{obj.mibModel.Id}]);
             delete(wb);
             set(0, 'DefaulttextInterpreter', curInt);
             
             obj.View.handles.continueBtn.BackgroundColor = 'g';
-            
+
             %[~, fn, ext] = fileparts(obj.movieFilename{obj.mibModel.Id});
             %obj.mibController.updateFilelist([fn ext]);
         end

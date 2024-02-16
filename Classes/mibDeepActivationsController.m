@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibDeepActivationsController < handle
     % @type mibDeepActivationsController class is a template class for using with
     % GUI developed using appdesigner of Matlab
@@ -22,14 +38,6 @@ classdef mibDeepActivationsController < handle
     % obj.startController('mibDeepActivationsController', [], NaN);
     % @endcode
     
-    % Copyright (C) 17.09.2019, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-	% 
-	% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-	%
 	% Updates
 	%     
     
@@ -52,7 +60,7 @@ classdef mibDeepActivationsController < handle
         % .z1{1} - numeric, number of slice for 3D datasets to show
         % .x1{1} - numeric, image shift in x
         % .y1{1} - numeric, image shift in y
-        % .patchZ{1} - numeric, position insize the activation block
+        % .patchZ{1} - numeric, position inside the activation block
         % .filterId{1} - numeric, filter id of the activation block
         imgDS
         % imageDatastore with images to be be explored
@@ -109,15 +117,18 @@ classdef mibDeepActivationsController < handle
             
             % init the image store
             if strcmp(obj.mibDeep.BatchOpt.PreprocessingMode{1}, 'Preprocessing is not required') || strcmp(obj.mibDeep.BatchOpt.PreprocessingMode{1}, 'Split files for training/validation')
-                trainingSwitch = false;     % use prediction directory to see activations
+                % prepare options for loading images
+                mibDeepStoreLoadImagesOpt.mibBioformatsCheck = obj.mibDeep.BatchOpt.Bioformats;
+                mibDeepStoreLoadImagesOpt.BioFormatsIndices = obj.mibDeep.BatchOpt.BioformatsIndex{1};
+                mibDeepStoreLoadImagesOpt.Workflow = obj.mibDeep.BatchOpt.Workflow{1};
                 fnExtention = lower(['.' obj.mibDeep.BatchOpt.ImageFilenameExtension{1}]);
                 obj.imgDS = imageDatastore(fullfile(obj.mibDeep.BatchOpt.OriginalPredictionImagesDir, 'Images'), ...
                         'FileExtensions', fnExtention, ...
                         'IncludeSubfolders', false, ...
-                        'ReadFcn', @(fn)obj.mibDeep.loadImages(fn, fnExtention, trainingSwitch));
+                        'ReadFcn', @(fn)mibDeepStoreLoadImages(fn, mibDeepStoreLoadImagesOpt));
             else
                 obj.imgDS = imageDatastore(fullfile(obj.mibDeep.BatchOpt.ResultingImagesDir, 'PredictionImages'), ...
-                    'FileExtensions', '.mibImg', 'ReadFcn', @mibDeepController.mibImgFileRead);
+                    'FileExtensions', '.mibImg', 'ReadFcn', @mibDeepStoreLoadImages);
             end
             
             [~, fnames] = arrayfun(@(x) fileparts(cell2mat(x)), obj.imgDS.Files, 'UniformOutput', false);   % get filenames
@@ -143,7 +154,7 @@ classdef mibDeepActivationsController < handle
             obj.BatchOpt.y1{1} = 1;     % image shift y
             obj.BatchOpt.y1{2} = [0.999 1.001]; % the limits should be different
             obj.BatchOpt.y1{3} = 'on';
-            obj.BatchOpt.patchZ{1} = 1;     % z position insize the activation block
+            obj.BatchOpt.patchZ{1} = 1;     % z position inside the activation block
             obj.BatchOpt.patchZ{2} = [0.999 1.001]; % the limits should be different
             obj.BatchOpt.patchZ{3} = 'on';
             obj.BatchOpt.filterId{1} = 1;     % filter id of the activation block
@@ -158,7 +169,7 @@ classdef mibDeepActivationsController < handle
             obj.BatchOpt.mibBatchTooltip.z1 = sprintf('Slice number for 3D datasets');
             obj.BatchOpt.mibBatchTooltip.x1 = sprintf('Shift the input dataset in X; may be slow');
             obj.BatchOpt.mibBatchTooltip.y1 = sprintf('Shift the input dataset in Y; may be slow');
-            obj.BatchOpt.mibBatchTooltip.patchZ = sprintf('z position insize the activation block');
+            obj.BatchOpt.mibBatchTooltip.patchZ = sprintf('z position inside the activation block');
             obj.BatchOpt.mibBatchTooltip.filterId = sprintf('filter id of the activation block');
             
             %% add here a code for the batch mode, for example
@@ -198,13 +209,13 @@ classdef mibDeepActivationsController < handle
             % update font and size
             % you may need to replace "obj.View.handles.text1" with tag of any text field of your own GUI
             % % this function is not yet
-%             global Font;
-%             if ~isempty(Font)
-%               if obj.View.handles.text1.FontSize ~= Font.FontSize ...
-%                     || ~strcmp(obj.View.handles.text1.FontName, Font.FontName)
-%                   mibUpdateFontSize(obj.View.gui, Font);
-%               end
-%             end
+            global Font;
+            if ~isempty(Font)
+              if obj.View.handles.NumberFilersLabel.FontSize ~= Font.FontSize + 4 ...   % guide font size is 4 points smaller than in appdesigner
+                    || ~strcmp(obj.View.handles.NumberFilersLabel.FontName, Font.FontName)
+                  mibUpdateFontSize(obj.View.gui, Font);
+              end
+            end
             
 			% update widgets from the BatchOpt structure
             obj.View = updateGUIFromBatchOpt_Shared(obj.View, obj.BatchOpt);
@@ -278,7 +289,6 @@ classdef mibDeepActivationsController < handle
             %
             % Parameters:
             % event: event from the callback
-            
             obj.BatchOpt = updateBatchOptFromGUI_Shared(obj.BatchOpt, event.Source);
         end
         
@@ -442,6 +452,58 @@ classdef mibDeepActivationsController < handle
                     obj.BatchOpt.filterId{1} = min([obj.BatchOpt.filterId{1} size(obj.imageActivation,4)]);
                     obj.BatchOpt.filterId{2} = [1 size(obj.imageActivation,4)];
                     obj.deltaZ = obj.BatchOpt.patchZ{1} - obj.BatchOpt.z1{1};
+                case '2.'
+                    blockDepth = obj.net.inputPatchSize(3);
+                    maxZ = size(obj.imageOriginal, 4);
+                    dz1 = floor(obj.net.inputPatchSize(3)/2);    % patch shift to down
+                    dz2 = floor(obj.net.inputPatchSize(3)/2);  % z patch shift to up
+                    z1 = obj.BatchOpt.z1{1} - dz1;
+                    if z1 < 1
+                        obj.BatchOpt.patchZ{1} = dz1 + z1;
+                        z1 = 1;
+                        z2 = blockDepth;
+                    else
+                        z2 = obj.BatchOpt.z1{1} + dz2;
+                        if z2 > maxZ
+                            obj.BatchOpt.patchZ{1} = obj.BatchOpt.z1{1} - (maxZ - blockDepth);
+                            z2 = maxZ;
+                            z1 = maxZ - blockDepth + 1;
+                        else
+                            z2 = z1 + blockDepth - 1;
+                            obj.BatchOpt.patchZ{1} = dz1 + 1;
+                        end
+                    end
+                    
+                    %z2 = min([z2 size(obj.imageOriginal, 4)]);  % tweak to show input image
+                    imgBlock = permute(obj.imageOriginal(:,:,:,z1:z2), [1 2 4 3]);
+                    obj.imageActivation = activations(obj.net.net, imgBlock, obj.BatchOpt.NetworkLayerName{1});
+                    obj.patchNetworkDims = size(obj.imageActivation);
+                    
+                    % code adapted for 2.5 but it might be that the first
+                    % part will also work fine with 3D, need to check
+                    if obj.net.BatchOpt.Workflow{1}(1) == '2'
+                        if numel(obj.patchNetworkDims) > 2
+                            obj.imageActivation = padarray(obj.imageActivation, ...
+                                [0, ...
+                                0, ...
+                                (obj.net.inputPatchSize(3) - obj.patchNetworkDims(3))/2, ...
+                                0], 0, 'both');
+                        end
+                    else
+                        obj.imageActivation = padarray(obj.imageActivation, ...
+                            [(obj.net.inputPatchSize(1) - obj.patchNetworkDims(1))/2, ...
+                            (obj.net.inputPatchSize(2) - obj.patchNetworkDims(2))/2, ...
+                            (obj.net.inputPatchSize(3) - obj.patchNetworkDims(3))/2, ...
+                            0], 0, 'both');
+                    end
+
+                    obj.BatchOpt.patchZ{2} = [1 size(obj.imageActivation,3)+.0001];
+                    if obj.BatchOpt.patchZ{1} > obj.BatchOpt.patchZ{2}
+                        obj.BatchOpt.patchZ{1} = obj.BatchOpt.patchZ{2}(1);
+                    end
+                    obj.BatchOpt.filterId{1} = min([obj.BatchOpt.filterId{1} size(obj.imageActivation,4)]);
+                    obj.BatchOpt.filterId{2} = [1 size(obj.imageActivation,4)];
+                    obj.deltaZ = obj.BatchOpt.patchZ{1} - obj.BatchOpt.z1{1};
                 case '2D'
                     obj.imageActivation = activations(obj.net.net, obj.imageOriginal, obj.BatchOpt.NetworkLayerName{1});
                     obj.patchNetworkDims = size(obj.imageActivation);
@@ -466,6 +528,13 @@ classdef mibDeepActivationsController < handle
                     maxVal = max(imgToPrev(:));
                     imgToPrev = mat2gray(imgToPrev);
                     imgToPrev = repmat(uint8(imgToPrev*255), [1 1 3]);
+                case '2.'
+                    %imgToPrev = squeeze(obj.imageActivation(:, :, ceil(size(obj.imageActivation,3)/2), round(obj.BatchOpt.filterId{1})));
+                    imgToPrev = squeeze(obj.imageActivation(:, :, round(obj.BatchOpt.patchZ{1}), round(obj.BatchOpt.filterId{1})));
+                    minVal = min(imgToPrev(:));
+                    maxVal = max(imgToPrev(:));
+                    imgToPrev = mat2gray(imgToPrev);
+                    imgToPrev = repmat(uint8(imgToPrev*255), [1 1 3]);
                 case '2D'
                     imgToPrev = obj.imageActivation(:, :, round(obj.BatchOpt.filterId{1}));
                     minVal = min(imgToPrev(:));
@@ -477,7 +546,7 @@ classdef mibDeepActivationsController < handle
             obj.View.Figure.MaxLabelValue.Text = num2str(maxVal);
             newWidth = size(obj.View.Figure.ImageOriginal.ImageSource, 2);
             newHeight = size(obj.View.Figure.ImageOriginal.ImageSource, 1);
-            imgToPrev = padarray(imgToPrev, [floor((newWidth-size(imgToPrev,1))/2) floor((newHeight-size(imgToPrev,2))/2)], 0, 'both');
+            imgToPrev = padarray(imgToPrev, [floor((newHeight-size(imgToPrev,1))/2) floor((newWidth-size(imgToPrev,2))/2)], 0, 'both');
             obj.View.Figure.ImageActivation.ImageSource = imgToPrev;
         end
         

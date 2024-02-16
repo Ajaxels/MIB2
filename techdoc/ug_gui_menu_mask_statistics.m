@@ -122,6 +122,14 @@
 %   <li><b>Target:</b> where to crop the objects</li>
 %   <li><b>MarginXY:</b> extend the bounding box around the object by the specified number of pixels</li>
 %   <li><b>MarginZ:</b> extend the bounding box around the object by the specified number of pixels in the Z dimension</li>
+%   <li><b>Jitter XY centroids</b> use this option to introduce a random
+%   jitter of XY coordinates. This jitter will shift the crop window
+%   left/right/up/down randomly depending on the provided value in the
+%   <span class="dropdown">Variation</span> edit box. The random generator
+%   is initialized using the <span class="dropdown">Seed</span> edit box.
+%   When seed is 0 a random value used to initalize the random generator.
+%   When any other number is used, that number is initializing the random
+%   generator</li>
 %   <li><b>Crop Model:</b> also include cropping of the model</li>
 %   <li><b>Crop Mask:</b> also include cropping of the mask</li>
 %   <li><b>Single Mask object per dataset:</b> keep only a main object in the crop of the Mask, enabled only when the objects were identified from the mask layer</li>
@@ -261,6 +269,17 @@
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_models.html *Models Menu*> *---* <ug_gui_menu_mask.html *Mask Menu*>
 %
 % [cssClasses]
+% .dropdown { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	border-radius: 0.2em; 
+% 	background-color: #fff; 
+% 	background-color: #e0f5ff; 
+% 	background-color: #e8f5e8; 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
 % .kbd { 
 %   font-family: monospace;
 % 	border: 1px solid #aaa; 
@@ -291,6 +310,14 @@
 % padding: 1pt 3pt;
 % }
 % [/cssClasses]
+%
+% <html>
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>
+%
 %%
 % <html>
 % <script>

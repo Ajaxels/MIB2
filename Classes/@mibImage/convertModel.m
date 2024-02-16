@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function convertModel(obj, type)
 % function convertModel(obj, type)
 % Convert model from obj.modelType==63 to obj.modelType==255 and other way around
@@ -10,7 +26,7 @@ function convertModel(obj, type)
 % @li 255 - model with 255 materials, the slower to use, utilize x2 more memory than 63-material type
 % @li 65535 - model with 65535 materials, utilize x2 more memory than 255-material type
 % @li 4294967295 - model with 4294967295 materials, utilize x2 more memory than 65535-material type
-% @li 2.4 - detect all 2D objects (connectivity 4) in all materials of the current model and generate a new model, where each object has an unique index
+% @li 2.4 - detect all 2D 2objects (connectivity 4) in all materials of the current model and generate a new model, where each object has an unique index
 % @li 2.8 - detect all 2D objects (connectivity 8) in all materials of the current model and generate a new model, where each object has an unique index
 % @li 3.6 - detect all 3D objects (connectivity 6) in all materials of the current model and generate a new model, where each object has an unique index
 % @li 3.26 - detect all 3D objects (connectivity 26) in all materials of the current model and generate a new model, where each object has an unique index
@@ -21,13 +37,6 @@ function convertModel(obj, type)
 %| 
 % @b Examples:
 % @code obj.mibModel.I{obj.mibModel.Id}.convertModel(255);  // convert model to the obj.modelType==255 type @endcode
-
-% Copyright (C) 12.01.2017 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
 
 % Updates
 % 04.12.2017, IB, added 4294967295 materials

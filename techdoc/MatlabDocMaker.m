@@ -268,6 +268,7 @@ classdef MatlabDocMaker
             % See also: getProjectLogo
             if nargin < 1
                 [f, p] = mib_uigetfile('*.*', 'Select project logo', pwd);
+                f = f{1}; 
                 if f ~= 0
                     value = fullfile(p,f);
                 else

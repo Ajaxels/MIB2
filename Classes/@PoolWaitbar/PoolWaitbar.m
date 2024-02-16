@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef PoolWaitbar < handle
     % classdef PoolWaitbar < handle
     % waitbar for parallel loops
@@ -42,13 +58,6 @@ classdef PoolWaitbar < handle
     %       pwb.increment();  
     % end
     
-    % Copyright (C) 15.01.2020, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-    %
     % Updates
     %
 
@@ -61,6 +70,7 @@ classdef PoolWaitbar < handle
         ClientHandle = []
         Count = 0   % current iteration
         Increment = 1
+        uiprogressdlgSwitch = false   % define that the progress dialog was generated using uiprogressdlg
     end
     
     properties (SetAccess = immutable, GetAccess = private, Transient)
@@ -70,43 +80,78 @@ classdef PoolWaitbar < handle
     methods (Access = private)
         function localIncrement(obj)
             obj.Count = obj.Increment + obj.Count;
-            waitbar(obj.Count / obj.N, obj.ClientHandle);
+            if ~obj.uiprogressdlgSwitch     % waitbar
+                waitbar(obj.Count / obj.N, obj.ClientHandle);
+            else    % uiprogressdlg
+                obj.ClientHandle.Value = min([obj.Count / obj.N 1]);
+            end
         end
     end
     
     methods
-        function obj = PoolWaitbar(N, message, existingHandle, WindowName)
+        function obj = PoolWaitbar(N, message, existingHandle, WindowName, parentHandle)
             % Constructor
             % Parameters:
             % N: number of iterations of the waitbar
             % message: message to display
             % existingHandle: a handle to existing standard waitbar figure
             % WindowName: title of the figure window
+            % parentHandle: optional, a handle to the parent window, when
+            %       it is provided and if it is done with appdesigner,
+            %       uiprogressdlg function is used instead of waitbar
             
+            if nargin < 5; parentHandle = []; end
             if nargin < 4; WindowName = []; end
             if nargin < 3; existingHandle = []; end
             if nargin < 2; message = []; end
             
+            % % set by default that the existing handle is not uiprogressdlg
+            % if ~isempty(existingHandle) && ~isfield(existingHandle, 'uiprogressdlgSwitch')
+            %     switch class(existingHandle)
+            %         case 'matlab.ui.dialog.ProgressDialog'
+            %             existingHandle.uiprogressdlgSwitch = true;
+            %         case 'matlab.ui.Figure'
+            %             existingHandle.uiprogressdlgSwitch = false;
+            %         otherwise
+            %             existingHandle.uiprogressdlgSwitch = false;
+            %     end
+            % end
+
             obj.N = N;
-            if isempty(existingHandle) && isempty(message)
-                obj.ClientHandle = waitbar(0, message);
-            elseif isempty(existingHandle)
-                obj.ClientHandle = waitbar(0, message);
-            elseif isempty(message)
+            if ~isempty(parentHandle) && isa(parentHandle, 'matlab.ui.Figure') && isempty(existingHandle)
+                % if parent is present and it was created using appdesigner
+                obj.ClientHandle = uiprogressdlg(parentHandle, 'Message', message, 'Title', WindowName, ...
+                    'Cancelable', true);
+                obj.uiprogressdlgSwitch = true;
+            elseif ~isempty(existingHandle) && isfield(existingHandle, 'uiprogressdlgSwitch') && existingHandle.uiprogressdlgSwitch
+                % existing uiprogressdlgSwitch
                 obj.ClientHandle = existingHandle;
-                waitbar(0, obj.ClientHandle);
+                if ~isempty(message); obj.ClientHandle.Message = message; end
+                if ~isempty(WindowName); obj.ClientHandle.Title = WindowName; end
+                obj.uiprogressdlgSwitch = true;
             else
-                obj.ClientHandle = existingHandle;
-                waitbar(0, obj.ClientHandle, message);
-            end
-            
-            if ~isempty(WindowName)
-                obj.ClientHandle.Name = WindowName;
+                if isempty(existingHandle) && isempty(message)
+                    obj.ClientHandle = waitbar(0, 'Please wait');
+                elseif isempty(existingHandle)
+                    obj.ClientHandle = waitbar(0, message);
+                elseif isempty(message)
+                    obj.ClientHandle = existingHandle;
+                    waitbar(0, obj.ClientHandle);
+                else
+                    obj.ClientHandle = existingHandle;
+                    waitbar(0, obj.ClientHandle, message);
+                end
+                
+                if ~isempty(WindowName)
+                    obj.ClientHandle.Name = WindowName;
+                end
+                
+                obj.ClientHandle.Children.Title.Interpreter = 'none';
+                obj.uiprogressdlgSwitch = false;
             end
             obj.Queue = parallel.pool.DataQueue;
             obj.Listener = afterEach(obj.Queue, @(~) localIncrement(obj));
-            
-            obj.ClientHandle.Children.Title.Interpreter = 'none';
+                
         end
         
         function updateMaxNumberOfIterations(obj, N)
@@ -120,7 +165,21 @@ classdef PoolWaitbar < handle
             % increase maximal number of iterations by N
             obj.N = obj.N + N;
         end
+
+        function res = getCancelState(obj)
+            % function res = getCancelState(obj)
+            % return state (true/false) of the cancel button
+            % only for uiprogressdlg
+            res = obj.ClientHandle.CancelRequested;
+        end
         
+        function count = getCurrentIteration(obj)
+            % function count = getCurrentIteration(obj)
+            % return the current iteration
+            
+            count = obj.Count;
+        end
+
         function result = getMaxNumberOfIterations(obj)
             % function result = getMaxNumberOfIterations(obj)
             % get number of iterations
@@ -130,8 +189,14 @@ classdef PoolWaitbar < handle
         function updateText(obj, newText)
             % function updateText(obj, newText)
             % update text of the waitbar
-            childrenList = obj.ClientHandle.Children();
-            childrenList(1).Title.String = newText;
+            if ~obj.uiprogressdlgSwitch
+                % waitbar-based progress dialog
+                childrenList = obj.ClientHandle.Children();
+                childrenList(1).Title.String = newText;
+            else
+                % uiprogressdlg-based
+                obj.ClientHandle.Message = newText;
+            end
         end
         
         function setCurrentIteration(obj, count)

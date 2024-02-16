@@ -11,33 +11,41 @@
 % 
 % <html>
 % For details of deep learning with DeepMIB please refer to the following tutorials:<br>
+% <b>The newest tutorial:</b><br>
+% <a href="https://youtu.be/ZO-WmMijN0U"><img style="vertical-align:middle;" src="images\youtube.png"> Deep-learning segmentation using 2.5D Depth-to-Colors workflow in MIB</a><br>
+% <b>Older tutorials:</b><br>
 % <a href="https://youtu.be/gk1GK_hWuGE"><img style="vertical-align:middle;" src="images\youtube.png"> DeepMIB: 2D U-net for image segmentation</a><br>
 % <a href="https://youtu.be/U5nhbRODvqU"><img style="vertical-align:middle;" src="images\youtube.png"> DeepMIB: 3D U-net for image segmentation</a><br>
-% <a href="https://youtu.be/iG_wsxniBKk"><img style="vertical-align:middle;" src="images\youtube.png"> DeepMIB, features and updates in MIB 2.80</a><br>
+% <a href="https://youtu.be/iG_wsxniBKk"><img style="vertical-align:middle;" src="images\youtube.png"> DeepMIB, features and updates in MIB 2.80</a> (a recommended to see recommended workflow without preprocessing)<br>
 % <a href="https://youtu.be/451nwPxyD-Q"><img style="vertical-align:middle;" src="images\youtube.png"> DeepMIB, 2D Patch-wise mode</a><br>
-% <br><br>
+% <b>Trained networks and examples:</b><br>
+% <a href="https://youtu.be/-IXB4Da9VMw"><img style="vertical-align:middle;" src="images\youtube.png"> Deep learning segmentation projects of FIB-SEM dataset of a U2-OS cell</a><br>
+% <br>
 % The typical semantic segmentation workflow consists of two parts: 
 % <ul>
 % <li>network training</li>
 % <li>image prediction</li>
 % </ul>
-% During network training users specify type of the
-% network architecture (the <em>Network panel</em> of Deep MIB) and provide images and ground truth
-% models (the <em>Directories and Preprocessing tab</em>). For training, the provided data will be split into two sets: one set to be 
-% used for the actual training (normally it contains most of the ground truth data)
-% and another for validation. The network trains itself over the training
-% set, while checking own performance using the validation set (the
-% <em>Training tab</em>). 
+% During network training, users specify the type of network architecture (the <em>Network panel</em> of Deep MIB) and provide images and ground truth labels
+% (the <em>Directories and Preprocessing tab</em>). For training, the provided data will be split into two sets: 
+% one set to be used for the actual training (normally it contains most of the ground truth data) 
+% and another for validation. The network trains itself over the training set while checking its 
+% own performance using the validation set (the <em>Training tab</em>). 
 % <br>
-% The pretrained network is saved to disk and can be distributed to predict (the <em>Predict tab</em>) unseen
-% datasets.<br>
-% Please refer to the documentation below for details of various
-% options available in MIB.<br>
+% The pretrained network is saved to disk and can be distributed to predict unseen datasets (the <em>Predict tab</em>).<br>
+% Please refer to the documentation below for details of various options available in DeepMIB<br>
 % <img src="images\DeepLearning_scheme.jpg">
 % </html>
 %
 % For the list of available workflows and networks jump to description of <ug_gui_menu_tools_deeplearning_network.html the Network panel> 
 % [br32]
+%
+%% Example networks
+%
+% Number of demo trainined DeepMIB projects are available for download and
+% tests. Navigate to [class.code]Menu->File->Example datasets->DeepMIB
+% projects[/class].[br8]
+% Detailed information about these projects is available from <ug_gui_menu_file.html Menu-File> 
 %
 %% Network panel
 % 

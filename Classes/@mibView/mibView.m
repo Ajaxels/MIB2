@@ -1,14 +1,22 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibView < handle
     % classdef mibView < handle
     % the main view class of MIB
-    
-    % Copyright (C) 04.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-    %
     
     properties
         gui
@@ -19,12 +27,16 @@ classdef mibView < handle
         % handles to the controller
         handles
         % list of handles for the gui
+        guiPositions
+        % structure with default positions of some GUIs to be used for rescaling
         brushPrevXY
         % coordinates of the previous pixel for the @em Brush tool,
         % @note dimensions: [x, y] or NaN
         brushSelection
         % selection layer during the brush tool movement, @code {1:2}[1:height,1:width] or NaN @endcode
-        % brushSelection{1} - contains brush selection during drawing
+        % brushSelection{1} 
+        %   .selection - contains brush selection during drawing
+        %   .travelPathInPixels - distance of brush travelled during painting
         % brushSelection{2} - contains labels of the supervoxels and some additional information
         %   .slic - a label image with superpixels
         %   .selectedSlic - a bitmap image of the selected with the Brush tool superpixels 
@@ -110,6 +122,11 @@ classdef mibView < handle
                 end
             end
             
+            title = ['Microscopy Image Browser ' obj.mibController.mibVersion];
+            if isdeployed; title = [title ' deployed version'];  end
+            title = [title '    level ' obj.mibModel.preferences.Users.tierLevelRanks{min(obj.mibModel.preferences.Users.Tiers.tierLevel, numel(obj.mibModel.preferences.Users.tierLevelRanks))}];
+            obj.gui.Name = title;
+
             obj.brushPrevXY = NaN;
             obj.brushSelection = NaN;
             obj.trackerYXZ = [NaN;NaN;NaN];

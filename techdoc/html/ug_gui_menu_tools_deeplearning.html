@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Deep MIB - segmentation using Deep Learning</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning.m"><style>
+      --><title>Deep MIB - segmentation using Deep Learning</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -147,11 +147,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -521,55 +520,63 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <p>The deep learning tool (Deep MIB) provides access to training of deep convolutional networks over the user data and utilization of those networks for image segmentation tasks.</p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a></p><!--/introduction--><h2>Contents</h2>
 <div><ul><li><a href="#1">Overview</a></li>
-<li><a href="#2">Network panel</a></li>
-<li><a href="#3">Directories and Preprocessing tab</a></li>
-<li><a href="#4">Train tab</a></li>
-<li><a href="#5">Predict tab</a></li>
-<li><a href="#6">Options tab</a></li></ul></div><h2 id="1">Overview</h2>
+<li><a href="#2">Example networks</a></li>
+<li><a href="#3">Network panel</a></li>
+<li><a href="#4">Directories and Preprocessing tab</a></li>
+<li><a href="#5">Train tab</a></li>
+<li><a href="#6">Predict tab</a></li>
+<li><a href="#7">Options tab</a></li></ul></div><h2 id="1">Overview</h2>
 For details of deep learning with DeepMIB please refer to the following tutorials:
+<br>
+<b>The newest tutorial:</b>
+<br>
+<a href="https://youtu.be/ZO-WmMijN0U"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> Deep-learning segmentation using 2.5D Depth-to-Colors workflow in MIB</a>
+<br>
+<b>Older tutorials:</b>
 <br>
 <a href="https://youtu.be/gk1GK_hWuGE"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> DeepMIB: 2D U-net for image segmentation</a>
 <br>
 <a href="https://youtu.be/U5nhbRODvqU"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> DeepMIB: 3D U-net for image segmentation</a>
 <br>
-<a href="https://youtu.be/iG_wsxniBKk"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> DeepMIB, features and updates in MIB 2.80</a>
+<a href="https://youtu.be/iG_wsxniBKk"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> DeepMIB, features and updates in MIB 2.80</a> (a recommended to see recommended workflow without preprocessing)
 <br>
 <a href="https://youtu.be/451nwPxyD-Q"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> DeepMIB, 2D Patch-wise mode</a>
 <br>
-
+<b>Trained networks and examples:</b>
 <br>
+<a href="https://youtu.be/-IXB4Da9VMw"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> Deep learning segmentation projects of FIB-SEM dataset of a U2-OS cell</a>
+<br>
+
 <br>
 The typical semantic segmentation workflow consists of two parts:
 <ul>
 <li>network training</li>
 <li>image prediction</li>
 </ul>
-During network training users specify type of the
-network architecture (the <em>Network panel</em> of Deep MIB) and provide images and ground truth
-models (the <em>Directories and Preprocessing tab</em>). For training, the provided data will be split into two sets: one set to be
-used for the actual training (normally it contains most of the ground truth data)
-and another for validation. The network trains itself over the training
-set, while checking own performance using the validation set (the
-<em>Training tab</em>).
+During network training, users specify the type of network architecture (the <em>Network panel</em> of Deep MIB) and provide images and ground truth labels
+(the <em>Directories and Preprocessing tab</em>). For training, the provided data will be split into two sets:
+one set to be used for the actual training (normally it contains most of the ground truth data)
+and another for validation. The network trains itself over the training set while checking its
+own performance using the validation set (the <em>Training tab</em>).
 
 <br>
-The pretrained network is saved to disk and can be distributed to predict (the <em>Predict tab</em>) unseen
-datasets.
+The pretrained network is saved to disk and can be distributed to predict unseen datasets (the <em>Predict tab</em>).
 <br>
-Please refer to the documentation below for details of various
-options available in MIB.
+Please refer to the documentation below for details of various options available in DeepMIB
 <br>
 <img class="image-fit" src="images\DeepLearning_scheme.jpg">
-<p>For the list of available workflows and networks jump to description of <a href="ug_gui_menu_tools_deeplearning_network.html">the Network panel</a> 
-<br style="display:block; content:''; margin-top:32px;"></p><h2 id="2">Network panel</h2>
+<p>For the list of available workflows and networks jump to description of <a href="ug_gui_menu_tools_deeplearning_network.html">the Network panel</a> <span style="line-height:32px; display:block; vertical-align:top">
+<br></span></p><h2 id="2">Example networks</h2>
+<p>Number of demo trainined DeepMIB projects are available for download and tests. Navigate to <span class="code">Menu-&gt;File-&gt;Example datasets-&gt;DeepMIB projects</span>.<span style="line-height:8px; display:block; vertical-align:top">
+<br></span> Detailed information about these projects is available from <a href="ug_gui_menu_file.html">Menu-File</a></p><h2 id="3">Network panel</h2>
 <p>This panel is used to select workflow and convolutional network architecture to be used during training</p>
-<p><a href="ug_gui_menu_tools_deeplearning_network.html">Details of the Network panel</a></p><h2 id="3">Directories and Preprocessing tab</h2>
+<p><a href="ug_gui_menu_tools_deeplearning_network.html">Details of the Network panel</a></p><h2 id="4">Directories and Preprocessing tab</h2>
 <p>This tab allows choosing directories with images for training and prediction as well as various parameters used during image loading and preprocessing.</p>
-<p><a href="ug_gui_menu_tools_deeplearning_dirs.html">Details of the Directories and Preprocessing tab</a></p><h2 id="4">Train tab</h2>
+<p><a href="ug_gui_menu_tools_deeplearning_dirs.html">Details of the Directories and Preprocessing tab</a></p><h2 id="5">Train tab</h2>
 <p>This tab contains settings for generating deep convolutional network and training.</p>
-<p><a href="ug_gui_menu_tools_deeplearning_train.html">Details of the Train tab</a></p><h2 id="5">Predict tab</h2>
+<p><a href="ug_gui_menu_tools_deeplearning_train.html">Details of the Train tab</a></p><h2 id="6">Predict tab</h2>
 <p>The trained networks can be loaded to Deep MIB and used for prediction of new datasets</p>
-<p><a href="ug_gui_menu_tools_deeplearning_predict.html">Details of the Predict tab</a></p><h2 id="6">Options tab</h2>
+<p><a href="ug_gui_menu_tools_deeplearning_predict.html">Details of the Predict tab</a></p><h2 id="7">Options tab</h2>
 <p>Some additional options and settings are available in this tab</p>
 <p><a href="ug_gui_menu_tools_deeplearning_options.html">Details of the Predict tab</a></p>
 <p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a></p>
@@ -580,7 +587,7 @@ options available in MIB.
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Deep MIB - segmentation using Deep Learning
@@ -597,42 +604,54 @@ options available in MIB.
 % <html lang="en">
 % For details of deep learning with DeepMIB please refer to the following tutorials:
 <br>
+% <b>The newest tutorial:</b>
+<br>
+% <a href="https://youtu.be/ZO-WmMijN0U"><img style="vertical-align:middle;" src="images\youtube.png"> Deep-learning segmentation using 2.5D Depth-to-Colors workflow in MIB</a>
+<br>
+% <b>Older tutorials:</b>
+<br>
 % <a href="https://youtu.be/gk1GK_hWuGE"><img style="vertical-align:middle;" src="images\youtube.png"> DeepMIB: 2D U-net for image segmentation</a>
 <br>
 % <a href="https://youtu.be/U5nhbRODvqU"><img style="vertical-align:middle;" src="images\youtube.png"> DeepMIB: 3D U-net for image segmentation</a>
 <br>
-% <a href="https://youtu.be/iG_wsxniBKk"><img style="vertical-align:middle;" src="images\youtube.png"> DeepMIB, features and updates in MIB 2.80</a>
+% <a href="https://youtu.be/iG_wsxniBKk"><img style="vertical-align:middle;" src="images\youtube.png"> DeepMIB, features and updates in MIB 2.80</a> (a recommended to see recommended workflow without preprocessing)
 <br>
 % <a href="https://youtu.be/451nwPxyD-Q"><img style="vertical-align:middle;" src="images\youtube.png"> DeepMIB, 2D Patch-wise mode</a>
 <br>
-% 
+% <b>Trained networks and examples:</b>
 <br>
+% <a href="https://youtu.be/-IXB4Da9VMw"><img style="vertical-align:middle;" src="images\youtube.png"> Deep learning segmentation projects of FIB-SEM dataset of a U2-OS cell</a>
+<br>
+% 
 <br>
 % The typical semantic segmentation workflow consists of two parts: 
 % <ul>
 % <li>network training</li>
 % <li>image prediction</li>
 % </ul>
-% During network training users specify type of the
-% network architecture (the <em>Network panel</em> of Deep MIB) and provide images and ground truth
-% models (the <em>Directories and Preprocessing tab</em>). For training, the provided data will be split into two sets: one set to be 
-% used for the actual training (normally it contains most of the ground truth data)
-% and another for validation. The network trains itself over the training
-% set, while checking own performance using the validation set (the
-% <em>Training tab</em>). 
+% During network training, users specify the type of network architecture (the <em>Network panel</em> of Deep MIB) and provide images and ground truth labels
+% (the <em>Directories and Preprocessing tab</em>). For training, the provided data will be split into two sets: 
+% one set to be used for the actual training (normally it contains most of the ground truth data) 
+% and another for validation. The network trains itself over the training set while checking its 
+% own performance using the validation set (the <em>Training tab</em>). 
 % 
 <br>
-% The pretrained network is saved to disk and can be distributed to predict (the <em>Predict tab</em>) unseen
-% datasets.
+% The pretrained network is saved to disk and can be distributed to predict unseen datasets (the <em>Predict tab</em>).
 <br>
-% Please refer to the documentation below for details of various
-% options available in MIB.
+% Please refer to the documentation below for details of various options available in DeepMIB
 <br>
 % <img src="images\DeepLearning_scheme.jpg">
 % </html>
 %
 % For the list of available workflows and networks jump to description of <ug_gui_menu_tools_deeplearning_network.html the Network panel> 
 % [br32]
+%
+%% Example networks
+%
+% Number of demo trainined DeepMIB projects are available for download and
+% tests. Navigate to [class.code]Menu->File->Example datasets->DeepMIB
+% projects[/class].[br8]
+% Detailed information about these projects is available from <ug_gui_menu_file.html Menu-File> 
 %
 %% Network panel
 % 

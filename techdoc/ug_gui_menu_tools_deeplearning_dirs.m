@@ -12,23 +12,25 @@
 % 
 %% Widgets and settings
 %
-% [class.h3]Directory with images and modelsn  for training[/class][br]
+% [class.h3]Directory with images and labels for training[/class][br]
 % [ _used only for training_ ][br]
 % 
 % <<images\DeepLearningDirs_panel1.png>>
 % 
+% <html>
 % use these widgets to select directory that contain images and model to be
 % used for training. For the organization of directories see the
-% organization schemes [jumpto1]below[/jumpto].[br8]
+% organization schemes below.<br>
 % For 2D networks the files should contain individual 2D images, while for 3D networks
-% individual 3D datasets.[br]
-% The [class.dropdown]extension &#9660;[/class] dropdown menu on the right-hand side can be used to specify extension 
-% of the image files. [br]
-% The [class.kbd][&#10003;] *Bio*[/class] checkbox toggles standard or Bio-format readers for loading images. 
-% If the Bio-Format file is a collection of image, the [class.dropdown]Index...[/class] edit box can be used
-% to specify an index of the file within the container.[br]
-% For better performance, it is recommended to convert Bio-Formats compatible images to standard formats or to use [jumpto2]the Preprocessing option[/jumpto]. 
-% [br8]
+% individual 3D datasets.<br>
+% The <span class="dropdown">extension &#9660;</span> dropdown menu on the right-hand side can be used to specify extension 
+% of the image files. <br>
+% The <span class="kbd">[&#10003;] <b>Bio</b></span> checkbox toggles standard or Bio-format readers for loading images. 
+% If the Bio-Format file is a collection of image, the <span class="dropdown">Index...</span> edit box can be used
+% to specify an index of the file within the container.<br>
+% For better performance, it is recommended to convert Bio-Formats compatible images to standard formats or to use the Preprocessing option (see below). 
+% <br>
+% </html>
 %
 % [dtls][smry] *Important notes considering training files* [/smry]
 %
@@ -38,16 +40,12 @@
 % (one exception is 2D networks, where it is allowed to have a single
 % model file in MIB <span class="code">*.model</span> format, when <b>Single MIB model file:
 % ticked</b>). This option requires [jumpto2]data preprocessing[/jumpto]</li> 
-% <li>For models in standard image formats it is important to
+% <li>For labels in standard image formats it is important to
 % specify number of classes <b>including the Exterior</b> into the <b>Number of
 % classes</b> edit box</li>
 % <li><b><em>Important! It is not possible to use numbers as names of
 % materials, please name materials in a sensible way when using the <span class="code">*.model</span> format!</b></em></li>
 % </ul>
-% <br>
-% <b>Tip!</b> if you have only one segmented dataset you can split it into
-% several datasets using <span class="code">Menu->File->Chopped
-% images->Export</span> operation.
 % </html>
 %
 % [/dtls]
@@ -59,52 +57,34 @@
 % 
 % <<images\DeepLearningDirs_panel2.png>>
 % 
-% The image files should be placed under [class.code]Images[/class] subfolder. Optionally,
-% when the ground truth models for prediction images is available, they can
-% be placed under [class.code]Labels[/class] subfolder.
-% [br8]
-% When the preprocessing mode is used the images from this folder are
-% converted and saved to [class.code]3_Results\Prediction images[/class] directory. 
-% [br]For 2D networks the files should contain individual 2D images or 3D stacks, while for 3D networks
-% individual 3D datasets.
-% [br8]
-% When the ground truth labels are present, they are also processed and copied to 
-% [class.code]3_Results\PredictionImages\GroundTruthLabels[/class]. These models can
-% be used for evaluation of results (see <ug_gui_menu_tools_deeplearning_predict.html the *Predict* tab> for details).[br]
-% The [class.dropdown]extension &#9660;[/class] dropdown menu on the right-hand side can be used to specify extension 
-% of the image files. The [class.kbd][&#10003;] *Bio*[/class] checkbox toggles standard or Bio-format readers for loading the images. 
-% If the Bio-Format file is a collection of image, the *Index* edit box can be used
-% to specify an index of the file within the container.[br8]
-%
-% [dtls][smry] *Description of additional settings* [/smry]
-% 
 % <html>
-% <ul>
-% <li>The <span class="kbd">[&#10003;] <b>Single MIB model file </b></span> checkbox, (<em>only for 2D networks</em>) tick it, when using a single model file with
-% segmentations</li>
-% <li>The <span class="dropdown">Model extension &#9660;</span> dropdown, (<em>only for 2D networks</em>) is used to select extension of files containing models.
-% For 3D network MIB model format is used</li>
-% <li>The <b>Number of classes edit box</b>, (<em>TIF or PNG formats only</em>) is used to define number of classes (including <span class="code">Exterior</span>) 
-% in models. For model files in MIB <span class="code">*.model</span> format, this field is not used</li>
-% <li><span class="kbd">[&#10003;] <b>Use masking</b></span> checkbox is used when some parts of the training 
-% data should be excluded from training. The masks may be provided in various formats
-% and number of mask files should match the number of image files<br>
-% *Note!* masking may give drop in precision of training due to
-% inconsistency within the image patches</li>
-% <li><span class="dropdown">Mask extension &#9660;</span> is used to select extension for files that
-% contain masks. For 3D network only MIB <span class="code">*.mask</span> format
-% is supported</li>
+% The image files should be placed under <span class="code">Images</span> subfolder 
+% (it is also possible to place images directly into a folder specified in this panel). 
+% Optionally, when the ground truth labels for prediction images are available, they can be placed under <span class="code">Labels</span> subfolder.
+% <br><br>
+% When the preprocessing mode is used the images from this folder are
+% converted and saved to <span class="code">3_Results\Prediction images</span> directory. 
+% When the ground truth labels are present, they are also processed and copied to 
+% <span class="code">3_Results\PredictionImages\GroundTruthLabels</span>. These labels can
+% be used for evaluation of results (see <ug_gui_menu_tools_deeplearning_predict.html the *Predict* tab> for details).
+% <br><br>
+% For 2D networks the files should contain individual 2D images or 3D stacks, while for 3D networks
+% individual 3D datasets.
+% <br><br>
+% The <span class="dropdown">extension &#9660;</span> dropdown menu on the right-hand side can be used to specify extension 
+% of the image files. The <span class="kbd">[&#10003;] <b>Bio</b></span> checkbox toggles standard or Bio-format readers for loading the images. 
+% If the Bio-Format file is a collection of image, the <b>Index</b> edit box can be used
+% to specify an index of the file within the container.<br>
 % </html>
 %
-% [/dtls]
 % [br8]
 % [class.h3]Directory with resulting images[/class][br]
 % use these widgets to specify the main output directory; results and all
 % preprocessed images are stored there.
 % 
-% <<images\DeepLearningDirs_panel2.png>>
+% <<images\DeepLearningDirs_panel3.png>>
 %
-% [br]All subfolders inside this
+% All subfolders inside this
 % directory are automatically created by Deep MIB:[br8]
 %
 % [dtls][smry] *Description of directories created by DeepMIB* [/smry]
@@ -113,30 +93,66 @@
 % <ul>
 % <li><span class="code">PredictionImages</span>, place for the prepocessed images for
 % prediction</li>
-% <li><span class="code">PredictionImages\GroundTruthLabels</span>, place for ground truth models
-% for prediction images, when available</li>
-% <li><span class="code">PredictionImages\ResultsModels</span>, the main outout directory with generated models after prediction. 
+% <li><span class="code">PredictionImages\GroundTruthLabels</span>, place
+% for ground truth labels for prediction images, when available</li>
+% <li><span class="code">PredictionImages\ResultsModels</span>, the main outout directory with generated labels after prediction. 
 % The 2D models can be combined in MIB by selecting the files using the <span class="kbd">&#8679; Shift</span>+<span class="kbd">left mouse click</span> during loading</li>
 % <li><span class="code">PredictionImages\ResultsScores</span>, folder for generated prediction scores (probability) for each material. 
 % The score values are scaled between 0 and 255</li>
 % <li><span class="code">ScoreNetwork</span>, for accuracy and loss score plots, when the <em>Export training plots</em> option 
 % of the <em>Train</em> tab is ticked and for storing checkpoints of the network after each epoch (or specified frequency), 
-% when the <span class="kbd">[&#10003;] <b>Save progress after each epoch</b></span> checkbox is ticked</li>
+% when the <span class="kbd">[&#10003;] <b>Save progress after each epoch</b></span> checkbox is ticked. The score files are started with a date-time tag and overwritten when a new training is started</li>
 % <li><span class="code">TrainImages</span>, images to be used for training (<em>only for preprocessing mode</em>)</li>
-% <li><span class="code">TrainLabels</span>, models accompanying images to be used for training (<em>only for preprocessing mode</em>)</li>
+% <li><span class="code">TrainLabels</span>, labels accompanying images to be used for training (<em>only for preprocessing mode</em>)</li>
 % <li><span class="code">ValidationImages</span>, images to be used for validation during training (<em>only for preprocessing mode</em>)</li>
-% <li><span class="code">ValidationLabels</span>, models accompanying images for validation (<em>only for preprocessing mode</em>)</li>
+% <li><span class="code">ValidationLabels</span>, labels accompanying images for validation (<em>only for preprocessing mode</em>)</li>
 % </ul>
 % </html>
 %
 % [/dtls]
 %
-% [target5]
-% [dtls][smry] *Details of additional widgets* [/smry]
+% [class.h3]Label file details[/class]
 % 
 % <<images\DeepLearningDirs_panel4.png>>
-% 
 %
+% <html>
+% <ul>
+% <li>The <span class="kbd">[&#10003;] <b>Single MIB model file </b></span> checkbox, (<em>only for 2D networks</em>) when checked, a single model file with labels will be used</li>
+% <li>The <span class="dropdown">Labels extension &#9660;</span> dropdown, (<em>only for 2D networks</em>) is used to select extension of files containing models.
+% For 3D network MIB model format is used</li>
+% <li>The <b>Number of classes edit box</b>, (<em>TIF or PNG formats only</em>) is used to define number of classes (including <span class="code">Exterior</span>) 
+% in labels. For label files in MIB <span class="code">*.model</span> format, this field will be updated automatically</li>
+% <li><span class="kbd">[&#10003;] <b>Use masking</b></span> checkbox is used when some parts of the training 
+% data should be excluded from training. The masks may be provided in various formats
+% and number of mask files should match the number of image files. When
+% mask files are provided the preprocessing operation has to be done. When <span class="dropdown">USE 0-s IN LABELS &#9660;</span>
+% is selected the mask is assumed to be areas of label files with 0-values.
+% This option is recommended for work with masks without the preprocessing operation<br>
+% <div class="info">
+% <ul>
+% <li> When <span class="dropdown">USE 0-s IN LABELS &#9660;</span> is used, the
+% first material in the prediction results will be assigned to the
+% Exterior material, i.e. will acquire index 0.<br>
+% It is recommended to have the first material in the ground truth assigned to background!</li>
+% <li> When mask with the preprocessing operation is used, the Exterior material will be used to indicate the background areas</li>
+% <li> Masking may give drop in precision of training due to
+% inconsistency within the image patches, it is recommended to minimize use
+% of masking</li>
+% </ul>
+% </div>
+% </li>
+% <li><span class="dropdown">Mask extension &#9660;</span> is used to select extension for files that
+% contain masks. Without preprocessing (<span class="dropdown">USE 0-s IN LABELS &#9660;</span> any files are allowed); 
+% with preprocessing only <span class="code">*.mask</span> format is
+% allowed for the 3D network</li>
+% </html>
+%
+% [target5]
+%
+% [class.h3]Additional settings[/class]
+% 
+% <<images\DeepLearningDirs_panel5.png>>
+% 
 % <html>
 % <ul>
 % <li><span class="kbd">[&#10003;] <b>Compress processed images</b></span>, tick to compress the processed images. 
@@ -145,20 +161,20 @@
 % using similar to this command:<br><span class="code">res = load('img01.mibImg, '-mat');</span>.
 % <br>
 % Compression of images slows down performance!</li>
-% <li><span class="kbd">[&#10003;] <b>Compress processed models</b></span>, tick to compress models during preprocessing. 
-% The processed models are stored in <em>*.mibCat</em> format that can be loaded in MIB (<em>Menu->Models->Load model</em>). 
+% <li><span class="kbd">[&#10003;] <b>Compress processed labels</b></span>, tick to compress labels during preprocessing. 
+% The processed labels are stored in <em>*.mibCat</em> format that can be loaded in MIB (<em>Menu->Models->Load model</em>). 
 % It is a variation of a standard MATLAB format, where the model is encoded using categorical class of MATLAB.
 % <br> 
-% Compression of models slows down performance but brings significant benefit of small file sizes</li>
+% Compression of labels slows down performance but brings significant benefit of small file sizes</li>
 % <li><span class="kbd">[&#10003;] <b>Use parallel processing</b></span>, when ticked DeepMIB is using multiple
 % cores to process images. Number of cores can be specified using the
-% <b>Workers</b> edit box. The parallel processing during preprocessing
+% <span class="dropdown">Workers</span> edit box. The parallel processing during preprocessing
 % operation brings significant decrease in time required for
 % preprocessing.</li>
-% <li><b>Fraction of images for validation</b>, define fraction of images
-% that will be randomly (<b>Random generator seed</b>) assigned into
+% <li><span class="dropdown"><b>Fraction of images for validation</b></span>, define fraction of images
+% that will be randomly (depending on <span class="dropdown">Random generator seed</span>) assigned into
 % the validation set. When set to 0, the validation option will not be used during the training</li>
-% <li><b>Random generator seed</b>, a number to initialize random seed
+% <li><span class="dropdown">Random generator seed</span>, a number to initialize random seed
 % generator, which defines how the images for training and validation are
 % split. For reproducibility of tests keep value fixed. 
 % When random seed is initialized with 0, the random seed generator is shuffled based on the current system time</li>
@@ -167,21 +183,24 @@
 % </ul>
 % </html>
 %
-% [/dtls]
 % [br32]
 %
 %% Preprocessing of files
 % 
-% [target1]Originally, the preprocessing of files in DeepMIB was required for most
-% of workflows. Currently, however, DeepMIB is capable to work with unprocessed images most of 
-% times: use the *Preprocessing is not required* options.
+% [target1]
+%
+% <html>
+% Originally, the preprocessing of files in DeepMIB was required for most of workflows. 
+% Currently, however, DeepMIB is capable to work with unprocessed images most of 
+% times: use the <span class="dropdown">Preprocessing is not required &#9660;</span> or 
+% <span class="dropdown">Split for training/validation &#9660;</span> options.
+% </html>
 %
 % [dtls][smry] *When the preprocessing step is required or recommended* [/smry]
 %
 % The preprocessing is recommended/required in the following situations:
 %
 % * when labels are stored in a single [class.code]*.MODEL[/class] file
-% * when masking is used during training
 % * when training set is coming in proprietary formats that can only be read using BioFormats reader
 %
 % During preprocessing the images and model files are converted to 
@@ -405,6 +424,22 @@
 % font-size: 10pt;
 % background: #eee;
 % padding: 1pt 3pt;
+% }
+% .info {
+%  position: relative;
+%  left: 40px;
+%  width: 600px;
+%  padding: 1em 1em 1em 4em;
+%  margin: 2em 0;
+%  color: #555;
+%  background: #e7f2fa;
+%  border-left: 4px solid #93cfeb;
+% }
+% .info:before {
+%  content: url(images\\info.png);
+%  position: absolute;
+%  top: 10px;
+%  left: 10px;
 % }
 % [/cssClasses]
 %

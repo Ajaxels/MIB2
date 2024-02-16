@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function moveMaskToSelectionDataset(obj, action_type, options)
 % function moveMaskToSelectionDataset(obj, action_type, options)
 % Move the Mask layer to the Selection layer.
@@ -31,13 +47,6 @@ function moveMaskToSelectionDataset(obj, action_type, options)
 % @attention @b NOT @b sensitive to the blockModeSwitch
 % @attention @b NOT @b sensitive to the shown ROI
 
-% Copyright (C) 18.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-% 
 % Updates
 % 
 
@@ -55,7 +64,12 @@ if ~isfield(options, 'level'); options.level = 1; end
 % swap options.contSelIndex and options.contAddIndex when selecting
 % mask with fix selection to material switch
 if options.selected_sw && options.contSelIndex == -1
-    options.contSelIndex = options.contAddIndex;
+    % Mask/Mask is selected disable selected_material switch
+    if options.contSelIndex == -1 && options.contAddIndex == -1
+        options.selected_sw = 0;
+    else
+        options.contSelIndex = options.contAddIndex;
+    end
 end
 
 % % filter the obj_type_from depending on selected_sw 

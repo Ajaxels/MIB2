@@ -7,7 +7,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
 %   It also gives extended formatting options, provides an optional dark theme, and
 %   automatically enhances the formatting of inline code and images.
 %
-%	Version 6.5
+%	Version 6.7
 %
 %   Inputs:
 %
@@ -88,29 +88,37 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
 %% Authorship:
 %
 %   Written by Harry Dymond, Electrical Energy Management Group, University of Bristol, UK; harry.dymond@bris.ac.uk. If you find any bugs, please email me!
-%   Developed with MATLAB R2018a running on Windows 10 and macOS Mojave.
+%   Developed with MATLAB R2018a running on Windows 10 and macOS Monterey.
 %
 %% ==========================================================================================================================================================
 
+    try
+    %% Clear show_dialogue
+    show_dialogue([]);        
     %% Constants
-    HELP_URL     = ['    Click <a href="matlab:ans=dir(which(''prettify_MATLAB_html.m''));' ...
+    if show_dialogue
+        HELP_URL = '';
+    else
+        HELP_URL = [NL NL 'Click <a href="matlab:ans=dir(which(''prettify_MATLAB_html.m''));' ...
                     'open([ans.folder filesep ''prettify documentation'' filesep ''html'' filesep ''prettify_MATLAB_html_helpdoc.html'']);' ...
-                    'clear ans">here</a> to see the help document for more information.'];
-    NO_START_ERR = 'ERROR: couldn''t find start of content in html file';
+                    'clear ans">here</a> to see the help document for more information.' NL];
+    end
+    NO_START_ERR = 'Couldn''t find start of content in html file';
     DEBUG        = getappdata(0,'PRETTY_DEBUG'); if isempty(DEBUG), DEBUG = false; end
     %% Check sufficient inputs
-    assert(nargin>=1,['    Call syntax error. Call syntax is:' NL ...
-                      '    prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addCommandsToToolbar)' NL ...
-                      '    Where inputs verbose, overloadPublish, and addCommandsToToolbar are optional.' NL HELP_URL NL]);
-    try
-    %% Clear show_warning and write_fstrm_to_file sub-functions
-    show_warning(true)
+    assert(nargin>=1,'prettify:inputError', ['ERROR: Call syntax error. Call syntax is:' NL ...
+                                             'prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addCommandsToToolbar)' NL ...
+                                             'Where inputs verbose, overloadPublish, and addCommandsToToolbar are optional.' HELP_URL]);
+    %% Clear sub-functions
     write_fstrm_to_file([], [], [])
+    show_warning(true, inputhtmlFile);
     %% Overload publish
     if nargin>=3 && islogical(overloadPublish)
         PUBLISH_OVERLOAD_FOLDER_NAME = 'publish overload';
-        ERROR_MSG_START = 'Not installed correctly. In the folder that contains the prettify_MATLAB_html.m file, there should be a ';
-        if ~exist([my_path PUBLISH_OVERLOAD_FOLDER_NAME],'dir'), error([ERROR_MSG_START 'folder named "' PUBLISH_OVERLOAD_FOLDER_NAME '"']); end
+        ERROR_MSG_START = 'ERROR: Not installed correctly. In the folder that contains the prettify_MATLAB_html.m file, there should be a ';
+        if ~exist([my_path PUBLISH_OVERLOAD_FOLDER_NAME],'dir')
+            error('prettify:notInstalledCorrectly',[ERROR_MSG_START 'folder named "' PUBLISH_OVERLOAD_FOLDER_NAME '"']);
+        end
         pathList     = strsplit(path,':');
         overloadPath = pathList(cellfun(@(str)contains(str,PUBLISH_OVERLOAD_FOLDER_NAME),pathList));
         if ~isempty(overloadPath)
@@ -148,15 +156,18 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
         return
     end
     %% Some input checking
-    assert(ischar(inputhtmlFile),['ERROR: First input to prettify_MATLAB_html should be a character vector specifying '...
-                                  'the html file to be processed, either by just file name, or by full path.' NL HELP_URL NL]);
+    assert(ischar(inputhtmlFile),'prettify:inputError',['ERROR: First input to prettify_MATLAB_html should be a character vector specifying '...
+                                                        'the html file to be processed, either by just file name, or by full path.' HELP_URL]);
     if nargin < 2 || ~islogical(verbose), verbose = true; end
     if verbose, fprintf(1,'\nReading input file...\n'); end
     fInfo = dir(inputhtmlFile);
-    assert(~isempty(fInfo),['ERROR: Specified html file could not be found. Make sure the html file '...
-                            'is in the present working directory, or otherwise on the MATLAB path']);
+    assert(~isempty(fInfo),'prettify:inputFileNotFound',['ERROR: Specified html file could not be found. Make sure the html file '...
+                                                         'is in the present working directory, or otherwise on the MATLAB path']);
     %% Open input file
     fstrm = read_file_to_mem(inputhtmlFile);
+    %% Create error intro for error messages
+    % for use in error messages raised by helper functions
+    error_intro(inputhtmlFile);
     if verbose, fprintf(1,'Processing:\n'); end
     %% Find [cssClass] tags
     [fstrm, classNames, userCSS] = process_cssClasses_tags(fstrm);
@@ -164,7 +175,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     classNames     = [classNames {'codeinput', 'codeoutput', 'error', 'keyword', 'comment', 'string', 'untermstring', 'syscmd'}];
     %% Themes
     themeSwitchPos = strfind(fstrm,'<div class="content">');
-    assert (~isempty(themeSwitchPos), NO_START_ERR);
+    assert (~isempty(themeSwitchPos), [error_intro NO_START_ERR]);
     themeSwitchPos = themeSwitchPos(1) + 20;
     if ~strcmp(char(fstrm(themeSwitchPos+1:themeSwitchPos+4)),'<h1>') ...
     || strcmp(char(fstrm(themeSwitchPos+1:themeSwitchPos+9)),'<h1></h1>'), extraStr = '<div>&nbsp;</div>'; %#ok<ALIGN>
@@ -256,11 +267,10 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
                 NL ...
                 'details > summary,' NL ...
                 '.details-div {' NL ...
-                '  padding: 6px 14px;' NL ...
+                '  padding: 8px 20px;' NL ...
                 '  border-style: solid;' NL ...
                 '  border-width: 1.2pt;' NL ...
                 '  border-color: #E0E0E0;' NL ...
-                '  margin-left: 15px;' NL ...
                 '}' NL ...
                 'details > summary {' NL ...
                 '  border-radius:6px 6px 0 0;' NL ...
@@ -649,8 +659,8 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     if ~isempty(styleStart)
         styleStart = styleStart + sourceStart - 1;
         styleEnd   = strfind(fstrm(sourceStart:htmlEnd),'</style>');
-        assert(length(styleStart)==length(styleEnd),'ERROR: Imbalanced <style></style> tags; there are %i opening tags and %i closing tags', ...
-                                                    length(styleStart), length(styleEnd));
+        assert(length(styleStart)==length(styleEnd),'prettify:styleImbalance', [error_intro 'Imbalanced <style></style> tags; there are %i opening tags' ...
+                                                                                ' and %i closing tags'], length(styleStart), length(styleEnd));
         styleEnd = styleEnd + sourceStart - 1;
         for i = 1:length(styleStart)
             sectionLength = 1+styleEnd(i)+7-styleStart(i);
@@ -697,7 +707,8 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     if verbose, fprintf(1,'   dtls tags...\n'); end
     [detailsOpens, detailsCloses] = get_tag_pairs('[dtls]', fstrm, htmlEnd);
     [summaryOpens, summaryCloses] = get_tag_pairs('[smry]', fstrm, htmlEnd);
-    assert(length(summaryOpens)==length(detailsOpens), 'ERROR: Number of [smry] tags does not match the number of [dtls] tags');
+    assert(length(summaryOpens)==length(detailsOpens), 'prettify:smrydtlsNotEqual', ...
+                                                       [error_intro 'Number of [smry] tags does not match the number of [dtls] tags']);
     detailsTags = {detailsOpens, detailsCloses};
     wrapTags = {'<span','<pre'};
     for i = 1:2
@@ -723,8 +734,8 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     end
     [countOfDtlsTags, detailsCloses] = sort_tag_closes(detailsOpens, detailsCloses);
     for i = 1:countOfDtlsTags
-        assert(summaryOpens (i)>detailsOpens (i),'ERROR: [smry] tag %i opened before [dtls] tag %i', i, i);
-        assert(summaryCloses(i)<detailsCloses(i),'ERROR: [dtls] tag pair %i closed before [smry] tag pair %i', i, i);
+        assert(summaryOpens (i)>detailsOpens (i),'prettify:smryBeforedtls'  ,[error_intro '[smry] tag %i opened before [dtls] tag %i'], i, i);
+        assert(summaryCloses(i)<detailsCloses(i),'prettify:dtlsClosedB4smry',[error_intro '[dtls] tag pair %i closed before [smry] tag pair %i'], i, i);
     end
     imgTags = [];
     %% Process [dtls] and [smry] tags
@@ -741,7 +752,8 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
             if isempty(collapseAllPos), noSections = true; collapseAllPos=0; end
             firstP = strfind(fstrm(sourceStart:htmlEnd),'<div class="content">') + sourceStart - 1;
             firstP = strfind(fstrm(firstP(1):htmlEnd),'<p>') + firstP(1) - 1;
-            assert (~isempty(firstP),[NO_START_ERR ' - is entire source .m file comment-only? Did you forget to start a section?']);
+            assert (~isempty(firstP),'prettify:noSections',...
+                                     [error_intro NO_START_ERR ' - is entire source .m file comment-only? Did you forget to start a section?']);
             if isempty(themeSwitch)
                 collapseAll = ['<p style="margin:0px; line-height:0;">&nbsp;</p><p onclick="toggle_details(0)"'...
                                ' style="float:right; padding-left:10px; margin:0;"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p>'];
@@ -800,7 +812,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
                 skipHeading = false;
                 headingIdx  = headingSearchStart-1+headingIdx(end);
                 idEnd       = strfind(fstrm(headingIdx+9:detailsOpens(detailsSectionCounter)),'"');
-                if isempty(idEnd), error('ERROR: malformed <h2> tag (no closing " for id)'); end
+                if isempty(idEnd), error('prettify:malformedH2',[error_intro 'Malformed <h2> tag (no closing " for id)']); end
                 idEnd = idEnd(1) + headingIdx + 7;
                 headingNum = str2double(fstrm(headingIdx+8:idEnd));
                 if isnan(headingNum), isDummySection = true;
@@ -808,7 +820,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
                 headingNestLevel = sum(headingIdx<detailsCloses(1:detailsSectionCounter-1));
                 if detailsSectionCounter>1 && headingNestLevel
                     if ~isDummySection
-                        error('ERROR: Section heading %i is inside a [dtls] box: this is not supported', headingNum);
+                        error('prettify:sectionInsidedtls',[error_intro 'Section heading %i is inside a [dtls] box: this is not supported'], headingNum);
                     elseif headingNestLevel > sum(detailsOpens(detailsSectionCounter)<detailsCloses(1:detailsSectionCounter-1))
                         skipHeading = true;
                     elseif ~noSections
@@ -1008,10 +1020,10 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     imgTags = strfind(fstrm(sourceStart:htmlEnd),'<img ') + sourceStart - 1;
     for i = 1:length(imgTags)
         srcIdx    = strfind(fstrm(imgTags(i):htmlEnd),' src=');
-        srcIdx    = srcIdx(1) + imgTags(i) - 1;
         imgTagEnd = strfind(fstrm(imgTags(i):htmlEnd),'>');
+        assert(~isempty(srcIdx) && ~isempty(imgTagEnd),'prettify:malformedImgTag',[error_intro 'Malformed image tags found']);
+        srcIdx    = srcIdx(1) + imgTags(i) - 1;
         imgTagEnd = imgTagEnd(1) + imgTags(i) - 1;
-        assert(~isempty(srcIdx) && ~isempty(imgTagEnd),'ERROR: malformed image tags found');
         if contains(fstrm(srcIdx:imgTagEnd),'.svg'), fitClass = 'image-fit-svg';
         else                                       , fitClass = 'image-fit';     end
         classStrs = {'class="','class ="','class= "','class = "'};
@@ -1173,12 +1185,12 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     brxTagList = strfind(fstrm(sourceStart:htmlEnd),'[br') + sourceStart - 1;
     [fstrm, htmlEnd, brxTagList, ~ , ~, brTagEnds] = find_valid_prettify_tags('br', brxTagList, [], [], fstrm, htmlEnd);
     for j = 1:length(brxTagList)
-        %[brx] -> <br style="display:block; content:''; margin-top:xpx;">
-        fstrm = [fstrm(1:brxTagList(j)-1) '<br style="display:block; content:''''; margin-top:' fstrm(brxTagList(j)+3:brTagEnds(j)-1) ...
-                 'px;">' fstrm(brTagEnds(j)+1:end)];
-        brxTagList = brxTagList + 50;
-        brTagEnds  = brTagEnds  + 50;
-        htmlEnd    = htmlEnd    + 50;
+        %[brx] -> <span style="line-height:xpx; display:block; vertical-align:top"><br></span>
+        fstrm = [fstrm(1:brxTagList(j)-1) '<span style="line-height:' fstrm(brxTagList(j)+3:brTagEnds(j)-1) ...
+                 'px; display:block; vertical-align:top"><br></span>' fstrm(brTagEnds(j)+1:end)];            
+        brxTagList = brxTagList + 71;
+        brTagEnds  = brTagEnds  + 71;
+        htmlEnd    = htmlEnd    + 71;
     end
     %% Remove excess spacing after codeoutput sections
     codeoutLoc = strfind(fstrm(sourceStart:htmlEnd),'<pre class="codeoutput">') + sourceStart - 1;
@@ -1202,11 +1214,12 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     end
     %% Remove erroneous <p></p> tags
     pOpens    = strfind(fstrm(sourceStart:htmlEnd),'<p ')  + sourceStart - 1;
-    unstyledP = strfind(fstrm(sourceStart:htmlEnd),'<p>') + sourceStart - 1;
+    unstyledP = strfind(fstrm(sourceStart:htmlEnd),'<p>')  + sourceStart - 1;
     pOpens    = sort([pOpens unstyledP]);
     pCloses   = strfind(fstrm(sourceStart:htmlEnd),'</p>') + sourceStart - 1;
-    assert(length(pOpens)==length(pCloses),'ERROR: Imbalanced <p></p> tags detected. There are %i opening tags and %i closing tags',...
-                                            length(pOpens),length(pCloses))
+    assert(length(pOpens)==length(pCloses),'prettify:imbalancedpTags',...
+                                           [error_intro 'Imbalanced <p></p> tags detected. There are %i opening tags and %i closing tags'],...
+                                           length(pOpens),length(pCloses))
     [~, pCloses] = sort_tag_closes(pOpens, pCloses);
     pCloses      = pCloses(ismember(pOpens,unstyledP));
     pOpens       = pOpens (ismember(pOpens,unstyledP));
@@ -1225,7 +1238,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     % handle defunct [frameBufferx] tag
     frameBufferTag = strfind(fstrm(sourceStart:htmlEnd),'[frameBuffer') + sourceStart - 1;
     if ~isempty(frameBufferTag)
-        assert(length(frameBufferTag)==1,'ERROR: only one [frameBufferx] tag is allowed');
+        assert(length(frameBufferTag)==1,'prettify:tooManyFramebufTags',[error_intro 'Only one [frameBufferx] tag is allowed']);
         frameBufferTagEnd = strfind(fstrm(frameBufferTag:htmlEnd),']') + frameBufferTag - 1;
         fstrm(frameBufferTag:frameBufferTagEnd) = [];
     end
@@ -1314,20 +1327,21 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     if verbose, fprintf(1,'Processing complete.\n'); end
     show_warning_dialogue;
     catch MEx
+    %% Handle errors    
         show_warning_dialogue;
-        throwError = false;
-        if ~isempty(MEx.identifier)
+        throwError   = false;
+        if isempty(MEx.identifier) || ~strncmp(MEx.identifier,'prettify:',9)
             fprintf(2,'\nPLEASE REPORT BUGS TO: <a href="mailto:harry.dymond@bristol.ac.uk">harry.dymond@bristol.ac.uk</a>\n\n');
-            errorMsg = ['Error!' NL 'Please see MATLAB command line for more information'];
+            if show_dialogue, errorMsg = ['Error!' NL 'Please see MATLAB command line for more information' NL];
+            else            , errorMsg = '';                                                                     end
             throwError = true;
         else
             errorMsg = MEx.message;
         end
-        callStack = dbstack;
-        if length(callStack)>1 && strcmp(callStack(2).file,'publish.m')
+        if show_dialogue
             uiwait(msgbox(errorMsg,'','error','modal'));
         else
-            fprintf(2,errorMsg);
+            fprintf(2,[wrap_text(errorMsg,'       ') '\n']);
         end
         if throwError
             fprintf(2,'Error in %s on <a href="matlab:opentoline(''%s'', %i)">line %i</a>:\n', ...
@@ -1337,7 +1351,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     end
     %% Subroutines
     function update_idxs(insertionLength)
-        %%     Index updater
+        %% -   Index updater
         detailsOpens ( detailsOpens  > insertPoint ) = detailsOpens ( detailsOpens  > insertPoint ) + insertionLength;
         detailsCloses( detailsCloses > insertPoint ) = detailsCloses( detailsCloses > insertPoint ) + insertionLength;
         summaryCloses( summaryCloses > insertPoint ) = summaryCloses( summaryCloses > insertPoint ) + insertionLength;
@@ -1347,17 +1361,25 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     end
 
     function show_warning_dialogue
-        %%     Show warning dialogue if warnings were generated
-        callStack = dbstack;
-        if length(callStack)>1 && ismember('publish.m',{callStack.file}) && ~isempty(show_warning([]))
+        %% -   Show warning dialogue if warnings were generated
+        if show_dialogue && ~isempty(show_warning([]))
             uiwait(msgbox([num2str(show_warning([])) ' warnings generated' NL 'Please see MATLAB command line for more information'],'','warn','modal'));
         end
+    end
+
+    function showDialogue = show_dialogue(~)
+        persistent showDialogueTest
+        if nargin
+            callStack        = dbstack;
+            showDialogueTest = length(callStack)>1 && ismember('publish.m',{callStack.file});
+        end
+        showDialogue = showDialogueTest;
     end
 end
 
 %% ==========================================================================================================================================================
 %% Helper functions
-%%     Tag processing
+%% -   Tag processing
 function [fstrm, classNames, userCSS] = process_cssClasses_tags(fstrm, getClassNamesOnly)
     if nargin<2, getClassNamesOnly = false; end
     if getClassNamesOnly,     htmlEnd  = length(fstrm);
@@ -1366,10 +1388,15 @@ function [fstrm, classNames, userCSS] = process_cssClasses_tags(fstrm, getClassN
     userCSS = '';
     if isempty(cssOpens), classNames = {}; return, end
     if length(cssOpens)>1
-        throwAsCaller(MException('prettify:too many cssClass blocks','There should only be one pair of [cssClasses][/cssClasses] tags in your source file'))
+        throwAsCaller(MException('prettify:tooManyCssClassBlocks',...
+                                 [error_intro 'There should only be one pair of [cssClasses][/cssClasses] tags in your source file']))
     end
     openBraces   = strfind(fstrm(cssOpens:cssCloses),'{') + cssOpens - 1;
+    NO_VALID_CLASSES_TAG = 'prettify:noValidCssClasses';
+    NO_VALID_CLASSES     = [error_intro 'No valid css classes found in your source file'];
+    if isempty(openBraces), throwAsCaller(MException(NO_VALID_CLASSES_TAG, NO_VALID_CLASSES)); end
     closeBraces  = strfind(fstrm(cssOpens:cssCloses),'}') + cssOpens - 1;
+    if isempty(closeBraces), throwAsCaller(MException(NO_VALID_CLASSES_TAG, NO_VALID_CLASSES)); end    
     classNames{length(openBraces)} = '';
     fileIdx      = cssOpens + 12;
     for classCounter = 1:length(openBraces)
@@ -1413,7 +1440,7 @@ function [sourceStart, sourceEnd] = find_source(fstrm)
     sourceStart = sourceStart(1);
     sourceEnd   = strfind(fstrm,'##### SOURCE BEGIN #####');
     try
-        assert(~isempty(sourceEnd),'ERROR: Format of MATLAB-generated html file has changed.');
+        assert(~isempty(sourceEnd),[error_intro 'Format of MATLAB-generated html file has changed.']);
     catch MEx
         throwAsCaller(MEx);
     end
@@ -1463,7 +1490,7 @@ function [fstrm, htmlEnd, tagList, tagCloseList, valList, tagEnds] = find_valid_
     for i = 1:length(tagList)
         warningMsg = '';
         tagEnds{i} = strfind(fstrm(tagList(i):htmlEnd),']');
-        if isempty(tagEnds{i}), error(['ERROR: ' sprintf(WARN_MSG_START,i) 'there is no closing bracket.']); end
+        if isempty(tagEnds{i}), error('prettify:malformedTag',[error_intro sprintf(WARN_MSG_START,i) 'there is no closing bracket.']); end
         tagEnds{i} = tagEnds{i}(1) + tagList(i) - 1;
         if (tagEnds{i}-tagList(i)-1-length(type))>long
             show_warning(['The ' valDescriptor ' for ' type generic ' tag ' num2str(i) ' is more than '...
@@ -1728,8 +1755,9 @@ function [tagOpens, tagCloses] = get_tag_pairs(tag, fstrm, htmlEnd)
     tagOpens  = strfind(fstrm(1:htmlEnd),openTag);
     tagCloses = strfind(fstrm(1:htmlEnd),closeTag);
     try
-        assert( length(tagOpens)==length(tagCloses), 'ERROR: Number of %s tags (%i) does not match number of %s tags (%i)', ...
-                                                             tag, length(tagOpens), closeTag, length(tagCloses));
+        assert( length(tagOpens)==length(tagCloses), 'prettify:imbalancedTags', ...
+                                                     [error_intro 'Number of %s tags (%i) does not match number of %s tags (%i)'], ...
+                                                      tag, length(tagOpens), closeTag, length(tagCloses));
         if ~ismember(tag,{'[class]','[dtls]'}), check_tag_pairs(tagOpens, tagCloses, tag); end
     catch MEx
         throwAsCaller(MEx)
@@ -1739,13 +1767,13 @@ end
 function check_tag_pairs(tagOpens, tagCloses, type)
     if isempty(tagOpens), return, end
     try
-        closeBeforeOpenError = 'ERROR: %s close tag %i appears before open tag %i';
+        closeBeforeOpenError = [error_intro '%s close tag %i appears before open tag %i'];
         for i = 1:length(tagOpens)-1
-            assert(tagOpens(i)<tagCloses(i),closeBeforeOpenError,type,i,i);
-            assert(tagCloses(i)<tagOpens(i+1),'ERROR: %s open tag %i appears before close tag %i',type,i+1,i);
+            assert(tagOpens(i) <tagCloses(i) ,'prettify:closeBeforeOpen',closeBeforeOpenError,type,i,i);
+            assert(tagCloses(i)<tagOpens(i+1),'prettify:openBeforeClose',[error_intro '%s open tag %i appears before close tag %i'],type,i+1,i);
         end
         if isempty(i), i = 1; end
-        assert(tagOpens(i)<tagCloses(i),closeBeforeOpenError,type,i,i);
+        assert(tagOpens(i)<tagCloses(i),'prettify:closeBeforeOpen',closeBeforeOpenError,type,i,i);
     catch MEx
         throwAsCaller(MEx)
     end
@@ -1764,7 +1792,7 @@ function [countOfTags, tagCloses] = sort_tag_closes(tagOpens, tagCloses)
     assert(~any(tagCloses==0),'prettifyMATLABhtml:internalError','Failed to sort nested tags');
 end
 
-%%     Get path of this .m file
+%% -   Get path of this .m file
 function myPath = my_path()
 %
 %   NOTE: path returned includes trailing file separator
@@ -1774,24 +1802,39 @@ function myPath = my_path()
     myPath = myPath(1:end-length(myName));
 end
 
-%%     Save handle to built-in Publish function
+%% -   Save handle to built-in Publish function
 function save_publish_handle
     publishName = which('publish');
     if ~strcmp(publishName(end-1:end),'.p')
         error(['ERROR: You must run this before MATLAB''s "publish" function has been overloaded.'...
                ' In other words, the custom "publish" function must not be on the MATLAB path when you run save_publish_handle.']);
     else
-        setappdata(0,'real_publish',@publish);
+        publishHelp = help('publish');
+        referencePagePos = strfind(publishHelp,'Reference page in Doc Center');
+        if isempty(referencePagePos), referencePagePos = strfind(publishHelp,'Documentation for publish'); end
+        if ~isempty(referencePagePos)
+            publishHelp(referencePagePos:end) = [];
+            publishHelp = [publishHelp '<a href="matlab:doc publish">Reference page for publish</a>'];
+        end
+        setappdata(0, 'publishHelp' , publishHelp)
+        setappdata(0, 'real_publish', @publish);
     end
 end
 
-%%     Warning functions
-function warningsIssued = show_warning(msg)
-    persistent warnCounter
-    if islogical(msg), warnCounter = []; return; end
+%% -   Warning functions
+function warningsIssued = show_warning(msg, inputhtmlFile)
+    persistent warnCounter fileMsg
+    if islogical(msg)
+        warnCounter = [];
+        if ischar(inputhtmlFile), fileMsg =  [' when processing file "' strrep(inputhtmlFile, '\', '\\') '"'];
+        else                    , fileMsg = '';                                                               end
+        return;
+    end
     if isempty(msg), warningsIssued = warnCounter; return, end
     if isempty(warnCounter)
-        fprintf(1, wrap_text(sprintf('\n%s: prettify_MATLAB_html [\\bWARNING%cmessages:]\\b\n', datestr(now),char(160)),'')); warnCounter = 0;
+        fprintf(1, ...
+                wrap_text(['\n' datestr(now) ': prettify_MATLAB_html [\bWARNING' char(160) 'messages]\b' fileMsg ':\n'],''));
+        warnCounter = 0;
     end
     warnCounter = warnCounter + 1;
     fprintf(1,'\n%i. [\b%s]\b\n', warnCounter, wrap_text(msg,'   '));
@@ -1802,26 +1845,84 @@ function wrappedText = wrap_text(str, lineStart)
     numCols           = commandWindowSize(1)-2-length(lineStart);
 
     if length(str)<= numCols, wrappedText = str; return; end
-    lines = strsplit(str,'\n');
+    lines = strsplit(str,'\n','CollapseDelimiters',false);
     lineCounter = 1;
     while lineCounter<=length(lines)
         if length(lines{lineCounter}) > numCols
-            lastChar = 1;
-            spaces   = strfind(lines{lineCounter},' ');
-            insertNewLine = spaces(find(spaces<=numCols,1,'last'));
-            if isempty(insertNewLine)
-                insertNewLine = numCols;
-                lastChar      = 0;
+            [links, lines{lineCounter}] = replace_links(lines{lineCounter});
+            if length(lines{lineCounter}) > numCols
+                lastChar = 1;
+                spaces   = strfind(lines{lineCounter},' ');
+                insertNewLine = spaces(find(spaces<=numCols,1,'last'));
+                if isempty(insertNewLine)
+                    insertNewLine = numCols;
+                    lastChar      = 0;
+                end
+                if ~isempty(links)
+                    linkLocs = [links.Loc];
+                    newLineSplitsLink = insertNewLine>=linkLocs & insertNewLine<(linkLocs + cellfun(@length,{links.Text}));
+                    if any( newLineSplitsLink )
+                        insertNewLine = linkLocs(find(newLineSplitsLink,1)) - 1;
+                        lastChar      = 0;
+                    end
+                end
+                lines = [lines(1:lineCounter) {lines{lineCounter}(insertNewLine+1:end)} lines(lineCounter+1:end)];
+                lines{lineCounter} = lines{lineCounter}(1:insertNewLine-lastChar);
             end
-            lines = [lines(1:lineCounter) {lines{lineCounter}(insertNewLine+1:end)} lines(lineCounter+1:end)];
-            lines{lineCounter} = lines{lineCounter}(1:insertNewLine-lastChar);
+            if ~isempty(links)
+                % restore links
+                linkCounter = 1;
+                while linkCounter<=length(links)
+                    if links(linkCounter).Loc < length(lines{lineCounter}), lineAdj = 0; locAdj = 0;
+                    else                                                  , lineAdj = 1; locAdj = length(lines{lineCounter});  end
+                    lines{lineCounter+lineAdj} = [lines{lineCounter+lineAdj}(1:links(linkCounter).Loc-locAdj-1) links(linkCounter).FullLink ...
+                                                  lines{lineCounter+lineAdj}(links(linkCounter).Loc-locAdj+length(links(linkCounter).Text):end)];
+                    for k = linkCounter+1:length(links) 
+                        links(k).Loc = links(k).Loc + length(links(linkCounter).FullLink) - length(links(linkCounter).Text) - 1;
+                    end
+                    linkCounter = linkCounter + 1;
+                end
+            end
         end
         lineCounter = lineCounter + 1;
     end
     wrappedText = strjoin(lines,[NL lineStart]);
+
+
+    function [links, str] = replace_links(str)
+        links = find_links(str);
+
+        if ~isempty(links)
+            for i = 1:length(links) %#ok<FXUP>
+                str = [str(1:links(i).Loc-1) links(i).Text str(links(i).Loc+length(links(i).FullLink):end)];
+                for j = i+1:length(links)
+                    links(j).Loc = links(j).Loc - length(links(i).FullLink) + length(links(i).Text);
+                end
+            end
+        end
+
+        function links = find_links(str)
+            links      = struct([]);
+            linksFound = 0;
+            linkLocs   = strfind(str,'<a href');
+            for i = 1:length(linkLocs) %#ok<FXUP> 
+                linkTagEnd = strfind(str(linkLocs(i):end),'>');
+                linkEnd    = strfind(str(linkLocs(i):end),'</a>');
+                if i<length(linkLocs), nextLinkLoc = linkLocs(i+1);
+                else                 , nextLinkLoc = length(str);   end
+                if ~isempty(linkTagEnd) && ~isempty(linkEnd) ...
+                && linkEnd(1)>linkTagEnd(1) && linkLocs(i)+linkEnd(1)<nextLinkLoc
+                    linksFound = linksFound + 1;
+                    links(linksFound).Loc      = linkLocs(i);
+                    links(linksFound).Text     = str(linkLocs(i)+linkTagEnd:linkLocs(i)+linkEnd-2);
+                    links(linksFound).FullLink = str(linkLocs(i):linkLocs(i)+linkEnd+2);
+                end
+            end
+        end
+    end
 end
 
-%%     Toolbar button functions
+%% -   Toolbar button functions
 function insert_target(document)
     targetTagList = strfind(document.Text,'[target');
     [~, ~, ~, ~, targetIDList, ~] = find_valid_prettify_tags('target', targetTagList, [], [], document.Text, length(document.Text));
@@ -2011,7 +2112,7 @@ function add_pretty_commands_to_toolbar
     fprintf(1,'\n');
 end
 
-%%     File read & write
+%% -   File read & write
 function fstrm = read_file_to_mem(fileName)
     try
         fileH = fopen(fileName,'r');
@@ -2078,12 +2179,29 @@ function write_fstrm_to_file(fstrm, fileName, isDebug)
     fclose(fileH);
 end
 
-%%     New line constant
+%% -   Get start of error message
+function errorStart = error_intro(inputhtmlFile)
+    persistent savedFileName
+    if nargin
+        savedFileName = inputhtmlFile;
+        fileSepLoc    = find(savedFileName==filesep,1,'last');
+        if ~isempty(fileSepLoc)
+            savedFileName(1:fileSepLoc) = [];
+        end
+    end
+    if isempty(savedFileName), errorStart = 'ERROR: ';
+    else                     , errorStart = ['ERROR processing file "' savedFileName '":' NL]; end
+    return
+end
+
+%% -   New line constant
 function CONST = NL, CONST = char(10); end %#ok<CHARTEN> for backwards compatibility
 
 %% ==========================================================================================================================================================
 %
 %% Version history:
+%
+%   (note: any dates are development start dates)
 %
 %   1.0     -- Original release
 %   1.1     -- Improved method of closing <details> sections
@@ -2153,5 +2271,10 @@ function CONST = NL, CONST = char(10); end %#ok<CHARTEN> for backwards compatibi
 %   6.4.1   -- Fixed bug that could occur when <tt> tags are replaced by <code> tags (HTML5 validation fix)
 %   6.5     -- 15 May 2021
 %           -- Details boxes now open automatically if they are closed and the user clicks an internal page link that links to the box
+%   6.6     -- 22 May 2021
+%           -- Improved error handling, including display of name of file being processed, if warnings and/or errors occur
+%           -- Saves help of built-in publish so it can be displayed on command line when user runs "help publish", when publish is being overloaded
+%   6.7     -- 11 June 2022
+%           -- Changed html implementation of [brx] tags for better cross-browser support
 %
 %============================================================================================================================================================

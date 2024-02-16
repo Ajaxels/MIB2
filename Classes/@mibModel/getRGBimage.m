@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function [imgRGB, imgRAW] = getRGBimage(obj, options, sImgIn)
 % function [imgRGB, imgRAW] =  getRGBimage(obj, options, sImgIn)
 % Generate RGB image from all layers that have to be shown on the screen.
@@ -26,13 +42,6 @@ function [imgRGB, imgRAW] = getRGBimage(obj, options, sImgIn)
 % @code imageData.Ishown = imageData.getRGBimage(handles, options);     // to get cropped 2D RGB image of the shown area @endcode
 % @code imageData.Ishown = getRGBimage(obj, handles, options);// Call within the class; to get cropped 2D RGB image of the shown area @endcode
 
-% Copyright (C) 08.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-% 
 % Updates
 % 
 
@@ -196,7 +205,10 @@ switch colortype
         if obj.mibLiveStretchCheck == 0 && (currViewPort.min(1) ~= 0 || currViewPort.max(1) ~= max_int || currViewPort.gamma ~= 1)
             % convert to the 8bit image
             if ~isa(sImg, 'uint32')
-                sImg = imadjust(sImg,[currViewPort.min(1)/max_int currViewPort.max(1)/max_int],[0 1],currViewPort.gamma(1));    
+                %currViewPort.min(1) = -128;
+                %currViewPort.max(1) = 512;
+                [lowIn, highIn, lowOut, highOut] = obj.I{obj.Id}.getImAdjustStretchCoef(1);
+                sImg = imadjust(sImg, [lowIn, highIn], [lowOut highOut], currViewPort.gamma(1));    
             else
                 sImg = uint8(double((sImg-currViewPort.min))/double((currViewPort.max-currViewPort.min))*255);
                 colorScale = 255;
@@ -241,66 +253,46 @@ switch colortype
             end
         else
             if numel(slices{3}) > 3
-                R = imadjust(sImg(:,:,1),[currViewPort.min(1)/max_int currViewPort.max(1)/max_int],[0 1],currViewPort.gamma(1));
-                G = imadjust(sImg(:,:,2),[currViewPort.min(2)/max_int currViewPort.max(2)/max_int],[0 1],currViewPort.gamma(2));
-                B = imadjust(sImg(:,:,3),[currViewPort.min(3)/max_int currViewPort.max(3)/max_int],[0 1],currViewPort.gamma(3));
+                    [lowIn, highIn, lowOut, highOut] = obj.I{obj.Id}.getImAdjustStretchCoef(1:3);
+                    R = imadjust(sImg(:,:,1), [lowIn(1), highIn(1)], [lowOut(1) highOut(1)], currViewPort.gamma(1)); 
+                    G = imadjust(sImg(:,:,2), [lowIn(2), highIn(2)], [lowOut(2) highOut(2)], currViewPort.gamma(2)); 
+                    B = imadjust(sImg(:,:,3), [lowIn(3), highIn(3)], [lowOut(3) highOut(3)], currViewPort.gamma(3)); 
             elseif numel(slices{3}) == 3
-                R = imadjust(sImg(:,:,1),...
-                    [currViewPort.min(slices{3}(1))/max_int currViewPort.max(slices{3}(1))/max_int],...
-                    [0 1],currViewPort.gamma(slices{3}(1)));
-                G = imadjust(sImg(:,:,2),...
-                    [currViewPort.min(slices{3}(2))/max_int currViewPort.max(slices{3}(2))/max_int],...
-                    [0 1],currViewPort.gamma(slices{3}(2)));
-                B = imadjust(sImg(:,:,3),...
-                    [currViewPort.min(slices{3}(3))/max_int currViewPort.max(slices{3}(3))/max_int],...
-                    [0 1],currViewPort.gamma(slices{3}(3)));
+                [lowIn, highIn, lowOut, highOut] = obj.I{obj.Id}.getImAdjustStretchCoef(slices{3});
+                R = imadjust(sImg(:,:,1), [lowIn(1), highIn(1)], [lowOut(1) highOut(1)], currViewPort.gamma(slices{3}(1))); 
+                G = imadjust(sImg(:,:,2), [lowIn(2), highIn(2)], [lowOut(2) highOut(2)], currViewPort.gamma(slices{3}(2))); 
+                B = imadjust(sImg(:,:,3), [lowIn(3), highIn(3)], [lowOut(3) highOut(3)], currViewPort.gamma(slices{3}(3))); 
             elseif numel(slices{3}) == 2
+                [lowIn, highIn, lowOut, highOut] = obj.I{obj.Id}.getImAdjustStretchCoef(slices{3});
                 if obj.I{obj.Id}.colors == 3 || slices{3}(end) < 4
                     if slices{3}(1) ~= 1
                         R = zeros(size(sImg,1),size(sImg,2),class(sImg));
-                        G = imadjust(sImg(:,:,1),...
-                            [currViewPort.min(slices{3}(1))/max_int currViewPort.max(slices{3}(1))/max_int],...
-                            [0 1],currViewPort.gamma(slices{3}(1)));
-                        B = imadjust(sImg(:,:,2),...
-                            [currViewPort.min(slices{3}(2))/max_int currViewPort.max(slices{3}(2))/max_int],...
-                            [0 1],currViewPort.gamma(slices{3}(2)));
+                        G = imadjust(sImg(:,:,1), [lowIn(1), highIn(1)], [lowOut(1) highOut(1)], currViewPort.gamma(slices{3}(1))); 
+                        B = imadjust(sImg(:,:,2), [lowIn(2), highIn(2)], [lowOut(2) highOut(2)], currViewPort.gamma(slices{3}(2))); 
                     elseif slices{3}(2) ~= 2
-                        R = imadjust(sImg(:,:,1),...
-                            [currViewPort.min(slices{3}(1))/max_int currViewPort.max(slices{3}(1))/max_int],...
-                            [0 1],currViewPort.gamma(slices{3}(1)));
+                        R = imadjust(sImg(:,:,1), [lowIn(1), highIn(1)], [lowOut(1) highOut(1)], currViewPort.gamma(slices{3}(1))); 
                         G = zeros(size(sImg,1),size(sImg,2),class(sImg));
-                        B = imadjust(sImg(:,:,2),...
-                            [currViewPort.min(slices{3}(2))/max_int currViewPort.max(slices{3}(2))/max_int],...
-                            [0 1],currViewPort.gamma(slices{3}(2)));
+                        B = imadjust(sImg(:,:,2), [lowIn(2), highIn(2)], [lowOut(2) highOut(2)], currViewPort.gamma(slices{3}(2))); 
                     else
-                        R = imadjust(sImg(:,:,1),...
-                            [currViewPort.min(slices{3}(1))/max_int currViewPort.max(slices{3}(1))/max_int],...
-                            [0 1],currViewPort.gamma(slices{3}(1)));
-                        G = imadjust(sImg(:,:,2),...
-                            [currViewPort.min(slices{3}(2))/max_int currViewPort.max(slices{3}(2))/max_int],...
-                            [0 1],currViewPort.gamma(slices{3}(1)));
+                        R = imadjust(sImg(:,:,1), [lowIn(1), highIn(1)], [lowOut(1) highOut(1)], currViewPort.gamma(slices{3}(1)));
+                        G = imadjust(sImg(:,:,2), [lowIn(2), highIn(2)], [lowOut(2) highOut(2)], currViewPort.gamma(slices{3}(2))); 
                         B = zeros(size(sImg,1),size(sImg,2),class(sImg));
                     end
                 else
-                    R = imadjust(sImg(:,:,1),...
-                    [currViewPort.min(slices{3}(1))/max_int currViewPort.max(slices{3}(1))/max_int],...
-                            [0 1],currViewPort.gamma(slices{3}(1)));
-                    G = imadjust(sImg(:,:,2),...
-                        [currViewPort.min(slices{3}(2))/max_int currViewPort.max(slices{3}(2))/max_int],...
-                        [0 1],currViewPort.gamma(slices{3}(2)));
+                    R = imadjust(sImg(:,:,1), [lowIn(1), highIn(1)], [lowOut(1) highOut(1)], currViewPort.gamma(slices{3}(1))); 
+                    G = imadjust(sImg(:,:,2), [lowIn(2), highIn(2)], [lowOut(2) highOut(2)], currViewPort.gamma(slices{3}(2))); 
                     B = zeros(size(sImg,1),size(sImg,2),class(sImg));
                 end
             elseif numel(slices{3}) == 1  % show in greyscale
-                    R = imadjust(sImg(:,:,1),...
-                        [currViewPort.min(slices{3}(1))/max_int currViewPort.max(slices{3}(1))/max_int],...
-                        [0 1],currViewPort.gamma(slices{3}(1)));
-                    G = R;
-                    B = R;
+                [lowIn, highIn, lowOut, highOut] = obj.I{obj.Id}.getImAdjustStretchCoef(slices{3}(1));
+                R = imadjust(sImg(:,:,1), [lowIn, highIn], [lowOut highOut], currViewPort.gamma(slices{3}(1))); 
+                G = R;
+                B = R;
             end
         end
 end
 
-if isnan(sOver1(1,1,1)) == 0   % segmentation model
+if ~isnan(sOver1(1,1,1))   % segmentation model
     sList = obj.I{obj.Id}.modelMaterialNames;
     T = obj.preferences.Colors.ModelTransparency; % transparency for the segmentation model
     if obj.I{obj.Id}.modelType ~= 127 && obj.I{obj.Id}.modelType ~= 32767
@@ -310,19 +302,23 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
         
         if over_type == 2       % see model as a countour
             if obj.showAllMaterials == 1 % show all materials
-                M2 = zeros(size(M),'uint8');
-                for ind = 1:numel(sList)
-                    M3 = zeros(size(M2),'uint8');
-                    M3(M==ind) = 1;
-                    M3 = bwperim(M3);
-                    M2(M3==1) = ind;
+                if strcmp(obj.preferences.Styles.Contour.ThicknessRendering, 'quality')
+                    M2 = zeros(size(M),'uint8');
+                    for ind = 1:numel(sList)
+                        M3 = zeros(size(M2),'uint8');
+                        M3(M==ind) = 1;
+                        M3 = M3 - imerode(M3, strel('disk', obj.preferences.Styles.Contour.ThicknessModels));
+                        M2(M3==1) = ind;
+                    end
+                    M = M2;
+                else
+                    M = M - imerode(M, strel('disk', obj.preferences.Styles.Contour.ThicknessModels));
                 end
-                M = M2;
             elseif selectedObject > 0
                 ind = selectedObject;    % only selected
-                M2 = zeros(size(M),'uint8');
-                M2(M==ind) = 1;
-                M = bwperim(M2)*ind;
+                M2 = zeros(size(M), 'uint8');
+                M2(M==ind) = ind;
+                M = M2 - imerode(M2, strel('disk', obj.preferences.Styles.Contour.ThicknessModels));
             end
         end
         
@@ -343,6 +339,7 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
 %             end
             
             modIndeces = find(M~=0);  % generate list of points that have elements of the model
+            %modIndeces = find(ismember(M, [1 4]));
             if numel(modIndeces) > 0
                 switch class(R)     % generate list of colors for the materials of the model
                     case 'uint8';   modColors = uint8(obj.I{obj.Id}.modelMaterialColors*colorScale);
@@ -363,7 +360,7 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
             
         elseif selectedObject > 0
             i = selectedObject;
-            pntlist = find(M==i);
+            pntlist = find(M == i);
             if obj.I{obj.Id}.modelType > 65535
                 i = mod(i-1, 65535)+1;  % modify color index
             end
@@ -387,14 +384,18 @@ end
 T1 = obj.preferences.Colors.SelectionTransparency; % transparency for selection
 
 % add the mask layer
-if isnan(sOver2(1,1,1)) == 0
+if ~isnan(sOver2(1,1,1))
     T2 = obj.preferences.Colors.MaskTransparency; % transparency for mask
-    over_type = 2; %get(handles.segmShowTypePopup,'Value');  % if 1=filled, 2=contour
     %T1 = 0.65;    % transparency for mask model
     
     ind = 1;    % index
-    if over_type == 2       % see model as a countour
-        M = bwperim(sOver2); % mask
+    if obj.preferences.Styles.Masks.ShowAsContours      % see model as a countour
+        if obj.preferences.Styles.Contour.ThicknessMethodMasks(1) == 'i' %   inwards
+            M = sOver2 - imerode(sOver2, strel('disk', obj.preferences.Styles.Contour.ThicknessMasks));
+        else  %   outwards
+            M = imdilate(sOver2, strel('disk', obj.preferences.Styles.Contour.ThicknessMasks)) - sOver2;
+        end
+        %M = bwperim(sOver2); % mask
     else
         M = sOver2;   % mask
     end

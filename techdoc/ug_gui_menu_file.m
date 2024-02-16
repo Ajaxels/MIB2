@@ -34,7 +34,7 @@
 % full projects for image segmentation using deep learning. The datasets
 % are grouped by techniques used for data collection. 
 %
-% [dtls][smry] *DeepMIB projects->Syntetic 2D large spots* [/smry]
+% [dtls][smry] *DeepMIB projects->Synthetic 2D large spots* [/smry]
 % 
 % <html>
 % A complete DeepMIB project with a synthetic dataset generated for quick tests of semantic
@@ -48,11 +48,14 @@
 %   <td><img src = "images\examplesDeepMIB_large_spots_tree.png"></td>
 %   <td><img src = "images\examplesDeepMIB_large_spots.png"></td>
 % </tr></table>
+% <br>
+% <b>Reference:</b><br>
+% <a href="https://doi.org/10.5281/zenodo.10203188"><img src="images\zenodo.10203188.svg" alt="https://doi.org/10.5281/zenodo.10203188"></a>
 % </html>
 %
 % [/dtls]
 %
-% [dtls][smry] *DeepMIB projects->Syntetic 2D small spots* [/smry]
+% [dtls][smry] *DeepMIB projects->Synthetic 2D small spots* [/smry]
 %
 % <html>
 % A complete DeepMIB project with a synthetic dataset generated for quick tests of semantic
@@ -66,11 +69,47 @@
 %   <td><img src = "images\examplesDeepMIB_small_spots_tree.png"></td>
 %   <td><img src = "images\examplesDeepMIB_small_spots.png"></td>
 % </tr></table>
+% <br>
+% <b>Reference:</b><br>
+% <a href="https://doi.org/10.5281/zenodo.10203764"><img src="images\zenodo.10203764.svg" alt="https://doi.org/10.5281/zenodo.10203764"></a>
 % </html>
 %
 % [/dtls]
 %
-% [dtls][smry] *DeepMIB projects->Syntetic 2D patch-wise* [/smry]
+% [dtls][smry] *DeepMIB projects->Synthetic 2.5D large spots* [/smry]
+% 
+% <html>
+% A complete DeepMIB project with a synthetic dataset generated for quick tests of 2.5D depth-to-color semantic
+% segmentation approaches<br>
+% The dataset includes a trained 2.5D DeepLabV3-Resnet18 and 2.5D U-net networks, where the 5-slice subvolumes 
+% were used for segmentation of large 3D spots on a black background. In
+% addition, there are 2D spots that should not be segmented.<br><br>
+% The trained networks are<br>
+% <ul>
+% <li><b>Spots_25D_DLv3RN18_Z2C_xy200z5</b> - DeepLabV3-based
+% 2.5D Depth-to-Color network with patches of 200x200x5</li>
+% <li><b>Spots_25D_Unet_Z2C_xy200z5</b> - U-net-based
+% 2.5D Depth-to-Color network with patches of 200x200x5</li>
+% </ul>
+% The networks can be loaded by opening their config files by
+% <ul>
+% <li><span class="code">Menu->Tools->Deep learning segmentation->Options
+% tab->Config files->Load</span></li>
+% <li>Drag and drop of the config file into DeepMIB window</li>
+% </ul>
+% <br>
+% <table><tr>
+%   <td><img src = "images\examplesDeepMIB_25D_large_spots_tree.png"></td>
+%   <td><img src = "images\examplesDeepMIB_25D_large_spots.png"></td>
+% </tr></table>
+% <br>
+% <b>Reference:</b><br>
+% <a href="https://doi.org/10.5281/zenodo.10212417"><img src="images\zenodo.10212417.svg" alt="https://doi.org/10.5281/zenodo.10212417"></a>
+% </html>
+%
+% [/dtls]
+%
+% [dtls][smry] *DeepMIB projects->Synthetic 2D patch-wise* [/smry]
 %
 % <html>
 % A complete DeepMIB project with a synthetic dataset generated for quick tests of the patch-wise segmentation approaches<br>
@@ -84,6 +123,9 @@
 %   <td><img src = "images\examplesDeepMIB_patchwise_tree.png"></td>
 %   <td><img src = "images\examplesDeepMIB_patchwise.png"></td>
 % </tr></table>
+% <br>
+% <b>Reference:</b><br>
+% <a href="https://doi.org/10.5281/zenodo.10203861"><img src="images\zenodo.10203861.svg" alt="https://doi.org/10.5281/zenodo.10203861"></a>
 % </html>
 %
 % [/dtls]

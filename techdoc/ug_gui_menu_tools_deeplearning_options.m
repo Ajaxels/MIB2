@@ -45,6 +45,13 @@
 % [class.code]*.mibCfg[/class] extension.[br]
 % Alternatively, the files can be saved manually by pressing the
 % [class.kbd]Save[/class] button.
+% [br8]
+% The config files can be loaded by drag-and-droping the file over panels
+% in DeepMIB
+% [br8]
+% [class.kbd]Duplicate[/class], press to copy network and its config to a new network ([class.code]*.mibDeep[/class]) and config ([class.code]*.mibCfg[/class]). It is useful
+% to create backup versions of a trained network and its config file. This
+% operation copy files and updates network name in the new config file.
 % [br16]
 %
 %% Tools section
@@ -56,14 +63,14 @@
 % Network Designer and after that imported into DeepMIB for training or
 % prediction. During the import process [class.code]*.mibCfg[/class] and
 % [class.code]*.mibDeep[/class] files are generated.
-% * [class.kbd]Export network to ONNX[/class], press to export the trained
-% network outside of MATLAB using the ONNX format. 
+% * [class.kbd]Export network[/class], press to export the trained
+% network outside of MATLAB using the ONNX format or TensorFlow formats. 
 %
-% [dtls][smry] *Additional details of ONNX export* [/smry]
+% [dtls][smry] *Additional details of the export process* [/smry]
 %
 % <<images\DeepLearningOptionsONNX.png>>
 % 
-% During ONNX export, it is possible to choose following options:
+% During export, it is possible to choose following options:
 %
 % * [class.dropdown]Version of ONNX operator set &#9660;[/class], supported
 % operator set versions are 6, 7, 8, 9
@@ -123,25 +130,6 @@
 %
 % [/dtls]
 %
-%% Augmentation section
-% Supporting functions that are used to reset or disable augmentations.
-% 
-% <html>
-% <ul>
-% <li><b>2D</b>, modify augmentations for 2D networks
-% <ul>
-% <li>[class.kbd]Reset[/class], press to reset 2D augmentations to their default values</li>
-% <li>[class.kbd]Disable[/class], press to disable all 2D augmentations</li>
-% </ul>
-% </li>
-% <li><b>3D</b>, modify augmentations for 3D networks
-% <ul>
-% <li>[class.kbd]Reset[/class], press to reset 3D augmentations to their default values</li>
-% <li>[class.kbd]Disable[/class], press to disable all 3D augmentations</li>
-% </ul>
-% </li>
-% </ul>
-% </html>
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools

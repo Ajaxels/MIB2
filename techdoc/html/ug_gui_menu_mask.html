@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Mask Menu</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_mask.m"><style>
+      --><title>Mask Menu</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_mask.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -145,11 +145,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -546,7 +545,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li><b>Amira mesh binary (.am)</b>, Amira mesh binary format</li>
 <li><b>Amira mesh binary RLE compression SLOW (.am), compressed Amira Mesh format. *Note</b>, use of this format is not recommended as it is very slow. When working with Amira, the best to save mask in <b>Amira mesh binary</b> and resave it from Amira using RLE compression</li>
 <li><b>Hierarchial Data Format (.h5)</b>, chunked format suitable for saving masks to Ilastik</li>
-<li><b>TIF format (.tif)</b>, standard TIF format</li>
+<li><b>PNG format (.png)</b> - save mask as 2D slices using Portable Network Graphic format</li>
+<li><b>TIF format (.tif)</b> - save mask as 2D slices or 3D volumes using Tag Image File format</li>
 <li><b>Hierarchial Data Format with XML header (.xml)</b>, generate HDF5 file and XML file with image parameters</li></ul></div>
 </div>
 </details>
@@ -569,7 +569,7 @@ A brief demonstration is available in the following video:
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Mask Menu
@@ -619,7 +619,8 @@ A brief demonstration is available in the following video:
 % When working with Amira, the best to save mask in *Amira mesh binary* and
 % resave it from Amira using RLE compression
 % * *Hierarchial Data Format (.h5)*, chunked format suitable for saving masks to Ilastik
-% * *TIF format (.tif)*, standard TIF format
+% * *PNG format (.png)* - save mask as 2D slices using Portable Network Graphic format 
+% * *TIF format (.tif)* - save mask as 2D slices or 3D volumes using Tag Image File format
 % * *Hierarchial Data Format with XML header (.xml)*, generate HDF5 file and XML file with image parameters
 %
 % [/dtls]

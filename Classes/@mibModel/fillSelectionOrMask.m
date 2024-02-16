@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function fillSelectionOrMask(obj, sel_switch, type, BatchOptIn)
 % function fillSelectionOrMask(obj, sel_switch, type, BatchOptIn)
 % fill holes for selection or mask layers
@@ -17,13 +33,6 @@ function fillSelectionOrMask(obj, sel_switch, type, BatchOptIn)
 % @li .fixSelectionToMaterial - logical, when 1- limit selection only for the selected material
 % @li .showWaitbar - logical, show or not the waitbar
 
-% Copyright (C) 19.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-% 
 % Updates
 % 25.09.2019, ported from mibSelectionFillBtn_Callback and updated for the
 % batch mode
@@ -52,6 +61,7 @@ end
 BatchOpt.DatasetType{2} = {'2D, Slice', '3D, Stack', '4D, Dataset'};
 BatchOpt.SelectedMaterial = num2str(obj.I{BatchOpt.id}.getSelectedMaterialIndex());    % index of the selected material
 BatchOpt.fixSelectionToMaterial = logical(obj.I{BatchOpt.id}.fixSelectionToMaterial);   % when 1- limit selection only for the selected material
+BatchOpt.Use2DParallelComputing = false;
 BatchOpt.showWaitbar = true;   % logical, show or not the waitbar
 
 if strcmp(BatchOpt.TargetLayer{1}, 'selection')
@@ -67,9 +77,11 @@ BatchOpt.mibBatchTooltip.TargetLayer = sprintf('Layer to be eroded');
 BatchOpt.mibBatchTooltip.DatasetType = sprintf('Specify whether to erode the current slice (2D, Slice), the stack (3D, Stack) or complete dataset (4D, Dataset)');
 BatchOpt.mibBatchTooltip.SelectedMaterial = sprintf('index of the selected material; -1 for mask, 0-for exterior, 1,2,3 materials of the model');
 BatchOpt.mibBatchTooltip.fixSelectionToMaterial = sprintf('when checked, limit selection only for the selected material');
+BatchOpt.mibBatchTooltip.Use2DParallelComputing = sprintf('Use parallel processing to fill images in 2D');
 BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');
 
 %%
+batchModeSwitch = 0;
 if isstruct(BatchOptIn) == 0
     if isnan(BatchOptIn)     % when varargin{2} == NaN return possible settings
         % trigger syncBatch event to send BatchOptInOut to mibBatchController
@@ -84,51 +96,106 @@ else
     % add/update BatchOpt with the provided fields in BatchOptIn
     % combine fields from input and default structures
     BatchOpt = updateBatchOptCombineFields_Shared(BatchOpt, BatchOptIn);
+    if isfield(BatchOptIn, 'mibBatchTooltip'); batchModeSwitch = 1; end
 end
 
+%% start of the function
+% do nothing is selection is disabled
+if obj.I{BatchOpt.id}.enableSelection == 0; notify(obj, 'stopProtocol'); return; end
 tic;
+
 selcontour = str2double(BatchOpt.SelectedMaterial);
 selectedOnly = BatchOpt.fixSelectionToMaterial;
 
-storeOptions.id = BatchOpt.id;
-if strcmp(BatchOpt.DatasetType{1}, '2D, Slice')
-    obj.mibDoBackup(BatchOpt.TargetLayer{1}, 0, storeOptions);
-    filled_img = imfill(cell2mat(obj.getData2D(BatchOpt.TargetLayer{1}, NaN, NaN, NaN, storeOptions)),'holes');
-    if selectedOnly
-        filled_img = filled_img & cell2mat(obj.getData2D('model', NaN, NaN, selcontour, storeOptions));
-    end
-    obj.setData2D(BatchOpt.TargetLayer{1}, {filled_img}, NaN, NaN, NaN, storeOptions);
-else 
-    if strcmp(BatchOpt.DatasetType{1},'3D, Stack') 
-        obj.mibDoBackup(BatchOpt.TargetLayer{1}, 1, storeOptions);
-        t1 = obj.I{BatchOpt.id}.slices{5}(1);
-        t2 = obj.I{BatchOpt.id}.slices{5}(2);
-        if BatchOpt.showWaitbar; wb = waitbar(0,'Filling holes in 2D for a whole Z-stack...','WindowStyle','modal'); end
+getDataOptions.id = BatchOpt.id;
+% do not make backup in the batch processing mode
+if ~batchModeSwitch
+    if strcmp(BatchOpt.DatasetType{1}, '3D, Stack')
+        obj.mibDoBackup(BatchOpt.TargetLayer{1}, 1, getDataOptions);
     else
-        t1 = 1;
-        t2 = obj.I{BatchOpt.id}.time;
-        if BatchOpt.showWaitbar; wb = waitbar(0,'Filling holes in 2D for a whole dataset...','WindowStyle','modal'); end
+        obj.mibDoBackup(BatchOpt.TargetLayer{1}, 0, getDataOptions);
     end
+end
+
+% define the time points
+if strcmp(BatchOpt.DatasetType{1}, '4D, Dataset')
+    t1 = 1;
+    t2 = obj.I{BatchOpt.id}.time;
+else    % 2D, 3D
+    t1 = obj.I{BatchOpt.id}.slices{5}(1);
+    t2 = obj.I{BatchOpt.id}.slices{5}(2);
+end
+
+if strcmp(BatchOpt.DatasetType{1}, '2D, Slice')
+    filled_img = imfill(cell2mat(obj.getData2D(BatchOpt.TargetLayer{1}, NaN, NaN, NaN, getDataOptions)),'holes');
+    if selectedOnly
+        filled_img = filled_img & cell2mat(obj.getData2D('model', NaN, NaN, selcontour, getDataOptions));
+    end
+    obj.setData2D(BatchOpt.TargetLayer{1}, {filled_img}, NaN, NaN, NaN, getDataOptions);
+else 
+    showWaitbar = BatchOpt.showWaitbar;
+    % get max number of iterations
     max_size = obj.I{BatchOpt.id}.dim_yxczt(obj.I{BatchOpt.id}.orientation);
     max_size2 = max_size*(t2-t1+1);
-    index = 1;
+    
+    % define parallel processing settings
+    % when not in the batch mode, when parpool is present use it
+    if ~batchModeSwitch
+        p = gcp('nocreate');
+        if ~isempty(p); BatchOpt.Use2DParallelComputing = true; end
+    end
+
+    % check for parallel processing options
+    if BatchOpt.Use2DParallelComputing
+        parforArg = obj.cpuParallelLimit;    % Maximum number of workers running in parallel
+        if isempty(gcp('nocreate')); parpool(parforArg); end % create parpool
+    else
+        parforArg = 0;
+    end
+
+    if showWaitbar
+        pw = PoolWaitbar(max_size2, sprintf('Filling holes in 2D for %s\nPlease wait...', BatchOpt.TargetLayer{1}), [], 'Filling holes...');
+        pw.setIncrement(10);
+    end
     
     for t=t1:t2
-        storeOptions.t = [t, t];
-        for layer_id=1:max_size
-            if BatchOpt.showWaitbar; if mod(index, 10)==0; waitbar(layer_id/max_size2, wb); end; end
-            slice = cell2mat(obj.getData2D(BatchOpt.TargetLayer{1}, layer_id, obj.I{BatchOpt.id}.orientation, 0, storeOptions));
-            if max(max(slice)) < 1; continue; end
-            slice = imfill(slice,'holes');
-            if selectedOnly
-                slice = slice & cell2mat(obj.getData2D('model', layer_id, obj.I{BatchOpt.id}.orientation, selcontour, storeOptions));
+        getDataOptions.t = [t, t];
+        if ~BatchOpt.Use2DParallelComputing
+            for layer_id=1:max_size
+                if showWaitbar && mod(layer_id, 10) == 1; increment(pw); end
+
+                slice = obj.getData2D(BatchOpt.TargetLayer{1}, layer_id, obj.I{BatchOpt.id}.orientation, 0, getDataOptions);
+                if max(max(slice{1})) < 1; continue; end
+
+                slice = imfill(slice{1}, 'holes');
+                if selectedOnly
+                    slice = slice & cell2mat(obj.getData2D('model', layer_id, obj.I{BatchOpt.id}.orientation, selcontour, getDataOptions));
+                end
+                obj.setData2D(BatchOpt.TargetLayer{1}, {slice}, layer_id, obj.I{BatchOpt.id}.orientation, 0, getDataOptions);
             end
-            obj.setData2D(BatchOpt.TargetLayer{1}, {slice}, layer_id, obj.I{BatchOpt.id}.orientation, 0, storeOptions);
-            index = index + 1;
+        else    % process in parallel
+            stack = cell2mat(obj.getData3D(BatchOpt.TargetLayer{1}, t, obj.I{BatchOpt.id}.orientation, 0, getDataOptions));
+            model = cell2mat(obj.getData3D('model', t, obj.I{BatchOpt.id}.orientation, selcontour, getDataOptions));
+            parfor (layer_id=1:max_size, parforArg)
+                if showWaitbar && mod(layer_id, 10) == 1;  increment(pw); end
+                
+                slice = stack(:,:,layer_id);
+                if max(max(slice)) < 1; continue; end
+
+                slice = imfill(slice, 'holes');
+                if selectedOnly
+                    slice = slice & model(:,:,layer_id);
+                end
+                stack(:,:,layer_id) = slice;
+            end
+            obj.setData3D(BatchOpt.TargetLayer{1}, {stack}, t, obj.I{BatchOpt.id}.orientation, 0, getDataOptions);
         end
     end
-    if BatchOpt.showWaitbar; delete(wb); end
-    toc
+    if showWaitbar; pw.deletePoolWaitbar(); end
+
+    if ~strcmp(BatchOpt.DatasetType{1}, '2D, Slice')
+        toc;
+    end
 end
 
 % notify the batch mode

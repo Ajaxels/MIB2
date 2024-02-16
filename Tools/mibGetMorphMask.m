@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mask = mibGetMorphMask(img, Options)
 % function mask = mibGetMorphMask(img, Options)
 % Return result of BW Morphological filters generated from img
@@ -16,13 +32,6 @@ function mask = mibGetMorphMask(img, Options)
 % Return values:
 % mask: generated mask image [1:height,1:width,1:no_stacks], (0/1);
 
-% Copyright (C) 12.03.2015, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -84,56 +93,53 @@ else    % apply filter slice by slice in 2D
         %parfor layer=start_no:end_no
             switch type
                 case 'Extended-maxima transform'
-                    bw = imextendedmax(img(:,:,:,layer), Options.h, Options.conn);
+                    mask(:,:,layer) = imextendedmax(img(:,:,:,layer), Options.h, Options.conn);
                 case 'Extended-minima transform'
-                    bw = imextendedmin(img(:,:,:,layer), Options.h, Options.conn);
+                    mask(:,:,layer) = imextendedmin(img(:,:,:,layer), Options.h, Options.conn);
                 case 'H-maxima transform'
-                    bw = imhmax(img(:,:,:,layer), Options.h, Options.conn);
+                    mask(:,:,layer) = imhmax(img(:,:,:,layer), Options.h, Options.conn);
                 case 'H-minima transform'
-                    bw = imhmin(img(:,:,:,layer), Options.h, Options.conn);
+                    mask(:,:,layer) = imhmin(img(:,:,:,layer), Options.h, Options.conn);
                 case 'Regional maxima'
-                    bw = imregionalmax(img(:,:,:,layer), Options.conn);
+                    mask(:,:,layer) = imregionalmax(img(:,:,:,layer), Options.conn);
                 case 'Regional minima'
-                    bw = imregionalmin(img(:,:,:,layer), Options.conn);
+                    mask(:,:,layer) = imregionalmin(img(:,:,:,layer), Options.conn);
             end
-            mask(:,:,layer) = bw;
         end
         toc
     elseif Options.orientation == 1     % xz plane
         parfor (layer=start_no:end_no, noCores)
             switch type
                 case 'Extended-maxima transform'
-                    bw = imextendedmax(squeeze(img(layer,:,:,:)), Options.h, Options.conn);
+                    mask(layer,:,:) = imextendedmax(squeeze(img(layer,:,:,:)), Options.h, Options.conn);
                 case 'Extended-minima transform'
-                    bw = imextendedmin(squeeze(img(layer,:,:,:)), Options.h, Options.conn);
+                    mask(layer,:,:) = imextendedmin(squeeze(img(layer,:,:,:)), Options.h, Options.conn);
                 case 'H-maxima transform'
-                    bw = imhmax(squeeze(img(layer,:,:,:)), Options.h, Options.conn);
+                    mask(layer,:,:) = imhmax(squeeze(img(layer,:,:,:)), Options.h, Options.conn);
                 case 'H-minima transform'
-                    bw = imhmin(squeeze(img(layer,:,:,:)), Options.h, Options.conn);
+                    mask(layer,:,:) = imhmin(squeeze(img(layer,:,:,:)), Options.h, Options.conn);
                 case 'Regional maxima'
-                    bw = imregionalmax(squeeze(img(layer,:,:,:)), Options.conn);
+                    mask(layer,:,:) = imregionalmax(squeeze(img(layer,:,:,:)), Options.conn);
                 case 'Regional minima'
-                    bw = imregionalmin(squeeze(img(layer,:,:,:)), Options.conn);
+                    mask(layer,:,:) = imregionalmin(squeeze(img(layer,:,:,:)), Options.conn);
             end
-            mask(layer,:,:) = bw;
         end
     elseif Options.orientation == 2     % yz plane
         parfor (layer=start_no:end_no, noCores)
             switch type
                 case 'Extended-maxima transform'
-                    bw = imextendedmax(squeeze(img(:,layer,:,:)), Options.h, Options.conn);
+                    mask(:,layer,:) = imextendedmax(squeeze(img(:,layer,:,:)), Options.h, Options.conn);
                 case 'Extended-minima transform'
-                    bw = imextendedmin(squeeze(img(:,layer,:,:)), Options.h, Options.conn);
+                    mask(:,layer,:) = imextendedmin(squeeze(img(:,layer,:,:)), Options.h, Options.conn);
                 case 'H-maxima transform'
-                    bw = imhmax(squeeze(img(:,layer,:,:)), Options.h, Options.conn);
+                    mask(:,layer,:) = imhmax(squeeze(img(:,layer,:,:)), Options.h, Options.conn);
                 case 'H-minima transform'
-                    bw = imhmin(squeeze(img(:,layer,:,:)), Options.h, Options.conn);
+                    mask(:,layer,:) = imhmin(squeeze(img(:,layer,:,:)), Options.h, Options.conn);
                 case 'Regional maxima'
-                    bw = imregionalmax(squeeze(img(:,layer,:,:)), Options.conn);
+                    mask(:,layer,:) = imregionalmax(squeeze(img(:,layer,:,:)), Options.conn);
                 case 'Regional minima'
-                    bw = imregionalmin(squeeze(img(:,layer,:,:)), Options.conn);
+                    mask(:,layer,:) = imregionalmin(squeeze(img(:,layer,:,:)), Options.conn);
             end
-            mask(:,layer,:) = bw;
         end
     else
         error('[Error] Morphological Mask Filter: unsupported dimention/orientation!');

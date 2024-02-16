@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function rotateColorChannel(obj, channel1, angle, options)
 % function rotateColorChannel(obj, channel1, angle, options)
 % Rotate color channel of the dataset
@@ -9,9 +25,10 @@ function rotateColorChannel(obj, channel1, angle, options)
 % angle: [@em optional] rotation angle, should be a number: 90, 180 or -90, can be empty
 % options: structure with additional parameters
 % .showWaitbar - logical, @b 1 [@em default] - show the waitbar, @b 0 - do not show
-
+%
 %
 % Return values:
+%
 
 %| 
 % @b Examples:
@@ -19,13 +36,6 @@ function rotateColorChannel(obj, channel1, angle, options)
 % obj.mibModel.I{obj.mibModel.Id}.rotateColorChannel(1, 90);     // call from mibController; rotate color channel 1 by 90 degrees 
 % @endcode
 
-% Copyright (C) 07.12.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 26.05.2019, added options
 

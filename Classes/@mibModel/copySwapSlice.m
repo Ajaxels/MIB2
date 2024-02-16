@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function copySwapSlice(obj, SourceSlice, TargetSlice, mode, BatchOptIn)
 % function copySwapSlice(obj, SourceSlice, TargetSlice, mode, BatchOptIn)
 % Copy/swap slice(s) within the dataset
@@ -36,13 +52,6 @@ function copySwapSlice(obj, SourceSlice, TargetSlice, mode, BatchOptIn)
 % obj.mibModel.deleteSlice([], [], BatchOptIn); // call from mibController class; in the batch mode
 % @endcode
 
-% Copyright (C) 20.05.2019 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 
 global mibPath; % path to mib installation folder
@@ -123,7 +132,7 @@ if nargin < 5
     defAns = {[BatchOpt.Mode{2}, find(ismember(BatchOpt.Mode{2}, BatchOpt.Mode{1})==1)], ...
         BatchOpt.SourceSlice, BatchOpt.TargetSlice};
     
-    mibInputMultiDlgOptions.Title = sprintf('Please enter the slice numbers (1-%d)', maxSlice);
+    mibInputMultiDlgOptions.Title = sprintf('Please enter the slice numbers (1:%d)', maxSlice);
     mibInputMultiDlgOptions.TitleLines = 2;
     
     answer = mibInputMultiDlg({mibPath}, prompt, defAns, 'Copy slice', mibInputMultiDlgOptions);

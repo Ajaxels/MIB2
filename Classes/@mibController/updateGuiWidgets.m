@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function updateGuiWidgets(obj)
 % function updateGuiWidgets()
 % Update user interface widgets in obj.mibView.gui based on the properties of the opened dataset
@@ -5,13 +21,6 @@ function updateGuiWidgets(obj)
 % Parameters:
 % 
 
-% Copyright (C) 06.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -84,8 +93,8 @@ end
 if obj.mibModel.getImageProperty('modelType') < 256
     obj.mibView.handles.mibAddMaterialBtn.CData = obj.mibModel.sessionSettings.guiImages.plus;
     obj.mibView.handles.mibAddMaterialBtn.TooltipString = 'press to add Material to the model';
-    obj.mibView.handles.mibSegmShowTypePopup.Enable = 'on';
-    
+    obj.mibView.handles.mibSegmShowTypePopup.Visible = 'on';
+    obj.mibView.handles.mibSegmentationRecolor.Visible = 'off';
     obj.mibView.handles.mibRemoveMaterialBtn.CData = obj.mibModel.sessionSettings.guiImages.minus;
     obj.mibView.handles.mibRemoveMaterialBtn.TooltipString = 'remove selected material from the model';
 else
@@ -95,8 +104,9 @@ else
     
     obj.mibView.handles.mibRemoveMaterialBtn.CData = obj.mibModel.sessionSettings.guiImages.shrink;
     obj.mibView.handles.mibRemoveMaterialBtn.TooltipString = 'squeeze the labels to remove all empty indices and select next available index';
-    
-    obj.mibView.handles.mibSegmShowTypePopup.Enable = 'off';
+    obj.mibView.handles.mibSegmShowTypePopup.Visible = 'off';
+    obj.mibView.handles.mibSegmentationRecolor.Visible = 'on';
+
     obj.mibView.handles.mibSegmShowTypePopup.Value = 1;
     obj.mibModel.mibSegmShowTypePopup = 1;
 end

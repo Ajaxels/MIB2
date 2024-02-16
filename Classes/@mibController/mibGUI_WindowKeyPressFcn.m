@@ -1,4 +1,19 @@
-% --- Executes on key release with focus on mibGUI or any of its controls.
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibGUI_WindowKeyPressFcn(obj, hObject, eventdata)
 % function  mibGUI_WindowKeyPressFcn(obj, hObject, eventdata)
 % callback for a key press in mibGUI
@@ -13,13 +28,6 @@ function mibGUI_WindowKeyPressFcn(obj, hObject, eventdata)
 % Return values:
 %
 
-% Copyright (C) 15.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-% 
 % Updates
 % 
 
@@ -42,11 +50,18 @@ else
     char = eventdata.Key;
     modifier = eventdata.Modifier;
 end
+
 % if ~isempty(eventdata.Modifier)
 %     fprintf('Ch=%s, mod=%s\n', char, eventdata.Modifier{1});
 % else
 %     fprintf('Ch=%s, mod=[]\n', char);
 % end
+
+% if strcmp(char, 'f2')
+%     obj.mibModel.renameMaterial();
+%     return;
+% end
+
 if strcmp(char, 'alt'); return; end
 
 xyString = obj.mibView.handles.mibPixelInfoTxt2.String;
@@ -64,7 +79,7 @@ shiftSw = 0;
 altSw = 0;
 if ismember('control', modifier); controlSw = 1; end
 if ismember('shift', modifier)
-    if ismember(char, obj.mibModel.preferences.KeyShortcuts.Key(6:16))   % override the Shift state for actions that work for all slices
+    if ismember(char, obj.mibModel.preferences.KeyShortcuts.Key(obj.mibModel.preferences.KeyShortcuts.overrideShift==1))   % override the Shift state for actions that work for all slices
         shiftSw = 0;  
     else
         shiftSw = 1; 
@@ -73,15 +88,16 @@ end
 if ismember('alt', modifier)
     % override the Alt state for previous/next time point
     % 'a', 's', 'r', 'c', 'z', 'x'
-    if ismember(char, obj.mibModel.preferences.KeyShortcuts.Key([7:12 13:14]))  
+    if ismember(char, obj.mibModel.preferences.KeyShortcuts.Key(obj.mibModel.preferences.KeyShortcuts.overrideAlt==1))  % [7:12 13:14]
         altSw = 0;
-    elseif ismember(char, obj.mibModel.preferences.KeyShortcuts.Key(6)) && ismember('shift', modifier)
+    elseif ismember(char, obj.mibModel.preferences.KeyShortcuts.Key(ismember(obj.mibModel.preferences.KeyShortcuts.Action, 'Add to selection to material'))) && ismember('shift', modifier)
         % to care about Alt+A
         altSw = 0;
     else
         altSw = 1; 
     end
 end
+
 ActionId = ismember(obj.mibModel.preferences.KeyShortcuts.Key, char) & ismember(obj.mibModel.preferences.KeyShortcuts.control, controlSw) & ...
     ismember(obj.mibModel.preferences.KeyShortcuts.shift, shiftSw) & ismember(obj.mibModel.preferences.KeyShortcuts.alt, altSw);
 ActionId = find(ActionId>0);    % action id is the index of the action, obj.mibModel.preferences.KeyShortcuts.Action(ActionId)
@@ -271,6 +287,11 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
                 recenter = 1;
                 obj.mibToolbar_ZoomBtn_ClickedCallback('zoominPush', recenter); % zoomoutPush zoominPush
             end
+        case 'Rename material'          % default F2
+            selectedMaterial = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
+            if selectedMaterial > 0
+                obj.mibModel.renameMaterial();
+            end
         case 'Show/hide the Model layer'    % default 'space'
             val = obj.mibView.handles.mibModelShowCheck.Value;
             obj.mibView.handles.mibModelShowCheck.Value = abs(val-1);
@@ -356,6 +377,21 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
                 obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames = segmList;
                 obj.updateSegmentationTable();
             end
+        case 'Zoom to 100% view'
+            obj.mibToolbar_ZoomBtn_ClickedCallback('one2onePush');
+        case 'Zoom to fit the view'
+            obj.mibToolbar_ZoomBtn_ClickedCallback('fitPush');
+        case {'Brush size decrease', 'Brush size increase'}
+            scrollEventData.VerticalScrollCount = -1;
+            if strcmp(obj.mibModel.preferences.KeyShortcuts.Action{ActionId}, 'Brush size decrease')
+                scrollEventData.VerticalScrollCount = 1;
+            end
+            scrollEventData.VerticalScrollAmount = 3;
+            scrollEventData.Source = obj.mibView.gui;
+            scrollEventData.EventName = 'WindowScrollWheel';
+            eventdata2 = ToggleEventData(scrollEventData);
+            obj.mibGUI_ScrollWheelFcn(eventdata2);
+            return;
     end
 else    % all other possible shortcuts
     switch char
@@ -410,5 +446,10 @@ else    % all other possible shortcuts
             end
     end
 end
+
+% count user's points
+obj.mibModel.preferences.Users.Tiers.numberOfKeyShortcuts = obj.mibModel.preferences.Users.Tiers.numberOfKeyShortcuts+1;
+eventdata = ToggleEventData(0.5);    % scale scoring by factor 0.5
+notify(obj.mibModel, 'updateUserScore', eventdata);
 
 end  % ------ end of im_browser_WindowKeyPressFcn

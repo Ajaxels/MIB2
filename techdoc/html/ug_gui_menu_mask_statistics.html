@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Statistics for Mask or Model objects</title><meta name="generator" content="MATLAB 9.13"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-14"><meta name="DC.source" content="ug_gui_menu_mask_statistics.m"><style>
+      --><title>Statistics for Mask or Model objects</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_mask_statistics.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -65,6 +65,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
+.dropdown {   font-family: monospace; 	border: 1px solid #aaa; 	border-radius: 0.2em; 	background-color: #fff; 	background-color: #e0f5ff; 	background-color: #e8f5e8; 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
 .kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
@@ -145,11 +146,10 @@ vertical-align: middle;}
 
 details > summary,
 .details-div {
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-style: solid;
   border-width: 1.2pt;
   border-color: #E0E0E0;
-  margin-left: 15px;
 }
 details > summary {
   border-radius:6px 6px 0 0;
@@ -659,6 +659,14 @@ on image intensities behind the objects</li>
   <li><b>Target:</b> where to crop the objects</li>
   <li><b>MarginXY:</b> extend the bounding box around the object by the specified number of pixels</li>
   <li><b>MarginZ:</b> extend the bounding box around the object by the specified number of pixels in the Z dimension</li>
+  <li><b>Jitter XY centroids</b> use this option to introduce a random
+  jitter of XY coordinates. This jitter will shift the crop window
+  left/right/up/down randomly depending on the provided value in the
+  <span class="dropdown">Variation</span> edit box. The random generator
+  is initialized using the <span class="dropdown">Seed</span> edit box.
+  When seed is 0 a random value used to initalize the random generator.
+  When any other number is used, that number is initializing the random
+  generator</li>
   <li><b>Crop Model:</b> also include cropping of the model</li>
   <li><b>Crop Mask:</b> also include cropping of the mask</li>
   <li><b>Single Mask object per dataset:</b> keep only a main object in the crop of the Mask, enabled only when the objects were identified from the mask layer</li>
@@ -732,8 +740,8 @@ on image intensities behind the objects</li>
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="3">Statistical properties of 2D objects</h2>
 <p>Calculate properties of 3D objects of the dataset.</p>
@@ -761,8 +769,8 @@ on image intensities behind the objects</li>
 </div>
 </details>
 <br>
-<p> 
-<br style="display:block; content:''; margin-top:8px;"></p>
+<p> <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="4">Statistical properties of intensities of 2D/3D objects</h2>
 <p>These properties are calculated when the <code>Intensity</code> radio button in the <code>Mode</code> panel is selected.</p>
@@ -786,7 +794,13 @@ on image intensities behind the objects</li>
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.5</p>
+<p>
+<script>
+  var allDetails = document.getElementsByTagName('details');
+  toggle_details(0);
+</script>
+</p>
+<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
 <p id="iFrameBuf">&nbsp;</p></div><!--
 ##### SOURCE BEGIN #####
 %% Statistics for Mask or Model objects 
@@ -946,6 +960,14 @@ on image intensities behind the objects</li>
 %   <li><b>Target:</b> where to crop the objects</li>
 %   <li><b>MarginXY:</b> extend the bounding box around the object by the specified number of pixels</li>
 %   <li><b>MarginZ:</b> extend the bounding box around the object by the specified number of pixels in the Z dimension</li>
+%   <li><b>Jitter XY centroids</b> use this option to introduce a random
+%   jitter of XY coordinates. This jitter will shift the crop window
+%   left/right/up/down randomly depending on the provided value in the
+%   <span class="dropdown">Variation</span> edit box. The random generator
+%   is initialized using the <span class="dropdown">Seed</span> edit box.
+%   When seed is 0 a random value used to initalize the random generator.
+%   When any other number is used, that number is initializing the random
+%   generator</li>
 %   <li><b>Crop Model:</b> also include cropping of the model</li>
 %   <li><b>Crop Mask:</b> also include cropping of the mask</li>
 %   <li><b>Single Mask object per dataset:</b> keep only a main object in the crop of the Mask, enabled only when the objects were identified from the mask layer</li>
@@ -1094,6 +1116,17 @@ on image intensities behind the objects</li>
 % |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu.html *Menu*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_menu_models.html *Models Menu*> *REPLACE_WITH_DASH_DASH-* <ug_gui_menu_mask.html *Mask Menu*>
 %
 % [cssClasses]
+% .dropdown { 
+%   font-family: monospace;
+% 	border: 1px solid #aaa; 
+% 	border-radius: 0.2em; 
+% 	background-color: #fff; 
+% 	background-color: #e0f5ff; 
+% 	background-color: #e8f5e8; 
+% 	padding: 0.1em 0.4em; 
+% 	font-family: inherit; 
+% 	font-size: 1em;
+% }
 % .kbd { 
 %   font-family: monospace;
 % 	border: 1px solid #aaa; 
@@ -1124,6 +1157,14 @@ on image intensities behind the objects</li>
 % padding: 1pt 3pt;
 % }
 % [/cssClasses]
+%
+% <html lang="en">
+% <script>
+%   var allDetails = document.getElementsByTagName('details');
+%   toggle_details(0);
+% </script>
+% </html>
+%
 %%
 % <html lang="en">
 % <script>

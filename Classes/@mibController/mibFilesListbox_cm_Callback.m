@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibFilesListbox_cm_Callback(obj, parameter, BatchOptIn)
 % function mibFilesListbox_cm_Callback(obj, parameter, BatchOptIn)
 % a context menu to the to the handles.mibFilesListbox, the menu is called
@@ -31,13 +47,6 @@ function mibFilesListbox_cm_Callback(obj, parameter, BatchOptIn)
 % @li .showWaitbar -> [logical] show or not the waitbar
 % @li .id -> [@em optional], an index dataset from 1 to 9, defalt = currently shown dataset
 
-% Copyright (C) 10.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-% 
 % Updates
 % 13.03.2019, fixed for 5D datasets
 % 28.08.2019, added BatchMode
@@ -290,6 +299,10 @@ switch BatchOpt.Mode{1}
             obj.mibModel.preferences.System.Dirs.RecentDirs = [obj.mibModel.preferences.System.Dirs.RecentDirs(dirPos==1) obj.mibModel.preferences.System.Dirs.RecentDirs(dirPos==0)];
         end
         obj.mibView.handles.mibRecentDirsPopup.String = obj.mibModel.preferences.System.Dirs.RecentDirs;
+        
+        % count user's points
+        obj.mibModel.preferences.Users.Tiers.numberOfLoadedDatasets = obj.mibModel.preferences.Users.Tiers.numberOfLoadedDatasets+1;
+        notify(obj.mibModel, 'updateUserScore');     % update score using default obj.mibModel.preferences.Users.singleToolScores increase
     case 'Insert into open dataset'
         if batchModeSwitch == 0
             prompts = {'Dimension:'; ...

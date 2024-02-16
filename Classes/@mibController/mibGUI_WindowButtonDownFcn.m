@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibGUI_WindowButtonDownFcn(obj)
 % function mibGUI_WindowButtonDownFcn(obj)
 % this is callback for the press of a mouse button
@@ -5,13 +21,6 @@ function mibGUI_WindowButtonDownFcn(obj)
 % Parameters:
 % 
 
-% Copyright (C) 15.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 
 
@@ -221,7 +230,7 @@ elseif strcmp(operation, 'interact')
         case 'Lasso'
             % Lasso mode
             if strcmp(obj.mibView.handles.mibSegmObjectPickerPanelSub2Select.Enable, 'on')
-                [w, h, z] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 1);
+                [w, h] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 1);
                 spotToolBatchOpt.Shape = {'square'};
                 spotToolBatchOpt.Radius = [obj.mibView.handles.mibSegmObjectPickerPanelSub2Width.String ';' obj.mibView.handles.mibSegmObjectPickerPanelSub2Height.String];
                 obj.mibSegmentationSpot(ceil(h), ceil(w), modifier, spotToolBatchOpt);
@@ -308,6 +317,106 @@ elseif strcmp(operation, 'interact')
             end
             if obj.mibView.handles.mibSegmTrackRecenterCheck.Value == 1 && isempty(modifier)  % recenter the view
                 obj.mibModel.I{obj.mibModel.Id}.moveView(w, h);
+            end
+        case 'Segment-anything model'
+            % add labels
+            [w, h, z, t] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 0);
+            
+
+            if obj.mibView.handles.mibSegmSAMMethod.Value == 1    %     'Interactive'
+                % remove shift modifier
+                if ~isempty(modifier) && strcmp(modifier, 'shift') && isempty(obj.mibModel.sessionSettings.SAMsegmenter.Points.Value)
+                    modifier = [];
+                end
+                extraOptions.addNextMaterial = false;    % add next material after adding the current one only for "add, +next material" mode
+                
+                if isempty(modifier)    % start new segmentation
+                    obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [w, h, z];
+                    obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = 1;
+                    destinationLayer = obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value};
+                    
+                    % limit to the selected material of the model
+                    if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1
+                        % update selected material state
+                        selectedFixToMaterial = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
+                        obj.mibModel.sessionSettings.SAMsegmenter.initialImageSelected = ...
+                            uint8(cell2mat(obj.mibModel.getData2D('model', NaN, NaN, selectedFixToMaterial)));
+                    end
+
+                    switch obj.mibView.handles.mibSegmSAMMode.String{obj.mibView.handles.mibSegmSAMMode.Value}
+                        case 'add'
+                            % store the current state
+                            %obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
+                            %    cell2mat(obj.mibModel.getData2D(destinationLayer, NaN, NaN, obj.mibModel.I{obj.mibModel.Id}.selectedMaterial-2));
+                            obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
+                                cell2mat(obj.mibModel.getData2D(destinationLayer, NaN, NaN, obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo')));
+
+                            % do backup
+                            destinationStr = obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value};     % {'selection', 'mask', 'model'}'
+                            obj.mibModel.mibDoBackup(destinationStr, 0);
+                        case 'add, +next material'
+                            if obj.mibModel.I{obj.mibModel.Id}.modelType < 256 || ...
+                                ~strcmp(obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value}, 'model')
+
+                                errordlg(sprintf(['!!! Error !!!\n\nThere current settings are not compatible with the "add, +next material" mode!\n\n' ...
+                                    'Please make sure that:\n' ...
+                                    '   1. You created or already have a model with type 65535 or larger\n' ...
+                                    '   2. Destination should be set to "Model"']), ...
+                                    'add, +next material');
+                                return; 
+                            end
+                            
+                            % select the second material row in the table
+                            if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial < 4
+                                userData = obj.mibView.handles.mibSegmentationTable.UserData;
+                                jTable = userData.jTable;   % jTable is initializaed in the beginning of mibGUI.m
+                                jTable.changeSelection(3, 2, false, false);    % automatically calls mibSegmentationTable_CellSelectionCallback
+                                obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection = [3 4];
+                                obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial = 4;
+                            end
+
+                            obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
+                                uint8(cell2mat(obj.mibModel.getData2D(destinationLayer, NaN, NaN, obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'))));
+                            extraOptions.addNextMaterial = true;
+
+                            % do backup
+                            destinationStr = obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value};     % {'selection', 'mask', 'model'}'
+                            backupOptions.LinkedVariable.modelMaterialNames = 'obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames';
+                            backupOptions.LinkedData.modelMaterialNames = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames;
+                            obj.mibModel.mibDoBackup(destinationStr, 0, backupOptions);
+                        otherwise
+                            obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = [];
+                    end
+                elseif strcmp(modifier, 'control')
+                    switch obj.mibView.handles.mibSegmSAMMode.String{obj.mibView.handles.mibSegmSAMMode.Value}
+                        case 'add, +next material'
+                            % select the first material row in the table
+                            if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 4
+                                eventdata2.Indices = [3, 3];
+                                obj.mibSegmentationTable_CellSelectionCallback(eventdata2);     % update mibSegmentationTable
+                            end
+                    end
+                    
+                    % remove area from segmentation
+                    obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
+                    obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, 0];
+                elseif strcmp(modifier, 'shift')
+                    switch obj.mibView.handles.mibSegmSAMMode.String{obj.mibView.handles.mibSegmSAMMode.Value}
+                        case 'add, +next material'
+                            % select the first material row in the table
+                            if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 4
+                                eventdata2.Indices = [3, 3];
+                                obj.mibSegmentationTable_CellSelectionCallback(eventdata2);     % update mibSegmentationTable
+                            end
+                    end
+
+                    % add point to segmentation
+                    obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
+                    obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, 1];
+                end
+                obj.mibSegmentationSAM(extraOptions);
+            elseif obj.mibView.handles.mibSegmSAMMethod.Value == 2    %     'Landmarks'
+                obj.mibSegmentationAnnotation(h, w, z, t, modifier);
             end
         case 'Spot'
             % The spot mode: draw a circle after mouse click

@@ -1,15 +1,23 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 classdef mibImage < matlab.mixin.Copyable    
     % classdef mibImage < matlab.mixin.Copyable    
     % a basic class to contain individual datasets loaded in MIB. This
     % class is ruled by the mibModel class
-    
-    % Copyright (C) 26.12.2016, Ilya Belevich, University of Helsinki (ilya.belevich -at- helsinki.fi)
-    % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-    % This program is free software; you can redistribute it and/or
-    % modify it under the terms of the GNU General Public License
-    % as published by the Free Software Foundation; either version 2
-    % of the License, or (at your option) any later version.
-    
     
     properties
         % properties of the class
@@ -237,7 +245,7 @@ classdef mibImage < matlab.mixin.Copyable
         
         createModel(obj, model_type, modelMaterialNames)        % Create an empty model: allocate memory for a new model
         
-        result = cropDataset(obj, cropF)        % Crop image and all corresponding layers of the opened dataset
+        result = cropDataset(obj, cropF, options)        % Crop image and all corresponding layers of the opened dataset
         
         deleteColorChannel(obj, channel1, options)       % Delete specified color channel from the dataset
         
@@ -260,6 +268,8 @@ classdef mibImage < matlab.mixin.Copyable
         [height, width, color, depth, time] = getDatasetDimensions(obj, type, orient, color, options)        % Get dimensions of the dataset
         
         [totalSize, imSize] = getDatasetSizeInBytes(obj)        % Get size of the loaded dataset in bytes
+
+        [lowIn, highIn, lowOut, highOut] = getImAdjustStretchCoef(obj, channel)     % Return image stretching coefficients to be used for imadjust function to stretch contrast of the image
         
         dataset = getPixelIdxList(obj, type, PixelIdxList, options)     % Get dataset from the list of pixel indices
         
@@ -267,7 +277,7 @@ classdef mibImage < matlab.mixin.Copyable
         
         index = getSelectedMaterialIndex(obj, target)      % return the index of the currently selected material
         
-        [labelsList, labelValues, labelPositions, indices] = getSliceLabels(obj, sliceNumber, timePoint)        % Get list of labels (mibImage.hLabels) shown at the specified slice
+        [labelsList, labelValues, labelPositions, indices] = getSliceLabels(obj, sliceNumber, timePoint, options)        % Get list of labels (mibImage.hLabels) shown at the specified slice
         
         insertEmptyColorChannel(obj, channel1, options)       % Insert an empty color channel to the specified position
         
@@ -291,6 +301,8 @@ classdef mibImage < matlab.mixin.Copyable
         
         replaceImageColor(obj, type, color_id, channel_id, slice_id, time_pnt, options)        % replace image intensities in the @em Masked or @em Selected areas with new intensity value
         
+        result = resliceDataset(obj, sliceNumber, orient, options)  % reslice the dataset so that the selected slices are kept and all others are removed
+
         rotateColorChannel(obj, channel1, angle, options)        % Rotate color channel of the dataset
         
         fnOut = saveImageAsDialog(obj, filename, options)   % save image to a file

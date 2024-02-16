@@ -1,0 +1,18 @@
+Copyright 2000-2023 the Regents of the University of Colorado.
+
+PEET (Particle Estimation for Electron Tomography) source code is 
+made available under the terms of the GNU Public License, version 2.0, 
+available at http://www.gnu.org/licenses/gpl-2.0.html, with the 
+exception of help files and man pages which are licensed under 
+Creative Commons Attribution Share Alike, version 3.0, available at 
+http://creativecommons.org/licenses/by-sa/3.0/.  Copies of both 
+licenses are provided in this directory.
+
+PEET compiled executables are governed by a license between The 
+Mathworks and The Regents of the University of Colordado. See file 
+PEET_License_for_Executables for more details. 
+
+By downloading, using, modifying, compiling, or distributing any of 
+these files or their derivatives you explicitly agree to be bound by
+the terms and conditions of these licenses. 
+

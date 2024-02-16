@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function createModel(obj, modelType, modelMaterialNames)
 % function createModel(obj, model_type, modelMaterialNames)
 % Create an empty model: allocate memory for a new model
@@ -25,13 +41,6 @@ function createModel(obj, modelType, modelMaterialNames)
 % @code obj.mibModel.I{obj.mibModel.Id}.createModel(NaN, {'Material1','Material2'});  // call from mibController; allocate space for a new Model of the default type and assign 2 materials @endcode
 % @code obj.mibModel.getImageMethod('createModel', NaN, 63); // call from mibController via a wrapper function getImageMethod @endcode
 
-% Copyright (C) 28.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 %
 

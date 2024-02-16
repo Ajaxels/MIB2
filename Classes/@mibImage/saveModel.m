@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function fnOut = saveModel(obj, filename, saveModelOptions)
 % function fnOut = saveModel(obj, filename, saveModelOptions)
 % save model to a file
@@ -15,20 +31,13 @@ function fnOut = saveModel(obj, filename, saveModelOptions)
 % @li .DestinationDirectory - string, with destination directory, if filename has no full path
 % @li .MaterialIndex - numeric, index of the material to save, when 0 save all materials; NaN - save currently selected material
 % @li .Saving3DPolicy - string, [TIF, mibCat only] save images as 3D file or as a sequence of 2D files ('3D stack', '2D sequence')
-% @li .FilenamePolicy - string, [mibCat only] policy for generation of filenames 
+% @li .FilenamePolicy - string, [mibCat, TIF, PNG only] policy for generation of filenames ('Use existing name', 'Use new provided name')
 % @li .showWaitbar - logical, show or not the waitbar
 % @li .silent  - logical, do not ask any questions and use default parameters
 %
 % Return values:
 % fnOut -> output model filename
-%
-% Copyright (C) 06.02.2017, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
+
 % Updates
 %
 
@@ -49,6 +58,7 @@ Formats = {'*.model',  'Matlab format (*.model)'; ...
     '*.mod',  'Contours for IMOD (*.mod)'; ...
     '*.mrc',  'Volume for IMOD (*.mrc)'; ...
     '*.nrrd',  'NRRD for 3D Slicer (*.nrrd)'; ...
+    '*.png', 'PNG format (*.png)'; ...
     '*.stl',  'Isosurface as binary STL (*.stl)'; ...
     '*.tif',  'TIF format (*.tif)'; ...
     '*.xml',   'Hierarchical Data Format with XML header (*.xml)'; ...
@@ -174,8 +184,9 @@ if strcmp(saveModelOptions.Format, 'Matlab format (*.model)') ...
     end
 
     if saveModelOptions.showWaitbar
-        wb = waitbar(0, sprintf('%s\nPlease wait...', fnOut), 'Name', 'Saving the model', 'WindowStyle', 'modal');
+        wb = waitbar(0, '', 'Name', 'Saving the model', 'WindowStyle', 'modal');
         wb.Children.Title.Interpreter = 'none';
+        waitbar(0, wb, sprintf('%s\nPlease wait...', fnOut));
         drawnow;
     end
     
@@ -285,8 +296,9 @@ else
     if saveModelOptions.showWaitbar
         if t1 ~= t2
             showLocalWaitbar = 1;
-            wb = waitbar(0, sprintf('Saving %s\nPlease wait...', saveModelOptions.Format), 'Name', 'Saving images...', 'WindowStyle', 'modal');
+            wb = waitbar(0, '', 'Name', 'Saving images...', 'WindowStyle', 'modal');
             wb.Children.Title.Interpreter = 'none';
+            waitbar(0, wb, sprintf('Saving %s\nPlease wait...', saveModelOptions.Format));
             drawnow;
             dT = t2-t1+1;
         end
@@ -558,7 +570,7 @@ else
                     end
                     savingOptions.slice = 0;
                 end
-                
+
                 if selMaterial == 0 || isnan(selMaterial)
                     p = mibRenderModel(model, selMaterial, obj.pixSize, bounding_box, obj.modelMaterialColors, NaN, savingOptions);
                     for i=1:numel(p)
@@ -571,6 +583,33 @@ else
                     fv.vertices = p.Vertices;
                     stlwrite(sprintf('%s_%s.stl', fnOut(1:end-4), obj.modelMaterialNames{selMaterial}), fv, 'FaceColor', p.FaceColor*255);
                 end
+            case 'PNG format (*.png)'    % PNG format
+                ImageDescription = {obj.meta('ImageDescription')};
+                resolution(1) = obj.meta('XResolution');
+                resolution(2) = obj.meta('YResolution');
+                if exist('savingOptions', 'var') == 0   % define parameters for the first time use
+                    savingOptions = struct('overwrite', 1, 'Comment', ImageDescription,...
+                        'XResolution', resolution(1), 'YResolution', resolution(2), ...
+                        'ResolutionUnit', 'Unknown', 'Reshape', 0);
+                    savingOptions.cmap = NaN;
+                end
+                savingOptions.showWaitbar = showWaitbar;
+                if isKey(obj.meta, 'SliceName') && numel(obj.meta('SliceName'))==size(model,3)
+                    if t1 == t2
+                        savingOptions.SliceName = arrayfun(@(fn) sprintf('Labels_%s', cell2mat(fn)), obj.meta('SliceName'), 'UniformOutput', false);
+                    else
+                        savingOptions.SliceName = arrayfun(@(t, fn) sprintf('Labels_t%.3d_%s', t, cell2mat(fn)), repmat(t, [size(model,3), 1]), obj.meta('SliceName'), 'UniformOutput', false);
+                    end
+                    if isfield(saveModelOptions, 'FilenamePolicy') && strcmp(saveModelOptions.FilenamePolicy, 'Use existing name')
+                        savingOptions.useOriginals = true;
+                    end
+                end
+                if isfield(saveModelOptions, 'FilenamePolicy') && strcmp(saveModelOptions.FilenamePolicy, 'Use new provided name')
+                    savingOptions.useOriginals = false;
+                end
+                model = reshape(model, [size(model,1) size(model,2) 1 size(model,3)]);
+
+                result = mibImage2png(fullfile(path, fnOutLocal), model, savingOptions);
             case 'TIF format (*.tif)'
                 ImageDescription = {obj.meta('ImageDescription')};
                 resolution(1) = obj.meta('XResolution');
@@ -591,7 +630,14 @@ else
                     else
                         savingOptions.SliceName = arrayfun(@(t, fn) sprintf('Labels_t%.3d_%s', t, cell2mat(fn)), repmat(t, [size(model,3), 1]), obj.meta('SliceName'), 'UniformOutput', false);
                     end
+                    if isfield(saveModelOptions, 'FilenamePolicy') && strcmp(saveModelOptions.FilenamePolicy, 'Use existing name')
+                        savingOptions.useOriginals = true;
+                    end
                 end
+                if isfield(saveModelOptions, 'FilenamePolicy') && strcmp(saveModelOptions.FilenamePolicy, 'Use new provided name')
+                    savingOptions.useOriginals = false;
+                end
+
                 savingOptions.showWaitbar = showWaitbar;  % show or not waitbar in ib_image2tiff
                 model = reshape(model,[size(model,1) size(model,2) 1 size(model,3)]);
                 [result, savingOptions] = mibImage2tiff(fullfile(path, fnOutLocal), model, savingOptions, ImageDescription);

@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function updateBoundingBox(obj, newBB, xyzShift, imgDims)
 % function updateBoundingBox(obj, newBB, xyzShift, imgDims)
 % Update the bounding box info of the dataset
@@ -12,7 +28,7 @@ function updateBoundingBox(obj, newBB, xyzShift, imgDims)
 % @li bb(3) = Ymin
 % @li bb(4) = Height
 % @li bb(5) = Zmin
-% @li bb(6) = Thickness
+% @li bb(6) = Depth
 % xyzShift: [@em optional] a vector [height, width, z-stacks] with shifts of the bounding box; when omitted the function will use minimal
 % parameters of the existing boinding box for the shitfs. @b Note! the units here are the image units:
 % mibImage.pixSize.units.
@@ -29,13 +45,6 @@ function updateBoundingBox(obj, newBB, xyzShift, imgDims)
 % @code newBB = [15 50 10 150 1 15];  // define new bounding box in mibImage.pixSize.units @endcode
 % @code mibImage.updateBoundingBox(newBB);  // get bounding box info @endcode
 
-% Copyright (C) 10.11.2016 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 %
 

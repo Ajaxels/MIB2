@@ -1,3 +1,19 @@
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <https://www.gnu.org/licenses/>
+
+% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% Date: 25.04.2023
+
 function mibDoBackup(obj, type, switch3d, getDataOptions)
 % function mibDoBackup(obj, type, switch3d, getDataOptions)
 % Store the dataset for Undo
@@ -18,19 +34,29 @@ function mibDoBackup(obj, type, switch3d, getDataOptions)
 % @li .t -> [@em optional], [tmin, tmax] of the part of the dataset to store
 % @li .roiId -> [@em optional], use or not the ROI mode (@b when missing or less than 0, return full dataset; @b 0 - return all shown ROIs dataset, @b Index or [] - return ROI with this index or currently selected)
 % @li .id -> [@em optional], index of the dataset to backup
+% @li .LinkedVariable - [@em optional] an additional structure with parameters that should be stored
+%     .LinkedVariable.Fieldname - string that specifies variable name seen
+%     from mibController, for example: 
+%     getDataOptions.LinkedVariable.Points = 'obj.mibModel.sessionSettings.SAMsegmenter.Points';
+% @li .LinkedData - [@em optional] an additional structure with data that
+% should be stored, Fieldname should match Fieldname in .LinkedVariable
+%     .LinkedData.Fieldname.Value1 - values1 to be stored
+%     .LinkedData.Fieldname.Value2 - values2 to be stored
+%     for example:
+%       getDataOptions.LinkedData.Points.Position = [];
+%       getDataOptions.LinkedData.Points.Value = [];
 
 %|
 % @b Examples:
 % @code obj.mibModel.mibDoBackup('labels', 0);     // call from mibController: store labels @endcode
 % @code obj.mibModel.mibDoBackup('selection', 1);     // call from mibController: store the selection layer for 3D dataset @endcode
+% @code 
+%  backupOptions.LinkedData.Points.Position = [10, 10];
+%  backupOptions.LinkedData.Points.Value = [5];
+%  backupOptions.LinkedVariable.Points = 'obj.mibModel.sessionSettings.SAMsegmenter.Points';
+%  obj.mibModel.mibDoBackup('labels', 0, backupOptions);
+% @endcode
 
-% Copyright (C) 15.11.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
-% of the License, or (at your option) any later version.
-%
 % Updates
 % 01.07.2019 added getDataOptions.id option
 % 21.11.2019 added mibImage type
@@ -230,5 +256,6 @@ else                    % 2D mode
         end
     end
 end
+
 %sprintf('Backup: Index=%d, numel=%d, max=%d', handles.U.undoIndex, numel(handles.U.undoList), handles.U.max_steps)
 end
