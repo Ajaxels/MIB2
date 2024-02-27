@@ -505,7 +505,12 @@ classdef mibDeepActivationsController < handle
                     obj.BatchOpt.filterId{2} = [1 size(obj.imageActivation,4)];
                     obj.deltaZ = obj.BatchOpt.patchZ{1} - obj.BatchOpt.z1{1};
                 case '2D'
-                    obj.imageActivation = activations(obj.net.net, obj.imageOriginal, obj.BatchOpt.NetworkLayerName{1});
+                    if size(obj.imageOriginal, 3) == obj.net.inputPatchSize(4)   % 2D dataset
+                        obj.imageActivation = activations(obj.net.net, obj.imageOriginal, obj.BatchOpt.NetworkLayerName{1});
+                    else    % 3D dataset 
+                        z1 = obj.BatchOpt.z1{1};
+                        obj.imageActivation = activations(obj.net.net, obj.imageOriginal(:,:,z1), obj.BatchOpt.NetworkLayerName{1});
+                    end
                     obj.patchNetworkDims = size(obj.imageActivation);
                     obj.BatchOpt.filterId{1} = min([obj.BatchOpt.filterId{1} size(obj.imageActivation,3)]);
                     obj.BatchOpt.filterId{2} = [1 size(obj.imageActivation,3)];
