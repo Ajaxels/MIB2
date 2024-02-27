@@ -108,7 +108,7 @@ children = h.Children;
 for i=1:numel(children)
     if isprop(children(i), 'FontName')
         children(i).FontName = Font.FontName;
-        if isprop(children(i), 'FontSize')  % 'matlab.ui.container.Tab' does not have find size
+        if isprop(children(i), 'FontSize') && ~strcmp(children(i).Type, 'uitabgroup')  % 'matlab.ui.container.Tab' does not have find size
             children(i).FontSize = Font.FontSize+4;     % it looks that appdesigner font size is 4 units smaller than corresponding guide app
         end
     end
