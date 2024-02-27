@@ -38,7 +38,7 @@ function varargout = mibImageArithmeticGUI(varargin)
 
 % Edit the above text to modify the response to help mibImageArithmeticGUI
 
-% Last Modified by GUIDE v2.5 08-Dec-2021 18:08:59
+% Last Modified by GUIDE v2.5 27-Feb-2024 14:54:19
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
