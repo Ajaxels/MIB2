@@ -34,12 +34,25 @@ function getDefaultParameters(obj)
 %
 global mibPath;
 
+%% define global preferences
+% see also mibPreferencesController.defaultBtn_Callback()
+obj.mibModel.preferences = obj.generateDefaultPreferences();
+
 %% Restore preferences from the last time
 prefdir = getPrefDir();
 prefsFn = fullfile(prefdir, 'mib.mat');
 if exist(prefsFn, 'file') ~= 0
     load(prefsFn); %#ok<LOAD>
     disp(['MIB parameters file: ', prefsFn]);
+else
+    % check for preference override file ('mib_prefs_override.mat') located at the same
+    % directory where MIB is installed
+    overridePreferencesFile = fullfile(obj.mibPath, 'mib_prefs_override.mat');
+    if exist(overridePreferencesFile, 'file') ~= 0
+        overridePrefs = load(overridePreferencesFile); %#ok<LOAD>
+        disp(['MIB override global parameters file: ', overridePreferencesFile]);
+        obj.mibModel.preferences = mibConcatenateStructures(obj.mibModel.preferences, overridePrefs.mib_pars.preferences);
+    end
 end
 
 if ispc
@@ -47,10 +60,6 @@ if ispc
 else
     start_path = '/';
 end
-
-% set the global preferences
-% see also mibPreferencesController.defaultBtn_Callback()
-obj.mibModel.preferences = obj.generateDefaultPreferences();
 
 %% update preferences
 if exist('mib_pars', 'var') && isfield(mib_pars, 'mibVersion')  %#ok<NODEF> % % detection for new preferences from MIB 2.72

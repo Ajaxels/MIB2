@@ -1,0 +1,10 @@
+## This file can be used to override global config settings.
+## Process:
+## - Start MIB
+## - Configure all required settings
+## - Close MIB to store mib.mat file with configuration settings
+## - Copy mib.mat to mib_prefs_override.mat located at this location
+## When done, 
+## if there is no mib.mat file present under the user's directory, file 'mib_prefs_override.mat' 
+## will be used to override default config settings generated upon MIB startup process.
+## If mib.mat file is present, it is used instead.

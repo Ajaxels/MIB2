@@ -5,7 +5,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser Release Notes</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="im_browser_release_notes.m"><style>
+      --><title>Microscopy Image Browser Release Notes</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-28"><meta name="DC.source" content="im_browser_release_notes.m"><style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -519,7 +519,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <p><a href="im_browser_product_page.html">Back to Index</a></p><!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
-<div><ul><li><a href="#1">2.90 / 14.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)</a></li>
+<div><ul><li><a href="#1">2.9003 / 28.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)</a></li>
 <li><a href="#2">2.84 / 09.12.2022 (new 3D viewer and HDD alignement)</a></li>
 <li><a href="#3">2.831 / 21.06.2022; 2.83 / 19.06.2022 (blockedImage and 2D patch-wise)</a></li>
 <li><a href="#4">2.82 / 12.04.2022 (DeepLabV3, kymographs, key callbacks)</a></li>
@@ -544,11 +544,11 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li><a href="#23">2.01 / 11.04.2017</a></li>
 <li><a href="#24">2.00 / 20.03.2017 Official Release, 2.002 (02.04.2017)</a></li></ul></div>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="1">2.90 / 14.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)</h2>
+<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="1">2.9003 / 28.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)</h2>
 <details open onclick="state_check('1.1')" id="1.1"><summary> <b>2.843 / 28.04.2023 (SAM segmentation, Multi-GPU training)</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><b>To comply with dependencies the MIB license was updated from GPLv2 to GPLv3</b></li>
+<div><ul><li><b>To comply with dependencies the MIB license was updated from GPLv2 to GPLv3</b></li>
 <li>Added Segment anything (Standard and Microscopy) models for manual/semi-automatic segmentation</li>
 <li>Added Rename materials to batch processing operations</li>
 <li>Added possibility to skip loading of metadata</li>
@@ -608,10 +608,12 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li>[DeepMIB] Added preview of a network stored in mibDeep file (Network panel)</li>
 <li>[DeepMIB] Added possibility to mask-away areas without preprocessing (Mask extension: Use 0-s in labels)</li>
 <li>[DeepMIB] Improved handling of directories that are RELATIVE to the project directory</li>
-<li>[DeepMIB] Extended the Evaluate segmentation plot with Class and Dataset metrics</li></ul></div>
+<li>[DeepMIB] Extended the Evaluate segmentation plot with Class and Dataset metrics</li>
+<li>[2.9002] Updated GUI windows</li>
+<li>[2.9003] Added 'mib_prefs_override.mat' file to override default settings of MIB, pleased at the same location as mib.m 
 </div>
 </details>
-<br>
+<br></li></ul></div>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="2">2.84 / 09.12.2022 (new 3D viewer and HDD alignement)</h2>
 <details open onclick="state_check('2.1')" id="2.1"><summary> <b>2.8331 / 21.06.2022 (Updated 3D viewer, HDD automatic alignment)</b> </summary>
@@ -1167,7 +1169,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 %
 %
 %
-%% 2.90 / 14.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)
+%% 2.9003 / 28.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)
 % 
 % [dtls]<summary> *2.843 / 28.04.2023 (SAM segmentation, Multi-GPU training)* </summary>
 <div class="details-div">
@@ -1233,7 +1235,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % * [DeepMIB] Added possibility to mask-away areas without preprocessing (Mask extension: Use 0-s in labels)
 % * [DeepMIB] Improved handling of directories that are RELATIVE to the project directory
 % * [DeepMIB] Extended the Evaluate segmentation plot with Class and Dataset metrics
-%
+% * [2.9002] Updated GUI windows
+% * [2.9003] Added 'mib_prefs_override.mat' file to override default settings of MIB, pleased at the same location as mib.m
 % [/dtls]
 %
 %% 2.84 / 09.12.2022 (new 3D viewer and HDD alignement)

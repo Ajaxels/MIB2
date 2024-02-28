@@ -5,7 +5,7 @@
 %
 %
 %
-%% 2.90 / 14.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)
+%% 2.9003 / 28.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)
 % 
 % [dtls][smry] *2.843 / 28.04.2023 (SAM segmentation, Multi-GPU training)* [/smry]
 %
@@ -70,7 +70,8 @@
 % * [DeepMIB] Added possibility to mask-away areas without preprocessing (Mask extension: Use 0-s in labels)
 % * [DeepMIB] Improved handling of directories that are RELATIVE to the project directory
 % * [DeepMIB] Extended the Evaluate segmentation plot with Class and Dataset metrics
-%
+% * [2.9002] Updated GUI windows
+% * [2.9003] Added 'mib_prefs_override.mat' file to override default settings of MIB, pleased at the same location as mib.m
 % [/dtls]
 %
 %% 2.84 / 09.12.2022 (new 3D viewer and HDD alignement)
