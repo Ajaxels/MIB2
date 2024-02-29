@@ -2030,6 +2030,11 @@ classdef mibDeepController < handle
 
             if nargin < 3
                 if strcmp(mode, '2D')
+                    % an old legacy setting for augmentations that may
+                    % sneak into the current set.
+                    if isfield(obj.AugOpt2D, 'ImageNoise')
+                        obj.AugOpt2D = rmfield(obj.AugOpt2D, 'ImageNoise');
+                    end
                     augOptions = obj.AugOpt2D;
                 else    % '2.5D Semantic' and '3D Semantic'
                     augOptions = obj.AugOpt3D;
