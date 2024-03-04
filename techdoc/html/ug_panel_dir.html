@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Directory Contents Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_panel_dir.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Directory Contents Panel</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_panel_dir.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,8 +72,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.dropdown {   font-family: monospace; 	border: 1px solid #aaa; 	border-radius: 0.2em; 	background-color: #fff; 	background-color: #e0f5ff; 	background-color: #e8f5e8; 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.dropdown { font-family: monospace; border: 1px solid #aaa; border-radius: 0.2em; background-color: #fff; background-color: #e0f5ff; background-color: #e8f5e8; padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -177,8 +184,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -258,7 +265,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -272,7 +279,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -506,7 +513,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -515,22 +524,52 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Directory Contents Panel</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Directory Contents Panel</h1>
+<!--introduction-->
 <p>This panel displays a list of files in the selected directory and provides the option to filter them based on known image and video formats.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2>
-<div><ul><li><a href="#2">1. Multiple buffer buttons</a></li>
-<li><a href="#4">2. File list box</a></li>
-<li><a href="#5">3. Filter</a></li>
-<li><a href="#7">4. The <span class="kbd">Update</span> button</a></li>
-<li><a href="#8">5. Left Interchangeable Panels</a></li>
-<li><a href="#9">6. Right Interchangeable Panels</a></li>
-<li><a href="#10">7. <span class="kbd">[&#10003;] <b>Bio</b></span> checkbox</a></li>
-<li><a href="#11">8. ?.</a></li></ul></div>
-<p><img class="image-fit" src="images\PanelsDirContents.png" alt=""> </p><h2 id="2">1. Multiple buffer buttons</h2>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a>
+</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#2">1. Multiple buffer buttons</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">2. File list box</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#5">3. Filter</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#7">4. The <span class="kbd">Update</span> button</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#8">5. Left Interchangeable Panels</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#9">6. Right Interchangeable Panels</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#10">7. <span class="kbd">[✓] <b>Bio</b></span> checkbox</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#11">8. ?.</my-a>
+</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images\PanelsDirContents.png" alt=""> </p>
+<h2 id="2">1. Multiple buffer buttons</h2>
 <p>Multiple buffer buttons at the upper part of the panel provide fast access to several datasets stored in the memory. Each button represents a dataset, and the green color indicates that a dataset is loaded in that buffer. When you hover your cursor over a button, a tooltip with the full file name of the loaded dataset appears, helping you identify the dataset.</p>
 <p>You can switch between datasets by clicking the left mouse button on the desired buffer button.</p>
 <p>Additionally, clicking the left mouse button on a buffer button opens a popup menu with additional options:</p>
-<p><img class="image-fit" src="images\PanelsDirContentsBuffers.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\PanelsDirContentsBuffers.png" alt=""> </p>
+
 <ul>
 <li> <b>Duplicate dataset</b>, creates a duplicate of the currently shown dataset
 and put it behind one of the available buffers</li>
@@ -545,18 +584,35 @@ You can find more information and a demonstration of this feature in the provide
 <li> <b>Close dataset</b>, removes the selected dataset from the computer memory</li>
 <li> <b>Close all stored datasets</b>, removes all stored datasets from the computer memory</li>
 </ul>
-<p>These buffer buttons and their associated options provide convenient ways to manage and interact with multiple datasets in MIB, allowing you to switch between datasets, duplicate them, synchronize views, link views, and remove datasets from memory as needed</p><h2 id="4">2. File list box</h2>
-<p>The major part of the panel is occupied by a list box that displays a list of files in the selected directory. The directory can be chosen from the <a href="ug_panel_path.html">Path Panel</a>. The files in the list are filtered based on the specified filter. Selecting <b>Filter:</b> <span class="dropdown">all known &#9660;</span> displays all readable formats.</p>
+
+<p>These buffer buttons and their associated options provide convenient ways to manage and interact with multiple datasets in MIB, allowing you to switch between datasets, duplicate them, synchronize views, link views, and remove datasets from memory as needed</p>
+<h2 id="4">2. File list box</h2>
+<p>The major part of the panel is occupied by a list box that displays a list of files in the selected directory. The directory can be chosen from the <a href="ug_panel_path.html">Path Panel</a>. The files in the list are filtered based on the specified filter. Selecting <b>Filter:</b> <span class="dropdown">all known ▼</span> displays all readable formats.</p>
 <p><span class="h3">Navigating Folders</span></p>
-<div><ul><li>Double-clicking on the <span class="dropdown">[.]</span> line changes the folder to the top level of the current logical drive.</li>
-<li>Double-clicking on the <span class="dropdown">[..]</span> line changes the folder to one level up.</li></ul></div>
+<div>
+<ul>
+<li>Double-clicking on the <span class="dropdown">[.]</span> line changes the folder to the top level of the current logical drive.</li>
+<li>Double-clicking on the <span class="dropdown">[..]</span> line changes the folder to one level up.</li>
+</ul>
+</div>
 <p><span class="h3">Selecting and Loading Datasets</span></p>
-<div><ul><li>Double-clicking on a file in the list loads it into MIB and displays it in the <a href="ug_panel_im_view.html">Image View panel</a></li>
-<li>Individual datasets can be selected by holding down <span class="kbd">&#8679; Shift</span> or <span class="kbd">Ctrl</span> and left-clicking on the desired files. They can then be loaded via a context menu accessed by right-clicking (see below for the options)</li></ul></div>
+<div>
+<ul>
+<li>Double-clicking on a file in the list loads it into MIB and displays it in the <a href="ug_panel_im_view.html">Image View panel</a>
+</li>
+<li>Individual datasets can be selected by holding down <span class="kbd">⇧ Shift</span> or <span class="kbd">Ctrl</span> and left-clicking on the desired files. They can then be loaded via a context menu accessed by right-clicking (see below for the options)</li>
+</ul>
+</div>
 <p><span class="h3">Selecting and Loading Datasets</span></p>
-<div><ul><li>Right-clicking above the scroll bar will scroll the list to the top</li>
-<li>The context menu, accessible with the right mouse button, provides access to various operations on the selected datasets, such as combining, loading specific parts, inserting, renaming, and deleting files, as well as accessing file properties:</li></ul></div>
-<p><img class="image-fit" src="images\PanelsDirContentsFileList.png" alt=""> </p>
+<div>
+<ul>
+<li>Right-clicking above the scroll bar will scroll the list to the top</li>
+<li>The context menu, accessible with the right mouse button, provides access to various operations on the selected datasets, such as combining, loading specific parts, inserting, renaming, and deleting files, as well as accessing file properties:</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images\PanelsDirContentsFileList.png" alt=""> </p>
+
 <ul style="padding-left: 30px">
   <li><b>Combine selected datasets</b>, combine selected datasets into a single 3D stack</li>
   <li><b>Load part of the dataset (AM and TIF)</b>, loads a specific part of a larger dataset. You can define the
@@ -571,9 +627,12 @@ The color channels to show can be selected in the <a href="ug_panel_view_setting
   <li><b>Deletes selected files</b>, permanently deletes the selected files from the disk
   <li><b>File properties</b>, provides information about the file, such as date/time and size in bytes
 </ul>
+
 <h2 id="5">3. Filter</h2>
-<p>The <span class="dropdown">Filter dropdown &#9660;</span> allows you to filter the list of files based on available image type filters. The available extensions in the filter list depend on whether the standard or <a href="https://www.openmicroscopy.org/bio-formats/">Bio-Formats reader</a> (see below) is used and whether or not the virtual mode is enabled. There are four different configurations for image format filters.</p>
-<p><img class="image-fit" src="images\PanelsDirContents_Filters.png" alt=""> </p>
+<p>The <span class="dropdown">Filter dropdown ▼</span> allows you to filter the list of files based on available image type filters. The available extensions in the filter list depend on whether the standard or <a href="https://www.openmicroscopy.org/bio-formats/">Bio-Formats reader</a> (see below) is used and whether or not the virtual mode is enabled. There are four different configurations for image format filters.</p>
+<p>
+<img class="image-fit" src="images\PanelsDirContents_Filters.png" alt=""> </p>
+
 <b>To modify the list of filters, follow these steps:</b>
 <br>
 <ol>
@@ -586,20 +645,46 @@ The color channels to show can be selected in the <a href="ug_panel_view_setting
 </ul>
 </li>
 </ol>
+
 <h2 id="7">4. The <span class="kbd">Update</span> button</h2>
-<p>Updates the file list in the Directory contents window.</p><h2 id="8">5. Left Interchangeable Panels</h2>
-<p>Selected panel will be shown in the lower left part of <code>MIB</code></p>
-<div><ul><li><a href="ug_panel_segm.html">Segmentation panel</a></li>
-<li><a href="ug_panel_roi.html">ROI panel</a></li></ul></div><h2 id="9">6. Right Interchangeable Panels</h2>
+<p>Updates the file list in the Directory contents window.</p>
+<h2 id="8">5. Left Interchangeable Panels</h2>
+<p>Selected panel will be shown in the lower left part of <code>MIB</code>
+</p>
+<div>
+<ul>
+<li>
+<a href="ug_panel_segm.html">Segmentation panel</a>
+</li>
+<li>
+<a href="ug_panel_roi.html">ROI panel</a>
+</li>
+</ul>
+</div>
+<h2 id="9">6. Right Interchangeable Panels</h2>
 <p>Selected panel will be shown in the right bottom part of <code>MIB</code>.</p>
-<div><ul><li><a href="ug_panel_image_filters.html">Image Filters</a></li>
-<li><a href="ug_panel_mask_generators.html">Mask Generators</a></li>
-<li><a href="ug_panel_fiji_connect.html">Fiji Connect</a></li></ul></div><h2 id="10">7. <span class="kbd">[&#10003;] <b>Bio</b></span> checkbox</h2>
+<div>
+<ul>
+<li>
+<a href="ug_panel_image_filters.html">Image Filters</a>
+</li>
+<li>
+<a href="ug_panel_mask_generators.html">Mask Generators</a>
+</li>
+<li>
+<a href="ug_panel_fiji_connect.html">Fiji Connect</a>
+</li>
+</ul>
+</div>
+<h2 id="10">7. <span class="kbd">[✓] <b>Bio</b></span> checkbox</h2>
 <p>When the Bio checkbox is selected in MIB, the <a href="http://openmicroscopy.org/info/bio-formats">Bio-formats reader</a> is called to load desired datasets. MIB is capable of opening specific biological image formats, which are typically the native file formats for different microscopes.</p>
 <p>The reader for these formats is obtained from Bio-formats and is based on the connected MIB Bio-formats Java library. The library is stored in the <span class="code">mib\ImportExportTools\BioFormats</span> directory.<span style="line-height:8px; display:block; vertical-align:top">
-<br></span> Please note that perfomance of the Bio-Formats reader may be slower than the standard native readers due to Java-related overheads.</p><h2 id="11">8. ?.</h2>
+<br></span> Please note that perfomance of the Bio-Formats reader may be slower than the standard native readers due to Java-related overheads.</p>
+<h2 id="11">8. ?.</h2>
 <p>Access to this help page</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -607,8 +692,13 @@ The color channels to show can be selected in the <a href="ug_panel_view_setting
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Directory Contents Panel
 % This panel displays a list of files in the selected directory and provides the option to
@@ -811,7 +901,8 @@ The color channels to show can be selected in the <a href="ug_panel_view_setting
 % </script>
 % </html>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -840,8 +931,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

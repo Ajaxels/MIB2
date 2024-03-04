@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser Toolbar</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_toolbar.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Microscopy Image Browser Toolbar</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_gui_toolbar.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,7 +72,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -176,8 +183,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -257,7 +264,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -271,7 +278,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -505,7 +512,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -514,83 +523,186 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Microscopy Image Browser Toolbar</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Microscopy Image Browser Toolbar</h1>
+<!--introduction-->
 <p>Toolbar under the main menu. The toolbar offers fast access to few most frequently used functions.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a></p>
-<p><img class="image-fit" src="images/Toolbar.png" alt=""> </p><!--/introduction--><h2>Contents</h2>
-<div><ul><li><a href="#1">Paste dataset from the system clipboard</a></li>
-<li><a href="#2">Virtual mode switch</a></li>
-<li><a href="#3">Development shortcut...</a></li>
-<li><a href="#4">Save model</a></li>
-<li><a href="#7">Zoom in</a></li>
-<li><a href="#8">1:1</a></li>
-<li><a href="#9">Fit to screen</a></li>
-<li><a href="#10">Zoom out</a></li>
-<li><a href="#11">Fast pan mode</a></li>
-<li><a href="#12">Undo</a></li>
-<li><a href="#13">Redo</a></li>
-<li><a href="#14">Make snapshot</a></li>
-<li><a href="#16">YX, YZ, or XZ</a></li>
-<li><a href="#18">Line measure tool</a></li>
-<li><a href="#20">Interpolation type</a></li>
-<li><a href="#21">Type of image rescaling for visualization</a></li>
-<li><a href="#23">Center marker toggle</a></li>
-<li><a href="#25">Block-mode switch</a></li>
-<li><a href="#27">Show ROI switch</a></li>
-<li><a href="#29">Volume Rendering</a></li>
-<li><a href="#30">Turn on parallel processing</a></li>
-<li><a href="#31">Swap left and right mouse button</a></li>
-<li><a href="#32">Mouse button</a></li></ul></div><h2 id="1">Paste dataset from the system clipboard</h2>
-<p><img class="image-fit" src="images/toolbar_open.jpg" alt=""> </p>
-<p>Pastes image from the system clipboard. This functionality is implemented using <a href="http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard"><b>IMCLIPBOARD</b></a> function by  Jiro Doke, MathWorks, 2010.</p><h2 id="2">Virtual mode switch</h2>
-<p><img class="image-fit" src="images/toolbar_virtmode.png" alt=""> </p>
-<p>By default MIB works in memory-resident mode, when each dataset is loaded completely to computer memory. For large datasets it may take long time to load the datasets, in this case the virtual (harddrive-resident) mode can be used to browser the datasets. The virtual mode is enabled when this button has a HDD icon. It is possible to open datasets in the HDF5 format and datasets that are compatible with the <a href="https://www.openmicroscopy.org/bio-formats">Bio-Formats library</a>. In later case, please make sure that the <span class="kbd">[&#10003;] <b>Bio</b></span> checkbox of the <a href="ug_panel_dir.html">Directory Contents panel</a> is enabled.</p>
-<p>The virtual mode is more limited comparing to the memory-resident mode and yet can't be used for image segmentation. The only segmentation tools available in the virtual mode for MIB version 2.40 are <a href="ug_panel_segm_tools.html">Annotations and 3D Lines</a>.</p><h2 id="3">Development shortcut...</h2>
-<p><img class="image-fit" src="images/toolbar_development.jpg" alt=""> </p>
-<p>Reserved for the development purposes</p><h2 id="4">Save model</h2>
-<p><img class="image-fit" src="images/toolbar_save.jpg" alt=""> </p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a>
+</p>
+<p>
+<img class="image-fit" src="images/Toolbar.png" alt=""> </p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#1">Paste dataset from the system clipboard</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#2">Virtual mode switch</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">Development shortcut...</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">Save model</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#7">Zoom in</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#8">1:1</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#9">Fit to screen</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#10">Zoom out</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#11">Fast pan mode</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#12">Undo</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#13">Redo</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#14">Make snapshot</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#16">YX, YZ, or XZ</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#18">Line measure tool</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#20">Interpolation type</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#21">Type of image rescaling for visualization</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#23">Center marker toggle</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#25">Block-mode switch</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#27">Show ROI switch</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#29">Volume Rendering</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#30">Turn on parallel processing</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#31">Swap left and right mouse button</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#32">Mouse button</my-a>
+</li>
+</ul>
+</div>
+<h2 id="1">Paste dataset from the system clipboard</h2>
+<p>
+<img class="image-fit" src="images/toolbar_open.jpg" alt=""> </p>
+<p>Pastes image from the system clipboard. This functionality is implemented using <a href="http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard"><b>IMCLIPBOARD</b></a> function by Jiro Doke, MathWorks, 2010.</p>
+<h2 id="2">Virtual mode switch</h2>
+<p>
+<img class="image-fit" src="images/toolbar_virtmode.png" alt=""> </p>
+<p>By default MIB works in memory-resident mode, when each dataset is loaded completely to computer memory. For large datasets it may take long time to load the datasets, in this case the virtual (harddrive-resident) mode can be used to browser the datasets. The virtual mode is enabled when this button has a HDD icon. It is possible to open datasets in the HDF5 format and datasets that are compatible with the <a href="https://www.openmicroscopy.org/bio-formats">Bio-Formats library</a>. In later case, please make sure that the <span class="kbd">[✓] <b>Bio</b></span> checkbox of the <a href="ug_panel_dir.html">Directory Contents panel</a> is enabled.</p>
+<p>The virtual mode is more limited comparing to the memory-resident mode and yet can't be used for image segmentation. The only segmentation tools available in the virtual mode for MIB version 2.40 are <a href="ug_panel_segm_tools.html">Annotations and 3D Lines</a>.</p>
+<h2 id="3">Development shortcut...</h2>
+<p>
+<img class="image-fit" src="images/toolbar_development.jpg" alt=""> </p>
+<p>Reserved for the development purposes</p>
+<h2 id="4">Save model</h2>
+<p>
+<img class="image-fit" src="images/toolbar_save.jpg" alt=""> </p>
 <p>Saves model to a file in the MATLAB format. The file name is not asked, which means that the <code>MIB</code> will use:</p>
-<div><ul><li>Default template such as <code>Labels_NAME_OF_THE_DATASET.model</code></li>
+<div>
+<ul>
+<li>Default template such as <code>Labels_NAME_OF_THE_DATASET.model</code>
+</li>
 <li>The name that was provided from the <i>Save model as...</i> entry</li>
-<li>The name that was obtained during the <i>Load model</i> action The models can be saved also using the <i>Save model</i> command in <a href="ug_gui_menu_models.html">Menu-&gt;Models</a>.</li></ul></div><h2 id="7">Zoom in</h2>
-<p><img class="image-fit" src="images/toolbar_zoomin.jpg" alt=""> </p>
-<p>Increases magnification in 1.5 times.</p><h2 id="8">1:1</h2>
-<p><img class="image-fit" src="images/toolbar_zoom100.jpg" alt=""> </p>
-<p>Magnifies to 100% magnification.</p><h2 id="9">Fit to screen</h2>
-<p><img class="image-fit" src="images/toolbar_zoomfit.jpg" alt=""> </p>
-<p>Fits the image to the view image panel.</p><h2 id="10">Zoom out</h2>
-<p><img class="image-fit" src="images/toolbar_zoomout.jpg" alt=""> </p>
-<p>Decreases magnification by 1.5 times.</p><h2 id="11">Fast pan mode</h2>
-<p><img class="image-fit" src="images/toolbar_fastpan.jpg" alt=""> </p>
-<p>Panning an image means moving the image displayed in the <a href="ug_panel_im_view.html">Image View panel</a>. This mode is enabled during pressing of the right mouse button. Normally to pan the image <code>MIB</code> gets full sized image of the currently shown slice. When the Width/Height of the image is high it results is a small lag. Enabling this mode reduces the lag, but does not allow to see the full image during the panning process.</p><h2 id="12">Undo</h2>
-<p><img class="image-fit" src="images/toolbar_undo.jpg" alt=""> </p>
-<p>Does Undo operation (Ctrl+Z shortcut): restore the previous state of the dataset. The length of the Undo history can be set in the <a href="ug_gui_menu_file_preferences.html">Menu-&gt;File-&gt;Preferences</a>.</p>
+<li>The name that was obtained during the <i>Load model</i> action The models can be saved also using the <i>Save model</i> command in <a href="ug_gui_menu_models.html">Menu-</a>Models&gt;.</li>
+</ul>
+</div>
+<h2 id="7">Zoom in</h2>
+<p>
+<img class="image-fit" src="images/toolbar_zoomin.jpg" alt=""> </p>
+<p>Increases magnification in 1.5 times.</p>
+<h2 id="8">1:1</h2>
+<p>
+<img class="image-fit" src="images/toolbar_zoom100.jpg" alt=""> </p>
+<p>Magnifies to 100% magnification.</p>
+<h2 id="9">Fit to screen</h2>
+<p>
+<img class="image-fit" src="images/toolbar_zoomfit.jpg" alt=""> </p>
+<p>Fits the image to the view image panel.</p>
+<h2 id="10">Zoom out</h2>
+<p>
+<img class="image-fit" src="images/toolbar_zoomout.jpg" alt=""> </p>
+<p>Decreases magnification by 1.5 times.</p>
+<h2 id="11">Fast pan mode</h2>
+<p>
+<img class="image-fit" src="images/toolbar_fastpan.jpg" alt=""> </p>
+<p>Panning an image means moving the image displayed in the <a href="ug_panel_im_view.html">Image View panel</a>. This mode is enabled during pressing of the right mouse button. Normally to pan the image <code>MIB</code> gets full sized image of the currently shown slice. When the Width/Height of the image is high it results is a small lag. Enabling this mode reduces the lag, but does not allow to see the full image during the panning process.</p>
+<h2 id="12">Undo</h2>
+<p>
+<img class="image-fit" src="images/toolbar_undo.jpg" alt=""> </p>
+<p>Does Undo operation (Ctrl+Z shortcut): restore the previous state of the dataset. The length of the Undo history can be set in the <a href="ug_gui_menu_file_preferences.html">Menu-</a>File-&gt;Preferences&gt;.</p>
 <p>
 Demonstration of the undo/redo system is available in the following video:
 <br>
 <a href="https://youtu.be/PrY3Eo02gU8"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PrY3Eo02gU8</a>
-</p><h2 id="13">Redo</h2>
-<p><img class="image-fit" src="images/toolbar_redo.jpg" alt=""> </p>
-<p>Does Redo operation: re-apply the last undone action.</p><h2 id="14">Make snapshot</h2>
-<p><img class="image-fit" src="images/toolbar_snapshot.jpg" alt=""> </p>
+</p>
+<h2 id="13">Redo</h2>
+<p>
+<img class="image-fit" src="images/toolbar_redo.jpg" alt=""> </p>
+<p>Does Redo operation: re-apply the last undone action.</p>
+<h2 id="14">Make snapshot</h2>
+<p>
+<img class="image-fit" src="images/toolbar_snapshot.jpg" alt=""> </p>
 <p>Makes snapshot of the current slice. <a href="ug_gui_menu_file_makesnapshot.html">See more here</a>.</p>
-<p><img class="image-fit" src="images/MenuFileSnapshot.png" alt=""> </p><h2 id="16">YX, YZ, or XZ</h2>
-<p><img class="image-fit" src="images/toolbar_xyz.jpg" alt=""> </p>
+<p>
+<img class="image-fit" src="images/MenuFileSnapshot.png" alt=""> </p>
+<h2 id="16">YX, YZ, or XZ</h2>
+<p>
+<img class="image-fit" src="images/toolbar_xyz.jpg" alt=""> </p>
 <p>Changes the viewing plane orientation. Default is the <code>XY</code> plane. Some tools may not work if the dataset is not in the XY orientation. There are following key shortcuts that allow to switch the plane of the dataset. As shown on the image below, placing the mouse cursor in the XY view above the intersection of two colored lines and pressing Alt+3 will switch the orientation to the ZY plane.</p>
-<div><ul><li><b>Alt+'1'</b>, switches the view to the XY plane using the image coordinates under the mouse cursor</li>
-<li><b>Alt+'2'</b>, switches the view to the ZX plane using the image coordinates under the mouse cursor</li>
-<li><b>Alt+'3'</b>, switches the view to the ZY plane using the image coordinates under the mouse cursor</li></ul></div>
+<div>
+<ul>
+<li>
+<b>Alt+'1'</b>, switches the view to the XY plane using the image coordinates under the mouse cursor</li>
+<li>
+<b>Alt+'2'</b>, switches the view to the ZX plane using the image coordinates under the mouse cursor</li>
+<li>
+<b>Alt+'3'</b>, switches the view to the ZY plane using the image coordinates under the mouse cursor</li>
+</ul>
+</div>
 <p>
 A demonstration is available in the following video:
 <br>
 <a href="https://youtu.be/4NXSEkrhnts"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/4NXSEkrhnts</a>
 </p>
-<p><img class="image-fit" src="images/ToolbarPlaneChangeButtons.jpg" alt=""> </p><h2 id="18">Line measure tool</h2>
-<p><img class="image-fit" src="images/toolbar_measure.jpg" alt=""> </p>
-<p>Measures linear distance. See more in the  <a href="ug_gui_menu_tools.html">Tools menu</a>.</p><h2 id="20">Interpolation type</h2>
-<p><img class="image-fit" src="images/toolbar_interpolationBtn.png" alt=""> </p>
-<p>Changes type of the interpolator: for shapes, or for lines. See more in the <a href="ug_gui_menu_selection.html">Selection menu</a>.</p><h2 id="21">Type of image rescaling for visualization</h2>
-<p><img class="image-fit" src="images/toolbar_image_resizing.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images/ToolbarPlaneChangeButtons.jpg" alt=""> </p>
+<h2 id="18">Line measure tool</h2>
+<p>
+<img class="image-fit" src="images/toolbar_measure.jpg" alt=""> </p>
+<p>Measures linear distance. See more in the  <a href="ug_gui_menu_tools.html">Tools menu</a>.</p>
+<h2 id="20">Interpolation type</h2>
+<p>
+<img class="image-fit" src="images/toolbar_interpolationBtn.png" alt=""> </p>
+<p>Changes type of the interpolator: for shapes, or for lines. See more in the <a href="ug_gui_menu_selection.html">Selection menu</a>.</p>
+<h2 id="21">Type of image rescaling for visualization</h2>
+<p>
+<img class="image-fit" src="images/toolbar_image_resizing.png" alt=""> </p>
 <p>Changes type of the image resizing for the visualization: use 'nearest' to see unmodified pixels and 'bicubic' for smooth appearance. <b>Note!</b> the <code>nearest</code> option gives the fastest and <code>bicubic</code> the slowest performance.</p>
 <p>
 A demonstration is available in the following videos:
@@ -599,27 +711,43 @@ A demonstration is available in the following videos:
 
 <br>
 <a href="https://youtu.be/T08fJeucn0U"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/T08fJeucn0U</a>
-</p><h2 id="23">Center marker toggle</h2>
-<p><img class="image-fit" src="images/toolbar_center_marker.jpg" alt=""> </p>
-<p>Switch on/off marker for the center of the image axes. It is helpful when doing the graphcut segmentation using the grid mode.</p><h2 id="25">Block-mode switch</h2>
-<p><img class="image-fit" src="images/toolbar_blockmode.jpg" alt=""> </p>
-<p>When enabled the filters will only be applied to the part of the dataset shown on the screen. This speeds up performance and may be good for any kind of tests. <b><i>Please note:</i></b> this is not compatible with ROIs, <i>i.e.</i> when the ROIs are shown MIB will work with the full dataset.</p><h2 id="27">Show ROI switch</h2>
-<p><img class="image-fit" src="images/toolbar_roi.jpg" alt=""> </p>
-<p>Turns ON/OFF visualization of ROIs</p><h2 id="29">Volume Rendering</h2>
-<p><img class="image-fit" src="images/toolbar_volren.jpg" alt=""> </p>
+</p>
+<h2 id="23">Center marker toggle</h2>
+<p>
+<img class="image-fit" src="images/toolbar_center_marker.jpg" alt=""> </p>
+<p>Switch on/off marker for the center of the image axes. It is helpful when doing the graphcut segmentation using the grid mode.</p>
+<h2 id="25">Block-mode switch</h2>
+<p>
+<img class="image-fit" src="images/toolbar_blockmode.jpg" alt=""> </p>
+<p>When enabled the filters will only be applied to the part of the dataset shown on the screen. This speeds up performance and may be good for any kind of tests. <b><i>Please note:</i></b> this is not compatible with ROIs, <i>i.e.</i> when the ROIs are shown MIB will work with the full dataset.</p>
+<h2 id="27">Show ROI switch</h2>
+<p>
+<img class="image-fit" src="images/toolbar_roi.jpg" alt=""> </p>
+<p>Turns ON/OFF visualization of ROIs</p>
+<h2 id="29">Volume Rendering</h2>
+<p>
+<img class="image-fit" src="images/toolbar_volren.jpg" alt=""> </p>
 <p>Render the dataset using the shear-warp transform. Applicable to fairly small datasets. The electron microscopy datasets should be inverted for proper visualization.</p>
 <p>
 A demonstration is available in the following video:
 <br>
 <a href="https://youtu.be/rCYSTKF0TsM"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/rCYSTKF0TsM</a>
-</p><h2 id="30">Turn on parallel processing</h2>
-<p><img class="image-fit" src="images/toolbar_parallel.jpg" alt=""> </p>
-<p>Starts matlab parallel processing routine. Requires the parallel processing toolbox. It seems that it is not really needed, MATLAB handles the paralling of processing automatically in many cases.</p><h2 id="31">Swap left and right mouse button</h2>
-<p><img class="image-fit" src="images/toolbar_swapmousebuttons.jpg" alt=""> </p>
-<p>In the default state the left mouse button is responsible for panning the image and the right mouse button for selection, when this button is pressed the mouse button behavior is swapped. These modes can also be set from the <a href="ug_gui_menu_file_preferences.html">Menu-&gt;File-&gt;Preferences dialog</a>.</p><h2 id="32">Mouse button</h2>
-<p><img class="image-fit" src="images/toolbar_swapmouse.jpg" alt=""> </p>
-<p>Switches the way of zooming and changing the slices of the dataset. When the button is not pressed the mouse wheel changes the magnification and the <code>Q</code> and <code>W</code> buttons change the slices. These modes can also be set from the <a href="ug_gui_menu_file_preferences.html">Menu-&gt;File-&gt;Preferences dialog</a>.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a></p>
+</p>
+<h2 id="30">Turn on parallel processing</h2>
+<p>
+<img class="image-fit" src="images/toolbar_parallel.jpg" alt=""> </p>
+<p>Starts matlab parallel processing routine. Requires the parallel processing toolbox. It seems that it is not really needed, MATLAB handles the paralling of processing automatically in many cases.</p>
+<h2 id="31">Swap left and right mouse button</h2>
+<p>
+<img class="image-fit" src="images/toolbar_swapmousebuttons.jpg" alt=""> </p>
+<p>In the default state the left mouse button is responsible for panning the image and the right mouse button for selection, when this button is pressed the mouse button behavior is swapped. These modes can also be set from the <a href="ug_gui_menu_file_preferences.html">Menu-</a>File-&gt;Preferences dialog&gt;.</p>
+<h2 id="32">Mouse button</h2>
+<p>
+<img class="image-fit" src="images/toolbar_swapmouse.jpg" alt=""> </p>
+<p>Switches the way of zooming and changing the slices of the dataset. When the button is not pressed the mouse wheel changes the magnification and the <code>Q</code> and <code>W</code> buttons change the slices. These modes can also be set from the <a href="ug_gui_menu_file_preferences.html">Menu-</a>File-&gt;Preferences dialog&gt;.</p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -627,8 +755,13 @@ A demonstration is available in the following video:
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Microscopy Image Browser Toolbar
 % Toolbar under the main menu. The toolbar offers fast access to few most frequently used
@@ -906,7 +1039,8 @@ A demonstration is available in the following video:
 % </html>
 
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -935,8 +1069,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

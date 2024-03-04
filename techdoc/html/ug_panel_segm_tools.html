@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Segmentation Tools</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_panel_segm_tools.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Segmentation Tools</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_panel_segm_tools.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,8 +72,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.dropdown {   font-family: monospace; 	border: 1px solid #aaa; 	border-radius: 0.2em; 	background-color: #fff; 	background-color: #e0f5ff; 	background-color: #e8f5e8; 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.dropdown { font-family: monospace; border: 1px solid #aaa; border-radius: 0.2em; background-color: #fff; background-color: #e0f5ff; background-color: #e8f5e8; padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -177,8 +184,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -258,7 +265,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -272,7 +279,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -506,7 +513,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -515,25 +524,59 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Segmentation Tools</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Segmentation Tools</h1>
+<!--introduction-->
 <p>This panel hosts different tools that are used for the image segmentation. These tools are designed to help you separate and identify different regions or objects within an image.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a> <code><b>--&gt;</b></code> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a></p><!--/introduction-->
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a> <code><b>--&gt;</b></code> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a>
+</p>
+<!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
-<div><ul><li><a href="#1">The 3D ball</a></li>
-<li><a href="#2">The 3D lines</a></li>
-<li><a href="#3">Annotations</a></li>
-<li><a href="#4">The Brush tool</a></li>
-<li><a href="#7">The Black and White Thresholding tool</a></li>
-<li><a href="#8">Drag &amp; Drop material</a></li>
-<li><a href="#9">The Lasso tool</a></li>
-<li><a href="#10">The Magic Wand + Region Growing tool</a></li>
-<li><a href="#11">The Membrane Click Tracker tool</a></li>
-<li><a href="#12">Object Picker</a></li>
-<li><a href="#13">Segment-anything model</a></li>
-<li><a href="#14">The Spot tool</a></li></ul></div>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#1">The 3D ball</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#2">The 3D lines</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">Annotations</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">The Brush tool</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#7">The Black and White Thresholding tool</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#8">Drag &amp; Drop material</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#9">The Lasso tool</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#10">The Magic Wand + Region Growing tool</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#11">The Membrane Click Tracker tool</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#12">Object Picker</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#13">Segment-anything model</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#14">The Spot tool</my-a>
+</li>
+</ul>
+</div>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="1">The 3D ball</h2>
+
 <table style="border: 0px; line-height:1.5">
 <tr>
 <td style="width: 300px; border: 0px">
@@ -563,11 +606,17 @@ MIB in brief: Manual segmentation tools (https://youtu.be/ZcJQb59YzUA?t=1s)</a>
 </td>
 </tr>
 </table>
+
 <details open onclick="state_check('1.1')" id="1.1"><summary> <b>Selection modifiers</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><span class="kbd">None</span> / <span class="kbd">&#8679; Shift</span>+<span class="kbd">left mouse click</span>, add 3D ball selection with the existing one</li>
-<li><span class="kbd">Ctrl</span> + <span class="kbd">left mouse click</span>, remove 3D ball selection from the current selection layer</li></ul></div>
+<div>
+<ul>
+<li><span class="kbd">None</span> / <span class="kbd">⇧ Shift</span>+<span class="kbd">left mouse click</span>, add 3D ball selection with the existing one</li>
+<li><span class="kbd">Ctrl</span> + <span class="kbd">left mouse click</span>, remove 3D ball selection from the current selection layer</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
@@ -576,6 +625,7 @@ MIB in brief: Manual segmentation tools (https://youtu.be/ZcJQb59YzUA?t=1s)</a>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="2">The 3D lines</h2>
 <p><a id="target1"></a></p>
+
 <table style="border: 0px;line-height:1.5">
 <tr>
 <td style="width: 300px; border: 0px">
@@ -610,9 +660,11 @@ table below for various options.
 </td>
 </tr>
 </table>
+
 <details open onclick="state_check('2.1')" id="2.1"><summary> <b>Available actions</b> </summary>
 <div class="details-div">
 <p></p>
+
 <ul>
 <li><span class="dropdown">Add node &#9660;</span>, add a new node to the active tree. This will create a new point in the 3D space and connect it to the active point (shown in red) of the tree. The new node will become part of the active tree</li>
 <li><span class="dropdown">Assign active node &#9660;</span> allows you to assign the closest node to the position of the mouse click as the new active node. This can be useful when you want to change the active node to perform specific operations or modifications</li>
@@ -630,10 +682,12 @@ the Image View panel.
 Press the <span class="kbd">Table view</span> button to open a window that displays tables describing the 3D lines.
 This can provide additional information and details about the structure of the lines (see below).
 
+
 </div>
 </details>
 <br>
 <p><span class="h3">Lines 3D View</span></p>
+
 <table style="width: 800px; border: 0px; line-height:1.5">
 <tr>
 <td style="border: 0px">
@@ -656,15 +710,24 @@ To access additional options for a tree, you can right-click on it. This will op
 </td>
 </tr>
 </table>
+
 <details open onclick="state_check('2.2')" id="2.2"><summary> <b>Space between the tables</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><b>Active tree</b>, an index of the active tree</li>
-<li><b>Active node</b>, an index of the active node</li>
-<li>The <span class="dropdown">Table &#9660;</span> dropdown can be used to select what should be shown in the lower table below: <b>Nodes</b> or <b>Edges</b></li>
-<li>The <span class="dropdown">Field &#9660;</span> dropdown can be used to define an additional field that should be added to the lower table. By default, only the <b>Radius</b> and <b>Weights</b> fields are available</li>
-<li><span class="kbd">[&#10003;] <b>Auto jump</b></span>, when selected, auto jump to the selected node and show it in the Image View panel.</li>
-<li><span class="kbd">[&#10003;] <b>Auto refresh</b></span>, automatically refresh the tables, may be quite slow with many nodes</li></ul></div>
+<div>
+<ul>
+<li>
+<b>Active tree</b>, an index of the active tree</li>
+<li>
+<b>Active node</b>, an index of the active node</li>
+<li>The <span class="dropdown">Table ▼</span> dropdown can be used to select what should be shown in the lower table below: <b>Nodes</b> or <b>Edges</b>
+</li>
+<li>The <span class="dropdown">Field ▼</span> dropdown can be used to define an additional field that should be added to the lower table. By default, only the <b>Radius</b> and <b>Weights</b> fields are available</li>
+<li><span class="kbd">[✓] <b>Auto jump</b></span>, when selected, auto jump to the selected node and show it in the Image View panel.</li>
+<li><span class="kbd">[✓] <b>Auto refresh</b></span>, automatically refresh the tables, may be quite slow with many nodes</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
@@ -672,39 +735,66 @@ To access additional options for a tree, you can right-click on it. This will op
 <div class="details-div">
 <p></p>
 <p>The table shows list of nodes and offers multiple actions via a popup menu:</p>
-<div><ul style="margin-bottom:0px;"><li><span class="dropdown">Jump to the node &#9660;</span>, jumps to the selected node and put it in the center of the Image View panel</li>
-<li><span class="dropdown">Set as active node &#9660;</span>, makes the selected node active</li>
-<li><span class="dropdown">Rename selected nodes... &#9660;</span>, assign a new name for the selected nodes</li>
-<li><span class="dropdown">Show coordinates in pixels... &#9660;</span>, by default, the coordinates of the nodes are shown in the physical units of the dataset, <i>i.e.</i> with respect to <a href="ug_gui_menu_dataset.html#8">the bounding box</a> ; this action shows coordinate of the node in pixels</li>
-<li><span class="dropdown">New annotations from nodes &#9660;</span>, generate a new annotations from the position of nodes</li>
-<li><span class="dropdown">Add nodes to annotations &#9660;</span>, add selected nodes to the existing annotations</li>
-<li><span class="dropdown">Delete nodes from annotations &#9660;</span>, delete selected nodes from the existing annotations</li>
-<li><span class="dropdown">Delete nodes... &#9660;</span>, delete selected nodes</li></ul></div>
+<div>
+<ul>
+<li><span class="dropdown">Jump to the node ▼</span>, jumps to the selected node and put it in the center of the Image View panel</li>
+<li><span class="dropdown">Set as active node ▼</span>, makes the selected node active</li>
+<li><span class="dropdown">Rename selected nodes... ▼</span>, assign a new name for the selected nodes</li>
+<li><span class="dropdown">Show coordinates in pixels... ▼</span>, by default, the coordinates of the nodes are shown in the physical units of the dataset, <i>i.e.</i> with respect to <a href="ug_gui_menu_dataset.html#8">the bounding box</a> ; this action shows coordinate of the node in pixels</li>
+<li><span class="dropdown">New annotations from nodes ▼</span>, generate a new annotations from the position of nodes</li>
+<li><span class="dropdown">Add nodes to annotations ▼</span>, add selected nodes to the existing annotations</li>
+<li><span class="dropdown">Delete nodes from annotations ▼</span>, delete selected nodes from the existing annotations</li>
+<li><span class="dropdown">Delete nodes... ▼</span>, delete selected nodes</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('2.4')" id="2.4"><summary> <b>The Edges table</b> </summary>
 <div class="details-div">
 <p> The table shows list of edges; certain actions available via a popup menu:</p>
-<div><ul style="margin-bottom:0px;"><li><span class="dropdown">Jump to the node &#9660;</span>, jumps to the selected node and put it in the center of the Image View panel</li>
-<li><span class="dropdown">Set as active node &#9660;</span>, makes the selected node active</li></ul></div>
+<div>
+<ul>
+<li><span class="dropdown">Jump to the node ▼</span>, jumps to the selected node and put it in the center of the Image View panel</li>
+<li><span class="dropdown">Set as active node ▼</span>, makes the selected node active</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('2.5')" id="2.5"><summary> <b>Tools panel</b></summary>
 <div class="details-div">
 <p></p>
-<div><ul><li><b><span class="kbd">Load</span></b>, load 3D lines from a file in MATLAB-compatible lines3d format</li>
-<li><b><span class="kbd">Save</span></b>, export to MATLAB or save 3D lines to a file:</li></ul></div>
+<div>
+<ul>
+<li>
+<b><span class="kbd">Load</span></b>, load 3D lines from a file in MATLAB-compatible lines3d format</li>
+<li>
+<b><span class="kbd">Save</span></b>, export to MATLAB or save 3D lines to a file:</li>
+</ul>
+</div>
+
 <ul>
 <li><b>MATLAB format, *.lines3d</b>, it is recommended to save the 3D lines in the matlab format!</li>
 <li><b>Amira Spatial graph, *.am</b>, Amira-compatible format in binary or ascii form</li>
 <li><b>Excel format, *.xls</b>, export Nodes and Edges tables to an Excel file</li>
 </ul>
-<div><ul style="margin-bottom:0px;"><li><b><span class="kbd">Refresh</span></b>, refresh the tables shown in this window</li>
-<li><b><span class="kbd">Delete all</span></b>, delete all 3D lines</li>
-<li><b><span class="kbd">Visualize in 3D</span></b>, plot all trees in the 3D space</li>
-<li><b><span class="kbd">Settings</span></b>, modify color and thickness of 3D lines</li></ul></div>
+
+<div>
+<ul>
+<li>
+<b><span class="kbd">Refresh</span></b>, refresh the tables shown in this window</li>
+<li>
+<b><span class="kbd">Delete all</span></b>, delete all 3D lines</li>
+<li>
+<b><span class="kbd">Visualize in 3D</span></b>, plot all trees in the 3D space</li>
+<li>
+<b><span class="kbd">Settings</span></b>, modify color and thickness of 3D lines</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
@@ -712,6 +802,7 @@ To access additional options for a tree, you can right-click on it. This will op
 <br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="3">Annotations</h2>
+
 <table style="border: 0px; line-height:1.5">
 <tr>
 <td style="width: 300px; border: 0px">
@@ -742,9 +833,11 @@ position under the mouse cursor</li>
 </td>
 </tr>
 </table>
+
 <details open onclick="state_check('3.1')" id="3.1"><summary> <b>Annotation panel widgets</b> </summary>
 <div class="details-div">
 <p></p>
+
 <ul>
 <li>The <span class="kbd">Annotation list</span> button starts a window with the list of existing
 annotations. It is possible to load and save annotations to the main MATLAB
@@ -768,10 +861,12 @@ displayed in the <a href="ug_panel_im_view.html">Image View panel</a>.
 </li>
 </ul>
 
+
 </div>
 </details>
 <br>
 <p><span class="h3">List of annotations window</span></p>
+
 <table style="border: 0px; line-height:1.5">
 <tr>
 <td style="width: 400px; border: 0px">
@@ -838,10 +933,12 @@ displayed in the <a href="ug_panel_im_view.html">Image View panel</a>.
 </td>
 </tr>
 </table>
+
 <p><span style="line-height:8px; display:block; vertical-align:top">
 <br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="4">The Brush tool</h2>
+
 <table style="border: 0px; line-height:1.5">
 <tr>
 <td style="width: 300px; border: 0px">
@@ -866,9 +963,11 @@ see more in the <a href="ug_gui_menu_selection.html">Selection menu</a> section.
 </td>
 </tr>
 </table>
+
 <details open onclick="state_check('4.1')" id="4.1"><summary> <b>Controls</b> </summary>
 <div class="details-div">
 <p></p>
+
 <ul>
 <li> <span class="kbd">^ Ctrl</span> + <span class="kbd">Mouse wheel</span>,  change brush size</li>
 <li> <span class="kbd">None</span> / <span class="kbd">&#8679; Shift</span> + <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>,
@@ -878,6 +977,7 @@ eraser mode could be amplifier using the <span class="dropdown">Eraser, x</span>
 <li> The <span class="kbd">[&#10003;] <b>auto fill</b></span> checkbox in
 the <b>Selection panel</b> allows to perform automatic filling of areas after use of brush</li>
 </ul>
+
 
 </div>
 </details>
@@ -901,26 +1001,45 @@ The <span class="kbd">[&#10003;] <b>Watershed</b></span> checkbox, when ticked, 
 The <span class="kbd">[&#10003;] <b>SLIC</b></span> checkbox, , when ticked, pixels of the image are clustered using the SLIC algorithm and can be selected as clusters (see the following section)
 <br>
 </p>
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('4.3')" id="4.3"><summary> <b>Superpixels with the Brush tool</b> </summary>
 <div class="details-div">
 <p></p>
-<p><b>The Superpixels mode</b> can be initiated by selecting the <a href="https://youtu.be/vVh1j3HBh-c"><b>Watershed</b></a> or <a href="https://youtu.be/6bZb_Mr_nS0?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj"><b>SLIC</b></a> checkbox. In the Superpixels mode the brush tool selects not individual pixels but rather groups of pixels (superpixels). While drawing the selection of the last superpixel can be undone by pressiong the <span class="kbd">Ctrl+Z</span> shortcut.</p>
+<p>
+<b>The Superpixels mode</b> can be initiated by selecting the <a href="https://youtu.be/vVh1j3HBh-c"><b>Watershed</b></a> or <a href="https://youtu.be/6bZb_Mr_nS0?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj"><b>SLIC</b></a> checkbox. In the Superpixels mode the brush tool selects not individual pixels but rather groups of pixels (superpixels). While drawing the selection of the last superpixel can be undone by pressiong the <span class="kbd">Ctrl+Z</span> shortcut.</p>
 <p>The superpixels are calculated using the</p>
-<div><ul><li><b>SLIC</b> (Simple Linear Iterative Clustering, good for objects with distinct intensities) algorithm written by <a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html">Radhakrishna Achanta et al., 2015</a> , Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland.</li>
-<li><b>Watershed</b> (good for objects with distinct boundaries).</li></ul></div>
-<p>The two additional edit boxed (<code>N</code>, <code>Compact/Invert</code>) offer possibility to modify the size of generated superpixels (<i>see below</i>). The values in the <code>N</code> edit box can be changed using the <span class="kbd">Ctrl+Alt + mouse wheel</span> or <span class="kbd">Ctrl</span>+<span class="kbd">Alt</span>+<span class="kbd">&#8679; Shift</span> + <span class="kbd">mouse wheel</span> shortcuts.</p>
-<p><b>References:</b></p>
-<div><ul><li>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, SLIC Superpixels Compared to State-of-the-art Superpixel Methods, IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 34, num. 11, p. 2274 - 2282, May 2012.</li>
-<li>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, SLIC Superpixels, EPFL Technical Report no. 149300, June 2010.</li></ul></div>
-<p><img class="image-fit" src="images\PanelsSegmentationToolsBrushSupervoxels.jpg" alt=""> </p>
+<div>
+<ul>
+<li>
+<b>SLIC</b> (Simple Linear Iterative Clustering, good for objects with distinct intensities) algorithm written by <a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html">Radhakrishna Achanta et al., 2015</a> , Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland.</li>
+<li>
+<b>Watershed</b> (good for objects with distinct boundaries).</li>
+</ul>
+</div>
+<p>The two additional edit boxed (<code>N</code>, <code>Compact/Invert</code>) offer possibility to modify the size of generated superpixels (<i>see below</i>). The values in the <code>N</code> edit box can be changed using the <span class="kbd">Ctrl+Alt + mouse wheel</span> or <span class="kbd">Ctrl</span>+<span class="kbd">Alt</span>+<span class="kbd">⇧ Shift</span> + <span class="kbd">mouse wheel</span> shortcuts.</p>
+<p>
+<b>References:</b>
+</p>
+<div>
+<ul>
+<li>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, SLIC Superpixels Compared to State-of-the-art Superpixel Methods, IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 34, num. 11, p. 2274 - 2282, May 2012.</li>
+<li>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S?sstrunk, SLIC Superpixels, EPFL Technical Report no. 149300, June 2010.</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images\PanelsSegmentationToolsBrushSupervoxels.jpg" alt=""> </p>
 <p>The set of superpixels is individual for each magnification (especially in the <i>SLIC</i> mode). It is possible to define size of superpixels (the <code>N</code> edit box, default value 220 for SLIC, for Watershed use lower numbers) and compactness (the <code>Compact</code> edit box; higher compactness gives more rectangularly shaped superpixels). In the <i>Watershed</i> mode the <code>Compact</code> edit box is called <code>Invert</code>; when objects have dark boundaries over bright backround number in the <code>Invert</code> edit box should be 1 (or higher), if the objects have bright boundaries over dark background this number should be 0.</p>
 <p>During drawing the boundaries of the superpixels for the SLIC mode are shown using the <i>drawregionboundaries.m</i> function written by <a href="http://www.peterkovesi.com/projects/segmentation/">Peter Kovesi</a> Centre for Exploration Targeting, School of Earth and Environment, The University of Western Australia.</p>
-<p><b>Note 1!</b> The Superpixels mode is sensitive to the <span class="kbd">[&#10003;] <b>Adapt.</b></span> checkbox in the <code>Selection panel</code>. When the <span class="kbd">[&#10003;] <b>Adapt.</b></span> checkbox is selected the superpixels are selected based on the <i>mean value</i> of the initial selection <i>plus/minus</i> standard deviation within the same area multiplied by the factor specified in the <code>Adapt.</code> editbox of the <code>Selection</code> panel.</p>
-<p><b>Note 2!</b> While drawing the value in the <code>Adapt.</code> editbox may be changed using the mouse wheel.</p>
-<p><b>Note 3!</b> The function relies on <span class="code">slicmex.c</span> that should be compiled for your operating system. Please refer to the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements</a> section for details.</p>
+<p>
+<b>Note 1!</b> The Superpixels mode is sensitive to the <span class="kbd">[✓] <b>Adapt.</b></span> checkbox in the <code>Selection panel</code>. When the <span class="kbd">[✓] <b>Adapt.</b></span> checkbox is selected the superpixels are selected based on the <i>mean value</i> of the initial selection <i>plus/minus</i> standard deviation within the same area multiplied by the factor specified in the <code>Adapt.</code> editbox of the <code>Selection</code> panel.</p>
+<p>
+<b>Note 2!</b> While drawing the value in the <code>Adapt.</code> editbox may be changed using the mouse wheel.</p>
+<p>
+<b>Note 3!</b> The function relies on <span class="code">slicmex.c</span> that should be compiled for your operating system. Please refer to the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements</a> section for details.</p>
+
 </div>
 </details>
 <br>
@@ -928,6 +1047,7 @@ The <span class="kbd">[&#10003;] <b>SLIC</b></span> checkbox, , when ticked, pix
 <br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(5)" class="collapse-link"><a href="javascript:void(0);" id="Toggle5">collapse all</a></p><h2 id="7">The Black and White Thresholding tool</h2>
+
 <table style="border: 0px; line-height:1.5">
 <tr>
 <td style="width: 300px; border: 0px">
@@ -947,19 +1067,26 @@ A brief demonstration is available in the following video:
 </td>
 </tr>
 </table>
+
 <details open onclick="state_check('5.1')" id="5.1"><summary> <b>Parameters and controls</b> </summary>
 <div class="details-div">
 <p></p>
 <p>Use the <b>Low</b> and <b>High</b> sliders and edit boxes to provide threshold values that will be used to select pixels with intensities between these values. The thresholding process is automatically initiated upon interaction with these widgets. <span style="line-height:8px; display:block; vertical-align:top">
 <br></span> If the <b>Masked area</b> check box is selected the thresholding is performed only for the masked areas of the image, which is very convenient for local black and white thresholding. <span style="line-height:8px; display:block; vertical-align:top">
 <br></span> <span class="kbd">Right mouse click</span> above the threshold sliders opens a popup menu that allows to set precision for the slider movement. <span style="line-height:8px; display:block; vertical-align:top">
-<br></span> The <span class="kbd">[&#10003;] <b>Adaptive</b></span> checkbox starts adaptive threshoding with the <code>Sensitivity</code> and <code>Width</code> parameters modified by the scroll bars.</p>
-<p><b>Usage notes</b>
+<br></span> The <span class="kbd">[✓] <b>Adaptive</b></span> checkbox starts adaptive threshoding with the <code>Sensitivity</code> and <code>Width</code> parameters modified by the scroll bars.</p>
+<p>
+<b>Usage notes</b>
 <br> When doing thesholding for large 3D/4D datasets it is recommended to:</p>
-<div><ul style="margin-bottom:0px;"><li>start in 2D mode by unchecking <span class="kbd">[&#10003;] <b>3D</b></span> and <span class="kbd">[&#10003;] <b>4D</b></span> checkboxes</li>
+<div>
+<ul>
+<li>start in 2D mode by unchecking <span class="kbd">[✓] <b>3D</b></span> and <span class="kbd">[✓] <b>4D</b></span> checkboxes</li>
 <li>adjust parameters using the currently shown slice</li>
-<li>when parameters are chosen, tick <span class="kbd">[&#10003;] <b>3D</b></span> or <span class="kbd">[&#10003;] <b>4D</b></span> checkbox</li>
-<li>Press the <span class="kbd">Threshold</span> button to start black-and-white thresholding</li></ul></div>
+<li>when parameters are chosen, tick <span class="kbd">[✓] <b>3D</b></span> or <span class="kbd">[✓] <b>4D</b></span> checkbox</li>
+<li>Press the <span class="kbd">Threshold</span> button to start black-and-white thresholding</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
@@ -967,6 +1094,7 @@ A brief demonstration is available in the following video:
 <br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(6)" class="collapse-link"><a href="javascript:void(0);" id="Toggle6">collapse all</a></p><h2 id="8">Drag &amp; Drop material</h2>
+
 <table style="border: 0px; line-height:1.5">
 <tr>
 <td style="width: 300px; border: 0px">
@@ -993,9 +1121,11 @@ A brief demonstration is available in the following video:
 </td>
 </tr>
 </table>
+
 <details open onclick="state_check('6.1')" id="6.1"><summary> <b>Mouse and key controls</b> </summary>
 <div class="details-div">
 <p></p>
+
 <table style="width: 800px; text-align: center;" cellspacing=2px cellpadding=2px >
 <tr style="font-weight: bold; background: #ffb74d;">
   <td>Start by</td>
@@ -1011,6 +1141,7 @@ A brief demonstration is available in the following video:
 <tr><td><span class="kbd">Left</span>/<span class="kbd">Right</span>/<span class="kbd">Up</span>/<span class="kbd">Down buttons</span></td><td>-</td><td>Checked</td><td>Move all objects on all slices by the specified number of pixels, i.e. 3D movement</td></tr>
 </table>
 
+
 </div>
 </details>
 <br>
@@ -1018,6 +1149,7 @@ A brief demonstration is available in the following video:
 <br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(7)" class="collapse-link"><a href="javascript:void(0);" id="Toggle7">collapse all</a></p><h2 id="9">The Lasso tool</h2>
+
 <table style="width: 800px; border: 0px; line-height:1.5">
 <tr>
 <td style="border: 0px">
@@ -1033,18 +1165,32 @@ A brief demonstration is available in the following video:
 </td>
 </tr>
 </table>
+
 <details open onclick="state_check('7.1')" id="7.1"><summary> <b>How to use:</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>Press and release <span class="kbd">left mouse button</span> above the image to initialize the lasso tool</li>
+<div>
+<ul>
+<li>Press and release <span class="kbd">left mouse button</span> above the image to initialize the lasso tool</li>
 <li>Press and hold <span class="kbd">left mouse button</span> and drag the mouse to select an area</li>
 <li>Release the <span class="kbd">left mouse button</span> to finish the selection process</li>
 <li>Modify selected area, if needed</li>
-<li>Accept selection using <span class="kbd">double left mouse button click</span></li></ul></div>
-<p><b>Modes:</b></p>
-<div><ul><li><b>Add</b>, a new selection is added to the existing one</li>
-<li><b>Subtract</b>, a new selection is subtracted from the existing one</li></ul></div>
+<li>Accept selection using <span class="kbd">double left mouse button click</span></li>
+</ul>
+</div>
+<p>
+<b>Modes:</b>
+</p>
+<div>
+<ul>
+<li>
+<b>Add</b>, a new selection is added to the existing one</li>
+<li>
+<b>Subtract</b>, a new selection is subtracted from the existing one</li>
+</ul>
+</div>
 <p>The Lasso tool works also in 3D.</p>
+
 </div>
 </details>
 <br>
@@ -1052,6 +1198,7 @@ A brief demonstration is available in the following video:
 <br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(8)" class="collapse-link"><a href="javascript:void(0);" id="Toggle8">collapse all</a></p><h2 id="10">The Magic Wand + Region Growing tool</h2>
+
 <table style="border: 0px; line-height:1.5">
 <tr>
 <td style="width: 300px; border: 0px">
@@ -1070,23 +1217,38 @@ A brief demonstration is available in the following video:
 </td>
 </tr>
 </table>
+
 <details open onclick="state_check('8.1')" id="8.1"><summary> <b>Widgets and parameters</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li><b>Variation</b> editboxes, specify variation of image intensities relative to the clicked value</li>
-<li><b>Connect 8</b> specifies the 8 (26 for 3D) connected neighbourhood connectivity</li>
-<li><b>Connect 4</b> specifies the 4 (6 for 3D) connected neighbourhood connectivity</li>
-<li><b>Radius</b> allows defining an effective range for the magic wand</li></ul></div>
+<div>
+<ul>
+<li>
+<b>Variation</b> editboxes, specify variation of image intensities relative to the clicked value</li>
+<li>
+<b>Connect 8</b> specifies the 8 (26 for 3D) connected neighbourhood connectivity</li>
+<li>
+<b>Connect 4</b> specifies the 4 (6 for 3D) connected neighbourhood connectivity</li>
+<li>
+<b>Radius</b> allows defining an effective range for the magic wand</li>
+</ul>
+</div>
 <p>The Magic Wand works also in the 3D mode (the 3D switch in the <a href="ug_panel_selection.html"><code>Selection panel</code></a>).</p>
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('8.2')" id="8.2"><summary> <b>Selection modifiers for the Magic wand tool</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><span class="kbd">left mouse click</span>, will replace the existing selection with the new one.</li>
-<li><span class="kbd">&#8679; Shift</span> + <span class="kbd">left mouse click</span>, will add new selection to the existing one.</li>
-<li><span class="kbd">Ctrl</span> + <span class="kbd">left mouse click</span>, will remove new selection from the current.</li></ul></div>
+<div>
+<ul>
+<li><span class="kbd">left mouse click</span>, will replace the existing selection with the new one.</li>
+<li><span class="kbd">⇧ Shift</span> + <span class="kbd">left mouse click</span>, will add new selection to the existing one.</li>
+<li><span class="kbd">Ctrl</span> + <span class="kbd">left mouse click</span>, will remove new selection from the current.</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
@@ -1094,6 +1256,7 @@ A brief demonstration is available in the following video:
 <br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(9)" class="collapse-link"><a href="javascript:void(0);" id="Toggle9">collapse all</a></p><h2 id="11">The Membrane Click Tracker tool</h2>
+
 <table style="border: 0px; line-height:1.5">
 <tr>
 <td style="width: 300px; border: 0px">
@@ -1115,29 +1278,44 @@ A brief demonstration for 3D is available in the following video:
 </td>
 </tr>
 </table>
+
 <details open onclick="state_check('9.1')" id="9.1"><summary> <b>How to use</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><span class="kbd">Ctrl</span> + <span class="kbd">left mouse click</span> to define the starting point of a membrane fragment (before MIB version 2.651 the <span class="kbd">&#8679; Shift</span> + <span class="kbd">left mouse click</span> combination was used)&lt;/li&gt;</li>
-<li><span class="kbd">Left mouse click</span> to trace the membrane from the starting point to the clicked point&lt;/li&gt;</li></ul></div>
+<div>
+<ul>
+<li><span class="kbd">Ctrl</span> + <span class="kbd">left mouse click</span> to define the starting point of a membrane fragment (before MIB version 2.651 the <span class="kbd">⇧ Shift</span> + <span class="kbd">left mouse click</span> combination was used)&lt;/li&gt;</li>
+<li><span class="kbd">Left mouse click</span> to trace the membrane from the starting point to the clicked point&lt;/li&gt;</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('9.2')" id="9.2"><summary> <b>Additional parameters</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>The <b>Scale</b> edit box - during the tracing the image gets enhanced by taking into account intensities of the starting and ending points <code>img(img&gt;min([val1 val2])-diff([val1 val2])*options.scaleFactor) = maxIntensity;</code></li>
+<div>
+<ul>
+<li>The <b>Scale</b> edit box - during the tracing the image gets enhanced by taking into account intensities of the starting and ending points <code>img(img&gt;min([val1 val2])-diff([val1 val2])*options.scaleFactor) = maxIntensity;</code>
+</li>
 <li>The <b>Width</b> edit box - defines a width of the resulting trace</li>
-<li>The <span class="kbd">[&#10003;] <b>BlackSignal</b></span> checkbox defines whether the signal is Black on White, or White on Black</li>
-<li>The <span class="kbd">[&#10003;] <b>Straight line</b></span> checkbox - when checked, the points are connected with a straight line</li></ul></div>
-<p><b><i>Note!</i></b> When the 3D switch in the <a href="ug_panel_selection.html"><code>Selection</code> panel</a> is enabled the <b>Membrane Click Tracker</b> tool connects points (<i>linearly</i>) in the 3D space (this may be very usefull for tracing microtubules). Alternatively for microtunules, consider <a href="#target1">3D lines tool</a></p>
+<li>The <span class="kbd">[✓] <b>BlackSignal</b></span> checkbox defines whether the signal is Black on White, or White on Black</li>
+<li>The <span class="kbd">[✓] <b>Straight line</b></span> checkbox - when checked, the points are connected with a straight line</li>
+</ul>
+</div>
+<p>
+<b><i>Note!</i></b> When the 3D switch in the <a href="ug_panel_selection.html"><code>Selection</code> panel</a> is enabled the <b>Membrane Click Tracker</b> tool connects points (<i>linearly</i>) in the 3D space (this may be very usefull for tracing microtubules). Alternatively for microtunules, consider <my-a onclick="jump_to()" href="#target1">3D lines tool</my-a></p>
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('9.3')" id="9.3"><summary> <b>Reference and compilation</b> </summary>
 <div class="details-div">
 <p> The membrane is traced with help of Accurate Fast Marching function <a href="http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching">http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching</a> by Dirk-Jan Kroon, 2011, University of Twente.</p>
-<p><b><i>Note!</i></b> It is highly recommended to compile the corresponding function (see details in the Membrane Click Tracker section of <a href="im_browser_system_requirements.html">the System Requirements page</a> ), otherwise the function is very slow!</p>
+<p>
+<b><i>Note!</i></b> It is highly recommended to compile the corresponding function (see details in the Membrane Click Tracker section of <a href="im_browser_system_requirements.html">the System Requirements page</a> ), otherwise the function is very slow!</p>
+
 </div>
 </details>
 <br>
@@ -1145,6 +1323,7 @@ A brief demonstration for 3D is available in the following video:
 <br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(10)" class="collapse-link"><a href="javascript:void(0);" id="Toggle10">collapse all</a></p><h2 id="12">Object Picker</h2>
+
 <table style="border: 0px; line-height:1.5">
 <tr>
 <td style="width: 300px; border: 0px">
@@ -1176,9 +1355,11 @@ Works also in <em>3D</em> (select the <b>3D</b> check box in the <a href="ug_pan
 </td>
 </tr>
 </table>
+
 <details open onclick="state_check('10.1')" id="10.1"><summary> <b>Possible Object Picker selection modes</b> </summary>
 <div class="details-div">
 <p></p>
+
 <ul style="position:relative; left:35px;">
 <li>
 1. <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> Left mouse click</span>, selects object from the <em>Mask/Model</em> layers with a single mouse click.
@@ -1214,14 +1395,20 @@ Selection <em>-minus-</em> Mask. This action is sensitive to the <span class="kb
 </li>
 </ul>
 
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('10.2')" id="10.2"><summary> <b>Selection modifiers</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><span class="kbd">None</span>/<span class="kbd">&#8679; Shift</span> + <span class="kbd">left mouse click</span>, will add selection with the existing one</li>
-<li><span class="kbd">Ctrl</span> + <span class="kbd">left mouse click</span>, will remove selection from the current</li></ul></div>
+<div>
+<ul>
+<li><span class="kbd">None</span>/<span class="kbd">⇧ Shift</span> + <span class="kbd">left mouse click</span>, will add selection with the existing one</li>
+<li><span class="kbd">Ctrl</span> + <span class="kbd">left mouse click</span>, will remove selection from the current</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
@@ -1229,6 +1416,7 @@ Selection <em>-minus-</em> Mask. This action is sensitive to the <span class="kb
 <br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(11)" class="collapse-link"><a href="javascript:void(0);" id="Toggle11">collapse all</a></p><h2 id="13">Segment-anything model</h2>
+
 <table style="border: 0px; line-height:1.5">
 <tr>
 <td style="width: 300px; border: 0px">
@@ -1244,9 +1432,11 @@ An extensive tutorial covering installation and usage:
 </td>
 </tr>
 </table>
+
 <details open onclick="state_check('11.1')" id="11.1"><summary> <b>General information and reference</b> </summary>
 <div class="details-div">
 <p></p>
+
 Segment-anything model (SAM) is developed by <a href="https://ai.facebook.com/research">Meta AI Research, FAIR research team</a>.
 It can be used to segment individual objects or the whole image using one or few mouse click. Details of the research and interactive demo
 is available here: <a href="https://segment-anything.com">https://segment-anything.com</a>
@@ -1300,12 +1490,14 @@ class="code">Resources</span> subfolder within MIB. It is also possible
 to link this file from anywhere, in this case use segment-anything
 settings in MIB to provide a new location.
 
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('11.2')" id="11.2"><summary> <b>Requirements and installation instructions</b> </summary>
 <div class="details-div">
 <p></p>
+
 Segment-anything is not available by default and it needs to be
 installed!
 <br>
@@ -1321,12 +1513,14 @@ Before the installation keep in mind the following requirements:
 <br>
 Installation details available from <a href="https://mib.helsinki.fi/downloads_systemreq_sam.html">https://mib.helsinki.fi/downloads_systemreq_sam.html</a>
 
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('11.3')" id="11.3"><summary> <b>How to use</b> </summary>
 <div class="details-div">
 <p></p>
+
 <span class="h3">SAM segmentation in MIB has 3 different options for use.</span>
 <br>
 <br>
@@ -1402,12 +1596,14 @@ define portion of the image stack to process</li>
 <li>Press<span class="kbd">Segment</span> to do segmentation</li>
 </ul>
 
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('11.4')" id="11.4"><summary> <b>SAM settings</b> </summary>
 <div class="details-div">
 <p></p>
+
 Press <img class="image-fit" src="images\icons_settings.jpg"> to open the settings
 dialog.
 <br>
@@ -1430,11 +1626,13 @@ progress bar during segmentation</li>
 You can click <span class="kbd">[&#10003;] <b>Check to select path to segment-anything</b></span> to open a directory selection dialog to specify this folder</li>
 </ul>
 
+
 </div>
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(12)" class="collapse-link"><a href="javascript:void(0);" id="Toggle12">collapse all</a></p><h2 id="14">The Spot tool</h2>
+
 <table style="border: 0px; line-height:1.5">
 <tr>
 <td style="width: 300px; border: 0px">
@@ -1450,9 +1648,11 @@ A brief demonstration is available in the following video:
 </td>
 </tr>
 </table>
+
 <details open onclick="state_check('12.1')" id="12.1"><summary> <b>Widgets and parameters</b> </summary>
 <div class="details-div">
 <p></p>
+
 Use the <b>Radius, px</b> edit box to specify the radius of the spot.
 
 <br>
@@ -1470,10 +1670,13 @@ Works also in 3D.
 <li><span class="kbd">Ctrl</span> + <span class="kbd"><img class="image-fit-svg" style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, will remove selection from the current</li>
 </ul>
 
+
 </div>
 </details>
 <br>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a> <code><b>--&gt;</b></code> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a></p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a> <code><b>--&gt;</b></code> <a href="ug_panel_segm.html"><b>Segmentation Panel</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -1481,8 +1684,13 @@ Works also in 3D.
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Segmentation Tools
 % This panel hosts different tools that are used for the image
@@ -2613,7 +2821,8 @@ Works also in 3D.
 % </script>
 % </html>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -2642,8 +2851,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

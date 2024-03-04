@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Options tab</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_options.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Options tab</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_gui_menu_tools_deeplearning_options.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,8 +72,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.dropdown {   font-family: monospace; 	border: 1px solid #aaa; 	border-radius: 0.2em; 	background-color: #fff; 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.dropdown { font-family: monospace; border: 1px solid #aaa; border-radius: 0.2em; background-color: #fff; padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -177,8 +184,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -258,7 +265,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -272,7 +279,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -506,7 +513,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -515,15 +524,33 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Options tab</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Options tab</h1>
+<!--introduction-->
 <p>Some additional options and settings are available in this tab</p>
-<p><img class="image-fit" src="images\DeepLearningOptions.png" alt=""> </p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a></p><!--/introduction-->
+<p>
+<img class="image-fit" src="images\DeepLearningOptions.png" alt=""> </p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a>
+</p>
+<!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
-<div><ul><li><a href="#1">Custom training plot section</a></li>
-<li><a href="#2">Config files section</a></li>
-<li><a href="#3">Tools section</a></li></ul></div><h2 id="1">Custom training plot section</h2>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#1">Custom training plot section</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#2">Config files section</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">Tools section</my-a>
+</li>
+</ul>
+</div>
+<h2 id="1">Custom training plot section</h2>
+
 Settings for the custom training progress plot showing the loss function
 during training.
 <ul>
@@ -545,6 +572,7 @@ patches that are shown in the custom training plot. Use 1 to see all input patch
 small values to see only a fraction of those. For example, the value 0.01
 specifies that only 1% of image patches are displayed in the progress plot window</li>
 </ul>
+
 <h2 id="2">Config files section</h2>
 <p>This panel brings access to loading or saving Deep MIB config files.
 <br> The config files contain all settings of DeepMIB including the network name and input and output directories but excluding the actual trained network. Normally, these files are automatically created during the training process and stored next to the network <span class="code">*.mibDeep</span> files also in MATLAB format using the <span class="code">*.mibCfg</span> extension.
@@ -554,50 +582,86 @@ specifies that only 1% of image patches are displayed in the progress plot windo
 <br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="3">Tools section</h2>
-<div><ul><li><span class="kbd">Import network</span>, press to import a network designed or trained elsewhere. At the moment, the function only supports network in MATLAB format. 
+<div>
+<ul>
+<li><span class="kbd">Import network</span>, press to import a network designed or trained elsewhere. At the moment, the function only supports network in MATLAB format. 
 <br> In a typical workflow, a network can be designed using MATLAB Deep Network Designer and after that imported into DeepMIB for training or prediction. During the import process <span class="code">*.mibCfg</span> and <span class="code">*.mibDeep</span> files are generated.</li>
-<li><span class="kbd">Export network</span>, press to export the trained network outside of MATLAB using the ONNX format or TensorFlow formats.</li></ul></div>
+<li><span class="kbd">Export network</span>, press to export the trained network outside of MATLAB using the ONNX format or TensorFlow formats.</li>
+</ul>
+</div>
 <details open onclick="state_check('1.1')" id="1.1"><summary> <b>Additional details of the export process</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\DeepLearningOptionsONNX.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningOptionsONNX.png" alt=""> </p>
 <p>During export, it is possible to choose following options:</p>
-<div><ul><li><span class="dropdown">Version of ONNX operator set &#9660;</span>, supported operator set versions are 6, 7, 8, 9</li>
-<li><span class="dropdown">Alter the final segmentation layer as &#9660;</span>; use this option to modify the last segmentation layer used during training. For example, the CustomDice classification layer is not standard and thus not supported in ONNX. Instead, as this layer is not needed after training, it can be replaced with a standard segmentation layer or removed.</li></ul></div>
+<div>
+<ul>
+<li><span class="dropdown">Version of ONNX operator set ▼</span>, supported operator set versions are 6, 7, 8, 9</li>
+<li><span class="dropdown">Alter the final segmentation layer as ▼</span>; use this option to modify the last segmentation layer used during training. For example, the CustomDice classification layer is not standard and thus not supported in ONNX. Instead, as this layer is not needed after training, it can be replaced with a standard segmentation layer or removed.</li>
+</ul>
+</div>
 <details open onclick="state_check('1.2')" id="1.2"><summary> <b>List of available options</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><span class="dropdown">Keep as it is &#9660;</span>, do not modify the last segmentation layer</li>
-<li><span class="dropdown">Remove the layer &#9660;</span>, remove the segmentation layer making the softmax as the final layer of the network</li>
-<li><span class="dropdown">pixelClassificationLayer &#9660;</span>, replace the final segmentation layer with a standard pixel classification layer for semantic segmentation</li>
-<li><span class="dropdown">dicePixelClassificationLayer &#9660;</span>, replace the final segmentation layer with a standard pixel classification layer using generalized Dice loss for semantic segmentation</li></ul></div>
+<div>
+<ul>
+<li><span class="dropdown">Keep as it is ▼</span>, do not modify the last segmentation layer</li>
+<li><span class="dropdown">Remove the layer ▼</span>, remove the segmentation layer making the softmax as the final layer of the network</li>
+<li><span class="dropdown">pixelClassificationLayer ▼</span>, replace the final segmentation layer with a standard pixel classification layer for semantic segmentation</li>
+<li><span class="dropdown">dicePixelClassificationLayer ▼</span>, replace the final segmentation layer with a standard pixel classification layer using generalized Dice loss for semantic segmentation</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
+
 </div>
 </details>
 <br>
-<div><ul><li><span class="kbd">Count labels</span>, press to start a supporting function that counts the labels in the model files. Expand the section below for details.</li></ul></div>
+<div>
+<ul>
+<li><span class="kbd">Count labels</span>, press to start a supporting function that counts the labels in the model files. Expand the section below for details.</li>
+</ul>
+</div>
 <details open onclick="state_check('1.3')" id="1.3"><summary> <b>Details of Count Labels</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>Select directory with labels</li>
-<li>Specify filename extension (supported formats <span class="code">*.model, *.mibCat, *.png, *.tif, *.tiff</span>) of the model file and number of classes</li></ul></div>
-<p><img class="image-fit" src="images\DeepLearningOptionsCountLabels.png" alt=""> </p>
-<div><ul style="margin-bottom:0px;"><li>Save results to a file (supported formats <span class="code">*.mat, *.xls, *.csv</span>)</li></ul></div>
+<div>
+<ul>
+<li>Select directory with labels</li>
+<li>Specify filename extension (supported formats <span class="code">*.model, *.mibCat, *.png, *.tif, *.tiff</span>) of the model file and number of classes</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images\DeepLearningOptionsCountLabels.png" alt=""> </p>
+<div>
+<ul>
+<li>Save results to a file (supported formats <span class="code">*.mat, *.xls, *.csv</span>)</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
-<div><ul><li><span class="kbd">Balance classes</span>, this is a beta procedure to balance rare classes in the dataset. The procedure is implemented only for the 2D Semantic workflow and only for images and labels that are stored in standard image formats (e.g. TIF, PNG, JPG) and suitable in cases when pathces for rare classes needs to be generated from large rasters.</li></ul></div>
+<div>
+<ul>
+<li><span class="kbd">Balance classes</span>, this is a beta procedure to balance rare classes in the dataset. The procedure is implemented only for the 2D Semantic workflow and only for images and labels that are stored in standard image formats (e.g. TIF, PNG, JPG) and suitable in cases when pathces for rare classes needs to be generated from large rasters.</li>
+</ul>
+</div>
 <details open onclick="state_check('1.4')" id="1.4"><summary> <b>Details of Balance classes</b> </summary>
 <div class="details-div">
 <p></p>
 <p>The images and labels needs to be placed in "Images" and "Labels" subfolders under "Directories with images and labels for training" specified in the "Directories and preprocessing" tab The balanced results are generated under the same directory in "ImagesBalanced" and "LabelsBalanced" subfolders'</p>
 <p>The function is driven by <a href="https://se.mathworks.com/help/vision/ref/balancepixellabels.html">balancepixellabels</a> function.</p>
+
 </div>
 </details>
 <br>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a></p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -605,8 +669,13 @@ specifies that only 1% of image patches are displayed in the progress plot windo
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Options tab
 % Some additional options and settings are available in this tab
@@ -800,7 +869,8 @@ specifies that only 1% of image patches are displayed in the progress plot windo
 % </script>
 % </html>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -829,8 +899,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

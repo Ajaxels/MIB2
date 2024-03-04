@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Deep MIB - Predict tab</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_predict.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Deep MIB - Predict tab</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_gui_menu_tools_deeplearning_predict.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,8 +72,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.dropdown {   font-family: monospace; 	border: 1px solid #aaa; 	border-radius: 0.2em; 	background-color: #e8f5e8; 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.dropdown { font-family: monospace; border: 1px solid #aaa; border-radius: 0.2em; background-color: #e8f5e8; padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -177,8 +184,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -258,7 +265,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -272,7 +279,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -506,7 +513,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -515,15 +524,34 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Deep MIB - Predict tab</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Deep MIB - Predict tab</h1>
+<!--introduction-->
 <p>This tab contains parameters used for efficient prediction (inference) of images and generation of semantic segmentation models.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a></p><!--/introduction-->
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a>
+</p>
+<!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
-<div><ul><li><a href="#1">How to start the prediction (inference) process</a></li>
-<li><a href="#2">Settings sections</a></li>
-<li><a href="#3">Explore activations</a></li>
-<li><a href="#4">Preview results section</a></li></ul></div><h2 id="1">How to start the prediction (inference) process</h2>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#1">How to start the prediction (inference) process</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#2">Settings sections</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">Explore activations</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">Preview results section</my-a>
+</li>
+</ul>
+</div>
+<h2 id="1">How to start the prediction (inference) process</h2>
+
 <img class="image-fit" src="images\DeepLearningPredict.png">
 <br>
 <br>
@@ -563,24 +591,38 @@ prediction</span></li>
 </ul>
 <li>finally switch back to the <b>Predict</b> tab and press the <span class="kbd">Predict</span> button</li>
 </ul>
+
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="2">Settings sections</h2>
 <p>The Settings section is used to specify the main parameters using for the prediction (inference) process</p>
-<p><img class="image-fit" src="images\DeepLearningPredictSettings.png" alt=""> </p>
-<div><ul><li><span class="dropdown">Prediction engine &#9660;</span>, use this dropdown to select a tiling engine that will be used during the prediction process. The legacy engine was in use until MIB version 2.83, for all later releases the Blocked-image engine is recommended. Some of operations (for example, <b>Dynamic masking</b> or <b>2D Patch-wise</b>) are not available in the Legacy engine.</li>
-<li><span class="kbd">[&#10003;] <b>Overlapping tiles</b></span>, available for <span class="dropdown">Padding: same &#9660;</span> convolutional padding. During prediction the edges of the predicted patch are cropped improving the segmentation, but taking more time. The percentage of the overlap between tiles can be specified using the <span class="dropdown">%%...</span> editbox.</li></ul></div>
+<p>
+<img class="image-fit" src="images\DeepLearningPredictSettings.png" alt=""> </p>
+<div>
+<ul>
+<li><span class="dropdown">Prediction engine ▼</span>, use this dropdown to select a tiling engine that will be used during the prediction process. The legacy engine was in use until MIB version 2.83, for all later releases the Blocked-image engine is recommended. Some of operations (for example, <b>Dynamic masking</b> or <b>2D Patch-wise</b>) are not available in the Legacy engine.</li>
+<li><span class="kbd">[✓] <b>Overlapping tiles</b></span>, available for <span class="dropdown">Padding: same ▼</span> convolutional padding. During prediction the edges of the predicted patch are cropped improving the segmentation, but taking more time. The percentage of the overlap between tiles can be specified using the <span class="dropdown">%%...</span> editbox.</li>
+</ul>
+</div>
 <details open onclick="state_check('1.1')" id="1.1"><summary> <b>Overlapping vs non-overlapping mode</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\DeepLearning_OverlappingTiles.jpg" alt=""> </p>
-<p><b>Same</b> padding in the non-overlapping mode may have vertical and horizontal artefacts, that are eliminated when the overlapping mode is used.</p>
+<p>
+<img class="image-fit" src="images\DeepLearning_OverlappingTiles.jpg" alt=""> </p>
+<p>
+<b>Same</b> padding in the non-overlapping mode may have vertical and horizontal artefacts, that are eliminated when the overlapping mode is used.</p>
+
 </div>
 </details>
 <br>
-<div><ul><li><span class="kbd">[&#10003;] <b>Dynamic masking</b></span>, apply on-fly masking to skip prediction on some of the tiles. Settings for dynamic masking can be specified using the <b>Settings</b> button on the right-hand side of the checkbox. See the block below for details.</li></ul></div>
+<div>
+<ul>
+<li><span class="kbd">[✓] <b>Dynamic masking</b></span>, apply on-fly masking to skip prediction on some of the tiles. Settings for dynamic masking can be specified using the <b>Settings</b> button on the right-hand side of the checkbox. See the block below for details.</li>
+</ul>
+</div>
 <details open onclick="state_check('1.2')" id="1.2"><summary> <b>Dynamic masking settings and preview</b> </summary>
 <div class="details-div">
 <p></p>
+
 <ul>
 <li><img class="image-fit" src="images\DeepLearningTrainSettingsBtn.png">, press the
 button to specify parameters for dynamic masking.
@@ -602,47 +644,78 @@ specified dynamic masking settings on a portion of the image that is
 currently shown in the <b>Image View</b> panel of MIB</li>
 </ul>
 <img class="image-fit" src="images\DeepLearningPredictSettingsDynMaskPreview.png">
+
 <details open onclick="state_check('1.3')" id="1.3"><summary> <b>Example of patch-wise segmentation with dynamic masking</b> </summary>
 <div class="details-div">
 <p> Snapshot showing result of 2D patch-wise segmentation of nuclei.
 <br></p>
-<div><ul><li>Green color patches indicate predicted locations of nuclei</li>
+<div>
+<ul>
+<li>Green color patches indicate predicted locations of nuclei</li>
 <li>Red color patches indicate predicted locations of background</li>
-<li>Uncolored areas indicate patches that were skipped due to dynamic masking</li></ul></div>
-<p><img class="image-fit" src="images\DeepLearningPredictDynMaskingResults.png" alt=""> </p>
+<li>Uncolored areas indicate patches that were skipped due to dynamic masking</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images\DeepLearningPredictDynMaskingResults.png" alt=""> </p>
+
 </div>
 </details>
 <br>
+
 </div>
 </details>
 <br>
-<div><ul><li><span class="dropdown">Padding, %%</span>, when predicting pad the image from the sides using symmetrical padding. This operation helps to reduce possible artefacts that may appear at the edges.</li>
+<div>
+<ul>
+<li><span class="dropdown">Padding, %%</span>, when predicting pad the image from the sides using symmetrical padding. This operation helps to reduce possible artefacts that may appear at the edges.</li>
 <li><span class="dropdown">Batch size for prediction...</span>, this editbox allows to specify number of input image patches that are processed by GPU at the same time. The larger the value, the quicker prediction takes, but the max value is limited by the total memory available on GPU.</li>
-<li><span class="dropdown">Model files &#9660;</span>, specify output format for the generated model files. For the patch-wise workflow CSV files are created.</li></ul></div>
+<li><span class="dropdown">Model files ▼</span>, specify output format for the generated model files. For the patch-wise workflow CSV files are created.</li>
+</ul>
+</div>
 <details open onclick="state_check('1.4')" id="1.4"><summary> <b>List of available image formats for the model files</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><span class="dropdown">MIB Model format &#9660;</span>, standard formal for models in MIB. The model files have <span class="code">*.model</span> extension and can be read directly to MATLAB using <span class="code">model = load('filename.model', '-mat');</span> command</li>
-<li><span class="dropdown">TIF compressed format &#9660;</span>, a standard TIF LZW compressed file, where each pixel encodes the predicted class as 1, 2, 3, etc...</li>
-<li><span class="dropdown">TIF uncompressed format &#9660;</span>, a standard TIF uncompressed file, where each pixel encodes the predicted class as 1, 2, 3, etc...</li></ul></div>
+<div>
+<ul>
+<li><span class="dropdown">MIB Model format ▼</span>, standard formal for models in MIB. The model files have <span class="code">*.model</span> extension and can be read directly to MATLAB using <span class="code">model = load('filename.model', '-mat');</span> command</li>
+<li><span class="dropdown">TIF compressed format ▼</span>, a standard TIF LZW compressed file, where each pixel encodes the predicted class as 1, 2, 3, etc...</li>
+<li><span class="dropdown">TIF uncompressed format ▼</span>, a standard TIF uncompressed file, where each pixel encodes the predicted class as 1, 2, 3, etc...</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
-<div><ul><li><span class="dropdown">Score files &#9660;</span>, specify output format for the generated score files with prediction maps.</li></ul></div>
+<div>
+<ul>
+<li><span class="dropdown">Score files ▼</span>, specify output format for the generated score files with prediction maps.</li>
+</ul>
+</div>
 <details open onclick="state_check('1.5')" id="1.5"><summary> <b>List of available image formats for the score files</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><span class="dropdown">Do not generate &#9660;</span>, skip generation of score files improving performance and minimizing disk usage</li>
-<li><span class="dropdown">Use AM format &#9660;</span>, AmiraMesh format, compatible with MIB, Fiji or Amira</li>
-<li><span class="dropdown">Use Matlab non-compressed format &#9660;</span>, resulting score files are generated in MATLAB uncompressed format with <span class="code">*.mibImg</span> extension. The score files can be loaded to MIB or to MATLAB using <span class="code">model = load('filename.mibImg', '-mat');</span> command</li>
-<li><span class="dropdown">Use Matlab compressed format &#9660;</span>, resulting score files are generated in MATLAB compressed format with <span class="code">*.mibImg</span> extension. The score files can be loaded to MIB or to MATLAB using <span class="code">model = load('filename.mibImg', '-mat');</span> command</li>
-<li><span class="dropdown">Use Matlab non-compressed format (range 0-1) &#9660;</span>, the score files are generated in MATLAB non-compressed format without scaling, i.e. in the range from 0 to 1. The file extension is <span class="code">*.mibImg</span> and these files can not be opened in MIB. The score files can be loaded to MATLAB using <span class="code">model = load('filename.mat');</span> command</li></ul></div>
+<div>
+<ul>
+<li><span class="dropdown">Do not generate ▼</span>, skip generation of score files improving performance and minimizing disk usage</li>
+<li><span class="dropdown">Use AM format ▼</span>, AmiraMesh format, compatible with MIB, Fiji or Amira</li>
+<li><span class="dropdown">Use Matlab non-compressed format ▼</span>, resulting score files are generated in MATLAB uncompressed format with <span class="code">*.mibImg</span> extension. The score files can be loaded to MIB or to MATLAB using <span class="code">model = load('filename.mibImg', '-mat');</span> command</li>
+<li><span class="dropdown">Use Matlab compressed format ▼</span>, resulting score files are generated in MATLAB compressed format with <span class="code">*.mibImg</span> extension. The score files can be loaded to MIB or to MATLAB using <span class="code">model = load('filename.mibImg', '-mat');</span> command</li>
+<li><span class="dropdown">Use Matlab non-compressed format (range 0-1) ▼</span>, the score files are generated in MATLAB non-compressed format without scaling, i.e. in the range from 0 to 1. The file extension is <span class="code">*.mibImg</span> and these files can not be opened in MIB. The score files can be loaded to MATLAB using <span class="code">model = load('filename.mat');</span> command</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
-<div><ul><li><span class="kbd">[&#10003;] <b>upsample predictions</b></span> (<b>only for the 2D patch-wise workflow</b>). By default, the 2D patch-wise workflow generates a heavily downsampled image (and CSV file), where each pixel encodes detected class at each predicted block. To overlap such prediction over the original image, the predicted image should be upsampled to match the original image size.</li></ul></div>
+<div>
+<ul>
+<li><span class="kbd">[✓] <b>upsample predictions</b></span> (<b>only for the 2D patch-wise workflow</b>). By default, the 2D patch-wise workflow generates a heavily downsampled image (and CSV file), where each pixel encodes detected class at each predicted block. To overlap such prediction over the original image, the predicted image should be upsampled to match the original image size.</li>
+</ul>
+</div>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="3">Explore activations</h2>
+
 Activations explorer brings the possibility for detailed evaliation of
 the network. 
 <br>
@@ -673,16 +746,21 @@ currently displayed patch</li>
 <li><span class="kbd">Collage</span> press to make a collage image of the current network
 layer activations</li>
 </ul>
+
 <details open onclick="state_check('2.1')" id="2.1"><summary> <b>Snapshot with the generated collage image</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\DeepLearningPredictActivationImages.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningPredictActivationImages.png" alt=""> </p>
+
 </div>
 </details>
 <br>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="4">Preview results section</h2>
-<p><img class="image-fit" src="images\DeepLearningPredictPreviewResults.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningPredictPreviewResults.png" alt=""> </p>
+
 <ul>
 <li><span class="kbd">Load images and models</span> press this button after finishing prediction
 to open original images and the resulting segmentations in the currently
@@ -696,9 +774,11 @@ ground truth labels (<b> requires a label file(s) in the Labels directory
 under Prediction images directory; it is important that the model materials names match those for the training data!</b>).
 </li>
 </ul>
+
 <details open onclick="state_check('3.1')" id="3.1"><summary> <b>Details of the Evaluate segmentation operation</b> </summary>
 <div class="details-div">
 <p></p>
+
 <ul>
 <li>Press the button to calculate various precision metrics
 <br>
@@ -712,7 +792,7 @@ In addition, the calculated class metrics (Accuracy, IoU, MeanBGScore) as
 well as the global dataset metrics are shown.
 <br>
 <img class="image-fit" src='images\DeepLearning_Evaluation2.jpg'></li>
-<li>In addition, it is possible to calculate occurrence of labels and SÃ¸rensen-Dice similarity coefficient in the
+<li>In addition, it is possible to calculate occurrence of labels and Sørensen-Dice similarity coefficient in the
 generated and ground truth labels. These options are available from a
 dropdown located in the right-bottom corner of the <em>Evaluation
 results</em> window:
@@ -730,10 +810,13 @@ function</a></li>
 </li>
 </ul>
 
+
 </div>
 </details>
 <br>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a></p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -741,8 +824,13 @@ function</a></li>
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Deep MIB - Predict tab
 % 
@@ -1012,7 +1100,7 @@ function</a></li>
 % well as the global dataset metrics are shown.
 <br>
 % <img src='images\DeepLearning_Evaluation2.jpg'></li>
-% <li>In addition, it is possible to calculate occurrence of labels and SÃ¸rensen-Dice similarity coefficient in the
+% <li>In addition, it is possible to calculate occurrence of labels and Sørensen-Dice similarity coefficient in the
 % generated and ground truth labels. These options are available from a
 % dropdown located in the right-bottom corner of the <em>Evaluation
 % results</em> window:
@@ -1085,7 +1173,8 @@ function</a></li>
 % </script>
 % </html>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -1114,8 +1203,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

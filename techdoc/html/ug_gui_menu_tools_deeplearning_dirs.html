@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>DeepMIB - Directories and Preprocessing tab</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_tools_deeplearning_dirs.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>DeepMIB - Directories and Preprocessing tab</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_gui_menu_tools_deeplearning_dirs.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,12 +72,12 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.dropdown {   font-family: monospace; 	border: 1px solid #aaa; 	border-radius: 0.2em; 	background-color: #fffce8; 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.dropdown { font-family: monospace; border: 1px solid #aaa; border-radius: 0.2em; background-color: #fffce8; padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
-.info {  position: relative;  left: 40px;  width: 600px;  padding: 1em 1em 1em 4em;  margin: 2em 0;  color: #555;  background: #e7f2fa;  border-left: 4px solid #93cfeb; }
-.info:before {  content: url(images\\info.png);  position: absolute;  top: 10px;  left: 10px; }
+.info { position: relative; left: 40px; width: 600px; padding: 1em 1em 1em 4em; margin: 2em 0; color: #555; background: #e7f2fa; border-left: 4px solid #93cfeb; }
+.info:before { content: url(images\\info.png); position: absolute; top: 10px; left: 10px; }
 
 #tooltiptext {
   visibility: hidden;
@@ -179,8 +186,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -260,7 +267,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -274,7 +281,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -508,7 +515,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -517,23 +526,44 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>DeepMIB - Directories and Preprocessing tab</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>DeepMIB - Directories and Preprocessing tab</h1>
+<!--introduction-->
 <p>This tab allows choosing directories with images for training and prediction as well as various parameters used during image loading and preprocessing</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a></p>
-<p><img class="image-fit" src="images\DeepLearning_FileTree.jpg" alt=""> </p><!--/introduction-->
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a>
+</p>
+<p>
+<img class="image-fit" src="images\DeepLearning_FileTree.jpg" alt=""> </p>
+<!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
-<div><ul><li><a href="#1">Widgets and settings</a></li>
-<li><a href="#2">Preprocessing of files</a></li>
-<li><a href="#3">Organization of directories without preprocessing for semantic segmentation</a></li>
-<li><a href="#4">Organization of directories with preprocessing for semantic segmentation</a></li>
-<li><a href="#5">Organization of directories for 2D patch-wise workflow</a></li></ul></div>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#1">Widgets and settings</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#2">Preprocessing of files</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">Organization of directories without preprocessing for semantic segmentation</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">Organization of directories with preprocessing for semantic segmentation</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#5">Organization of directories for 2D patch-wise workflow</my-a>
+</li>
+</ul>
+</div>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="1">Widgets and settings</h2>
 <p><span class="h3">Directory with images and labels for training</span>
 <br> [ <i>used only for training</i> ]
 <br></p>
-<p><img class="image-fit" src="images\DeepLearningDirs_panel1.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirs_panel1.png" alt=""> </p>
 <p>
 use these widgets to select directory that contain images and model to be
 used for training. For the organization of directories see the
@@ -556,17 +586,19 @@ For better performance, it is recommended to convert Bio-Formats compatible imag
 <details open onclick="state_check('1.1')" id="1.1"><summary> <b>Important notes considering training files</b> </summary>
 <div class="details-div">
 <p></p>
+
 <ul>
 <li>Number of model or mask files should match the number of image files
 (one exception is 2D networks, where it is allowed to have a single
 model file in MIB <span class="code">*.model</span> format, when <b>Single MIB model file:
-ticked</b>). This option requires <a href="#target2">data preprocessing</a></li>
+ticked</b>). This option requires <my-a onclick="jump_to()" href="#target2">data preprocessing</my-a></li>
 <li>For labels in standard image formats it is important to
 specify number of classes <b>including the Exterior</b> into the <b>Number of
 classes</b> edit box</li>
 <li><b><em>Important! It is not possible to use numbers as names of
 materials, please name materials in a sensible way when using the <span class="code">*.model</span> format!</b></em></li>
 </ul>
+
 
 </div>
 </details>
@@ -575,8 +607,9 @@ materials, please name materials in a sensible way when using the <span class="c
 <br></span></p>
 <p><span class="h3">Directory with images for prediction</span>
 <br> [ <i>used only for prediction</i> ]
-<br> use these widgets to specify directory with images for prediction (named <span class="code">2_Prediction</span> in <a href="#target1">the file organization schemes below</a>).</p>
-<p><img class="image-fit" src="images\DeepLearningDirs_panel2.png" alt=""> </p>
+<br> use these widgets to specify directory with images for prediction (named <span class="code">2_Prediction</span> in <my-a onclick="jump_to()" href="#target1">the file organization schemes below</my-a>).</p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirs_panel2.png" alt=""> </p>
 <p>
 The image files should be placed under <span class="code">Images</span> subfolder
 (it is also possible to place images directly into a folder specified in this panel).
@@ -606,12 +639,14 @@ to specify an index of the file within the container.
 <p><span style="line-height:8px; display:block; vertical-align:top">
 <br></span> <span class="h3">Directory with resulting images</span>
 <br> use these widgets to specify the main output directory; results and all preprocessed images are stored there.</p>
-<p><img class="image-fit" src="images\DeepLearningDirs_panel3.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirs_panel3.png" alt=""> </p>
 <p>All subfolders inside this directory are automatically created by Deep MIB:<span style="line-height:8px; display:block; vertical-align:top">
 <br></span></p>
 <details open onclick="state_check('1.2')" id="1.2"><summary> <b>Description of directories created by DeepMIB</b> </summary>
 <div class="details-div">
 <p></p>
+
 <ul>
 <li><span class="code">PredictionImages</span>, place for the prepocessed images for
 prediction</li>
@@ -630,11 +665,14 @@ when the <span class="kbd">[&#10003;] <b>Save progress after each epoch</b></spa
 <li><span class="code">ValidationLabels</span>, labels accompanying images for validation (<em>only for preprocessing mode</em>)</li>
 </ul>
 
+
 </div>
 </details>
 <br>
 <p><span class="h3">Label file details</span></p>
-<p><img class="image-fit" src="images\DeepLearningDirs_panel4.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirs_panel4.png" alt=""> </p>
+
 <ul>
 <li>The <span class="kbd">[&#10003;] <b>Single MIB model file </b></span> checkbox, (<em>only for 2D networks</em>) when checked, a single model file with labels will be used</li>
 <li>The <span class="dropdown">Labels extension &#9660;</span> dropdown, (<em>only for 2D networks</em>) is used to select extension of files containing models.
@@ -666,9 +704,12 @@ of masking</li>
 contain masks. Without preprocessing (<span class="dropdown">USE 0-s IN LABELS &#9660;</span> any files are allowed);
 with preprocessing only <span class="code">*.mask</span> format is
 allowed for the 3D network</li>
+
 <p><a id="target5"></a></p>
 <p><span class="h3">Additional settings</span></p>
-<p><img class="image-fit" src="images\DeepLearningDirs_panel5.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirs_panel5.png" alt=""> </p>
+
 <ul>
 <li><span class="kbd">[&#10003;] <b>Compress processed images</b></span>, tick to compress the processed images.
 The processed images are stored in <em>*.mibImg</em> format that can be loaded in MIB.
@@ -699,6 +740,7 @@ When random seed is initialized with 0, the random seed generator is shuffled ba
 <li><span class="dropdown">Preprocess for &#9660;</span>, select mode of operation upon press of the <span class="kbd">Preprocess</span> button.
 Results of the preprocessing operation for each mode are presented in schemes below</li>
 </ul>
+
 <p><span style="line-height:32px; display:block; vertical-align:top">
 <br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
@@ -714,9 +756,14 @@ times: use the <span class="dropdown">Preprocessing is not required &#9660;</spa
 <div class="details-div">
 <p></p>
 <p>The preprocessing is recommended/required in the following situations:</p>
-<div><ul><li>when labels are stored in a single <span class="code">*.MODEL</span> file</li>
-<li>when training set is coming in proprietary formats that can only be read using BioFormats reader</li></ul></div>
+<div>
+<ul>
+<li>when labels are stored in a single <span class="code">*.MODEL</span> file</li>
+<li>when training set is coming in proprietary formats that can only be read using BioFormats reader</li>
+</ul>
+</div>
 <p>During preprocessing the images and model files are converted to <b>mibImg</b> and <b>mibCat</b> formats (a variation of MATLAB standard data format) that are adapted for training and prediction.</p>
+
 </div>
 </details>
 <br>
@@ -727,19 +774,23 @@ times: use the <span class="dropdown">Preprocessing is not required &#9660;</spa
 <p><span style="line-height:12px; display:block; vertical-align:top">
 <br></span></p>
 <p><span class="h3">Without preprocessing, when datasets are manually split into training and validation sets</span></p>
-<p>In this mode, the training image files are not preprocessed and loaded on-demand during network training. The image files should be split into subfolders <span class="code">TrainImages, TrainLabels</span> and optional subfolders <span class="code">ValidationImages, ValidationLabels</span> (for details see Snapshot with the legend below). The images may also be automatically split, see <a href="#target4">the following section</a> for details. 
-<br>When Bio-Format library is used, it is recommended to <a href="#target2">preprocess images</a> for the training process to speed up the file reading performance.</p>
+<p>In this mode, the training image files are not preprocessed and loaded on-demand during network training. The image files should be split into subfolders <span class="code">TrainImages, TrainLabels</span> and optional subfolders <span class="code">ValidationImages, ValidationLabels</span> (for details see Snapshot with the legend below). The images may also be automatically split, see <my-a onclick="jump_to()" href="#target4">the following section</my-a> for details. 
+<br>When Bio-Format library is used, it is recommended to <my-a onclick="jump_to()" href="#target2">preprocess images</my-a> for the training process to speed up the file reading performance.</p>
 <details open onclick="state_check('3.1')" id="3.1"><summary> <b>Snapshot with the directory tree</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\DeepLearningDirectories_B.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirectories_B.png" alt=""> </p>
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('3.2')" id="3.2"><summary> <b>Snapshot with the legend</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\DeepLearningDirectories_Legend.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirectories_Legend.png" alt=""> </p>
+
 </div>
 </details>
 <br>
@@ -751,7 +802,9 @@ times: use the <span class="dropdown">Preprocessing is not required &#9660;</spa
 <details open onclick="state_check('3.3')" id="3.3"><summary> <b>Snapshot with the directory tree</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\DeepLearningDirectories_C.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirectories_C.png" alt=""> </p>
+
 </div>
 </details>
 <br>
@@ -760,7 +813,9 @@ times: use the <span class="dropdown">Preprocessing is not required &#9660;</spa
 <details open onclick="state_check('3.4')" id="3.4"><summary> <b>Snapshot with the legend</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\DeepLearningDirectories_Legend.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirectories_Legend.png" alt=""> </p>
+
 </div>
 </details>
 <br>
@@ -769,22 +824,33 @@ times: use the <span class="dropdown">Preprocessing is not required &#9660;</spa
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="4">Organization of directories with preprocessing for semantic segmentation</h2>
 <p><a id="target2"></a> This mode is enabled when the <span class="code">Preprocess for</span> has one of the following selections:</p>
-<div><ul><li><b>Training and prediction</b>, to preprocess images for both training and prediction</li>
-<li><b>Training</b>, to preprocess images only for training</li>
-<li><b>Prediction</b>, to preprocess images only for prediction</li></ul></div>
+<div>
+<ul>
+<li>
+<b>Training and prediction</b>, to preprocess images for both training and prediction</li>
+<li>
+<b>Training</b>, to preprocess images only for training</li>
+<li>
+<b>Prediction</b>, to preprocess images only for prediction</li>
+</ul>
+</div>
 <p>The preprocessing starts by pressing of the <span class="kbd">Preprocess</span> button.</p>
 <p>The scheme below demonstrates organization of directories, when the preprocessing mode is used.</p>
 <details open onclick="state_check('4.1')" id="4.1"><summary> <b>Snapshot with the directory tree</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\DeepLearningDirectories_A.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirectories_A.png" alt=""> </p>
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('4.2')" id="4.2"><summary> <b>Snapshot with the legend</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\DeepLearningDirectories_Legend.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirectories_Legend.png" alt=""> </p>
+
 </div>
 </details>
 <br>
@@ -795,42 +861,52 @@ times: use the <span class="dropdown">Preprocessing is not required &#9660;</spa
 <p>In contrast to semantic segmentation, the preprocessing is not used during the patch-wise mode.</p>
 <p><span class="h3">Without preprocessing, when datasets are manually split into training and validation sets</span></p>
 <p>The images for training should be organized in own subfolders named by corresponding class names and placed under:</p>
-<div><ul><li><span class="code">1_Training\TrainImages</span>, images to be used for training</li>
-<li><span class="code">1_Training\ValidationImages</span>, images to be used for validation (optionally)</li></ul></div>
-<p>The images may also be <a href="#target4">automatically split</a> into subfolder for training and validation.</p>
+<div>
+<ul>
+<li><span class="code">1_Training\TrainImages</span>, images to be used for training</li>
+<li><span class="code">1_Training\ValidationImages</span>, images to be used for validation (optionally)</li>
+</ul>
+</div>
+<p>The images may also be <my-a onclick="jump_to()" href="#target4">automatically split</my-a> into subfolder for training and validation.</p>
 <details open onclick="state_check('5.1')" id="5.1"><summary> <b>Snapshot with the directory tree</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\DeepLearningDirectories_PW1.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirectories_PW1.png" alt=""> </p>
 <p><span class="code">bg</span> and <span class="code">spots</span> are examples of two class names</p>
 <p>When the ground-truth data for prediction is present, it can be arranged in a similar way to the semantic segmentation under 
 <br> <span class="code">2_Prediction\Images</span> and 
 <br> <span class="code">2_Prediction\Labels</span> directories
 <br> or in subfolders named by class names as <span class="code">2_Prediction\bg</span> and <span class="code">2_Prediction\spots</span>, where <span class="code">bg</span> and <span class="code">spots</span> subfolders contain patches that belong to these classes.</p>
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('5.2')" id="5.2"><summary> <b>Snapshot with the legend</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\DeepLearningDirectories_Legend.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirectories_Legend.png" alt=""> </p>
+
 </div>
 </details>
 <br>
 <p> <span style="line-height:8px; display:block; vertical-align:top">
 <br></span></p>
 <p><a id="target4"></a> <span class="h3">Without preprocessing, with automatic splitting of datasets into training and validation sets</span></p>
-<p>In this mode, the files are randomly split (depending on <a href="#target5">*Random generator seed*</a>) into the train and validation sets. The split is done upon press of the <span class="kbd">Preprocess</span> button, when <span class="code">Preprocess for: Split for training and validation</span><span style="line-height:8px; display:block; vertical-align:top">
+<p>In this mode, the files are randomly split (depending on <my-a onclick="jump_to()" href="#target5">*Random generator seed*</my-a>) into the train and validation sets. The split is done upon press of the <span class="kbd">Preprocess</span> button, when <span class="code">Preprocess for: Split for training and validation</span><span style="line-height:8px; display:block; vertical-align:top">
 <br></span> Initially, all images for training should be organized in own subfolders named by corresponding class names and placed under: <span class="code">1_Training\Images</span></p>
 <details open onclick="state_check('5.3')" id="5.3"><summary> <b>Snapshot with the directory tree</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\DeepLearningDirectories_PW2.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirectories_PW2.png" alt=""> </p>
 <p><span class="code">bg</span> and <span class="code">spots</span> are examples of two class names</p>
 <p>When the ground-truth data for prediction is present, it can be arranged in a similar way to the semantic segmentation under 
 <br> <span class="code">2_Prediction\Images</span> and 
 <br> <span class="code">2_Prediction\Labels</span> directories
 <br> or in subfolders named by class names as <span class="code">2_Prediction\bg</span> and <span class="code">2_Prediction\spots</span>, where <span class="code">bg</span> and <span class="code">spots</span> subfolders contain patches that belong to these classes.</p>
+
 </div>
 </details>
 <br>
@@ -839,13 +915,17 @@ times: use the <span class="dropdown">Preprocessing is not required &#9660;</spa
 <details open onclick="state_check('5.4')" id="5.4"><summary> <b>Snapshot with the legend</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\DeepLearningDirectories_Legend.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\DeepLearningDirectories_Legend.png" alt=""> </p>
+
 </div>
 </details>
 <br>
 <p> <span style="line-height:32px; display:block; vertical-align:top">
 <br></span></p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a></p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools_deeplearning.html"><b>Deep learning segmentation</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -853,8 +933,13 @@ times: use the <span class="dropdown">Preprocessing is not required &#9660;</spa
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% DeepMIB - Directories and Preprocessing tab
 % This tab allows choosing directories with images for training and
@@ -1352,7 +1437,8 @@ times: use the <span class="dropdown">Preprocessing is not required &#9660;</spa
 % </script>
 % </html>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -1381,8 +1467,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

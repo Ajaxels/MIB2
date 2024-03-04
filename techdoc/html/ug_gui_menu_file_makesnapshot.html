@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Make a snapshot to a file or to clipboard.</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_file_makesnapshot.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Make a snapshot to a file or to clipboard.</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_gui_menu_file_makesnapshot.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,7 +72,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -176,8 +183,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -257,7 +264,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -271,7 +278,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -505,7 +512,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -514,29 +523,66 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Make a snapshot to a file or to clipboard.</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Make a snapshot to a file or to clipboard.</h1>
+<!--introduction-->
 <p>This dialog provides access to different settings for making snapshots.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_file.html"><b>File Menu</b></a></p><!--/introduction-->
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_file.html"><b>File Menu</b></a>
+</p>
+<!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
-<div><ul><li><a href="#2">Target</a></li>
-<li><a href="#3">Crop</a></li>
-<li><a href="#4">Resize</a></li>
-<li><a href="#5">Options</a></li>
-<li><a href="#6">Format</a></li></ul></div>
-<p><img class="image-fit" src="images\menuFileSnapshot.png" alt=""> </p><h2 id="2">Target</h2>
-<p>Define the destination for the rendered snapshot. The snapshot may be saved to a file when the <code>File</code> option is selected, or copied to the system clipboard, when the <code>Clipboard</code> options is selected.</p><h2 id="3">Crop</h2>
-<div><ul><li><b>Full image</b> - make snapshot of the whole image</li>
-<li><b>Shown area</b> - make snapshot of the displayed in the <a href="ug_panel_im_view.html">Image View panel</a> area only</li>
-<li><b>ROI</b> - use selected ROI (the ROI may be defined using <a href="ug_panel_roi.html">the ROI panel</a> ) as area for the snapshot</li></ul></div>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#2">Target</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">Crop</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">Resize</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#5">Options</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#6">Format</my-a>
+</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images\menuFileSnapshot.png" alt=""> </p>
+<h2 id="2">Target</h2>
+<p>Define the destination for the rendered snapshot. The snapshot may be saved to a file when the <code>File</code> option is selected, or copied to the system clipboard, when the <code>Clipboard</code> options is selected.</p>
+<h2 id="3">Crop</h2>
+<div>
+<ul>
+<li>
+<b>Full image</b> - make snapshot of the whole image</li>
+<li>
+<b>Shown area</b> - make snapshot of the displayed in the <a href="ug_panel_im_view.html">Image View panel</a> area only</li>
+<li>
+<b>ROI</b> - use selected ROI (the ROI may be defined using <a href="ug_panel_roi.html">the ROI panel</a> ) as area for the snapshot</li>
+</ul>
+</div>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="4">Resize</h2>
-<div><ul><li><b>Width</b> - modifies width of the snapshot, or the width of a single panel when the <code>Split channel</code> mode is enabled</li>
-<li><b>Height</b> - modifies height of the snapshot, or the height of a single panel when the <code>Split channel</code> mode is enabled</li>
-<li><b>Resizing method</b> - select one of possible resizing methods</li></ul></div>
+<div>
+<ul>
+<li>
+<b>Width</b> - modifies width of the snapshot, or the width of a single panel when the <code>Split channel</code> mode is enabled</li>
+<li>
+<b>Height</b> - modifies height of the snapshot, or the height of a single panel when the <code>Split channel</code> mode is enabled</li>
+<li>
+<b>Resizing method</b> - select one of possible resizing methods</li>
+</ul>
+</div>
 <details open onclick="state_check('1.1')" id="1.1"><summary> <b>List of image resizing methods</b> </summary>
 <div class="details-div">
 <p></p>
+
 <ul>
 <li><em>nearest</em> - Nearest-neighbor interpolation; the output pixel
 is assignedthe value of the pixel that the point falls within. No other
@@ -546,34 +592,65 @@ pixels are considered; best for upsampling of the images.
 weighted average of pixels in the nearest 4-by-4 neighborhood; best for downsampling of the images.
 </ul>
 
+
 </div>
 </details>
 <br>
-<p>The <span class="kbd">[&#10003;] <b>bin</b></span> checkbox defines actions for the <b>bin2</b>, <b>bin4</b>, and <b>bin8</b> buttons. When the <span class="kbd">[&#10003;] <b>bin</b></span> checkbox is selected the bin buttons reduce size of the image, otherwise the buttons change their names to <b>mag2</b>, <b>mag4</b>, and <b>mag8</b> and increase the image size.</p>
-<div><ul><li><b>bin2/mag2</b> update the dimensions of the snapshot after decreasing/increasing the image size in 2 times</li>
-<li><b>bin4/mag4</b> update the dimensions of the snapshot after decreasing/increasing the image size in 4 times</li>
-<li><b>bin8/mag4</b> update the dimensions of the snapshot after decreasing/increasing the image size in 8 times</li></ul></div>
+<p>The <span class="kbd">[✓] <b>bin</b></span> checkbox defines actions for the <b>bin2</b>, <b>bin4</b>, and <b>bin8</b> buttons. When the <span class="kbd">[✓] <b>bin</b></span> checkbox is selected the bin buttons reduce size of the image, otherwise the buttons change their names to <b>mag2</b>, <b>mag4</b>, and <b>mag8</b> and increase the image size.</p>
+<div>
+<ul>
+<li>
+<b>bin2/mag2</b> update the dimensions of the snapshot after decreasing/increasing the image size in 2 times</li>
+<li>
+<b>bin4/mag4</b> update the dimensions of the snapshot after decreasing/increasing the image size in 4 times</li>
+<li>
+<b>bin8/mag4</b> update the dimensions of the snapshot after decreasing/increasing the image size in 8 times</li>
+</ul>
+</div>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(2)" class="collapse-link"><a href="javascript:void(0);" id="Toggle2">collapse all</a></p><h2 id="5">Options</h2>
-<p><b>Split channel</b> - generate a montage image, where each panel has only one color channel.</p>
+<p>
+<b>Split channel</b> - generate a montage image, where each panel has only one color channel.</p>
 <p>The dimensions of the montage image can be specified using the <code>Cols</code> (number of horizontal panels) and <code>Rows</code> (number of vertical panels) edit boxes. In addition, it is possible to force rendering of individual color channels in the grayscale mode (the <code>Grayscale</code> check box).</p>
 <details open onclick="state_check('2.1')" id="2.1"><summary> <b>Split channel example</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\menuFileSnapshot_split.jpg" alt=""> </p>
+<p>
+<img class="image-fit" src="images\menuFileSnapshot_split.jpg" alt=""> </p>
+
 </div>
 </details>
 <br>
-<div><ul><li><b>white Bg</b> - render background in white color for the split channel mode and the scale bars</li>
-<li><b>Scale bar</b> - select the <code>Scale bar</code> check box to add a scale bar to the snapshot. <b>Note!</b> if the width of the snapshot is too small the scale bar is not generated</li>
-<li><b>Measurements</b> - add the displayed measurements to the snapshot. Warning! The resulting image may have border artifacts, at least in MATLAB R2014b. The snapshot is done using the <i>export_fig</i> function written by <a href="http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig">Oliver Woodford and Yair Altman</a></li>
-<li><b>Options</b> - define visualization options for the measurements</li></ul></div><h2 id="6">Format</h2>
+<div>
+<ul>
+<li>
+<b>white Bg</b> - render background in white color for the split channel mode and the scale bars</li>
+<li>
+<b>Scale bar</b> - select the <code>Scale bar</code> check box to add a scale bar to the snapshot. <b>Note!</b> if the width of the snapshot is too small the scale bar is not generated</li>
+<li>
+<b>Measurements</b> - add the displayed measurements to the snapshot. Warning! The resulting image may have border artifacts, at least in MATLAB R2014b. The snapshot is done using the <i>export_fig</i> function written by <a href="http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig">Oliver Woodford and Yair Altman</a>
+</li>
+<li>
+<b>Options</b> - define visualization options for the measurements</li>
+</ul>
+</div>
+<h2 id="6">Format</h2>
 <p>Select one of the possible formats. There are number of format specific settings available for each image format.</p>
-<div><ul><li><b>BMP</b> - Windows Bitmap (BMP); 1-bit, 8-bit, and 24-bit uncompressed images.</li>
-<li><b>JPG</b> - Joint Photographic Experts Group (JPEG), 8-bit, 12-bit, and 16-bit Baseline JPEG images.</li>
-<li><b>PNG</b> - Portable Network Graphics (PNG) format</li>
-<li><b>TIF</b> - Baseline Tagged Image File Format images, including 1-bit, 8-bit, 16-bit, and 24-bit uncompressed images.</li></ul></div>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_file.html"><b>File Menu</b></a></p>
+<div>
+<ul>
+<li>
+<b>BMP</b> - Windows Bitmap (BMP); 1-bit, 8-bit, and 24-bit uncompressed images.</li>
+<li>
+<b>JPG</b> - Joint Photographic Experts Group (JPEG), 8-bit, 12-bit, and 16-bit Baseline JPEG images.</li>
+<li>
+<b>PNG</b> - Portable Network Graphics (PNG) format</li>
+<li>
+<b>TIF</b> - Baseline Tagged Image File Format images, including 1-bit, 8-bit, 16-bit, and 24-bit uncompressed images.</li>
+</ul>
+</div>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_file.html"><b>File Menu</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -581,8 +658,13 @@ weighted average of pixels in the nearest 4-by-4 neighborhood; best for downsamp
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Make a snapshot to a file or to clipboard.
 % This dialog provides access to different settings for making snapshots. 
@@ -723,7 +805,8 @@ weighted average of pixels in the nearest 4-by-4 neighborhood; best for downsamp
 % </script>
 % </html>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -752,8 +835,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

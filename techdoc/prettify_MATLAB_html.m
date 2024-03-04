@@ -7,7 +7,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
 %   It also gives extended formatting options, provides an optional dark theme, and
 %   automatically enhances the formatting of inline code and images.
 %
-%	Version 6.7
+%	Version 6.8b2
 %
 %   Inputs:
 %
@@ -165,6 +165,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
                                                          'is in the present working directory, or otherwise on the MATLAB path']);
     %% Open input file
     fstrm = read_file_to_mem(inputhtmlFile);
+    fstrm = native2unicode(fstrm);
     %% Create error intro for error messages
     % for use in error messages raised by helper functions
     error_intro(inputhtmlFile);
@@ -177,11 +178,11 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     themeSwitchPos = strfind(fstrm,'<div class="content">');
     assert (~isempty(themeSwitchPos), [error_intro NO_START_ERR]);
     themeSwitchPos = themeSwitchPos(1) + 20;
-    if ~strcmp(char(fstrm(themeSwitchPos+1:themeSwitchPos+4)),'<h1>') ...
-    || strcmp(char(fstrm(themeSwitchPos+1:themeSwitchPos+9)),'<h1></h1>'), extraStr = '<div>&nbsp;</div>'; %#ok<ALIGN>
-    else                                                                 , extraStr = ''                 ; end
+    if ~strcmp(fstrm(themeSwitchPos+1:themeSwitchPos+4),'<h1>') ...
+    || strcmp(fstrm(themeSwitchPos+1:themeSwitchPos+9),'<h1></h1>'), extraStr = '<div>&nbsp;</div>'; %#ok<ALIGN>
+    else                                                           , extraStr = ''                 ; end
     themeSwitch    = '';
-    if contains(char(fstrm),'[themesEnabled]')
+    if contains(fstrm,'[themesEnabled]')
         classNames     = [classNames {'show-if-light', 'show-if-dark'}];
         themeSwitch    = ['<div><p onclick="toggle_theme()" style="text-align:right; float:right; padding-left:10px; margin:0;">'...
                           '<a href="javascript:void(0);" id="ToggleTheme">&nbsp;</a></p></div>'...
@@ -298,8 +299,8 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
                 '    h2, h3       { color: #B0B0B0; }' NL ...
                 '    html body    { background-color: #101010; color: #B0B0B0; }' NL ...
                 '    .pretty-link { color: #C46313 !important; }' NL ...
-                '    a, a:visited { color: #C46313 }' NL ...
-                '    a:hover      { color: orange; }' NL ...
+                '    a, a:visited, my-a  { color: #C46313 }' NL ...
+                '    a:hover, my-a:hover { color: orange; }' NL ...
                 '    details > summary,' NL ...
                 '    .details-div      { border-color:     #505050; }' NL ...
                 '    details > summary { background-color: #202020; }' NL ...
@@ -377,7 +378,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
                     '              }' NL ...
                     '              else' NL ...
                     '              {' NL ...
-                    '                  var href = clickedElem.closest("a").getAttribute("href");' NL ...
+                    '                  var href = clickedElem.closest("my-a").getAttribute("href");' NL ...
                     '                  if ( href && href[0] == "#" )' NL ...
                     '                  {' NL ...
                     '                     var target = document.getElementById(href.substring(1));' NL ...
@@ -391,7 +392,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
                     '                           if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }' NL ...
                     '                        if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }' NL ...
                     '                     }' NL ...
-                    '                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){' NL ...
+                    '                     if (target){' NL ...
                     '                        event.preventDefault();' NL ...
                     '                        target.scrollIntoView(); }' NL ...
                     '                     var nextElem = target.nextElementSibling;' NL ...
@@ -629,6 +630,9 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     fstrm = [fstrm(1:cssClose-1+length(STYLE_CLOSE)+rewindCount) NL javaScript fstrm(cssClose+length(STYLE_CLOSE)+rewindCount:end)];
     fstrm = [fstrm(1:cssClose-1) extraCSS '</style>' darkTheme jumpShift fstrm(cssClose+length(STYLE_CLOSE)+rewindCount:end)];
     %% Fix/tweak publish's css
+    fstrm = strrep(fstrm, 'pre,a,abbr','pre,a,my-a,abbr');
+    fstrm = strrep(fstrm, [NL 'a { color:'],[NL 'a,my-a { color:']);
+    fstrm = strrep(fstrm, [NL 'a:hover { color:'],[NL 'my-a:hover { cursor: pointer; }' NL 'a:hover,my-a:hover { color:']);
     fstrm = strrep(fstrm, '.content { font-size:1.2em; line-height:140%;', '.content { font-size:1.2em; line-height:160%;');
     fstrm = strrep(fstrm, 'pre { margin:0px 0px 20px; }', 'pre { margin:0px 0px 15px; overflow-x:auto; }');
     fstrm = strrep(fstrm, 'pre, code { font-size:12px; }', 'pre { font-size:12px; }');
@@ -651,6 +655,26 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
                           '</p>' NL ...
                           '<div id="tooltiptext">click to return<br>(click <b>&times;</b> to hide)</div>' NL ...
                           '</div>']);
+    %% Process anchor links (jump to target on page)
+    % <a href="# ... </a> -> <my-a onclick="jump_to()" href="# ... </my-a>
+    anchorStart = strfind(fstrm,'<a href="#');
+    for i = 1:numel(anchorStart)
+        anchorEnd = strfind(fstrm(anchorStart(i)+1:end),'</a>');
+        nextLink  = strfind(fstrm(anchorStart(i)+1:end),'<a ');
+        if isempty(nextLink), nextLink = 0;
+        else                , nextLink = nextLink(1) + anchorStart(i); end
+        try
+            anchorEnd = anchorEnd(1) + anchorStart(i);
+            if anchorEnd > nextLink
+                error(' ')
+            end
+        catch
+            error('prettify:anchorImbalance', [error_intro 'Imbalanced <a></a> anchor-link tags. The first 30 characters of the imbalanced tag are:' NL ...
+                  '%s'], fstrm( anchorStart(i):min([anchorStart(i)+30 numel(fstrm)]) )  );
+        end
+        fstrm = [fstrm(1:anchorStart(i)-1) ['<my-a onclick="jump_to()" href="#' fstrm(anchorStart(i)+10:anchorEnd-1) '</my-a>'] fstrm(anchorEnd+4:end)];
+        anchorStart = anchorStart + 26;
+    end
     %% Find start and end of page body source
     [sourceStart, htmlEnd] = find_source(fstrm);
     if DEBUG, write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'input.html', 1); end
@@ -928,7 +952,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
         if DEBUG, write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after replacing [smry] tags.html', 1); end
         insertPoint = detailsOpens(1)-1;
         update_idxs(31*countOfDtlsTags);
-        %% Â Â Â Â Remove excess line breaks after any tables in details sections
+        %%     Remove excess line breaks after any tables in details sections
         detailsOpens  = strfind(fstrm(sourceStart:htmlEnd),'<details open ') + sourceStart - 1;
         detailsCloses = strfind(fstrm(sourceStart:htmlEnd),'</details>') + sourceStart - 1;
         [countOfDtlsTags, detailsCloses] = sort_tag_closes(detailsOpens, detailsCloses);
@@ -946,7 +970,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
                 end
             end
         end
-        %% Â Â Â Â Remove excess spacing after any lists at the end of details sections
+        %%     Remove excess spacing after any lists at the end of details sections
         for listTag = {'ul','ol'}
             for detailsCounter = 1:countOfDtlsTags
                 listIdxs = strfind(fstrm(detailsOpens(detailsCounter):detailsCloses(detailsCounter)),['<' listTag{:} '>']);
@@ -976,7 +1000,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
             end
         end
         if DEBUG, write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'before adding breaks between tables and images.html', 1); end
-        %% Â Â Â Â Add breaks between tables and images
+        %%     Add breaks between tables and images
         for detailsCounter = 1:countOfDtlsTags
             tableThenImage = strfind(fstrm(detailsOpens(detailsCounter):detailsCloses(detailsCounter)),'</table><img ')  + detailsOpens(detailsCounter) - 1;
             for i = 1:length(tableThenImage)
@@ -1053,6 +1077,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
             update_idxs(length(classToAdd)-charsToRemove);
         end
     end
+    if DEBUG && ~isempty(imgTags), write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after processing image tags.html', 1); end
     %% Process undocumented [png2svg] tags
     % WARNING - MATLAB central does not support .svg images, so they have to be hosted externally
     [png2svgOpens, png2svgCloses] = get_tag_pairs('[png2svg]', fstrm, htmlEnd);
@@ -1089,6 +1114,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
             end
         end
     end
+    if DEBUG && ~isempty(png2svgOpens), write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after processing [png2svg].html', 1); end
     %% Process undocumented [removepng] tags
     [removepngOpens, removepngCloses] = get_tag_pairs('[removepng]', fstrm, htmlEnd);
     for i = 1:length(removepngOpens)
@@ -1108,6 +1134,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
             end
         end
     end
+    if DEBUG && ~isempty(removepngOpens), write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after processing [removepng].html', 1); end
     %% Process [darkAlt] tags
     if verbose, fprintf(1,'   darkAlt tags...\n'); end
     IMG_EXTS = {'png','jpg','jpeg','svg'};
@@ -1147,9 +1174,11 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
             end
         end
     end
+    if DEBUG && ~isempty(darkAltOpens), write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after processing [darkAlt].html', 1); end
     %% Replace [br] with <br>
     if verbose, fprintf(1,'   [br] tags...\n'); end
     fstrm = strrep(fstrm,'[br]','<br>');
+    if DEBUG, write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after processing [br].html', 1); end
     %% Process undocumented [rembr] and [delbr] tags
     rembrTags = strfind(fstrm(sourceStart:htmlEnd),'[rembr]') + sourceStart - 1;
     for i = 1:length(rembrTags)
@@ -1161,6 +1190,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
             htmlEnd   = htmlEnd   - 4;
         end
     end
+    if DEBUG && ~isempty(rembrTags), write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after processing [rembr].html', 1); end
     delbrTags = strfind(fstrm(sourceStart:htmlEnd),'[delbr]') + sourceStart - 1;
     for i = 1:length(delbrTags)
         brTag = strfind(fstrm(delbrTags(i):htmlEnd),'<br>');
@@ -1171,6 +1201,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
             htmlEnd   = htmlEnd   - 4;
         end
     end
+    if DEBUG && ~isempty(delbrTags), write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after processing [delbr].html', 1); end
     if verbose, fprintf(1,'   [delsp] tags...\n'); end
     delspTags = strfind(fstrm(sourceStart:htmlEnd),'[delsp]') + sourceStart - 1;
     for i = 1:length(delspTags)
@@ -1180,6 +1211,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
             htmlEnd   = htmlEnd   - 1;
         end
     end
+    if DEBUG && ~isempty(delspTags), write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after processing [delsp].html', 1); end
     %% Insert breaks of specified pixel height ([brx] tags)
     if verbose, fprintf(1,'   [brx] tags...\n'); end
     brxTagList = strfind(fstrm(sourceStart:htmlEnd),'[br') + sourceStart - 1;
@@ -1192,6 +1224,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
         brTagEnds  = brTagEnds  + 71;
         htmlEnd    = htmlEnd    + 71;
     end
+    if DEBUG && ~isempty(brxTagList), write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after processing [brx].html', 1); end
     %% Remove excess spacing after codeoutput sections
     codeoutLoc = strfind(fstrm(sourceStart:htmlEnd),'<pre class="codeoutput">') + sourceStart - 1;
     for i = 1:length(codeoutLoc)
@@ -1212,6 +1245,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
             codeoutLoc(i+1:end) = codeoutLoc(i+1:end) + 25;
         end
     end
+    if DEBUG && ~isempty(codeoutLoc), write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after processing codeoutput sections.html', 1); end
     %% Remove erroneous <p></p> tags
     pOpens    = strfind(fstrm(sourceStart:htmlEnd),'<p ')  + sourceStart - 1;
     unstyledP = strfind(fstrm(sourceStart:htmlEnd),'<p>')  + sourceStart - 1;
@@ -1232,8 +1266,10 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
             fstrm(pCloses(i):pCloses(i)+3) = [];
             pOpens (pCloses>pCloses(i)) = pOpens (pCloses>pCloses(i)) - 4;
             pCloses(pCloses>pCloses(i)) = pCloses(pCloses>pCloses(i)) - 4;
+            htmlEnd = htmlEnd - 7;
         end
     end
+    if DEBUG && ~isempty(pOpens), write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after processing p tags.html', 1); end
     %% Insert link to FEX page
     % handle defunct [frameBufferx] tag
     frameBufferTag = strfind(fstrm(sourceStart:htmlEnd),'[frameBuffer') + sourceStart - 1;
@@ -1241,13 +1277,17 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
         assert(length(frameBufferTag)==1,'prettify:tooManyFramebufTags',[error_intro 'Only one [frameBufferx] tag is allowed']);
         frameBufferTagEnd = strfind(fstrm(frameBufferTag:htmlEnd),']') + frameBufferTag - 1;
         fstrm(frameBufferTag:frameBufferTagEnd) = [];
+        htmlEnd = htmlEnd - (1+frameBufferTagEnd-frameBufferTag);
     end
+    if DEBUG && ~isempty(frameBufferTag), write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after processing [frameBufferx].html', 1); end
     frameBuffer = '<p id="iFrameBuf">&nbsp;</p>';
     finalA = strfind(fstrm(sourceStart:htmlEnd),'<a');
     finalA = finalA(end) + sourceStart - 1;
     if strcmp(fstrm(finalA-4:finalA-1),'<br>'), fstrm(finalA-4:finalA-1) = []; end
     finalCloseA = strfind(fstrm(sourceStart:htmlEnd),'</a>');
     finalCloseA = finalCloseA(end) + sourceStart - 1;
+    finalCloseP = strfind(fstrm(finalCloseA:htmlEnd),'</p>');
+    finalCloseP = finalCloseP(end) + finalCloseA - 1;
     % get version number from opening comments
     fid    = fopen([mfilename('fullpath') '.m'],'r');
     line   = ''; while ~contains(line,'Version'), line = fgetl(fid); end
@@ -1256,7 +1296,11 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     % add link and frame buffer to footer
     fstrm  = [fstrm(1:finalCloseA+3) ' and subsequently processed by ' ...
               '<a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a>' ...
-              ' V' verStr '</p>' frameBuffer fstrm(finalCloseA+12:end)]; % skip over <br></p> in original source
+              ' V' verStr '</p>' frameBuffer fstrm(finalCloseP+4:end)]; % skip over <br></p> in original source
+    if DEBUG
+        [sourceStart, htmlEnd] = find_source(fstrm);
+        write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after processing adding link and frame buffer.html', 1);
+    end
     %% Remove/modify remaining prettify_MATLAB_html tags
     tagsToRemove = {'[rembr]','[delbr]','[delsp]','[png2svg]','[/png2svg]','[removepng]','[/removepng]','[darkAlt]','[/darkAlt]','[imageFolder='};
     for tag = tagsToRemove
@@ -1284,6 +1328,10 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     for tag = tagsToModify
         fstrm = strrep(fstrm,tag{:},[tag{:}(1) tag{:}(3:end)]);
         fstrm = strrep(fstrm,[tag{:}(1:2) '/' tag{:}(3:end)],[tag{:}(1) '/' tag{:}(3:end)]);
+    end
+    if DEBUG
+        [sourceStart, htmlEnd] = find_source(fstrm);
+        write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'after tag removal and modification.html', 1);
     end
     %% Final bit of javascript
     fstrm = strrep(fstrm,'</body>',['<script>' NL ...
@@ -1315,15 +1363,14 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
                                     '}' NL ...
                                     'if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){' NL ...
                                     '   document.getElementById("anchor-offsets").sheet.disabled = true; }' NL ...
-                                    'var jumpLinks = document.getElementsByTagName("a");' NL ...
-                                    'for (var i = 0; i < jumpLinks.length; i++){' NL ...
-                                    '  href = jumpLinks[i].getAttribute("href");' NL ...
-                                    '  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}' NL ...
                                     '</script></body>']);
     %% Write the output file
     if verbose, fprintf(1,'Writing output file...\n'); end
     write_fstrm_to_file(fstrm, inputhtmlFile);
-    if DEBUG, write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'processing complete.html', 1); end
+    if DEBUG
+        [sourceStart, htmlEnd] = find_source(fstrm);
+        write_fstrm_to_file(fstrm(sourceStart:htmlEnd), 'processing complete.html', 1);
+    end
     if verbose, fprintf(1,'Processing complete.\n'); end
     show_warning_dialogue;
     catch MEx
@@ -1351,7 +1398,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     end
     %% Subroutines
     function update_idxs(insertionLength)
-        %% -Â Â Â Index updater
+        %% -   Index updater
         detailsOpens ( detailsOpens  > insertPoint ) = detailsOpens ( detailsOpens  > insertPoint ) + insertionLength;
         detailsCloses( detailsCloses > insertPoint ) = detailsCloses( detailsCloses > insertPoint ) + insertionLength;
         summaryCloses( summaryCloses > insertPoint ) = summaryCloses( summaryCloses > insertPoint ) + insertionLength;
@@ -1361,7 +1408,7 @@ function prettify_MATLAB_html(inputhtmlFile, verbose, overloadPublish, addComman
     end
 
     function show_warning_dialogue
-        %% -Â Â Â Show warning dialogue if warnings were generated
+        %% -   Show warning dialogue if warnings were generated
         if show_dialogue && ~isempty(show_warning([]))
             uiwait(msgbox([num2str(show_warning([])) ' warnings generated' NL 'Please see MATLAB command line for more information'],'','warn','modal'));
         end
@@ -1379,7 +1426,7 @@ end
 
 %% ==========================================================================================================================================================
 %% Helper functions
-%% -Â Â Â Tag processing
+%% -   Tag processing
 function [fstrm, classNames, userCSS] = process_cssClasses_tags(fstrm, getClassNamesOnly)
     if nargin<2, getClassNamesOnly = false; end
     if getClassNamesOnly,     htmlEnd  = length(fstrm);
@@ -1461,15 +1508,15 @@ function [fstrm, htmlEnd] = process_target_and_jump_tags(fstrm, htmlEnd)
     [jumpOpens, jumpCloses] = get_tag_pairs('[jumpto]', fstrm, htmlEnd);
     [fstrm,htmlEnd,jumpOpens,jumpCloses,jumpIDList,jumpTagEnds] = find_valid_prettify_tags('jumpto', jumpOpens, jumpCloses, targetIDList, fstrm, htmlEnd);
     for j = 1:length(jumpOpens)
-        % [jumpton] -> <a href="#targetn">
-        fstrm = [fstrm(1:jumpOpens(j)-1) '<a href="#target' num2str(jumpIDList(j)) '">' fstrm(jumpTagEnds(j)+1:end)];
-        jumpCloses  = jumpCloses  + 10;
-        % [/jumpto] -> "</a>"
-        fstrm = [fstrm(1:jumpCloses(j)-1) '</a>' fstrm(jumpCloses(j)+9:end)];
-        jumpCloses  = jumpCloses  - 5;
-        jumpOpens   = jumpOpens   + 5;
-        jumpTagEnds = jumpTagEnds + 5;
-        htmlEnd     = htmlEnd     + 5;
+        % [jumpton] -> <my-a onclick="jump_to()" href="#targetn">
+        fstrm = [fstrm(1:jumpOpens(j)-1) '<my-a onclick="jump_to()" href="#target' num2str(jumpIDList(j)) '">' fstrm(jumpTagEnds(j)+1:end)];
+        jumpCloses  = jumpCloses  + 33;
+        % [/jumpto] -> "</my-a>"
+        fstrm = [fstrm(1:jumpCloses(j)-1) '</my-a>' fstrm(jumpCloses(j)+9:end)];
+        jumpCloses  = jumpCloses  - 2;
+        jumpOpens   = jumpOpens   + 31;
+        jumpTagEnds = jumpTagEnds + 31;
+        htmlEnd     = htmlEnd     + 31;
     end
 end
 
@@ -1792,7 +1839,7 @@ function [countOfTags, tagCloses] = sort_tag_closes(tagOpens, tagCloses)
     assert(~any(tagCloses==0),'prettifyMATLABhtml:internalError','Failed to sort nested tags');
 end
 
-%% -Â Â Â Get path of this .m file
+%% -   Get path of this .m file
 function myPath = my_path()
 %
 %   NOTE: path returned includes trailing file separator
@@ -1802,7 +1849,7 @@ function myPath = my_path()
     myPath = myPath(1:end-length(myName));
 end
 
-%% -Â Â Â Save handle to built-in Publish function
+%% -   Save handle to built-in Publish function
 function save_publish_handle
     publishName = which('publish');
     if ~strcmp(publishName(end-1:end),'.p')
@@ -1821,7 +1868,7 @@ function save_publish_handle
     end
 end
 
-%% -Â Â Â Warning functions
+%% -   Warning functions
 function warningsIssued = show_warning(msg, inputhtmlFile)
     persistent warnCounter fileMsg
     if islogical(msg)
@@ -1922,7 +1969,7 @@ function wrappedText = wrap_text(str, lineStart)
     end
 end
 
-%% -Â Â Â Toolbar button functions
+%% -   Toolbar button functions
 function insert_target(document)
     targetTagList = strfind(document.Text,'[target');
     [~, ~, ~, ~, targetIDList, ~] = find_valid_prettify_tags('target', targetTagList, [], [], document.Text, length(document.Text));
@@ -2112,11 +2159,11 @@ function add_pretty_commands_to_toolbar
     fprintf(1,'\n');
 end
 
-%% -Â Â Â File read & write
+%% -   File read & write
 function fstrm = read_file_to_mem(fileName)
     try
         fileH = fopen(fileName,'r');
-        fstrm = fread(fileH, 'uchar')';
+        fstrm = fread(fileH, '*uint8')';
     catch MEx
         fclose(fileH);
         throwAsCaller(MException('prettify:fileread', sprintf('ERROR: Unable to read file %s: %s', fileName, MEx.message) ));
@@ -2168,18 +2215,19 @@ function write_fstrm_to_file(fstrm, fileName, isDebug)
                          strrep(fstrm(max(preCloseLocs)+1:htmlEnd),'<br',[NL '<br']) fstrm(htmlEnd+1:end)];
             end
         end
+        fstrm = unicode2native(fstrm,'UTF-8');
     end
     try
         fileH = fopen(fileName,'w');
-        fwrite(fileH, fstrm, 'char*1');
+        fwrite(fileH, fstrm, 'uint8');
     catch MEx
-        fclose(fileH);
+        try fclose(fileH); end %#ok<TRYNC>
         throwAsCaller(MException('prettify:filewrite', sprintf('ERROR: Unable to write file %s: %s',fileName, MEx.message) ));
     end
     fclose(fileH);
 end
 
-%% -Â Â Â Get start of error message
+%% -   Get start of error message
 function errorStart = error_intro(inputhtmlFile)
     persistent savedFileName
     if nargin
@@ -2194,7 +2242,7 @@ function errorStart = error_intro(inputhtmlFile)
     return
 end
 
-%% -Â Â Â New line constant
+%% -   New line constant
 function CONST = NL, CONST = char(10); end %#ok<CHARTEN> for backwards compatibility
 
 %% ==========================================================================================================================================================
@@ -2276,5 +2324,11 @@ function CONST = NL, CONST = char(10); end %#ok<CHARTEN> for backwards compatibi
 %           -- Saves help of built-in publish so it can be displayed on command line when user runs "help publish", when publish is being overloaded
 %   6.7     -- 11 June 2022
 %           -- Changed html implementation of [brx] tags for better cross-browser support
+%   6.7.1   -- 11 June 2022
+%           -- Added more debugging output
+%           -- Improved robustness of modifying footer
+%   6.8     -- 1 Mar 2024
+%           -- Added support for UTF-8-encoded HTML files (newer versions of MATLAB now write extended characters directly to HTML file, with UTF-8 encoding)
+%           -- Changed how page-internal links function, to work around bug in help browser in recent versions of MATLAB (2022a and above)
 %
 %============================================================================================================================================================

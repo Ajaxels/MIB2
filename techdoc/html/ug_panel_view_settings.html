@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>The View Settings Panel</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_panel_view_settings.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>The View Settings Panel</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_panel_view_settings.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,7 +72,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -176,8 +183,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -257,7 +264,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -271,7 +278,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -505,7 +512,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -514,24 +523,52 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>The View Settings Panel</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>The View Settings Panel</h1>
+<!--introduction-->
 <p>The View Settings panel gives basic tools for visualization of the dataset.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction-->
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a>
+</p>
+<!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
-<div><ul><li><a href="#2">1. The Colors table and the <span class="kbd">[&#10003;] <b>LUT</b></span> checkbox</a></li>
-<li><a href="#3">2. The Show Model check box</a></li>
-<li><a href="#4">3. The Show Mask check box</a></li>
-<li><a href="#5">4. The Hide image check box</a></li>
-<li><a href="#6">5. The Annotations check box</a></li>
-<li><a href="#7">6. Display</a></li>
-<li><a href="#8">7. The Auto button and checkboxes</a></li>
-<li><a href="#9">8. The Transparency sliders</a></li>
-<li><a href="#10">Right mouse click opens a dropdown menu</a></li></ul></div>
-<p><img class="image-fit" src="images\PanelsViewSettings.png" alt=""> </p>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#2">1. The Colors table and the <span class="kbd">[✓] <b>LUT</b></span> checkbox</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">2. The Show Model check box</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">3. The Show Mask check box</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#5">4. The Hide image check box</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#6">5. The Annotations check box</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#7">6. Display</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#8">7. The Auto button and checkboxes</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#9">8. The Transparency sliders</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#10">Right mouse click opens a dropdown menu</my-a>
+</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images\PanelsViewSettings.png" alt=""> </p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="2">1. The Colors table and the <span class="kbd">[&#10003;] <b>LUT</b></span> checkbox</h2>
-<p>This table contains a list of color channels of the dataset. The color channels may be switched on and off (a combination of <span class="kbd">Ctrl</span>+<span class="kbd">left mouse click</span> above checkboxes turns on selection of a single color channel). The image is generated depending on selection state of the <code>LUT checkbox</code>. When the <span class="kbd">[&#10003;] <b>LUT</b></span> checkbox is selected <code>MIB</code> generates the final image based on defined colors (the third column in this table). <b>Note!</b> When the <span class="kbd">[&#10003;] <b>LUT</b></span> checkbox is unchecked the maximal number of colors that can be shown simultaneously is limited to 3. If more than 3 colors are selected then only the first 3 color channels are shown.</p>
+<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="2">1. The Colors table and the <span class="kbd">[✓] <b>LUT</b></span> checkbox</h2>
+<p>This table contains a list of color channels of the dataset. The color channels may be switched on and off (a combination of <span class="kbd">Ctrl</span>+<span class="kbd">left mouse click</span> above checkboxes turns on selection of a single color channel). The image is generated depending on selection state of the <code>LUT checkbox</code>. When the <span class="kbd">[✓] <b>LUT</b></span> checkbox is selected <code>MIB</code> generates the final image based on defined colors (the third column in this table). <b>Note!</b> When the <span class="kbd">[✓] <b>LUT</b></span> checkbox is unchecked the maximal number of colors that can be shown simultaneously is limited to 3. If more than 3 colors are selected then only the first 3 color channels are shown.</p>
 <p>
 A brief demonstration of work with color channels is available in the following video:
 <br>
@@ -540,38 +577,72 @@ A brief demonstration of work with color channels is available in the following 
 <details open onclick="state_check('1.1')" id="1.1"><summary> <b>The right mouse button gives access to additional color channel actions</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><b>Insert empty channel...</b>, insert an empty channel (intensity of all pixels is 0) to the specified position</li>
-<li><b>Copy channel</b>, to copy the selected color channel to a new channel (available also from <a href="ug_gui_menu_image.html">Menu-Image-Color Channels</a>)</li>
-<li><b>Invert channel</b>, to invert the selected color channel (available also from <a href="ug_gui_menu_image.html">Menu-Image-Color Channels</a>)</li>
-<li><b>Rotate channel</b>, rotate the specified color channel (available also from <a href="ug_gui_menu_image.html">Menu-Image-Color Channels</a>)</li>
-<li><b>Shift channel</b>, allows to shift a channel by X and Y pixels (available also from <a href="ug_gui_menu_image.html">Menu-Image-Color Channels</a>)</li>
-<li><b>Swap channels</b>, to swap the selected color channel with another one (available also from <a href="ug_gui_menu_image.html">Menu-Image-Color Channels</a>)</li>
-<li><b>Delete channel</b>, to delete the selected color channel (available also from <a href="ug_gui_menu_image.html">Menu-Image-Color Channels</a>)</li>
-<li><b>Set LUT color</b>, to set colors for use with the <span class="kbd">[&#10003;] <b>LUT</b></span> checkbox (available also from <a href="ug_gui_menu_file_preferences.html">Menu-File-Preferences</a>)</li></ul></div>
+<div>
+<ul>
+<li>
+<b>Insert empty channel...</b>, insert an empty channel (intensity of all pixels is 0) to the specified position</li>
+<li>
+<b>Copy channel</b>, to copy the selected color channel to a new channel (available also from <a href="ug_gui_menu_image.html">Menu-Image-Color Channels</a>)</li>
+<li>
+<b>Invert channel</b>, to invert the selected color channel (available also from <a href="ug_gui_menu_image.html">Menu-Image-Color Channels</a>)</li>
+<li>
+<b>Rotate channel</b>, rotate the specified color channel (available also from <a href="ug_gui_menu_image.html">Menu-Image-Color Channels</a>)</li>
+<li>
+<b>Shift channel</b>, allows to shift a channel by X and Y pixels (available also from <a href="ug_gui_menu_image.html">Menu-Image-Color Channels</a>)</li>
+<li>
+<b>Swap channels</b>, to swap the selected color channel with another one (available also from <a href="ug_gui_menu_image.html">Menu-Image-Color Channels</a>)</li>
+<li>
+<b>Delete channel</b>, to delete the selected color channel (available also from <a href="ug_gui_menu_image.html">Menu-Image-Color Channels</a>)</li>
+<li>
+<b>Set LUT color</b>, to set colors for use with the <span class="kbd">[✓] <b>LUT</b></span> checkbox (available also from <a href="ug_gui_menu_file_preferences.html">Menu-File-Preferences</a>)</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
 <p> <span style="line-height:8px; display:block; vertical-align:top">
-<br></span></p><h2 id="3">2. The Show Model check box</h2>
+<br></span></p>
+<h2 id="3">2. The Show Model check box</h2>
 <p>Switch on/off the <code>Model</code> layer. This check box has a shortcut <span class="kbd">space</span>. <span style="line-height:8px; display:block; vertical-align:top">
-<br></span></p><h2 id="4">3. The Show Mask check box</h2>
+<br></span></p>
+<h2 id="4">3. The Show Mask check box</h2>
 <p>Switch on/off <code>Mask</code> layer. This check box has a shortcut <span class="kbd">Ctrl</span> + <span class="kbd">space</span>. <span style="line-height:8px; display:block; vertical-align:top">
-<br></span></p><h2 id="5">4. The Hide image check box</h2>
+<br></span></p>
+<h2 id="5">4. The Hide image check box</h2>
 <p>Switch on/off display of the <code>Image</code> layer. <span style="line-height:8px; display:block; vertical-align:top">
-<br></span></p><h2 id="6">5. The Annotations check box</h2>
+<br></span></p>
+<h2 id="6">5. The Annotations check box</h2>
 <p>Switch on/off <a href="ug_panel_segm_tools.html#3">Annotation layer</a> and <a href="ug_gui_menu_tools_measure.html">measurements</a>. <span style="line-height:8px; display:block; vertical-align:top">
-<br></span></p><h2 id="7">6. Display</h2>
+<br></span></p>
+<h2 id="7">6. Display</h2>
 <p>Press to start display adjustments GUI tool, <a href="ug_panel_adjustments.html"><b>see more here</b></a>.</p>
-<p><img class="image-fit" src="images\PanelsViewSettingsDisplay.png" alt=""> </p><h2 id="8">7. The Auto button and checkboxes</h2>
-<p><b>The Auto button</b> Auto brightness adjustment of complete dataset. The function asks for saturation parameters for both low and high intensity borders. As a result, the image intensities are <i><b>recalculated</b></i> to increase the contrast. <b>Note</b>, the function behaviour is affected by the <code>stack</code> switch. When the <code>stack</code> switch is <code>off</code> the brightness is individually adjusted for each frame of the dataset. Alternatively, when checked, the function first finds minimal and maximal stretching parameters for the whole dataset and then uses these values to adjust the contrast.</p>
-<p><b>The <span class="kbd">[&#10003;] *on fly</b></span> checkbox automatically adjust contrast for each shown image without recalculation of intensities of the actual data. <span style="line-height:8px; display:block; vertical-align:top">
-<br></span></p><h2 id="9">8. The Transparency sliders</h2>
-<div><ul><li><b>The top trasparency slider</b> regulates transparency of the <code>Model</code> layer from opaque (slider in the left position) to transparent (slider in the right position).</li>
-<li><b>The middle transparency slider</b> changes transparency values for the <code>Mask</code> layers from opaque to transparent.</li>
-<li><b>The lower trasparency slider</b> change transparency values for the <code>Selection</code> layer from opaque to transparent.</li></ul></div><h2 id="10">Right mouse click opens a dropdown menu</h2>
+<p>
+<img class="image-fit" src="images\PanelsViewSettingsDisplay.png" alt=""> </p>
+<h2 id="8">7. The Auto button and checkboxes</h2>
+<p>
+<b>The Auto button</b> Auto brightness adjustment of complete dataset. The function asks for saturation parameters for both low and high intensity borders. As a result, the image intensities are <i><b>recalculated</b></i> to increase the contrast. <b>Note</b>, the function behaviour is affected by the <code>stack</code> switch. When the <code>stack</code> switch is <code>off</code> the brightness is individually adjusted for each frame of the dataset. Alternatively, when checked, the function first finds minimal and maximal stretching parameters for the whole dataset and then uses these values to adjust the contrast.</p>
+<p>
+<b>The <span class="kbd">[✓] *on fly</b></span> checkbox automatically adjust contrast for each shown image without recalculation of intensities of the actual data. <span style="line-height:8px; display:block; vertical-align:top">
+<br></span></p>
+<h2 id="9">8. The Transparency sliders</h2>
+<div>
+<ul>
+<li>
+<b>The top trasparency slider</b> regulates transparency of the <code>Model</code> layer from opaque (slider in the left position) to transparent (slider in the right position).</li>
+<li>
+<b>The middle transparency slider</b> changes transparency values for the <code>Mask</code> layers from opaque to transparent.</li>
+<li>
+<b>The lower trasparency slider</b> change transparency values for the <code>Selection</code> layer from opaque to transparent.</li>
+</ul>
+</div>
+<h2 id="10">Right mouse click opens a dropdown menu</h2>
 <p>When clicking on an empty area of within this panel an additiona menu appears allowing to hide/show the following panels. This allows to increase space occupied by the Image view panel</p>
-<p><img class="image-fit" src="images\PanelsImageView_dropdown.jpg" alt=""> </p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a></p>
+<p>
+<img class="image-fit" src="images\PanelsImageView_dropdown.jpg" alt=""> </p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_panels.html"><b>Panels</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -579,8 +650,13 @@ A brief demonstration of work with color channels is available in the following 
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% The View Settings Panel
 % The View Settings panel gives basic tools for visualization of the
@@ -719,7 +795,8 @@ A brief demonstration of work with color channels is available in the following 
 
 
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -748,8 +825,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

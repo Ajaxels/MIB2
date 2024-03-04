@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser Watershed/Graphcut segmentation</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_tools_objseparation.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Microscopy Image Browser Watershed/Graphcut segmentation</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_gui_menu_tools_objseparation.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,8 +72,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.dropdown {   font-family: monospace; 	border: 1px solid #aaa; 	border-radius: 0.2em; 	background-color: #fff; 	background-color: #e0f5ff; 	background-color: #e8f5e8; 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.dropdown { font-family: monospace; border: 1px solid #aaa; border-radius: 0.2em; background-color: #fff; background-color: #e0f5ff; background-color: #e8f5e8; padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -177,8 +184,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -258,7 +265,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -272,7 +279,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -506,7 +513,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -515,18 +524,46 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Microscopy Image Browser Watershed/Graphcut segmentation</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Microscopy Image Browser Watershed/Graphcut segmentation</h1>
+<!--introduction-->
 <p>Tools for separation of objects that can be as materials of the current model, the mask or selection layers.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a></p><!--/introduction--><h2>Contents</h2>
-<div><ul><li><a href="#1">General example</a></li>
-<li><a href="#2">Mode panel</a></li>
-<li><a href="#4">Subarea panel</a></li>
-<li><a href="#6">Object separation settings</a></li>
-<li><a href="#7">Object separation example</a></li>
-<li><a href="#8">Algorithm for object separation with watershed</a></li>
-<li><a href="#9">References</a></li></ul></div><h2 id="1">General example</h2>
-<p><img class="image-fit" src="images\menuToolsObjSep_Overview.jpg" alt=""> </p><h2 id="2">Mode panel</h2>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a>
+</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#1">General example</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#2">Mode panel</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">Subarea panel</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#6">Object separation settings</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#7">Object separation example</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#8">Algorithm for object separation with watershed</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#9">References</my-a>
+</li>
+</ul>
+</div>
+<h2 id="1">General example</h2>
+<p>
+<img class="image-fit" src="images\menuToolsObjSep_Overview.jpg" alt=""> </p>
+<h2 id="2">Mode panel</h2>
 <p>The <code>Mode panel</code> offers possibility to select a desired working mode for the segmentation.</p>
+
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px; width:180px">
@@ -546,8 +583,10 @@ values are used when watershed is running using the distance map (see below)</li
 </td>
 </tr>
 </table>
+
 <h2 id="4">Subarea panel</h2>
 <p>The <code>Subarea panel</code> allows selection of the sub-area of the dataset for processing. If dataset is too big it can be processed in parts or binned using this panel.</p>
+
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px; width: 200px">
@@ -572,8 +611,10 @@ the <b>Object separation</b> mode may give unpredictable results</li>
 </td>
 </tr>
 </table>
+
 <h2 id="6">Object separation settings</h2>
 <p>The <b>Object separation</b> mode uses the watershed transformation to brake segmented objects into smaller ones. The specific settings for the <b>Object separation</b> mode are shown below.</p>
+
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px; width: 340px">
@@ -595,23 +636,51 @@ the <b>Object separation</b> mode may give unpredictable results</li>
 </td>
 </tr>
 </table>
+
 <h2 id="7">Object separation example</h2>
 <p>The object separation with watershed can be used to separate big objects into smaller ones. For example, some mitochondria from the image segmentation example are fused together. It is possible to separate them using the <i>Object separation</i> mode.</p>
-<div><ul><li><code>Menu-&gt;Tools-&gt;Object separation</code></li>
-<li>Select <b>Mask</b> in the <b>Objects to watershed</b></li>
-<li>Press the <span class="kbd">Segment</span> button</li></ul></div>
-<p><img class="image-fit" src="images\watershed_imsegm_05.jpg" alt=""> </p>
+<div>
+<ul>
+<li>
+<code>Menu-&gt;Tools-&gt;Object separation</code>
+</li>
+<li>Select <b>Mask</b> in the <b>Objects to watershed</b>
+</li>
+<li>Press the <span class="kbd">Segment</span> button</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images\watershed_imsegm_05.jpg" alt=""> </p>
 <p>Now the mitochondria are separated, but unfortunately, as usual with watershed, long mitochondria are broken into several small pieces as well. To deal with that the seeded watershed can be used.</p>
-<div><ul><li>Press the <span class="kbd">[&#10003;] <b>Use seeds</b></span> checkbox</li>
+<div>
+<ul>
+<li>Press the <span class="kbd">[✓] <b>Use seeds</b></span> checkbox</li>
 <li>Choose <b>Model, select material</b> -&gt; 'Seeds' in the <b>Layer with seeds</b> panel</li>
-<li>Press the <b>Segment button</b></li>
-<li>If there is only one label in each mitochondria the individual mutochondria should be extracted (shown in green)</li></ul></div>
-<p><img class="image-fit" src="images\watershed_imsegm_06.jpg" alt=""> </p><h2 id="8">Algorithm for object separation with watershed</h2>
-<p><img class="image-fit" src="images\menuToolsWatershed_obj_sep_alg.jpg" alt=""> </p><h2 id="9">References</h2>
+<li>Press the <b>Segment button</b>
+</li>
+<li>If there is only one label in each mitochondria the individual mutochondria should be extracted (shown in green)</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images\watershed_imsegm_06.jpg" alt=""> </p>
+<h2 id="8">Algorithm for object separation with watershed</h2>
+<p>
+<img class="image-fit" src="images\menuToolsWatershed_obj_sep_alg.jpg" alt=""> </p>
+<h2 id="9">References</h2>
 <p>Watershed: the Image segmentation and Object separation modes:</p>
-<div><ul><li><a href="http://blogs.mathworks.com/steve/2013/11/19/watershed-transform-question-from-tech-support/">Watershed transform question from tech support by Steve Eddins</a></li>
-<li><a href="http://blogs.mathworks.com/steve/2006/06/02/cell-segmentation/">Cell segmentation by Steve Eddins</a></li></ul></div>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a></p>
+<div>
+<ul>
+<li>
+<a href="http://blogs.mathworks.com/steve/2013/11/19/watershed-transform-question-from-tech-support/">Watershed transform question from tech support by Steve Eddins</a>
+</li>
+<li>
+<a href="http://blogs.mathworks.com/steve/2006/06/02/cell-segmentation/">Cell segmentation by Steve Eddins</a>
+</li>
+</ul>
+</div>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -619,8 +688,13 @@ the <b>Object separation</b> mode may give unpredictable results</li>
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Microscopy Image Browser Watershed/Graphcut segmentation
 % Tools for separation of objects that can be as materials of the current model, the mask or selection layers.
@@ -818,7 +892,8 @@ the <b>Object separation</b> mode may give unpredictable results</li>
 % </script>
 % </html>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -847,8 +922,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

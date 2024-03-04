@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser Features</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="im_browser_features.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Microscopy Image Browser Features</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="im_browser_features.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -173,8 +180,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -254,7 +261,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -268,7 +275,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -502,7 +509,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -511,19 +520,42 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Microscopy Image Browser Features</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Microscopy Image Browser Features</h1>
+<!--introduction-->
 <p>Microscopy Image Browser is a high-performance software package for advanced image processing, segmentation and visualization of multidimentional (2D-4D) datasets. Microscopy Image Browser is written in MATLAB, but has a user friendly graphical interface that does not requre knowledge of MATLAB and can be used by a general audience without knowledge of programming.</p>
 <p>Please find a list of main features below</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><!--/introduction--><h2>Contents</h2>
-<div><ul><li><a href="#1">List of all features</a></li>
-<li><a href="#2">List of Key Features:</a></li>
-<li><a href="#4">Scheme of Microscopy Image Browser</a></li></ul></div><h2 id="1">List of all features</h2>
-<p>Please check <a href="http://mib.helsinki.fi/features_all.html">the list of all features page</a> for more detailed description and video examples</p><h2 id="2">List of Key Features:</h2>
-<div><ul><li>Works as a MATLAB program under Windows/Linux/MacOS MATLAB, or as a standalone application (Windows 64bit/MacOS/Linux)</li>
-<li>Open source licensed under <a href="im_browser_license.html#2">GPLv3 license</a></li>
-<li>Compiled version is <a href="im_browser_license.html#3">licensed for academic research</a></li>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a>
+</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#1">List of all features</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#2">List of Key Features:</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">Scheme of Microscopy Image Browser</my-a>
+</li>
+</ul>
+</div>
+<h2 id="1">List of all features</h2>
+<p>Please check <a href="http://mib.helsinki.fi/features_all.html">the list of all features page</a> for more detailed description and video examples</p>
+<h2 id="2">List of Key Features:</h2>
+<div>
+<ul>
+<li>Works as a MATLAB program under Windows/Linux/MacOS MATLAB, or as a standalone application (Windows 64bit/MacOS/Linux)</li>
+<li>Open source licensed under <a href="im_browser_license.html#2">GPLv3 license</a>
+</li>
+<li>Compiled version is <a href="im_browser_license.html#3">licensed for academic research</a>
+</li>
 <li>Extendable with custom plugins (<a href="http://mib.helsinki.fi/tutorials_programming.html">tutorials</a>)</li>
-<li>Load/Import multiple image and video formats using standard and custom-made readers, <a href="http://www.mathworks.com">Bio-Formats (LOCI) reader</a>, <a href="http://www.openmicroscopy.org/site">OMERO server</a>, and direct import from <a href="http://fiji.sc/Fiji">Fiji</a> and <a href="http://www.bitplane.com">Imaris</a></li>
+<li>Load/Import multiple image and video formats using standard and custom-made readers, <a href="http://www.mathworks.com">Bio-Formats (LOCI) reader</a>, <a href="http://www.openmicroscopy.org/site">OMERO server</a>, and direct import from <a href="http://fiji.sc/Fiji">Fiji</a> and <a href="http://www.bitplane.com">Imaris</a>
+</li>
 <li>Generation of multidimentional image stacks (3D/4D, width:height:color:depth:time)</li>
 <li>Batch processing mode for automatization of image processing steps</li>
 <li>Alignment of multi-dimensional stacks and images within these stacks</li>
@@ -532,20 +564,32 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li>Train and predict datasets using deep convolutional neural networks</li>
 <li>Quantification and statistics for 2D/3D objects</li>
 <li>Export of images or models to MATLAB, <a href="http://www.vsg3d.com/amira/overview">Amira</a> , <a href="http://bio3d.colorado.edu/imod/">IMOD</a>, <a href="https://youtu.be/G6z0pM3xOIk">STL</a>, TIF, <a href="http://www.slicer.org/">NRRD for 3D Slicer</a>, <a href="http://imagej.net/BigDataViewer">Fiji BigDataViewer</a> formats</li>
-<li>Direct 3D visualization using MATLAB isosurfaces and volume rendering, <a href="http://fiji.sc/3D_Viewer">Fiji 3D viewer</a>, and <a href="http://www.bitplane.com/">Imaris</a></li>
+<li>Direct 3D visualization using MATLAB isosurfaces and volume rendering, <a href="http://fiji.sc/3D_Viewer">Fiji 3D viewer</a>, and <a href="http://www.bitplane.com/">Imaris</a>
+</li>
 <li>Filtering of images with core MATLAB and custom functions</li>
 <li>Log of performed actions</li>
 <li>Customizable Undo option</li>
 <li>Customizable Keyboard shortcuts</li>
-<li>Colorblind friendly default color modeling scheme</li></ul></div><h2 id="4">Scheme of Microscopy Image Browser</h2>
+<li>Colorblind friendly default color modeling scheme</li>
+</ul>
+</div>
+<h2 id="4">Scheme of Microscopy Image Browser</h2>
 <p>The connection diagram that illustrates the available tools and layers for image processing, segmentation, and visualization. This diagram showcases the workflow and interactions between different components in the software.</p>
 <p>When working with opened images in Microscopy Image Browser, you have the flexibility to apply various filters and adjustments using a range of standard and custom functions. These functions enable you to enhance and modify the images according to your requirements.</p>
 <p>Furthermore, MIB provides options for segmenting the images using variety of manual, semi-automatic and automatic techniques, including state of the art deep learning approaches.</p>
 <p>The connection diagram below helps you understand the relationships between the different tools and layers, facilitating a seamless workflow for image processing and analysis.</p>
-<p><img class="image-fit" src="images/im_browser_scheme.jpg" alt=""> </p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p>
+<img class="image-fit" src="images/im_browser_scheme.jpg" alt=""> </p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a>
+</p>
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Microscopy Image Browser Features
 % Microscopy Image Browser is a high-performance software package for
@@ -610,7 +654,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 %
 % *Back to* <im_browser_product_page.html *Index*>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -639,8 +684,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

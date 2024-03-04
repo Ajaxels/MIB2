@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Model Menu</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_models.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Model Menu</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_gui_menu_models.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,7 +72,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -176,8 +183,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -257,7 +264,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -271,7 +278,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -505,7 +512,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -514,43 +523,89 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Model Menu</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Model Menu</h1>
+<!--introduction-->
 <p>Actions that can be applied to the <code>Model</code> layers. The <code>Model layer</code> is one of three main segmentation layers (<code>Model, Selection, Mask</code>) which can be used in combibation with other layer. See more about segmentation layers in <a href="ug_gui_data_layers.html">the Data layers of Microscopy Image Browser section</a>.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction-->
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a>
+</p>
+<!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
-<div><ul><li><a href="#2">Convert type</a></li>
-<li><a href="#3">New model</a></li>
-<li><a href="#4">Load model</a></li>
-<li><a href="#5">Import model from MATLAB</a></li>
-<li><a href="#6">Export model to...</a></li>
-<li><a href="#7">Save model</a></li>
-<li><a href="#8">Save model as...</a></li>
-<li><a href="#9">Render model...</a></li>
-<li><a href="#12">Annotations...</a></li>
-<li><a href="#14">Model Statistics...</a></li></ul></div>
-<p><img class="image-fit" src="images\menuModel.png" alt=""> </p>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#2">Convert type</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">New model</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">Load model</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#5">Import model from MATLAB</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#6">Export model to...</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#7">Save model</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#8">Save model as...</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#9">Render model...</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#12">Annotations...</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#14">Model Statistics...</my-a>
+</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images\menuModel.png" alt=""> </p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="2">Convert type</h2>
 <p>Convert model to a different type; the current type of the model is checked in the menu.</p>
 <details open onclick="state_check('1.1')" id="1.1"><summary> <b>Types of models in MIB</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><b>63 materials</b>, [_default_], allows to store Models, Selection and Mask layers in a single memory container,   reduces memory requirements and improves performance, but limits the   number of materials to 63</li>
-<li><b>255 materials</b>, allows to have up to 255 materials in the model, but requires additional computer memory to keep   Selection and Mask layers, which doubles memory requirements</li>
-<li><b>65535 materials</b>, allows to have up to 65535 materials in the model, requres ~1.25 times more memory than models with 255 materials. <b>Please note</b> that when using this mode the look of the <a href="ug_panel_segm.html">segmentation panel</a> will be different. <a href="https://youtu.be/r3lpmWyvrJU">Click here to see a short demonstration</a></li>
-<li><b>4294967295 materials</b>, allows to have up to 4294967295 materials in the model, requires twice more memory than 65535.</li>
-<li><b>Indexed objects-&gt;2D objects conn4</b>, detect all 2D objects (connectivity 4) in all materials of the current model and generate a new model, where each object has an unique index</li>
-<li><b>Indexed objects-&gt;2D objects conn8</b>, detect all 2D objects (connectivity 8) in all materials of the current model and generate a new model, where each object has an unique index</li>
-<li><b>Indexed objects-&gt;3D objects conn6</b>, detect all 3D objects (connectivity 6) in all materials of the current model and generate a new model, where each object has an unique index</li>
-<li><b>Indexed objects-&gt;3D objects conn26</b>, detect all 3D objects (connectivity 26) in all materials of the current model and generate a new model, where each object has an unique index</li></ul></div>
+<div>
+<ul>
+<li>
+<b>63 materials</b>, [_default_], allows to store Models, Selection and Mask layers in a single memory container, reduces memory requirements and improves performance, but limits the number of materials to 63</li>
+<li>
+<b>255 materials</b>, allows to have up to 255 materials in the model, but requires additional computer memory to keep Selection and Mask layers, which doubles memory requirements</li>
+<li>
+<b>65535 materials</b>, allows to have up to 65535 materials in the model, requres ~1.25 times more memory than models with 255 materials. <b>Please note</b> that when using this mode the look of the <a href="ug_panel_segm.html">segmentation panel</a> will be different. <a href="https://youtu.be/r3lpmWyvrJU">Click here to see a short demonstration</a>
+</li>
+<li>
+<b>4294967295 materials</b>, allows to have up to 4294967295 materials in the model, requires twice more memory than 65535.</li>
+<li>
+<b>Indexed objects-&gt;2D objects conn4</b>, detect all 2D objects (connectivity 4) in all materials of the current model and generate a new model, where each object has an unique index</li>
+<li>
+<b>Indexed objects-&gt;2D objects conn8</b>, detect all 2D objects (connectivity 8) in all materials of the current model and generate a new model, where each object has an unique index</li>
+<li>
+<b>Indexed objects-&gt;3D objects conn6</b>, detect all 3D objects (connectivity 6) in all materials of the current model and generate a new model, where each object has an unique index</li>
+<li>
+<b>Indexed objects-&gt;3D objects conn26</b>, detect all 3D objects (connectivity 26) in all materials of the current model and generate a new model, where each object has an unique index</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('1.2')" id="1.2"><summary> <b>An example of standard model conversion into the model with indexed objects</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\menuModelsConvertIndexedObjects.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\menuModelsConvertIndexedObjects.png" alt=""> </p>
+
 </div>
 </details>
 <br>
@@ -558,13 +613,16 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <div class="details-div">
 <p></p>
 <p>Materials should be named with numbers that represent the index of the current working material. For example, in the image below the current working material for the brush tool is 11555.</p>
-<p><img class="image-fit" src="images\PanelsSegmentation_65535materials.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\PanelsSegmentation_65535materials.png" alt=""> </p>
 <p>Selection of material for work can be done either by the right mouse click over the segmentation table and seletion of the <code>Rename...</code> entry in the menu; or by moving the mouse over the desired object in the Image View panel and press the <span class="kbd">Ctrl</span> + <span class="kbd">F</span> shortcut.</p>
+
 </div>
 </details>
 <br>
 <p> <span style="line-height:8px; display:block; vertical-align:top">
-<br></span></p><h2 id="3">New model</h2>
+<br></span></p>
+<h2 id="3">New model</h2>
 <p>Allocate space for a new model. Use this menu entry when you want to start a new model or to delete the existing one. Alternatively it is possible to use the <span class="kbd">Create</span> button in the <a href="ug_panel_segm.html">Segmentation Panel</a>. <span style="line-height:8px; display:block; vertical-align:top">
 <br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
@@ -574,12 +632,23 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <details open onclick="state_check('2.1')" id="2.1"><summary> <b>List of compatible model types</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li><b>.AM, Amira Mesh</b> - as Amira Mesh label field for models saved in <a href="http://www.vsg3d.com/amira/overview">Amira</a> format</li>
-<li><b>.NRRD, Nearly Raw Raster Data</b> - a data format compatible with <a href="www.slicer.org">3D slicer</a>.</li>
-<li><b>.MRC, Medical Research Council format</b> - a data format compatible with IMOD <a href="http://bio3d.colorado.edu/imod">http://bio3d.colorado.edu/imod</a>. When using this mode, it is possible to provide a list of MRC files, where each object is encoded using its number in a separate MRC-file; after that MIB will assemble and merge all these individual objects together into a single model.</li>
-<li><b>.PNG, PNG format</b> - save models as 2D slices using Portable Network Graphic format</li>
-<li><b>.TIF, TIF format</b> - save models as 2D slices or 3D volumes using Tag Image File format</li></ul></div>
-<p><b>Note!</b> almost any standard image format can be loaded as a model, please choose <span class="code">All files (<b>.</b>)</span> filter in the Open model dialog.</p>
+<div>
+<ul>
+<li>
+<b>.AM, Amira Mesh</b> - as Amira Mesh label field for models saved in <a href="http://www.vsg3d.com/amira/overview">Amira</a> format</li>
+<li>
+<b>.NRRD, Nearly Raw Raster Data</b> - a data format compatible with <a href="www.slicer.org">3D slicer</a>.</li>
+<li>
+<b>.MRC, Medical Research Council format</b> - a data format compatible with IMOD <a href="http://bio3d.colorado.edu/imod">http://bio3d.colorado.edu/imod</a>. When using this mode, it is possible to provide a list of MRC files, where each object is encoded using its number in a separate MRC-file; after that MIB will assemble and merge all these individual objects together into a single model.</li>
+<li>
+<b>.PNG, PNG format</b> - save models as 2D slices using Portable Network Graphic format</li>
+<li>
+<b>.TIF, TIF format</b> - save models as 2D slices or 3D volumes using Tag Image File format</li>
+</ul>
+</div>
+<p>
+<b>Note!</b> almost any standard image format can be loaded as a model, please choose <span class="code">All files (<b>.</b>)</span> filter in the Open model dialog.</p>
+
 </div>
 </details>
 <br>
@@ -591,11 +660,21 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <details open onclick="state_check('3.1')" id="3.1"><summary> <b>Fields of MIB model structure</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><b>.model</b> - the field <code>model</code> is a matrix with dimensions similar to those of the loaded dataset <span class="code">[1:height, 1:width, 1:depth, 1:time]</span> of the <span class="code">uint8</span> class</li>
-<li><b>.modelMaterialNames</b> - [_optional_] the field <code>materials</code> a cell array with names of the materials used in the model</li>
-<li><b>.modelMaterialColors</b> - [_optional_] a matrix with colors (0-1) for the materials of the model, [1:materialIndex, Red Green Blue]</li>
-<li><b>.labelText</b> - [_optional_] a cell array containing labels for the annotations</li>
-<li><b>.labelPosition</b> - [_optional_] a matrix containing positions for the annotations <span class="code">[1:annotationIndex, x y z]</span></li></ul></div>
+<div>
+<ul>
+<li>
+<b>.model</b> - the field <code>model</code> is a matrix with dimensions similar to those of the loaded dataset <span class="code">[1:height, 1:width, 1:depth, 1:time]</span> of the <span class="code">uint8</span> class</li>
+<li>
+<b>.modelMaterialNames</b> - [_optional_] the field <code>materials</code> a cell array with names of the materials used in the model</li>
+<li>
+<b>.modelMaterialColors</b> - [_optional_] a matrix with colors (0-1) for the materials of the model, [1:materialIndex, Red Green Blue]</li>
+<li>
+<b>.labelText</b> - [_optional_] a cell array containing labels for the annotations</li>
+<li>
+<b>.labelPosition</b> - [_optional_] a matrix containing positions for the annotations <span class="code">[1:annotationIndex, x y z]</span></li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
@@ -607,8 +686,15 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <details open onclick="state_check('4.1')" id="4.1"><summary> <b>List of options to export the models</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><b>MATLAB</b>, export to the main MATLAB workspace, as a structure (see above). The exported models may be later imported back to <code>MIB</code> using the <i>Import model from Matlab</i> menu entry</li>
-<li><b>Imaris as volume</b>, export model to Imaris (if it is available, please see <a href="im_browser_system_requirements.html#16">System Requirements section</a> for details</li></ul></div>
+<div>
+<ul>
+<li>
+<b>MATLAB</b>, export to the main MATLAB workspace, as a structure (see above). The exported models may be later imported back to <code>MIB</code> using the <i>Import model from Matlab</i> menu entry</li>
+<li>
+<b>Imaris as volume</b>, export model to Imaris (if it is available, please see <a href="im_browser_system_requirements.html#16">System Requirements section</a> for details</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
@@ -620,9 +706,16 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <details open onclick="state_check('5.1')" id="5.1"><summary> <b>Model filename considerations, when using Save model</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li>Default template such as <code>Labels_NAME_OF_THE_DATASET.model</code></li>
+<div>
+<ul>
+<li>Default template such as <code>Labels_NAME_OF_THE_DATASET.model</code>
+</li>
 <li>the name that was provided from the <i>Save model as...</i> entry</li>
-<li>the name that was obtained during the <i>Load model</i> action. The models can be saved also using the corresponding <i>Save model</i> button in <a href="ug_gui_toolbar.html">Toolbar</a></li></ul></div>
+<li>the name that was obtained during the <i>Load model</i> action. The models can be saved also using the corresponding <i>Save model</i> button in <a href="ug_gui_toolbar.html">Toolbar</a>
+</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
@@ -634,15 +727,30 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <details open onclick="state_check('6.1')" id="6.1"><summary> <b>List of model formats available for saving</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><b>.AM, Amira Mesh</b> - as Amira Mesh label field in RAW, RAW-ASCII and RLE compressed formats. (<b>Note!</b> the RLE compression is very slow).</li>
-<li><b>.MAT, MATLAB format</b> - MATLAB native data format for MIB version 1</li>
-<li><b>.MODEL, MATLAB format</b> - <i>[default]</i>, MATLAB native data format for MIB version 2</li>
-<li><b>.MOD, IMOD format</b> - contours for IMOD</li>
-<li><b>.MRC, IMOD format</b> - volume for IMOD</li>
-<li><b>.NRRD, Nearly Raw Raster Data</b> - a data format compatible with <a href="www.slicer.org">3D slicer</a>.</li>
-<li><b>.PNG</b> - save models as 2D slices using Portable Network Graphic format</li>
-<li><b>.STL, STL format</b> - triangulated mesh for use with visualization programs such as Blender.</li>
-<li><b>.TIF, TIF format</b></li></ul></div>
+<div>
+<ul>
+<li>
+<b>.AM, Amira Mesh</b> - as Amira Mesh label field in RAW, RAW-ASCII and RLE compressed formats. (<b>Note!</b> the RLE compression is very slow).</li>
+<li>
+<b>.MAT, MATLAB format</b> - MATLAB native data format for MIB version 1</li>
+<li>
+<b>.MODEL, MATLAB format</b> - <i>[default]</i>, MATLAB native data format for MIB version 2</li>
+<li>
+<b>.MOD, IMOD format</b> - contours for IMOD</li>
+<li>
+<b>.MRC, IMOD format</b> - volume for IMOD</li>
+<li>
+<b>.NRRD, Nearly Raw Raster Data</b> - a data format compatible with <a href="www.slicer.org">3D slicer</a>.</li>
+<li>
+<b>.PNG</b> - save models as 2D slices using Portable Network Graphic format</li>
+<li>
+<b>.STL, STL format</b> - triangulated mesh for use with visualization programs such as Blender.</li>
+<li>
+<b>.TIF, TIF format</b>
+</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
@@ -656,13 +764,18 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <p></p>
 <p>Starting from MIB (version 2.5) and MATLAB R2018b the materials can be directly visualized in MIB using hardware accelerated volume rendering engine. The datasets for visuzalization can be downsampled during the export. It is possible to make snapshots and animations.</p>
 <p>Limitations:</p>
-<div><ul><li>One material at the time</li>
-<li>Scale bar is not yet available</li></ul></div>
+<div>
+<ul>
+<li>One material at the time</li>
+<li>Scale bar is not yet available</li>
+</ul>
+</div>
 <p>
 A brief demonstration is available in the following video:
 <br>
 <a href="https://youtu.be/4CrfdOiZebk"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/J70V33f7bas</a>
 </p>
+
 </div>
 </details>
 <br>
@@ -670,6 +783,7 @@ A brief demonstration is available in the following video:
 <div class="details-div">
 <p></p>
 <p>MIB uses MATLAB engine to generate isosurfaces from the models and visualize those using a modification of the <a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">view3d</a> function written by Torsten Vogel.</p>
+
 <table style="width: 600px; text-align: left; margin-left: 60pt" cellspacing=2px cellpadding=2px >
 <tr style="font-weight: bold; background: #ff6600;">
   <td colspan=2><b>The following controls are implemented:</b></td>
@@ -710,6 +824,7 @@ style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/svAFGB
 </table>
 
 
+
 </div>
 </details>
 <br>
@@ -724,13 +839,15 @@ A demonstration is available in the following video:
 
 <br>
 </p>
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('7.4')" id="7.4"><summary> <b>MATLAB volume viewer</b> </summary>
 <div class="details-div">
 <p></p>
-<p><b>MATLAB volume viewer</b>, render the model using MATLAB volume viewer, available only for the MATLAB version of MIB and requires R2017b - R2019b or newer. For the release R2019b, the materials may be displayed together with the volume, but there are not control for lightning, so it is not very convenient.</p>
+<p>
+<b>MATLAB volume viewer</b>, render the model using MATLAB volume viewer, available only for the MATLAB version of MIB and requires R2017b - R2019b or newer. For the release R2019b, the materials may be displayed together with the volume, but there are not control for lightning, so it is not very convenient.</p>
 <p>
 Demonstration of the visualization of models as Volumes:
 <br>
@@ -743,7 +860,9 @@ Demonstration of the visualization of models as materials together with the imag
 src="images\youtube.png"> https://youtu.be/GM9V1IxNkTI</a>
 <br>
 </p>
-<p><img class="image-fit" src="images\MenuModelsRenderMatlabVolumeViewer.jpg" alt=""> </p>
+<p>
+<img class="image-fit" src="images\MenuModelsRenderMatlabVolumeViewer.jpg" alt=""> </p>
+
 </div>
 </details>
 <br>
@@ -756,14 +875,18 @@ A demonstration is available in the following video:
 <br>
 <a href="https://youtu.be/DZ1Tj3Fh2HM"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/DZ1Tj3Fh2HM</a>
 </p>
-<p><img class="image-fit" src="images\MenuModelsRenderFiji.jpg" alt=""> </p>
+<p>
+<img class="image-fit" src="images\MenuModelsRenderFiji.jpg" alt=""> </p>
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('7.6')" id="7.6"><summary> <b>Imaris surface</b> </summary>
 <div class="details-div">
 <p></p>
-<p><b>Imaris surface</b>, render the model in Imaris; requires Imaris and ImarisXT to be installed, <a href="im_browser_system_requirements.html">see here</a></p>
+<p>
+<b>Imaris surface</b>, render the model in Imaris; requires Imaris and ImarisXT to be installed, <a href="im_browser_system_requirements.html">see here</a>
+</p>
 <p>
 A demonstration is available in the following video:
 <br>
@@ -772,24 +895,38 @@ Without ImarisXT <a href="https://youtu.be/MbK2JcTrZFw"><img class="image-fit" s
 With ImarisXT <a href="https://youtu.be/yODGYJUzTr0"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/yODGYJUzTr0</a>
 <br>
 </p>
-<p><img class="image-fit" src="images\MenuModelsRenderImarisLarge.jpg" alt=""> </p>
+<p>
+<img class="image-fit" src="images\MenuModelsRenderImarisLarge.jpg" alt=""> </p>
 <p>The rendered material is specified in the Material list of the <a href="ug_panel_segm.html">Segmentation Panel</a>.</p>
+
 </div>
 </details>
 <br>
 <p> <span style="line-height:8px; display:block; vertical-align:top">
-<br></span></p><h2 id="12">Annotations...</h2>
+<br></span></p>
+<h2 id="12">Annotations...</h2>
 <p>Use this menu to modify the <code>Annotations</code> layer</p>
 <p>
 A brief demonstration is available in the following video:
 <br>
 <a href="https://youtu.be/3lARjx9dPi0"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/3lARjx9dPi0</a>
 </p>
-<div><ul><li><b>List of annotations...</b> - starts an auxiliary window with a list of existing annotations, <a href="ug_panel_segm_tools.html">see more here</a> .</li>
-<li><b>Export to Imaris as Spots</b> - export all annotations to a Spot object in Imaris, please export first the dataset and only after that export annotations as spots</li>
-<li><b>Remove all annotations...</b> - deletes all annotations stored with the model.</li></ul></div><h2 id="14">Model Statistics...</h2>
-<p>Get statistics for the selected material of the model. Statistical results may be used to filter the model based on properties of its objects. The statistics dialog can also be reached from the <a href="ug_panel_segm.html">Segmentation Panel</a> -&gt;Materials List-&gt;Right mouse click-&gt;Get statistics... See more <a href="ug_gui_menu_mask_statistics.html">here</a></p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a></p>
+<div>
+<ul>
+<li>
+<b>List of annotations...</b> - starts an auxiliary window with a list of existing annotations, <a href="ug_panel_segm_tools.html">see more here</a> .</li>
+<li>
+<b>Export to Imaris as Spots</b> - export all annotations to a Spot object in Imaris, please export first the dataset and only after that export annotations as spots</li>
+<li>
+<b>Remove all annotations...</b> - deletes all annotations stored with the model.</li>
+</ul>
+</div>
+<h2 id="14">Model Statistics...</h2>
+<p>Get statistics for the selected material of the model. Statistical results may be used to filter the model based on properties of its objects. The statistics dialog can also be reached from the <a href="ug_panel_segm.html">Segmentation Panel</a> -&gt;Materials List-&gt;Right mouse click-&gt;Get statistics... See more <a href="ug_gui_menu_mask_statistics.html">here</a>
+</p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -797,8 +934,13 @@ A brief demonstration is available in the following video:
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Model Menu
 % Actions that can be applied to the |Model| layers. The |Model layer| is one
@@ -1192,7 +1334,8 @@ A brief demonstration is available in the following video:
 % </script>
 % </html>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -1221,8 +1364,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

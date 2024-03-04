@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser Troubleshooting</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="im_browser_troubleshooting.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Microscopy Image Browser Troubleshooting</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="im_browser_troubleshooting.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -173,8 +180,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -254,7 +261,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -268,7 +275,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -502,7 +509,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -511,34 +520,79 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Microscopy Image Browser Troubleshooting</h1><!--introduction-->
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><!--/introduction--><h2>Contents</h2>
-<div><ul><li><a href="#1"><code>MIB</code> does not start</a></li>
-<li><a href="#3">Out of memory</a></li>
-<li><a href="#5">Fiji: reports Java3D is not installed.</a></li>
-<li><a href="#6">Fiji: Failed to retrieve Exception Message</a></li>
-<li><a href="#7">Hotline</a></li></ul></div><h2 id="1"><code>MIB</code> does not start</h2>
-<div><ul><li>Check that <code>MIB</code> directory is in MATLAB path: <code>File-&gt;Set path...</code>. If it is missing, add it with <code>-&gt;Add with Subfolders-&gt; Save</code>.</li>
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Microscopy Image Browser Troubleshooting</h1>
+<!--introduction-->
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a>
+</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#1"><code>MIB</code> does not start</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">Out of memory</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#5">Fiji: reports Java3D is not installed.</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#6">Fiji: Failed to retrieve Exception Message</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#7">Hotline</my-a>
+</li>
+</ul>
+</div>
+<h2 id="1">
+<code>MIB</code> does not start</h2>
+<div>
+<ul>
+<li>Check that <code>MIB</code> directory is in MATLAB path: <code>File-&gt;Set path...</code>. If it is missing, add it with <code>-&gt;Add with Subfolders-&gt; Save</code>.</li>
 <li>Delete old configuration file:</li>
-<li><b>for Windows</b> - <i>C:\Users\Username\MATLAB\mib.mat</i> or in the Windows TEMP directory (<i>C:\Users\User-name\AppData\Local\Temp\</i>). The TEMP directory can be found and accessed with <code>Windows-&gt;Start button-&gt;%TEMP%</code> command</li>
-<li><b>for Linux</b> - <i>/home/username/Matlab</i> or local TEMP directory</li>
-<li><b>for MacOS</b> - <i>/Users/username/Matlab</i> or local TEMP directory</li></ul></div><h2 id="3">Out of memory</h2>
+<li>
+<b>for Windows</b> - <i>C:\Users\Username\MATLAB\mib.mat</i> or in the Windows TEMP directory (<i>C:\Users\User-name\AppData\Local\Temp\</i>). The TEMP directory can be found and accessed with <code>Windows-&gt;Start button-&gt;%TEMP%</code> command</li>
+<li>
+<b>for Linux</b> - <i>/home/username/Matlab</i> or local TEMP directory</li>
+<li>
+<b>for MacOS</b> - <i>/Users/username/Matlab</i> or local TEMP directory</li>
+</ul>
+</div>
+<h2 id="3">Out of memory</h2>
 <p>When working with large datasets it is normal to experience shortage of available memory. The following recommendations could be considered:</p>
-<div><ul><li>Use 64-bit operating system. The 32-bit operating system can use only up to 3.25 Gb.</li>
+<div>
+<ul>
+<li>Use 64-bit operating system. The 32-bit operating system can use only up to 3.25 Gb.</li>
 <li>Use 8-bit datasets. Convert from 16-bit to 8-bit via <code>Menu-&gt;Image-&gt;Mode-&gt;8 bit</code>.</li>
 <li>Use Models with 63 maximal materials, <code>Menu-&gt;File-&gt;Preferences-&gt;Models-&gt; Number of materials in a model-&gt;63</code>.</li>
-<li>Lower number of 3D Undo steps in the <a href="ug_gui_menu_file_preferences.html">Menu-&gt;File-&gt;Preference dialog</a>.</li>
-<li>Lower number of maximal steps to keep in the Undo history <a href="ug_gui_menu_file_preferences.html">Menu-&gt;File-&gt;Preference dialog</a>.</li>
-<li>Completely disable Undo history in the <a href="ug_gui_menu_file_preferences.html">Menu-&gt;File-&gt;Preference dialog</a>.</li>
-<li>Turn off <code>Selection</code> layer from the <code>Disable selection</code> option of the <a href="ug_gui_menu_file_preferences.html">Menu-&gt;File-&gt;Preference dialog</a>. <b>Note!</b> when the <code>Selection</code> layer is switched off it is not possible to do the segmentation.</li></ul></div><h2 id="5">Fiji: reports Java3D is not installed.</h2>
+<li>Lower number of 3D Undo steps in the <a href="ug_gui_menu_file_preferences.html">Menu-</a>File-&gt;Preference dialog&gt;.</li>
+<li>Lower number of maximal steps to keep in the Undo history <a href="ug_gui_menu_file_preferences.html">Menu-</a>File-&gt;Preference dialog&gt;.</li>
+<li>Completely disable Undo history in the <a href="ug_gui_menu_file_preferences.html">Menu-</a>File-&gt;Preference dialog&gt;.</li>
+<li>Turn off <code>Selection</code> layer from the <code>Disable selection</code> option of the <a href="ug_gui_menu_file_preferences.html">Menu-</a>File-&gt;Preference dialog&gt;. <b>Note!</b> when the <code>Selection</code> layer is switched off it is not possible to do the segmentation.</li>
+</ul>
+</div>
+<h2 id="5">Fiji: reports Java3D is not installed.</h2>
 <p>Most likely there are no write permissions to some folders required for automatic installation of Fiji 3D viewer. Please check carefully the MATLAB command window, where Fiji reports required directories.</p>
 <p>For example in standard case the following directories should have write permissions:</p>
-<div><ul><li><i>C:\Program Files\MATLAB\MATLAB Compiler Runtime\v81\sys\java\jre\win64\jre\lib\ext</i></li>
-<li><i>C:\Program Files\MATLAB\MATLAB Compiler Runtime\v81\sys\java\jre\win64\jre\bin</i></li></ul></div><h2 id="6">Fiji: Failed to retrieve Exception Message</h2>
+<div>
+<ul>
+<li>
+<i>C:\Program Files\MATLAB\MATLAB Compiler Runtime\v81\sys\java\jre\win64\jre\lib\ext</i>
+</li>
+<li>
+<i>C:\Program Files\MATLAB\MATLAB Compiler Runtime\v81\sys\java\jre\win64\jre\bin</i>
+</li>
+</ul>
+</div>
+<h2 id="6">Fiji: Failed to retrieve Exception Message</h2>
 <p>If the <code>Failed to retrieve Exception Message</code> error appears, please increase the heap space for the Java VM in MATLAB, <a href="http://www.mathworks.se/support/solutions/en/data/1-18I2C/index.html">see details here</a>.</p>
-<p>For example, rendering of 1818x1022x717 volume requires 4Gb heap size.</p><h2 id="7">Hotline</h2>
-<p>For bug reports please use the im-browser issues system: <a href="https://sourceforge.net/p/im-browser/tickets/">&lt;https://sourceforge.net/p/im-browser/tickets/</a>&gt;.</p>
-<p>For additional support please use the mailing list: <a href="https://lists.sourceforge.net/lists/listinfo/im-browser-support">&lt;https://lists.sourceforge.net/lists/listinfo/im-browser-support</a>&gt;</p>
+<p>For example, rendering of 1818x1022x717 volume requires 4Gb heap size.</p>
+<h2 id="7">Hotline</h2>
+<p>For bug reports please use the im-browser issues system: &lt;https://sourceforge.net/p/im-browser/tickets/ <a href="https://sourceforge.net/p/im-browser/tickets/">https://sourceforge.net/p/im-browser/tickets/</a>&gt;.</p>
+<p>For additional support please use the mailing list: &lt;https://lists.sourceforge.net/lists/listinfo/im-browser-support <a href="https://lists.sourceforge.net/lists/listinfo/im-browser-support">https://lists.sourceforge.net/lists/listinfo/im-browser-support</a>&gt;</p>
 <p>
 Ilya Belevich (<a href="mailto:ilya.belevich -AT- helsinki.fi">ilya.belevich @ helsinki.fi</a>)
 <br>
@@ -548,9 +602,16 @@ Ilya Belevich (<a href="mailto:ilya.belevich -AT- helsinki.fi">ilya.belevich @ h
 <br>
 University of Helsinki</i>
 </p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a>
+</p>
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Microscopy Image Browser Troubleshooting
 % 
@@ -624,7 +685,8 @@ University of Helsinki</i>
 %
 % *Back to* <im_browser_product_page.html *Index*>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -653,8 +715,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

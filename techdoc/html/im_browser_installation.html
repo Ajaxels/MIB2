@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser (MIB) Installation</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="im_browser_installation.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Microscopy Image Browser (MIB) Installation</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="im_browser_installation.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,7 +72,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
+.code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
 #tooltiptext {
   visibility: hidden;
@@ -174,8 +181,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -255,7 +262,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -269,7 +276,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -503,7 +510,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -512,39 +521,96 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Microscopy Image Browser (MIB) Installation</h1><!--introduction-->
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><!--/introduction--><h2>Contents</h2>
-<div><ul><li><a href="#1">Run Microscopy Image Browser under MATLAB environment</a></li>
-<li><a href="#2">Run Microscopy Image Browser as standalone (Windows, x64 bit)</a></li>
-<li><a href="#3">Run Microscopy Image Browser as standalone (MacOS, x64 bit)</a></li>
-<li><a href="#4">Additional info</a></li></ul></div><h2 id="1">Run Microscopy Image Browser under MATLAB environment</h2>
-<div><ul><li>Download MATLAB distribution of the program (<a href="http://mib.helsinki.fi/web-update/MIB2_Matlab.zip">MIB2_Matlab.zip</a>)</li>
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Microscopy Image Browser (MIB) Installation</h1>
+<!--introduction-->
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a>
+</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#1">Run Microscopy Image Browser under MATLAB environment</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#2">Run Microscopy Image Browser as standalone (Windows, x64 bit)</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">Run Microscopy Image Browser as standalone (MacOS, x64 bit)</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">Additional info</my-a>
+</li>
+</ul>
+</div>
+<h2 id="1">Run Microscopy Image Browser under MATLAB environment</h2>
+<div>
+<ul>
+<li>Download MATLAB distribution of the program (<a href="http://mib.helsinki.fi/web-update/MIB2_Matlab.zip">MIB2_Matlab.zip</a>)</li>
 <li>Unzip and copy MIB files to <code>MIB</code> directory in your <code>Scripts</code> folder. For example, <span class="code">c:\MATLAB\Scripts\mib\</span></li>
 <li>Start MATLAB</li>
 <li>Add <code>MIB</code> starting directory (for example, <span class="code">c:\MATLAB\Scripts\mib\</span>) into MATLAB path:
 <br> <span class="code">MATLAB-&gt;Home tab-&gt;Set path...-&gt;Add folder...-&gt;Save</span> 
-<br> alternatively use the <span class="code">pathtool</span> function from MATLAB command window</li></ul></div>
-<div><ul><li>Type <span class="code">mib</span> in the MATLAB command window and hit the Enter button to start the program</li>
-<li>Check <a href="im_browser_system_requirements.html">System Requirements</a> for further details about optional steps, such as use of <a href="http://fiji.sc/Fiji">Fiji</a>, or <a href="http://www.openmicroscopy.org/site">OMERO</a></li>
-<li>Access help and tutorials from the MIB menu: <span class="code">MIB-&gt;Menu-&gt;Help-&gt;Help</span></li></ul></div><h2 id="2">Run Microscopy Image Browser as standalone (Windows, x64 bit)</h2>
-<div><ol><li>Download a single executable file that installs MIB (<a href="http://mib.helsinki.fi/web-update/MIB2_Win.exe">MIB2_Win.exe</a>).</li>
+<br> alternatively use the <span class="code">pathtool</span> function from MATLAB command window</li>
+</ul>
+</div>
+<div>
+<ul>
+<li>Type <span class="code">mib</span> in the MATLAB command window and hit the Enter button to start the program</li>
+<li>Check <a href="im_browser_system_requirements.html">System Requirements</a> for further details about optional steps, such as use of <a href="http://fiji.sc/Fiji">Fiji</a>, or <a href="http://www.openmicroscopy.org/site">OMERO</a>
+</li>
+<li>Access help and tutorials from the MIB menu: <span class="code">MIB-&gt;Menu-&gt;Help-&gt;Help</span></li>
+</ul>
+</div>
+<h2 id="2">Run Microscopy Image Browser as standalone (Windows, x64 bit)</h2>
+<div>
+<ol>
+<li>Download a single executable file that installs MIB (<a href="http://mib.helsinki.fi/web-update/MIB2_Win.exe">MIB2_Win.exe</a>).</li>
 <li>Run <span class="code">MIB2_Win.exe</span> to install MIB to your computer (<i>requires administrative privileges</i>). The required MATLAB Compiler Runtime (MCR) environment will be automatically installed during the process. <a href="http://mib.helsinki.fi/downloads_installation_windows.html">Click here for detailed instructions</a> .</li>
 <li>To start, please type MIB in the Start menu of Windows</li>
-<li>Check <a href="im_browser_system_requirements.html">System Requirements</a> for further details about optional steps, such as use of <a href="http://fiji.sc/Fiji">Fiji</a>, or <a href="http://www.openmicroscopy.org/site">OMERO</a></li>
-<li>Access help and tutorials from the MIB menu: <span class="code">MIB-&gt;Menu-&gt;Help-&gt;Help</span></li></ol></div><h2 id="3">Run Microscopy Image Browser as standalone (MacOS, x64 bit)</h2>
-<p><i>Tested with Mac OS X (Yosemite), version 10.10.3 and MATLAB R2016a.</i></p>
-<div><ol><li>Download standalone distribution of the program for Mac OS (<a href="http://mib.helsinki.fi/web-update/MIB2_Mac.dmg">MIB2_Mac.dmg</a>).</li>
-<li>Follow the datailed instructions from MIB website <a href="http://mib.helsinki.fi/downloads_installation_macos.html">MIB for Mac OS</a></li></ol></div><h2 id="4">Additional info</h2>
+<li>Check <a href="im_browser_system_requirements.html">System Requirements</a> for further details about optional steps, such as use of <a href="http://fiji.sc/Fiji">Fiji</a>, or <a href="http://www.openmicroscopy.org/site">OMERO</a>
+</li>
+<li>Access help and tutorials from the MIB menu: <span class="code">MIB-&gt;Menu-&gt;Help-&gt;Help</span></li>
+</ol>
+</div>
+<h2 id="3">Run Microscopy Image Browser as standalone (MacOS, x64 bit)</h2>
+<p>
+<i>Tested with Mac OS X (Yosemite), version 10.10.3 and MATLAB R2016a.</i>
+</p>
+<div>
+<ol>
+<li>Download standalone distribution of the program for Mac OS (<a href="http://mib.helsinki.fi/web-update/MIB2_Mac.dmg">MIB2_Mac.dmg</a>).</li>
+<li>Follow the datailed instructions from MIB website <a href="http://mib.helsinki.fi/downloads_installation_macos.html">MIB for Mac OS</a>
+</li>
+</ol>
+</div>
+<h2 id="4">Additional info</h2>
 <p>MIB stores its configuration parameters:</p>
-<div><ul><li><b>for Windows</b> - <span class="code">C:\Users\Username\MATLAB\mib.mat</span> or in the Windows TEMP directory (<span class="code">C:\Users\User-name\AppData\Local\Temp\</span>). The TEMP directory can be found and accessed with <code>Windows-&gt;Start button-&gt;%TEMP%</code> command</li>
-<li><b>for Linux</b> - <span class="code">/home/username/Matlab</span> or local TEMP directory</li>
-<li><b>for MacOS</b> - <span class="code">/Users/username/Matlab</span> or local TEMP directory</li></ul></div>
+<div>
+<ul>
+<li>
+<b>for Windows</b> - <span class="code">C:\Users\Username\MATLAB\mib.mat</span> or in the Windows TEMP directory (<span class="code">C:\Users\User-name\AppData\Local\Temp\</span>). The TEMP directory can be found and accessed with <code>Windows-&gt;Start button-&gt;%TEMP%</code> command</li>
+<li>
+<b>for Linux</b> - <span class="code">/home/username/Matlab</span> or local TEMP directory</li>
+<li>
+<b>for MacOS</b> - <span class="code">/Users/username/Matlab</span> or local TEMP directory</li>
+</ul>
+</div>
 <p>The actual path to the configuration file is dispayed in the command prompt during MIB startup. The configuration file is automatically created/updated when closing <code>MIB</code>.</p>
 <p>If <code>MIB</code> does not start check MATLAB path and/or delete the configuration <span class="code">mib.mat</span> file.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a>
+</p>
 <p></p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Microscopy Image Browser (MIB) Installation
 % 
@@ -614,7 +680,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % }
 % [/cssClasses]
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -643,8 +710,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

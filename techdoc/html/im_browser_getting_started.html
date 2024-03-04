@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser Getting Started</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="im_browser_getting_started.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Microscopy Image Browser Getting Started</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="im_browser_getting_started.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -173,8 +180,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -254,7 +261,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -268,7 +275,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -502,7 +509,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -511,27 +520,73 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Microscopy Image Browser Getting Started</h1><!--introduction-->
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><!--/introduction--><h2>Contents</h2>
-<div><ul><li><a href="#1">Brief description</a></li>
-<li><a href="#2">Starting the program</a></li>
-<li><a href="#3">Links</a></li></ul></div><h2 id="1">Brief description</h2>
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Microscopy Image Browser Getting Started</h1>
+<!--introduction-->
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a>
+</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#1">Brief description</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#2">Starting the program</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">Links</my-a>
+</li>
+</ul>
+</div>
+<h2 id="1">Brief description</h2>
 <p>Rapid development of multidimensional microscopy imaging techniques in recent years has raised a number of questions about effective image processing, visualization, and analysis of the obtained datasets.</p>
 <p>Most universities worldwide provide access to modern imaging techniques, allowing researchers to easily obtain descriptive multidimensional datasets of their desired specimens. After acquisition, the datasets need to be analyzed, and often detailed analysis is impossible without segmentation (creating a model) of objects of interest from the multidimensional data. Segmentation is often the most time-consuming part of the image analysis routine. For example, properly segmenting a single electron tomogram can take up to a month. The slowness of this process can be attributed to two main factors: a limited variety of good software tools (even commercial ones) and a lack of user-friendly segmentation algorithms that can facilitate the modeling. As a result, the amount of collected data that is not properly processed is much higher than the amount of produced results.</p>
 <p>To address this problem, we have developed Microscopy Image Browser (MIB), an open-source software package that can be used for image processing, analysis, segmentation, and visualization of multidimensional datasets. MIB is designed to work in both the MATLAB environment and as a stand-alone package.</p>
-<p><b>Please note</b> that the distributed compiled version of MIB has been compiled using an academic license of MATLAB. As a result, it is limited to academic research and also may not have all the features available in the full MATLAB version.</p><h2 id="2">Starting the program</h2>
-<p>To install the program, please follow the steps described in the <a href="im_browser_installation.html">Installation section</a>.</p>To start Microscopy Image Browser, type the following command in the main MATLAB window: <pre class="codeinput">&gt;&gt; mib</pre> For detailed information on the functioning of the program, refer to the following links, especially the <b>User Guide</b> section. <span style="line-height:20px; display:block; vertical-align:top">
-<br></span><h2 id="3">Links</h2>
-<div><ul><li><a href="im_browser_installation.html">Installation</a></li>
-<li><a href="im_browser_system_requirements.html">System requirements</a></li>
-<li><a href="im_browser_release_notes.html">Release Notes</a></li>
-<li><a href="im_browser_features.html">Features</a></li>
-<li><a href="im_browser_user_guide.html">User Guide</a></li>
-<li><a href="im_browser_ack.html">Acknowledgements</a></li>
-<li><a href="im_browser_troubleshooting.html">Troubleshooting</a></li></ul></div>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p>
+<b>Please note</b> that the distributed compiled version of MIB has been compiled using an academic license of MATLAB. As a result, it is limited to academic research and also may not have all the features available in the full MATLAB version.</p>
+<h2 id="2">Starting the program</h2>
+<p>To install the program, please follow the steps described in the <a href="im_browser_installation.html">Installation section</a>.</p>
+To start Microscopy Image Browser, type the following command in the main MATLAB window: <pre class="codeinput">&gt;&gt; mib</pre> For detailed information on the functioning of the program, refer to the following links, especially the <b>User Guide</b> section. <span style="line-height:20px; display:block; vertical-align:top">
+<br></span>
+<h2 id="3">Links</h2>
+<div>
+<ul>
+<li>
+<a href="im_browser_installation.html">Installation</a>
+</li>
+<li>
+<a href="im_browser_system_requirements.html">System requirements</a>
+</li>
+<li>
+<a href="im_browser_release_notes.html">Release Notes</a>
+</li>
+<li>
+<a href="im_browser_features.html">Features</a>
+</li>
+<li>
+<a href="im_browser_user_guide.html">User Guide</a>
+</li>
+<li>
+<a href="im_browser_ack.html">Acknowledgements</a>
+</li>
+<li>
+<a href="im_browser_troubleshooting.html">Troubleshooting</a>
+</li>
+</ul>
+</div>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a>
+</p>
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Microscopy Image Browser Getting Started
 %
@@ -582,7 +637,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 %
 % *Back to* <im_browser_product_page.html *Index*>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -611,8 +667,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Chopped images...</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_file_chop.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Chopped images...</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_gui_menu_file_chop.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,7 +72,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -176,8 +183,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -257,7 +264,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -271,7 +278,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -505,7 +512,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -514,33 +523,80 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Chopped images...</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Chopped images...</h1>
+<!--introduction-->
 <p>This mode allows to chop a large dataset to smaller pieces and restore them back. This feature may be useful when needed to parallel segmentation of the large dataset to several workstations.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_file.html"><b>File Menu</b></a></p><!--/introduction--><h2>Contents</h2>
-<div><ul><li><a href="#2">Export...</a></li>
-<li><a href="#4">Import...</a></li></ul></div>
-<p><img class="image-fit" src="images\menuFileChopmode.jpg" alt=""> </p><h2 id="2">Export...</h2>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_file.html"><b>File Menu</b></a>
+</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#2">Export...</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">Import...</my-a>
+</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images\menuFileChopmode.jpg" alt=""> </p>
+<h2 id="2">Export...</h2>
 <p>The export command chops the large dataset into smaller pieces.</p>
-<p><img class="image-fit" src="images\menuFileChopExport.png" alt=""> </p>
-<div><ul><li><b>Number of tiles in X/Y/Z</b>, define number of resulting datasets. For example, when <i>number of tiles in X: 2, in Y: 1 and in Z: 1</i> the original dataset will be chopped in two smaller datasets. The first dataset will have dimensions [1: <i>width</i> /2] and the second [ <i>width</i> /2: <i>width</i>], where <i>width</i> is the width of the original dataset</li>
-<li><span class="kbd">[&#10003;] <b>Chop model</b></span>, when model is present it can also be chopped into corresponding blocks, if this checkbox is selected</li>
-<li><span class="kbd">[&#10003;] <b>Chop mask</b></span>, when the Mask layer is present it can also be chopped into corresponding blocks, if this checkbox is selected</li>
-<li><b>Output directory</b> use this button or the editbox to define directory where the chopped datasets should be saved</li>
-<li><b>Filename template</b>, defines a template for saving the chopped datasets. During the saving MIB will add "_Znn_Xnn_Ynn" tag to each block, where <i>nn</i> is the index of the block.</li>
-<li><b>Output format for images</b>, datasets can be saved in Amira Mesh, NRRD, 3D-TIF formats, or HDF5 with XML header formats.</li>
-<li><b>Output format for models</b>, models can also be stored in several formats: MATLAB, AmiraMesh, NRRD, TIF or HDF5. When the models are saved a "Labels_" prefix is added to the beginning of the filename.</li></ul></div>
-<p>The masks saved in the MATLAB format with <code>Mask_[FN].mask</code> template, where [FN] is a filename of the corresponding image dataset.</p><h2 id="4">Import...</h2>
+<p>
+<img class="image-fit" src="images\menuFileChopExport.png" alt=""> </p>
+<div>
+<ul>
+<li>
+<b>Number of tiles in X/Y/Z</b>, define number of resulting datasets. For example, when <i>number of tiles in X: 2, in Y: 1 and in Z: 1</i> the original dataset will be chopped in two smaller datasets. The first dataset will have dimensions [1: <i>width</i> /2] and the second [ <i>width</i> /2: <i>width</i>], where <i>width</i> is the width of the original dataset</li>
+<li><span class="kbd">[✓] <b>Chop model</b></span>, when model is present it can also be chopped into corresponding blocks, if this checkbox is selected</li>
+<li><span class="kbd">[✓] <b>Chop mask</b></span>, when the Mask layer is present it can also be chopped into corresponding blocks, if this checkbox is selected</li>
+<li>
+<b>Output directory</b> use this button or the editbox to define directory where the chopped datasets should be saved</li>
+<li>
+<b>Filename template</b>, defines a template for saving the chopped datasets. During the saving MIB will add "_Znn_Xnn_Ynn" tag to each block, where <i>nn</i> is the index of the block.</li>
+<li>
+<b>Output format for images</b>, datasets can be saved in Amira Mesh, NRRD, 3D-TIF formats, or HDF5 with XML header formats.</li>
+<li>
+<b>Output format for models</b>, models can also be stored in several formats: MATLAB, AmiraMesh, NRRD, TIF or HDF5. When the models are saved a "Labels_" prefix is added to the beginning of the filename.</li>
+</ul>
+</div>
+<p>The masks saved in the MATLAB format with <code>Mask_[FN].mask</code> template, where [FN] is a filename of the corresponding image dataset.</p>
+<h2 id="4">Import...</h2>
 <p>The import command restores previously chopped or cropped datasets.</p>
-<p><img class="image-fit" src="images\menuFileChopImport.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\menuFileChopImport.png" alt=""> </p>
 <p>There are two modes available:</p>
-<div><ul><li><b>Generate new stack</b>, generates a new stack (for images), or imports models or masks for the opened datasets. When using this mode it is important to have proper filenames. The images should have the "_Znn_Xnn_Ynn" tag at the end of the filename; the models should have the "Labels_" prefix (see the <i>Export</i> section for details). This is default mode for combining files that were chopped using the Menu-&gt;File-&gt;Chopped images...-&gt;Export... command</li>
-<li><b>Fuse into existing</b>, uses the BoundingBox information that is normally stored in the ImageDescription field to fuse the selected datasets into the opened dataset. This mode can be used to import previously cropped datasets and models. Three additional edit boxes (offset X, Y, Z) allows to specify an additional offset in pixels for each dimension.</li></ul></div>
+<div>
+<ul>
+<li>
+<b>Generate new stack</b>, generates a new stack (for images), or imports models or masks for the opened datasets. When using this mode it is important to have proper filenames. The images should have the "_Znn_Xnn_Ynn" tag at the end of the filename; the models should have the "Labels_" prefix (see the <i>Export</i> section for details). This is default mode for combining files that were chopped using the Menu-&gt;File-&gt;Chopped images...-&gt;Export... command</li>
+<li>
+<b>Fuse into existing</b>, uses the BoundingBox information that is normally stored in the ImageDescription field to fuse the selected datasets into the opened dataset. This mode can be used to import previously cropped datasets and models. Three additional edit boxes (offset X, Y, Z) allows to specify an additional offset in pixels for each dimension.</li>
+</ul>
+</div>
 <p>To proceed please choose the mode and types of the files to combine. After that press the <code>Select files</code> button to choose the files. The filenames for the models and masks are automatically generated from the filenames of the selected images:</p>
-<div><ul><li><b>Filename of the selected image:</b> <code>Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.am</code></li>
-<li><b>Generated filename of the model:</b> <code>Labels_Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.model</code></li>
-<li><b>Generated filename of the mask:</b> <code>Mask_Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.mask</code></li></ul></div>
-<p><b>Important!</b> If the <span class="kbd">[&#10003;] <b>Images</b></span> checkbox is selected please select only files with images and do not select models nor mask files. The filenames for models and masks will be automatically generated. However, if models or masks are combined for the opened dataset (<i>i.e.</i> the <span class="kbd">[&#10003;] <b>Images</b></span> checkbox is unselected) the actual model or mask filenames have to be selected.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_file.html"><b>File Menu</b></a></p>
+<div>
+<ul>
+<li>
+<b>Filename of the selected image:</b> <code>Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.am</code>
+</li>
+<li>
+<b>Generated filename of the model:</b> <code>Labels_Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.model</code>
+</li>
+<li>
+<b>Generated filename of the mask:</b> <code>Mask_Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.mask</code>
+</li>
+</ul>
+</div>
+<p>
+<b>Important!</b> If the <span class="kbd">[✓] <b>Images</b></span> checkbox is selected please select only files with images and do not select models nor mask files. The filenames for models and masks will be automatically generated. However, if models or masks are combined for the opened dataset (<i>i.e.</i> the <span class="kbd">[✓] <b>Images</b></span> checkbox is unselected) the actual model or mask filenames have to be selected.</p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_file.html"><b>File Menu</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -548,8 +604,13 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Chopped images...
 % This mode allows to chop a large dataset to smaller pieces and restore
@@ -673,7 +734,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % </script>
 % </html>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -702,8 +764,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

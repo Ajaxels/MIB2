@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Dataset Menu</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_dataset.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Dataset Menu</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_gui_menu_dataset.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,7 +72,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -176,8 +183,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -257,7 +264,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -271,7 +278,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -505,7 +512,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -514,49 +523,84 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Dataset Menu</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Dataset Menu</h1>
+<!--introduction-->
 <p>Modify parameters such as voxel sizes and the bounding box for the dataset, start the Alignment tool, or do some other dataset related actions.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction-->
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a>
+</p>
+<!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
-<div><ul><li><a href="#2">Alignment tool...</a></li>
-<li><a href="#3">Crop dataset...</a></li>
-<li><a href="#4">Resample...</a></li>
-<li><a href="#6">Transform</a></li>
-<li><a href="#7">Slice</a></li>
-<li><a href="#8">Scale bar</a></li>
-<li><a href="#9">Bounding Box...</a></li>
-<li><a href="#10">Parameters</a></li></ul></div>
-<p><img class="image-fit" src="images\menuDataset.png" alt=""> </p>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#2">Alignment tool...</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">Crop dataset...</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">Resample...</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#6">Transform</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#7">Slice</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#8">Scale bar</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#9">Bounding Box...</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#10">Parameters</my-a>
+</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images\menuDataset.png" alt=""> </p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="2">Alignment tool...</h2>
 <p>Can be used to align the slices of the opened dataset or to align two separate datasets. See details <a href="ug_gui_menu_dataset_alignment.html"><b>here</b></a>.</p>
 <details open onclick="state_check('1.1')" id="1.1"><summary> <b>Alignement window</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images/MenuDatasetAlignment.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images/MenuDatasetAlignment.png" alt=""> </p>
+
 </div>
 </details>
-<br><h2 id="3">Crop dataset...</h2>
+<br>
+<h2 id="3">Crop dataset...</h2>
 <p>Crop the image and corresponding Selection, Mask, and Model layers. Cropping can be done in the Interactive, Manual or using ROI mode.</p>
 <p>
 A brief demonstration is available in the following video:
 <br>
 <a href="https://youtu.be/PQtpYUuJwG8"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/PQtpYUuJwG8</a>
 </p>
-<p><img class="image-fit" src="images/MenuDatasetCrop.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images/MenuDatasetCrop.png" alt=""> </p>
 <p>When the interactive mode is selected it is possible to draw (by pressing and holding left mouse button) a rectangle area a top of the image. This area can then be used for cropping.</p>
 <p>The values for cropping may also be provided directly by enabling the <code>Manual</code> mode. It is also possible to do cropping based on the selected ROI. Use the <a href="ug_panel_roi.html">ROI panel</a> to make them.</p>
 <p>The dataset can be just cropped (the <span class="kbd">Crop</span> button) or copied to another buffer and cropped (the <span class="kbd">Crop to</span> button). The multiple buffer buttons buttons located at the top of the <a href="ug_panel_dir.html">Directory Contents panel</a>.</p>
-<p>The cropped datasets can be placed back to the original dataset using the <i>Fuse into existing</i> mode of the <i>Chop image tool</i> available at <code>Menu-&gt;File-&gt;Chop images...-&gt;Import...</code>. <a href="ug_gui_menu_file_chop.html">See more here.</a></p><h2 id="4">Resample...</h2>
+<p>The cropped datasets can be placed back to the original dataset using the <i>Fuse into existing</i> mode of the <i>Chop image tool</i> available at <code>Menu-&gt;File-&gt;Chop images...-&gt;Import...</code>. <a href="ug_gui_menu_file_chop.html">See more here.</a>
+</p>
+<h2 id="4">Resample...</h2>
 <p>Resample image in any possible direction.</p>
 <p>
 A brief demonstration is available in the following video:
 <br>
 <a href="https://youtu.be/26-HROwg_JM"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/26-HROwg_JM</a>
 </p>
-<p><img class="image-fit" src="images/MenuDatasetResample.png" alt=""> </p><h2 id="6">Transform</h2>
+<p>
+<img class="image-fit" src="images/MenuDatasetResample.png" alt=""> </p>
+<h2 id="6">Transform</h2>
 <p>Transformation of dataset: image and all other layers. The following modes are possible</p>
+
 <table>
 <tr>
 <td><b>Add frame -> provide new width/height</b></td>
@@ -614,6 +658,7 @@ Rotate: <a href="https://youtu.be/WFbZn0rfb5I"><img class="image-fit" style="ver
 <br>
 Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png"> https://youtu.be/PyEXX7j6pnc</a>
 <br>
+
 <p><span style="line-height:8px; display:block; vertical-align:top">
 <br></span></p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
@@ -622,6 +667,7 @@ Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img class="image-fit" style="
 <details open onclick="state_check('2.1')" id="2.1"><summary> <b>The following actions are possible</b> </summary>
 <div class="details-div">
 <p></p>
+
 <ul>
 <li> <b>Copy slice...</b> - allows to copy slice from one
 position to another position within the same dataset (the 'Replace' options) or to insert one slice to another position in the dataset
@@ -635,11 +681,13 @@ dataset. For example, type <span class="code"> 5:10 </span> to delete all slices
 <li> <b>Delete frame(s)...</b> - removes desired frame(s) from a time series of the dataset.</li>
 </ul>
 
+
 </div>
 </details>
 <br>
 <p> <span style="line-height:8px; display:block; vertical-align:top">
-<br></span></p><h2 id="8">Scale bar</h2>
+<br></span></p>
+<h2 id="8">Scale bar</h2>
 <p>Scale bar is a tool that allows to use a scale bar printed on the image to calibrate physical size (X and Y) for pixels in MIB.</p>
 <p>
 A brief demonstration is available in the following video:
@@ -649,21 +697,33 @@ A brief demonstration is available in the following video:
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="9">Bounding Box...</h2>
 <p>Bounding Box defines position of the dataset in the 3D space; the bounding box information is important for positioning of datasets in the visualization software, such as Amira. The bounding box can be shifted based on its minimal or centeral coordinates. The current coordinates of the bounding box are shown under the <i>Current Bounding Box</i> text.</p>
-<p><b>Attention!</b> For 3D images the bounding box is calculated as the smallest box containing all voxel centers, but not all voxels as is! <i>I.e.</i> it's defined by the voxel centers, which means that a 1/2 voxel on both sides of the bounding box are subtracted, resulting in a bounding box that is 1 voxel smaller in all three directions.</p>
+<p>
+<b>Attention!</b> For 3D images the bounding box is calculated as the smallest box containing all voxel centers, but not all voxels as is! <i>I.e.</i> it's defined by the voxel centers, which means that a 1/2 voxel on both sides of the bounding box are subtracted, resulting in a bounding box that is 1 voxel smaller in all three directions.</p>
 <p>
 A brief demonstration is available in the following video:
 <br>
 <a href="https://youtu.be/lY0XjNy4Dr8"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/lY0XjNy4Dr8</a>
 </p>
-<p><img class="image-fit" src="images/MenuDatasetBoundingBox.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images/MenuDatasetBoundingBox.png" alt=""> </p>
 <details open onclick="state_check('3.1')" id="3.1"><summary> <b>Widgets and parameters</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li><b>X, Y, Z, min</b> - defines minimal coordinates of the bounding box</li>
-<li><b>X, Y, center</b> - defines central coordinates of the dataset. When the central coordinates are used the <code>X, min</code> and <code>Y, min</code> coordinates are going to be recalculated.</li>
-<li><b>*X, Y, Z max</b> - maximal values of the bounding box. When entered together with the <b>X, Y, Z min</b> coordinates - MIB recalculates the voxel sizes.</li>
-<li><b>Stage rotation bias, degrees</b> - implemented only when entering X, Y center coordinates. Allows recalculation of the coordinates for the cases when the stage has some rotation bias, for example, Gatan 3View has 45 degrees stage bias.</li>
-<li><b>Import from Clipboard</b>, parses text in the system clipboard and automatically extracts the following parameters (syntax: <i>[ParameterName] = [ParameterValue]</i>):</li></ul></div>
+<div>
+<ul>
+<li>
+<b>X, Y, Z, min</b> - defines minimal coordinates of the bounding box</li>
+<li>
+<b>X, Y, center</b> - defines central coordinates of the dataset. When the central coordinates are used the <code>X, min</code> and <code>Y, min</code> coordinates are going to be recalculated.</li>
+<li>
+<b>*X, Y, Z max</b> - maximal values of the bounding box. When entered together with the <b>X, Y, Z min</b> coordinates - MIB recalculates the voxel sizes.</li>
+<li>
+<b>Stage rotation bias, degrees</b> - implemented only when entering X, Y center coordinates. Allows recalculation of the coordinates for the cases when the stage has some rotation bias, for example, Gatan 3View has 45 degrees stage bias.</li>
+<li>
+<b>Import from Clipboard</b>, parses text in the system clipboard and automatically extracts the following parameters (syntax: <i>[ParameterName] = [ParameterValue]</i>):</li>
+</ul>
+</div>
+
 <table style="width: 550px; text-align: center;" cellspacing=2px cellpadding=2px >
 <tr>
   <td style="width=150px;"><b>Parameter Name</b></td><td><b>Description</b></td>
@@ -693,6 +753,7 @@ A brief demonstration is available in the following video:
 </tr>
 </table>
 
+
 </div>
 </details>
 <br>
@@ -700,15 +761,21 @@ A brief demonstration is available in the following video:
 <div class="details-div">
 <p></p>
 <p>Example of text that can be copied to the system clipboard for automatic detection of parameters:</p>
-<p><img class="image-fit" src="images/menuDatasetBoundingBox2.jpg" alt=""> </p>
+<p>
+<img class="image-fit" src="images/menuDatasetBoundingBox2.jpg" alt=""> </p>
+
 </div>
 </details>
 <br>
 <p> <span style="line-height:8px; display:block; vertical-align:top">
-<br></span></p><h2 id="10">Parameters</h2>
+<br></span></p>
+<h2 id="10">Parameters</h2>
 <p>Modifies parameters of the dataset: voxels sizes, frame rate for movies and units. Enter of new voxels results in recalculation of the bounding box.</p>
-<p><img class="image-fit" src="images/menuDatasetParameters.png" alt=""> </p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a></p>
+<p>
+<img class="image-fit" src="images/menuDatasetParameters.png" alt=""> </p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -716,8 +783,13 @@ A brief demonstration is available in the following video:
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Dataset Menu
 % Modify parameters such as voxel sizes and the bounding box for the
@@ -1016,7 +1088,8 @@ A brief demonstration is available in the following video:
 % </html>
 
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -1045,8 +1118,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

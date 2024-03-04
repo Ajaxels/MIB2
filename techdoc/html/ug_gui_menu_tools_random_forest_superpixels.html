@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Classifier of superpixels / supervoxels</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_tools_random_forest_superpixels.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Classifier of superpixels / supervoxels</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_gui_menu_tools_random_forest_superpixels.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,7 +72,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -176,8 +183,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -257,7 +264,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -271,7 +278,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -505,7 +512,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -514,48 +523,104 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Classifier of superpixels / supervoxels</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Classifier of superpixels / supervoxels</h1>
+<!--introduction-->
 <p>Classifier of superpixels/supervoxels is a good method for automatic segmentation of images using <i>train</i> and <i>predict</i> scheme.</p>
 <p>This classifier uses the <a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html"><b>SLIC (Simple Linear Iterative Clustering) algorithm</b></a> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S&uuml;sstrunk, Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland to simplify the dataset by clustering of pixels into groups: superpixels for 2D or supervoxels for 3D. Each of these superpixels/voxels is characterized and these characteristics are used for the classification.</p>
 <p>The example of use is presented below.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools</b></a></p><!--/introduction--><h2>Contents</h2>
-<div><ul><li><a href="#1">Dataset and the aim of the segmentation</a></li>
-<li><a href="#2">Training the classifier</a></li>
-<li><a href="#3">Wiping the temp directory</a></li></ul></div><h2 id="1">Dataset and the aim of the segmentation</h2>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools</b></a>
+</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#1">Dataset and the aim of the segmentation</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#2">Training the classifier</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">Wiping the temp directory</my-a>
+</li>
+</ul>
+</div>
+<h2 id="1">Dataset and the aim of the segmentation</h2>
 <p>Below is a dataset imaged with light microscopy where the aim is to segment the outlines of the cells (in green). The cells have different intensity and can't be directly segemented using the black-and-white thresholding.</p>
-<p><img class="image-fit" src="images/superpix_01.jpg" alt=""> </p><h2 id="2">Training the classifier</h2>
+<p>
+<img class="image-fit" src="images/superpix_01.jpg" alt=""> </p>
+<h2 id="2">Training the classifier</h2>
 <p>The first part of the classification is to select areas that belong to the object of interest and background.</p>
-<div><ul><li>Start a new model: <code>Segmentation Panel-&gt;the Create button</code></li>
-<li>Add two materials for the model: <code>Segmentation Panel-&gt;the + button</code></li>
-<li>Rename material 1 to <code>Object</code> and material 2 to <code>Background</code>. Highlight material in the left list box, press the right mouse button and select <code>Rename</code> in the popup menu</li></ul></div>
-<p><img class="image-fit" src="images/random_forest_2.jpg" alt=""> </p>
-<div><ul><li>Select the Brush tool and select some profiles of the endoplasmic reticulum and assign them to the <code>Object</code> material of the model (<i>select '1' in the 'Add to' list and press the 'A' shortcut</i>)</li>
-<li>Select few areas of the background and add those to the <code>Background</code> material of the model (<i>select '2' in the 'Add to' list and press the 'A' shortcut</i>)</li></ul></div>
-<p><img class="image-fit" src="images/superpix_02.jpg" alt=""> </p>
-<div><ul><li>Start the Classifier: <code>Menu-&gt;Tools-&gt;Classifier-&gt;Superpixel classification</code></li>
-<li>Specify a directory to keep temporary data. By default, MIB offers to use <code>RF_Temp</code> located next to the data.</li></ul></div>
-<p><img class="image-fit" src="images/superpix_03.jpg" alt=""> </p>
-<div><ul><li>Select the mode to use: <code>2D</code> for 2D images and superpixels or 3D for 3D datasets and supervoxels</li>
+<div>
+<ul>
+<li>Start a new model: <code>Segmentation Panel-&gt;the Create button</code>
+</li>
+<li>Add two materials for the model: <code>Segmentation Panel-&gt;the + button</code>
+</li>
+<li>Rename material 1 to <code>Object</code> and material 2 to <code>Background</code>. Highlight material in the left list box, press the right mouse button and select <code>Rename</code> in the popup menu</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images/random_forest_2.jpg" alt=""> </p>
+<div>
+<ul>
+<li>Select the Brush tool and select some profiles of the endoplasmic reticulum and assign them to the <code>Object</code> material of the model (<i>select '1' in the 'Add to' list and press the 'A' shortcut</i>)</li>
+<li>Select few areas of the background and add those to the <code>Background</code> material of the model (<i>select '2' in the 'Add to' list and press the 'A' shortcut</i>)</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images/superpix_02.jpg" alt=""> </p>
+<div>
+<ul>
+<li>Start the Classifier: <code>Menu-&gt;Tools-&gt;Classifier-&gt;Superpixel classification</code>
+</li>
+<li>Specify a directory to keep temporary data. By default, MIB offers to use <code>RF_Temp</code> located next to the data.</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images/superpix_03.jpg" alt=""> </p>
+<div>
+<ul>
+<li>Select the mode to use: <code>2D</code> for 2D images and superpixels or 3D for 3D datasets and supervoxels</li>
 <li>Select the type of superpixels to calculate: <code>SLIC</code> for objects with distinct intensity vs background or <code>Watershed</code> for objects that have distinct boundaries</li>
-<li>Select the color channel that should be used to generate superpixels/voxels: <code>Color channel</code></li>
+<li>Select the color channel that should be used to generate superpixels/voxels: <code>Color channel</code>
+</li>
 <li>Define size for superpixels/voxels and their compactness: <code>Size</code> and <code>Compactness</code>. For the <code>Watershed</code> superpixels the <code>Size</code> field defines a factor that regulates size of superpixels (larger number gives bigger superpixels) and the <code>Black on white</code> field. When the boundaries of objects are bright over dark background, the <code>Black on white</code> should be 0; otherwise any number bigger than 0.</li>
 <li>If needed the area for processing can be modified using the Subarea panel.</li>
 <li>Press the <code>Calculate superpixels</code> button to generate SLIC superpixels</li>
-<li>Press the <code>Preview superpixels</code> button to see the generated superpixels</li></ul></div>
-<p><img class="image-fit" src="images/superpix_04.jpg" alt=""> </p>
-<div><ul><li>If size and quality of superpixels is acceptable press the <code>Calculate features</code> button to calculate features for the superpixels.</li>
-<li>Press the <code>Train &amp; Predict button</code> to access settings for the classification</li></ul></div>
-<p><img class="image-fit" src="images/superpix_05.jpg" alt=""> </p>
+<li>Press the <code>Preview superpixels</code> button to see the generated superpixels</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images/superpix_04.jpg" alt=""> </p>
+<div>
+<ul>
+<li>If size and quality of superpixels is acceptable press the <code>Calculate features</code> button to calculate features for the superpixels.</li>
+<li>Press the <code>Train &amp; Predict button</code> to access settings for the classification</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images/superpix_05.jpg" alt=""> </p>
 <p>In this window it is possible either load classifier from the training session done earlier (<code>the Load classifier button</code>), or train a new one if labels exist.</p>
-<div><ul><li>Select <code>Object</code> in the <code>Object</code> popup menu</li>
+<div>
+<ul>
+<li>Select <code>Object</code> in the <code>Object</code> popup menu</li>
 <li>Select <code>Background</code> in the <code>Background</code> popup menu</li>
 <li>Choose type of the classifier to use in the <code>Classifier</code> popup menu</li>
 <li>Press the <code>Train classifier</code> to start the training session</li>
 <li>Press the <code>Predict dataset</code> to start the prediction session</li>
-<li>Check results in the <code>Image View panel</code>. If needed add more markers for the Object and Background and repeat Training and Prediction.</li></ul></div>
-<p><img class="image-fit" src="images/superpix_06.jpg" alt=""> </p><h2 id="3">Wiping the temp directory</h2>
+<li>Check results in the <code>Image View panel</code>. If needed add more markers for the Object and Background and repeat Training and Prediction.</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images/superpix_06.jpg" alt=""> </p>
+<h2 id="3">Wiping the temp directory</h2>
 <p>During the prediction the classifier creates files in the <code>RF_Temp</code> directory. This directory can be deleted by pressing the <code>Wipe Temp dir</code> button or manually using any file explorer.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools</b></a></p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -563,8 +628,13 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Classifier of superpixels / supervoxels
 % Classifier of superpixels/supervoxels is a good method for automatic segmentation of images
@@ -572,7 +642,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 %
 % This classifier uses the <http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html 
 % *SLIC (Simple Linear Iterative Clustering) algorithm*> written by Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, 
-% Pascal Fua, and Sabine SÃ¼sstrunk, Ecole Polytechnique Federale de
+% Pascal Fua, and Sabine Süsstrunk, Ecole Polytechnique Federale de
 % Lausanne (EPFL), Switzerland to simplify the dataset by clustering of
 % pixels into groups: superpixels for 2D or supervoxels for 3D. Each of
 % these superpixels/voxels is characterized and these characteristics are
@@ -717,7 +787,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % </script>
 % </html>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -746,8 +817,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

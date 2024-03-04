@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Global black-and-white thresholding</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_tools_global_thresholding.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>Global black-and-white thresholding</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_gui_menu_tools_global_thresholding.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,7 +72,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -176,8 +183,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -257,7 +264,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -271,7 +278,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -505,7 +512,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -514,44 +523,85 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>Global black-and-white thresholding</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>Global black-and-white thresholding</h1>
+<!--introduction-->
 <p>Perform global black-and-white thresholding of the dataset.</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools</b></a></p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools</b></a>
+</p>
 <p>
 A demonstration of the global black-and-white thresholding is available in the following video:
 <br>
 <a href="https://youtu.be/mzfgxLvkGTI"><img class="image-fit" style="vertical-align:middle;" src="images\youtube2.png">
 <br>https://youtu.be/mzfgxLvkGTI</a>
-</p><!--/introduction-->
+</p>
+<!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
-<div><ul><li><a href="#2">CONCAVITY algorithm</a></li>
-<li><a href="#3">ENTROPY algorithm</a></li>
-<li><a href="#6">INTERMEANS ITER algorithm</a></li>
-<li><a href="#7">INTERMODES algorithm</a></li>
-<li><a href="#8">MEAN algorithm</a></li>
-<li><a href="#9">MEDIAN and PERCENTILE algorithms</a></li>
-<li><a href="#10">MINERROR algorithm</a></li>
-<li><a href="#11">MINERROR ITER algorithm</a></li>
-<li><a href="#12">MINIMUM algorithm</a></li>
-<li><a href="#13">MOMENTS algorithm</a></li>
-<li><a href="#14">OTSU algorithm</a></li>
-<li><a href="#15">Programming tips</a></li></ul></div>
-<p><img class="image-fit" src="images/menuToolsSemiautoSegmAutomaticThresholding.png" alt=""> </p>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#2">CONCAVITY algorithm</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">ENTROPY algorithm</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#6">INTERMEANS ITER algorithm</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#7">INTERMODES algorithm</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#8">MEAN algorithm</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#9">MEDIAN and PERCENTILE algorithms</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#10">MINERROR algorithm</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#11">MINERROR ITER algorithm</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#12">MINIMUM algorithm</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#13">MOMENTS algorithm</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#14">OTSU algorithm</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#15">Programming tips</my-a>
+</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images/menuToolsSemiautoSegmAutomaticThresholding.png" alt=""> </p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="2">CONCAVITY algorithm</h2>
 <details open onclick="state_check('1.1')" id="1.1"><summary> <b>Details of CONCAVITY algorithm</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>If the image does not have distinct objects and background, the MINIMUM and INTERMODES algorithms are not suitable.</li>
+<div>
+<ul>
+<li>If the image does not have distinct objects and background, the MINIMUM and INTERMODES algorithms are not suitable.</li>
 <li>A good threshold may be found at the shoulder of the histogram.</li>
 <li>The shoulder location can be found based on the concavity of the histogram.</li>
 <li>Construct the convex hull H of the histogram y.</li>
 <li>Find the local maxima of <code>H - y</code>.</li>
 <li>Set <code>t</code> to the value of <code>j</code> at which the balance measure <code>bj = Aj(An - Aj)</code> is maximized</li>
-<li>The algorithm seems to work well in many cases, but in some cases it gives thresholds that are clearly unusable</li></ul></div>
-<p><b>Reference</b> A. Rosenfeld and P. De La Torre, Histogram concavity analysis as an aid in threshold selection, IEEE Trans. Systems Man Cybernet., vol. 13, pp. 231-235, 1983</p>
-<p><b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+<li>The algorithm seems to work well in many cases, but in some cases it gives thresholds that are clearly unusable</li>
+</ul>
+</div>
+<p>
+<b>Reference</b> A. Rosenfeld and P. De La Torre, Histogram concavity analysis as an aid in threshold selection, IEEE Trans. Systems Man Cybernet., vol. 13, pp. 231-235, 1983</p>
+<p>
+<b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+
 </div>
 </details>
 <br>
@@ -562,16 +612,34 @@ A demonstration of the global black-and-white thresholding is available in the f
 <details open onclick="state_check('2.1')" id="2.1"><summary> <b>Details of ENTROPY algorithm</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>One of several maximum entropy algorithms</li>
+<div>
+<ul>
+<li>One of several maximum entropy algorithms</li>
 <li>Divides the histogram of the image into two probability distributions, one representing the objects and one representing the background</li>
 <li>Choose t such that the sum of the entropies of these probability distributions is maximized</li>
-<li>Define the partial sums:</li></ul></div>
-<p><img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq08534548539886231616.png" alt="$E_{j} =\sum_{i=0}^{j}y_{i}\cdot \textup{log}y_{i}, \textup{for} j=0, ..., n$"></p>
-<div><ul><li>Set t to the value of j at which an equiation below is maximized</li></ul></div>
-<p><img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq11768634098473996064.png" alt="$\frac{E_{j}}{A_{j}} - \textup{log}A_{j} + \frac{E_{n} - E_{j}}{A_{n} - A_{j}} - \textup{log}A_{n} - A_{j}$"></p>
-<p><b>Reference</b></p>
-<div><ul><li>J. N. Kapur, P. K. Sahoo, and A. K. C. Wong, A new method for gray-level picture thresholding using the entropy of the histogram, Comput. Vision Graphics Image Process., vol. 29, pp. 273-285, 1985.</li></ul></div>
-<p><b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+<li>Define the partial sums:</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq08534548539886231616.png" alt="$E_{j} =\sum_{i=0}^{j}y_{i}\cdot \textup{log}y_{i}, \textup{for} j=0, ..., n$"></p>
+<div>
+<ul>
+<li>Set t to the value of j at which an equiation below is maximized</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq11768634098473996064.png" alt="$\frac{E_{j}}{A_{j}} - \textup{log}A_{j} + \frac{E_{n} - E_{j}}{A_{n} - A_{j}} - \textup{log}A_{n} - A_{j}$"></p>
+<p>
+<b>Reference</b>
+</p>
+<div>
+<ul>
+<li>J. N. Kapur, P. K. Sahoo, and A. K. C. Wong, A new method for gray-level picture thresholding using the entropy of the histogram, Comput. Vision Graphics Image Process., vol. 29, pp. 273-285, 1985.</li>
+</ul>
+</div>
+<p>
+<b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+
 </div>
 </details>
 <br>
@@ -582,19 +650,32 @@ A demonstration of the global black-and-white thresholding is available in the f
 <details open onclick="state_check('3.1')" id="3.1"><summary> <b>Details of INTERMEANS ITER algorithm</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>An iterative algorithm that gives similar results as the OTSU algorithm</li>
+<div>
+<ul>
+<li>An iterative algorithm that gives similar results as the OTSU algorithm</li>
 <li>Computationally less intensive than OTSU</li>
-<li>The algorithm starts with an initial guess for <code>t</code></li>
-<li>Define the means &#956;t and &#957;t of the two classes</li>
-<li>Set <code>t = [(&#956;t + &#957;t)/2]</code> and recalculate &#956;t and &#957;t.</li>
+<li>The algorithm starts with an initial guess for <code>t</code>
+</li>
+<li>Define the means μt and νt of the two classes</li>
+<li>Set <code>t = [(μt + νt)/2]</code> and recalculate μt and νt.</li>
 <li>Repeat until <code>t</code> has the same value in two consecutive iterations</li>
 <li>The obtained t may strongly depend on its initial value</li>
 <li>If the objects and background occupy comparable areas, use MEAN</li>
-<li>If the objects are small compared to the background, use INTERMODES.</li></ul></div>
-<p><b>References</b></p>
-<div><ul><li>T. Ridler and S. Calvard, Picture thresholding using an iterative selection method, IEEE Trans. Systems Man Cybernet., vol. 8, pp. 630-632, 1978.</li>
-<li>H. J. Trussell, Comments on ?Picture thresholding using an iterative selection method?, IEEE Trans. Systems Man Cybernet., vol. 9, p. 311, 1979.</li></ul></div>
-<p><b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+<li>If the objects are small compared to the background, use INTERMODES.</li>
+</ul>
+</div>
+<p>
+<b>References</b>
+</p>
+<div>
+<ul>
+<li>T. Ridler and S. Calvard, Picture thresholding using an iterative selection method, IEEE Trans. Systems Man Cybernet., vol. 8, pp. 630-632, 1978.</li>
+<li>H. J. Trussell, Comments on ?Picture thresholding using an iterative selection method?, IEEE Trans. Systems Man Cybernet., vol. 9, p. 311, 1979.</li>
+</ul>
+</div>
+<p>
+<b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+
 </div>
 </details>
 <br>
@@ -605,15 +686,29 @@ A demonstration of the global black-and-white thresholding is available in the f
 <details open onclick="state_check('4.1')" id="4.1"><summary> <b>Details of INTERMODES algorithm</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>An alternative to MINIMUM</li>
+<div>
+<ul>
+<li>An alternative to MINIMUM</li>
 <li>Assumes a bimodal histogram</li>
-<li>Find the two peaks (local maxima) <code>yj</code> and <code>yk</code></li>
-<li>Set <code>t</code> to <code>(j + k)/2</code></li>
-<li>Set <code>t = [(&#956;t + &#957;t)/2]</code> and recalculate &#956;t and &#957;t.</li>
-<li>Still unsuitable for images that have a histogram with extremely unequal peaks</li></ul></div>
-<p><b>Reference</b></p>
-<div><ul><li>J. M. S. Prewitt and M. L. Mendelsohn, The analysis of cell images, in Ann. New York Acad. Sci., vol. 128, pp. 1035-1053, 1966</li></ul></div>
-<p><b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+<li>Find the two peaks (local maxima) <code>yj</code> and <code>yk</code>
+</li>
+<li>Set <code>t</code> to <code>(j + k)/2</code>
+</li>
+<li>Set <code>t = [(μt + νt)/2]</code> and recalculate μt and νt.</li>
+<li>Still unsuitable for images that have a histogram with extremely unequal peaks</li>
+</ul>
+</div>
+<p>
+<b>Reference</b>
+</p>
+<div>
+<ul>
+<li>J. M. S. Prewitt and M. L. Mendelsohn, The analysis of cell images, in Ann. New York Acad. Sci., vol. 128, pp. 1035-1053, 1966</li>
+</ul>
+</div>
+<p>
+<b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+
 </div>
 </details>
 <br>
@@ -624,11 +719,18 @@ A demonstration of the global black-and-white thresholding is available in the f
 <details open onclick="state_check('5.1')" id="5.1"><summary> <b>Details of MEAN algorithm</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>Similar to the MEDIAN algorithm</li>
+<div>
+<ul>
+<li>Similar to the MEDIAN algorithm</li>
 <li>Instead of median, set <code>t</code> such that it is the integer part of the mean of all pixel values</li>
-<li>With the partial sum notation, <code>t = Bn/An</code></li>
-<li>Does not take into account histogram shape, so obviously the results are suboptimal</li></ul></div>
-<p><b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+<li>With the partial sum notation, <code>t = Bn/An</code>
+</li>
+<li>Does not take into account histogram shape, so obviously the results are suboptimal</li>
+</ul>
+</div>
+<p>
+<b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+
 </div>
 </details>
 <br>
@@ -639,14 +741,26 @@ A demonstration of the global black-and-white thresholding is available in the f
 <details open onclick="state_check('6.1')" id="6.1"><summary> <b>Details of MEDIAN and PERCENTILE algorithm</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>Assumes that the percentage of object pixels is known</li>
+<div>
+<ul>
+<li>Assumes that the percentage of object pixels is known</li>
 <li>Set <code>t</code> to the highest gray-level which maps at least <code>(100 - p)%</code> of the pixels into the object category</li>
 <li>Not suitable if the object area is not know</li>
 <li>Problem: the algorithm is parametric</li>
-<li>Solution: set <code>p = 50</code> so that <code>t</code> is the median of the distribution of pixel values</li></ul></div>
-<p><b>Reference</b></p>
-<div><ul><li>W. Doyle, Operation useful for similarity-invariant pattern recognition, J. Assoc. Comput. Mach, vol. 9, pp. 259-267, 1962</li></ul></div>
-<p><b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+<li>Solution: set <code>p = 50</code> so that <code>t</code> is the median of the distribution of pixel values</li>
+</ul>
+</div>
+<p>
+<b>Reference</b>
+</p>
+<div>
+<ul>
+<li>W. Doyle, Operation useful for similarity-invariant pattern recognition, J. Assoc. Comput. Mach, vol. 9, pp. 259-267, 1962</li>
+</ul>
+</div>
+<p>
+<b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+
 </div>
 </details>
 <br>
@@ -657,16 +771,34 @@ A demonstration of the global black-and-white thresholding is available in the f
 <details open onclick="state_check('7.1')" id="7.1"><summary> <b>Details of MINERROR algorithm</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>Similar to the OTSU algorithm</li>
+<div>
+<ul>
+<li>Similar to the OTSU algorithm</li>
 <li>Views the histogram as an estimate of the probability density function of the mixture population (objects and background)</li>
 <li>Assumes a Gaussian mixture model, that is, <b>A)</b> the pixels in the two categories come from a normal distribution and <b>B)</b> the normal distributions may have different means as well as variances</li>
-<li>Define the following statistics:</li></ul></div>
-<p><img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq00816458518999265299.png" alt="$p_{t} = \frac{A_{t}}{A_{n}}, q_{t} = \frac{A_{n} - A_{f}}{A_{n}}$"></p>
-<p><img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq09178498689771272145.png" alt="$\sigma{_{t}}^{2} = \frac{C_{t}}{A_{t}} - \mu{_{t}}^2, \tau{_{t}^{2}} = \frac{C_{n} - C_{t}}{A_{n} - A_{t}} - \nu{_{t}^2}$"></p>
-<div><ul><li>Set <code>t</code> to the value of <code>j</code> at which   <img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq17023380879244178535.png" alt="$p_{j}\textup{log}\begin{pmatrix}\sigma_{j}\\p_{j}\end{pmatrix} + q_{j}\textup{log}\begin{pmatrix}\tau_{j}\\q_{i}\end{pmatrix}$">  is minumized</li></ul></div>
-<p><b>Reference</b></p>
-<div><ul><li>J. Kittler and J. Illingworth, Minimum error thresholding, Pattern Recognition, vol. 19, pp. 41-47, 1986</li></ul></div>
-<p><b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+<li>Define the following statistics:</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq00816458518999265299.png" alt="$p_{t} = \frac{A_{t}}{A_{n}}, q_{t} = \frac{A_{n} - A_{f}}{A_{n}}$"></p>
+<p>
+<img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq09178498689771272145.png" alt="$\sigma{_{t}}^{2} = \frac{C_{t}}{A_{t}} - \mu{_{t}}^2, \tau{_{t}^{2}} = \frac{C_{n} - C_{t}}{A_{n} - A_{t}} - \nu{_{t}^2}$"></p>
+<div>
+<ul>
+<li>Set <code>t</code> to the value of <code>j</code> at which <img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq17023380879244178535.png" alt="$p_{j}\textup{log}\begin{pmatrix}\sigma_{j}\\p_{j}\end{pmatrix} + q_{j}\textup{log}\begin{pmatrix}\tau_{j}\\q_{i}\end{pmatrix}$"> is minumized</li>
+</ul>
+</div>
+<p>
+<b>Reference</b>
+</p>
+<div>
+<ul>
+<li>J. Kittler and J. Illingworth, Minimum error thresholding, Pattern Recognition, vol. 19, pp. 41-47, 1986</li>
+</ul>
+</div>
+<p>
+<b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+
 </div>
 </details>
 <br>
@@ -677,19 +809,37 @@ A demonstration of the global black-and-white thresholding is available in the f
 <details open onclick="state_check('8.1')" id="8.1"><summary> <b>Details of MINERROR ITER algorithm</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>The iterative version of the MINERROR algorithm is computationally less intensive</li>
+<div>
+<ul>
+<li>The iterative version of the MINERROR algorithm is computationally less intensive</li>
 <li>Find initial value for <code>t</code> using MEAN</li>
-<li>The integer part of the larger solution provides a new value <code>t</code>:</li></ul></div>
-<p><img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq07747099640382817390.png" alt="$x^{2}(\frac{1}{\sigma^{2}} - \frac{1}{\tau^{2}}) - 2x(\frac{\mu}{\sigma^{2}} + \frac{\nu}{\tau^{2}}) + (\frac{\mu^{2}}{\sigma^{2}} - \frac{\nu^{2}}{\tau^{2}} + \textup{log}(\frac{\sigma^{2}q^{2}}{\tau^{2}p^{2}})) = 0$"></p>
-<div><ul><li>Let w0, w1 and w2 denote the three terms</li>
+<li>The integer part of the larger solution provides a new value <code>t</code>:</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq07747099640382817390.png" alt="$x^{2}(\frac{1}{\sigma^{2}} - \frac{1}{\tau^{2}}) - 2x(\frac{\mu}{\sigma^{2}} + \frac{\nu}{\tau^{2}}) + (\frac{\mu^{2}}{\sigma^{2}} - \frac{\nu^{2}}{\tau^{2}} + \textup{log}(\frac{\sigma^{2}q^{2}}{\tau^{2}p^{2}})) = 0$"></p>
+<div>
+<ul>
+<li>Let w0, w1 and w2 denote the three terms</li>
 <li>Set <img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq11032656358415437361.png" alt="$t = \frac{w_{1} + \sqrt{ {w_{1}}^{2} - w_{0}w_{2}}}{w_{0}}$"></li>
-<li>Recalculate all the terms using the new value of <code>t</code> and re-derive <code>t</code></li>
+<li>Recalculate all the terms using the new value of <code>t</code> and re-derive <code>t</code>
+</li>
 <li>Repeat until convergence</li>
 <li>This minimizes the number of misclassi?cations between the two normal distributions with the given means, variances, and proportions</li>
-<li>The algorithm fails to converge if the quadratic equation does not have a real solution</li></ul></div>
-<p><b>Reference</b></p>
-<div><ul><li>J. Kittler and J. Illingworth, Minimum error thresholding, Pattern Recognition, vol. 19, pp. 41-47, 1986</li></ul></div>
-<p><b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+<li>The algorithm fails to converge if the quadratic equation does not have a real solution</li>
+</ul>
+</div>
+<p>
+<b>Reference</b>
+</p>
+<div>
+<ul>
+<li>J. Kittler and J. Illingworth, Minimum error thresholding, Pattern Recognition, vol. 19, pp. 41-47, 1986</li>
+</ul>
+</div>
+<p>
+<b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+
 </div>
 </details>
 <br>
@@ -700,13 +850,26 @@ A demonstration of the global black-and-white thresholding is available in the f
 <details open onclick="state_check('9.1')" id="9.1"><summary> <b>Details of MINIMUM algorithm</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>Assumes a bimodal histogram</li>
+<div>
+<ul>
+<li>Assumes a bimodal histogram</li>
 <li>The histogram needs to be smoothed (using the three-point mean filter) iteratively until the histogram has only two local maxima</li>
-<li>Choose <code>t</code> such that <code>yt - 1 &gt; yt ? yt + 1</code></li>
-<li>Unsuitable for images that have a histogram with extremely unequal peaks or a broad and flat valley</li></ul></div>
-<p><b>Reference</b></p>
-<div><ul><li>J. M. S. Prewitt and M. L. Mendelsohn, The analysis of cell images, in Ann. New York Acad. Sci., vol. 128, pp. 1035-1053, 1966</li></ul></div>
-<p><b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+<li>Choose <code>t</code> such that <code>yt - 1 &gt; yt ? yt + 1</code>
+</li>
+<li>Unsuitable for images that have a histogram with extremely unequal peaks or a broad and flat valley</li>
+</ul>
+</div>
+<p>
+<b>Reference</b>
+</p>
+<div>
+<ul>
+<li>J. M. S. Prewitt and M. L. Mendelsohn, The analysis of cell images, in Ann. New York Acad. Sci., vol. 128, pp. 1035-1053, 1966</li>
+</ul>
+</div>
+<p>
+<b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+
 </div>
 </details>
 <br>
@@ -717,13 +880,27 @@ A demonstration of the global black-and-white thresholding is available in the f
 <details open onclick="state_check('10.1')" id="10.1"><summary> <b>Details of MOMENTS algorithm</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>Choose <code>t</code> such that the binary image has the same ?rst three moments as the gray-level image</li>
-<li>his is achieved by setting <code>t</code> such that <code>At/An</code> is the value of the fraction nearest to <code>x0</code>, where</li></ul></div>
-<p><img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq08643240116357854884.png" alt="$x_{0} = \frac{1}{2} - \frac{B_{n}/A_{n} + x_{2}/2}{\sqrt{x_{2}^{2} - 4x_{1}}}, x_1 = \frac{B_{n}D_{n} - C_{n}^{2}}{A_{n}C_{n} - B_{n}2'}$"></p>
-<p><img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq14655251748718410941.png" alt="$x_{2} = \frac{B_{n}C_{n} - A_{n}D_{n}}{A_{n}C_{n} - B_{n}^{2}}, D_{n} = \sum_{i=0}^{n}i^{2}y_{i}$"></p>
-<p><b>Reference</b></p>
-<div><ul><li>W. Tsai, Moment-preserving thresholding: a new approach, Comput. Vision Graphics Image Process., vol. 29, pp. 377-393, 1985</li></ul></div>
-<p><b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+<div>
+<ul>
+<li>Choose <code>t</code> such that the binary image has the same ?rst three moments as the gray-level image</li>
+<li>his is achieved by setting <code>t</code> such that <code>At/An</code> is the value of the fraction nearest to <code>x0</code>, where</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq08643240116357854884.png" alt="$x_{0} = \frac{1}{2} - \frac{B_{n}/A_{n} + x_{2}/2}{\sqrt{x_{2}^{2} - 4x_{1}}}, x_1 = \frac{B_{n}D_{n} - C_{n}^{2}}{A_{n}C_{n} - B_{n}2'}$"></p>
+<p>
+<img class="image-fit" src="ug_gui_menu_tools_global_thresholding_eq14655251748718410941.png" alt="$x_{2} = \frac{B_{n}C_{n} - A_{n}D_{n}}{A_{n}C_{n} - B_{n}^{2}}, D_{n} = \sum_{i=0}^{n}i^{2}y_{i}$"></p>
+<p>
+<b>Reference</b>
+</p>
+<div>
+<ul>
+<li>W. Tsai, Moment-preserving thresholding: a new approach, Comput. Vision Graphics Image Process., vol. 29, pp. 377-393, 1985</li>
+</ul>
+</div>
+<p>
+<b>Acknowledgements</b> Based on the <a href="https://github.com/carandraug/histthresh">HistThresh Toolbox</a> by Antti Niemist&ouml;, Tampere University of Technology, Finland</p>
+
 </div>
 </details>
 <br>
@@ -734,10 +911,22 @@ A demonstration of the global black-and-white thresholding is available in the f
 <details open onclick="state_check('11.1')" id="11.1"><summary> <b>Details of OTSU algorithm</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul><li>MATLAB implementation of the Otsu algorithm</li>
-<li>The <code>t</code> value is calculated using <code>graythresh</code></li></ul></div>
-<p><b>Reference</b></p>
-<div><ul style="margin-bottom:0px;"><li>Otsu, N., "A Threshold Selection Method from Gray-Level Histograms," IEEE Transactions on Systems, Man, and Cybernetics, Vol. 9, No. 1, 1979, pp. 62-66.</li></ul></div>
+<div>
+<ul>
+<li>MATLAB implementation of the Otsu algorithm</li>
+<li>The <code>t</code> value is calculated using <code>graythresh</code>
+</li>
+</ul>
+</div>
+<p>
+<b>Reference</b>
+</p>
+<div>
+<ul>
+<li>Otsu, N., "A Threshold Selection Method from Gray-Level Histograms," IEEE Transactions on Systems, Man, and Cybernetics, Vol. 9, No. 1, 1979, pp. 62-66.</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
@@ -746,9 +935,13 @@ A demonstration of the global black-and-white thresholding is available in the f
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(12)" class="collapse-link"><a href="javascript:void(0);" id="Toggle12">collapse all</a></p><h2 id="15">Programming tips</h2>
 <p>This function is compatible with the batch scripting.</p>
-<div><ul><li>Define parameters as a structure, where the names of the fields can be checked from the tooltips of the widgets</li>
+<div>
+<ul>
+<li>Define parameters as a structure, where the names of the fields can be checked from the tooltips of the widgets</li>
 <li>Some of the parameters are optional</li>
-<li>use mibController.startController function, where the 3rd input is the defined structure with parameters</li></ul></div>
+<li>use mibController.startController function, where the 3rd input is the defined structure with parameters</li>
+</ul>
+</div>
 <details open onclick="state_check('12.1')" id="12.1"><summary> <b>Example of usage</b> </summary>
 <div class="details-div">
 <p></p>
@@ -763,12 +956,15 @@ BatchOpt.x = [10 120];    <span class="comment">% [optional] part of the image, 
 BatchOpt.Orientation = 4;      <span class="comment">% [optional], dataset orientation</span>
 obj.startController(<span class="string">'mibHistThresController'</span>, [], BatchOpt);  <span class="comment">% start the thresholding</span>
 </pre>
+
 </div>
 </details>
 <br>
 <p> <span style="line-height:8px; display:block; vertical-align:top">
 <br></span></p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools</b></a></p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu_tools.html"><b>Tools</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -776,8 +972,13 @@ obj.startController(<span class="string">'mibHistThresController'</span>, [], Ba
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% Global black-and-white thresholding
 % Perform global black-and-white thresholding of the dataset. 
@@ -1133,7 +1334,8 @@ obj.startController(<span class="string">'mibHistThresController'</span>, [], Ba
 % </script>
 % </html>
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -1162,8 +1364,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>

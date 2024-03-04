@@ -1,12 +1,18 @@
-
-<!DOCTYPE html>
-<html lang="en"><head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>File Menu</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-02-13"><meta name="DC.source" content="ug_gui_menu_file.m"><style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      -->
+<title>File Menu</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-03-04">
+<meta name="DC.source" content="ug_gui_menu_file.m">
+<style>
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -16,8 +22,9 @@ h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif;
 h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
 h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
+a,my-a { color:#005fce; text-decoration:none; }
+my-a:hover { cursor: pointer; }
+a:hover,my-a:hover { color:#005fce; text-decoration:underline; }
 a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
@@ -65,8 +72,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-.dropdown {   font-family: monospace; 	border: 1px solid #aaa; 	border-radius: 0.2em; 	background-color: #fffce8; 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
-.kbd {   font-family: monospace; 	border: 1px solid #aaa; 	-moz-border-radius: 0.2em; 	-webkit-border-radius: 0.2em; 	border-radius: 0.2em; 	-moz-box-shadow: 0.1em 0.2em 0.2em #ddd; 	-webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; 	box-shadow: 0.1em 0.2em 0.2em #ddd; 	background-color: #f9f9f9; 	background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); 	background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); 	padding: 0.1em 0.4em; 	font-family: inherit; 	font-size: 1em; }
+.dropdown { font-family: monospace; border: 1px solid #aaa; border-radius: 0.2em; background-color: #fffce8; padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
+.kbd { font-family: monospace; border: 1px solid #aaa; -moz-border-radius: 0.2em; -webkit-border-radius: 0.2em; border-radius: 0.2em; -moz-box-shadow: 0.1em 0.2em 0.2em #ddd; -webkit-box-shadow: 0.1em 0.2em 0.2em #ddd; box-shadow: 0.1em 0.2em 0.2em #ddd; background-color: #f9f9f9; background-image: -moz-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -o-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: -webkit-linear-gradient(top, #eee, #f9f9f9, #eee); background-image: linear-gradient([[:Template:Linear-gradient/legacy]], #eee, #f9f9f9, #eee); padding: 0.1em 0.4em; font-family: inherit; font-size: 1em; }
 .h3 { color: #E65100; font-size: 12px; font-weight: bold; }
 .code { font-family: monospace; font-size: 10pt; background: #eee; padding: 1pt 3pt; }
 
@@ -177,8 +184,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
     h2, h3       { color: #B0B0B0; }
     html body    { background-color: #101010; color: #B0B0B0; }
     .pretty-link { color: #C46313 !important; }
-    a, a:visited { color: #C46313 }
-    a:hover      { color: orange; }
+    a, a:visited, my-a  { color: #C46313 }
+    a:hover, my-a:hover { color: orange; }
     details > summary,
     .details-div      { border-color:     #505050; }
     details > summary { background-color: #202020; }
@@ -258,7 +265,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
               }
               else
               {
-                  var href = clickedElem.closest("a").getAttribute("href");
+                  var href = clickedElem.closest("my-a").getAttribute("href");
                   if ( href && href[0] == "#" )
                   {
                      var target = document.getElementById(href.substring(1));
@@ -272,7 +279,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                            if ( enclosingBox ) { enclosingBox = enclosingBox.closest("details"); }  }
                         if (enclosingBox && !enclosingBox.open) { open_details(enclosingBox.id) }
                      }
-                     if (target && in_iFrame() && !contentDiv.getAttribute("data-isHelpBrowser") ){
+                     if (target){
                         event.preventDefault();
                         target.scrollIntoView(); }
                      var nextElem = target.nextElementSibling;
@@ -506,7 +513,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
                }
           }
 </script>
-</head><body>
+
+</head>
+<body>
 <div class="content">
 <div id="return-link" style="display:none;" class="tooltip">
 <p onclick="jump_to()">
@@ -515,34 +524,82 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </p>
 <div id="tooltiptext">click to return
 <br>(click <b>&times;</b> to hide)</div>
-</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script><h1>File Menu</h1><!--introduction-->
+</div><script>document.getElementById("dark-theme").sheet.disabled = true;</script>
+<h1>File Menu</h1>
+<!--introduction-->
 <p>Provides access to some file handling actions for image dataset</p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction-->
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a>
+</p>
+<!--/introduction-->
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(0)" class="collapse-link"><a href="javascript:void(0);" id="Toggle0">collapse all on page</a></p><h2>Contents</h2>
-<div><ul><li><a href="#2">Import image from...</a></li>
-<li><a href="#3">Example datasets</a></li>
-<li><a href="#4">OMERO Import</a></li>
-<li><a href="#5">Batch processing...</a></li>
-<li><a href="#6">Chopped images...</a></li>
-<li><a href="#7">Rename and shuffle</a></li>
-<li><a href="#8">Export image to</a></li>
-<li><a href="#9">Save image as</a></li>
-<li><a href="#10">Make movie</a></li>
-<li><a href="#11">Make snapshot</a></li>
-<li><a href="#13">Render volume</a></li>
-<li><a href="#16">Preferences</a></li></ul></div>
-<p><img class="image-fit" src="images\menuFile.png" alt=""> </p><h2 id="2">Import image from...</h2>
-<div><ul><li><b>MATLAB</b>  - import image from the main MATLAB workspace into <code>MIB</code>. It is possible to provide image description containers.Map together with the dataset, which allows to maintain parameters of the dataset when using the <code>Export image</code> command (see below). <a href="https://youtu.be/zUJ1RUuTLVs">[*brief demo*]</a></li>
-<li><b>Clipboard</b> - paste image from the system clipboard. This functionality is implemented using <a href="http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard"><b>IMCLIPBOARD</b></a> function by  Jiro Doke, MathWorks, 2010. <a href="https://youtu.be/kcN0Na_YC_U">[*brief demo*]</a></li>
-<li><b>Imaris</b> - import dataset from Imaris; requires <a href="http://www.bitplane.com/">Imaris and ImarisXT</a>. This functionality is done with <a href="http://www.scs2.net/next/index.php?id=110">IceImarisConnector</a> written by Aaron C. Ponti, ETH Zurich. <a href="https://youtu.be/MbK2JcTrZFw?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj">[*demo*]</a></li>
-<li><b>URL</b> - open image from provided URL address. The link should contain the protocol type (<i>e.g.</i>, <a href="http://">http://</a>). <a href="https://youtu.be/FNEVgKzbGqQ">[*brief demo*]</a></li></ul></div>
+<div>
+<ul>
+<li>
+<my-a onclick="jump_to()" href="#2">Import image from...</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#3">Example datasets</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#4">OMERO Import</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#5">Batch processing...</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#6">Chopped images...</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#7">Rename and shuffle</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#8">Export image to</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#9">Save image as</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#10">Make movie</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#11">Make snapshot</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#13">Render volume</my-a>
+</li>
+<li>
+<my-a onclick="jump_to()" href="#16">Preferences</my-a>
+</li>
+</ul>
+</div>
+<p>
+<img class="image-fit" src="images\menuFile.png" alt=""> </p>
+<h2 id="2">Import image from...</h2>
+<div>
+<ul>
+<li>
+<b>MATLAB</b> - import image from the main MATLAB workspace into <code>MIB</code>. It is possible to provide image description containers.Map together with the dataset, which allows to maintain parameters of the dataset when using the <code>Export image</code> command (see below). <a href="https://youtu.be/zUJ1RUuTLVs">[*brief demo*]</a>
+</li>
+<li>
+<b>Clipboard</b> - paste image from the system clipboard. This functionality is implemented using <a href="http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard"><b>IMCLIPBOARD</b></a> function by Jiro Doke, MathWorks, 2010. <a href="https://youtu.be/kcN0Na_YC_U">[*brief demo*]</a>
+</li>
+<li>
+<b>Imaris</b> - import dataset from Imaris; requires <a href="http://www.bitplane.com/">Imaris and ImarisXT</a>. This functionality is done with <a href="http://www.scs2.net/next/index.php?id=110">IceImarisConnector</a> written by Aaron C. Ponti, ETH Zurich. <a href="https://youtu.be/MbK2JcTrZFw?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj">[*demo*]</a>
+</li>
+<li>
+<b>URL</b> - open image from provided URL address. The link should contain the protocol type (<i>e.g.</i>, <a href="http://">http://</a>). <a href="https://youtu.be/FNEVgKzbGqQ">[*brief demo*]</a>
+</li>
+</ul>
+</div>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="3">Example datasets</h2>
 <p>This menu entry provides quick access to several MIB demo datasets and full projects for image segmentation using deep learning. The datasets are grouped by techniques used for data collection.</p>
 <details open onclick="state_check('1.1')" id="1.1"><summary> <b>DeepMIB projects-&gt;Synthetic 2D large spots</b> </summary>
 <div class="details-div">
 <p></p>
+
 A complete DeepMIB project with a synthetic dataset generated for quick tests of semantic
 segmentation approaches.
 <br>
@@ -562,12 +619,14 @@ of large spots on a black background. The network can be opened by loading
 <br>
 <a href="https://doi.org/10.5281/zenodo.10203188"><img class="image-fit-svg" src="images\zenodo.10203188.svg" alt="https://doi.org/10.5281/zenodo.10203188"></a>
 
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('1.2')" id="1.2"><summary> <b>DeepMIB projects-&gt;Synthetic 2D small spots</b> </summary>
 <div class="details-div">
 <p></p>
+
 A complete DeepMIB project with a synthetic dataset generated for quick tests of semantic
 segmentation approaches.
 <br>
@@ -587,12 +646,14 @@ of small random spots of 2 colors on a black background. The network can be open
 <br>
 <a href="https://doi.org/10.5281/zenodo.10203764"><img class="image-fit-svg" src="images\zenodo.10203764.svg" alt="https://doi.org/10.5281/zenodo.10203764"></a>
 
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('1.3')" id="1.3"><summary> <b>DeepMIB projects-&gt;Synthetic 2.5D large spots</b> </summary>
 <div class="details-div">
 <p></p>
+
 A complete DeepMIB project with a synthetic dataset generated for quick tests of 2.5D depth-to-color semantic
 segmentation approaches
 <br>
@@ -626,12 +687,14 @@ tab->Config files->Load</span></li>
 <br>
 <a href="https://doi.org/10.5281/zenodo.10212417"><img class="image-fit-svg" src="images\zenodo.10212417.svg" alt="https://doi.org/10.5281/zenodo.10212417"></a>
 
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('1.4')" id="1.4"><summary> <b>DeepMIB projects-&gt;Synthetic 2D patch-wise</b> </summary>
 <div class="details-div">
 <p></p>
+
 A complete DeepMIB project with a synthetic dataset generated for quick tests of the patch-wise segmentation approaches
 <br>
 The dataset includes a trained Resnet18 network for detection of patches that
@@ -652,12 +715,14 @@ The network can be opened by loading
 <br>
 <a href="https://doi.org/10.5281/zenodo.10203861"><img class="image-fit-svg" src="images\zenodo.10203861.svg" alt="https://doi.org/10.5281/zenodo.10203861"></a>
 
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('1.5')" id="1.5"><summary> <b>DeepMIB projects-&gt;2D EM membranes</b> </summary>
 <div class="details-div">
 <p></p>
+
 A complete DeepMIB project with a segmentation of membranes from serial-section TEM images
 <br>
 The dataset includes a trained U-net and DeepLabV3-Resnet18 networks for
@@ -678,12 +743,14 @@ The network can be opened by loading
   <td><img class="image-fit" src = "images\examplesDeepMIB_2DEM.jpg"></td>
 </tr></table>
 
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('1.6')" id="1.6"><summary> <b>DeepMIB projects-&gt;2D LM nuclei</b> </summary>
 <div class="details-div">
 <p></p>
+
 A complete DeepMIB project with a segmentation of nuclei, their boundaries and touching edges
 <br>
 The dataset includes a trained U-net network for semantic segmentation. This is an updated project that has been published
@@ -703,12 +770,14 @@ The network can be opened by loading
   <td><img class="image-fit" src = "images\examplesDeepMIB_2DLM.jpg"></td>
 </tr></table>
 
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('1.7')" id="1.7"><summary> <b>DeepMIB projects-&gt;3D EM mitochondria</b> </summary>
 <div class="details-div">
 <p></p>
+
 A complete DeepMIB project with a segmentation of mitochondria
 <br>
 The dataset includes a trained 3D U-net network for semantic segmentation. This is an updated project that has been published
@@ -728,12 +797,14 @@ The network can be opened by loading
   <td><img class="image-fit" src = "images\examplesDeepMIB_3DEM.jpg"></td>
 </tr></table>
 
+
 </div>
 </details>
 <br>
 <details open onclick="state_check('1.8')" id="1.8"><summary> <b>DeepMIB projects-&gt;3D LM inner hair cells</b> </summary>
 <div class="details-div">
 <p></p>
+
 A complete DeepMIB project with a segmentation of inner hear cells, nuclei and synapses
 <br>
 The dataset includes a trained 3D anisotropic U-net network for semantic segmentation. This is an updated project that has been published
@@ -753,6 +824,7 @@ The network can be opened by loading
   <td><img class="image-fit" src = "images\examplesDeepMIB_3DLM.jpg"></td>
 </tr></table>
 
+
 </div>
 </details>
 <br>
@@ -766,6 +838,7 @@ reticulum
 <br>
 <img class="image-fit" src = "images\examplesLM_3D_SIM.jpg">
 </p>
+
 </div>
 </details>
 <br>
@@ -779,6 +852,7 @@ A 3D super-resolution Stimulated emission depletion (STED) microscopy dataset
 <br>
 <img class="image-fit" src = "images\examplesLM_3D_STED.jpg">
 </p>
+
 </div>
 </details>
 <br>
@@ -793,6 +867,7 @@ photo-bleaching effect
 <br>
 <img class="image-fit" src = "images\examplesLM_WF_photobleaching.jpg">
 </p>
+
 </div>
 </details>
 <br>
@@ -808,6 +883,7 @@ reticulum, mitochondria and lipid droplets.
 <br>
 <img class="image-fit" src = "images\examplesSBEM_Huh7.jpg">
 </p>
+
 </div>
 </details>
 <br>
@@ -822,6 +898,7 @@ reticulum, mitochondria, vesicles, lipid droplets and cytoplasm.
 <br>
 <img class="image-fit" src = "images\examplesSBEM_trypanosoma.jpg">
 </p>
+
 </div>
 </details>
 <br>
@@ -837,25 +914,33 @@ for MATLAB.
 <br>
 <img class="image-fit" src = "images\examplesMRI_brain.jpg">
 </p>
+
 </div>
 </details>
-<br><h2 id="4">OMERO Import</h2>
+<br>
+<h2 id="4">OMERO Import</h2>
 <p>Establish connection and load images from OMERO server. Requires <a href="http://www.openmicroscopy.org/site">OMERO server</a> files to be downloaded. Please refer to the <a href="im_browser_system_requirements.html">System Requirements</a> pages for details of installation.</p>
 <p>Selection of a server (<i>please do not copy/paste the password!</i>):</p>
-<p><img class="image-fit" src="images\menuFileImportOmero1.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\menuFileImportOmero1.png" alt=""> </p>
 <p>In the following dialog it is possible to select desired dataset and the range to take</p>
-<p><img class="image-fit" src="images\menuFileImportOmero2.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images\menuFileImportOmero2.png" alt=""> </p>
 <p>
 A brief demonstration is available in the following video:
 <br>
 <a href="https://youtu.be/iR7OL0eJGuw"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/iR7OL0eJGuw</a>
-</p><h2 id="5">Batch processing...</h2>
+</p>
+<h2 id="5">Batch processing...</h2>
 <p>With the batch processing mode many of the image processing operations may be designed into an image processing workflow, which may automatically applied to multiple images.</p>
-<p>Please refer to the <a href="ug_gui_menu_file_batch.html">Batch processing...</a> section for details.</p><h2 id="6">Chopped images...</h2>
+<p>Please refer to the <a href="ug_gui_menu_file_batch.html">Batch processing...</a> section for details.</p>
+<h2 id="6">Chopped images...</h2>
 <p>This is a special mode that allows to split a large dataset into defined number of smaller ones and combine them back later. It is also possible to fuse the previously cropped dataset to the bigger one.</p>
-<p>Please refer to the <a href="ug_gui_menu_file_chop.html">Chopped images...</a> section for details.</p><h2 id="7">Rename and shuffle</h2>
+<p>Please refer to the <a href="ug_gui_menu_file_chop.html">Chopped images...</a> section for details.</p>
+<h2 id="7">Rename and shuffle</h2>
 <p>Two tools placed under this menu entry allow to shuffle files for their blind modeling, when the user does not know which file belong to which condition. The models from the shuffled files can be converted back over the original filenames for analysis.</p>
-<p>Please refer to the <a href="ug_gui_menu_file_rename_and_shuffle.html">Rename and shuffle</a> section for details.</p><h2 id="8">Export image to</h2>
+<p>Please refer to the <a href="ug_gui_menu_file_rename_and_shuffle.html">Rename and shuffle</a> section for details.</p>
+<h2 id="8">Export image to</h2>
 <p>Export images to the main MATLAB workspace or Imaris.</p>
 <p>
 <b>- MATLAB</b>
@@ -882,31 +967,53 @@ When Imaris is installed, the images can also be exported to Imaris.
 <details open onclick="state_check('2.1')" id="2.1"><summary> <b>The following image formats are implemented</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><b>AM, Amira Mesh</b> - as Amira Mesh binary format</li>
-<li><b>JPEG, Joint Photographic Experts Group</b> - a method for saving lossy compressed RGB datasets</li>
-<li><b>HDF5, Hierarchical Data Format</b> - saves images in the Hierarchical Data Format, version 5</li>
-<li><b>MRC, MRC format for IMOD</b> - saves images in the MRC Format compatible with IMOD</li>
-<li><b>NRRD, Nearly Raw Raster Data</b> - a data format compatible with <a href="www.slicer.org">3D slicer</a></li>
-<li><b>OME-TIFF 5D (*.ome.tiff)</b> - use BioFormats libraty to save the dataset as a 5D stack using OME-TIFF format</li>
-<li><b>PNG, Portable Network Graphics (*.png)</b> - saves images in the Portable Network Graphics format</li>
-<li><b>TIF format, LZW compressed</b>, as a multilayered tif-file (<code>3D-Tif option</code>) or as a sequence of tif-files (<code>Sequence of 2D files</code>). <b>Please note!</b> the TIF format uses 32-bit offsets, and that, in practice, limits the maximal size of the TIF-files to 2Gb. MATLAB can create TIF files larger than 2Gb but those can't be opened later</li>
-<li><b>TIF format, non-compressed</b>, see above for details of saving datasets in the TIF format</li></ul></div>
+<div>
+<ul>
+<li>
+<b>AM, Amira Mesh</b> - as Amira Mesh binary format</li>
+<li>
+<b>JPEG, Joint Photographic Experts Group</b> - a method for saving lossy compressed RGB datasets</li>
+<li>
+<b>HDF5, Hierarchical Data Format</b> - saves images in the Hierarchical Data Format, version 5</li>
+<li>
+<b>MRC, MRC format for IMOD</b> - saves images in the MRC Format compatible with IMOD</li>
+<li>
+<b>NRRD, Nearly Raw Raster Data</b> - a data format compatible with <a href="www.slicer.org">3D slicer</a>
+</li>
+<li>
+<b>OME-TIFF 5D (*.ome.tiff)</b> - use BioFormats libraty to save the dataset as a 5D stack using OME-TIFF format</li>
+<li>
+<b>PNG, Portable Network Graphics (*.png)</b> - saves images in the Portable Network Graphics format</li>
+<li>
+<b>TIF format, LZW compressed</b>, as a multilayered tif-file (<code>3D-Tif option</code>) or as a sequence of tif-files (<code>Sequence of 2D files</code>). <b>Please note!</b> the TIF format uses 32-bit offsets, and that, in practice, limits the maximal size of the TIF-files to 2Gb. MATLAB can create TIF files larger than 2Gb but those can't be opened later</li>
+<li>
+<b>TIF format, non-compressed</b>, see above for details of saving datasets in the TIF format</li>
+</ul>
+</div>
+
 </div>
 </details>
-<br><h2 id="10">Make movie</h2>
+<br>
+<h2 id="10">Make movie</h2>
 <p>Save dataset as a movie file. All objects that are shown in the image view window will be captured. <b>Note!</b> If the image width is too small the scale bar is not rendered. <a href="ug_gui_menu_file_makevideo.html">See more here</a>.</p>
-<p><img class="image-fit" src="images\menuFileMakeMovie.png" alt=""> </p><h2 id="11">Make snapshot</h2>
+<p>
+<img class="image-fit" src="images\menuFileMakeMovie.png" alt=""> </p>
+<h2 id="11">Make snapshot</h2>
 <p>Make snapshot of the current slice. All objects that are shown in the image view window will be captured.  <a href="ug_gui_menu_file_makesnapshot.html">See more here</a>.</p>
-<p><img class="image-fit" src="images/menuFileSnapshot.png" alt=""> </p>
+<p>
+<img class="image-fit" src="images/menuFileSnapshot.png" alt=""> </p>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(3)" class="collapse-link"><a href="javascript:void(0);" id="Toggle3">collapse all</a></p><h2 id="13">Render volume</h2>
-<p>3D visualization of volumes is available using 3 different ways</p><h3 style="color:#d45600;">MIB rendering</h3>
-<p><a href="ug_gui_menu_file_3D_viewer.html"><b>Click to open documentation about the new 3D volume viewer is available</b></a></p>
+<p>3D visualization of volumes is available using 3 different ways</p>
+<h3 style="color:#d45600;">MIB rendering</h3>
+<p> <a href="ug_gui_menu_file_3D_viewer.html"><b>Click to open documentation about the new 3D volume viewer is available</b></a>
+</p>
 <p>Starting from MIB (version 2.5) and MATLAB R2018b the volumes can be directly visualized in MIB using hardware accelerated volume rendering engine. The datasets for visuzalization can be downsampled during the export. It is possible to make snapshots and animations.</p>
 <p>MIB version 2.84 comes with the updated 3D volume rendering that allows to render volumes with 1-3 color channels together with the models. As for MIB 2.84 the new 3D viewer is only available in MIB for MATLAB.</p>
 <details open onclick="state_check('3.1')" id="3.1"><summary> <b>Volume rendering engines of MIB</b> </summary>
 <div class="details-div">
 <p></p>
+
 <table><tr>
   <td>MIB 2.84, R2022b or newer
 <br>Volumes (1-3 colors) and models</td>
@@ -931,6 +1038,7 @@ When Imaris is installed, the images can also be exported to Imaris.
  </ul></td>
 </tr></table>
 
+
 </div>
 </details>
 <br>
@@ -940,12 +1048,15 @@ When Imaris is installed, the images can also be exported to Imaris.
 A brief demonstration is available in the following video:
 <br>
 <a href="https://youtu.be/4CrfdOiZebk"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/J70V33f7bas</a>
-</p><h3 style="color:#d45600;">MATLAB Volume Viewer</h3>
+</p>
+<h3 style="color:#d45600;">MATLAB Volume Viewer</h3>
 <p>When MIB is used with MATLAB R2017a or newer it is possible to export the open dataset to Volume Viewer application. Please note that this feature is not available for the compliled version of MIB</p>
 <details open onclick="state_check('3.2')" id="3.2"><summary> <b>Snapshot of MATLAB volume renderer</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\menuFileRenderingMatlabVolRen.jpg" alt=""> </p>
+<p>
+<img class="image-fit" src="images\menuFileRenderingMatlabVolRen.jpg" alt=""> </p>
+
 </div>
 </details>
 <br>
@@ -953,12 +1064,15 @@ A brief demonstration is available in the following video:
 A brief demonstration is available in the following video:
 <br>
 <a href="https://youtu.be/J70V33f7bas"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/J70V33f7bas</a>
-</p><h3 style="color:#d45600;">Fiji 3D viewer</h3>
+</p>
+<h3 style="color:#d45600;">Fiji 3D viewer</h3>
 <p>Please refer to details in the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements Fiji</a> section for installation of Fiji.</p>
 <details open onclick="state_check('3.3')" id="3.3"><summary> <b>Snapshot of volume renderering in Fiji</b> </summary>
 <div class="details-div">
 <p></p>
-<p><img class="image-fit" src="images\menuFileRenderingFiji.jpg" alt=""> </p>
+<p>
+<img class="image-fit" src="images\menuFileRenderingFiji.jpg" alt=""> </p>
+
 </div>
 </details>
 <br>
@@ -968,27 +1082,49 @@ A brief demonstration is available in the following video:
 <a href="https://youtu.be/DZ1Tj3Fh2HM"><img class="image-fit" style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/DZ1Tj3Fh2HM</a>
 </p>
 <p>Additional dialog prompts for extra parameters for rendering:</p>
-<p><img class="image-fit" src="images/menuFileRenderFiji.png" alt=""> </p>
-<div><ul><li><b>Reduce the volume down to, max width pixels</b> - allows to reduce size of the dataset prior the rendering. This reduces memory consumption and improves performance. When this field contains <b>0</b> no volume resizing occurs.</li>
-<li><b>Smoothing 3d kernel, width</b> - smooth the volume with gaussian blur. No smoothing when 0.</li>
-<li><b>Invert? [0-no, 1-yes]</b> - invert the dataset, required for electron microscopy images.</li>
-<li><b>Transparency threshold</b> - all pixels with intensities below the provided value will appear transparent. Comma-separated numbers may be used here to provide specific transparency parameters for each color channel. In addition, the transparency threshold can also be tweaked in the Fiji 3D viewer window: <code>3D Viewer-&gt;Edit-&gt;Attributes-&gt;Adjust threshold</code>.</li></ul></div>
+<p>
+<img class="image-fit" src="images/menuFileRenderFiji.png" alt=""> </p>
+<div>
+<ul>
+<li>
+<b>Reduce the volume down to, max width pixels</b> - allows to reduce size of the dataset prior the rendering. This reduces memory consumption and improves performance. When this field contains <b>0</b> no volume resizing occurs.</li>
+<li>
+<b>Smoothing 3d kernel, width</b> - smooth the volume with gaussian blur. No smoothing when 0.</li>
+<li>
+<b>Invert? [0-no, 1-yes]</b> - invert the dataset, required for electron microscopy images.</li>
+<li>
+<b>Transparency threshold</b> - all pixels with intensities below the provided value will appear transparent. Comma-separated numbers may be used here to provide specific transparency parameters for each color channel. In addition, the transparency threshold can also be tweaked in the Fiji 3D viewer window: <code>3D Viewer-&gt;Edit-&gt;Attributes-&gt;Adjust threshold</code>.</li>
+</ul>
+</div>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
 <p onclick="toggle_details(4)" class="collapse-link"><a href="javascript:void(0);" id="Toggle4">collapse all</a></p><h2 id="16">Preferences</h2>
-<p>View and edit preferences of Microscopy Image Browser. Allows to modify colors of the <code>Selection</code>, <code>Model</code> and <code>Mask</code> layers, default behaviour of the mouse wheel and keys, settings of Undo. <a href="ug_gui_menu_file_preferences.html"><b>See more...</b></a></p>
-<p><b>Please note</b>, <code>MIB</code> stores its configuration parameters in a file that is automatically generated after closing of <code>MIB</code></p>
+<p>View and edit preferences of Microscopy Image Browser. Allows to modify colors of the <code>Selection</code>, <code>Model</code> and <code>Mask</code> layers, default behaviour of the mouse wheel and keys, settings of Undo. <a href="ug_gui_menu_file_preferences.html"><b>See more...</b></a>
+</p>
+<p>
+<b>Please note</b>, <code>MIB</code> stores its configuration parameters in a file that is automatically generated after closing of <code>MIB</code>
+</p>
 <details open onclick="state_check('4.1')" id="4.1"><summary> <b>Location of the configuration file</b> </summary>
 <div class="details-div">
 <p></p>
-<div><ul style="margin-bottom:0px;"><li><b>for Windows</b> - <span class="code">C:\Users\Username\MATLAB\mib.mat</span> or in the Windows TEMP directory (<span class="code">C:\Users\User-name\AppData\Local\Temp\</span>). The TEMP directory can be found and accessed with <code>Windows-&gt;Start button-&gt;%TEMP%</code> command</li>
-<li><b>for Linux</b> - <span class="code">/home/username/Matlab</span> or local TEMP directory</li>
-<li><b>for MacOS</b> - <span class="code">/Users/username/Matlab</span> or local TEMP directory</li></ul></div>
+<div>
+<ul>
+<li>
+<b>for Windows</b> - <span class="code">C:\Users\Username\MATLAB\mib.mat</span> or in the Windows TEMP directory (<span class="code">C:\Users\User-name\AppData\Local\Temp\</span>). The TEMP directory can be found and accessed with <code>Windows-&gt;Start button-&gt;%TEMP%</code> command</li>
+<li>
+<b>for Linux</b> - <span class="code">/home/username/Matlab</span> or local TEMP directory</li>
+<li>
+<b>for MacOS</b> - <span class="code">/Users/username/Matlab</span> or local TEMP directory</li>
+</ul>
+</div>
+
 </div>
 </details>
 <br>
 <p> <span style="line-height:8px; display:block; vertical-align:top">
 <br></span></p>
-<p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a></p>
+<p>
+<b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <code><b>--&gt;</b></code> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <code><b>--&gt;</b></code> <a href="ug_gui_menu.html"><b>Menu</b></a>
+</p>
 <p></p>
 <p>
 <script>
@@ -996,8 +1132,13 @@ A brief demonstration is available in the following video:
   toggle_details(0);
 </script>
 </p>
-<p class="footer"><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.7</p>
-<p id="iFrameBuf">&nbsp;</p></div><!--
+<p class="footer">
+
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<p id="iFrameBuf">&nbsp;</p>
+</div>
+<!--
 ##### SOURCE BEGIN #####
 %% File Menu
 % Provides access to some file handling actions for image dataset
@@ -1632,7 +1773,8 @@ A brief demonstration is available in the following video:
 
 
 ##### SOURCE END #####
---><script>
+-->
+<script>
 var allDetails   = document.getElementsByTagName('details');
 var contentDiv   = document.getElementsByClassName("content"); contentDiv = contentDiv[0];
 var returnButton = document.getElementById("return-link");
@@ -1661,8 +1803,5 @@ if(in_iFrame())
 }
 if (!contentDiv.getAttribute("data-isHelpBrowser") && !contentDiv.getAttribute("data-isMATLABCentral") ){
    document.getElementById("anchor-offsets").sheet.disabled = true; }
-var jumpLinks = document.getElementsByTagName("a");
-for (var i = 0; i < jumpLinks.length; i++){
-  href = jumpLinks[i].getAttribute("href");
-  if (href && href[0] == "#") { jumpLinks[i].onclick = jump_to;}}
-</script></body></html>
+</script></body>
+</html>
