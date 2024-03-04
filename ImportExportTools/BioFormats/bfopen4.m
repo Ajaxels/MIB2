@@ -53,6 +53,9 @@ function [result] = bfopen4(r, seriesNumber, sliceNo, options)
 if nargin < 4;     options = struct;   end
 if nargin < 3;     sliceNo = NaN;   end
 
+% Disable logging
+bfInitLogging('ERROR');
+
 if ~isfield(options, 'DimensionOrder')
     options.DimensionOrder = '';
 end
