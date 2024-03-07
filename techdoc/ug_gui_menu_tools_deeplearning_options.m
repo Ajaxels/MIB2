@@ -1,8 +1,6 @@
 %% Options tab
 % Some additional options and settings are available in this tab
 % 
-% <<images\DeepLearningOptions.png>>
-% 
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools
 % Menu*> |*-->*| <ug_gui_menu_tools_deeplearning.html *Deep learning segmentation*>
@@ -10,7 +8,8 @@
 %
 %% Custom training plot section
 %
-% <html>
+% <html> 
+% <img src="images\DeepLearningOptions.png"><br>
 % Settings for the custom training progress plot showing the loss function
 % during training. 
 % <ul>

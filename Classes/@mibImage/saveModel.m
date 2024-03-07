@@ -186,7 +186,8 @@ if strcmp(saveModelOptions.Format, 'Matlab format (*.model)') ...
     if saveModelOptions.showWaitbar
         wb = waitbar(0, '', 'Name', 'Saving the model', 'WindowStyle', 'modal');
         wb.Children.Title.Interpreter = 'none';
-        waitbar(0, wb, sprintf('%s\nPlease wait...', fnOut));
+        [pathnameStr, filenameStr, extStr] = fileparts(fnOut);
+        waitbar(0, wb, sprintf('%s\n%s', pathnameStr, [filenameStr extStr]));
         drawnow;
     end
     

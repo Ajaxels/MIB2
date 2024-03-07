@@ -7,10 +7,10 @@
 % |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_tools.html *Tools
 % Menu*> |*-->*| <ug_gui_menu_tools_deeplearning.html *Deep learning segmentation*>
 % 
-%
-% <<images\DeepLearning_FileTree.jpg>>
 % 
 %% Widgets and settings
+%
+% <<images\DeepLearning_FileTree.jpg>>
 %
 % [class.h3]Directory with images and labels for training[/class][br]
 % [ _used only for training_ ][br]

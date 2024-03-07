@@ -58,6 +58,28 @@ classdef mibMakeMovieController < handle
                     obj.updateWidgets();
             end
         end
+
+        function listner_ModelEvent_Callback(obj, src, evnt)
+            % callback function for detection of mibModel callbacks
+            % this function is recommended to use
+            if ~ismember('Parameter', fieldnames(evnt))
+                errordlg(sprintf('!!! Listner error !!!\n\nParameter field is required!\n\nExample,\nmotifyEvent.Name = "updateSegmentationTable";\neventdata = ToggleEventData(motifyEvent);\nnotify(obj, "modelNotify", eventdata);'), ...
+                'Listner error', 'non-modal');
+                return;
+            end
+            switch evnt.EventName
+                case 'modelNotify'
+                    % generic notification event to make the list of listners smaller,
+                    % call it as notify(obj, 'modelNotify', eventdata); see in mibModel.renameMaterial 
+                    switch evnt.Parameter.Name
+                        case 'updteAxesLimits_changed'  % update the segmentation table
+                            % update dimensions for the shown area
+                            if obj.View.handles.shownAreaRadio.Value
+                                obj.crop_Callback();
+                            end
+                    end
+            end
+        end
     end
     
     methods
@@ -92,7 +114,7 @@ classdef mibMakeMovieController < handle
             % add listner to obj.mibModel and call controller function as a callback
             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
             obj.listener{2} = addlistener(obj.mibModel, 'updateROI', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
-            
+            obj.listener{3} = addlistener(obj.mibModel, 'modelNotify', @(src,evnt) obj.listner_ModelEvent_Callback(obj, src, evnt));
         end
         
         function closeWindow(obj)

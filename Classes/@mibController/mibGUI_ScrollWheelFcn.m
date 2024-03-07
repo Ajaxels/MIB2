@@ -209,6 +209,11 @@ elseif strcmp(obj.mibView.handles.mouseWheelToolbarSw.State,'off')              
     obj.mibModel.setMagFactor(magFactor*r);    % update magFactor
     obj.mibModel.setAxesLimits(lims(:,1)', lims(:,2)');    % update axes limits
     obj.plotImage(0);
+    
+    % notify listeners that the image axes were changed -> mibSnapshotController
+    motifyEvent.Name = 'updteAxesLimits_changed';
+    eventdata = ToggleEventData(motifyEvent);
+    notify(obj.mibModel, 'modelNotify', eventdata);
 else    % slice change with the mouse wheel
     if strcmp(modifier,'shift')
         shift = obj.mibView.handles.mibChangeLayerSlider.UserData.sliderShiftStep;

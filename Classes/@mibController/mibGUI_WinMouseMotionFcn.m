@@ -84,7 +84,10 @@ if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer with
                     modelValues = obj.mibModel.I{obj.mibModel.Id}.model{1}(y,x, sliceNo, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1));
                 end
             else    % virtual stacking mode, hdd-resident
-                colorValues = obj.mibView.Iraw(yImg, xImg, :);
+                colorValues = 0;
+                if ~isempty(obj.mibView.Iraw)
+                    colorValues = obj.mibView.Iraw(yImg, xImg, :);
+                end
             end
         elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 1 % zx
             y = min([y, obj.mibModel.I{obj.mibModel.Id}.width]);

@@ -136,4 +136,10 @@ elseif strcmp(mode, 'zoom')
     end
     obj.mibModel.setMagFactor(newMagFactor, index);
 end
+
+% notify listeners that the image axes were changed -> mibSnapshotController
+motifyEvent.Name = 'updteAxesLimits_changed';
+eventdata = ToggleEventData(motifyEvent);
+notify(obj.mibModel, 'modelNotify', eventdata);
+
 end
