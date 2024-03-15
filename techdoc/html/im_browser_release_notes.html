@@ -9,7 +9,7 @@ To make changes, update the MATLAB code and republish this document.
 <title>Microscopy Image Browser Release Notes</title>
 <meta name="generator" content="MATLAB 23.2">
 <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
-<meta name="DC.date" content="2024-03-07">
+<meta name="DC.date" content="2024-03-15">
 <meta name="DC.source" content="im_browser_release_notes.m">
 <style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
@@ -536,7 +536,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <div>
 <ul>
 <li>
-<my-a onclick="jump_to()" href="#1">2.9003 / 28.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)</my-a>
+<my-a onclick="jump_to()" href="#1">2.9006 / 15.04.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)</my-a>
 </li>
 <li>
 <my-a onclick="jump_to()" href="#2">2.84 / 09.12.2022 (new 3D viewer and HDD alignement)</my-a>
@@ -610,8 +610,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </ul>
 </div>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="1">2.9003 / 28.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)</h2>
-<details open onclick="state_check('1.1')" id="1.1"><summary> <b>2.843 / 28.04.2023 (SAM segmentation, Multi-GPU training)</b> </summary>
+<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="1">2.9006 / 15.04.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)</h2>
+<details open onclick="state_check('1.1')" id="1.1"><summary> <b>2.9006 / 15.04.2024 (SAM segmentation, Multi-GPU training)</b> </summary>
 <div class="details-div">
 <p></p>
 <div>
@@ -682,7 +682,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <li>[2.9002] Updated GUI windows</li>
 <li>[2.9003] Added 'mib_prefs_override.mat' file to override default settings of MIB, pleased at the same location as mib.m</li>
 <li>[2.9004] Fix accidental incompatibility augmentation settings bug in DeepMIB</li>
-<li>[2.9005] Added update on zoom of the shown area dimensions for snapshot and movie maker tools 
+<li>[2.9005] Added update on zoom of the shown area dimensions for snapshot and movie maker tools</li>
+<li>[2.9006] Added usage of a reference slice for contrast normalization 
 </div>
 </details>
 <br></li>
@@ -1370,9 +1371,9 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 %
 %
 %
-%% 2.9003 / 28.02.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)
+%% 2.9006 / 15.04.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)
 % 
-% [dtls]<summary> *2.843 / 28.04.2023 (SAM segmentation, Multi-GPU training)* </summary>
+% [dtls]<summary> *2.9006 / 15.04.2024 (SAM segmentation, Multi-GPU training)* </summary>
 <div class="details-div">
 %
 % * *To comply with dependencies the MIB license was updated from GPLv2 to GPLv3*
@@ -1439,7 +1440,8 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 % * [2.9002] Updated GUI windows
 % * [2.9003] Added 'mib_prefs_override.mat' file to override default settings of MIB, pleased at the same location as mib.m
 % * [2.9004] Fix accidental incompatibility augmentation settings bug in DeepMIB
-% * [2.9005] Added update on zoom of the shown area dimensions for snapshot and movie maker tools 
+% * [2.9005] Added update on zoom of the shown area dimensions for snapshot and movie maker tools
+% * [2.9006] Added usage of a reference slice for contrast normalization
 % [/dtls]
 %
 %% 2.84 / 09.12.2022 (new 3D viewer and HDD alignement)

@@ -775,7 +775,7 @@ classdef mibController < handle
                 linefeedPos = strfind(urlText, sprintf('\n'));
                 availableVersion = str2double(urlText(1:linefeedPos(1)));
                 if availableVersion - obj.mibVersionNumeric > 0
-                    anwser = questdlg(sprintf('A new version %f of MIB is available!\nWould you like to download/install it?\n\nYou can always do that later from Menu->Help->Check for Update', availableVersion),'New version', 'Update now', 'Later', 'Update');
+                    anwser = questdlg(sprintf('A new version %f of MIB is available!\nWould you like to download/install it?\n\nYou can always do that later from Menu->Help->Check for Update', availableVersion),'New version', 'Update now', 'Later', 'Update now');
                     if strcmp(anwser, 'Update now')
                         obj.startController('mibUpdateCheckController', obj);
                     end

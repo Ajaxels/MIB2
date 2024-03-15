@@ -61,7 +61,7 @@ function contrastNormalization(obj, target, BatchOptIn)
 
 % Updates
 % 27.04.2019, IB updated for the batch mode
-
+% 13.03.2024, IB added usage of a reference slice for normalization
 
 global mibPath;
 
@@ -78,7 +78,7 @@ BatchOpt = struct();
 BatchOpt.Target = {target};     % define normalization type
 BatchOpt.Target{2} = {'Z stack','Time series','Masked area','Background'};
 BatchOpt.Mode = {'Automatic'}; % use Automatic to calculate Mean/Std or Manual to use predefined values BatchOpt.Mean and BatchOpt.Std
-BatchOpt.Mode{2} = {'Automatic', 'Manual'};
+BatchOpt.Mode{2} = {'Automatic', 'Manual', 'BasedOnSlice'};
 BatchOpt.Mean = num2str(obj.sessionSettings.normalizationMean); % Destination Mean value for the MAnual mode
 BatchOpt.Std = num2str(obj.sessionSettings.normalizationStd);   % Destination Std value for the MAnual mode
 BatchOpt.ColChannel = {'All channels'};     % Define color channels for normalization
@@ -87,6 +87,7 @@ BatchOpt.Exculude = {'Whole range'};        % Define intensities to exclude
 BatchOpt.Exculude{2} = {'Whole range', 'Excude blacks', 'Excude whites'};
 BatchOpt.MaskLayer = {'selection'};         % Mask layer for ''Masked area'' and 'Background' modes
 BatchOpt.MaskLayer{2} = {'selection', 'mask'};
+BatchOpt.ReferenceSliceNo = num2str(obj.I{obj.Id}.getCurrentSliceNumber);    % slice number to use for normalization, only BasedOnSlice
 BatchOpt.TimeSeriesNormalization = {'Based on current 2D slice'};   % for ''Time series'' automatic mode obtain Mean/Std from the current 2D section
 BatchOpt.TimeSeriesNormalization{2} = {'Based on current 2D slice', 'Based on complete 3D stack'};
 BatchOpt.id = obj.Id;
@@ -102,6 +103,7 @@ BatchOpt.mibBatchTooltip.Std = sprintf('[Only for Mode->Manual]\nnormalize inten
 BatchOpt.mibBatchTooltip.ColChannel = sprintf('Color channels for normalization');
 BatchOpt.mibBatchTooltip.Exculude = sprintf('Exclude black or while pixels from the calculations of Mean and Std values');
 BatchOpt.mibBatchTooltip.MaskLayer = sprintf('[Masked area and Background only]\nspecify the layer to obtain the masked areas');
+BatchOpt.mibBatchTooltip.ReferenceSliceNo = sprintf('[BasedOnSlice only]\nSpecify slice number to use as reference for normalization');
 BatchOpt.mibBatchTooltip.TimeSeriesNormalization = sprintf('[Time series only]\nCalculate mean/std for each 3D stack or only the shown Z-section');
 BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');
 
@@ -175,10 +177,11 @@ if nargin < 3
                        'Color channel:';
                        'Detect automatically or use provided values for average intensity of the stack and its standard deviation'; ...
                        'Average stack intensity (only for manual mode):'; 'Std of stack intensity (only for manual mode):'; ...
+                       'Slice number to use as reference (BasedOnSlice only):'; ...
                        'Intensities to consider:'};
-            defAns = {[BatchOpt.MaskLayer{2}, 1]; [BatchOpt.ColChannel{2}, 1]; [BatchOpt.Mode{2}, 1]; BatchOpt.Mean; BatchOpt.Std; [BatchOpt.Exculude{2}, 1]};
+            defAns = {[BatchOpt.MaskLayer{2}, 1]; [BatchOpt.ColChannel{2}, 1]; [BatchOpt.Mode{2}, 1]; BatchOpt.Mean; BatchOpt.Std; BatchOpt.ReferenceSliceNo; [BatchOpt.Exculude{2}, 1]};
             dlgTitle = 'Masked based normalization settings';
-            mibInputMultiDlgOpt.PromptLines = [1, 1, 2, 1, 1, 1];
+            mibInputMultiDlgOpt.PromptLines = [1, 1, 2, 1, 1, 1, 1];
             [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, mibInputMultiDlgOpt);
             if isempty(answer); return; end
             
@@ -187,15 +190,17 @@ if nargin < 3
             BatchOpt.Mode(1) = answer(3);
             BatchOpt.Mean = answer{4};
             BatchOpt.Std = answer{5};
-            BatchOpt.Exculude(1) = answer(6);
+            BatchOpt.ReferenceSliceNo = answer(6);
+            BatchOpt.Exculude(1) = answer(7);
         case 'Background'
             prompts = {'Mask layer:';
                        'Color channel:';
                        'Detect automatically or use provided values for average intensity of the stack and its standard deviation:'; ...
-                       'Background intensity (only for manual mode):'};
-            defAns = {[BatchOpt.MaskLayer{2}, 1]; [BatchOpt.ColChannel{2}, 1]; [BatchOpt.Mode{2}, 1]; BatchOpt.Mean};
+                       'Background intensity (only for manual mode):'; ...
+                       'Slice number to use as reference (BasedOnSlice only):'};
+            defAns = {[BatchOpt.MaskLayer{2}, 1]; [BatchOpt.ColChannel{2}, 1]; [BatchOpt.Mode{2}, 1]; BatchOpt.Mean; BatchOpt.ReferenceSliceNo};
             dlgTitle = 'Background based normalization settings';
-            mibInputMultiDlgOpt.PromptLines = [1, 1, 2, 1];
+            mibInputMultiDlgOpt.PromptLines = [1, 1, 2, 1, 1];
             [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, mibInputMultiDlgOpt);
             if isempty(answer); return; end
             
@@ -203,6 +208,7 @@ if nargin < 3
             BatchOpt.ColChannel(1) = answer(2);
             BatchOpt.Mode(1) = answer(3);
             BatchOpt.Mean = answer{4};
+            BatchOpt.ReferenceSliceNo = answer(5);
     end
     
     if strcmp(BatchOpt.Mode{1}, 'Manual')
@@ -339,6 +345,10 @@ for colCh = 1:numel(colorChannel)
             if strcmp(BatchOpt.Mode{1}, 'Automatic') 
                 imgMean = mean(mean_val(valIds));
                 imgStd = mean(std_val(valIds));
+            elseif strcmp(BatchOpt.Mode{1}, 'BasedOnSlice') 
+                sliceNo = str2double(BatchOpt.ReferenceSliceNo);
+                imgMean = mean(mean_val(sliceNo));
+                imgStd = mean(std_val(sliceNo));
             end
             
             if isempty(MeanValsString)
