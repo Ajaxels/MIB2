@@ -3378,10 +3378,10 @@ classdef mibDeepController < handle
                 res.BatchOpt.Workflow{2} = {'2D Semantic', '3D Semantic', '2D Patch-wise'}; % {'2D U-net', '2D SegNet', '2D DLv3 Resnet18', '3D U-net', '3D U-net Anisotropic', '2D Patch-wise Resnet18', '2D Patch-wise Resnet50'}
             end
 
-            if ~isstruct(res.AugOpt2DStruct.RandScale)
+            if ~isfield(res.AugOpt2DStruct, 'RandScale') || ~isstruct(res.AugOpt2DStruct.RandScale)
                 res.AugOpt2DStruct = mibDeepConvertOldAugmentationSettingsToNew(res.AugOpt2DStruct, '2D');
             end
-            if ~isstruct(res.AugOpt3DStruct.RandScale)
+            if ~isfield(res.AugOpt3DStruct, 'RandScale') || ~isstruct(res.AugOpt3DStruct.RandScale)
                 res.AugOpt3DStruct = mibDeepConvertOldAugmentationSettingsToNew(res.AugOpt3DStruct, '3D');
             end
         end
