@@ -39,13 +39,19 @@ pressedButtonHandle = sprintf('mibBufferToggle%i', obj.mibModel.Id);
 prevButtonHandle = ['mibBufferToggle' obj.mibModel.mibPrevId];
 
 % check for coming from a linked view
-if obj.mibView.handles.(pressedButtonHandle).ContextMenu.Children(3).Text(10) == pressedButtonStr && ...
-        obj.mibView.handles.(pressedButtonHandle).ContextMenu.Children(3).Text(16) == obj.mibModel.mibPrevId
+if isprop(obj.mibView.handles.(pressedButtonHandle), 'ContextMenu')     % in R2019b the property has UIContextMenu name
+    ContextMenuProperty = 'ContextMenu';
+else
+    ContextMenuProperty = 'UIContextMenu';
+end
+
+if obj.mibView.handles.(pressedButtonHandle).(ContextMenuProperty).Children(3).Text(10) == pressedButtonStr && ...
+        obj.mibView.handles.(pressedButtonHandle).(ContextMenuProperty).Children(3).Text(16) == obj.mibModel.mibPrevId
     if sum(obj.mibModel.I{obj.mibModel.Id}.dim_yxczt([1,2,4])) ~= sum(obj.mibModel.I{mibPrevId}.dim_yxczt([1,2,4]))
         warndlg(sprintf('!!! Error !!!\n\nDimensions of the datasets most likely mismatch!\nThe link mode is desabled!'),'Dimensions mismatch!');
 
-        obj.mibView.handles.(pressedButtonHandle).ContextMenu.Children(3).Text = 'Link view with... [Unlinked]';
-        obj.mibView.handles.(prevButtonHandle).ContextMenu.Children(3).Text = 'Link view with... [Unlinked]';
+        obj.mibView.handles.(pressedButtonHandle).(ContextMenuProperty).Children(3).Text = 'Link view with... [Unlinked]';
+        obj.mibView.handles.(prevButtonHandle).(ContextMenuProperty).Children(3).Text = 'Link view with... [Unlinked]';
         notify(obj.mibModel, 'stopProtocol');
     else
         obj.mibModel.I{obj.mibModel.Id}.slices = obj.mibModel.I{mibPrevId}.slices;

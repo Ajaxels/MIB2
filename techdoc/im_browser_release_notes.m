@@ -5,9 +5,9 @@
 %
 %
 %
-%% 2.9006 / 15.04.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)
+%% 2.9008 / 02.04.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)
 % 
-% [dtls][smry] *2.9007 / 25.04.2024 (SAM segmentation, Multi-GPU training)* [/smry]
+% [dtls][smry] *2.9008 / 02.04.2024 (SAM segmentation, Multi-GPU training)* [/smry]
 %
 % * *To comply with dependencies the MIB license was updated from GPLv2 to GPLv3*
 % * Added Segment anything (Standard and Microscopy) models for manual/semi-automatic segmentation
@@ -76,6 +76,7 @@
 % * [2.9005] Added update on zoom of the shown area dimensions for snapshot and movie maker tools
 % * [2.9006] Added usage of a reference slice for contrast normalization
 % * [2.9007] Fixed import of older versions of DeepMIB configs
+% * [2.9008] Fixed selection of 2D objects in Get Statistics; compatibility fix with R2019b
 % [/dtls]
 %
 %% 2.84 / 09.12.2022 (new 3D viewer and HDD alignement)

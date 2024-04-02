@@ -206,6 +206,13 @@ switch BatchOpt.Mode{1}
         
         if strcmp(BatchOpt.Mode{1}, 'Load part of dataset')
             options.customSections = 1;     % to load part of the dataset, for AM only
+            % check for correct extensions
+            [~,~,extList] = fileparts(BatchOpt.Filenames);
+            if sum(~ismember(lower(unique(extList)), {'.tif', '.tiff', '.am'})) > 0
+                errordlg(sprintf('!!! Error !!!\n\nIt is only possible to load part of the dataset for TIF and AM formats!'), 'Wrong format', 'modal');
+                notify(obj.mibModel, 'stopProtocol');
+                return;
+            end
         end
         options.virtual = obj.mibModel.I{BatchOpt.id}.Virtual.virtual;
         if ~isempty(BatchOpt.BioFormatsIndices)

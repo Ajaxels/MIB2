@@ -322,6 +322,9 @@ classdef mibDebrisRemovalController < handle
                     end
 
                     % get difference
+                    %dI1 = abs(double(I1)-double(I2));
+                    %dI2 = abs(double(I3)-double(I2));
+                    
                     dI1 = I1-I2;
                     dI2 = I3-I2;
                     dI = dI1+dI2;

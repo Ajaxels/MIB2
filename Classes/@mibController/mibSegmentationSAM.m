@@ -424,7 +424,7 @@ try
                 case 2  % Landmarks
                     % get labels
                     [labelsList, labelValues, labelPositions, indices] = obj.mibModel.I{BatchOpt.id}.getSliceLabels(z, t, getLabelsOpt);
-                    if isempty(labelsList); return; end
+                    if isempty(labelsList); continue; end
                     % keep only x,y
                     labelPositions = labelPositions(:,2:3);
                     imgOut = pointsSAM(imgIn, labelPositions, labelValues);

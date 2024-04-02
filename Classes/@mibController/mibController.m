@@ -102,10 +102,15 @@ classdef mibController < handle
 
                     % uncheck the linked views state
                     currentButtonHandle = sprintf('mibBufferToggle%i', obj.mibModel.Id);
-                    if obj.mibView.handles.(currentButtonHandle).ContextMenu.Children(3).Text(1) == '[' % check for "[Linked ..."
-                        secondButtonHandle = ['mibBufferToggle' obj.mibView.handles.(currentButtonHandle).ContextMenu.Children(3).Text(16)];
-                        obj.mibView.handles.(currentButtonHandle).ContextMenu.Children(3).Text = 'Link view with... [Unlinked]';
-                        obj.mibView.handles.(secondButtonHandle).ContextMenu.Children(3).Text = 'Link view with... [Unlinked]';
+                    if isprop(obj.mibView.handles.(currentButtonHandle), 'ContextMenu')     % in R2019b the property has UIContextMenu name
+                        ContextMenuProperty = 'ContextMenu';
+                    else
+                        ContextMenuProperty = 'UIContextMenu';
+                    end
+                    if obj.mibView.handles.(currentButtonHandle).(ContextMenuProperty).Children(3).Text(1) == '[' % check for "[Linked ..."
+                        secondButtonHandle = ['mibBufferToggle' obj.mibView.handles.(currentButtonHandle).(ContextMenuProperty).Children(3).Text(16)];
+                        obj.mibView.handles.(currentButtonHandle).(ContextMenuProperty).Children(3).Text = 'Link view with... [Unlinked]';
+                        obj.mibView.handles.(secondButtonHandle).(ContextMenuProperty).Children(3).Text = 'Link view with... [Unlinked]';
                     end
                     
                     obj.updateGuiWidgets();

@@ -40,6 +40,13 @@ function mibBufferToggleContext_Callback(obj, parameter, buttonID, BatchOptIn)
 
 global mibPath; % path to mib installation folder
 
+% in R2019b the property has UIContextMenu name
+if isprop(obj.mibView.handles.mibBufferToggle1, 'ContextMenu')     
+    ContextMenuProperty = 'ContextMenu';
+else
+    ContextMenuProperty = 'UIContextMenu';
+end
+
 %% Declaration of the BatchOpt structure
 BatchOpt = struct();
 switch parameter
@@ -63,7 +70,8 @@ switch parameter
         BatchOpt.ContainerB{2} = arrayfun(@(x) sprintf('Container %d', x), 1:obj.mibModel.maxId, 'UniformOutput', false);
         % generate a string for evaluation
         buttonIDHandle = sprintf('mibBufferToggle%i', buttonID);
-        linked = obj.mibView.handles.(buttonIDHandle).ContextMenu.Children(3).Text(1) == '['; % check for "[Linked..."
+       
+        linked = obj.mibView.handles.(buttonIDHandle).(ContextMenuProperty).Children(3).Text(1) == '['; % check for "[Linked..."
         if linked
             BatchOpt.Linked = false;
         else
@@ -170,13 +178,13 @@ switch parameter
         buttonIDHandle = sprintf('mibBufferToggle%i', buttonID);
 
         if BatchOpt.Linked == false
-            sourceButtonStr = obj.mibView.handles.(buttonIDHandle).ContextMenu.Children(3).Text(10);
+            sourceButtonStr = obj.mibView.handles.(buttonIDHandle).(ContextMenuProperty).Children(3).Text(10);
             sourceButtonStr = ['mibBufferToggle', sourceButtonStr];
-            destinationButtonStr = obj.mibView.handles.(buttonIDHandle).ContextMenu.Children(3).Text(16);
+            destinationButtonStr = obj.mibView.handles.(buttonIDHandle).(ContextMenuProperty).Children(3).Text(16);
             destinationButtonHandle = ['mibBufferToggle', destinationButtonStr];
             
-            obj.mibView.handles.(sourceButtonStr).ContextMenu.Children(3).Text = 'Link view with... [Unlinked]';
-            obj.mibView.handles.(destinationButtonHandle).ContextMenu.Children(3).Text = 'Link view with... [Unlinked]';
+            obj.mibView.handles.(sourceButtonStr).(ContextMenuProperty).Children(3).Text = 'Link view with... [Unlinked]';
+            obj.mibView.handles.(destinationButtonHandle).(ContextMenuProperty).Children(3).Text = 'Link view with... [Unlinked]';
         else
             if obj.mibModel.I{buttonID}.volren.show == 1; return; end
             if nargin < 4
@@ -201,13 +209,13 @@ switch parameter
             
             destinationButtonHandle = sprintf('mibBufferToggle%i', destinationButton);
             % check whether the destination is already linked
-            if obj.mibView.handles.(destinationButtonHandle).ContextMenu.Children(3).Text(1) == '['
+            if obj.mibView.handles.(destinationButtonHandle).(ContextMenuProperty).Children(3).Text(1) == '['
                 warndlg(sprintf('!!! Warnining !!!\n\nThe second dataset in %s is already linked!\nUnlink it first and repeat the operation', BatchOpt.ContainerB{1}), 'Already linked!');
                 notify(obj.mibModel, 'stopProtocol');
                 return;
             end
-            obj.mibView.handles.(buttonIDHandle).ContextMenu.Children(3).Text = sprintf('[Linked: %i <-> %i] press to unlink', buttonID, destinationButton);
-            obj.mibView.handles.(destinationButtonHandle).ContextMenu.Children(3).Text = sprintf('[Linked: %i <-> %i] press to unlink', destinationButton, buttonID);
+            obj.mibView.handles.(buttonIDHandle).(ContextMenuProperty).Children(3).Text = sprintf('[Linked: %i <-> %i] press to unlink', buttonID, destinationButton);
+            obj.mibView.handles.(destinationButtonHandle).(ContextMenuProperty).Children(3).Text = sprintf('[Linked: %i <-> %i] press to unlink', destinationButton, buttonID);
         end
         % notify the batch mode
         eventdata = ToggleEventData(BatchOpt);

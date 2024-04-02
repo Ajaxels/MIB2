@@ -157,13 +157,16 @@ value(1) = str2double(handles.highlight1.String);
 value(2) = str2double(handles.highlight2.String);
 value = sort(value);
 data = handles.statTable.Data;
+
 if size(data,1) < 2
     errordlg(sprintf('!!! Error !!!\n\nStats values are empty!\nPlease calculate statistics values first!\nPress the Run button'), 'No data');
     return; 
 end
 
 indeces = find(data(:,2) >= value(1) & data(:,2) <= value(2));
-object_list = data(indeces, 1);
+%object_list = data(indeces, 1);
+% from 2.9 the object Ids are encoded in row header
+object_list = cellfun(@(x) str2num(x), [handles.statTable.RowName(indeces)]);
 handles.winController.highlightSelection(object_list);
 end
 
