@@ -320,8 +320,8 @@ elseif strcmp(operation, 'interact')
             end
         case 'Segment-anything model'
             % add labels
-            [w, h, z, t] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 0);
-            
+            %[w, h, z, t] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 0);
+            [w, h, z, t] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 1); % to enable the interactive mode also in YZ/XZ
 
             if obj.mibView.handles.mibSegmSAMMethod.Value == 1    %     'Interactive'
                 % remove shift modifier

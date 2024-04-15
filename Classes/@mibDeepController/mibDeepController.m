@@ -175,7 +175,9 @@ classdef mibDeepController < handle
         sessionSettings
         % structure for the session settings
         % .countLabelsDir - directory with labels to count, used in count labels function
-
+        TrainEngine
+        % temp property to test trainnet function for training: can be
+        % 'trainnet' or 'trainNetwork'
     end
 
     events
@@ -3146,8 +3148,15 @@ classdef mibDeepController < handle
                     "'CheckpointPath', CheckpointPath,"
                     "'ExecutionEnvironment', executionEnvironment,"
                     ], ' ');
+    
+                % To calculate AccuracyMetric, Metrics='accuracy' is required
+                % for trainnet
+                if strcmp(obj.TrainEngine, 'trainnet')
+                    evalTrainingOptions = join([evalTrainingOptions, ...
+                            "'Metrics', 'accuracy',"
+                            ], ' ');
+                end
 
-                
                 if mibDeepTrainingProgressStruct.useCustomProgressPlot
                     % add output function and dispatch in background option
                     switch obj.View.Figure.GPUDropDown.Value
@@ -3270,7 +3279,6 @@ classdef mibDeepController < handle
                 % generate TrainingOptions structure
                 eval(evalTrainingOptions);
             catch err
-                %obj.showErrorDialog(err, 'Wrong training options');
                 mibShowErrorDialog(obj.View.gui, err, 'Wrong training options');
                 if obj.BatchOpt.showWaitbar; delete(obj.wb); return; end
             end

@@ -23,6 +23,10 @@ global counter;     % for patch test
 global mibDeepStopTraining
 global mibDeepTrainingProgressStruct
 
+obj.TrainEngine = 'trainNetwork'; % use this later as one of the parameters for main obj.BatchOpt
+%obj.TrainEngine = 'trainnet'; % use this later as one of the parameters for main obj.BatchOpt
+if  obj.mibController.matlabVersion < 24.1; obj.TrainEngine = 'trainNetwork'; end
+
 counter = 1;
 mibDeepTrainingProgressStruct.emergencyBrake = false;   % emergency brake without finishing the weights
 
@@ -820,11 +824,54 @@ fprintf('Preparation for training is finished, elapsed time: %f\n', toc(trainTim
 trainTimer = tic;
 try
     mibDeepStopTraining = false;
-    [net, info] = trainNetwork(AugTrainDS, lgraph, TrainingOptions);
-    
-    %lgraph2 = removeLayers(lgraph,  lgraph.Layers(end).Name);
-    %net = dlnetwork(lgraph2);
-    %[net, info] = trainnet(AugTrainDS, net, 'crossentropy', TrainingOptions);
+    %obj.TrainEngine = 'trainNetwork'; % use this later as one of the parameters for main obj.BatchOpt
+    %obj.TrainEngine = 'trainnet'; % use this later as one of the parameters for main obj.BatchOpt
+    switch obj.TrainEngine
+        case 'trainNetwork'
+            [net, info] = trainNetwork(AugTrainDS, lgraph, TrainingOptions);
+        case 'trainnet'
+            % testing trainnet
+
+            % requires to update prediction part using
+            % X = single(im);
+            % scores = predict(net,X);
+            % [label,score] = scores2label(scores,classNames);
+
+            % remove the last layer as it is not used in trainnet
+            lgraph2 = removeLayers(lgraph,  lgraph.Layers(end).Name);
+            % convert to dlnetwork object 
+            net = dlnetwork(lgraph2); 
+            switch obj.BatchOpt.T_SegmentationLayer{1} % define the loss function
+                case 'pixelClassificationLayer'
+                    [net, info] = trainnet(AugTrainDS, net, 'crossentropy', TrainingOptions);  % 10.89 vs 15.69 seconds
+                    %[net, info] = trainnet(AugTrainDS, net, 'binary-crossentropy', TrainingOptions); 
+                case 'dicePixelCustomClassificationLayer'
+                    if obj.SegmentationLayerOpt.dicePixelCustom.ExcludeExerior
+                        % exclude the background class from calculation of
+                        % the loss function
+                        useClasses = 2:obj.BatchOpt.T_NumberOfClasses{1};
+                    else
+                        useClasses = [];
+                    end
+
+                    switch obj.BatchOpt.Workflow{1}
+                        case '3D Semantic'
+                            dataDimension = 3;
+                        case {'2D Semantic', '2D Patch-wise', '2.5D Semantic'}
+                            if strcmp(obj.BatchOpt.Architecture{1}(1:3), 'Z2C') || strcmp(obj.BatchOpt.Workflow{1}(1:2), '2D')
+                                dataDimension = 2;
+                            else    % '2.5D Semantic'
+                                dataDimension = 2.5;
+                            end
+                    end
+                    [net, info] = trainnet(AugTrainDS, net, @(Y,T)customDiceForwardLoss(Y,T, dataDimension, useClasses), TrainingOptions);
+                case {'focalLossLayer', 'dicePixelClassificationLayer'}
+                    uialert(obj.View.gui, ...
+                        sprintf('!!! Error !!!\n\n%s is not yet implemented for the trainnet engine!\nSwitch to another segmentation layer or use trainNetwork engine', obj.BatchOpt.T_SegmentationLayer{1}), ...
+                        'Not implemented', 'Icon', 'error');
+                    return;
+            end
+    end
 catch err
     mibShowErrorDialog(obj.View.gui, err, 'Train network error');
     return;

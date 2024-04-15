@@ -47,7 +47,7 @@ stopState =  false;
 % get max number of points in the progress plot to show
 maxPoints = trainingProgressOptions.O_NumberOfPoints;
 
-if progressStruct.Iteration == 0
+if isempty(progressStruct.Iteration) || progressStruct.Iteration == 0
     mibDeepTrainingProgressStruct.TrainXvec = zeros([maxPoints, 1]);  % vector of iteration numbers for training
     mibDeepTrainingProgressStruct.TrainLoss = zeros([maxPoints, 1]);  % training loss vector
     mibDeepTrainingProgressStruct.TrainAccuracy = zeros([maxPoints, 1]);  % training accuracy vector
@@ -333,15 +333,23 @@ else
     end
     mibDeepTrainingProgressStruct.AccTrainingValue.Text = sprintf('%.2f%%', progressStruct.TrainingAccuracy);
 
-    mibDeepTrainingProgressStruct.ElapsedTime.Text = ...
-        sprintf('Elapsed time: %.0f h %.0f min %.2d sec', floor(progressStruct.TimeSinceStart/3600), floor(mod(round(progressStruct.TimeSinceStart),3600)/60), mod(round(progressStruct.TimeSinceStart),60));
-    timerValue = progressStruct.TimeSinceStart/progressStruct.Iteration*(mibDeepTrainingProgressStruct.maxIter-progressStruct.Iteration);
-    mibDeepTrainingProgressStruct.TimeToGo.Text = ...
-        sprintf('Time to go: ~%.0f h %.0f min %.2d sec', floor(timerValue/3600), floor(mod(round(timerValue),3600)/60), mod(round(timerValue),60));
+    if isfield(progressStruct, 'TimeSinceStart') % when trainNetwork is used
+        mibDeepTrainingProgressStruct.ElapsedTime.Text = ...
+            sprintf('Elapsed time: %.0f h %.0f min %.2d sec', floor(progressStruct.TimeSinceStart/3600), floor(mod(round(progressStruct.TimeSinceStart),3600)/60), mod(round(progressStruct.TimeSinceStart),60));
+        timerValue = progressStruct.TimeSinceStart/progressStruct.Iteration*(mibDeepTrainingProgressStruct.maxIter-progressStruct.Iteration);
+        mibDeepTrainingProgressStruct.TimeToGo.Text = ...
+            sprintf('Time to go: ~%.0f h %.0f min %.2d sec', floor(timerValue/3600), floor(mod(round(timerValue),3600)/60), mod(round(timerValue),60));
+        mibDeepTrainingProgressStruct.BaseLearnRate.Text = sprintf('Base learn rate: %.3e', progressStruct.BaseLearnRate);
+    else %  when trainnet is used
+        mibDeepTrainingProgressStruct.ElapsedTime.Text = sprintf('Elapsed time: %s sec', progressStruct.TimeElapsed);
+        timerValue = progressStruct.TimeElapsed/progressStruct.Iteration*(mibDeepTrainingProgressStruct.maxIter-progressStruct.Iteration);
+        mibDeepTrainingProgressStruct.TimeToGo.Text = sprintf('Time to go: ~%s sec', timerValue);
+        mibDeepTrainingProgressStruct.BaseLearnRate.Text = sprintf('Base learn rate: %.3e', progressStruct.LearnRate); % renamed to LearnRate
+    end
     mibDeepTrainingProgressStruct.Epoch.Text = sprintf('Epoch: %d of %d', progressStruct.Epoch, trainingProgressOptions.TrainingOpt.MaxEpochs);
     mibDeepTrainingProgressStruct.IterationNumberValue.Text = sprintf('%d of %d', progressStruct.Iteration, round(mibDeepTrainingProgressStruct.maxIter));
     mibDeepTrainingProgressStruct.ProgressGauge.Value = progressStruct.Iteration/mibDeepTrainingProgressStruct.maxIter*100;
-    mibDeepTrainingProgressStruct.BaseLearnRate.Text = sprintf('Base learn rate: %.3e', progressStruct.BaseLearnRate);
+    
 
     if ~isempty(progressStruct.ValidationLoss)
         mibDeepTrainingProgressStruct.ValidationXvec(mibDeepTrainingProgressStruct.ValidationXvecIndex) = progressStruct.Iteration;
