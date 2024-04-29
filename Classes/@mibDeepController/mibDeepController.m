@@ -1239,7 +1239,7 @@ classdef mibDeepController < handle
                         [file, path] = mib_uigetfile({'*.mibDeep;', 'Deep MIB network files (*.mibDeep)';
                             '*.mat', 'Mat files (*.mat)'}, 'Open network file', ...
                             obj.BatchOpt.NetworkFilename);
-                        if file == 0; return; end
+                        if isequal(file , 0); return; end
                         networkName = fullfile(path, file{1});
                     end
                     if exist(networkName, 'file') ~= 2
