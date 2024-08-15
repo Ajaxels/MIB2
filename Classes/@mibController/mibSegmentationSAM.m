@@ -174,6 +174,11 @@ if isempty(obj.mibModel.mibPython)
         insert(py.sys.path, int64(0), samPath);
     end
 
+    %% SAM 2 TEST
+    %pyrun('import torch');
+    %pyrun('from sam2.build_sam import build_sam2');
+    %pyrun('from sam2.sam2_image_predictor import SAM2ImagePredictor');
+
     % import required modules
     pyrun('import cv2');
     pyrun('import numpy as np')

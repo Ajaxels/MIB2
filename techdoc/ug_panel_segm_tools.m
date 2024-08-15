@@ -839,9 +839,11 @@
 % destination layer</li>
 % <li><b>Subtract</b>, subtract segmentation results from the objects of
 % the selected destination layer</li>
-% <li><b>add, +next material</b>, (<em><b>only for models with 65535+
-% materials and destination: model</b></em>). Add segmentation results to
-% the selected material and add a new material to the model. </li>
+% <li><b>add, +next material</b>, add segmentation results to
+% the selected material and automatically add a new material to the model. 
+% <em><b>This mode is only for models with 65535+ and when the destination
+% layer is model or selection.</b></em>
+% </li>
 % </ul>
 % <li>Use <span class="kbd"><img style="height: 1em"
 % src="images\LMB_click.svg"> left mouse click</span> to specify a point on

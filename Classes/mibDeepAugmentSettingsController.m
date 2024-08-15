@@ -390,7 +390,7 @@ classdef mibDeepAugmentSettingsController < handle
                         'FileExtensions', '.mibImg', 'IncludeSubfolders', false, 'ReadFcn', @mibDeepStoreLoadImages);
                 end
             catch err
-                obj.mibDeep.showErrorDialog(err, 'Missing files');
+                mibShowErrorDialog(obj.View.gui, err, 'Missing files');
                 if obj.mibDeep.BatchOpt.showWaitbar; delete(obj.mibDeep.wb); end
                 return;
             end

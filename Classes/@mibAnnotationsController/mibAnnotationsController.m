@@ -244,6 +244,8 @@ classdef mibAnnotationsController < handle
                     [filename, path, indx] = mib_uigetfile(...
                         {'*.ann;',  'Matlab format (*.ann)'; ...
                         '*.csv;',  'CSV format (*.csv)'; ...
+                        '*.landmarkAscii;',  'landmarkAscii Amira format (*.landmarkAscii)'; ...
+                        '*.landmarkBin;',  'landmarkBin Amira format (*.landmarkBin)'; ...
                         '*.*',  'All Files (*.*)'}, ...
                         'Load annotations...', obj.mibModel.myPath);
                     if isequal(filename, 0); return; end % check for cancel
@@ -320,6 +322,27 @@ classdef mibAnnotationsController < handle
                                     end
                                 end
                             end
+                        case {3, 4}  % landmarkAscii file
+                            % get points as matrix [pointId, [x,y,z]]
+                            amiraLandmarks = amiraLandmarks2points(fullFilename);
+                            % add Time dimension
+                            res = struct();
+                            res.labelText = repmat({'AmiraLandmark'}, [size(amiraLandmarks,1), 1]);
+                            res.labelValue = ones([size(amiraLandmarks,1), 1]);
+                            res.labelPosition = ones([size(amiraLandmarks,1), 4]);
+                            
+                            % convert from units to pixels
+                            % and rearrange to [z, x, y] format from [x, y, z] 
+                            bb = obj.mibModel.I{obj.mibModel.Id}.getBoundingBox();
+                            pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
+
+                            % z
+                            res.labelPosition(:,1) = round((amiraLandmarks(:,3) - bb(5) + pixSize.z)/pixSize.z);
+                            % x
+                            res.labelPosition(:,2) = (amiraLandmarks(:,1) - bb(1) + pixSize.x/2)/pixSize.x; % x
+                            % y
+                            res.labelPosition(:,3) = (amiraLandmarks(:,2) - bb(3) + pixSize.y/2)/pixSize.y; 
+
                         otherwise
                             return
                     end
@@ -385,8 +408,8 @@ classdef mibAnnotationsController < handle
             
             Filters = {'*.ann',  'Matlab format (*.ann)';...
                        '*.csv',   'Comma-separated value (*.csv)';...
-                       '*.landmarksAscii',   'Amira landmarks ASCII (*.landmarksAscii)';...
-                       '*.landmarksBin',   'Amira landmarks BINARY(*.landmarksBin)';...
+                       '*.landmarkAscii',   'Amira landmarks ASCII (*.landmarkAscii)';...
+                       '*.landmarkBin',   'Amira landmarks BINARY(*.landmarkBin)';...
                        '*.psi',   'PSI format ASCII(*.psi)';...
                        '*.xls',   'Excel format (*.xls)'; };
             [filename, path, FilterIndex] = uiputfile(Filters, 'Save annotations...', fn_out); %...
@@ -436,10 +459,10 @@ classdef mibAnnotationsController < handle
                     recalcCoordinates = questdlg(sprintf('Recalculate annotations with respect to the current bounding box or save as they are?'),...
                         'Recalculate coordinates', 'Recalculate', 'Save as they are', 'Recalculate');
                 
-                    if strcmp(Filters{FilterIndex+numel(Filters)/2}, 'Amira landmarks ASCII (*.landmarksAscii)')
-                        options.format = 'landmarksAscii';
+                    if strcmp(Filters{FilterIndex+numel(Filters)/2}, 'Amira landmarks ASCII (*.landmarkAscii)')
+                        options.format = 'landmarkAscii';
                     else
-                        options.format = 'landmarksBin';
+                        options.format = 'landmarkBin';
                     end
                     if strcmp(recalcCoordinates, 'Recalculate')
                         options.convertToUnits = true;
@@ -464,7 +487,9 @@ classdef mibAnnotationsController < handle
                 sliceNames = repmat({[sliceNames, ext]}, [max(options.labelPosition(:,1)), 1]);
             end
 
-            options.sliceNames = sliceNames(round(options.labelPosition(:,1)));
+            sliceValsZ = round(options.labelPosition(:,1));
+            sliceValsZ(sliceValsZ<=0) = [];
+            options.sliceNames = sliceNames(sliceValsZ);
 
             obj.mibModel.I{obj.mibModel.Id}.hLabels.saveToFile(fn_out, options);
         end

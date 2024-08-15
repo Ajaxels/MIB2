@@ -430,7 +430,13 @@ else
         if isempty(model)  % dilate to all pixels around sliceIn
             sliceOut = imdilate(sliceIn, se);
         else                % dilate using pixels only from the selected countour
-            sliceOut = imdilate(sliceIn, se) & bitor(model, sliceIn);
+            if isa(model, 'uint8')
+                sliceOut = imdilate(sliceIn, se) & bitor(model, sliceIn);
+            elseif isa(model, 'uint16')
+                sliceOut = imdilate(sliceIn, se) & bitor(model, uint16(sliceIn));
+            else
+                sliceOut = imdilate(sliceIn, se) & bitor(model, uint32(sliceIn));
+            end
         end
     end
 end

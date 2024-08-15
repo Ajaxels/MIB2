@@ -168,7 +168,7 @@ for index = 1:numel(xVec)
         currSelection2 = zeros(size(currSelection), 'uint8');
         currSelection2(y, x) = 1;
         currSelection2 = bwdist(currSelection2); 
-        currSelection2 = uint8(currSelection2 <= radius);
+        currSelection2 = uint8(currSelection2 <= radius(1));
     else
         currSelection2 = zeros(size(currSelection), 'uint8')+1;
     end

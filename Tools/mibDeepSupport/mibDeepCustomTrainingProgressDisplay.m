@@ -71,7 +71,7 @@ if isempty(progressStruct.Iteration) || progressStruct.Iteration == 0
     mibDeepTrainingProgressStruct.UIFigure.Name = sprintf('Training progress (%s)', netName);
 
     % Create GridLayouts
-    mibDeepTrainingProgressStruct.GridLayout = uigridlayout(mibDeepTrainingProgressStruct.UIFigure);
+    mibDeepTrainingProgressStruct.GridLayout = uigridlayout(mibDeepTrainingProgressStruct.UIFigure, [2, 1]);
     mibDeepTrainingProgressStruct.GridLayout.ColumnWidth = {'1x'};
 
     mibDeepTrainingProgressStruct.GridLayout2 = uigridlayout(mibDeepTrainingProgressStruct.GridLayout);

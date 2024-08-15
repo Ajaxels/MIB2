@@ -112,7 +112,7 @@ switch tag
         options.WindowWidth = 2.5;    % [optional] make window x1.2 times wider
         options.Columns = 2;    % [optional] define number of columns
         options.Focus = 1;      % [optional] define index of the widget to get focus
-        options.HelpUrl = 'http:\\mib.helsinki.fi'; % [optional], an url for the Help button
+        options.HelpUrl = 'https://mib.helsinki.fi/downloads_systemreq_sam.html'; % [optional], an url for the Help button
         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
         if isempty(answer); return; end
         

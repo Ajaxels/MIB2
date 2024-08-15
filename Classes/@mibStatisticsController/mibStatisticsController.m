@@ -467,6 +467,7 @@ classdef mibStatisticsController < handle
             % @li 'hist' - show histogram distribution for the selected objects
             % @li 'newLabel', 'addLabel', 'removeLabel' - generate or update the MIB annotations
             % @li 'copyColumn' - copy selected column to the clipboard
+            % @li 'colormap' - color materials based on their value
             
             global mibPath;
             
@@ -561,31 +562,34 @@ classdef mibStatisticsController < handle
                     colIds = unique(obj.indices(:,1));
                     labelList = repmat({[materialName property]}, [numel(colIds), 1]);
                     % linear indices of objects
-                    objIndices = str2num(cell2mat(obj.View.handles.statTable.RowName(colIds))); %#ok<ST2NM>
+                    linearObjIndices = str2num(cell2mat(obj.View.handles.statTable.RowName(colIds))); %#ok<ST2NM>
+
+                    objIndices = data(colIds, 1); % absolute indices of objects
                     
                     if obj.mibModel.sessionSettings.StatToAnnotation.AddObjId     % add indices of objects
                         noDecimails = numel(num2str(max(objIndices)));
                         if noDecimails <= 2
-                            labelList = cellfun(@(x, y) sprintf('%s_%.2d', x, str2double(y)), labelList, obj.View.handles.statTable.RowName(colIds), 'UniformOutput', false);
+                            % labelList = cellfun(@(x, y) sprintf('%s_%.2d', x, str2double(y)), labelList, obj.View.handles.statTable.RowName(colIds), 'UniformOutput', false);
+                            labelList = arrayfun(@(x, y) sprintf('%s_%.2d', cell2mat(x), y), labelList, objIndices, 'UniformOutput', false);
                         elseif noDecimails == 3
-                            labelList = cellfun(@(x, y) sprintf('%s_%.3d', x, str2double(y)), labelList, obj.View.handles.statTable.RowName(colIds), 'UniformOutput', false);                        
+                            labelList = arrayfun(@(x, y) sprintf('%s_%.3d', cell2mat(x), y), labelList, objIndices, 'UniformOutput', false);
                         elseif noDecimails == 4
-                            labelList = cellfun(@(x, y) sprintf('%s_%.4d', x, str2double(y)), labelList, obj.View.handles.statTable.RowName(colIds), 'UniformOutput', false);                        
+                            labelList = arrayfun(@(x, y) sprintf('%s_%.4d', cell2mat(x), y), labelList, objIndices, 'UniformOutput', false);
                         elseif noDecimails == 5
-                            labelList = cellfun(@(x, y) sprintf('%s_%.5d', x, str2double(y)), labelList, obj.View.handles.statTable.RowName(colIds), 'UniformOutput', false);
+                            labelList = arrayfun(@(x, y) sprintf('%s_%.5d', cell2mat(x), y), labelList, objIndices, 'UniformOutput', false);
                         elseif noDecimails == 6
-                            labelList = cellfun(@(x, y) sprintf('%s_%.6d', x, str2double(y)), labelList, obj.View.handles.statTable.RowName(colIds), 'UniformOutput', false);
+                            labelList = arrayfun(@(x, y) sprintf('%s_%.6d', cell2mat(x), y), labelList, objIndices, 'UniformOutput', false);
                         elseif noDecimails == 7
-                            labelList = cellfun(@(x, y) sprintf('%s_%.7d', x, str2double(y)), labelList, obj.View.handles.statTable.RowName(colIds), 'UniformOutput', false);          
+                            labelList = arrayfun(@(x, y) sprintf('%s_%.7d', cell2mat(x), y), labelList, objIndices, 'UniformOutput', false);
                         else
-                            labelList = cellfun(@(x, y) sprintf('%s_%.10d', x, str2double(y)), labelList, obj.View.handles.statTable.RowName(colIds), 'UniformOutput', false);          
+                            labelList = arrayfun(@(x, y) sprintf('%s_%.10d', cell2mat(x), y), labelList, objIndices, 'UniformOutput', false);
                         end
                     end
                     
                     labelValues = data(colIds, 2);
                     positionList = arrayfun(@(index) data(index, 3), colIds);
-                    positionList(:,2) = arrayfun(@(objId) obj.STATS(objId).Centroid(1), objIndices);
-                    positionList(:,3) = arrayfun(@(objId) obj.STATS(objId).Centroid(2), objIndices);
+                    positionList(:,2) = arrayfun(@(objId) obj.STATS(objId).Centroid(1), linearObjIndices);
+                    positionList(:,3) = arrayfun(@(objId) obj.STATS(objId).Centroid(2), linearObjIndices);
                     positionList(:,4) = arrayfun(@(index) data(index, 4), colIds);
                     
                     if strcmp(parameter, 'removeLabel')
@@ -605,6 +609,27 @@ classdef mibStatisticsController < handle
                     %                         cb = get(hlabelsGui.refreshBtn,'callback');
                     %                         feval(cb, hlabelsGui.refreshBtn, []);
                     %                     end
+                % case 'colormap'
+                %     if obj.mibModel.I{obj.mibModel.Id}.modelType < 65535
+                %         errordlg(sprintf('!!! Error !!!\n\nColoring of materials is implemented only for models with 65535+ materials!\n\nYou can use Objects to a new model option from the context menu and after that convert the model to a model with 65535 materials'), 'Wrong model');
+                %         return;
+                %     end
+                % 
+                %     val = data(:, 2);
+                %     noObjects = numel(val);
+                % 
+                %     prompts = {'Colormap name:'; 'Min value:'; 'Max value'};
+                %     defAns = {{'parula', 'turbo', 1}; num2str(min(val)); num2str(max(val))};
+                %     dlgTitle = 'New colormap settings';
+                %     options.WindowStyle = 'normal';
+                %     options.PromptLines = [1, 1, 1];
+                %     answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                %     if isempty(answer); return; end
+                % 
+                %     % generate palette
+                %     cmd = sprintf('palette =  colormap(%s(65535));', answer{1});
+                %     eval(cmd);
+                    
                 otherwise
                     obj.statTable_CellSelectionCallback([], parameter);
             end

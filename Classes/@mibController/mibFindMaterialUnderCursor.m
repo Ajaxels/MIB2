@@ -70,8 +70,18 @@ else
             obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{obj.mibModel.I{obj.mibModel.Id}.selectedMaterial-2} = num2str(materialIndex);
             eventdata2.Indices = [obj.mibModel.I{obj.mibModel.Id}.selectedMaterial, 2];
         else
-            obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{1} = num2str(materialIndex);
-            eventdata2.Indices = [3, 2];
+            if ~obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial
+                obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{1} = num2str(materialIndex);
+                eventdata2.Indices = [3, 2];
+            else
+                obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial-2} = num2str(materialIndex);
+
+                % update segmentation table
+                motifyEvent.Name = 'updateSegmentationTable';
+                eventdata = ToggleEventData(motifyEvent);
+                notify(obj.mibModel, 'modelNotify', eventdata);
+                return;
+            end
         end
     end
 end

@@ -26,6 +26,12 @@ function palette = mibGenerateDefaultSegmentationPalette(paletteName, colorsNo)
 % Return values:
 % palette: matrix [colorId][R G B] in range from 0 to 1 with colors
 
+% Updates
+% 240605: added definition of the color seed for the random palette generator
+
+
+global mibPath;
+
 if nargin < 2; colorsNo = 6; end
 if nargin < 1; paletteName = 'Default, 6 colors'; end
 
@@ -162,6 +168,14 @@ switch paletteName
         palette =  colormap(hot(colorsNo));
     case 'Random Colors'
         rng('shuffle');     % randomize generator
+        randomSeed = round(rand()*100000);
+        prompts = {'Random seed number';};
+        defAns = {num2str(randomSeed)};
+        dlgTitle = 'Specify random seed';
+        answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle);
+        if isempty(answer); return; end
+
+        rng(str2double(answer{1}), 'twister');
         palette =  colormap(rand([colorsNo,3]));
 end
 

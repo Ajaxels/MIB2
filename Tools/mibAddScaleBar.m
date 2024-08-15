@@ -122,7 +122,7 @@ if isempty(DejaVuSansMono)
         model(:, round(shiftX*resizeFactor):round(shiftX*resizeFactor)+size(model1,2)-1,:) = model1;
     end
     scaleBarText = strrep(scaleBarText, 'u', char(956));    % replace u sign
-    model = insertText(model, [scaleBarLength+10*resizeFactor, round(scaleBarHeight/2)], scaleBarText, 'FontSize', round(15*resizeFactor), ...
+    model = insertText(model, [scaleBarLength+10*resizeFactor, round(scaleBarHeight/2)], scaleBarText, 'FontSize', min([200 round(15*resizeFactor)]), ...
         'BoxOpacity',0, 'TextColor', [fgColor, fgColor, fgColor], 'AnchorPoint', 'LeftCenter');
 else
     options.color = [fgColor, fgColor, fgColor];

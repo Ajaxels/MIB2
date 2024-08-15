@@ -575,6 +575,10 @@ else
                 if selMaterial == 0 || isnan(selMaterial)
                     p = mibRenderModel(model, selMaterial, obj.pixSize, bounding_box, obj.modelMaterialColors, NaN, savingOptions);
                     for i=1:numel(p)
+                        % check whether the material exists
+                        if isa(p(i), 'matlab.graphics.GraphicsPlaceholder')
+                            continue; 
+                        end
                         fv = struct('faces', p(i).Faces, 'vertices', p(i).Vertices);
                         stlwrite(sprintf('%s_%s.stl', fnOut(1:end-4), obj.modelMaterialNames{i}), fv, 'FaceColor', p(i).FaceColor*255);
                     end

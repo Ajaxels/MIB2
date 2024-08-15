@@ -9,7 +9,7 @@ To make changes, update the MATLAB code and republish this document.
 <title>Segmentation Tools</title>
 <meta name="generator" content="MATLAB 23.2">
 <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
-<meta name="DC.date" content="2024-03-15">
+<meta name="DC.date" content="2024-06-17">
 <meta name="DC.source" content="ug_panel_segm_tools.m">
 <style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
@@ -1542,9 +1542,11 @@ new segmentation results</li>
 destination layer</li>
 <li><b>Subtract</b>, subtract segmentation results from the objects of
 the selected destination layer</li>
-<li><b>add, +next material</b>, (<em><b>only for models with 65535+
-materials and destination: model</b></em>). Add segmentation results to
-the selected material and add a new material to the model. </li>
+<li><b>add, +next material</b>, add segmentation results to
+the selected material and automatically add a new material to the model.
+<em><b>This mode is only for models with 65535+ and when the destination
+layer is model or selection.</b></em>
+</li>
 </ul>
 <li>Use <span class="kbd"><img class="image-fit" style="height: 1em"
 src="images\LMB_click.svg"> left mouse click</span> to specify a point on
@@ -2638,9 +2640,11 @@ Works also in 3D.
 % destination layer</li>
 % <li><b>Subtract</b>, subtract segmentation results from the objects of
 % the selected destination layer</li>
-% <li><b>add, +next material</b>, (<em><b>only for models with 65535+
-% materials and destination: model</b></em>). Add segmentation results to
-% the selected material and add a new material to the model. </li>
+% <li><b>add, +next material</b>, add segmentation results to
+% the selected material and automatically add a new material to the model. 
+% <em><b>This mode is only for models with 65535+ and when the destination
+% layer is model or selection.</b></em>
+% </li>
 % </ul>
 % <li>Use <span class="kbd"><img style="height: 1em"
 % src="images\LMB_click.svg"> left mouse click</span> to specify a point on

@@ -142,18 +142,28 @@ else         % for 65535 model look for the next empty material
         return;
     end
     
-    if obj.mibModel.I{BatchOpt.id}.selectedMaterial > 2
-        obj.mibModel.I{BatchOpt.id}.modelMaterialNames{obj.mibModel.I{BatchOpt.id}.selectedMaterial-2} = num2str(maxVal+1);
-        eventdata2.Indices = [obj.mibModel.I{BatchOpt.id}.selectedMaterial, 2];
+    if obj.mibModel.I{BatchOpt.id}.fixSelectionToMaterial
+        obj.mibModel.I{BatchOpt.id}.modelMaterialNames{obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2} = num2str(maxVal+1);
+        
+        % update segmentation table
+        motifyEvent.Name = 'updateSegmentationTable';
+        eventdata = ToggleEventData(motifyEvent);
+        notify(obj.mibModel, 'modelNotify', eventdata);
     else
-        obj.mibModel.I{BatchOpt.id}.modelMaterialNames{1} = num2str(maxVal+1);
-        eventdata2.Indices = [3, 2];
+        if obj.mibModel.I{BatchOpt.id}.selectedMaterial > 2
+            obj.mibModel.I{BatchOpt.id}.modelMaterialNames{obj.mibModel.I{BatchOpt.id}.selectedMaterial-2} = num2str(maxVal+1);
+            eventdata2.Indices = [obj.mibModel.I{BatchOpt.id}.selectedMaterial, 2];
+        else
+            obj.mibModel.I{BatchOpt.id}.modelMaterialNames{2} = num2str(maxVal+1);
+            eventdata2.Indices = [4, 2];
+        end
+        obj.mibSegmentationTable_CellSelectionCallback(eventdata2);     % update mibSegmentationTable
     end
+
     if size(obj.mibModel.I{BatchOpt.id}.modelMaterialColors, 1) < maxVal+1  % generate a random color
         obj.mibModel.I{BatchOpt.id}.modelMaterialColors(maxVal+1, :) = rand(1,3);
     end
     
-    obj.mibSegmentationTable_CellSelectionCallback(eventdata2);     % update mibSegmentationTable
     if BatchOpt.showWaitbar; waitbar(1, wb); end
     
 end

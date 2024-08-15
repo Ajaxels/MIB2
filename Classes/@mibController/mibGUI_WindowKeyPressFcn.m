@@ -155,6 +155,55 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             % do nothing is selection is disabled
             if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 0; return; end
             
+            selectedSegmentationTool = obj.mibView.handles.mibSegmentationToolPopup.String{obj.mibView.handles.mibSegmentationToolPopup.Value};
+            
+            % Tweak to use SAM using the selection layer and adding a new
+            % material upon press of the 'a' key shortcut
+            if strcmp(selectedSegmentationTool, 'Segment-anything model') && ...
+                    strcmp(obj.mibView.handles.mibSegmSAMMode.String{obj.mibView.handles.mibSegmSAMMode.Value}, 'add, +next material') && ...
+                    strcmp(obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value}, 'selection')
+
+                if obj.mibModel.I{obj.mibModel.Id}.modelType < 256
+                    errordlg(sprintf(['!!! Error !!!\n\nThere current settings are not compatible with the "add, +next material" mode!\n\n' ...
+                        'Please make sure that:\n' ...
+                        '   - You created or already have a model with type 65535 or larger\n' ...
+                        '   ']), ...
+                        'add, +next material');
+                    return;
+                end
+
+                % select the second material row in the table
+                if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial < 4
+                    userData = obj.mibView.handles.mibSegmentationTable.UserData;
+                    jTable = userData.jTable;   % jTable is initializaed in the beginning of mibGUI.m
+                    jTable.changeSelection(3, 2, false, false);    % automatically calls mibSegmentationTable_CellSelectionCallback
+                    obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection = [3 4];
+                    obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial = 4;
+                end
+                
+                obj.mibModel.moveLayers('selection', 'model', '2D, Slice', 'add');
+                obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = [];
+
+                % add next material
+                selMaterialIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo');
+                % add next material
+                obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames = {num2str(selMaterialIndex), num2str(selMaterialIndex+1) };
+                eventdata2.Indices = [obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial, 3];
+                if size(obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors, 1) < selMaterialIndex+1  % generate a random color
+                    obj.mibModel.I{obj.mibModel.Id}.modelMaterialColors(selMaterialIndex+1, :) = rand(1,3);
+                end
+                obj.updateSegmentationTable();
+                obj.mibSegmentationTable_CellSelectionCallback(eventdata2);     % update mibSegmentationTable
+
+                % % do backup
+                % backupOptions.LinkedVariable.modelMaterialNames = 'obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames';
+                % backupOptions.LinkedData.modelMaterialNames = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames;
+                % obj.mibModel.mibDoBackup('model', 0, backupOptions);
+                % obj.mibSegmentationSAM(extraOptions);
+                % obj.plotImage();
+                return;
+            end
+
             if obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo') == -1    % Selection to Mask or Model
                 selectionTo = 'mask';
             else    % Selection to Mask

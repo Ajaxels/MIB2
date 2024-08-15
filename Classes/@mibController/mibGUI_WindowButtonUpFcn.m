@@ -27,6 +27,8 @@ function mibGUI_WindowButtonUpFcn(obj, brush_switch)
 global mibPath;
 showCongratulations = false; % switch to show the milestone congratulations
 
+if nargin < 2; brush_switch = ''; end
+
 if iscell(obj.mibView.brushSelection)  % return after movement of the brush tool
     if numel(obj.mibView.brushSelection) > 1
         obj.mibView.brushSelection{1}.selection = obj.mibView.brushSelection{2}.selectedSlic;

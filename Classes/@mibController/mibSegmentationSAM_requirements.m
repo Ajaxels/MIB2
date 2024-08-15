@@ -135,5 +135,11 @@ end
 obj.mibModel.sessionSettings.SAMsegmenter.Links.checkpointFilename = checkpointFilename;
 obj.mibModel.sessionSettings.SAMsegmenter.Links.onnxFilename = onnxFilename;
 obj.mibModel.sessionSettings.SAMsegmenter.Links.backbone = linksStruct(selectedBackboneIndex).backbone;
+
+% SAM 2 test
+%obj.mibModel.sessionSettings.SAMsegmenter.Links.checkpointFilename = 'sam2_hiera_tiny.pt';
+%obj.mibModel.sessionSettings.SAMsegmenter.Links.onnxFilename = '';
+%obj.mibModel.sessionSettings.SAMsegmenter.Links.backbone = 'sam2_hiera_tiny.yaml';
+
 status = true;
 end

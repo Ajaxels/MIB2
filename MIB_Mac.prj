@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
     </param.icons>
-    <param.version>2.84</param.version>
+    <param.version>2.9011</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -34,23 +34,23 @@ To configure path to Fiji and Omero server please add paths to those program in 
 
 Further instructions:
 http://mib.helsinki.fi/downloads_installation_windows.html</param.install.notes>
-    <param.target.install.notes>In the following directions, replace MR/v911 by the directory on the target machine where MATLAB is installed, or MR by the directory where the MATLAB Runtime is installed.
+    <param.target.install.notes>In the following directions, replace MR/R2024a by the directory on the target machine where MATLAB is installed, or MR by the directory where the MATLAB Runtime is installed.
 
 If the environment variable DYLD_LIBRARY_PATH is undefined, set it to the following string:
 
-MR/v911/runtime/maci64:MR/v911/sys/os/maci64:MR/v911/bin/maci64
+MR/R2024a/runtime/maca64:MR/R2024a/sys/os/maca64:MR/R2024a/bin/maca64
 
 If it is defined, set it to the following:
 
-${DYLD_LIBRARY_PATH}:MR/v911/runtime/maci64:MR/v911/sys/os/maci64:MR/v911/bin/maci64</param.target.install.notes>
+${DYLD_LIBRARY_PATH}:MR/R2024a/runtime/maca64:MR/R2024a/sys/os/maca64:MR/R2024a/bin/maca64</param.target.install.notes>
     <param.intermediate>${PROJECT_ROOT}/MIB_Mac/for_testing</param.intermediate>
     <param.files.only>${PROJECT_ROOT}/MIB_Mac/for_redistribution_files_only</param.files.only>
     <param.output>${PROJECT_ROOT}/MIB_Mac/for_redistribution</param.output>
     <param.logdir>${PROJECT_ROOT}/MIB_Mac</param.logdir>
     <param.enable.clean.build>false</param.enable.clean.build>
-    <param.user.defined.mcr.options>-a /Users/ibelev/Documents/MATLAB/SupportPackages/R2021b/toolbox/nnet/supportpackages/onnx/ 
--a /Users/ibelev/Documents/MATLAB/SupportPackages/R2021b/resources/nnet_cnn_onnx/
--a /Users/ibelev/Documents/MATLAB/SupportPackages/R2021b/bin/maci64</param.user.defined.mcr.options>
+    <param.user.defined.mcr.options>-a /Users/ibelev/Documents/MATLAB/SupportPackages/R2024a/toolbox/nnet/supportpackages/onnx/ 
+-a /Users/ibelev/Documents/MATLAB/SupportPackages/R2024a/resources/nnet_cnn_onnx/
+-a /Users/ibelev/Documents/MATLAB/SupportPackages/R2024a/bin/maca64</param.user.defined.mcr.options>
     <param.target.type>subtarget.standalone</param.target.type>
     <param.support.packages>
       <item>&lt;package displayname="Deploy Imported Models for ONNX Model Format Deep Learning Toolbox Converter" enabled="true" name="Deep Learning Toolbox Converter for ONNX Model Format" product="Deep Learning Toolbox"/&gt;</item>
@@ -526,15 +526,33 @@ ${DYLD_LIBRARY_PATH}:MR/v911/runtime/maci64:MR/v911/sys/os/maci64:MR/v911/bin/ma
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/Applications/MATLAB_R2021b.app</root>
+      <root>/Applications/MATLAB_R2024a.app</root>
       <toolboxes>
         <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
+        <toolbox name="fixedpoint" />
+        <toolbox name="matlabhdlcoder" />
         <toolbox name="neuralnetwork" />
       </toolboxes>
       <toolbox>
         <matlabcoder>
           <enabled>true</enabled>
         </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+      <toolbox>
+        <fixedpoint>
+          <enabled>true</enabled>
+        </fixedpoint>
+      </toolbox>
+      <toolbox>
+        <matlabhdlcoder>
+          <enabled>true</enabled>
+        </matlabhdlcoder>
       </toolbox>
       <toolbox>
         <neuralnetwork>
@@ -551,9 +569,9 @@ ${DYLD_LIBRARY_PATH}:MR/v911/runtime/maci64:MR/v911/sys/os/maci64:MR/v911/bin/ma
       <vista>false</vista>
       <linux>false</linux>
       <solaris>false</solaris>
-      <osver>10.15.7</osver>
-      <os32>false</os32>
-      <os64>true</os64>
+      <osver>14.5</osver>
+      <os32>true</os32>
+      <os64>false</os64>
       <arch>maci64</arch>
       <matlab>true</matlab>
     </platform>

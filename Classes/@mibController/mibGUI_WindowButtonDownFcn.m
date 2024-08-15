@@ -24,7 +24,7 @@ function mibGUI_WindowButtonDownFcn(obj)
 % Updates
 % 
 
-val = obj.mibView.handles.mibSegmentationToolPopup.Value; % get a selected instrument: filter, magic wand, brush etc
+val = obj.mibView.handles.mibSegmentationToolPopup.Value; % get a selected segmentation tool: magic wand, brush etc
 txt = obj.mibView.handles.mibSegmentationToolPopup.String;
 tool = cell2mat(txt(val));
 tool = strtrim(tool);   % remove ending space
@@ -330,6 +330,11 @@ elseif strcmp(operation, 'interact')
                 end
                 extraOptions.addNextMaterial = false;    % add next material after adding the current one only for "add, +next material" mode
                 
+                samMode = obj.mibView.handles.mibSegmSAMMode.String{obj.mibView.handles.mibSegmSAMMode.Value};
+                if strcmp(samMode, 'add, +next material') && strcmp(obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value}, 'selection')
+                    samMode = 'add';
+                end
+
                 if isempty(modifier)    % start new segmentation
                     obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [w, h, z];
                     obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = 1;
@@ -339,11 +344,12 @@ elseif strcmp(operation, 'interact')
                     if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1
                         % update selected material state
                         selectedFixToMaterial = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
+                        getData2Doptions.blockModeSwitch = false;
                         obj.mibModel.sessionSettings.SAMsegmenter.initialImageSelected = ...
-                            uint8(cell2mat(obj.mibModel.getData2D('model', NaN, NaN, selectedFixToMaterial)));
+                            uint8(cell2mat(obj.mibModel.getData2D('model', NaN, NaN, selectedFixToMaterial, getData2Doptions)));
                     end
 
-                    switch obj.mibView.handles.mibSegmSAMMode.String{obj.mibView.handles.mibSegmSAMMode.Value}
+                    switch samMode
                         case 'add'
                             % store the current state
                             %obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
@@ -388,7 +394,7 @@ elseif strcmp(operation, 'interact')
                             obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = [];
                     end
                 elseif strcmp(modifier, 'control')
-                    switch obj.mibView.handles.mibSegmSAMMode.String{obj.mibView.handles.mibSegmSAMMode.Value}
+                    switch samMode
                         case 'add, +next material'
                             % select the first material row in the table
                             if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 4
@@ -401,7 +407,7 @@ elseif strcmp(operation, 'interact')
                     obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
                     obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, 0];
                 elseif strcmp(modifier, 'shift')
-                    switch obj.mibView.handles.mibSegmSAMMode.String{obj.mibView.handles.mibSegmSAMMode.Value}
+                    switch samMode
                         case 'add, +next material'
                             % select the first material row in the table
                             if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 4

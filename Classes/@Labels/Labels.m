@@ -614,8 +614,8 @@ classdef Labels < matlab.mixin.Copyable
             if isempty(filename)
                 Filters = {'*.ann',  'Matlab format (*.ann)';...
                            '*.csv',   'Comma-separated value (*.csv)';...
-                           '*.landmarksAscii',   'Amira landmarks ASCII (*.landmarksAscii)';...
-                           '*.landmarksBin',   'Amira landmarks BINARY(*.landmarksBin)';...
+                           '*.landmarkAscii',   'Amira landmarks ASCII (*.landmarkAscii)';...
+                           '*.landmarkBin',   'Amira landmarks BINARY(*.landmarkBin)';...
                            '*.psi',   'PSI format ASCII(*.psi)';...
                            '*.xls',   'Excel format (*.xls)'; };
                 
@@ -629,10 +629,10 @@ classdef Labels < matlab.mixin.Copyable
                         options.format = 'ann';
                     case 'Comma-separated value (*.csv)'
                         options.format = 'csv';
-                    case 'Amira landmarks ASCII (*.landmarksAscii)'
-                        options.format = 'landmarksAscii';
-                    case 'Amira landmarks BINARY(*.landmarksBin)'
-                        options.format = 'landmarksBin';
+                    case 'Amira landmarks ASCII (*.landmarkAscii)'
+                        options.format = 'landmarkAscii';
+                    case 'Amira landmarks BINARY(*.landmarkBin)'
+                        options.format = 'landmarkBin';
                     case 'PSI format ASCII(*.psi)'
                          options.format = 'psi';
                     case 'Excel format (*.xls)'
@@ -761,7 +761,7 @@ classdef Labels < matlab.mixin.Copyable
                     if options.showWaitbar; waitbar(0.3, wb); end
                     points2psi(filename, labelPositionsOut, labelText, labelValue, options);
                     if options.showWaitbar; waitbar(1, wb); end
-                case {'landmarksBin', 'landmarksAscii'}
+                case {'landmarkBin', 'landmarkAscii'}
                     % rearrange to [x, y, z] format from [z, x, y]
                     labelPositionsOut = [labelPosition(:,2) labelPosition(:,3) labelPosition(:,1)];
                     
@@ -772,7 +772,7 @@ classdef Labels < matlab.mixin.Copyable
                         labelPositionsOut(:, 3) = labelPositionsOut(:, 3)*options.pixSize.z + bb(5) - options.pixSize.z;
                     end
                     if options.showWaitbar; waitbar(0.3, wb); end
-                    if strcmp(options.format, 'landmarksAscii')
+                    if strcmp(options.format, 'landmarkAscii')
                         options.format = 'ascii';
                     else
                         options.format = 'binary';

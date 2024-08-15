@@ -78,6 +78,7 @@ if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer with
             y = min([y, obj.mibModel.I{obj.mibModel.Id}.height]);
             x = min([x, obj.mibModel.I{obj.mibModel.Id}.width]);
             if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 0     % normal mode, memory-resident
+                sliceNo = min([size(obj.mibModel.I{obj.mibModel.Id}.img{1}, 4), sliceNo]);
                 colorValues = obj.mibModel.I{obj.mibModel.Id}.img{1}(y, x,...
                     obj.mibModel.I{obj.mibModel.Id}.slices{3}, sliceNo, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1));
                 if obj.mibModel.I{obj.mibModel.Id}.modelExist

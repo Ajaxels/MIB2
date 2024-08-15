@@ -32,21 +32,25 @@ function setDefaultSegmentationColorPalette(obj, paletteName, colorsNo)
 % @code obj.mibModel.setDefaultSegmentationColorPalette('Qualitative (Monte Carlo->Half Baked), 3-12 colors', 6);     // call from mibController: set "Qualitative (Monte Carlo->Half Baked)" palette with 6 colors @endcode
 
 % Updates
-%
+% 240605: updated for models with 65535+ material
 
 global mibPath;
 
 if nargin < 3; colorsNo = []; end
 if nargin < 2; paletteName = 'Default, 6 colors'; colorsNo = 6; end
 
-if obj.I{obj.Id}.modelType > 255
-    errordlg(sprintf('!!! Error !!!\n\nThe color palette is only available for models with up to 255 materials'), 'Too many materials');
-    return;
-end
+% if obj.I{obj.Id}.modelType > 255
+%     errordlg(sprintf('!!! Error !!!\n\nThe color palette is only available for models with up to 255 materials'), 'Too many materials');
+%     return;
+% end
 
 % update number of colors
 if isempty(colorsNo)
-    colorsNo = numel(obj.I{obj.Id}.modelMaterialNames);
+    if obj.I{obj.Id}.modelType < 256
+        colorsNo = numel(obj.I{obj.Id}.modelMaterialNames);
+    else
+        colorsNo = 65535;
+    end
 
     if ismember(paletteName, {'Matlab Jet','Matlab Gray','Matlab Bone','Matlab HSV', 'Matlab Cool', 'Matlab Hot'})
         answer = mibInputDlg({mibPath}, ...
@@ -55,10 +59,10 @@ if isempty(colorsNo)
         if isempty(answer); return; end
 
         colorsNo = str2double(answer{1});
-        if colorsNo > 255
-            errordlg(sprintf('!!! Error !!!\n\nNumber of colors should be below 256'), 'Too many colors');
-            return;
-        end
+        % if colorsNo > 255
+        %     errordlg(sprintf('!!! Error !!!\n\nNumber of colors should be below 256'), 'Too many colors');
+        %     return;
+        % end
     end
 end
 

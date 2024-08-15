@@ -65,6 +65,7 @@ if ~isempty(Font)
 end
 % rescale widgets for Mac and Linux
 mibRescaleWidgets(handles.mibResampleGUI);
+ResamplingFunction_Callback(hObject, eventdata, handles);
 
 % Choose default command line output for mibSnapshotGUI
 handles.output = hObject;
@@ -159,14 +160,14 @@ if val == 1     % interpn
     methods = {'nearest', 'linear', 'spline', 'cubic'};
     methodsModel = {'nearest', 'linear', 'spline', 'cubic'};
 elseif val == 2     % imresize
-    methods = {'nearest', 'box', 'triangle', 'cubic', 'lanczos2', 'lanczos3'};
+    methods = {'nearest', 'box', 'triangle', 'cubic', 'lanczos2', 'lanczos3', 'osc'};
     methodsModel = {'nearest'};
 else
     methods = {'nearest', 'linear', 'cubic'};
     methodsModel = {'nearest', 'linear', 'cubic'};
 end
 if handles.ResamplingMethod.Value > numel(methods); handles.ResamplingMethod.Value = 1; end
-if handles.ResamplingMethodModels.Value > numel(methodsModel); handles.ResamplingMethodModels.Value = 1; end;
+if handles.ResamplingMethodModels.Value > numel(methodsModel); handles.ResamplingMethodModels.Value = 1; end
 handles.ResamplingMethod.String = methods;
 handles.ResamplingMethodModels.String = methodsModel;
 

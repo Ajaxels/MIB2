@@ -332,6 +332,9 @@ classdef mibVolRenAppController < handle
                     obj.View.handles.isovalueEdit.Enable = 'off';
             end
             obj.volume.RenderingStyle = obj.View.handles.rendererDropDown.Value;
+            %obj.volume.RenderingStyle = 'CinematicRendering';
+            %obj.volume.RenderingStyle = 'LightScattering';
+            
         end
 
         function updateIsovalue(obj, newIsovalue)

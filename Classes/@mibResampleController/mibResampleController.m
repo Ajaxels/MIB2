@@ -69,7 +69,7 @@ classdef mibResampleController  < handle
             obj.BatchOpt.ResamplingFunction = {'imresize'};     % function used for resampling
             obj.BatchOpt.ResamplingFunction{2} = [{'interpn'},{'imresize'},{'tformarray'}];
             obj.BatchOpt.ResamplingMethod = {'cubic'};            % method used for resampling of images
-            obj.BatchOpt.ResamplingMethod{2} = [{'nearest'},{'linear'},{'spline'},{'cubic'},{'box'},{'triangle'},{'lanczos2'},{'lanczos2'}];
+            obj.BatchOpt.ResamplingMethod{2} = [{'nearest'},{'linear'},{'spline'},{'cubic'},{'box'},{'triangle'},{'lanczos2'},{'lanczos2'}, {'osc'}];
             obj.BatchOpt.ResamplingMethodModels = {'nearest'};    % method used for resampling of models
             obj.BatchOpt.ResamplingMethodModels{2} = [{'nearest'},{'linear'},{'spline'},{'cubic'}];
             obj.BatchOpt.DimensionX = num2str(width);        % new width in pix

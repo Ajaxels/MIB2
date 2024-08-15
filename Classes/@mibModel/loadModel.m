@@ -265,9 +265,12 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
             end
             clear res;
         elseif strcmp(filename{fnId}(end-1:end),'am') % loading amira mesh
-            [~, img_info] = getAmiraMeshHeader(fullfile(BatchOpt.DirectoryName{1}, filename{fnId}));
+            [~, img_info, ~, materialNames] = getAmiraMeshHeader(fullfile(BatchOpt.DirectoryName{1}, filename{fnId}));
+            
             try
                 keysList = keys(img_info);
+                modelMaterialColors = [];
+                modelMaterialNames = [];
                 for keyId=1:numel(keysList)
                     strfindResult = strfind(keysList{keyId}, 'Materials_');
                     if ~isempty(strfindResult)
@@ -287,6 +290,9 @@ if isempty(model) % model and BatchOpt were not provided, load model from a file
                 end
                 BatchOpt.color_list = modelMaterialColors;
                 BatchOpt.material_list = modelMaterialNames;
+                if ~isempty(materialNames)
+                    BatchOpt.material_list = materialNames;
+                end
             catch err
                 err;
                 notify(obj, 'stopProtocol'); 
@@ -541,7 +547,7 @@ else
     end
 end
 
-if isfield(BatchOpt, 'material_list')
+if isfield(BatchOpt, 'material_list') && ~isempty(BatchOpt.material_list)
     obj.I{BatchOpt.id}.modelMaterialNames = BatchOpt.material_list;
 elseif isfield(BatchOpt, 'modelMaterialNames')
     obj.I{BatchOpt.id}.modelMaterialNames = BatchOpt.modelMaterialNames;
@@ -564,7 +570,7 @@ else
     end
 end
 
-if isfield(BatchOpt, 'color_list')
+if isfield(BatchOpt, 'color_list') && ~isempty(BatchOpt.color_list)
     obj.I{BatchOpt.id}.modelMaterialColors = BatchOpt.color_list;
 elseif isfield(BatchOpt, 'modelMaterialColors')
     obj.I{BatchOpt.id}.modelMaterialColors = BatchOpt.modelMaterialColors;

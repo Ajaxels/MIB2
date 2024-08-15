@@ -225,6 +225,7 @@ end
 getImagesOpt.waitbar = options.waitbar;
 getImagesOpt.imgStretch = options.imgStretch;
 getImagesOpt.verbose = options.verbose;
+getImagesOpt.silentMode = options.silentMode;
 [img, img_info] = mibGetImages(files, img_info, getImagesOpt);
 if isnan(img); return; end
 [img_info, pixSize] = mibUpdatePixSizeAndResolution(img_info, pixSize);

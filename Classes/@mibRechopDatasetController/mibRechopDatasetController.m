@@ -349,6 +349,12 @@ classdef mibRechopDatasetController < handle
                 end
                 
                 if maskSw    % combine masks
+                    if ~strcmp(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'), 'none.tif')
+                        button = questdlg(...
+                            sprintf('!!! Warning !!!\n\nThe currenly opened in the buffer %d dataset will be replaced!\n\nAre you sure?\n\nAlternatively, select an empty buffer (the buttons in the upper part of the Directory contents panel) and try again...', obj.mibModel.Id),'!! Warning !!','OK','Cancel','Cancel');
+                        if strcmp(button, 'Cancel'); return; end
+                    end
+
                     wb = waitbar(0, 'Combining the masks');
                     obj.mibModel.I{obj.mibModel.Id}.clearMask();
                     obj.mibModel.I{obj.mibModel.Id}.maskExist = 1;

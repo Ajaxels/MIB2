@@ -74,6 +74,7 @@ uimenu(handles.statTable_cm, 'Label', 'Calculate Max value', 'Callback', {@table
 uimenu(handles.statTable_cm, 'Label', 'Crop to a file/matlab...', 'Callback', {@tableContextMenu_cb, 'crop'}, 'Separator','on');
 uimenu(handles.statTable_cm, 'Label', 'Objects to a new model', 'Callback', {@tableContextMenu_cb, 'obj2model'});
 uimenu(handles.statTable_cm, 'Label', 'Plot histogram', 'Callback', {@tableContextMenu_cb, 'hist'}, 'Separator','on');
+%uimenu(handles.statTable_cm, 'Label', 'Colormap from value', 'Callback', {@tableContextMenu_cb, 'colormap'});
 set(handles.statTable,'UIContextMenu',handles.statTable_cm);
 
 % % Add sorting to the table:

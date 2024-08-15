@@ -120,8 +120,8 @@ BatchOpt.mibBatchTooltip.SourceLayer = sprintf('specify the source layer that wi
 BatchOpt.mibBatchTooltip.DestinationLayer = sprintf('specify the destibation layer to where the source layer will be moved');
 BatchOpt.mibBatchTooltip.DatasetType = sprintf('Type of the dataset to process, could be overridden with x,y,z,t fields');
 BatchOpt.mibBatchTooltip.ActionType = sprintf('type of the layer movement');
-BatchOpt.mibBatchTooltip.SelectedMaterial = sprintf('index of the selected material; -1 for mask, 0-for exterior, 1,2,3 materials of the model');
-BatchOpt.mibBatchTooltip.SelectedAddToMaterial = sprintf('index of the material to be added to; -1 for mask, 0-for exterior, 1,2,3 materials of the model');
+BatchOpt.mibBatchTooltip.SelectedMaterial = sprintf('index of the selected material; -1 for mask, 0-for exterior, 1,2,3 materials of the model, NaN-for the selected');
+BatchOpt.mibBatchTooltip.SelectedAddToMaterial = sprintf('index of the material to be added to; -1 for mask, 0-for exterior, 1,2,3 materials of the model, NaN-for the selected');
 BatchOpt.mibBatchTooltip.fixSelectionToMaterial = sprintf('when checked, limit selection only for the selected material');
 BatchOpt.mibBatchTooltip.fixSelectionToMask = sprintf('when checked, will do add, replace, remove actions only in the masked areas');
 BatchOpt.mibBatchTooltip.blockModeSwitch = sprintf('force to use or not the block mode');
@@ -179,7 +179,15 @@ BatchOpt = rmfield(BatchOpt, 'id');
 
 % convert to numbers to use in MoveXXXtoXXXDataset functions
 BatchOptLocal.SelectedMaterial = str2double(BatchOptLocal.SelectedMaterial);
+if isnan(BatchOptLocal.SelectedMaterial)
+    BatchOptLocal.SelectedMaterial = obj.I{obj.Id}.getSelectedMaterialIndex();    % index of the selected material
+end
+
 BatchOptLocal.SelectedAddToMaterial = str2double(BatchOptLocal.SelectedAddToMaterial);
+if isnan(BatchOptLocal.SelectedAddToMaterial)
+    BatchOptLocal.SelectedAddToMaterial = obj.I{obj.Id}.getSelectedMaterialIndex('AddTo');       % index of the target material
+end
+
 BatchOptLocal.roiId = str2double(BatchOptLocal.roiId);
 BatchOptLocal.fillBg = str2double(BatchOptLocal.fillBg);
 BatchOptLocal.selected_sw = BatchOptLocal.fixSelectionToMaterial;

@@ -30,7 +30,7 @@ function imgOut = mibResize3d(img, scale, options)
 % @li .depth - a new depth value, overrides the scale parameter
 % @li .method - interpolation method, specified as a string that identifies
 % a general method or a named interpolation kernel: @b imresize: 'nearest',
-% 'bilinear', 'bicubic', 'box', 'triangle', 'cubic', 'lanczos2',
+% 'bilinear', 'bicubic', 'box', 'triangle', 'cubic', 'lanczos2', 'osc'
 % 'lanczos3'; @b interpn: 'linear', 'nearest', 'pchip', 'cubic', 'spline';
 % @b tformarray - 'nearest', 'linear','cubic'
 % @li .imgType - a string with type of the dataset '4D' or '3D'
@@ -87,7 +87,7 @@ end
 
 switch options.algorithm
     case 'imresize'
-        methodsList = {'nearest', 'bilinear', 'bicubic', 'box', 'triangle', 'cubic', 'lanczos2', 'lanczos3'};
+        methodsList = {'nearest', 'bilinear', 'bicubic', 'box', 'triangle', 'cubic', 'lanczos2', 'lanczos3', 'osc'};
     case 'interpn'
         methodsList = {'linear', 'nearest', 'pchip', 'cubic', 'spline'};
     case 'tformarray'
@@ -122,7 +122,11 @@ if strcmp(options.algorithm, 'imresize')
             imgOut2 = zeros(newH, newW, colors, depth, class(img)); %#ok<ZEROLIKE>
             modVal = round(depth/10);
             for zIndex = 1:depth
-                imgOut2(:,:,:,zIndex) = imresize(img(:, :, :, zIndex), [newH newW], options.method);
+                if ~strcmp(options.method, 'osc')
+                    imgOut2(:,:,:,zIndex) = imresize(img(:, :, :, zIndex), [newH newW], options.method);
+                else
+                    imgOut2(:,:,:,zIndex) = imresize(img(:, :, :, zIndex), [newH newW], {@mibOscResampling, 4});
+                end
                 if mod(zIndex, modVal) == 0 && options.showWaitbar; waitbar(zIndex/depth,wb); end
             end
         end

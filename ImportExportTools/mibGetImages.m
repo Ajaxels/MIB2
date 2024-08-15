@@ -45,6 +45,7 @@ function [img, img_info] = mibGetImages(files, img_info, options)
 %       options: -> structure with options
 %          - .waitbar -> @b 0 - no waitbar, @b 1 - show waitbar
 %          - .imgStretch [optional] -> stretch or not the image if it is uint32 class
+%          - .silentMode [optional] -> when true - do not ask questions
 %
 %
 % Return values:
@@ -61,6 +62,7 @@ end
 if nargin < 3;     options.waitbar = 1;  end
 if ~isfield(options, 'waitbar');    options.waitbar = 1; end
 if ~isfield(options, 'imgStretch');    options.imgStretch = 1; end
+if ~isfield(options, 'silentMode');    options.silentMode = false; end
 
 % memory pre-allocation
 height = max([files(:).height]);
@@ -71,6 +73,7 @@ maxZ = 0;
 for i=1:numel(files)
     maxZ = maxZ + files(i).noLayers;
 end
+
 if strcmp(files(1).object_type,'bioformats')    % adjust number of sections, for bio-formats, when more than one serie was selected
     maxZ = maxZ * numel(files(1).seriesName);
 end
@@ -349,12 +352,13 @@ for fn_index = 1:no_files
         %mrc_image = flip(mrc_image, 2);     % flip vertically
         if isa(mrc_image,'single') || isa(mrc_image,'int16')
             [minInt, maxInt] = getMinAndMaxDensity(mrcFile); %#ok<NASGU>
-            if minInt < 0
+            if minInt < 0 && ~options.silentMode
                 button =  questdlg(sprintf('mibGetImages:\nThe dataset will be converted to unsigned integer class...'),'Convert image','Yes','Cancel','Yes');
                 if strcmp(button, 'Cancel') == 1
                     img_info = containers.Map;
                     return;
                 end
+                options.silentMode = true;
             end
             if minInt < 0; mrc_image = mrc_image - minInt; end
             %diffInt = maxInt - minInt;

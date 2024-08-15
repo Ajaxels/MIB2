@@ -129,6 +129,7 @@ for fn_index = 1:no_files
             [files.filename] = filenames{:};
             [~, ~, ext] = fileparts(filenames);
             [files.extension] = ext{:};
+            if iscell(ext); ext = ext{1}; end
             fn_index = no_files;
             continue;
         end

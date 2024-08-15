@@ -407,6 +407,8 @@ classdef mibDeepController < handle
         
         [patchOut, info, augList, augPars] = mibDeepAugmentAndCrop2dPatchMultiGPU(patchIn, info, inputPatchSize, outputPatchSize, mode, options) %  augment patches for 2D in multi-gpu mode
 
+        TrainingOptions = preprareTrainingOptionsInstances(obj, valDS);     % prepare options for training of instance segmentation network
+
         function obj = mibDeepController(mibModel, varargin)
             obj.mibModel = mibModel;    % assign model
             obj.mibController = varargin{1};
@@ -420,17 +422,18 @@ classdef mibDeepController < handle
             % for this widget
 
             % define available architectures
-            workflowsList = {'2D Semantic', '2.5D Semantic', '3D Semantic', '2D Patch-wise'};
+            workflowsList = {'2D Semantic', '2.5D Semantic', '3D Semantic', '2D Patch-wise', '2D Instance'};
             architectureList{1} = {'U-net', 'SegNet', 'DLv3 Resnet18', 'DLv3 Resnet50', 'DLv3 Xception', 'DLv3 Inception-ResNet-v2'};
             architectureList{2} = {'3DC + DLv3 Resnet18', 'Z2C + U-net', 'Z2C + DLv3 Resnet18', 'Z2C + DLv3 Resnet50'};
             architectureList{3} = {'U-net', 'U-net Anisotropic'};
             architectureList{4} = {'Resnet18', 'Resnet50', 'Resnet101', 'Xception'};
+            architectureList{5} = {'SOLOv2 Resnet18', 'SOLOv2 Resnet50'};
             obj.availableArchitectures = containers.Map(workflowsList, architectureList);
 
             obj.BatchOpt.NetworkFilename = fullfile(obj.mibModel.myPath, 'myLovelyNetwork.mibDeep');
 
             obj.BatchOpt.Workflow = {'2D Semantic'};
-            obj.BatchOpt.Workflow{2} = {'2D Semantic', '2.5D Semantic', '3D Semantic', '2D Patch-wise'};  % {'2D U-net', '2D SegNet', '2D DLv3 Resnet18', '3D U-net', '3D U-net Anisotropic', '2D Patch-wise Resnet18', '2D Patch-wise Resnet50'}
+            obj.BatchOpt.Workflow{2} = {'2D Semantic', '2.5D Semantic', '3D Semantic', '2D Patch-wise', '2D Instance'};  % {'2D U-net', '2D SegNet', '2D DLv3 Resnet18', '3D U-net', '3D U-net Anisotropic', '2D Patch-wise Resnet18', '2D Patch-wise Resnet50'}
             obj.BatchOpt.Architecture = {'DLv3 Resnet18'};
             obj.BatchOpt.Architecture{2} = obj.availableArchitectures('2D Semantic');
             % 2D Semantic: {'U-net', 'SegNet', 'DLv3 Resnet18'}
@@ -908,6 +911,16 @@ classdef mibDeepController < handle
                 obj.View.handles.MaskFilenameExtension.Enable = 'off';
             end
 
+            % override settings when the instance segmentation mode is used
+            if strcmp(obj.BatchOpt.Workflow{1}, '2D Instance')
+                obj.View.handles.CompressProcessedImages.Enable = 'off'; % there is no image preprocessing for the instance segmentation
+                obj.View.handles.NumberOfClassesPreprocessing.Enable = 'off';
+                obj.View.handles.T_NumberOfClasses.Enable = 'off';
+            else
+                obj.View.handles.NumberOfClassesPreprocessing.Enable = 'on';
+                obj.View.handles.T_NumberOfClasses.Enable = 'on';
+            end
+
             % update widgets in Train panel
             obj.toggleAugmentations();
             obj.activationLayerChangeCallback();
@@ -1070,6 +1083,8 @@ classdef mibDeepController < handle
                     obj.View.handles.T_UseImageNetWeights.Enable = 'on';
                     obj.View.handles.MaskAway.Enable = 'off';
                     obj.View.handles.MaskFilenameExtension.Enable = 'off'; 
+                case '2D Instance'
+                    obj.BatchOpt.Architecture{2} = obj.availableArchitectures(obj.BatchOpt.Workflow{1});
             end
             obj.View.handles.Architecture.Items = obj.BatchOpt.Architecture{2};
             obj.selectArchitecture();
@@ -2300,6 +2315,14 @@ classdef mibDeepController < handle
             global mibPath
             global mibDeepStopTraining     % variable to define stop of training (when true)
 
+            if strcmp(obj.BatchOpt.Workflow{1}, '2D Instance')
+                uialert(obj.View.gui, ...
+                    'Coming soon...', 'In progress', 'Icon','info');
+                return;
+                return;
+            end
+            
+            
             switch event.Source.Tag
                 case 'PreprocessButton'
                     obj.startPreprocessing();
@@ -2347,7 +2370,11 @@ classdef mibDeepController < handle
                             end
                         end
                     end
-                    obj.startTraining();
+                    if strcmp(obj.BatchOpt.Workflow{1}, '2D Instance')
+                        obj.startTrainingInstances(); % do instance segmentation
+                    else
+                        obj.startTraining(); % do semantic segmentation
+                    end
                 case 'PredictButton'
                     if strcmp(obj.BatchOpt.P_PredictionMode{1}, 'Blocked-image')
                         if obj.mibController.matlabVersion < 9.10 % new syntax from R2021a
@@ -2427,6 +2454,32 @@ classdef mibDeepController < handle
             % preprocessFor: a string with target, 'training', 'prediction'
 
             if nargin < 2; uialert(obj.View.gui, 'processImages: the second parameter is required!', 'Preprocessing error'); return; end
+
+            % init preprocessing images for the instance segmentation
+            if strcmp(obj.BatchOpt.Workflow{1}, '2D Instance') 
+                obj.processImagesForInstanceSegmentation(preprocessFor);
+                selection = uiconfirm(obj.View.gui, ...
+                    sprintf('The labels were preprocessed!\n\nNow the preprocessed images needs to be split for training and validation.\nDo you want to do that now?'), ...
+                    'Preprocessing labels',...
+                    'Options', {'Split labels', 'Change preprocess to split but do not split', 'Do nothing'},...
+                    'DefaultOption', 1, 'CancelOption', 3,...
+                    'Icon', 'info');
+                switch selection
+                    case 'Do nothing'
+                        obj.View.handles.PreprocessingMode.Value = 'Preprocessing is not required';
+                        obj.BatchOpt.PreprocessingMode{1} = 'Preprocessing is not required';
+                    case 'Change preprocess to split but do not split'
+                        obj.View.handles.PreprocessingMode.Value = 'Split files for training/validation';
+                        obj.BatchOpt.PreprocessingMode{1} = 'Split files for training/validation';
+                    case 'Split labels'
+                        obj.View.handles.PreprocessingMode.Value = 'Split files for training/validation';
+                        obj.BatchOpt.PreprocessingMode{1} = 'Split files for training/validation';
+                        obj.startPreprocessing();
+                end
+                %obj.View.handles.PreprocessingMode.Value = 'Preprocessing is not required';
+                %obj.BatchOpt.PreprocessingMode{1} = 'Preprocessing is not required';
+                return;
+            end
 
             if strcmp(preprocessFor, 'training')
                 imageDirIn = obj.BatchOpt.OriginalTrainingImagesDir;
@@ -2869,7 +2922,19 @@ classdef mibDeepController < handle
                     res2 = toc(t2);
                     fprintf('Prediction images preprocessing time: %f seconds\n', res2);
                 case 'Split files for training/validation'
-                    msg = sprintf('!!! Attention !!!\nThe following operation will split files in\n"%s"\n- Images\n- Labels\nto\n- TrainImages, TrainLabels\n- ValidationImages, ValidationLabels', obj.BatchOpt.OriginalTrainingImagesDir);
+                    if strcmp(obj.BatchOpt.Workflow{1}, '2D Instance') 
+                        sourceLabelDir = 'LabelsInstances';
+                        labelsFilenameExt = '*.mat';
+                        labelsSourceDir = 'LabelsInstances';
+                        splitForInstanceSegmentation = true;
+                    else
+                        sourceLabelDir = 'Labels';
+                        labelsFilenameExt = lower(['*.' obj.BatchOpt.ModelFilenameExtension{1}]);
+                        labelsSourceDir = 'Labels';
+                        splitForInstanceSegmentation = false;
+                    end
+                    msg = sprintf('!!! Attention !!!\nThe following operation will split files in\n"%s"\n\n- Images\n- %s\n\nto\n- TrainImages, TrainLabels\n- ValidationImages, ValidationLabels', obj.BatchOpt.OriginalTrainingImagesDir, sourceLabelDir);
+                    
                     selection = uiconfirm(obj.View.gui, ...
                         msg, 'Split files',...
                         'Options',{'Split and copy', 'Split and move', 'Cancel'},...
@@ -2882,6 +2947,7 @@ classdef mibDeepController < handle
                     else
                         rng(obj.BatchOpt.RandomGeneratorSeed{1}, 'twister');
                     end
+
                     if strcmp(obj.BatchOpt.Workflow{1},  '2D Patch-wise')  % '2D Patch-wise Resnet18' or '2D Patch-wise Resnet50'
                         imds = imageDatastore(fullfile(obj.BatchOpt.OriginalTrainingImagesDir, 'Images'),...
                             'LabelSource', 'foldernames', 'IncludeSubfolders', true, ...
@@ -2947,7 +3013,8 @@ classdef mibDeepController < handle
                         end
                     else            % split images for semantic segmentation
                         imageFiles = dir(fullfile(obj.BatchOpt.OriginalTrainingImagesDir, 'Images', lower(['*.' obj.BatchOpt.ImageFilenameExtensionTraining{1}])));
-                        labelsFiles = dir(fullfile(obj.BatchOpt.OriginalTrainingImagesDir, 'Labels', lower(['*.' obj.BatchOpt.ModelFilenameExtension{1}])));
+                        labelsFiles = dir(fullfile(obj.BatchOpt.OriginalTrainingImagesDir, labelsSourceDir, labelsFilenameExt));
+                        
                         if numel(imageFiles) ~= numel(labelsFiles) || numel(imageFiles) == 0
                             uialert(obj.View.gui, ...
                                 sprintf('!!! Error !!!\n\nThere are no files or number of files mismatch in\n\n%s\n\n- Images\n- Labels', obj.BatchOpt.OriginalTrainingImagesDir), ...
@@ -3041,7 +3108,6 @@ classdef mibDeepController < handle
                     obj.BatchOpt.PreprocessingMode{1} = 'Preprocessing is not required';
 
                     delete(wb);
-
             end
             % Preprocessing for training, AM files 256x256x3x512
             % C:\MATLAB\Data\CNN_FileRead_Test /notebook

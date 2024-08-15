@@ -14,8 +14,8 @@
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
 % Date: 25.04.2023
 
-function [par, img_info, dim_xyczt] = getAmiraMeshHeader(filename)
-% function [par, img_info, dim_xyczt] = getAmiraMeshHeader(filename)
+function [par, img_info, dim_xyczt, materialNames] = getAmiraMeshHeader(filename)
+% function [par, img_info, dim_xyczt, materialNames] = getAmiraMeshHeader(filename)
 % Get header of Amira Mesh file
 %
 % Parameters:
@@ -27,6 +27,7 @@ function [par, img_info, dim_xyczt] = getAmiraMeshHeader(filename)
 %   .Value -> parameter value
 % img_info: -> in the format compatible with imageData.img_info containers.Map
 % dim_xyczt: -> dimensions of the dataset
+% materialNames: -> detected material names
 
 % Updates
 % 09.01.2018, IB added extraction of embedded containers in the amiramesh headers
@@ -35,6 +36,7 @@ function [par, img_info, dim_xyczt] = getAmiraMeshHeader(filename)
 par = [];
 img_info = containers.Map;
 dim_xyczt = [];
+materialNames = {};
 
 if nargin < 1
     [filename, pathname] = mib_uigetfile( ...
@@ -214,8 +216,23 @@ for p=1:numel(par)
         fieldName = strrep(fieldName,'.','_');
         fieldName = strrep(fieldName,'-','_');
         img_info(fieldName) = par(p).Value;
+
+        % get material names
+        if strcmp(par(p).Name, 'Materials')
+            matName = par(p).Value{1};
+            pos1 = strfind(matName, '{');
+            if ~isempty(pos1)
+                matName = matName(1:pos1-2);
+                if ~strcmp(matName, 'Exterior')
+                    materialNames = [materialNames; {matName}];
+                end
+            else
+                break;
+            end
+        end
     end
 end
+
 warning(warning_state);     % Switch warning back to initial settings
 img_info('imgClass') = classType{1};
 if max(colorChannels) > 1
