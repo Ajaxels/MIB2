@@ -530,6 +530,9 @@ classdef mibDeepController < handle
             obj.BatchOpt.P_ExtraPaddingPercentage{1} = 0;
             obj.BatchOpt.P_ExtraPaddingPercentage{2} = [0 100];
             obj.BatchOpt.P_ExtraPaddingPercentage{3} = false;
+            obj.BatchOpt.P_ImageDownsamplingFactor{1} = 1;
+            obj.BatchOpt.P_ImageDownsamplingFactor{2} = [1 Inf];
+            obj.BatchOpt.P_ImageDownsamplingFactor{3} = false;
             obj.BatchOpt.P_MiniBatchSize{1} = 1;
             obj.BatchOpt.P_MiniBatchSize{2} = [1 Inf];
             obj.BatchOpt.P_MiniBatchSize{3} = true;
@@ -596,6 +599,7 @@ classdef mibDeepController < handle
             obj.BatchOpt.mibBatchTooltip.P_OverlappingTiles = 'The ooverlapping tiles mode can be used with "same" padding. It is slower but in general expected to give better predictions';
             obj.BatchOpt.mibBatchTooltip.P_OverlappingTilesPercentage = 'Overlap percentage between tiles when predicting with the Overlapping tiles mode';
             obj.BatchOpt.mibBatchTooltip.P_ExtraPaddingPercentage = 'Add symmetric padding to images for prediction; it helps to minimize edge artefacts';
+            obj.BatchOpt.mibBatchTooltip.P_ImageDownsamplingFactor = 'Downsample images by this number of times before prediction, [default=1, no downsampling]; for 2 classes predictions the results are also smoothed';
             obj.BatchOpt.mibBatchTooltip.P_DynamicMasking = 'When enabled, the images for predictions are thresholded to detect masked areas where segmentation occurs';
             obj.BatchOpt.mibBatchTooltip.P_PredictionMode = 'Main processing mode for prediction, the blocked image mode is recommended';
             obj.BatchOpt.mibBatchTooltip.P_ScoreFiles = 'tweak generation of score files showing probability of each class';
@@ -2020,7 +2024,17 @@ classdef mibDeepController < handle
                     end
                 case '3D Semantic'
                     if strcmp(obj.BatchOpt.Architecture{1}, 'U-net')
-                        lgraph = replaceLayer(lgraph, 'Segmentation-Layer', outputLayer);
+                        try
+                            lgraph = replaceLayer(lgraph, 'Segmentation-Layer', outputLayer);
+                        catch err
+                            if contains(lower(lgraph.Layers(end).Name), 'segmentation')
+                                lgraph = replaceLayer(lgraph, lgraph.Layers(end).Name, outputLayer);
+                            else
+                                % when deeplabv3plusLayers used to generate
+                                % one of the standard networks
+                                lgraph = replaceLayer(lgraph, 'classification', outputLayer);
+                            end
+                        end
                     end
                 case '2D Patch-wise'
                     lgraph = replaceLayer(lgraph, 'ClassificationLayer_predictions', outputLayer);
@@ -3919,6 +3933,20 @@ classdef mibDeepController < handle
                 vol = read(imgDS);
                 [~, fn] = fileparts(imgDS.Files{id});
 
+                % downsample the input image corresponding to the
+                % downsampling factor
+                if obj.BatchOpt.P_ImageDownsamplingFactor{1} ~= 1
+                    imResizeOpt.imgType = '3D';
+                    [imgHeight, imgWidth, imgDepth, noColors] = size(vol);
+                    imResizeOpt.width = round(imgWidth/obj.BatchOpt.P_ImageDownsamplingFactor{1});  % new width value, overrides the scale parameter
+                    imResizeOpt.height = round(imgHeight/obj.BatchOpt.P_ImageDownsamplingFactor{1});  % new height value, overrides the scale parameter
+                    imResizeOpt.depth = imgDepth;
+                    if dataDimension == 3 % for 3D downsample all dimensions
+                        imResizeOpt.depth = round(imgDepth/obj.BatchOpt.P_ImageDownsamplingFactor{1}); % % new depth value, overrides the scale parameter
+                    end
+                    vol = mibResize3d(vol, [], imResizeOpt);
+                end
+
                 % depth of the volume
                 volDepth = size(vol, 3);
                 nextWaitbarIterationFromZ = volDepth/progressUpdatesPerFile; % z-value when the progress bar needs to be updated
@@ -4036,6 +4064,36 @@ classdef mibDeepController < handle
                             pwb.updateText(sprintf('%s\nHold on ~%.0f:%.2d mins left...', fn, floor(timerValue/60), mod(round(timerValue),60)));
                             pwb.increment();
                         end
+                    end
+                end
+
+                % upsample results beased on downsampling factor
+                if obj.BatchOpt.P_ImageDownsamplingFactor{1} ~= 1
+                    imResizeOpt.width = imgWidth;  % upsample width value, overrides the scale parameter
+                    imResizeOpt.height = imgHeight;  % upsample height value, overrides the scale parameter
+                    imResizeOpt.depth = imgDepth;
+                    imResizeOpt.method = 'nearest';
+                    outputLabels = mibResize3d(outputLabels, [], imResizeOpt);
+
+                    % % smooth models for 2 classes outputs
+                    if numClasses == 2
+                        smoothOptions.dataType = '3D';
+                        smoothOptions.fitType = 'Gaussian';
+                        smoothOptions.showWaitbar = false;
+                        smoothOptions.sigma = obj.BatchOpt.P_ImageDownsamplingFactor{1}+1;
+                        if dataDimension == 3 
+                            smoothOptions.filters3DCheck = 1;
+                            smoothOptions.hSize = [obj.BatchOpt.P_ImageDownsamplingFactor{1}*2+1 obj.BatchOpt.P_ImageDownsamplingFactor{1}*2+1];
+                        else
+                            smoothOptions.filters3DCheck = 0;
+                            smoothOptions.hSize = obj.BatchOpt.P_ImageDownsamplingFactor{1}*2+1;
+                        end
+                        outputLabels = mibDoImageFiltering(outputLabels, smoothOptions);
+                    end
+                    
+                    if generateScoreFiles > 0
+                        imResizeOpt.imgType = '4D';
+                        scoreImg = mibResize3d(scoreImg, [], imResizeOpt);
                     end
                 end
 

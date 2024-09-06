@@ -8,6 +8,16 @@
 %
 % Added OSC resampling (see mibOscResampling.m)
 %
+%% 2.910 beta 01 / 06.09.2024 (SAM2 segmentation)
+%
+% [dtls][smry] *2.910 beta 01 / 06.09.2024 (SAM2 segmentation)* [/smry]
+%
+% * Added Segment-anything-2 models for manual/semi-automatic segmentation
+% * [DeepMIB] Added image downsampling paramter for automatic resizing of
+% images for prediction
+%
+% [/dtls]
+%
 %% 2.9012 / 24.07.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)
 % 
 % [dtls][smry] *2.9012 / 24.07.2024 (SAM segmentation, Multi-GPU training)* [/smry]

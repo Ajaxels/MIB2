@@ -273,17 +273,18 @@ Prefs.SegmTools.Superpixels.CompactSLIC = 99;
 
 % ---------- Segment-anything preferences ----------
 % see mibController.mibSegmSAMPanel_Callbacks for details
+Prefs.SegmTools.SAM.samVersion = 1; % use SAM1 or SAM2, when == 2
 Prefs.SegmTools.SAM.linksFile = ['Resources', filesep, 'sam_links.json'];     % location of sam_links.json file with SAM links settings, relative to MIB path!
 Prefs.SegmTools.SAM.backbone = 'vit_b (0.4Gb)';     % 'vit_h (2.5Gb)', 'vit_l (1.2Gb)', 'vit_b (0.4Gb)'
 Prefs.SegmTools.SAM.environment = 'cuda';     % 'cuda', 'cpu'
 Prefs.SegmTools.SAM.points_per_side = 32;
 Prefs.SegmTools.SAM.points_per_batch = 64;
-Prefs.SegmTools.SAM.pred_iou_thresh =  0.83;
-Prefs.SegmTools.SAM.stability_score_thresh = 0.8;
+Prefs.SegmTools.SAM.pred_iou_thresh =  0.88;
+Prefs.SegmTools.SAM.stability_score_thresh = 0.95;
 Prefs.SegmTools.SAM.box_nms_thresh = 0.7;
 Prefs.SegmTools.SAM.crop_n_layers = 0;
 Prefs.SegmTools.SAM.crop_nms_thresh = 0.7;
-Prefs.SegmTools.SAM.crop_overlap_ratio = 0.3413;
+Prefs.SegmTools.SAM.crop_overlap_ratio = 0.3413; % 512/1500
 Prefs.SegmTools.SAM.crop_n_points_downscale_factor = 1;
 % Prefs.SegmTools.SAM.point_grids: Optional[List[np.ndarray]] = None;
 Prefs.SegmTools.SAM.min_mask_region_area = 0;
@@ -292,7 +293,26 @@ Prefs.SegmTools.SAM.min_mask_region_area = 0;
 % large amounts of memory
 % Prefs.SegmTools.SAM.output_mode = "binary_mask";
 Prefs.SegmTools.SAM.sam_installation_path = [];
-Prefs.SegmTools.SAM.showProgressBar = true;     % show or not the progress bar dialog when doing SAM segmentation with points
+Prefs.SegmTools.SAM.showProgressBar = false;     % show or not the progress bar dialog when doing SAM segmentation with points
+
+% define separate settings for SAM2
+Prefs.SegmTools.SAM2.linksFile = ['Resources', filesep, 'sam2_links.json'];     % location of sam_links.json file with SAM links settings, relative to MIB path!
+Prefs.SegmTools.SAM2.backbone = 'sam2_hiera_t (0.15Gb)';     % 'sam2_hiera_t (0.15Gb), sam2_hiera_s (0.18Gb), sam2_hiera_base_plus (0.32Gb), sam2_hiera_l (0.90Gb)'
+Prefs.SegmTools.SAM2.environment = 'cuda';     % 'cuda', 'cpu'
+Prefs.SegmTools.SAM2.sam_installation_path = [];
+Prefs.SegmTools.SAM2.showProgressBar = false;     % s
+
+Prefs.SegmTools.SAM2.points_per_side = 32;
+Prefs.SegmTools.SAM2.points_per_batch = 64;
+Prefs.SegmTools.SAM2.pred_iou_thresh = 0.8;
+Prefs.SegmTools.SAM2.stability_score_thresh = 0.95;
+Prefs.SegmTools.SAM2.stability_score_offset = 1.0;
+Prefs.SegmTools.SAM2.crop_n_layers = 0;
+Prefs.SegmTools.SAM2.box_nms_thresh = 0.7;
+Prefs.SegmTools.SAM2.crop_n_points_downscale_factor = 1;
+Prefs.SegmTools.SAM2.min_mask_region_area = 0;
+Prefs.SegmTools.SAM2.use_m2m = false;
+
 
 %% -------------  IMAGE PROCESSING TOOLS ----------
 

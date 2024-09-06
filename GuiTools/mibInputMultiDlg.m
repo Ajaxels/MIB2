@@ -280,7 +280,7 @@ for elementId = 1:numel(prompts)
         shiftX = columnId*width + de/2*columnId;
         shiftY = 0; %dt*PromptLines(1);
     end
-    
+
     % fix for the last item to be on a single column
     if options.LastItemColumns == 1 && elementId == numel(prompts)
         shiftX = 0;
@@ -614,6 +614,7 @@ function Help_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if strcmp(handles.HelpUrl(1:4), 'http')
+    % http://mib.helsinki.fi
     web(handles.HelpUrl, '-browser');
 else
     eval(handles.HelpUrl);

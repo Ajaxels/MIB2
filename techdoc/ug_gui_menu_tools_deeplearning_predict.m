@@ -115,6 +115,12 @@
 % * [class.dropdown]Padding, %%[/class], when predicting
 % pad the image from the sides using symmetrical padding. This operation
 % helps to reduce possible artefacts that may appear at the edges.
+% * [class.dropdown]Downsample factor for images[/class], when networks are are
+% trained on downsampled images the images for prediction should also be
+% downsampled to the same extent. To streamline the prediction process, the 
+% images for prediction can be automatically donwsampled using this factor.
+% Resulting models are upsampled back to the size of the original images
+% and in case of networks with 2 classes are also smoothed.
 % * [class.dropdown]Batch size for prediction...[/class], this editbox
 % allows to specify number of input image patches that are processed by GPU
 % at the same time. The larger the value, the quicker prediction takes, but

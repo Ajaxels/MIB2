@@ -7,9 +7,9 @@ This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
       -->
 <title>Deep MIB - Predict tab</title>
-<meta name="generator" content="MATLAB 23.2">
+<meta name="generator" content="MATLAB 24.1">
 <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
-<meta name="DC.date" content="2024-06-17">
+<meta name="DC.date" content="2024-09-06">
 <meta name="DC.source" content="ug_gui_menu_tools_deeplearning_predict.m">
 <style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
@@ -669,6 +669,7 @@ currently shown in the <b>Image View</b> panel of MIB</li>
 <div>
 <ul>
 <li><span class="dropdown">Padding, %%</span>, when predicting pad the image from the sides using symmetrical padding. This operation helps to reduce possible artefacts that may appear at the edges.</li>
+<li><span class="dropdown">Downsample factor for images</span>, when networks are are trained on downsampled images the images for prediction should also be downsampled to the same extent. To streamline the prediction process, the images for prediction can be automatically donwsampled using this factor. Resulting models are upsampled back to the size of the original images and in case of networks with 2 classes are also smoothed.</li>
 <li><span class="dropdown">Batch size for prediction...</span>, this editbox allows to specify number of input image patches that are processed by GPU at the same time. The larger the value, the quicker prediction takes, but the max value is limited by the total memory available on GPU.</li>
 <li><span class="dropdown">Model files ▼</span>, specify output format for the generated model files. For the patch-wise workflow CSV files are created.</li>
 </ul>
@@ -827,7 +828,7 @@ function</a></li>
 <p class="footer">
 
 <br>
-<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2024a</a> and subsequently processed by <a class="pretty-link" href="https://www.mathworks.com/matlabcentral/fileexchange/78059-prettify-matlab-html">prettify_MATLAB_html</a> V6.8b2</p>
 <p id="iFrameBuf">&nbsp;</p>
 </div>
 <!--
@@ -964,6 +965,12 @@ function</a></li>
 % * [class.dropdown]Padding, %%[/class], when predicting
 % pad the image from the sides using symmetrical padding. This operation
 % helps to reduce possible artefacts that may appear at the edges.
+% * [class.dropdown]Downsample factor for images[/class], when networks are are
+% trained on downsampled images the images for prediction should also be
+% downsampled to the same extent. To streamline the prediction process, the 
+% images for prediction can be automatically donwsampled using this factor.
+% Resulting models are upsampled back to the size of the original images
+% and in case of networks with 2 classes are also smoothed.
 % * [class.dropdown]Batch size for prediction...[/class], this editbox
 % allows to specify number of input image patches that are processed by GPU
 % at the same time. The larger the value, the quicker prediction takes, but

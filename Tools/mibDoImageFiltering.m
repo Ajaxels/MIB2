@@ -67,6 +67,7 @@ end
 if ~isfield(options, 'colorChannel'); options.colorChannel = 0; end
 if ~isfield(options,'showWaitbar'); options.showWaitbar=1; end
 if ~isfield(options,'filters3DCheck'); options.filters3DCheck=0; end
+if ~isfield(options,'orientation'); options.orientation=4; end
 
 if ~isfield(options, 'pixSize') && strcmp(options.fitType, 'Gaussian') && options.filters3DCheck
     error('mibDoImageFiltering: such call requires specification of pixSize!');

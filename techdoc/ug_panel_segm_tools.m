@@ -740,8 +740,8 @@
 %   <img src = "images\PanelsSegmentationToolsSAM.png">
 % </td>
 % <td style="border: 0px">
-% Use Segment-anything model for object segmentation using one or few <em>mouse click</em><br><br>
-% An extensive tutorial covering installation and usage:<br>
+% Use Segment-anything model (SAM1 or SAM2) for object segmentation using one or few mouse clicks<br><br>
+% An extensive tutorial covering installation and usage (SAM1):<br>
 % <a href="https://youtu.be/J3pivV4udGU"><img style="vertical-align:middle;" src="images\youtube.png">  https://youtu.be/J3pivV4udGU</a>
 % </td>
 % </tr>
@@ -753,14 +753,18 @@
 %
 % <html>
 % Segment-anything model (SAM) is developed by <a href="https://ai.facebook.com/research">Meta AI Research, FAIR research team</a>. 
-% It can be used to segment individual objects or the whole image using one or few mouse click. Details of the research and interactive demo
-% is available here: <a href="https://segment-anything.com">https://segment-anything.com</a>
-% <br>
+% It can be used to segment individual objects or the whole image using one or few mouse clicks. Details of the research and interactive demo
+% is available:<br>
+% <ul>
+% <li>SAM-1: <a href="https://segment-anything.com">https://segment-anything.com</a></li>
+% <li>SAM-2: <a href="https://ai.meta.com/sam2/">https://ai.meta.com/sam2/</a></li>
+% </ul>
+% <br><br>
 % Implementation of SAM in MIB is done via utilization of an external Python interpreter, please check the <b>Requirements and installation</b> section below 
 % for detailed instructions.<br><br>
 % <b>Important!</b> even though SAM can work on CPU, GPU is highly recommended as it is x30-60 faster.
 % <br><br>
-% <b>List of original SAM available in MIB:</b>
+% <b>List of original SAM-1 available in MIB:</b>
 % <ul>
 % <li><b>vit_b (0.4Gb)</b>, fastest (x1) but gives less precise results</li>
 % <li><b>vit_l (1.2Gb)</b>, moderate speed (~x1.4 slower), better predictions</li>
@@ -768,10 +772,11 @@
 % </ul>
 % <b>Reference</b>
 % <ul><li>
-% Alexander Kirillov, Eric Mintun, Nikhila Ravi, Hanzi Mao, Chloe Rolland, Laura Gustafson, Tete Xiao, Spencer Whitehead, Alexander C. Berg, 
-% Wan-Yen Lo, Piotr Dollar, Ross Girshick<br>
+% <em>Alexander Kirillov, Eric Mintun, Nikhila Ravi, Hanzi Mao, Chloe Rolland, Laura Gustafson, Tete Xiao, Spencer Whitehead, Alexander C. Berg, 
+% Wan-Yen Lo, Piotr Dollar, Ross Girshick</em><br>
 % Segment Anything arXiv:2304.02643, <a href="https://doi.org/10.48550/arXiv.2304.02643">https://doi.org/10.48550/arXiv.2304.02643</a> 
-% </li></ul>
+% </li>
+% </ul>
 % To extend application of SAM for microscopy images four additional pretrained networks
 % for light and electron microscopy for tests are included:
 % <br>
@@ -785,14 +790,34 @@
 % </ul>
 % <b>Reference</b>
 % <ul><li>
-% Anwai Archit, Sushmita Nair, Nabeel Khalid, Paul Hilt, Vikas Rajashekar, Marei Freitag, Sagnik Gupta, Andreas Dengel, Sheraz Ahmed, Constantin Pape<br>
+% <em>Anwai Archit, Sushmita Nair, Nabeel Khalid, Paul Hilt, Vikas Rajashekar, Marei Freitag, Sagnik Gupta, Andreas Dengel, Sheraz Ahmed, Constantin Pape</em><br>
 % Segment Anything for Microscopy, bioRxiv, doi: https://doi.org/10.1101/2023.08.21.554208; <a href="https://www.biorxiv.org/content/10.1101/2023.08.21.554208v1">link</a> 
-% </li></ul>
+% </li>
+% </ul>
+% <bt>
+% <b>List of original SAM-2 available in MIB:</b>
+% <ul>
+% <li><b>sam2_hiera_tiny (0.15Gb)</b></li>
+% <li><b>sam2_hiera_small (0.18Gb)</b></li>
+% <li><b>sam2_hiera_base_plus (0.32Gb)</b></li>
+% <li><b>sam2_hiera_large (0.90Gb)</b></li>
+% </ul>
+% <b>Reference</b>
+% <ul><li>
+% <em>Nikhila Ravi, Valentin Gabeur, Yuan-Ting Hu, Ronghang Hu, Chaitanya Ryali, Tengyu Ma, Haitham Khedr,
+% Roman Rädle, Chloe Rolland, Laura Gustafson, Eric Mintun, Junting Pan, Kalyan Vasudev Alwala, 
+% Nicolas Carion, Chao-Yuan Wu, Ross Girshick, Piotr Dollar, Christoph Feichtenhofer</em><br>
+% SAM 2: Segment Anything in Images and Videos<br>
+% arXiv:2408.00714, <a href="https://arxiv.org/abs/2408.00714">https://arxiv.org/abs/2408.00714</a>
+% </li>
+% </ul>
+% <br>
 % <b>Download links and configuration file</b><br>
 % SAM networks are automatically connected to MIB; it is possible to
 % configure any custom SAM network for use in MIB. To do so, please modify
-% <span class="code">sam_links.json</span> located by default under <span
-% class="code">Resources</span> subfolder within MIB. It is also possible
+% <span class="code">sam_links.json</span> for SAM-1 and 
+% <span class="code">sam2_links.json</span> for SAM-2 located by default under 
+% <span class="code">Resources</span> subfolder within MIB. It is also possible
 % to link this file from anywhere, in this case use segment-anything
 % settings in MIB to provide a new location.
 % </html>
@@ -804,15 +829,11 @@
 % <html>
 % Segment-anything is not available by default and it needs to be
 % installed!<br><br>
-% Before the installation keep in mind the following requirements:
+% Installation details:<br>
 % <ul>
-% <li>MATLAB R2022a or newer (tested on R2022a, R2022b, R2023a)</li>
-% <li>Python 3.8, 3.9, 3.10; tested on 3.9</li>
-% <li><a href="https://se.mathworks.com/support/requirements/python-compatibility.html">Here is a list</a> of Python versions compatible with various MATLAB releases</li>
-% <li>CUDA-compatible GPU is highly recommended, CPU can also be used but it is significantly slower</li>
+% <li>SAM-1: <a href="https://mib.helsinki.fi/downloads_systemreq_sam.html">https://mib.helsinki.fi/downloads_systemreq_sam.html</a></li>
+% <li>SAM-2: <a href="https://mib.helsinki.fi/downloads_systemreq_sam2.html">https://mib.helsinki.fi/downloads_systemreq_sam2.html</a></li>
 % </ul>
-% <br>
-% Installation details available from <a href="https://mib.helsinki.fi/downloads_systemreq_sam.html">https://mib.helsinki.fi/downloads_systemreq_sam.html</a>
 % </html>
 %
 % [/dtls] 

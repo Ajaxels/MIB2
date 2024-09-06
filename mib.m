@@ -95,7 +95,10 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'Tools', 'Supervoxels'));
 end
 
-mibVersion = 'ver. 2.9012 / 07.08.2024';  % ATTENTION! it is important to have the version number between "ver." and "/"
+% ATTENTION! it is important to have the version number between "ver." and "/" 
+% Release syntax example: "ver. 2.91 / 06.08.2024"
+% Beta syntax example: "ver. 2.91 (beta 08) / 06.08.2024"
+mibVersion = 'ver. 2.91 (beta 01) / 06.08.2024';  
 
 % define max number of parallel workers for deployed versions
 % define workers for parallel pools

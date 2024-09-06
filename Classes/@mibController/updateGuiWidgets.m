@@ -315,6 +315,13 @@ end
 obj.mibView.handles.mibAnnotationPrecisionEdit.String = num2str(obj.mibModel.mibAnnValuePrecision);
 obj.mibSegmentationToolPopup_Callback();            
 
+% update SAM checkbox
+if obj.mibModel.preferences.SegmTools.SAM.samVersion == 1
+    obj.mibView.handles.mibSAM2checkbox.Value = false;
+else
+    obj.mibView.handles.mibSAM2checkbox.Value = true;
+end
+
 %% Virtual stacking mode related changes
 obj.mibBioformatsCheck_Callback();  % update the list of available extensions
 if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1

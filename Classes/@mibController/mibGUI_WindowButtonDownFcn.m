@@ -420,7 +420,13 @@ elseif strcmp(operation, 'interact')
                     obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
                     obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, 1];
                 end
-                obj.mibSegmentationSAM(extraOptions);
+                if obj.mibModel.preferences.SegmTools.SAM.samVersion == 1
+                    % use original SAM1
+                    obj.mibSegmentationSAM(extraOptions);
+                else  
+                    % use newer version SAM2
+                    obj.mibSegmentationSAM2(extraOptions);
+                end
             elseif obj.mibView.handles.mibSegmSAMMethod.Value == 2    %     'Landmarks'
                 obj.mibSegmentationAnnotation(h, w, z, t, modifier);
             end

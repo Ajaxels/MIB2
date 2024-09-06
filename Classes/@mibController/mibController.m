@@ -365,7 +365,9 @@ classdef mibController < handle
         
         mibSegmentationSAM(obj, extraOptions, BatchOptIn)         % Perform segmentation using segment-anything model https://segment-anything.com
 
-        status = mibSegmentationSAM_requirements(obj)         % Check for files required to run segmentation using segment-anything model
+        mibSegmentationSAM2(obj, extraOptions, BatchOptIn)         % Perform segmentation using segment-anything-2 model https://github.com/facebookresearch/segment-anything-2
+
+        status = mibSegmentationSAM_requirements(obj, samVersion)         % Check for files required to run segmentation using segment-anything model
         
         mibSegmentationSpot(obj, y, x, modifier, BatchOptIn)        % Do segmentation using the spot tool
         
@@ -506,9 +508,7 @@ classdef mibController < handle
             global Font mibPath scalingGUI DejaVuSansMono;
             
             obj.mibVersion = mibVersion;
-            index1 = strfind(obj.mibVersion, 'ver.');
-            index2 = strfind(obj.mibVersion, '/');
-            obj.mibVersionNumeric = str2double(obj.mibVersion(index1+4:index2-1));
+            obj.mibVersionNumeric = mibGetVersionNumberic(mibVersion);
             
             % when insertText is missing MIB will use a legacy function to add text to image
             % load the text table and keep it in a global variable
@@ -576,7 +576,7 @@ classdef mibController < handle
                 % get numbers for the brush size change
                 obj.brushSizeNumbers = 1-imread(fullfile(obj.mibPath, 'Resources', 'numbers.png'));   % height=16, letter size = 8, +1 pixel border
                 addTextOptions.color = [1 1 0];
-                addTextOptions.fontSize = 3;
+                addTextOptions.fontSize = 2;
                 addTextOptions.markerText = 'text';
                 img = mibAddText2Img(img, obj.mibVersion, [1, 436], addTextOptions);
                 if isdeployed;  img = mibAddText2Img(img, 'for Academic research', [1, 418], addTextOptions); end
