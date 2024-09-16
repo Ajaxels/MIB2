@@ -233,29 +233,6 @@ if isempty(obj.mibModel.mibPython)
         min_mask_reg_area = py.numpy.int32(obj.mibModel.preferences.SegmTools.SAM2.min_mask_region_area), ...
         use_m2m = obj.mibModel.preferences.SegmTools.SAM2.use_m2m);
 
-    % pyrun(['mask_generator = SAM2AutomaticMaskGenerator(' ...
-    %         'model = sam2_model, ' ...
-    %         'points_per_side = pnts_p_side, ' ...
-    %         'points_per_batch = pnts_p_batch, ' ...
-    %         'pred_iou_thresh = pred_iou_th, ' ...
-    %         'stability_score_thresh = st_sco_th, ' ...
-    %         'stability_score_offset = st_sco_offset, ' ...
-    %         'crop_n_layers = crop_n_l, ' ...
-    %         'box_nms_thresh = box_nms_thresh, ' ...
-    %         'crop_n_points_downscale_factor = crop_n_pnts_downsc_f, ' ...
-    %         'min_mask_region_area = min_mask_reg_area,' ...
-    %         'use_m2m = use_m2m,)'], ...
-    %     pnts_p_side = py.numpy.int32(obj.mibModel.preferences.SegmTools.SAM2.points_per_side), ...
-    %     pnts_p_batch = py.numpy.int32(obj.mibModel.preferences.SegmTools.SAM2.points_per_batch), ...
-    %     pred_iou_th = py.numpy.float16(obj.mibModel.preferences.SegmTools.SAM2.pred_iou_thresh), ...
-    %     st_sco_th = py.numpy.float16(obj.mibModel.preferences.SegmTools.SAM2.stability_score_thresh), ...
-    %     st_sco_offset = py.numpy.float16(obj.mibModel.preferences.SegmTools.SAM2.stability_score_offset), ...
-    %     crop_n_l = py.numpy.int32(obj.mibModel.preferences.SegmTools.SAM2.crop_n_layers), ...
-    %     box_nms_thresh = py.numpy.float16(obj.mibModel.preferences.SegmTools.SAM2.box_nms_thresh), ...
-    %     crop_n_pnts_downsc_f = py.numpy.int32(obj.mibModel.preferences.SegmTools.SAM2.crop_n_points_downscale_factor), ...
-    %     min_mask_reg_area = py.numpy.float16(obj.mibModel.preferences.SegmTools.SAM2.min_mask_region_area), ...
-    %     use_m2m = obj.mibModel.preferences.SegmTools.SAM2.use_m2m);
-
     if BatchOpt.showWaitbar; waitbar(1, wb); end
     delete(wb);
 end
@@ -263,19 +240,36 @@ end
 % define limits
 t1 = 1;
 t2 = obj.mibModel.I{BatchOpt.id}.time;
-if strcmp(BatchOpt.Dataset{1}, '2D, Slice') || ...
-        strcmp(BatchOpt.Method{1}, 'Interactive')
+if strcmp(BatchOpt.Dataset{1}, '2D, Slice') 
     z1 = obj.mibModel.I{BatchOpt.id}.getCurrentSliceNumber();
     z2 = z1;
 else
-    z1 = 1;
-    z2 = obj.mibModel.I{BatchOpt.id}.depth;
+    switch BatchOpt.Method{1}
+        case 'Interactive'
+            % when click is done on the same slice or when a new click is
+            % done with a different value, make 2D segmentation
+            if numel(obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(:,3)) > 1 && ...
+                (obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3)-obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end-1,3) == 0 || ...
+                        abs(diff(obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(end-1:end))) == 1)
+                    z1 = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3);
+                    z2 = z1;
+            else
+                z1 = min(obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(:,3));
+                z2 = max(obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(:,3));
+            end
+        case 'Landmarks'
+            z1 = obj.mibModel.I{BatchOpt.id}.hLabels.getMinValueZ();
+            z2 = obj.mibModel.I{BatchOpt.id}.hLabels.getMaxValueZ();
+        otherwise
+            z1 = 1;
+            z2 = obj.mibModel.I{BatchOpt.id}.depth;
+    end
 end
 noImages = (z2-z1+1)*(t2-t1+1);
 
 % redefine showing of the progress bar
 localWaitbar = BatchOpt.showWaitbar;
-if strcmp(BatchOpt.Method{1}, 'Interactive') && ~obj.mibModel.preferences.SegmTools.SAM2.showProgressBar
+if strcmp(BatchOpt.Method{1}, 'Interactive') && ~obj.mibModel.preferences.SegmTools.SAM2.showProgressBar && noImages == 1
     localWaitbar = false;
 end
 
@@ -284,6 +278,7 @@ if localWaitbar; wb = waitbar(0, sprintf('%s\nPlease wait...', BatchOpt.Method{1
 currViewPort = obj.mibModel.I{BatchOpt.id}.viewPort;
 max_int = obj.mibModel.I{BatchOpt.id}.meta('MaxInt');
 getDataOpt.id = BatchOpt.id;
+
 % enable blocked mode switch
 getLabelsOpt = struct();
 if strcmp(BatchOpt.Method{1}, 'Interactive')
@@ -391,23 +386,38 @@ try
                 case 1  % Interactive in-view points
                     % check for points from different slices and remove points
                     % that do not belong to the current slice
-                    currZ = obj.mibModel.I{BatchOpt.id}.getCurrentSliceNumber();
+                    %currZ = obj.mibModel.I{BatchOpt.id}.getCurrentSliceNumber();
+                    
                     % get indices of the points on the current slice
-                    pntIndices = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(:,3) == currZ;
-                    % keep only the points on the current slice
-                    obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(pntIndices, :);
-                    obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(pntIndices);
-                    % remove z-coordinate
-                    labelPositions = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(:, 1:2);
+                    pntIndices = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(:,3) == z;
+                    
+                    % % keep only the points on the current slice
+                    % obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(pntIndices, :);
+                    % obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(pntIndices);
+                    % 
+                    % % remove z-coordinate
+                    % labelPositions = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(:, 1:2);
+
+                    labelPositions = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(pntIndices, 1:2);
+                    labelValues = obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(pntIndices);
+
                     % shift coordinates
                     labelPositions(:,1) = ceil((labelPositions(:,1) - max([0 floor(obj.mibModel.I{BatchOpt.id}.axesX(1))])) );     % - .999/obj.magFactor subtract 1 pixel to put a marker to the left-upper corner of the pixel
                     labelPositions(:,2) = ceil((labelPositions(:,2) - max([0 floor(obj.mibModel.I{BatchOpt.id}.axesY(1))])) );
-                    imgOut = pointsSAM(imgIn, labelPositions, obj.mibModel.sessionSettings.SAMsegmenter.Points.Value);
+                    
+                    % imgOut = pointsSAM(imgIn, labelPositions, obj.mibModel.sessionSettings.SAMsegmenter.Points.Value);
+                    imgOut = pointsSAM(imgIn, labelPositions, labelValues);
+
                     imgOut = imgOut(padSize+1:end-padSize, padSize+1:end-padSize);    % remove padding
                     % % --- for DEBUG --- %
                     % --- for DEBUG --- % imgOut = zeros([size(imgIn, 1), size(imgIn, 2)], 'uint8');
                     % --- for DEBUG --- % imgOut(imgIn(:,:,1)<imgIn(labelPositions(end,2), labelPositions(end,1), 1)) = 1;
                     
+                    % auto fill the shape when auto fill is checked
+                    if obj.mibView.handles.mibAutoFillCheck.Value
+                        imgOut = imfill(imgOut);
+                    end
+
                     % limit to the selected material of the model
                     if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1
                         storedImageState = obj.mibModel.sessionSettings.SAMsegmenter.initialImageSelected(obj.mibModel.I{obj.mibModel.Id}.slices{1}(1):obj.mibModel.I{obj.mibModel.Id}.slices{1}(2), ...
@@ -417,21 +427,21 @@ try
 
                     switch BatchOpt.Mode{1}
                         case 'replace'
-                            obj.mibModel.setData2D(BatchOpt.Destination{1}, {imgOut}, NaN, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt);
+                            obj.mibModel.setData2D(BatchOpt.Destination{1}, {imgOut}, z, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt);
                         case 'add'
                             % crop the stored image to the current FoV
                             storedImageState = obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo(obj.mibModel.I{obj.mibModel.Id}.slices{1}(1):obj.mibModel.I{obj.mibModel.Id}.slices{1}(2), ...
                                 obj.mibModel.I{obj.mibModel.Id}.slices{2}(1):obj.mibModel.I{obj.mibModel.Id}.slices{2}(2) );
-                            obj.mibModel.setData2D(BatchOpt.Destination{1}, {bitor(storedImageState, imgOut)}, NaN, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt);
+                            obj.mibModel.setData2D(BatchOpt.Destination{1}, {bitor(storedImageState, imgOut)}, z, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt);
                         case 'subtract'
-                            currLayer = cell2mat(obj.mibModel.getData2D(BatchOpt.Destination{1}, NaN, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt));
-                            obj.mibModel.setData2D(BatchOpt.Destination{1}, {currLayer - imgOut}, NaN, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt);
+                            currLayer = cell2mat(obj.mibModel.getData2D(BatchOpt.Destination{1}, z, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt));
+                            obj.mibModel.setData2D(BatchOpt.Destination{1}, {currLayer - imgOut}, z, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt);
                         case 'add, +next material'
                             selMaterialIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo');
 
                             storedImageState = obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo(obj.mibModel.I{obj.mibModel.Id}.slices{1}(1):obj.mibModel.I{obj.mibModel.Id}.slices{1}(2), ...
                                 obj.mibModel.I{obj.mibModel.Id}.slices{2}(1):obj.mibModel.I{obj.mibModel.Id}.slices{2}(2) );
-                            obj.mibModel.setData2D(BatchOpt.Destination{1}, {bitor(storedImageState, imgOut)}, NaN, NaN, selMaterialIndex, getDataOpt);
+                            obj.mibModel.setData2D(BatchOpt.Destination{1}, {bitor(storedImageState, imgOut)}, z, NaN, selMaterialIndex, getDataOpt);
 
                             % add next material
                             if extraOptions.addNextMaterial
@@ -451,6 +461,11 @@ try
                     % keep only x,y
                     labelPositions = labelPositions(:,2:3);
                     imgOut = pointsSAM(imgIn, labelPositions, labelValues);
+                    % auto fill the shape when auto fill is checked
+                    if obj.mibView.handles.mibAutoFillCheck.Value
+                        imgOut = imfill(imgOut);
+                    end
+
                     switch BatchOpt.Mode{1}
                         case 'replace'
                             obj.mibModel.setData2D(BatchOpt.Destination{1}, {imgOut}, z, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt);
@@ -482,7 +497,7 @@ catch err
     return;
 
 end
-if localWaitbar; delete(wb); end
+%if localWaitbar; delete(wb); end
 toc
 
 % count user's points
@@ -497,7 +512,9 @@ notify(obj.mibModel, 'syncBatch', eventdata);
 if strcmp(BatchOpt.Destination{1}, 'mask')
     notify(obj.mibModel, 'showMask');   % turn on the show mask checkbox
 end
+
 notify(obj.mibModel, 'plotImage');
+if localWaitbar; delete(wb); end
 
 end
 

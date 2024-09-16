@@ -59,6 +59,7 @@ if obj.I{obj.Id}.useLUT     % use LUT for colors
     selectedColorsLUT = obj.I{obj.Id}.lutColors(colorIndices,:);
 else
     selectedColorsLUT = [1 0 0; 0 1 0; 0 0 1];  % RGB
+    colorIndices = colorIndices(1:min(3,numel(colorIndices)));
 end
 
 R = zeros([options.ImageSize(1), options.ImageSize(2)]);

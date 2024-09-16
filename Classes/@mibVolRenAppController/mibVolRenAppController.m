@@ -84,6 +84,8 @@ classdef mibVolRenAppController < handle
         % .mainGridLayoutRowHeights -> heights of rows in obj.View.handles.mainGridLayout
         keyFrameTableIndex
         % index of the selected key frame
+        matlabVersion
+        % current version of MATLAB
         maxIntValue
         % max integer value of the loaded volume
         noOverlayMaterials
@@ -250,6 +252,14 @@ classdef mibVolRenAppController < handle
                     || ~strcmp(obj.View.handles.cameraZoomEdit.FontName, Font.FontName)
                   mibUpdateFontSize(obj.View.gui, Font);
               end
+            end
+
+            % Add new renderers
+            % get matlab version
+            v = ver('matlab');
+            obj.matlabVersion = str2double(v(1).Version); 
+            if obj.matlabVersion >= 23.2 % R2023b
+                obj.View.handles.rendererDropDown.Items = [obj.View.handles.rendererDropDown.Items, 'CinematicRendering', 'LightScattering'];
             end
 
             % start 3D viewer in a separate window
@@ -1685,11 +1695,23 @@ classdef mibVolRenAppController < handle
             obj.volume.OverlayColormap = overlayColormap;
             obj.volume.OverlayThreshold = 0.0001;
             
+            % update rendering style
+            if obj.matlabVersion >= 23.2 % R2023b
+                obj.volume.OverlayRenderingStyle = obj.View.handles.overlayRenderingStyle.Value; % LabelOverlay, VolumeOverlay, GradientOverlay
+            end
+
             obj.overlayShownMaterials = logical(ones([obj.noOverlayMaterials, 1]));
             obj.updateModelTable(); % update table with materials
         end
 
+        function updateOverlayRenderingStyle(obj)
+            % function updateOverlayRenderingStyle()
+            % update rendering style for overlays
 
+            if obj.matlabVersion >= 23.2 % R2023b
+                obj.volume.OverlayRenderingStyle = obj.View.handles.overlayRenderingStyle.Value; % LabelOverlay, VolumeOverlay, GradientOverlay
+            end
+        end
 
         function updateSurfaceTable(obj)
             % update obj.View.handles.surfaceTable

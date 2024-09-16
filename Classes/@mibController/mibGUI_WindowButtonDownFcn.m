@@ -393,20 +393,65 @@ elseif strcmp(operation, 'interact')
                         otherwise
                             obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = [];
                     end
-                elseif strcmp(modifier, 'control')
-                    switch samMode
-                        case 'add, +next material'
-                            % select the first material row in the table
-                            if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 4
-                                eventdata2.Indices = [3, 3];
-                                obj.mibSegmentationTable_CellSelectionCallback(eventdata2);     % update mibSegmentationTable
-                            end
+                % elseif strcmp(modifier, 'control')
+                %     switch samMode
+                %         case 'add, +next material'
+                %             % select the first material row in the table
+                %             if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 4
+                %                 eventdata2.Indices = [3, 3];
+                %                 obj.mibSegmentationTable_CellSelectionCallback(eventdata2);     % update mibSegmentationTable
+                %             end
+                %     end
+                % 
+                %     % remove area from segmentation
+                %     obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
+                %     obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, 0];
+                % elseif strcmp(modifier, 'shift')
+                %     switch samMode
+                %         case 'add, +next material'
+                %             % select the first material row in the table
+                %             if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 4
+                %                 eventdata2.Indices = [3, 3];
+                %                 obj.mibSegmentationTable_CellSelectionCallback(eventdata2);     % update mibSegmentationTable
+                %             end
+                %     end
+                % 
+                %     if obj.mibView.handles.mibSegmSAMDataset.Value == 1 % 2D, Slice
+                %         % add point to segmentation
+                %         obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
+                %         obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, 1];
+                %     else % 3D, Dataset
+                %         % interpolate the points between the current and
+                %         % the previous points when z-value was changed
+                %         if obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(end) == 1 && ...
+                %                 obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3) ~= z
+                % 
+                %             % range vector between min and max Z
+                %             z_range = min([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3), z]):max([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3), z]);  
+                %             % Interpolate x and y values for each z value
+                %             x_interp = interp1([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3); z], [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 1); w], z_range, 'linear');     % x_interp = interp1([z1 z2], [x1 x2], z_range);
+                %             y_interp = interp1([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3); z], [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 2); h], z_range, 'linear');     % y_interp = interp1([z1 z2], [y1 y2], z_range);
+                %             id1 = size(obj.mibModel.sessionSettings.SAMsegmenter.Points.Position,1);
+                %             id2 = id1+numel(x_interp)-1;
+                %             obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 1) = x_interp;
+                %             obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 2) = y_interp;
+                %             obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 3) = z_range;
+                %             obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(id1:id2) = 1;
+                %         else
+                %             % add point to segmentation
+                %             obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
+                %             obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, 1];
+                %         end
+                %     end
+                else
+                    if strcmp(modifier, 'control')
+                        markerValue = 0;
+                    elseif strcmp(modifier, 'shift')
+                        markerValue = 1;
+                    else
+                        return
                     end
-                    
-                    % remove area from segmentation
-                    obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
-                    obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, 0];
-                elseif strcmp(modifier, 'shift')
+
                     switch samMode
                         case 'add, +next material'
                             % select the first material row in the table
@@ -416,10 +461,35 @@ elseif strcmp(operation, 'interact')
                             end
                     end
 
-                    % add point to segmentation
-                    obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
-                    obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, 1];
+                    if obj.mibView.handles.mibSegmSAMDataset.Value == 1 % 2D, Slice
+                        % add point to segmentation
+                        obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
+                        obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, markerValue];
+                    else % 3D, Dataset
+                        % interpolate the points between the current and
+                        % the previous points when z-value was changed
+                        if obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(end) == markerValue && ...
+                                obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3) ~= z
+                            
+                            % range vector between min and max Z
+                            z_range = min([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3), z]):max([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3), z]);  
+                            % Interpolate x and y values for each z value
+                            x_interp = interp1([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3); z], [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 1); w], z_range, 'linear');     % x_interp = interp1([z1 z2], [x1 x2], z_range);
+                            y_interp = interp1([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3); z], [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 2); h], z_range, 'linear');     % y_interp = interp1([z1 z2], [y1 y2], z_range);
+                            id1 = size(obj.mibModel.sessionSettings.SAMsegmenter.Points.Position, 1);
+                            id2 = id1+numel(x_interp)-1;
+                            obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 1) = x_interp;
+                            obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 2) = y_interp;
+                            obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 3) = z_range;
+                            obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(id1:id2) = markerValue;
+                        else
+                            % add point to segmentation
+                            obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
+                            obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, markerValue];
+                        end
+                    end
                 end
+
                 if obj.mibModel.preferences.SegmTools.SAM.samVersion == 1
                     % use original SAM1
                     obj.mibSegmentationSAM(extraOptions);
@@ -430,6 +500,7 @@ elseif strcmp(operation, 'interact')
             elseif obj.mibView.handles.mibSegmSAMMethod.Value == 2    %     'Landmarks'
                 obj.mibSegmentationAnnotation(h, w, z, t, modifier);
             end
+            return;
         case 'Spot'
             % The spot mode: draw a circle after mouse click
             [w, h, z] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 1);

@@ -38,7 +38,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 12-Feb-2024 16:00:54
+% Last Modified by GUIDE v2.5 09-Sep-2024 17:08:54
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -91,6 +91,10 @@ if ~isempty(Font)
         mibUpdateFontSize(handles.mibGUI, Font);
     end
 end
+
+% turn off axes toolbar
+% https://se.mathworks.com/help/matlab/creating_plots/control-axes-interactions.html
+handles.mibImageAxes.Toolbar.Visible = 'off';
 
 % Set the font size for mibFilesListbox
 handles.mibFilesListbox.FontSize = handles.mibController.mibModel.preferences.System.FontSizeDirView;

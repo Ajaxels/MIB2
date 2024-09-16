@@ -510,6 +510,8 @@ classdef mibController < handle
             obj.mibVersion = mibVersion;
             obj.mibVersionNumeric = mibGetVersionNumberic(mibVersion);
             
+            fprintf('MIB version: %.4f\n', obj.mibVersionNumeric);
+
             % when insertText is missing MIB will use a legacy function to add text to image
             % load the text table and keep it in a global variable
             if isempty(which('insertText'))
@@ -578,7 +580,7 @@ classdef mibController < handle
                 addTextOptions.color = [1 1 0];
                 addTextOptions.fontSize = 2;
                 addTextOptions.markerText = 'text';
-                img = mibAddText2Img(img, obj.mibVersion, [1, 436], addTextOptions);
+                img = mibAddText2Img(img, obj.mibVersion, [1, 440], addTextOptions);
                 if isdeployed;  img = mibAddText2Img(img, 'for Academic research', [1, 418], addTextOptions); end
                 
                 jimg = im2java(img);

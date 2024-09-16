@@ -34,7 +34,7 @@ switch tag
         switch obj.mibView.handles.mibSegmSAMMethod.String{obj.mibView.handles.mibSegmSAMMethod.Value}
             case {'Interactive'}
                 obj.mibView.handles.mibSegmSAMSegment.Enable = 'off';
-                obj.mibView.handles.mibSegmSAMDataset.Enable = 'off';
+                %obj.mibView.handles.mibSegmSAMDataset.Enable = 'off';
                 obj.mibView.handles.mibSegmSAMDestination.Enable = 'on';
                 % force to select the selection layer after change of methods
                 obj.mibView.handles.mibSegmSAMDestination.Value = find(ismember('selection', obj.mibView.handles.mibSegmSAMDestination.String));
@@ -43,7 +43,7 @@ switch tag
                 obj.mibView.handles.mibSegmSAMAnnotations.Enable = 'off';
             case 'Landmarks'
                 obj.mibView.handles.mibSegmSAMSegment.Enable = 'on';
-                obj.mibView.handles.mibSegmSAMDataset.Enable = 'on';
+                %obj.mibView.handles.mibSegmSAMDataset.Enable = 'on';
                 obj.mibView.handles.mibSegmSAMDestination.Enable = 'on';
                 % force to select the selection layer after change of methods
                 obj.mibView.handles.mibSegmSAMDestination.Value = find(ismember('selection', obj.mibView.handles.mibSegmSAMDestination.String));
@@ -53,7 +53,7 @@ switch tag
                 obj.mibView.handles.mibSegmSAMAnnotations.Enable = 'on';
             case 'Automatic everything'
                 obj.mibView.handles.mibSegmSAMSegment.Enable = 'on';
-                obj.mibView.handles.mibSegmSAMDataset.Enable = 'on';
+                %obj.mibView.handles.mibSegmSAMDataset.Enable = 'on';
                 obj.mibView.handles.mibSegmSAMDestination.Enable = 'off';
                 obj.mibView.handles.mibSegmSAMDestination.Value = 3;
                 obj.mibView.handles.mibSegmSAMMode.Value = 1;

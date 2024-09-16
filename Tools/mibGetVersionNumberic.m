@@ -34,9 +34,15 @@ if isempty(index3) % release, no beta
     mibVersionNumeric = str2double(mibVersionString(index1+4:index2-1));
 else % for beta version mibVersionNumeric is calculated as the version - beta/10000
     index4 = strfind(mibVersionString, ')');
+    
+    % % print the beta version as string:
+    % sprintf('%s', str2double(mibVersionString(index1+4:index3-2)) - ...
+    %    (.01 - str2double(mibVersionString(index3+4:index4-1))/10000))
+
     mibVersionNumeric = ...
         str2double(mibVersionString(index1+4:index3-2)) - ...
-        (1000-str2double(mibVersionString(index3+4:index4-1)))/1000000;
+        (.01 - str2double(mibVersionString(index3+4:index4-1))/10000);
+        
 end
 
 end

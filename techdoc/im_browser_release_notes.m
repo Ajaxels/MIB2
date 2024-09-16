@@ -8,13 +8,14 @@
 %
 % Added OSC resampling (see mibOscResampling.m)
 %
-%% 2.910 beta 01 / 06.09.2024 (SAM2 segmentation)
+%% 2.91 beta / 09.09.2024 (SAM2 segmentation)
 %
-% [dtls][smry] *2.910 beta 01 / 06.09.2024 (SAM2 segmentation)* [/smry]
+% [dtls][smry] *2.910 beta 13 / 16.09.2024 (SAM2 segmentation)* [/smry]
 %
 % * Added Segment-anything-2 models for manual/semi-automatic segmentation
-% * [DeepMIB] Added image downsampling paramter for automatic resizing of
-% images for prediction
+% * Added 3D mode for Segment-anything-2 models
+% * Added new rendering modes for volumes (CinematicRendering, LightScattering) and overlays (LabelOverlay, VolumeOverlay, GradientOverlay) in MIB rendering
+% * [DeepMIB] Added image downsampling paramter for automatic resizing of images for prediction
 %
 % [/dtls]
 %

@@ -205,5 +205,4 @@ end
 
 % update size of the cursor
 obj.mibView.updateCursor(); 
-
 end

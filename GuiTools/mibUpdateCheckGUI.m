@@ -142,22 +142,42 @@ function downloadBtn_Callback(hObject, eventdata, handles)
 % download MIB
 if isdeployed
     if ismac
-        web('http://mib.helsinki.fi/web-update/MIB2_Mac.zip', '-browser');
+        try
+            web('http://mib.helsinki.fi/web-update/MIB2_Mac.zip', '-browser');
+        catch err
+            web('https://mib.helsinki.fi/web-update/MIB2_Mac.zip', '-browser');
+        end
     elseif isunix
-        web('http://mib.helsinki.fi/web-update/MIB2_Linux.zip', '-browser');
+        try
+            web('http://mib.helsinki.fi/web-update/MIB2_Linux.zip', '-browser');
+        catch err
+            web('https://mib.helsinki.fi/web-update/MIB2_Linux.zip', '-browser');
+        end
     elseif ispc
         answer = questdlg('Would you like to download MIB compiled for the current or recent release of Matlab?', 'Matlab version', 'Current', 'Recent', 'Cancel', 'Current');
         switch answer
             case 'Cancel' 
                 return;
             case 'Current'
-                web('http://mib.helsinki.fi/web-update/MIB2_Win.exe', '-browser');
+                try
+                    web('http://mib.helsinki.fi/web-update/MIB2_Win.exe', '-browser');
+                catch err
+                    web('https://mib.helsinki.fi/web-update/MIB2_Win.exe', '-browser');
+                end
             case 'Recent'
-                web('http://mib.helsinki.fi/web-update/MIB2_Win_Recent.exe', '-browser');
+                try
+                    web('http://mib.helsinki.fi/web-update/MIB2_Win_Recent.exe', '-browser');
+                catch err    
+                    web('https://mib.helsinki.fi/web-update/MIB2_Win_Recent.exe', '-browser');
+                end
         end
     end
 else
-    web('http://mib.helsinki.fi/web-update/MIB2_Matlab.zip', '-browser');
+    try 
+        web('http://mib.helsinki.fi/web-update/MIB2_Matlab.zip', '-browser');
+    catch err
+        web('https://mib.helsinki.fi/web-update/MIB2_Matlab.zip', '-browser');
+    end
 end
 end
 

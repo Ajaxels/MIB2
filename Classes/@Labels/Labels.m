@@ -367,6 +367,37 @@ classdef Labels < matlab.mixin.Copyable
             end
         end
         
+        function [minZ, labelIds] = getMinValueZ(obj)
+            % function [minZ, labelIds] = getMinValueZ(obj)
+            % find and return the minimum Z value for all annotations as
+            % well as their indices
+            %
+            % Parameters:
+            %
+            % Return values:
+            % minZ: value of min Z for all annotations
+            % labelIds: indices of those annotations
+
+            minZ = min(obj.labelPosition(:,1));
+            labelIds = find(obj.labelPosition(:,1) == minZ); 
+        end
+
+        function [maxZ, labelIds] = getMaxValueZ(obj)
+            % function [mazZ, labelIds] = getMaxValueZ(obj)
+            % find and return the maximum Z value for all annotations as
+            % well as their indices
+            %
+            % Parameters:
+            %
+            % Return values:
+            % maxZ: value of max Z for all annotations
+            % labelIds: indices of those annotations
+            
+            maxZ = max(obj.labelPosition(:,1));
+            labelIds = find(obj.labelPosition(:,1) == maxZ); 
+        
+        end
+
         function removeLabels(obj, labels)
             % removeLabels(obj, labels)
             % Remove specified labels

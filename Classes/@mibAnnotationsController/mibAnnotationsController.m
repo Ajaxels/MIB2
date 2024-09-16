@@ -907,7 +907,7 @@ classdef mibAnnotationsController < handle
                     notify(obj.mibModel, 'showMask');
                 case 'Interpolate'
                     if isempty(obj.indices) || size(obj.indices, 1) == 1; return; end
-                    % get selected annotations
+                    % get selected annotations; labelPosition as [id][z,x,y,t]
                     [labelNames, labelValues, labelPosition, labelIndices] = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsById(obj.indices(:,1));
                     
                     % makesure that there is a single annotation per slice
@@ -940,7 +940,7 @@ classdef mibAnnotationsController < handle
                     labelValues = labelValues(ids(:,1));
                     labelNames = labelNames(ids(:,1));
                     
-                    z_range = min(labelPosition(:,1)):max(labelPosition(:,1));  % between min and max Z
+                    z_range = min(labelPosition(:,1)):max(labelPosition(:,1));  % range vector between min and max Z
                     % Interpolate x and y values for each z value
                     x_interp = interp1(labelPosition(:, 1), labelPosition(:, 2), z_range, interpolationMethod);     % x_interp = interp1([z1 z2], [x1 x2], z_range);
                     y_interp = interp1(labelPosition(:, 1), labelPosition(:, 3), z_range, interpolationMethod);     % y_interp = interp1([z1 z2], [y1 y2], z_range);
