@@ -48,7 +48,8 @@ global mibPath;
 defaultAnnotationText = obj.mibModel.getImageProperty('defaultAnnotationText');
 defaultAnnotationValue = obj.mibModel.getImageProperty('defaultAnnotationValue');
 obj.mibModel.mibDoBackup('labels', 0);
-if isempty(modifier) || strcmp(modifier, 'shift')  % add annotation
+
+if isempty(modifier)   % add annotation
     if obj.mibView.handles.mibAnnPromptCheck.Value
         title = 'Add annotation';
         if obj.mibModel.mibAnnValueEccentricCheck == 1
@@ -102,6 +103,39 @@ elseif strcmp(modifier, 'control')  % remove the closest to the mouse click anno
     [~, index] = min(distVec);  % find index
     selectedLabelPos = labelPositions(index, :);
     obj.mibModel.I{obj.mibModel.Id}.hLabels.removeLabels(selectedLabelPos);
+elseif strcmp(modifier, 'shift') % interpolate annotations
+    noLabels = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber();
+    if noLabels == 0; return; end % do nothing
+    % get previous label data
+    labelText = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelText{end};
+    labelValue = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelValue(end);
+    labelPosition = obj.mibModel.I{obj.mibModel.Id}.hLabels.labelPosition(end,:);
+    timepoint = labelPosition(4);
+
+    if z == labelPosition(1)
+        obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(labelText, [z, x, y, t], labelValue);
+    else
+        % range vector between min and max Z
+        if labelPosition(1) < z
+            z_range = labelPosition(1):z;
+        else
+            z_range = labelPosition(1):-1:z;
+        end
+        
+        % Interpolate x and y values for each z value
+        x_interp = interp1([labelPosition(1); z], [labelPosition(2); x], z_range, 'linear');     % x_interp = interp1([z1 z2], [x1 x2], z_range);
+        y_interp = interp1([labelPosition(1); z], [labelPosition(3); y], z_range, 'linear');     % y_interp = interp1([z1 z2], [y1 y2], z_range);
+        
+        labelPosition = zeros([size(z_range, 2)-1, 4]); % drop the first label
+        labelPosition(:, 1) = z_range(2:end);
+        labelPosition(:, 2) = x_interp(2:end);
+        labelPosition(:, 3) = y_interp(2:end);
+        labelPosition(:, 4) = timepoint;
+        labelText = repmat(labelText, [size(z_range, 2)-1, 1]);
+        labelValue = repmat(labelValue, [size(z_range, 2)-1, 1]);
+        
+        obj.mibModel.I{obj.mibModel.Id}.hLabels.addLabels(labelText, labelPosition, labelValue);
+    end
 end
 notify(obj.mibModel, 'updatedAnnotations');     % notify about updated annotation
 

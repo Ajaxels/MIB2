@@ -339,7 +339,13 @@ Prefs.VolRen.Viewer.lightColor = [1 1 1];
 Prefs.VolRen.Viewer.showScaleBar = true;
 Prefs.VolRen.Viewer.scaleBarUnits = 'um';
 Prefs.VolRen.Viewer.showOrientationAxes = true;
-Prefs.VolRen.Viewer.showBox = false;
+Prefs.VolRen.Viewer.showBox = true;
+Prefs.VolRen.Viewer.AmbientLight = 0.4;
+Prefs.VolRen.Viewer.DiffuseLight = 0.4;
+
+% 'orbit' - rotation is done around the center of the volume
+% 'cursor' - rotation around the clicked object
+Prefs.VolRen.Viewer.rotationMode = 'orbit'; 
 
 Prefs.VolRen.Volume.renderer = 'VolumeRendering';
 Prefs.VolRen.Volume.gradientOpacityValue = 0.3;

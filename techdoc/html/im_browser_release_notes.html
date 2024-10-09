@@ -9,7 +9,7 @@ To make changes, update the MATLAB code and republish this document.
 <title>Microscopy Image Browser Release Notes</title>
 <meta name="generator" content="MATLAB 24.1">
 <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
-<meta name="DC.date" content="2024-09-06">
+<meta name="DC.date" content="2024-09-19">
 <meta name="DC.source" content="im_browser_release_notes.m">
 <style>
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,my-a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
@@ -537,7 +537,7 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 <div>
 <ul>
 <li>
-<my-a onclick="jump_to()" href="#1">2.910 beta 01 / 06.09.2024 (SAM2 segmentation)</my-a>
+<my-a onclick="jump_to()" href="#1">2.91 beta / xx.xx.2024 (SAM2 segmentation)</my-a>
 </li>
 <li>
 <my-a onclick="jump_to()" href="#2">2.9012 / 24.07.2024 (SAM segmentation, Multi-GPU training, 2.5D CNNs)</my-a>
@@ -614,14 +614,20 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 </ul>
 </div>
 <p style="margin:0px; line-height:0;">&nbsp;</p>
-<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="1">2.910 beta 01 / 06.09.2024 (SAM2 segmentation)</h2>
-<details open onclick="state_check('1.1')" id="1.1"><summary> <b>2.910 beta 01 / 06.09.2024 (SAM2 segmentation)</b> </summary>
+<p onclick="toggle_details(1)" class="collapse-link"><a href="javascript:void(0);" id="Toggle1">collapse all</a></p><h2 id="1">2.91 beta / xx.xx.2024 (SAM2 segmentation)</h2>
+<details open onclick="state_check('1.1')" id="1.1"><summary> <b>2.910 beta 15 / 19.09.2024 (SAM2 segmentation)</b> </summary>
 <div class="details-div">
 <p></p>
 <div>
 <ul>
 <li>Added Segment-anything-2 models for manual/semi-automatic segmentation</li>
+<li>Added 3D mode for Segment-anything-2 models</li>
+<li>Added new rendering modes for volumes (CinematicRendering, LightScattering) and overlays (LabelOverlay, VolumeOverlay, GradientOverlay) in MIB rendering</li>
+<li>Added use of annotations to perform single landmark point alignment</li>
+<li>Added automatic interpolation of annotations when they added using shift+mouse click</li>
+<li>Added automatic interpolation of annotations when they added using shift+mouse click</li>
 <li>[DeepMIB] Added image downsampling paramter for automatic resizing of images for prediction</li>
+<li>[DeepMIB] Added automatic saving of the custom training plot as PNG</li>
 </ul>
 </div>
 
@@ -1399,14 +1405,19 @@ details > img.image-fit-svg{ padding: 0px 0px 10px; }
 %
 % Added OSC resampling (see mibOscResampling.m)
 %
-%% 2.910 beta 01 / 06.09.2024 (SAM2 segmentation)
+%% 2.91 beta / xx.xx.2024 (SAM2 segmentation)
 %
-% [dtls]<summary> *2.910 beta 01 / 06.09.2024 (SAM2 segmentation)* </summary>
+% [dtls]<summary> *2.910 beta 15 / 19.09.2024 (SAM2 segmentation)* </summary>
 <div class="details-div">
 %
 % * Added Segment-anything-2 models for manual/semi-automatic segmentation
-% * [DeepMIB] Added image downsampling paramter for automatic resizing of
-% images for prediction
+% * Added 3D mode for Segment-anything-2 models
+% * Added new rendering modes for volumes (CinematicRendering, LightScattering) and overlays (LabelOverlay, VolumeOverlay, GradientOverlay) in MIB rendering
+% * Added use of annotations to perform single landmark point alignment
+% * Added automatic interpolation of annotations when they added using shift+mouse click
+% * Added automatic interpolation of annotations when they added using shift+mouse click
+% * [DeepMIB] Added image downsampling paramter for automatic resizing of images for prediction
+% * [DeepMIB] Added automatic saving of the custom training plot as PNG
 %
 % [/dtls]
 %

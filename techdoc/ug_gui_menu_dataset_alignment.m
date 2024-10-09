@@ -126,8 +126,8 @@
 %     <tr>
 %       <td><b>Single landmark point</b></td>
 %       <td>The Single landmark point mode is a manual mode, where user marks
-%       corresponding areas on two consequetive slices using the brush tool with
-%       a spot. During alignment the images will be translated to align the
+%       corresponding areas on two consequetive slices using either the Brush tool with
+%       a spot or the Annotations tool with an annotation. During alignment the images will be translated to align the
 %       marked areas
 %       </td>
 %     </tr>

@@ -2,9 +2,11 @@
 % Date: 25.04.2023
 % License: BSD-3 clause (https://opensource.org/license/bsd-3-clause/)
 
-function mibDeepSaveTrainingPlot(src, evnt, trainingProgressStruct)
+function mibDeepSaveTrainingPlot(src, evnt, trainingProgressStruct, outputFilename)
 % function mibDeepSaveTrainingPlot(varargin)
 % save custom training plot to a file
+
+if nargin < 4; outputFilename = []; end
 
 % grab the figure as a screenshot
 screenSize = get(0, 'ScreenSize');
@@ -21,15 +23,17 @@ imgData(:,:,2) = reshape(rgb(2:4:end), cap.getWidth, [])';
 imgData(:,:,3) = reshape(rgb(1:4:end), cap.getWidth, [])';
 %imtool(imgData);
 
-formatsList = {'*.png', 'Portable Network Graphics (*.png)';
-    '*.jpg', 'Joint Photographic Experts Group (*.jpg)';
-    '*.tif', 'Tagged Image File Format (*.tif)'};
-
-[pathOut, fnOut] = fileparts(trainingProgressStruct.NetworkFilename);
-[fnOut, pathOut, indx] = uiputfile(formatsList, 'Select format and destination', ...
-    fullfile(pathOut, ['Training_' fnOut]));
-if fnOut == 0; return; end
-outputFilename = fullfile(pathOut, fnOut);
+if isempty(outputFilename)
+    formatsList = {'*.png', 'Portable Network Graphics (*.png)';
+        '*.jpg', 'Joint Photographic Experts Group (*.jpg)';
+        '*.tif', 'Tagged Image File Format (*.tif)'};
+    
+    [pathOut, fnOut] = fileparts(trainingProgressStruct.NetworkFilename);
+    [fnOut, pathOut, indx] = uiputfile(formatsList, 'Select format and destination', ...
+        fullfile(pathOut, ['Training_' fnOut]));
+    if fnOut == 0; return; end
+    outputFilename = fullfile(pathOut, fnOut);
+end
 
 imwrite(imgData, outputFilename);
 fprintf('DeepMIB training snapshot has been exported to:\n%s\n', outputFilename);

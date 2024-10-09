@@ -599,7 +599,7 @@ classdef mibDeepController < handle
             obj.BatchOpt.mibBatchTooltip.P_OverlappingTiles = 'The ooverlapping tiles mode can be used with "same" padding. It is slower but in general expected to give better predictions';
             obj.BatchOpt.mibBatchTooltip.P_OverlappingTilesPercentage = 'Overlap percentage between tiles when predicting with the Overlapping tiles mode';
             obj.BatchOpt.mibBatchTooltip.P_ExtraPaddingPercentage = 'Add symmetric padding to images for prediction; it helps to minimize edge artefacts';
-            obj.BatchOpt.mibBatchTooltip.P_ImageDownsamplingFactor = 'Downsample images by this number of times before prediction, [default=1, no downsampling]; for 2 classes predictions the results are also smoothed';
+            obj.BatchOpt.mibBatchTooltip.P_ImageDownsamplingFactor = 'Downsample images by this number of times before prediction, [default=1, no downsampling]; for 2 classes predictions are also smoothed';
             obj.BatchOpt.mibBatchTooltip.P_DynamicMasking = 'When enabled, the images for predictions are thresholded to detect masked areas where segmentation occurs';
             obj.BatchOpt.mibBatchTooltip.P_PredictionMode = 'Main processing mode for prediction, the blocked image mode is recommended';
             obj.BatchOpt.mibBatchTooltip.P_ScoreFiles = 'tweak generation of score files showing probability of each class';
@@ -1532,10 +1532,17 @@ classdef mibDeepController < handle
 
                             switch selectedArchitecture
                                 case 'U-net'
-                                    [lgraph, outputPatchSize] = unetLayers(...
-                                        inputPatchSize([1 2 colorDimension]), obj.BatchOpt.T_NumberOfClasses{1}, ...
-                                        'NumFirstEncoderFilters', obj.BatchOpt.T_NumFirstEncoderFilters{1}, 'FilterSize', obj.BatchOpt.T_FilterSize{1}, ...
-                                        'ConvolutionPadding', obj.BatchOpt.T_ConvolutionPadding{1}, 'EncoderDepth', obj.BatchOpt.T_EncoderDepth{1}); %#ok<*ST2NM>
+                                    %if obj.mibModel.matlabVersion < 24.1 % earlier than R2024a
+                                        [lgraph, outputPatchSize] = unetLayers(...
+                                            inputPatchSize([1 2 colorDimension]), obj.BatchOpt.T_NumberOfClasses{1}, ...
+                                            'NumFirstEncoderFilters', obj.BatchOpt.T_NumFirstEncoderFilters{1}, 'FilterSize', obj.BatchOpt.T_FilterSize{1}, ...
+                                            'ConvolutionPadding', obj.BatchOpt.T_ConvolutionPadding{1}, 'EncoderDepth', obj.BatchOpt.T_EncoderDepth{1}); %#ok<*ST2NM>
+                                    %else
+                                    %    [lgraph, outputPatchSize] = unet(...
+                                    %        inputPatchSize([1 2 colorDimension]), obj.BatchOpt.T_NumberOfClasses{1}, ...
+                                    %        'NumFirstEncoderFilters', obj.BatchOpt.T_NumFirstEncoderFilters{1}, 'FilterSize', obj.BatchOpt.T_FilterSize{1}, ...
+                                    %        'ConvolutionPadding', obj.BatchOpt.T_ConvolutionPadding{1}, 'EncoderDepth', obj.BatchOpt.T_EncoderDepth{1}); %#ok<*ST2NM>
+                                    %end
                                     outputPatchSize = [outputPatchSize(1), outputPatchSize(2), 1, outputPatchSize(3)];  % reformat to [height, width, depth, color]
                                 case 'SegNet'
                                     lgraph = segnetLayers(inputPatchSize([1 2 colorDimension]), obj.BatchOpt.T_NumberOfClasses{1}, obj.BatchOpt.T_EncoderDepth{1}, ...
@@ -1732,6 +1739,9 @@ classdef mibDeepController < handle
             % update the activation layers
             lgraph = obj.updateActivationLayers(lgraph);
 
+            % update the initialization weight for convolutional layers
+            % lgraph = updateConvolutionLayers(obj, lgraph);
+
             % update maxPool and TransposedConvolution layers depending on network downsampling factor
             if obj.View.handles.T_DownsamplingFactor.Value ~=2 && ismember(selectedArchitecture, {'U-net', 'SegNet'})
                 lgraph = obj.updateMaxPoolAndTransConvLayers(lgraph);
@@ -1873,7 +1883,49 @@ classdef mibDeepController < handle
                             layer = swishLayer('Name', sprintf('Swish-%d', id));
                         case 'tanhLayer'
                             layer = tanhLayer('Name', sprintf('Tahn-%d', id));
+                        %case 'reluLayer'
+                        %    layer = reluLayer('Name', sprintf('ReLU-%d', id));
                     end
+                    lgraph = replaceLayer(lgraph, lgraph.Layers(layerId).Name, layer);
+                end
+            end
+        end
+
+        function lgraph = updateConvolutionLayers(obj, lgraph)
+            % update the convolution layers by providing new set of weight
+            % initializers
+
+            weightsInitializer = 'glorot';
+            % redefine the activation layers
+            if ~strcmp(weightsInitializer, 'he')
+                convIndices = zeros([numel(lgraph.Layers), 1]);
+                % find indices of ReLU layers
+                for layerId = 1:numel(lgraph.Layers)
+                    if isa(lgraph.Layers(layerId), 'nnet.cnn.layer.Convolution2DLayer')
+                        convIndices(layerId) = 1;
+                    end
+                end
+                convIndices = find(convIndices);
+
+                for id=1:numel(convIndices)
+                    layerId = convIndices(id);
+                    if strcmp(lgraph.Layers(layerId).PaddingMode, 'same')
+                        layer = convolution2dLayer(lgraph.Layers(layerId).FilterSize, lgraph.Layers(layerId).NumFilters, ...
+                            'Padding', 'same', ...
+                            'Stride', lgraph.Layers(layerId).Stride, ...
+                            'DilationFactor', lgraph.Layers(layerId).DilationFactor, ...
+                            'NumChannels', lgraph.Layers(layerId).NumChannels, ...
+                            'WeightsInitializer', weightsInitializer);
+                    else
+                        layer = convolution2dLayer(lgraph.Layers(layerId).FilterSize, lgraph.Layers(layerId).NumFilters, ...
+                            'Stride', lgraph.Layers(layerId).Stride, ...
+                            'DilationFactor', lgraph.Layers(layerId).DilationFactor, ...
+                            'Padding', lgraph.Layers(layerId).PaddingSize, ...
+                            'PaddingValue', lgraph.Layers(layerId).PaddingValue, ...
+                            'NumChannels', lgraph.Layers(layerId).NumChannels, ...
+                            'WeightsInitializer', weightsInitializer);
+                    end
+                     
                     lgraph = replaceLayer(lgraph, lgraph.Layers(layerId).Name, layer);
                 end
             end
@@ -3384,8 +3436,7 @@ classdef mibDeepController < handle
             % save Deep MIB configuration to a file
             %
             % Parameters:
-            % configName: [optional] string, full filename for the config
-            % file
+            % configName: [optional] string, full filename to the config file
 
             if nargin < 2
                 [projectPath, file] = fileparts(obj.BatchOpt.NetworkFilename);
@@ -3937,7 +3988,14 @@ classdef mibDeepController < handle
                 % downsampling factor
                 if obj.BatchOpt.P_ImageDownsamplingFactor{1} ~= 1
                     imResizeOpt.imgType = '3D';
-                    [imgHeight, imgWidth, imgDepth, noColors] = size(vol);
+                    imResizeOpt.showWaitbar = false;
+                    if dataDimension == 2
+                        [imgHeight, imgWidth, noColors] = size(vol);
+                        imgDepth = 1;
+                    else
+                        [imgHeight, imgWidth, imgDepth, noColors] = size(vol);
+                    end
+                    if noColors > 1; imResizeOpt.imgType = '4D'; end
                     imResizeOpt.width = round(imgWidth/obj.BatchOpt.P_ImageDownsamplingFactor{1});  % new width value, overrides the scale parameter
                     imResizeOpt.height = round(imgHeight/obj.BatchOpt.P_ImageDownsamplingFactor{1});  % new height value, overrides the scale parameter
                     imResizeOpt.depth = imgDepth;
@@ -4069,6 +4127,7 @@ classdef mibDeepController < handle
 
                 % upsample results beased on downsampling factor
                 if obj.BatchOpt.P_ImageDownsamplingFactor{1} ~= 1
+                    imResizeOpt.imgType = '3D';
                     imResizeOpt.width = imgWidth;  % upsample width value, overrides the scale parameter
                     imResizeOpt.height = imgHeight;  % upsample height value, overrides the scale parameter
                     imResizeOpt.depth = imgDepth;
@@ -4345,6 +4404,7 @@ classdef mibDeepController < handle
                         filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', sprintf('Labels_%s.csv', fn));
                     end
                     writematrix(outputLabels, filename, 'FileType' , 'Text');
+                    
                     % upscale the resulting labels
                     if obj.BatchOpt.P_PatchWiseUpsample
                         if obj.BatchOpt.P_OverlappingTiles
@@ -5916,7 +5976,12 @@ classdef mibDeepController < handle
                     fNames = fieldnames(D);
                     msg = '';
                     for fId = 1:numel(fNames)
-                        msg = sprintf('%s%s:\t\t%s\n', msg, fNames{fId}, num2str(D.(fNames{fId})));
+                        switch class(D.(fNames{fId}))
+                            case 'datetime'
+                                msg = sprintf('%s%s:\t\t%s\n', msg, fNames{fId}, D.(fNames{fId}));
+                            otherwise
+                                msg = sprintf('%s%s:\t\t%s\n', msg, fNames{fId}, num2str(D.(fNames{fId})));
+                        end
                     end
             end
 

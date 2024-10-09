@@ -341,6 +341,10 @@ try
             % get image
             imgIn = cell2mat(obj.mibModel.getData2D('image', z, obj.mibModel.I{BatchOpt.id}.orientation, NaN, getDataOpt));
             
+            %szOut = size(imgIn);
+            %rgbOptions.blockModeSwitch = 1;
+            %imgIn = obj.mibModel.getRGBimage(rgbOptions);
+
             if size(imgIn, 3) ~= 1 && size(imgIn, 3) ~= 3
                 errordlg(sprintf('!!! Error !!!\n\nSegmentation using segment-everything model is only available for grayscale and RGB images\nFor multi-channel images select a single channel in the Colors table and try again!'), ...
                     'SAM segmentation error');

@@ -206,6 +206,8 @@
 % position under the mouse cursor</li>
 % <li><span class="kbd">Ctrl</span> + <span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, remove annotation that is the closest to the
 % position under the mouse cursor</li>
+% <li><span class="kbd">&#8679; Shift</span> + <span class="kbd"><img style="height: 1em" src="images\LMB_click.svg"> left mouse click</span>, interpolate annotations between previous and 
+% the added annotation across dataset depth dimension</li>
 % </ul>
 % </td>
 % </tr>
@@ -759,8 +761,8 @@
 % <li>SAM-1: <a href="https://segment-anything.com">https://segment-anything.com</a></li>
 % <li>SAM-2: <a href="https://ai.meta.com/sam2/">https://ai.meta.com/sam2/</a></li>
 % </ul>
-% <br><br>
-% Implementation of SAM in MIB is done via utilization of an external Python interpreter, please check the <b>Requirements and installation</b> section below 
+% <br>
+% Implementation of SAM in MIB is done via utilization of an external Python interpreter, please check the <a href="https://mib.helsinki.fi/downloads_systemreq_sam2.html"><b>Requirements and installation</b></a> section below 
 % for detailed instructions.<br><br>
 % <b>Important!</b> even though SAM can work on CPU, GPU is highly recommended as it is x30-60 faster.
 % <br><br>
@@ -905,6 +907,9 @@
 % </ul>
 % <li>Press<span class="kbd">Segment</span> to do segmentation</li>
 % </ul>
+% Use the Clear annotations button to remove landmarks used to highlight
+% object and background regions.
+% <br><br>
 % <h2>Automatic everything</h2>
 % In this mode, MIB is using SAM to segment all objects automatically and
 % assigns them to a new model:

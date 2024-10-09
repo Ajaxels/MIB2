@@ -718,12 +718,21 @@ classdef mibAnnotationsController < handle
                     currentName = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsById(rowId(1));
                     if isempty(currentName); return; end
                     
-                    answer = mibInputDlg([], 'New name for the selected annotations:', ...
-                        'Rename', currentName{1});
+                    prompts = {'String to search for'; 'Replace with'};
+                    defAns = {''; currentName{1}};
+                    dlgTitle = 'Rename annotations';
+                    dlgOptions.Focus = 2;
+                    [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, dlgOptions);
                     if isempty(answer); return; end
-                    
+
                     obj.mibModel.mibDoBackup('labels', 0);
-                    obj.mibModel.I{obj.mibModel.Id}.hLabels.renameLabels(rowId, answer(1)); 
+                    if isempty(answer{1})
+                        obj.mibModel.I{obj.mibModel.Id}.hLabels.renameLabels(rowId, answer(2)); 
+                    else
+                        labels = obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsById(rowId);
+                        labels = strrep(labels, answer{1}, answer{2});
+                        obj.mibModel.I{obj.mibModel.Id}.hLabels.renameLabels(rowId, labels); 
+                    end
                     obj.updateWidgets();
                     notify(obj.mibModel, 'plotImage');  % notify to plot the image
                 case 'Jump'     % jump to the highlighted annotation

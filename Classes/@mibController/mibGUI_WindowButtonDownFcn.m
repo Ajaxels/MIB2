@@ -472,7 +472,13 @@ elseif strcmp(operation, 'interact')
                                 obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3) ~= z
                             
                             % range vector between min and max Z
-                            z_range = min([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3), z]):max([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3), z]);  
+                            %z_range = min([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3), z]):max([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3), z]);  
+                            if obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3) < z
+                                z_range = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3):z;
+                            else
+                                z_range = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3):-1:z;
+                            end
+
                             % Interpolate x and y values for each z value
                             x_interp = interp1([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3); z], [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 1); w], z_range, 'linear');     % x_interp = interp1([z1 z2], [x1 x2], z_range);
                             y_interp = interp1([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3); z], [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 2); h], z_range, 'linear');     % y_interp = interp1([z1 z2], [y1 y2], z_range);
@@ -497,10 +503,10 @@ elseif strcmp(operation, 'interact')
                     % use newer version SAM2
                     obj.mibSegmentationSAM2(extraOptions);
                 end
+                return;
             elseif obj.mibView.handles.mibSegmSAMMethod.Value == 2    %     'Landmarks'
                 obj.mibSegmentationAnnotation(h, w, z, t, modifier);
             end
-            return;
         case 'Spot'
             % The spot mode: draw a circle after mouse click
             [w, h, z] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 1);

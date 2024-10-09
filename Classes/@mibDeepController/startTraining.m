@@ -920,6 +920,7 @@ if mibDeepTrainingProgressStruct.emergencyBrake && (obj.BatchOpt.Workflow{1}(1) 
     end
 end
 
+% save training plot figure
 save(obj.BatchOpt.NetworkFilename, 'net', 'TrainingOptStruct', 'AugOpt2DStruct', 'AugOpt3DStruct', 'InputLayerOpt', ...
     'ActivationLayerOpt', 'SegmentationLayerOpt', 'DynamicMaskOpt', ...
     'classNames', 'classColors', 'inputPatchSize', 'outputPatchSize', 'BatchOpt', '-mat', '-v7.3');
@@ -944,7 +945,17 @@ if obj.BatchOpt.T_ExportTrainingPlots
         writematrix(info.(fieldNames{fieldId}), ...
             fullfile(obj.BatchOpt.ResultingImagesDir, 'ScoreNetwork', [fnTemplate '_' fieldNames{fieldId} '.csv']));
     end
+
+    if obj.BatchOpt.O_CustomTrainingProgressWindow
+        try
+            fn_out = fullfile(obj.BatchOpt.ResultingImagesDir, 'ScoreNetwork', [datetimeTag '_Train_',  fnTemplate '.png']);
+            mibDeepTrainingProgressStruct.UIFigure.focus;
+            mibDeepSaveTrainingPlot([], [], mibDeepTrainingProgressStruct, fn_out);
+        catch err
+        end
+    end
 end
+
 if showWaitbarLocal
     obj.wb.Value = 1;
     delete(obj.wb);

@@ -323,9 +323,9 @@ switch methodSelected
         handles.winController.updateBatchOptFromGUI(handles.TransformationType);   % update BatchOpt parameters
         handles.winController.updateBatchOptFromGUI(handles.TransformationMode);   % update BatchOpt parameters
     case 'Single landmark point'
-        textStr = sprintf('Use the brush tool to mark two corresponding spots on consecutive slices. The dataset will be translated to align the marked spots');
+        textStr = sprintf('Use the Brush or Annotation tool to mark two corresponding spots on consecutive slices. The dataset will be translated to align the marked spots');
     case 'Three landmark points'
-        textStr = sprintf('Use the brush tool to mark corresponding spots on two consecutive slices. The dataset will be transformed to align the marked spots. The Landmark mode recommended instead!');
+        textStr = sprintf('Use the Brush tool to mark corresponding spots on two consecutive slices. The dataset will be transformed to align the marked spots. The Landmark mode recommended instead!');
     case 'Landmarks, multi points'
         textStr = sprintf('Use annotations or selection with brush to mark corresponding spots on consecutive slices. The dataset will be transformed to align the marked areas');
         handles.TransformationType.Enable = 'on';

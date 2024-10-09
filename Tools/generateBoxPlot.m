@@ -65,19 +65,31 @@ if ~isfield(options, 'nbins'); options.nbins = 20; end
 if ~isfield(options, 'figIndex'); options.figIndex = 1024; end
 if ~isfield(options, 'fontsize'); options.fontsize = []; end
 
+switch class(options.figIndex)
+    case 'matlab.graphics.axis.Axes'
+        handles.hFig = options.figIndex.Parent;
+        cla(options.figIndex);
+        handles.plotAxes = options.figIndex;
+    case 'matlab.ui.Figure'
+        handles.hFig = options.figIndex;
+        clf;
+    otherwise
+        handles.hFig = figure(options.figIndex);
+        clf;
+end
 
-handles.hFig = figure(options.figIndex);
-clf;
-if ~strcmp(options.mode, 'preview')
-    handles.hFig.Units = 'centimeters';
-    % -------setup graphic parameters
-    bot = 1;
-    lef = 1;
-    wi = options.width;
-    hi = options.height;
-    handles.plotAxes = axes('Units', 'centimeters', 'position', [lef bot wi hi]);
-else
-    handles.plotAxes = axes();
+if ~isfield(handles, 'plotAxes')
+    if ~strcmp(options.mode, 'preview')
+        handles.hFig.Units = 'centimeters';
+        % -------setup graphic parameters
+        bot = 1;
+        lef = 1;
+        wi = options.width;
+        hi = options.height;
+        handles.plotAxes = axes('Units', 'centimeters', 'position', [lef bot wi hi]);
+    else
+        handles.plotAxes = axes();
+    end
 end
 
 % generate vectors with sample values and sample labels
@@ -105,12 +117,16 @@ if options.showpoints
     xVec = calculateXSpread(dataset, options.spereadfactor, options.nbins);
     
     for id=1:numel(xVec)
-        handles.h2(id) = plot(xVec{id}, dataset{id}, 'o');
-        handles.h2(id).MarkerFaceColor = [.5 .5 .5];
-        handles.h2(id).MarkerEdgeColor = 'k';
-        handles.h2(id).MarkerSize = 3.5;
+        if ~isempty(xVec{id})
+            handles.h2(id) = plot(xVec{id}, dataset{id}, 'o');
+            handles.h2(id).MarkerFaceColor = [.5 .5 .5];
+            handles.h2(id).MarkerEdgeColor = 'k';
+            handles.h2(id).MarkerSize = 3.5;
+            handles.h2(id).LineWidth = 0.05;
+        else
+            %handles.h2(id) = plot(0, 0);
+        end
     end
-    set(handles.h2, 'linewidth', .05);
     if ~isempty(options.fontsize)
         handles.plotAxes.FontSize = options.fontsize; 
     end 

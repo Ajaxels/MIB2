@@ -445,7 +445,7 @@ classdef mibCropObjectsController < handle
                 getDataOpt.y = [y1, y1+height-1];
                 getDataOpt.z = [z1, z1+depth-1];
 
-                imOut = obj.mibModel.I{obj.mibModel.Id}.getData('image', 4, material_id, getDataOpt);
+                imOut = obj.mibModel.I{obj.mibModel.Id}.getData('image', 4, NaN, getDataOpt);
 
                 imgOut2 = mibImage(imOut);
                 imgOut2.pixSize = obj.mibModel.getImageProperty('pixSize');

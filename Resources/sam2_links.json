@@ -7,8 +7,8 @@
 	"onnxFilename": "",
 	"checkpointLink_url_1": "https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_tiny.pt",
 	"checkpointLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam2_hiera_tiny.pt",
-	"modelCfgLink_url_1": "https://raw.githubusercontent.com/facebookresearch/segment-anything-2/main/sam2_configs/sam2_hiera_t.yaml",
-	"modelCfgLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam2_hiera_t.yaml",
+	"modelCfgLink_url_1": "https://raw.githubusercontent.com/facebookresearch/sam2/refs/heads/main/sam2/configs/sam2/sam2_hiera_t.yaml",
+	"modelCfgLink_url_2": "https://mib.helsinki.fi/web-update/sam/sam2_hiera_t.yaml",
 	"onnxLink": ""
 	}
 ,
@@ -20,8 +20,8 @@
 	"onnxFilename": "",
 	"checkpointLink_url_1": "https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_small.pt",
 	"checkpointLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam2_hiera_small.pt",
-	"modelCfgLink_url_1": "https://raw.githubusercontent.com/facebookresearch/segment-anything-2/main/sam2_configs/sam2_hiera_s.yaml",
-	"modelCfgLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam2_hiera_s.yaml",
+	"modelCfgLink_url_1": "https://raw.githubusercontent.com/facebookresearch/sam2/refs/heads/main/sam2/configs/sam2/sam2_hiera_s.yaml",
+	"modelCfgLink_url_2": "https://mib.helsinki.fi/web-update/sam/sam2_hiera_s.yaml",
 	"onnxLink": ""
 	}
 ,
@@ -33,8 +33,8 @@
 	"onnxFilename": "",
 	"checkpointLink_url_1": "https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_base_plus.pt",
 	"checkpointLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam2_hiera_base_plus.pt",
-	"modelCfgLink_url_1": "https://raw.githubusercontent.com/facebookresearch/segment-anything-2/main/sam2_configs/sam2_hiera_b%2B.yaml",
-	"modelCfgLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam2_hiera_b%2B.yaml",
+	"modelCfgLink_url_1": "https://raw.githubusercontent.com/facebookresearch/sam2/refs/heads/main/sam2/configs/sam2/sam2_hiera_b%2B.yaml",
+	"modelCfgLink_url_2": "https://mib.helsinki.fi/web-update/sam/sam2_hiera_b%2B.yaml",
 	"onnxLink": ""
 	}
 ,
@@ -46,8 +46,8 @@
 	"onnxFilename": "",
 	"checkpointLink_url_1": "https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_large.pt",
 	"checkpointLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam2_hiera_large.pt",
-	"modelCfgLink_url_1": "https://raw.githubusercontent.com/facebookresearch/segment-anything-2/main/sam2_configs/sam2_hiera_l.yaml",
-	"modelCfgLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam2_hiera_l.yaml",
+	"modelCfgLink_url_1": "https://raw.githubusercontent.com/facebookresearch/sam2/refs/heads/main/sam2/configs/sam2/sam2_hiera_l.yaml",
+	"modelCfgLink_url_2": "https://mib.helsinki.fi/web-update/sam/sam2_hiera_l.yaml",
 	"onnxLink": ""
 	}
 ]

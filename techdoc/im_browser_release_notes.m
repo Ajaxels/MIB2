@@ -8,14 +8,20 @@
 %
 % Added OSC resampling (see mibOscResampling.m)
 %
-%% 2.91 beta / 09.09.2024 (SAM2 segmentation)
+%% 2.91 beta / xx.xx.2024 (SAM2 segmentation)
 %
-% [dtls][smry] *2.910 beta 13 / 16.09.2024 (SAM2 segmentation)* [/smry]
+% [dtls][smry] *2.910 beta 15 / 19.09.2024 (SAM2 segmentation)* [/smry]
 %
 % * Added Segment-anything-2 models for manual/semi-automatic segmentation
 % * Added 3D mode for Segment-anything-2 models
 % * Added new rendering modes for volumes (CinematicRendering, LightScattering) and overlays (LabelOverlay, VolumeOverlay, GradientOverlay) in MIB rendering
+% * Added use of annotations to perform single landmark point alignment
+% * Added automatic interpolation of annotations when they added using shift+mouse click
+% * Added rotation around selected object, ambient and diffuse lights in MIB 3D volume rendering
+% * Added pattern rename of annotations
+% * Fixed 3D rendering of the selected material
 % * [DeepMIB] Added image downsampling paramter for automatic resizing of images for prediction
+% * [DeepMIB] Added automatic saving of the custom training plot as PNG
 %
 % [/dtls]
 %

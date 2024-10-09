@@ -713,6 +713,21 @@ classdef mibAlignmentController < handle
             
             if strcmp(obj.BatchOpt.Mode{1}, 'CurrentDataset')   % align the currently opened dataset
                 if strcmp(parameters.method, 'Single landmark point')
+                    useAnnotations = false;
+                    if obj.mibModel.I{obj.mibModel.Id}.hLabels.getLabelsNumber() > 1
+                        button = questdlg(sprintf('Have the corresponding points were labeled using Annotations or using brush and the selection layer?'), ...
+                            'Annotations or Selection?', 'Annotations', 'Selection', 'Cancel', 'Annotations');
+                        switch button
+                            case 'Annotations'
+                                useAnnotations = true;
+                            case 'Selection'
+                                useAnnotations = false;
+                            case 'Cancel'
+                                if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
+                                return;
+                        end
+                    end
+
                     tic
                     obj.shiftsX = zeros(1, Depth);
                     obj.shiftsY = zeros(1, Depth);
@@ -720,28 +735,60 @@ classdef mibAlignmentController < handle
                     shiftX = 0;     % shift vs 1st slice in X
                     shiftY = 0;     % shift vs 1st slice in Y
                     STATS1 = struct([]);
-                    for layer=2:Depth
-                        if isempty(STATS1)
-                            prevLayer = cell2mat(obj.mibModel.getData2D('selection', layer-1, NaN, NaN, optionsGetData));
-                            STATS1 = regionprops(prevLayer, 'Centroid');
-                        end
-                        if ~isempty(STATS1)
-                            currLayer = cell2mat(obj.mibModel.getData2D('selection', layer, NaN, NaN, optionsGetData));
-                            STATS2 = regionprops(currLayer, 'Centroid');
-                            if ~isempty(STATS2)  % no second landmark found
-                                shiftX = shiftX + round(STATS1.Centroid(1) - STATS2.Centroid(1));
-                                shiftY = shiftY + round(STATS1.Centroid(2) - STATS2.Centroid(2));
-                                obj.shiftsX(layer:end) = shiftX;
-                                obj.shiftsY(layer:end) = shiftY;
-                                STATS1 = STATS2;
+                    if ~useAnnotations
+                        for layer=2:Depth
+                            if isempty(STATS1)
+                                prevLayer = cell2mat(obj.mibModel.getData2D('selection', layer-1, NaN, NaN, optionsGetData));
+                                STATS1 = regionprops(prevLayer, 'Centroid');
+                            end
+                            if ~isempty(STATS1)
+                                currLayer = cell2mat(obj.mibModel.getData2D('selection', layer, NaN, NaN, optionsGetData));
+                                STATS2 = regionprops(currLayer, 'Centroid');
+                                if ~isempty(STATS2)  % no second landmark found
+                                    shiftX = shiftX + round(STATS1.Centroid(1) - STATS2.Centroid(1));
+                                    shiftY = shiftY + round(STATS1.Centroid(2) - STATS2.Centroid(2));
+                                    obj.shiftsX(layer:end) = shiftX;
+                                    obj.shiftsY(layer:end) = shiftY;
+                                    STATS1 = STATS2;
+                                else
+                                    STATS1 = struct([]);
+                                end
                             else
                                 STATS1 = struct([]);
                             end
-                        else
-                            STATS1 = struct([]);
+                        end
+                    else
+                        prevZXYT = [];
+                        for layer=2:Depth
+                            if isempty(prevZXYT)
+                                [~, ~, prevZXYT] = obj.mibModel.I{obj.mibModel.Id}.getSliceLabels(layer-1); % prevX1: [z x y t]
+                            end
+                            if ~isempty(prevZXYT)
+                                [~, ~, currZXYT] = obj.mibModel.I{obj.mibModel.Id}.getSliceLabels(layer);
+                                if ~isempty(currZXYT)  % no second landmark found
+                                    if size(prevZXYT, 1) > 1 || size(currZXYT, 1) > 1
+                                        errordlg(sprintf(['!!! Error !!!\n\n' ...
+                                            'For the single point alignment with landmarks, the maximal number of landmarks per slice is 1!\n' ...
+                                            'Extra landmarks were detected on slices %d or %d'], layer-1, layer), 'Wrong number of landmarks'); 
+                                        if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
+                                        return;
+                                    end
+
+                                    shiftX = shiftX + round(prevZXYT(2) - currZXYT(2));
+                                    shiftY = shiftY + round(prevZXYT(3) - currZXYT(3));
+                                    obj.shiftsX(layer:end) = shiftX;
+                                    obj.shiftsY(layer:end) = shiftY;
+                                    prevZXYT = currZXYT;
+                                else
+                                    prevZXYT = [];
+                                end
+                            else
+                                prevZXYT = [];
+                            end
                         end
                     end
                     toc
+                    
                     if useBatchMode == 0
                         figure(155);
                         plot(1:length(obj.shiftsX), obj.shiftsX, 1:length(obj.shiftsY), obj.shiftsY);
@@ -768,7 +815,11 @@ classdef mibAlignmentController < handle
                     end
                     
                     % do alignment
-                    obj.mibModel.getImageMethod('clearSelection');
+                    if ~useAnnotations
+                        obj.mibModel.getImageMethod('clearSelection');
+                    else
+                        obj.mibModel.I{obj.mibModel.Id}.hLabels.clearContents();
+                    end
                     
                     img = mibCrossShiftStack(cell2mat(obj.mibModel.getData4D('image', NaN, 0, optionsGetData)), obj.shiftsX, obj.shiftsY, parameters);
                     obj.mibModel.setData4D('image', img, NaN, 0, optionsGetData);

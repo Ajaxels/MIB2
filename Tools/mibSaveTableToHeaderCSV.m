@@ -81,8 +81,12 @@ if isprop(T.Properties, 'RowNames') && ~isempty(T.Properties.RowNames)
 end
 % append variable names
 for i=1:numel(T.Properties.VariableNames)
-    for j=1:size(T.(T.Properties.VariableNames{i}) ,2)
-        fprintf(fid, '%s_%d, %s_Y,', T.Properties.VariableNames{i}, j);
+    if size(T.(T.Properties.VariableNames{i}) ,2) == 1
+        fprintf(fid, '%s,', T.Properties.VariableNames{i});
+    else
+        for j=1:size(T.(T.Properties.VariableNames{i}) ,2)
+            fprintf(fid, '%s_%d, %s_Y,', T.Properties.VariableNames{i}, j);
+        end
     end
 end
 

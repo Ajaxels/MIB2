@@ -392,7 +392,7 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
                 'HorizontalAlignment','center',...
                 'VerticalAlignment', 'middle',...
                 'String',toolList(nextTool));
-            pause(.1);
+            pause(.2);
             obj.mibView.handles.mibSegmentationToolPopup.Value = nextTool;
             obj.mibSegmentationToolPopup_Callback();
             delete(fittext);

@@ -256,9 +256,7 @@ classdef mibVolRenAppController < handle
 
             % Add new renderers
             % get matlab version
-            v = ver('matlab');
-            obj.matlabVersion = str2double(v(1).Version); 
-            if obj.matlabVersion >= 23.2 % R2023b
+            if obj.mibModel.matlabVersion >= 23.2 % R2023b
                 obj.View.handles.rendererDropDown.Items = [obj.View.handles.rendererDropDown.Items, 'CinematicRendering', 'LightScattering'];
             end
 
@@ -624,6 +622,8 @@ classdef mibVolRenAppController < handle
             obj.View.handles.showScaleBar.Value = obj.Settings.Viewer.showScaleBar;
             obj.View.handles.showOrientationAxes.Value = obj.Settings.Viewer.showOrientationAxes;
             obj.View.handles.showBox.Value = obj.Settings.Viewer.showBox;
+            obj.View.handles.AmbientLight.Value = obj.Settings.Viewer.AmbientLight;
+            obj.View.handles.DiffuseLight.Value = obj.Settings.Viewer.DiffuseLight;
             obj.View.handles.rendererDropDown.Value = obj.Settings.Volume.renderer;
             obj.View.handles.isovalueSlider.Value = obj.Settings.Volume.isosurfaceValue;
             obj.View.handles.isovalueEdit.Value = obj.Settings.Volume.isosurfaceValue;
@@ -632,6 +632,21 @@ classdef mibVolRenAppController < handle
             obj.View.handles.noFramesEditField.Value = obj.Settings.Animation.noFrames;
             obj.View.handles.colormapBlackPoint.Value = obj.Settings.Volume.colormapBlackPoint;
             obj.View.handles.colormapWhitePoint.Value = obj.Settings.Volume.colormapWhitePoint;
+            
+            % update lights
+            obj.viewer.AmbientLight = obj.Settings.Viewer.AmbientLight;
+            obj.viewer.DiffuseLight = obj.Settings.Viewer.DiffuseLight;
+
+            % define rotation mode, in try as it is not documented 
+            try
+                % 'orbit' - rotation is done around the center of the volume
+                % 'cursor' - rotation around the clicked object
+                obj.viewer.Mode.Rotate.Style = obj.Settings.Viewer.rotationMode;
+            catch err
+                obj.View.handles.rotationMode.Items = {'orbit'};
+                obj.Settings.Viewer.rotationMode = 'orbit';
+            end
+            obj.View.handles.rotationMode.Value = obj.Settings.Viewer.rotationMode;
 
             obj.plotAlphaPlot();
             obj.updateKeyFrameTable();
@@ -1108,6 +1123,18 @@ classdef mibVolRenAppController < handle
                 case 'showBox'
                     obj.viewer.Box  = event.Value;
                     obj.Settings.Viewer.showBox = event.Value;
+                case 'rotationMode'
+                    % update the rotation mode
+                    % 'orbit' - rotation is done around the center of the volume
+                    % 'cursor' - rotation around the clicked object
+                    obj.viewer.Mode.Rotate.Style = event.Value;
+                    obj.Settings.Viewer.rotationMode = event.Value;
+                case 'AmbientLight'
+                    obj.viewer.AmbientLight  = event.Value;
+                    obj.Settings.Viewer.AmbientLight = event.Value;
+                case 'DiffuseLight'
+                    obj.viewer.DiffuseLight  = event.Value;
+                    obj.Settings.Viewer.DiffuseLight = event.Value;
             end
         end
 
@@ -1289,8 +1316,8 @@ classdef mibVolRenAppController < handle
             [height, width, ~, depth] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('model', 4);
 
             if strcmp(volumeType, 'image')
-            colorChannelList = arrayfun(@(x) sprintf('ColCh %d', x), 1:obj.mibModel.I{obj.mibModel.Id}.colors, 'UniformOutput', false);
-                colorChannelList = [{'All'}, colorChannelList];
+                colorChannelList = arrayfun(@(x) sprintf('ColCh %d', x), 1:obj.mibModel.I{obj.mibModel.Id}.colors, 'UniformOutput', false);
+                colorChannelList = [{'Selected'}, {'All'}, colorChannelList];
             elseif strcmp(volumeType, 'model')
                 colorChannelList = [{'All materials'}, obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames'];
             else
@@ -1312,7 +1339,12 @@ classdef mibVolRenAppController < handle
             [answer, selIndices] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
             if isempty(answer); obj.closeWindow(); return; end
 
-            colorChannel = selIndices(3) - 1;
+            if strcmp(volumeType, 'image')
+                colorChannel = selIndices(3) - 2; % Selected, All, ColCh1, ColCh2...
+            else
+                colorChannel = selIndices(3) - 1; % All materials, mat1, mat2...
+            end
+              
             if str2double(answer{1}) == 1
                 obj.volumeScaleFactor = round(str2double(answer{2})/width, 3);
             else
@@ -1323,13 +1355,18 @@ classdef mibVolRenAppController < handle
             timePnt = obj.mibModel.I{obj.mibModel.Id}.getCurrentTimePoint();
             pixSize = obj.mibModel.I{obj.mibModel.Id}.pixSize;
 
-            img = obj.mibModel.getData3D(volumeType, timePnt, 4, colorChannel);
+            img = obj.mibModel.getData3D(volumeType, timePnt, 4, max([0, colorChannel]));
 
             if numel(img) > 1
                 msgbox(sprintf('Error!\nPlease select a ROI to render!'),'Error!','error');
                 return;
             end
             img = cell2mat(img);
+
+            % keep only selected color channels
+            if colorChannel == -1 % selected
+                img = img(:,:,obj.mibModel.I{obj.mibModel.Id}.slices{3},:);
+            end
 
             % resize the volume
             if obj.volumeScaleFactor ~= 1
@@ -1351,7 +1388,7 @@ classdef mibVolRenAppController < handle
                     img = permute(img, [1 2 4 3]);
                     img(:,:,:,3) = zeros([imgH, imgW, imgD, 1], class(img(1)));
                     imgC = 3;
-                elseif colorChannel == 0 && size(img,3) > 1
+                elseif colorChannel <= 0 && size(img,3) > 1
                     img = permute(img, [1 2 4 3]);
                 end
             else    % mask/model

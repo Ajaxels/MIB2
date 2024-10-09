@@ -35,6 +35,8 @@ classdef mibModel < handle
         % a switch 0/1 to disable segmentation tools while for example modifying ROIs
         displayedLutColors
         % a matrix with the currently shown colors for the color channels (updated in mibController.redrawMibChannelMixerTable function)
+        matlabVersion
+        % version of Matlab
         mibAnnMarkerEdit
         % a string with the mode to show the annotation: 'marker', 'label', 'value', 'label + value' (@em default)
         mibAnnValueEccentricCheck

@@ -41,6 +41,7 @@ switch tag
                 obj.mibView.handles.mibSegmSAMMode.Enable = 'on';
                 obj.mibView.handles.mibSegmSAMMode.String = {'replace', 'add', 'subtract', 'add, +next material'};
                 obj.mibView.handles.mibSegmSAMAnnotations.Enable = 'off';
+                obj.mibView.handles.mibSegmSAMAnnotationsClear.Enable = 'off';
             case 'Landmarks'
                 obj.mibView.handles.mibSegmSAMSegment.Enable = 'on';
                 %obj.mibView.handles.mibSegmSAMDataset.Enable = 'on';
@@ -51,6 +52,7 @@ switch tag
                 if obj.mibView.handles.mibSegmSAMMode.Value == 4; obj.mibView.handles.mibSegmSAMMode.Value = 1; end
                 obj.mibView.handles.mibSegmSAMMode.String = {'replace', 'add', 'subtract'};
                 obj.mibView.handles.mibSegmSAMAnnotations.Enable = 'on';
+                obj.mibView.handles.mibSegmSAMAnnotationsClear.Enable = 'on';
             case 'Automatic everything'
                 obj.mibView.handles.mibSegmSAMSegment.Enable = 'on';
                 %obj.mibView.handles.mibSegmSAMDataset.Enable = 'on';
@@ -59,6 +61,7 @@ switch tag
                 obj.mibView.handles.mibSegmSAMMode.Value = 1;
                 obj.mibView.handles.mibSegmSAMMode.Enable = 'off';
                 obj.mibView.handles.mibSegmSAMAnnotations.Enable = 'off';
+                obj.mibView.handles.mibSegmSAMAnnotationsClear.Enable = 'off';
         end
     case 'mibSegmSAMSettings'
         % get settings file with links to SAM backbones

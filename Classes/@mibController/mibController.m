@@ -581,7 +581,7 @@ classdef mibController < handle
                 addTextOptions.fontSize = 2;
                 addTextOptions.markerText = 'text';
                 img = mibAddText2Img(img, obj.mibVersion, [1, 440], addTextOptions);
-                if isdeployed;  img = mibAddText2Img(img, 'for Academic research', [1, 418], addTextOptions); end
+                if isdeployed;  img = mibAddText2Img(img, 'for Academic research', [1, 425], addTextOptions); end
                 
                 jimg = im2java(img);
                 frame = javax.swing.JFrame;
@@ -601,11 +601,6 @@ classdef mibController < handle
                 sprintf('%s', err.identifier);
             end
             
-            % get the current version of Matlab; keep this variable to be faster and
-            % not call ver function
-            v = ver('matlab');
-            obj.matlabVersion = str2double(v(1).Version);   % conversion is not correct as version named as 9.8, 9.9, 9.10...
-            
             obj.childControllers = {};    % initialize child controllers
             obj.childControllersIds = {};
             
@@ -620,8 +615,14 @@ classdef mibController < handle
 
             obj.mibView = mibView(obj);
             
+            % get the current version of Matlab; keep this variable to be faster and
+            % not call ver function
+            v = ver('matlab');
+            obj.matlabVersion = str2double(v(1).Version);   % conversion is not correct as version named as 9.8, 9.9, 9.10...
+            obj.mibModel.matlabVersion = obj.matlabVersion;
+
             % add icons for buttons
-            imageList = {'plus', 'minus', 'settings', 'next', 'step', 'step_and_advance', 'eye', 'shrink', 'bulleted_list', 'color_wheel'};
+            imageList = {'plus', 'minus', 'settings', 'next', 'step', 'step_and_advance', 'eye', 'shrink', 'bulleted_list', 'color_wheel', 'clear'};
             for fnId=1:numel(imageList)
                 fn = fullfile(mibPath, 'Resources', [imageList{fnId} '.png']);
                 [I, map, transparency] = imread(fn);
@@ -634,6 +635,7 @@ classdef mibController < handle
             obj.mibView.handles.mibBrushPanelInterpolationSettingsBtn.CData = obj.mibModel.sessionSettings.guiImages.settings;
             obj.mibView.handles.mibSegmSAMSettings.CData = obj.mibModel.sessionSettings.guiImages.settings;
             obj.mibView.handles.mibSegmSAMAnnotations.CData = obj.mibModel.sessionSettings.guiImages.bulleted_list;
+            obj.mibView.handles.mibSegmSAMAnnotationsClear.CData = obj.mibModel.sessionSettings.guiImages.clear;
             obj.mibView.handles.mibSegmentationRecolor.CData = obj.mibModel.sessionSettings.guiImages.color_wheel;
             
             % update parameters for mibImages
