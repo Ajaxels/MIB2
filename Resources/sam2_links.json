@@ -1,4 +1,56 @@
 [
+{	
+	"info": "Hiera tiny model, v2.1",
+	"name": "sam2.1_hiera_t (0.15Gb)",
+	"backbone": "sam2_hiera_t",
+	"checkpointFilename": "sam2.1_hiera_tiny.pt",
+	"onnxFilename": "",
+	"checkpointLink_url_1": "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_tiny.pt",
+	"checkpointLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam2.1_hiera_tiny.pt",
+	"modelCfgLink_url_1": "https://raw.githubusercontent.com/facebookresearch/sam2/refs/heads/main/sam2/configs/sam2.1/sam2.1_hiera_t.yaml",
+	"modelCfgLink_url_2": "https://mib.helsinki.fi/web-update/sam/sam2.1_hiera_t.yaml",
+	"onnxLink": ""
+	}
+,
+	{	
+	"info": "Hiera small model, v2.1",
+	"name": "sam2.1_hiera_s (0.18Gb)",
+	"backbone": "sam2_hiera_s",
+	"checkpointFilename": "sam2.1_hiera_small.pt",
+	"onnxFilename": "",
+	"checkpointLink_url_1": "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_small.pt",
+	"checkpointLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam2.1_hiera_small.pt",
+	"modelCfgLink_url_1": "https://raw.githubusercontent.com/facebookresearch/sam2/refs/heads/main/sam2/configs/sam2.1/sam2.1_hiera_s.yaml",
+	"modelCfgLink_url_2": "https://mib.helsinki.fi/web-update/sam/sam2.1_hiera_s.yaml",
+	"onnxLink": ""
+	}
+,
+	{	
+	"info": "Hiera base plus model, v2.1",
+	"name": "sam2.1_hiera_base_plus (0.32Gb)",
+	"backbone": "sam2_hiera_b+",
+	"checkpointFilename": "sam2.1_hiera_base_plus.pt",
+	"onnxFilename": "",
+	"checkpointLink_url_1": "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_base_plus.pt",
+	"checkpointLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam2.1_hiera_base_plus.pt",
+	"modelCfgLink_url_1": "https://raw.githubusercontent.com/facebookresearch/sam2/refs/heads/main/sam2/configs/sam2.1/sam2.1_hiera_b%2B.yaml",
+	"modelCfgLink_url_2": "https://mib.helsinki.fi/web-update/sam/sam2.1_hiera_b%2B.yaml",
+	"onnxLink": ""
+	}
+,
+{	
+	"info": "Hiera large model, v2.1",
+	"name": "sam2.1_hiera_l (0.90Gb)",
+	"backbone": "sam2_hiera_l",
+	"checkpointFilename": "sam2.1_hiera_large.pt",
+	"onnxFilename": "",
+	"checkpointLink_url_1": "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_large.pt",
+	"checkpointLink_url_2": "http://mib.helsinki.fi/web-update/sam/sam2.1_hiera_large.pt",
+	"modelCfgLink_url_1": "https://raw.githubusercontent.com/facebookresearch/sam2/refs/heads/main/sam2/configs/sam2.1/sam2.1_hiera_l.yaml",
+	"modelCfgLink_url_2": "https://mib.helsinki.fi/web-update/sam/sam2.1_hiera_l.yaml",
+	"onnxLink": ""
+	}
+,
 	{	
 	"info": "Hiera tiny model",
 	"name": "sam2_hiera_t (0.15Gb)",

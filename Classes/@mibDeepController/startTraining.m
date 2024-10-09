@@ -940,6 +940,7 @@ if obj.BatchOpt.T_ExportTrainingPlots
         mkdir(fullfile(obj.BatchOpt.ResultingImagesDir, 'ScoreNetwork'));
     end
     save(fullfile(obj.BatchOpt.ResultingImagesDir, 'ScoreNetwork', [fnTemplate '.score']), 'info', '-mat', '-v7.3');
+
     fieldNames = fieldnames(info);
     for fieldId = 1:numel(fieldNames)
         writematrix(info.(fieldNames{fieldId}), ...
@@ -951,6 +952,8 @@ if obj.BatchOpt.T_ExportTrainingPlots
             fn_out = fullfile(obj.BatchOpt.ResultingImagesDir, 'ScoreNetwork', [datetimeTag '_Train_',  fnTemplate '.png']);
             mibDeepTrainingProgressStruct.UIFigure.focus;
             mibDeepSaveTrainingPlot([], [], mibDeepTrainingProgressStruct, fn_out);
+            fn_out = fullfile(obj.BatchOpt.ResultingImagesDir, 'ScoreNetwork', [datetimeTag '_Train_',  fnTemplate '.fig']);
+            savefig(mibDeepTrainingProgressStruct.UIFigure, fn_out)
         catch err
         end
     end
