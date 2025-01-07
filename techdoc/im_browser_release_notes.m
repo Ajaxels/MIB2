@@ -10,7 +10,7 @@
 %
 %% 2.91 beta / xx.xx.2024 (SAM2 segmentation)
 %
-% [dtls][smry] *2.910 beta 20 / 09.10.2024 (SAM2 segmentation)* [/smry]
+% [dtls][smry] *2.910 beta 21 / 07.01.2025 (SAM2 segmentation)* [/smry]
 %
 % * Added Segment-anything-2 and 2.1 models for manual/semi-automatic segmentation
 % * Added 3D mode for Segment-anything-2 models
@@ -20,6 +20,7 @@
 % * Added rotation around selected object, ambient and diffuse lights in MIB 3D volume rendering
 % * Added pattern rename of annotations
 % * Fixed 3D rendering of the selected material
+% * Fixed SAM2 for Linux
 % * [DeepMIB] Added image downsampling paramter for automatic resizing of images for prediction
 % * [DeepMIB] Added automatic saving of the custom training plot as PNG and MATLAB-FIG
 %

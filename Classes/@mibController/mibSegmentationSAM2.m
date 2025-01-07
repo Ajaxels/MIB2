@@ -146,7 +146,14 @@ if isempty(obj.mibModel.mibPython)
     samPath = obj.mibModel.preferences.SegmTools.SAM2.sam_installation_path;
 
     %onnx_model_path = fullfile(obj.mibModel.preferences.ExternalDirs.DeepMIBDir, onnxFilename);
-    model_cfg = fullfile(obj.mibModel.preferences.ExternalDirs.DeepMIBDir, modelCfgFilename);
+    if ispc() % for PC the full absolute path is used
+        model_cfg = fullfile(obj.mibModel.preferences.ExternalDirs.DeepMIBDir, modelCfgFilename);
+    else
+        % for linux it is important to copy *.yaml configs to sam2
+        % subfolder of segment-anything-2
+        % in this case only modelCfgFilename is used to initalize it
+        model_cfg = modelCfgFilename;
+    end
     checkpoint = fullfile(obj.mibModel.preferences.ExternalDirs.DeepMIBDir, checkpointFilename);
 
     % enable Focus on value in the annotations panel
