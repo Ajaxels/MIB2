@@ -152,14 +152,8 @@ end
 
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
-if isdeployed
-     web(fullfile(fileparts(mfilename('fullpath')), 'html/TripleAreaIntensity_help.html'), '-helpbrowser');
-else
-    %path = fileparts(which('mib'));
-    %web(fullfile(path, 'techdoc/html/ug_panel_bg_removal.html'), '-helpbrowser');
-    web(fullfile(fileparts(mfilename('fullpath')), 'html/TripleAreaIntensity_help.html'), '-helpbrowser');
-end
-
+global mibPath;
+web(fullfile(mibPath, 'techdoc/html/user-interface/plugins/intensity-analysis/triple-area-intensity.html'), '-browser');
 end
 
 % --- Executes on button press in calculateRatioCheck.

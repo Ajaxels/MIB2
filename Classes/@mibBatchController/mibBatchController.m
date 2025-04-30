@@ -97,6 +97,9 @@ classdef mibBatchController < handle
                 case 'syncBatch'
                     obj.selectedActionTableIndex = 1;
                     obj.updateWidgets();
+                    % remove batchModeFlag
+                    if isfield(evnt.Parameter, 'batchModeFlag'); evnt.Parameter = rmfield(evnt.Parameter, 'batchModeFlag'); end 
+                    
                     obj.updateSelectedActionTable(evnt.Parameter);  % update the selected action table
                     if obj.View.handles.autoAddToProtocol.Value == true     % add to protocol
                         obj.protocolActions_Callback('add');
@@ -228,19 +231,23 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.loadModel([], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Import model from Matlab';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.menuModelsImport_Callback(Batch);'; actionId = actionId + 1;
-            obj.Sections(secIndex).Actions(actionId).Name = 'Export model';
-            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.menuModelsExport_Callback([], Batch);'; actionId = actionId + 1;
-            obj.Sections(secIndex).Actions(actionId).Name = 'Rename material';
-            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.renameMaterial(Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Export model or material';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.modelExport(Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Save model';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.saveModel([], Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Rename material';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.renameMaterial(Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Material actions';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.materialsActions([], Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Materials color swap';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.materialsSwapColors(Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Interpolate material';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.interpolateImage(''model'', [], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Smooth model';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.smoothImage(''model'', Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Get statistics';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''mibStatisticsController'', [], Batch);'; actionId = actionId + 1;
-            
+                        
             secIndex = secIndex + 1;
             actionId = 1;
             obj.Sections(secIndex).Name = 'Menu -> Mask';
@@ -299,7 +306,9 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Name = 'Menu -> Plugins';
             obj.Sections(secIndex).Actions(actionId).Name = 'Convert image files';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''ImageConverterController'', [], Batch);'; actionId = actionId + 1;
-            
+			obj.Sections(secIndex).Actions(actionId).Name = 'mib App Design Plugin';
+			obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''mibAppDesignPluginController'', [], Batch);'; actionId = actionId + 1;
+
             secIndex = secIndex + 1;
             actionId = 1;
             obj.Sections(secIndex).Name = 'Panel -> Directory contents';
@@ -337,6 +346,10 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibSegmentationSAM([], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Spot';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.mibSegmentationSpot([], [], [], Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Material actions';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.materialsActions([], Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Materials color swap';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibModel.materialsSwapColors(Batch);'; actionId = actionId + 1;
             
             secIndex = secIndex + 1;
             actionId = 1;
@@ -490,7 +503,7 @@ classdef mibBatchController < handle
             % function helpBtn_Callback(obj)
             % show help page
             global mibPath;
-            web(fullfile(mibPath, 'techdoc', 'html', 'ug_gui_menu_file_batch.html'), '-helpbrowser');
+            web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-batchprocessing.html'), '-browser');
         end
         
         % ------------------------------------------------------------------
@@ -1576,6 +1589,12 @@ classdef mibBatchController < handle
                     end
                 otherwise
                     Batch = obj.Protocol(stepId).Batch; %#ok<NASGU>
+                    Batch.batchModeFlag = true; % Add a special flag to indicate that the target tool was started from Batch processing 
+                    % The general logic of a function: (implemented in mibModel.materialsActions)
+                    % - when function called without parameters it is interactive, i.e. question dialog will appear for settings
+                    % - when parameters provided as BatchIn structure, the function still interactive, but it is using the provided parameters as default values
+                    % - when BatchIn.batchModeFlag == true, complete automatic mode without any question asked
+
                     % remove possible settings for the comboboxes from the
                     % Batch structure
                     %fieldNames = fieldnames(Batch);

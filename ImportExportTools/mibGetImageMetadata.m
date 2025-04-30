@@ -1111,11 +1111,27 @@ for fn_index = 1:no_files
 end
 
 % deal with loading of the custom sections
-if options.customSections && strcmpi(ext(2:end), 'tif')
-    prompts = {'X min:'; 'X max:'; 'Y min:'; 'Y max'; 'XY step (defines number of pixels to skip):'; 'Load each Nth file:'};
-    defAns = {'1', num2str(max([files.width])), '1', max([files.height]), '1', '1'};
+if options.customSections && (strcmpi(ext(2:end), 'tif') || options.mibBioformatsCheck)
+    maxWidthSeries = max([files.width]);
+    maxHeightSeries = max([files.height]);
+    maxDepthSeries = max([files.noLayers]);
+
+    prompts = {'X min (1->):'; sprintf('X max (<%d px):', maxWidthSeries); 'Y min (1->):'; sprintf('Y max (<%d px):', maxHeightSeries); ...
+               'Z min (1->):'; sprintf('Z max (<%d px):', maxDepthSeries); 'XY step (not for BioFormats):'; 'Load each Nth file:'};
+
+    if isfield(options, 'customSectionsSettings')
+        defAns = {num2str(options.customSectionsSettings.xMin), num2str(min([options.customSectionsSettings.xMax maxWidthSeries])), ...
+                  num2str(options.customSectionsSettings.yMin), num2str(min([options.customSectionsSettings.yMax maxHeightSeries])), ...
+                  num2str(options.customSectionsSettings.zMin), num2str(min([options.customSectionsSettings.zMax maxDepthSeries])), ...
+                  num2str(options.customSectionsSettings.xyStep), '1'};
+    else
+        defAns = {'1', num2str(maxWidthSeries), '1', num2str(maxHeightSeries), '1', num2str(maxDepthSeries), '1', '1'};
+    end
     dlgTitle = 'Define region to load';
     options.Title = 'Provide image range to load';   % additional text at the top of the window
+    options.WindowWidth = 1.2;
+    options.Columns = 2;
+    options.PromptLines = [1 1 1 1 1 1 1 1];
     answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
     if isempty(answer); if options.waitbar==1; delete(wb); end; img_info = containers.Map; return; end
 
@@ -1123,8 +1139,14 @@ if options.customSections && strcmpi(ext(2:end), 'tif')
     xMax = str2double(answer{2});
     yMin = str2double(answer{3});
     yMax = str2double(answer{4});
-    xyStep = str2double(answer{5});
-    fileLoadStep = str2double(answer{6});
+    zMin = str2double(answer{5});
+    zMax = str2double(answer{6});
+    if options.mibBioformatsCheck
+        xyStep = 1;
+    else
+        xyStep = str2double(answer{7});
+    end
+    fileLoadStep = str2double(answer{8});
     
     if fileLoadStep > 1 % decrease number of files to load
         files = files(1:fileLoadStep:numel(files));
@@ -1134,20 +1156,23 @@ if options.customSections && strcmpi(ext(2:end), 'tif')
         pixSize.y = pixSize.y * xyStep;
     end
     for i=1:numel(files) % add additional fields and correct height/width
-        files(i).xMin = xMin;
-        files(i).xMax = xMax;
-        files(i).yMin = yMin;
-        files(i).yMax = yMax;
+        files(i).xMin = max([xMin 1]);
+        files(i).xMax = min([xMax maxWidthSeries]);
+        files(i).yMin = max([yMin 1]);
+        files(i).yMax = min([yMax maxHeightSeries]);
+        files(i).zMin = max([zMin 1]);
+        files(i).zMax = min([zMax maxDepthSeries]);
         files(i).xyStep = xyStep;
-        files(i).height = ceil((yMax-yMin+1)/xyStep);
-        files(i).width = ceil((xMax-xMin+1)/xyStep);
+        files(i).height = ceil((files(i).yMax-files(i).yMin+1)/xyStep);
+        files(i).width = ceil((files(i).xMax-files(i).xMin+1)/xyStep);
+        files(i).noLayers = files(i).zMax - files(i).zMin + 1;
     end
 end
 
 % replace CR and LF characters with spaces
 if isKey(img_info,'ImageDescription') && ~isempty(img_info('ImageDescription'))
     img_info('ImageDescription') = strrep(strrep(img_info('ImageDescription'), sprintf('%s', 13), ' '), sprintf('%s', 10), '');
-    if numel(unique([files.width])) > 1 || numel(unique([files.height])) > 1
+    if numel(unique([files.width])) > 1 || numel(unique([files.height])) > 1 || isfield(files, 'xMin')
         % require to recalculate the bounding box
         bbStart = strfind(img_info('ImageDescription'), 'BoundingBox');
         if ~isempty(bbStart)
@@ -1160,9 +1185,19 @@ if isKey(img_info,'ImageDescription') && ~isempty(img_info('ImageDescription'))
             catch err
                 bb = [0 0 0 0 0 0];
             end
-            bb(2) = max([files.width])*pixSize.x + bb(1);
-            bb(4) = max([files.height])*pixSize.y + bb(3);
-            bb(6) = sum([files.noLayers])*pixSize.z + bb(5);
+
+            if isfield(files, 'xMin') % custom sections
+                bb(1) = bb(1) + (files(1).xMin-1)*pixSize.x; % xMin
+                bb(2) = bb(1) + (files(1).xMax-files(1).xMin)*pixSize.x; % xMax
+                bb(3) = bb(3) + (files(1).yMin-1)*pixSize.y; % yMin
+                bb(4) = bb(3) + (files(1).yMax-files(1).yMin)*pixSize.y; % yMax
+                bb(5) = bb(5) + (files(1).zMin-1)*pixSize.z; % zMin
+                bb(6) = bb(5) + (files(1).zMax-files(1).zMin)*pixSize.z; % zMax
+            else
+                bb(2) = max([files.width])*pixSize.x + bb(1);
+                bb(4) = max([files.height])*pixSize.y + bb(3);
+                bb(6) = sum([files.noLayers])*pixSize.z + bb(5);
+            end
             
             str2 = sprintf('BoundingBox %.5f %.5f %.5f %.5f %.5f %.5f ',bb(1),bb(2),bb(3),bb(4),bb(5),bb(6));
             curr_text = img_info('ImageDescription');
@@ -1179,6 +1214,17 @@ if isKey(img_info,'ImageDescription') && ~isempty(img_info('ImageDescription'))
             end
         end
     end
+elseif isfield(files, 'xMin') % no img_info('ImageDescription'), but custom sections were used
+    % add ImageDescription
+    bb = [0 0 0 0 0 0];
+    bb(1) = bb(1) + (files(1).xMin-1)*pixSize.x; % xMin
+    bb(2) = bb(1) + (files(1).xMax-files(1).xMin)*pixSize.x; % xMax
+    bb(3) = bb(3) + (files(1).yMin-1)*pixSize.y; % yMin
+    bb(4) = bb(3) + (files(1).yMax-files(1).yMin)*pixSize.y; % yMax
+    bb(5) = bb(5) + (files(1).zMin-1)*pixSize.z; % zMin
+    bb(6) = bb(5) + (files(1).zMax-files(1).zMin)*pixSize.z; % zMax
+    bbString = sprintf('BoundingBox %.5f %.5f %.5f %.5f %.5f %.5f ', bb(1), bb(2), bb(3), bb(4), bb(5), bb(6));
+    img_info('ImageDescription') = bbString;
 end
 
 switch files(1).imgClass

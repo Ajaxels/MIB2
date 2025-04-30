@@ -304,10 +304,13 @@ try
     try
         if isempty(checkPointRestoreFile)
             switch obj.BatchOpt.Architecture{1}
-                case 'SOLOv2 Resnet18'
-                    detectorName = 'light-resnet18-coco';
-                case 'SOLOv2 Resnet50'
-                    detectorName = 'resnet50-coco';
+                case 'SOLOv2'
+                    switch obj.BatchOpt.T_EncoderNetwork{1}
+                        case 'Resnet18'
+                            detectorName = 'light-resnet18-coco';
+                        case 'Resnet50'
+                            detectorName = 'resnet50-coco';
+                    end
             end
             lgraph = solov2(detectorName, ...
                 "object", ...

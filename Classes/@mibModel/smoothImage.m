@@ -125,6 +125,12 @@ if nargin < 3
         'Sigma', '[models only], index(es) of the material:'};
     
     mibInputMultiDlgOpt.PromptLines = [1, 1, 3, 1, 1, 1];
+    mibInputMultiDlgOpt.Title = sprintf(['Note!\nYou can also filter selection and mask with interactive preview of results.\n' ...
+        'Use:\n' ...
+        'Menu -> Image -> Image filters -> ...\n' ...
+        '        Basic Image Filtering -> Gaussian']);
+    mibInputMultiDlgOpt.TitleLines = 5; 
+    mibInputMultiDlgOpt.WindowWidth = 1.4; 
     answer = mibInputMultiDlg([], prompt, defAns, sprintf('Smooth %s', BatchOpt.Target{1}), mibInputMultiDlgOpt);
     if isempty(answer); return; end
     

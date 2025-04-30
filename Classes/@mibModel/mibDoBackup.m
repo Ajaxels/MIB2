@@ -28,6 +28,7 @@ function mibDoBackup(obj, type, switch3d, getDataOptions)
 % - @b 0 - 2D slice
 % - @b 1 - 3D dataset
 % getDataOptions: - an optional structure with extra parameters
+% @li .blockModeSwitch -> [@em optional], crop the stored dataset to the visible portion of the data, when true, overrides .y and .x fields
 % @li .y -> [@em optional], [ymin, ymax] of the part of the dataset to store
 % @li .x -> [@em optional], [xmin, xmax] of the part of the dataset to store
 % @li .z -> [@em optional], [zmin, zmax] of the part of the dataset to store
@@ -74,6 +75,19 @@ if nargin < 4; getDataOptions = struct(); end
 if nargin < 3; switch3d = 1; end
 
 if ~isfield(getDataOptions, 'id'); getDataOptions.id = obj.Id; end
+if isfield(getDataOptions, 'blockModeSwitch') && getDataOptions.blockModeSwitch == true
+    [axesX, axesY] = obj.getAxesLimits(getDataOptions.id);
+    if obj.I{getDataOptions.id}.orientation == 4
+        getDataOptions.x = ceil(axesX);
+        getDataOptions.y = ceil(axesY);
+    elseif obj.I{getDataOptions.id}.orientation == 1
+        getDataOptions.z = ceil(axesX);
+        getDataOptions.x = ceil(axesY);
+    elseif obj.I{getDataOptions.id}.orientation == 2
+        getDataOptions.z = ceil(axesX);
+        getDataOptions.y = ceil(axesY);
+    end
+end
 
 if strcmp(type, 'lines3d')
     obj.U.store(type, {copy(obj.I{getDataOptions.id}.hLines3D)}, [], getDataOptions);
@@ -89,6 +103,13 @@ if ~isfield(getDataOptions, 'x') || ~isfield(getDataOptions, 'y') || ...
         return;
     end
 end
+
+% disable switch3d when getDataOptions.z is available and points to the
+% same slice
+if isfield(getDataOptions, 'z') && getDataOptions.z(2)-getDataOptions.z(1) == 0
+    switch3d = 0;
+end
+
 if switch3d && obj.U.max3d_steps == 0; return; end
 
 if strcmp(type, 'mibImage')

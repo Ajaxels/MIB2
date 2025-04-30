@@ -107,7 +107,7 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'Plugins', 'EMU Tools', 'Granularity', 'Help', 'index.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc/html/user-interface/plugins/organelle-analysis/granularity.html'), '-browser');
 end
 
 % --- Executes on button press in timelapse2D.

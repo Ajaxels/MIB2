@@ -38,7 +38,7 @@ function varargout = GuiTutorialGUI(varargin)
 
 % Edit the above text to modify the response to help GuiTutorialGUI
 
-% Last Modified by GUIDE v2.5 15-Mar-2017 18:31:00
+% Last Modified by GUIDE v2.5 19-Apr-2025 00:14:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -207,3 +207,9 @@ function heightEdit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of heightEdit as text
 %        str2double(get(hObject,'String')) returns contents of heightEdit as a double
+
+
+% --- Executes on button press in helpBtn.
+function helpBtn_Callback(hObject, eventdata, handles)
+global mibPath;
+web(fullfile(mibPath, 'techdoc/html/user-interface/plugins/tutorials/gui-tutorial.html'), '-browser');

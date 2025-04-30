@@ -38,7 +38,7 @@ function varargout = mibGUI(varargin)
 
 % Edit the above text to modify the response to help mibGUI
 
-% Last Modified by GUIDE v2.5 09-Sep-2024 17:08:54
+% Last Modified by GUIDE v2.5 23-Mar-2025 18:32:23
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -120,7 +120,7 @@ end
 % adding context menu for filesListbox
 handles.mibFilesListbox_cm = uicontextmenu('Parent',handles.mibGUI);
 uimenu(handles.mibFilesListbox_cm, 'Label', 'Combine selected datasets...', 'Callback', {@mibFilesListbox_cm_Callback, 'Combine datasets'});
-uimenu(handles.mibFilesListbox_cm, 'Label', 'Load part of the dataset (AM and TIF)...', 'Callback', {@mibFilesListbox_cm_Callback, 'Load part of dataset'});
+uimenu(handles.mibFilesListbox_cm, 'Label', 'Load part of the dataset (AM, TIF, BioFormats)...', 'Callback', {@mibFilesListbox_cm_Callback, 'Load part of dataset'});
 uimenu(handles.mibFilesListbox_cm, 'Label', 'Load each N-th dataset...', 'Callback', {@mibFilesListbox_cm_Callback, 'Load each N-th dataset'});
 uimenu(handles.mibFilesListbox_cm, 'Label', 'Insert into the open dataset...', 'Callback', {@mibFilesListbox_cm_Callback, 'Insert into open dataset'});
 uimenu(handles.mibFilesListbox_cm, 'Label', 'Combine files as color channels...', 'Separator', 'on', 'Callback', {@mibFilesListbox_cm_Callback, 'Combine files as color channels'});
@@ -175,6 +175,7 @@ h0=uimenu(handles.mibSegmentationTable_cm,'label','Color scheme...');
 uimenu(h0,'label','Default, 6 colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Default, 6 colors'});
 uimenu(h0,'label','Distinct colors, 20 colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Distinct colors, 20 colors'});
 uimenu(h0,'label','Random Colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Random Colors'});
+uimenu(h0,'label','Swap Colors', 'callback', {@mibSegmentationTable_cm_Callback, 'swapMaterialColors', 'Swap Colors'});
 uimenu(h0,'label','Qualitative (Monte Carlo->Half Baked), 3-12 colors', 'Separator','on', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Qualitative (Monte Carlo->Half Baked), 3-12 colors'});
 uimenu(h0,'label','Diverging (Deep Bronze->Deep Teal), 3-11 colors','Separator','on', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Diverging (Deep Bronze->Deep Teal), 3-11 colors'});
 uimenu(h0,'label','Diverging (Ripe Plum->Kaitoke Green), 3-11 colors', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Diverging (Ripe Plum->Kaitoke Green), 3-11 colors'});
@@ -189,38 +190,48 @@ uimenu(h0,'label','Matlab Jet', 'Separator','on', 'callback', {@mibSegmentationT
 uimenu(h0,'label','Matlab HSV', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'Matlab HSV'});
 uimenu(h0,'label','Make these colors as default', 'Separator','on', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'current2default'});
 uimenu(h0,'label','Update colors from default', 'callback', {@mibSegmentationTable_cm_Callback, 'setColorScheme', 'default2current'});
-
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Get statistics...', 'Callback', {@mibSegmentationTable_cm_Callback, 'statistics'});
-h1=uimenu(handles.mibSegmentationTable_cm,'label','Material to Selection...','Separator','on');
-uimenu(h1,'label','NEW (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'model', 'selection', '2D, Slice', 'replace'});
-uimenu(h1,'label','ADD (2D, Slice)','callback', {@mibGUI_moveLayers, NaN, 'model','selection','2D, Slice','add'});
-uimenu(h1,'label','REMOVE (2D, Slice)','callback', {@mibGUI_moveLayers, NaN,'model','selection','2D, Slice','remove'});
-uimenu(h1,'label','NEW (3D, Stack)','Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','selection','3D, Stack','replace'});
-uimenu(h1,'label','ADD (3D, Stack)','callback', {@mibGUI_moveLayers, NaN, 'model','selection','3D, Stack','add'});
-uimenu(h1,'label','REMOVE (3D, Stack)','callback', {@mibGUI_moveLayers, NaN,'model','selection','3D, Stack','remove'});
-uimenu(h1,'label','NEW (4D, Dataset)','Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','selection','4D, Dataset','replace'});
-uimenu(h1,'label','ADD (4D, Dataset)','callback', {@mibGUI_moveLayers, NaN, 'model','selection','4D, Dataset','add'});
-uimenu(h1,'label','REMOVE (4D, Dataset)','callback', {@mibGUI_moveLayers, NaN,'model','selection','4D, Dataset','remove'});
-h2=uimenu(handles.mibSegmentationTable_cm,'label','Material to Mask...');
-uimenu(h2,'label','NEW (2D, Slice)','callback', {@mibGUI_moveLayers, NaN,'model','mask','2D, Slice','replace'});
-uimenu(h2,'label','ADD (2D, Slice)','callback', {@mibGUI_moveLayers, NaN, 'model','mask','2D, Slice','add'});
-uimenu(h2,'label','REMOVE (2D, Slice)','callback', {@mibGUI_moveLayers, NaN,'model','mask','2D, Slice','remove'});
-uimenu(h2,'label','NEW (3D, Stack)','Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','mask','3D, Stack','replace'});
-uimenu(h2,'label','ADD (3D, Stack)','callback', {@mibGUI_moveLayers, NaN, 'model','mask','3D, Stack','add'});
-uimenu(h2,'label','REMOVE (3D, Stack)','callback', {@mibGUI_moveLayers, NaN,'model','mask','3D, Stack','remove'});
-uimenu(h2,'label','NEW (4D, Dataset)','Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','mask','4D, Dataset','replace'});
-uimenu(h2,'label','ADD (4D, Dataset)','callback', {@mibGUI_moveLayers, NaN, 'model','mask','4D, Dataset','add'});
-uimenu(h2,'label','REMOVE (4D, Dataset)','callback', {@mibGUI_moveLayers, NaN,'model','mask','4D, Dataset','remove'});
-h3=uimenu(handles.mibSegmentationTable_cm,'label','Mask to Material...');
-uimenu(h3,'label','NEW (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '2D, Slice', 'replace'});
-uimenu(h3,'label','ADD (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '2D, Slice', 'add'});
-uimenu(h3,'label','REMOVE (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model','2D, Slice', 'remove'});
-uimenu(h3,'label','NEW (3D, Stack)', 'Separator', 'on','callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '3D, Stack', 'replace'});
-uimenu(h3,'label','ADD (3D, Stack)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '3D, Stack', 'add'});
-uimenu(h3,'label','REMOVE (3D, Stack)', 'callback', {@mibGUI_moveLayers, NaN,'mask', 'model', '3D, Stack', 'remove'});
-uimenu(h3,'label','NEW (4D, Dataset)', 'Separator', 'on','callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '4D, Dataset', 'replace'});
-uimenu(h3,'label','ADD (4D, Dataset)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '4D, Dataset', 'add'});
-uimenu(h3,'label','REMOVE (4D, Dataset)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '4D, Dataset', 'remove'});
+
+h1=uimenu(handles.mibSegmentationTable_cm, 'label', 'Materials...', 'Separator', 'on');
+uimenu(h1, 'label', 'Rename material', 'callback', {@materialsActions, 'Rename material'});
+uimenu(h1, 'label', 'Add material', 'Separator', 'on', 'callback', {@materialsActions, 'Add material'});
+uimenu(h1, 'label', 'Insert material', 'callback', {@materialsActions, 'Insert material'});
+uimenu(h1, 'label', 'Swap materials', 'callback', {@materialsActions, 'Swap materials'});
+uimenu(h1, 'label', 'Reorder materials', 'callback', {@materialsActions, 'Reorder materials'});
+uimenu(h1, 'label', 'Export material', 'Separator', 'on', 'callback', {@materialsActions, 'Export material'});
+uimenu(h1, 'label', 'Save material to file', 'callback', {@materialsActions, 'Save material to file'});
+uimenu(h1, 'label', 'Remove material', 'Separator', 'on', 'callback', {@materialsActions, 'Remove material'});
+h2=uimenu(handles.mibSegmentationTable_cm,'label','Material to Selection...');
+uimenu(h2, 'label', 'NEW (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'model', 'selection', '2D, Slice', 'replace'});
+uimenu(h2, 'label', 'ADD (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'model','selection','2D, Slice','add'});
+uimenu(h2, 'label', 'REMOVE (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN,'model','selection','2D, Slice','remove'});
+uimenu(h2, 'label', 'NEW (3D, Stack)', 'Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','selection','3D, Stack','replace'});
+uimenu(h2, 'label', 'ADD (3D, Stack)', 'callback', {@mibGUI_moveLayers, NaN, 'model','selection','3D, Stack','add'});
+uimenu(h2, 'label', 'REMOVE (3D, Stack)', 'callback', {@mibGUI_moveLayers, NaN,'model','selection','3D, Stack','remove'});
+uimenu(h2, 'label', 'NEW (4D, Dataset)', 'Separator','on','callback', {@mibGUI_moveLayers, NaN,'model','selection','4D, Dataset','replace'});
+uimenu(h2, 'label', 'ADD (4D, Dataset)', 'callback', {@mibGUI_moveLayers, NaN, 'model','selection','4D, Dataset','add'});
+uimenu(h2, 'label', 'REMOVE (4D, Dataset)', 'callback', {@mibGUI_moveLayers, NaN,'model','selection','4D, Dataset','remove'});
+h3=uimenu(handles.mibSegmentationTable_cm,'label','Material to Mask...');
+uimenu(h3, 'label', 'NEW (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN,'model','mask','2D, Slice','replace'});
+uimenu(h3, 'label', 'ADD (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'model','mask','2D, Slice','add'});
+uimenu(h3, 'label', 'REMOVE (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN,'model','mask','2D, Slice','remove'});
+uimenu(h3, 'label', 'NEW (3D, Stack)', 'Separator', 'on', 'callback', {@mibGUI_moveLayers, NaN,'model','mask','3D, Stack','replace'});
+uimenu(h3, 'label', 'ADD (3D, Stack)', 'callback', {@mibGUI_moveLayers, NaN, 'model','mask','3D, Stack','add'});
+uimenu(h3, 'label', 'REMOVE (3D, Stack)', 'callback', {@mibGUI_moveLayers, NaN,'model','mask','3D, Stack','remove'});
+uimenu(h3, 'label', 'NEW (4D, Dataset)', 'Separator', 'on', 'callback', {@mibGUI_moveLayers, NaN,'model','mask','4D, Dataset','replace'});
+uimenu(h3, 'label', 'ADD (4D, Dataset)', 'callback', {@mibGUI_moveLayers, NaN, 'model','mask','4D, Dataset','add'});
+uimenu(h3, 'label', 'REMOVE (4D, Dataset)', 'callback', {@mibGUI_moveLayers, NaN,'model','mask','4D, Dataset','remove'});
+h4=uimenu(handles.mibSegmentationTable_cm, 'label', 'Mask to Material...');
+uimenu(h4, 'label', 'NEW (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '2D, Slice', 'replace'});
+uimenu(h4, 'label', 'ADD (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '2D, Slice', 'add'});
+uimenu(h4, 'label', 'REMOVE (2D, Slice)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model','2D, Slice', 'remove'});
+uimenu(h4, 'label', 'NEW (3D, Stack)', 'Separator', 'on','callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '3D, Stack', 'replace'});
+uimenu(h4, 'label', 'ADD (3D, Stack)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '3D, Stack', 'add'});
+uimenu(h4, 'label', 'REMOVE (3D, Stack)', 'callback', {@mibGUI_moveLayers, NaN,'mask', 'model', '3D, Stack', 'remove'});
+uimenu(h4, 'label', 'NEW (4D, Dataset)', 'Separator', 'on','callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '4D, Dataset', 'replace'});
+uimenu(h4, 'label', 'ADD (4D, Dataset)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '4D, Dataset', 'add'});
+uimenu(h4, 'label', 'REMOVE (4D, Dataset)', 'callback', {@mibGUI_moveLayers, NaN, 'mask', 'model', '4D, Dataset', 'remove'});
+
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show as volume (MIB)...', 'Separator', 'on', 'Callback', {@mibSegmentationTable_cm_Callback, 'mib'});
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show isosurface (Matlab)...', 'Callback', {@mibSegmentationTable_cm_Callback, 'isosurface'});
 uimenu(handles.mibSegmentationTable_cm, 'Label', 'Show as volume (Fiji)...', 'Callback', {@mibSegmentationTable_cm_Callback, 'volumeFiji'});
@@ -698,10 +709,14 @@ handles = guidata(hObject);
 if isstruct(parameter)   % call from the Models menu entry
     parameter = 'statistics';
 end
-if strcmp(parameter, 'setColorScheme')
-    handles.mibController.mibModel.setDefaultSegmentationColorPalette(parameter2);
-else
-    handles.mibController.mibSegmentationTable_cm_Callback(hObject, parameter);
+switch parameter
+    case 'setColorScheme'
+        handles.mibController.mibModel.setDefaultSegmentationColorPalette(parameter2);
+    case 'swapMaterialColors'
+        % swap two colors in the model
+        handles.mibController.mibModel.materialsSwapColors();
+    otherwise
+        handles.mibController.mibSegmentationTable_cm_Callback(hObject, parameter);
 end
 end
 
@@ -990,6 +1005,16 @@ if ~isfield(handles, 'mibController'); return; end
 handles.mibController.mibGUI_SizeChangedFcn()
 end
 
+function materialsActionsMenu(hObject, eventdata, handles, actionType)
+materialsActions(hObject, eventdata, actionType);
+end
+
+function materialsActions(hObject, eventdata, actionType)
+% callback for selection of actions for materials of the model
+handles = guidata(hObject);
+handles.mibController.mibModel.materialsActions(actionType);
+end
+
 function mibGUI_moveLayers(hObject, ~, ~, obj_type_from, obj_type_to, layers_id, action_type)
 % move data between layers, a callback to the context menu of mibSegmentationTable
 handles = guidata(hObject);
@@ -1061,7 +1086,7 @@ if strcmp(hObject.Tag, 'mibSegmBWthres3D') && handles.mibSegmBWthres4D.Value == 
 end
 
 handles.mibController.mibSegmentationBlackWhiteThreshold(hObject.Tag);
-handles.mibController.plotImage();
+%handles.mibController.plotImage();
 unFocus(hObject);   % remove focus from hObject
 end
 
@@ -1808,6 +1833,8 @@ end
 
 % --- Executes on button press in mibSegmThresPanelAdaptiveCheck.
 function mibSegmThresPanelAdaptiveCheck_Callback(hObject, eventdata, handles)
+% copy of this code is also in mibUpdateSegmentationSettingsFromPreset.m
+
 if handles.mibSegmThresPanelAdaptiveCheck.Value == 1    % adaptive mode
     handles.mibSegmThresPanelAdaptivePopup.Enable = 'on';
     handles.mibSegmThresPanelAdaptiveInvert.Enable = 'on';
@@ -2282,30 +2309,12 @@ end
 
 %% ------------------ Help menu ------------------ 
 % --------------------------------------------------------------------
-function menuHelpHelp_Callback(hObject, eventdata, handles, page)
-% open help pages
-
-global mibPath;
-if isdeployed
-    web(fullfile(mibPath, sprintf('techdoc/html/%s.html', page)), '-helpbrowser');
-else
-    v = ver('matlab');
-    if v.Version < 8
-        if strcmp(page, 'im_browser_product_page')
-            docsearch '"Microscopy Image Browser"'
-        elseif strcmp(page, 'im_browser_license')
-            docsearch '"Microscopy Image Browser License"'
-        end
-    else
-        web(fullfile(mibPath,'techdoc','html',[page '.html']));
-    end
-end
-end
-
 function menuHelp_Callbacks(hObject, eventdata, handles, parameter)
 global mibPath;
 
 switch parameter
+    case 'mainhelp'
+        web(fullfile(mibPath, 'techdoc/html/index.html'), '-browser');
     case 'tip'
         handles.mibController.mibModel.preferences.Tips.ShowTips = 1;
         if verLessThan('matlab','9.12')
@@ -2338,15 +2347,16 @@ switch parameter
         options.okBtnText = 'Copy to clipboard';
         options.helpBtnText = 'Calendar';
         options.Icon = 'call4help';
-        answer = mibInputMultiDlg({mibPath}, [], [], 'MIB Call4Help', options);
+        mibInputMultiDlg({mibPath}, [], [], 'MIB Call4Help', options);
         clipboard('copy', call4help.Link);
-        
     case 'support'
         web('https://forum.image.sc/tags/mib', '-browser');
     case 'update'
         handles.mibController.startController('mibUpdateCheckController', handles.mibController);
     case 'about'
         handles.mibController.startController('mibAboutController', handles.mibGUI.Name);
+    case 'licenses'
+        web(fullfile(mibPath, 'techdoc/html/getting-started/licenses/index.html'), '-browser');
     case 'enthusiasm'
         % show the user's stats
         handles.mibController.mibShowMilestoneDialog('currentStats');
@@ -2357,25 +2367,58 @@ end
 % --- Executes on button press in mibPathPanelHelpBtn.
 function mibHelpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
+
+% v = ver('matlab');
+% if ischar(v.Version); v.Version = str2double(v.Version); end
+% browserText = '-helpbrowser';
+% if v.Version >= 24.2
+%     % up R2024b Matlab starts to use external browser
+%     % and links and styles stopped to work, to fix use the following syntax
+%     browserText = '-browser'; 
+% end
+browserText = '-browser'; 
 switch hObject.Tag
-    %case 'backRem_panel';            web(fullfile(mibPath, 'techdoc/html/ug_panel_bg_removal.html'), '-helpbrowser');
     case 'menuHelpClassRef'
         if exist(fullfile(mibPath, 'techdoc', 'ClassReference','index.html'), 'file')
-            web(fullfile(mibPath, 'techdoc/ClassReference/index.html'), '-helpbrowser');
+            web(fullfile(mibPath, 'techdoc/ClassReference/index.html'), browserText);
         else
-            web('http://mib.helsinki.fi/help/api2/index.html', '-helpbrowser');
+            web('http://mib.helsinki.fi/help/api2/index.html', browserText);
         end
-        %case 'coherence_filter';            web(fullfile(mibPath, 'techdoc/html/ug_panel_filters_coherence.html'), '-helpbrowser');
-        %case 'corr_panel';            web(fullfile(mibPath, 'techdoc/html/ug_panel_corr.html'), '-helpbrowser');
-    case 'mibDirPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/ug_panel_dir.html'), '-helpbrowser');
-    case 'mibFijiPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/ug_panel_fiji_connect.html'), '-helpbrowser');
-    case 'mibImageFiltersPanelHelpBtn';             web(fullfile(mibPath, 'techdoc/html/ug_panel_image_filters.html'), '-helpbrowser');
-    case 'mibMaskGeneratorsPanelHelpBtn';             web(fullfile(mibPath, 'techdoc/html/ug_panel_mask_generators.html'), '-helpbrowser');
-    case 'mibPathPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/ug_panel_path.html'), '-helpbrowser');
-    case 'mibRoiPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/ug_panel_roi.html'), '-helpbrowser');
-    case 'mibSegmentationPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/ug_panel_segm.html'), '-helpbrowser');
-        %case 'segmAn_panel';            web(fullfile(mibPath, 'techdoc/html/ug_panel_segm_analysis.html'), '-helpbrowser');
-    case 'mibSelectionPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/ug_panel_selection.html'), '-helpbrowser');
-    case 'mibViewSettingsPanelHelpBtn';             web(fullfile(mibPath, 'techdoc/html/ug_panel_view_settings.html'), '-helpbrowser');
+    case 'mibDirPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/user-interface/panels/dircontents/index.html'), browserText);
+    case 'mibFijiPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/user-interface/panels/fijiconnect/index.html'), browserText);
+    case 'mibImageFiltersPanelHelpBtn';             web(fullfile(mibPath, 'techdoc/html/user-interface/panels/imfilters/index.html'), browserText);
+    case 'mibMaskGeneratorsPanelHelpBtn';             web(fullfile(mibPath, 'techdoc/html/user-interface/panels/maskgen/index.html'), browserText);
+    case 'mibPathPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/user-interface/panels/path/index.html'), browserText);
+    case 'mibRoiPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/user-interface/panels/roi/index.html'), browserText);
+    case 'mibSegmentationPanelHelpBtn'
+        switch handles.mibSegmentationToolPopup.String{handles.mibSegmentationToolPopup.Value}
+            case '3D ball'
+                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-3dball.html'), browserText);
+            case '3D lines'
+                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-3dlines.html'), browserText);
+            case 'Annotations'
+                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-annotations.html'), browserText);
+            case 'Brush'
+                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-brush.html'), browserText);
+            case 'BW Thresholding'
+                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-bwthres.html'), browserText);
+            case 'Drag & Drop materials'
+                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-dragdrop.html'), browserText);
+            case 'Lasso'
+                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-lasso.html'), browserText);
+            case 'MagicWand-RegionGrowing'
+                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-magicwand.html'), browserText);
+            case 'Membrane ClickTracker'
+                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-membrtracker.html'), browserText);
+            case 'Object Picker'
+                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-objpick.html'), browserText);
+            case 'Segment-anything model'
+                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-sam.html'), browserText);
+            case 'Spot'
+                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-spot.html'), browserText);
+        end
+    case 'mibSelectionPanelHelpBtn'            
+         web(fullfile(mibPath, 'techdoc/html/user-interface/panels/selection/index.html'), browserText);
+    case 'mibViewSettingsPanelHelpBtn';             web(fullfile(mibPath, 'techdoc/html/user-interface/panels/viewsettings/index.html'), browserText);
 end
 end

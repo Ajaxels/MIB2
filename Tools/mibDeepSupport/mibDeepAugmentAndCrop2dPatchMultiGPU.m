@@ -235,7 +235,7 @@ else
                     end
                 end
             end
-
+            
             if cropSwitch
                 inpResponse{id, 1} = respOut(y1:y2, x1:x2, :, :);
             else

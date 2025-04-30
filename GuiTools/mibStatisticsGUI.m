@@ -184,8 +184,9 @@ function statTable_CellSelectionCallback(hObject, eventdata, handles, parameter)
 %	Indices: row and column indices of the cell(s) currently selecteds
 % handles    structure with handles and user data (see GUIDATA)
 
-Indices = eventdata.Indices;
-handles.winController.statTable_CellSelectionCallback(Indices, parameter);
+indices = eventdata.Indices;
+if max(indices(:,1)) > size(handles.statTable.Data,1); indices = 1; end
+handles.winController.statTable_CellSelectionCallback(indices, parameter);
 end
 
 % --- Executes on mouse press over figure background, over a disabled or
@@ -217,7 +218,7 @@ end
 % --- Executes on button press in helpButton.
 function helpButton_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_mask_statistics.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc/html/user-interface/menu/mask/mask-stats.html'), '-browser');
 end
 
 

@@ -1,35 +1,18 @@
-% This program is free software: you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation, either version 3 of the License, or
-% (at your option) any later version.
-%
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% You should have received a copy of the GNU General Public License
-% along with this program.  If not, see <https://www.gnu.org/licenses/>
-
-% Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% Date: 25.04.2023
-
-function vecOut = mibRunningAverageSmoothPoints(vecIn, halfwidth, excludePeaks)
-%function vecOut = mibRunningAverageSmoothPoints(vecIn, halfwidth, excludePeaks)
-% smooth points for the running average correction
+function vecOut = mibRunningAverageSmoothPoints2(vecIn, halfwidth, excludePeaks)
+% mibRunningAverageSmoothPoints - Smooth points for running average correction
 %
 % Parameters:
-% vecIn:    vector of input values to be smoothed
-% halfwidth:    half-width of the smoothing window, when 0-do not smooth
-% excludePeaks: peaks higher than this value are excluded from the
-% correction, when 0 - do not consider peaks
+% vecIn:    Vector of input values to be smoothed
+% halfwidth: Half-width of the smoothing window (0 = no smoothing)
+% excludePeaks: Peaks higher than this value are excluded from correction (0 = ignore peaks)
 %
 % Return values:
-% vecOut: smoothed vector
+% vecOut: Smoothed vector with drift removed
 
-% Updates
-%
+% Update
+% 07.03.2025 modified to use polyfit to extrapolate smoothing at the edges
 
+asInSmooth = true;
 if halfwidth > 0
     if excludePeaks > 0
         diffX = diff(vecIn);
@@ -38,16 +21,15 @@ if halfwidth > 0
         for pntId=1:numel(peakPntsX)
             vecIn3(peakPntsX(pntId)+1:end) = vecIn3(peakPntsX(pntId)+1:end) - diffX(peakPntsX(pntId));
         end
-        vecOut = vecIn3-windv(vecIn3, halfwidth);
-        
+        vecOut = vecIn3 - windv(vecIn3, halfwidth, asInSmooth);
+
         for pntId=1:numel(peakPntsX)
             vecOut(peakPntsX(pntId)+1:end) = vecOut(peakPntsX(pntId)+1:end) + diffX(peakPntsX(pntId));
         end
     else
         % subtract running average
-        vecOut = vecIn-windv(vecIn, halfwidth);
+        vecOut = vecIn - windv(vecIn, halfwidth, asInSmooth);
     end
 else
     vecOut = vecIn;
-end
 end

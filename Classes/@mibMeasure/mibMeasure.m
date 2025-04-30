@@ -82,6 +82,10 @@ classdef mibMeasure < matlab.mixin.Copyable
     events
         addMeasurement
         % add a new measurement, when the Measure Tool is displayed
+        % note: use this syntax instead to send event
+        % motifyEvent.Name = 'addMeasurement';
+        % eventdata = ToggleEventData(motifyEvent);
+        % notify(obj.mibModel, 'modelNotify', eventdata);
         updatePosition
         % update coordinates of measurements
     end
@@ -1434,7 +1438,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             
             if ~isfield(freehandOptions, 'fixNumberPoints'); freehandOptions.fixNumberPoints = false; end
             if ~isfield(freehandOptions, 'noPointsEdit'); freehandOptions.noPointsEdit = '5'; end
-            
+            info = ''; % default info text
             position = obj.drawROI(mibController, 'imfreehand');
             
             % get Z-value
@@ -1451,18 +1455,26 @@ classdef mibMeasure < matlab.mixin.Copyable
             end
             
             if ~freehandOptions.fixNumberPoints
-                prompt = sprintf('There are %d vertices in the line. \n\nIf needed type a new number of vertices in range 1-%d to reduce this value', ...
-                    size(position,1), size(position,1));
-                title = 'Convert to polyline';
                 if isfield(mibController.mibModel.sessionSettings.measureTool, 'noPointsEdit')
                     noPointsEdit = mibController.mibModel.sessionSettings.measureTool.noPointsEdit;
                 else
                     noPointsEdit = '5';
                 end
-                answer = mibInputDlg({mibPath}, prompt, title, noPointsEdit);
-                if isempty(answer); return; end
-                
-                noPointsInt = str2double(cell2mat(answer));
+
+                prompts = {sprintf('There are %d vertices in the line. \n\nIf needed type a new number of vertices in range 1-%d to reduce this value', ...
+                    size(position,1), size(position,1)); ...
+                    'Add text for the info field'};
+                defAns = {noPointsEdit; '';};
+                dlgTitle = 'Convert to polyline';
+                options.WindowStyle = 'modal';
+                options.PromptLines = [3, 1];
+                options.Focus = 2;
+                [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                if isempty(answer); return; end 
+
+                info = answer{2}; % update info text
+
+                noPointsInt = str2double(answer{1});
                 coef = round( size(position,1) / (noPointsInt-1) - 1);
                 mibController.mibModel.sessionSettings.measureTool.noPointsEdit = answer{1};
             else
@@ -1487,7 +1499,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             newData.spline = spl;
             newData.circ = [];
             newData.intensity = [];
-            newData.info = '';
+            newData.info = info;
             newData.profile = [];
             newData.integrateWidth = [];
             
@@ -2003,7 +2015,8 @@ classdef mibMeasure < matlab.mixin.Copyable
                         yi, xi));
                     resXvectorStep = obj.Data(index).value/(numel(pntIndices)-1);   % step between the points in the resulting image in units
                 else
-                    error('not implemented')
+                    errordlg(sprintf('Error!\n\nKymographs can only be generated when the Integrate checkbox is disabled!'), 'Not implemented');
+                    return;
                     im = cell2mat(mibController.mibModel.getData2D('image', 1, NaN, colCh, getDataOptions));
                     [~, ~, samplePntsX, samplePntsY] = mibImageProfileIntegrate(im, xVec(1), yVec(1), xVec(2), yVec(2), integrateWidth);
                 end

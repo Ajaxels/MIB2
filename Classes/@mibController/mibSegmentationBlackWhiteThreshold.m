@@ -326,6 +326,8 @@ end
 obj.mibView.handles.mibSegmThresPanelThreshold.BackgroundColor = backgroundColor;
 obj.mibView.handles.mibSegmThresPanelThreshold.String = 'Threshold';
 
+obj.plotImage();
+
 % notify the batch mode
 BatchOpt = rmfield(BatchOpt, 'id');     % remove id field
 eventdata = ToggleEventData(BatchOpt);

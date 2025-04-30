@@ -48,7 +48,7 @@ function varargout = mibInputMultiDlg(varargin)
 % beginning of the url link). Alternatively, it can be a command to
 % execute.
 % .msgBoxOnly - logical, to mimic message box without input fields
-% .Icon - string ('question'-default, 'celebrate', 'call4help'), an icon to use
+% .Icon - string ('question'-default, 'celebrate', 'call4help', 'warning'), an icon to use
 %
 % Return values:
 % answer: a cell array with the entered values, or @em empty, when cancelled
@@ -72,7 +72,7 @@ function varargout = mibInputMultiDlg(varargin)
 % options.HelpUrl = 'http:\\mib.helsinki.fi'; // [optional], an url for the Help button
 % options.LastItemColumns = 1; // [optional] force the last entry to be on a single column
 % options.msgBoxOnly = false; // [optional] mimic message box without input fields
-% options.Icon = 'question'; // [optional] icon to use: "question" (default), "celebrate", "call4help"
+% options.Icon = 'question'; // [optional] icon to use: "question" (default), "celebrate", "call4help", "warning"
 % [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
 % if isempty(answer); return; end 
 % @endcode
@@ -207,6 +207,8 @@ de = posEdit(4);    % standard height for the edits/combos/checkboxes
 % load the icon and
 % correct the image axes depending on the image size
 switch options.Icon
+    case 'warning'
+        iconFilename = 'mib_warning.png';
     case 'question'
         iconFilename = 'mib_question.png';
     case 'celebrate'
@@ -235,27 +237,26 @@ switch iconExt
         [IconData, IconCMap] = imread(fullfile(mibDir, 'Resources', iconFilename));
 end
 
-switch options.Icon
-    case 'question'     % use default axes box for the image, i.e. without resizing
-        %axShiftX = 0;
-    case {'celebrate', 'call4help'}
-        % increase the axes size for the image
-        origAxPositions = handles.axes1.Position;
-        handles.axes1.Units = 'pixels';
-        handles.axes1.Position(3) = size(IconData, 2);
-        handles.axes1.Position(4) = size(IconData, 1);
-        handles.axes1.Units = 'points';
-        % correct X1 and Y1 position for the image axes
-        handles.axes1.Position(1) = de/4;
-        handles.axes1.Position(2) = posButton(2)+posButton(4)+handles.textString.Position(4)/2; %handles.mibInputMultiDlg.Position(4) - handles.axes1.Position(4) + handles.axes1.Position(4);
-        % calculate how much the image axes were increased
-        axShiftX = handles.axes1.Position(3) - origAxPositions(3);
-        % decrese the size of the referenced handles.textString
-        handles.textString.Position(1) = handles.textString.Position(1) + axShiftX;
-        handles.textString.Position(3) = handles.textString.Position(3) - axShiftX;
-        % increase window height to keep the image
-        handles.mibInputMultiDlg.Position(4) = max([handles.mibInputMultiDlg.Position(4) handles.axes1.Position(4)+de*2]);
+%  resize the icon
+if ismember(options.Icon, {'warning', 'question'})
+        IconData = imresize(IconData, 0.32, 'lanczos3');
 end
+% increase the axes size for the image
+origAxPositions = handles.axes1.Position;
+handles.axes1.Units = 'pixels';
+handles.axes1.Position(3) = size(IconData, 2);
+handles.axes1.Position(4) = size(IconData, 1);
+handles.axes1.Units = 'points';
+% correct X1 and Y1 position for the image axes
+handles.axes1.Position(1) = de/4;
+handles.axes1.Position(2) = posButton(2)+posButton(4)+handles.textString.Position(4)/2; %handles.mibInputMultiDlg.Position(4) - handles.axes1.Position(4) + handles.axes1.Position(4);
+% calculate how much the image axes were increased
+axShiftX = handles.axes1.Position(3) - origAxPositions(3);
+% decrese the size of the referenced handles.textString
+handles.textString.Position(1) = handles.textString.Position(1) + axShiftX;
+handles.textString.Position(3) = handles.textString.Position(3) - axShiftX;
+% increase window height to keep the image
+handles.mibInputMultiDlg.Position(4) = max([handles.mibInputMultiDlg.Position(4) handles.axes1.Position(4)+de*2]);
 
 posText = handles.textString.Position;
 x1 = posText(1);    % left point for positioning the widgets
@@ -530,7 +531,7 @@ for id=1:numel(handles.hWidget)
         case 'edit'
             handles.output{id} = handles.hWidget(id).String;
         case 'checkbox'
-            handles.output{id} = handles.hWidget(id).Value;
+            handles.output{id} = logical(handles.hWidget(id).Value);
         case 'popupmenu'
             list = handles.hWidget(id).String;
             handles.output{id} = list{handles.hWidget(id).Value};
@@ -613,7 +614,7 @@ function Help_Callback(hObject, eventdata, handles)
 % hObject    handle to Help (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if strcmp(handles.HelpUrl(1:4), 'http')
+if strcmp(handles.HelpUrl(1:4), 'http') || ~isempty(strfind(handles.HelpUrl, 'html'))
     % http://mib.helsinki.fi
     web(handles.HelpUrl, '-browser');
 else

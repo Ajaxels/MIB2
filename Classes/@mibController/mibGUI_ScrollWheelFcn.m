@@ -144,13 +144,13 @@ if x<axXLim(1) || x>axXLim(2) || y<axYLim(1) || y>axYLim(2)
 end
 
 if strcmp(obj.mibView.handles.mouseWheelToolbarSw.State,'on') & ...
-        (strcmp(modifier, 'alt') | strcmp(cell2mat(modifier), 'shiftalt'))               %#ok<OR2,AND2> % change time point with Alt
+        (strcmp(modifier, 'alt') | strcmp(cell2mat(modifier), 'shiftalt')) & obj.mibModel.preferences.System.AltWithScrollWheel               %#ok<OR2,AND2> % change time point with Alt
+
     if strcmp(cell2mat(modifier), 'shiftalt')
         shift = obj.mibView.handles.mibChangeTimeSlider.UserData.sliderShiftStep;
     else
         shift = 1;
     end
-
     new_index = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1) - verticalScrollCount*shift;
     if new_index < 1;  new_index = 1; end
     if new_index > obj.mibModel.I{obj.mibModel.Id}.time; new_index = obj.mibModel.I{obj.mibModel.Id}.time; end
@@ -215,11 +215,17 @@ elseif strcmp(obj.mibView.handles.mouseWheelToolbarSw.State,'off')              
     eventdata = ToggleEventData(motifyEvent);
     notify(obj.mibModel, 'modelNotify', eventdata);
 else    % slice change with the mouse wheel
-    if strcmp(modifier,'shift')
+    if ismember('shift', modifier)
         shift = obj.mibView.handles.mibChangeLayerSlider.UserData.sliderShiftStep;
     else
         shift = 1;
     end
+    if ~obj.mibModel.preferences.System.AltWithScrollWheel && ismember('alt', modifier)
+        if obj.mibView.altPressed == 0
+            obj.mibView.altPressed = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
+        end
+    end
+
     new_index = obj.mibModel.I{obj.mibModel.Id}.slices{obj.mibModel.I{obj.mibModel.Id}.orientation}(1) - verticalScrollCount*shift;
     if new_index < 1;  new_index = 1; end
     if new_index > obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation); new_index = obj.mibModel.I{obj.mibModel.Id}.dim_yxczt(obj.mibModel.I{obj.mibModel.Id}.orientation); end

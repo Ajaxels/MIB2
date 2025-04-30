@@ -122,7 +122,12 @@ classdef mibDeepActivationsController < handle
                 mibDeepStoreLoadImagesOpt.BioFormatsIndices = obj.mibDeep.BatchOpt.BioformatsIndex{1};
                 mibDeepStoreLoadImagesOpt.Workflow = obj.mibDeep.BatchOpt.Workflow{1};
                 fnExtention = lower(['.' obj.mibDeep.BatchOpt.ImageFilenameExtension{1}]);
-                obj.imgDS = imageDatastore(fullfile(obj.mibDeep.BatchOpt.OriginalPredictionImagesDir, 'Images'), ...
+                imgPath = fullfile(obj.mibDeep.BatchOpt.OriginalPredictionImagesDir, 'Images');
+                if exist(imgPath, 'dir') == 0
+                    imgPath = obj.mibDeep.BatchOpt.OriginalPredictionImagesDir;
+                end
+
+                obj.imgDS = imageDatastore(imgPath, ...
                         'FileExtensions', fnExtention, ...
                         'IncludeSubfolders', false, ...
                         'ReadFcn', @(fn)mibDeepStoreLoadImages(fn, mibDeepStoreLoadImagesOpt));
@@ -412,7 +417,7 @@ classdef mibDeepActivationsController < handle
         function getActivations(obj)
             % function getActivations(obj)
             % from the selected image area generate activations
-            wb = waitbar(0, 'Please wait...');
+            wb = waitbar(0, sprintf('Generating previews\nPlease wait...'), 'Name', 'Get activations');
             
             switch obj.net.BatchOpt.Workflow{1}(1:2)
                 case '3D'
@@ -439,7 +444,11 @@ classdef mibDeepActivationsController < handle
                     
                     %z2 = min([z2 size(obj.imageOriginal, 4)]);  % tweak to show input image
                     imgBlock = permute(obj.imageOriginal(:,:,:,z1:z2), [1 2 4 3]);
-                    obj.imageActivation = activations(obj.net.net, imgBlock, obj.BatchOpt.NetworkLayerName{1});
+                    if obj.mibDeep.mibController.matlabVersion >= 24 && isa(obj.net.net, 'dlnetwork')
+                        obj.imageActivation = minibatchpredict(obj.net.net, imgBlock, Outputs=obj.BatchOpt.NetworkLayerName{1});
+                    else
+                        obj.imageActivation = activations(obj.net.net, imgBlock, obj.BatchOpt.NetworkLayerName{1});
+                    end
                     obj.patchNetworkDims = size(obj.imageActivation);
                     
                     obj.imageActivation = padarray(obj.imageActivation, ...
@@ -452,7 +461,7 @@ classdef mibDeepActivationsController < handle
                     obj.BatchOpt.filterId{1} = min([obj.BatchOpt.filterId{1} size(obj.imageActivation,4)]);
                     obj.BatchOpt.filterId{2} = [1 size(obj.imageActivation,4)];
                     obj.deltaZ = obj.BatchOpt.patchZ{1} - obj.BatchOpt.z1{1};
-                case '2.'
+                case '2.' % 2.5D
                     blockDepth = obj.net.inputPatchSize(3);
                     maxZ = size(obj.imageOriginal, 4);
                     dz1 = floor(obj.net.inputPatchSize(3)/2);    % patch shift to down
@@ -476,18 +485,23 @@ classdef mibDeepActivationsController < handle
                     
                     %z2 = min([z2 size(obj.imageOriginal, 4)]);  % tweak to show input image
                     imgBlock = permute(obj.imageOriginal(:,:,:,z1:z2), [1 2 4 3]);
-                    obj.imageActivation = activations(obj.net.net, imgBlock, obj.BatchOpt.NetworkLayerName{1});
+                    if obj.mibDeep.mibController.matlabVersion >= 24 && isa(obj.net.net, 'dlnetwork')
+                        obj.imageActivation = minibatchpredict(obj.net.net, imgBlock, Outputs=obj.BatchOpt.NetworkLayerName{1});
+                    else
+                        obj.imageActivation = activations(obj.net.net, imgBlock, obj.BatchOpt.NetworkLayerName{1});
+                    end
                     obj.patchNetworkDims = size(obj.imageActivation);
                     
                     % code adapted for 2.5 but it might be that the first
                     % part will also work fine with 3D, need to check
                     if obj.net.BatchOpt.Workflow{1}(1) == '2'
                         if numel(obj.patchNetworkDims) > 2
-                            obj.imageActivation = padarray(obj.imageActivation, ...
-                                [0, ...
-                                0, ...
-                                (obj.net.inputPatchSize(3) - obj.patchNetworkDims(3))/2, ...
-                                0], 0, 'both');
+                            % obj.imageActivation = padarray(obj.imageActivation, ...
+                            %     [0, ...
+                            %     0, ...
+                            %     (obj.net.inputPatchSize(3) - obj.patchNetworkDims(3))/2, ...
+                            %     0], 0, 'both');
+                            obj.imageActivation = permute(obj.imageActivation, [1 2 4 3]);
                         end
                     else
                         obj.imageActivation = padarray(obj.imageActivation, ...
@@ -506,10 +520,18 @@ classdef mibDeepActivationsController < handle
                     obj.deltaZ = obj.BatchOpt.patchZ{1} - obj.BatchOpt.z1{1};
                 case '2D'
                     if size(obj.imageOriginal, 3) == obj.net.inputPatchSize(4)   % 2D dataset
-                        obj.imageActivation = activations(obj.net.net, obj.imageOriginal, obj.BatchOpt.NetworkLayerName{1});
-                    else    % 3D dataset 
+                        if obj.mibDeep.mibController.matlabVersion >= 24 && isa(obj.net.net, 'dlnetwork') 
+                            obj.imageActivation = minibatchpredict(obj.net.net, obj.imageOriginal, Outputs=obj.BatchOpt.NetworkLayerName{1});
+                        else
+                            obj.imageActivation = activations(obj.net.net, obj.imageOriginal, obj.BatchOpt.NetworkLayerName{1});
+                        end
+                    else    % 3D dataset to predict using 2D network
                         z1 = obj.BatchOpt.z1{1};
-                        obj.imageActivation = activations(obj.net.net, obj.imageOriginal(:,:,z1), obj.BatchOpt.NetworkLayerName{1});
+                        if obj.mibDeep.mibController.matlabVersion >= 24 && isa(obj.net.net, 'dlnetwork')
+                            obj.imageActivation = minibatchpredict(obj.net.net, obj.imageOriginal(:,:,z1), Outputs=obj.BatchOpt.NetworkLayerName{1});
+                        else
+                            obj.imageActivation = activations(obj.net.net, obj.imageOriginal(:,:,z1), obj.BatchOpt.NetworkLayerName{1});
+                        end
                     end
                     obj.patchNetworkDims = size(obj.imageActivation);
                     obj.BatchOpt.filterId{1} = min([obj.BatchOpt.filterId{1} size(obj.imageActivation,3)]);
@@ -553,6 +575,45 @@ classdef mibDeepActivationsController < handle
             newHeight = size(obj.View.Figure.ImageOriginal.ImageSource, 1);
             imgToPrev = padarray(imgToPrev, [floor((newHeight-size(imgToPrev,1))/2) floor((newWidth-size(imgToPrev,2))/2)], 0, 'both');
             obj.View.Figure.ImageActivation.ImageSource = imgToPrev;
+            try
+                networkLayerId = obj.View.handles.NetworkLayerNumber.Value;
+                if isprop(obj.net.net.Layers(networkLayerId), 'Weights')
+                    selectedWeight = obj.net.net.Layers(networkLayerId).Weights(:,:,1,round(obj.BatchOpt.filterId{1}));
+                    % Stretch values to [0, 255] range
+                    minVal = min(selectedWeight(:));
+                    maxVal = max(selectedWeight(:));
+                    obj.View.handles.weightsMinValue.Text = sprintf('Min: %.3f', minVal);
+                    obj.View.handles.weightsMaxValue.Text = sprintf('Max: %.3f', maxVal);
+                    selectedWeight = (selectedWeight - minVal) / (maxVal - minVal) * 255;
+                    selectedWeight = uint8(selectedWeight);
+                    % resize to match the image container
+                    selectedWeight = imresize(selectedWeight, [obj.View.handles.WeightsImage.Position(3) obj.View.handles.WeightsImage.Position(4)], 'nearest');
+                    % convert to colors
+                    selectedWeight = repmat(selectedWeight, [1,1,3]);
+                    obj.View.handles.WeightsImage.ImageSource = selectedWeight;
+                else
+                    selectedWeight = zeros([obj.View.handles.WeightsImage.Position(3) obj.View.handles.WeightsImage.Position(4) 3], 'uint8');
+                    obj.View.handles.WeightsImage.ImageSource = selectedWeight;
+                    obj.View.handles.weightsMinValue.Text = 'Min: NaN';
+                    obj.View.handles.weightsMaxValue.Text = 'Max: NaN';
+                end
+                parameterList = {'Bias', 'Offset', 'Scale', 'TrainedMean', 'TrainedVariance'};
+                for paramId = 1:numel(parameterList)
+                    propName = parameterList{paramId};
+                    propValue = NaN;
+                    if isprop(obj.net.net.Layers(networkLayerId), propName)
+                        propValue = obj.net.net.Layers(networkLayerId).(propName)(1,1,round(obj.BatchOpt.filterId{1}));
+                    end
+                    fieldName = sprintf('weights%sValue', propName);
+                    % rename properties for visualization
+                    propName = strrep(propName, 'Trained', '');
+                    propName = strrep(propName, 'Variance', 'Var');
+                    obj.View.handles.(fieldName).Text = sprintf('%s: %.3f', propName, propValue);
+                end
+            catch err
+                mibShowErrorDialog(obj.View.gui, err, 'Error to show weights image');
+                return;
+            end
         end
         
         function changeImage(obj, event)

@@ -164,7 +164,7 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'Plugins', 'Organelle Analysis', 'SurfaceArea3D', 'html/SurfaceArea3D_help.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc/html/user-interface/plugins/organelle-analysis/surface-area-3d.html'), '-browser');
 end
 
 % --- Executes on button press in continueBtn.

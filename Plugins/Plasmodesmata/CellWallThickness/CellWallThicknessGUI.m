@@ -133,8 +133,7 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-%web(fullfile(mibPath, 'Plugins', 'Plasmodesmata', 'CellWallThickness', 'html/CellWallThickness_help.html'), '-helpbrowser');
-web('https://andreapaterlini.github.io/Plasmodesmata_dist_wall/wall.html');
+web(fullfile(mibPath, 'techdoc/html/user-interface/plugins/plasmodesmata/cellwall-thickness.html'), '-browser');
 end
 
 function profileThresholdEdit_Callback(hObject, eventdata, handles)

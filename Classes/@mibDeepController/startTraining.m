@@ -23,7 +23,7 @@ global counter;     % for patch test
 global mibDeepStopTraining
 global mibDeepTrainingProgressStruct
 
-obj.TrainEngine = 'trainNetwork'; % use this later as one of the parameters for main obj.BatchOpt
+%obj.TrainEngine = 'trainNetwork'; % use this later as one of the parameters for main obj.BatchOpt
 %obj.TrainEngine = 'trainnet'; % use this later as one of the parameters for main obj.BatchOpt
 if  obj.mibController.matlabVersion < 24.1; obj.TrainEngine = 'trainNetwork'; end
 
@@ -103,7 +103,7 @@ end
 
 % check input patch size for 2D Patch-wise workflow
 if strcmp(obj.BatchOpt.Workflow{1}, '2D Patch-wise')
-    if verLessThan('matlab', '9.13') && inputPatchSize(4) ~= 3
+    if obj.mibController.matlabVersion < 9.13 && inputPatchSize(4) ~= 3
         % blockedImage function can not properly process
         % 1-single channel images in R2022a, hopefully be fixed
         % in R2022b
@@ -192,7 +192,6 @@ end
 trainTimer = tic;
 
 try
-
     showWaitbarLocal = obj.BatchOpt.showWaitbar;
     if showWaitbarLocal
         obj.wb = uiprogressdlg(obj.View.gui, 'Message', 'Creating datastores...', ...
@@ -549,6 +548,7 @@ try
             res = load(checkPointRestoreFile, '-mat');
             if isfield(res, 'outputPatchSize')
                 outputPatchSize = res.outputPatchSize;
+                lgraph = res.net;
             else
                 [lgraph, outputPatchSize] = obj.createNetwork(previewSwitch);
                 if isempty(lgraph)
@@ -562,7 +562,14 @@ try
         if showWaitbarLocal; delete(obj.wb); end
         return;
     end
-    
+
+    % just in case, controlled from selection of architectures at the moment
+    if isa(lgraph, 'dlnetwork')
+        obj.TrainEngine = 'trainnet'; % new training method for dlnetwork
+    else
+        obj.TrainEngine = 'trainNetwork'; % original training method
+    end
+
     if isempty(outputPatchSize)
         if isdeployed
             uialert(obj.View.gui, ...
@@ -753,37 +760,42 @@ try
             obj.wb.Message = 'Loading checkpoint...';
         end
         load(checkPointRestoreFile, 'net', '-mat');
-        if isa(net, 'nnet.cnn.LayerGraph')     % from transfer learninig
-            lgraph = net;
-        else
-            lgraph = layerGraph(net);   % DAG object after normal training
+        switch class(net)
+            case 'nnet.cnn.LayerGraph'     % from transfer learninig
+                lgraph = net;
+            case 'dlnetwork'
+                lgraph = net;
+            otherwise
+                lgraph = layerGraph(net);   % DAG object after normal training
         end
     
-        % find index of the output layer
-        outPutLayerName = lgraph.OutputNames;
-        notFound = 1;
-        layerId = numel(lgraph.Layers) + 1;
-        while notFound
-            layerId = layerId - 1;
-            if strcmp(lgraph.Layers(layerId).Name, outPutLayerName) || layerId == 0
-                notFound = 0;
+        if ~isa(lgraph, 'dlnetwork')
+            % find index of the output layer
+            outPutLayerName = lgraph.OutputNames;
+            notFound = 1;
+            layerId = numel(lgraph.Layers) + 1;
+            while notFound
+                layerId = layerId - 1;
+                if strcmp(lgraph.Layers(layerId).Name, outPutLayerName) || layerId == 0
+                    notFound = 0;
+                end
             end
-        end
-        outLayer = lgraph.Layers(layerId);
-        if sum(ismember(cellstr(outLayer.Classes), classNames)) ~= numel(classNames)
-            selection = uiconfirm(obj.View.gui, ...
-                sprintf(['!!! Warning !!!\n\n' ...
-                'The class names of the loaded network do not match class names of the training model\n\n' ...
-                'Model classes:%s\nNetwork classes: %s\n\n' ...
-                'Press "Update network" to modify the network with new model class names'], ...
-                strjoin(string(classNames), ', '), strjoin(cellstr(outLayer.Classes), ', ')),...
-                'Class names mismatch', 'Options', {'Update network', 'Cancel'}, 'Icon', 'warning');
-            if strcmp(selection, 'Cancel')
-                if showWaitbarLocal; delete(obj.wb); end
-                return;
+            outLayer = lgraph.Layers(layerId);
+            if sum(ismember(cellstr(outLayer.Classes), classNames)) ~= numel(classNames)
+                selection = uiconfirm(obj.View.gui, ...
+                    sprintf(['!!! Warning !!!\n\n' ...
+                    'The class names of the loaded network do not match class names of the training model\n\n' ...
+                    'Model classes:%s\nNetwork classes: %s\n\n' ...
+                    'Press "Update network" to modify the network with new model class names'], ...
+                    strjoin(string(classNames), ', '), strjoin(cellstr(outLayer.Classes), ', ')),...
+                    'Class names mismatch', 'Options', {'Update network', 'Cancel'}, 'Icon', 'warning');
+                if strcmp(selection, 'Cancel')
+                    if showWaitbarLocal; delete(obj.wb); end
+                    return;
+                end
+                % redefine the segmentation layer to update the names of classes
+                lgraph = obj.updateSegmentationLayer(lgraph, classNames);
             end
-            % redefine the segmentation layer to update the names of classes
-            lgraph = obj.updateSegmentationLayer(lgraph, classNames);
         end
     end
     
@@ -837,14 +849,23 @@ try
             % scores = predict(net,X);
             % [label,score] = scores2label(scores,classNames);
 
-            % remove the last layer as it is not used in trainnet
-            lgraph2 = removeLayers(lgraph,  lgraph.Layers(end).Name);
-            % convert to dlnetwork object 
-            net = dlnetwork(lgraph2); 
+            % convert old type of network model into dlnetwork
+            if isa(lgraph, 'dlnetwork')
+                net = lgraph;
+            else
+                % remove the last layer as it is not used in trainnet
+                lgraph2 = removeLayers(lgraph,  lgraph.Layers(end).Name);
+                % convert to dlnetwork object 
+                net = dlnetwork(lgraph2); 
+            end
+
             switch obj.BatchOpt.T_SegmentationLayer{1} % define the loss function
                 case 'pixelClassificationLayer'
                     [net, info] = trainnet(AugTrainDS, net, 'crossentropy', TrainingOptions);  % 10.89 vs 15.69 seconds
                     %[net, info] = trainnet(AugTrainDS, net, 'binary-crossentropy', TrainingOptions); 
+                case 'weightedCrossEntropy'
+                    weights = [1 1 1]; % needs to be specified
+                    [net, info] = trainnet(AugTrainDS, net, @(Y,T)crossentropy(Y, T, weights), TrainingOptions);
                 case 'dicePixelCustomClassificationLayer'
                     if obj.SegmentationLayerOpt.dicePixelCustom.ExcludeExerior
                         % exclude the background class from calculation of
@@ -865,7 +886,24 @@ try
                             end
                     end
                     [net, info] = trainnet(AugTrainDS, net, @(Y,T)customDiceForwardLoss(Y,T, dataDimension, useClasses), TrainingOptions);
+                    fprintf('DeepMIB stop reason: %s\n', info.StopReason);
+                %case 'focalLossLayer'
+                    % focalLoss = focalCrossEntropy(dlX, targets, ...
+                    %     'Gamma', obj.SegmentationLayerOpt.focalLossLayer.Gamma, ...
+                    %     'Alpha', obj.SegmentationLayerOpt.focalLossLayer.Alpha, ...
+                    %     'DataFormat','SSCB', ...
+                    %     'Reduction','mean', 'ClassificationMode', 'multilabel');
+                    
+                    % focalLoss = focalCrossEntropy(dlX, targets, ...
+                    %     'Gamma', obj.SegmentationLayerOpt.focalLossLayer.Gamma, ...
+                    %     'Alpha', obj.SegmentationLayerOpt.focalLossLayer.Alpha, ...
+                    %     'DataFormat','SSCB', ...
+                    %     'Reduction','mean', 'ClassificationMode', 'single-label');
+                    % 
+                    % [net, info] = trainnet(AugTrainDS, net, focalLoss, TrainingOptions);
+                    % [net, info] = trainnet(AugTrainDS, net, @(Y,T)mibFocalCrossEntropyLoss(Y,T, obj.SegmentationLayerOpt.focalLossLayer.Alpha, obj.SegmentationLayerOpt.focalLossLayer.Gamma), TrainingOptions);
                 case {'focalLossLayer', 'dicePixelClassificationLayer'}
+                % case 'dicePixelClassificationLayer'
                     uialert(obj.View.gui, ...
                         sprintf('!!! Error !!!\n\n%s is not yet implemented for the trainnet engine!\nSwitch to another segmentation layer or use trainNetwork engine', obj.BatchOpt.T_SegmentationLayer{1}), ...
                         'Not implemented', 'Icon', 'error');
@@ -920,10 +958,14 @@ if mibDeepTrainingProgressStruct.emergencyBrake && (obj.BatchOpt.Workflow{1}(1) 
     end
 end
 
+% add MIB version to the saved config
+mibVersion.mibVersion = obj.mibController.mibVersion;
+mibVersion.mibVersionNumeric = obj.mibController.mibVersionNumeric;
+
 % save training plot figure
 save(obj.BatchOpt.NetworkFilename, 'net', 'TrainingOptStruct', 'AugOpt2DStruct', 'AugOpt3DStruct', 'InputLayerOpt', ...
     'ActivationLayerOpt', 'SegmentationLayerOpt', 'DynamicMaskOpt', ...
-    'classNames', 'classColors', 'inputPatchSize', 'outputPatchSize', 'BatchOpt', '-mat', '-v7.3');
+    'classNames', 'classColors', 'inputPatchSize', 'outputPatchSize', 'BatchOpt', 'mibVersion', '-mat', '-v7.3');
 
 if showWaitbarLocal
     if obj.wb.CancelRequested; mibDeepStopTrainingCallback(obj.wb); return; end
@@ -943,8 +985,13 @@ if obj.BatchOpt.T_ExportTrainingPlots
 
     fieldNames = fieldnames(info);
     for fieldId = 1:numel(fieldNames)
-        writematrix(info.(fieldNames{fieldId}), ...
-            fullfile(obj.BatchOpt.ResultingImagesDir, 'ScoreNetwork', [fnTemplate '_' fieldNames{fieldId} '.csv']));
+        if istable(info.(fieldNames{fieldId}))  % trainnet engine
+            writetable(info.(fieldNames{fieldId}), ...
+                fullfile(obj.BatchOpt.ResultingImagesDir, 'ScoreNetwork', [fnTemplate '_' fieldNames{fieldId} '.csv']));
+        else % trainNetwork engine
+            writematrix(info.(fieldNames{fieldId}), ...
+                fullfile(obj.BatchOpt.ResultingImagesDir, 'ScoreNetwork', [fnTemplate '_' fieldNames{fieldId} '.csv']));
+        end
     end
 
     if obj.BatchOpt.O_CustomTrainingProgressWindow
@@ -969,29 +1016,58 @@ if mibDeepTrainingProgressStruct.useCustomProgressPlot
     mibDeepTrainingProgressStruct.StopTrainingButton.Text = 'Finished!!!';
 end
 
-if obj.SendReports.T_SendReports && numel(info.TrainingLoss) >= mibDeepTrainingProgressStruct.maxNoIter && ...
+% when trainNetwork engine info has following fields:
+% .TrainingLoss: [0.7940 0.7566 0.6457 0.4848 0.3220 … ] (1×22 double)
+% .TrainingAccuracy: [8.1182 29.2371 90.4357 96.1761 97.1811 … ] (1×22 double)
+% .BaseLearnRate: [0.0050 0.0050 0.0050 0.0050 0.0050 … ] (1×22 double)
+% .OutputNetworkIteration: 22
+% when trainnet engine info:
+% .TrainingHistory: [22×5 table]
+% .ValidationHistory: [0×0 table]
+% .OutputNetworkIteration: 22
+% .StopReason: "Stopped by OutputFcn"
+
+
+if obj.SendReports.T_SendReports && info.OutputNetworkIteration >= mibDeepTrainingProgressStruct.maxNoIter && ...
         obj.SendReports.sendWhenFinished && ...
         mibDeepTrainingProgressStruct.sendNextReportAtEpoch ~= -1
     [~, fn] = fileparts(obj.BatchOpt.NetworkFilename);
     if mibDeepTrainingProgressStruct.useCustomProgressPlot
         mgsText = sprintf(['DeepMIB training of "%s" network\n' ...
-            '%s\n' ...
-            'Iteration Number: %s\n\n' ...
-            '%s\n%s\n%s\n\n' ...
-            'Training Loss: %f\n' ...
-            'Training Accuracy: %f\n' ...
-            'Validation Loss: %f\n' ...
-            'Validation Accuracy: %f\n' ...
-            'Final Validation Loss: %f\n' ...
-            'Final Validation Accuracy: %f\n' ...
-            'Output Network Iteration: %d\n'], ...
-            fn, ...
-            mibDeepTrainingProgressStruct.Epoch.Text, mibDeepTrainingProgressStruct.IterationNumberValue.Text, ...
-            mibDeepTrainingProgressStruct.StartTime.Text, mibDeepTrainingProgressStruct.ElapsedTime.Text, mibDeepTrainingProgressStruct.TimeToGo.Text, ...
-            info.TrainingLoss(end), info.TrainingAccuracy(end), ...
-            info.ValidationLoss(end), info.ValidationAccuracy(end), ...
-            info.FinalValidationLoss, info.FinalValidationAccuracy, ...
-            info.OutputNetworkIteration);
+                '%s\n' ...
+                'Iteration Number: %s\n\n' ...
+                '%s\n%s\n%s\n\n'], ...
+                fn, ...
+                mibDeepTrainingProgressStruct.Epoch.Text, mibDeepTrainingProgressStruct.IterationNumberValue.Text, ...
+                mibDeepTrainingProgressStruct.StartTime.Text, mibDeepTrainingProgressStruct.ElapsedTime.Text, mibDeepTrainingProgressStruct.TimeToGo.Text);
+        if isfield(info, 'TrainingLoss')  % obj.TrainEngine == 'trainNetwork'
+            mgsText = sprintf(['%s' ...
+                'Training Loss: %f\n' ...
+                'Training Accuracy: %f\n' ...
+                'Validation Loss: %f\n' ...
+                'Validation Accuracy: %f\n' ...
+                'Final Validation Loss: %f\n' ...
+                'Final Validation Accuracy: %f\n'], ...
+                mgsText, ...
+                info.TrainingLoss(end), info.TrainingAccuracy(end), ...
+                info.ValidationLoss(end), info.ValidationAccuracy(end), ...
+                info.FinalValidationLoss, info.FinalValidationAccuracy);
+        else   % obj.TrainEngine == 'trainnet'
+            mgsText = sprintf(['%s' ...
+                'Training Loss: %f\n' ...
+                'Training Accuracy: %f\n'], ...
+                mgsText, info.TrainingHistory.Loss(end), info.TrainingHistory.Accuracy(end));
+            if ~isempty(info.ValidationHistory)
+                mgsText = sprintf(['%s' ...
+                    'Validation Loss: %f\n' ...
+                    'Validation Accuracy: %f\n'], ...
+                mgsText, info.ValidationHistory.Loss(end), info.ValidationHistory.Accuracy(end));
+
+            end
+        end
+        mgsText = sprintf(['%s' ...
+                'Output Network Iteration: %d\n'], ...
+                mgsText, info.OutputNetworkIteration);
     else
         mgsText = sprintf(['DeepMIB training of "%s" network\n' ...
             'Training Loss: %f\n' ...

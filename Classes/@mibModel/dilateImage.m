@@ -75,7 +75,7 @@ BatchOpt.mibBatchTooltip.TargetLayer = sprintf('Layer to be dilated');
 BatchOpt.mibBatchTooltip.DatasetType = sprintf('Specify whether to dilate the current slice (2D, Slice), the stack (3D, Stack) or complete dataset (4D, Dataset)');
 BatchOpt.mibBatchTooltip.DilateMode = sprintf('Type of the strel element for dilation');
 BatchOpt.mibBatchTooltip.StrelSize = sprintf('Size of the strel element in pixels; one or two numbers, when two numbers entered, the second one defines Y or Z dimension for 2D and 3D strel elements respectively');
-BatchOpt.mibBatchTooltip.MaterialIndex = sprintf('Index of material of the model to be dilated; only for TargetLayer="model"');
+BatchOpt.mibBatchTooltip.MaterialIndex = sprintf('Index of material of the model to be dilated, use NaN to dilate all materials; only for TargetLayer="model"');
 BatchOpt.mibBatchTooltip.Difference = sprintf('Obtain the difference between dilated and original image');
 BatchOpt.mibBatchTooltip.Adaptive = sprintf('Adaptive dilation, when result depends on intensity of the original object');
 BatchOpt.mibBatchTooltip.AdaptiveCoef = sprintf('[Adaptive] expansion coefficient for the adaptive dilation');

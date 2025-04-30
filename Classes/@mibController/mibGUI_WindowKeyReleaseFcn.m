@@ -38,6 +38,11 @@ if obj.mibView.ctrlPressed ~= 0
     obj.mibView.updateCursor('dashed');
 end
 obj.mibView.ctrlPressed = 0;
+if obj.mibView.altPressed ~= 0 && ~obj.mibModel.preferences.System.AltWithScrollWheel
+    obj.mibView.handles.mibChangeLayerSlider.Value = obj.mibView.altPressed;     % update slider value
+    obj.mibChangeLayerSlider_Callback();
+end
+obj.mibView.altPressed = 0;
 
 % % return after Alt key press, used together with the mouse wheel to zoom in/out 
 % if strcmp(eventdata.Key, 'alt')

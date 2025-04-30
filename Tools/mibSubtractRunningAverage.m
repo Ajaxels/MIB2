@@ -64,22 +64,26 @@ while notOk
         
         figure(155);
         subplot(2,1,1)
-        plot(1:length(shiftX), shiftX, 1:length(shiftXOut), shiftXOut);
-        legend('Shift X', 'Smoothed X');
+        plot(1:length(shiftX), shiftX, '.-', 1:length(shiftXOut), shiftXOut, '.-');
+        legend('Shift X', 'Smoothed X', 'Location', 'best');
         grid;
         xlabel('Frame number');
         ylabel('Displacement');
         title('X coordinate');
         subplot(2,1,2)
-        plot(1:length(shiftY), shiftY, 1:length(shiftYOut), shiftYOut);
-        legend('Shift Y', 'Smoothed Y');
+        plot(1:length(shiftY), shiftY, '.-', 1:length(shiftYOut), shiftYOut, '.-');
+        legend('Shift Y', 'Smoothed Y', 'Location', 'best');
         grid;
         xlabel('Frame number');
         ylabel('Displacement');
         title('Y coordinate');
         
-        fixDrifts = questdlg('Align the stack using detected displacements?', 'Fix drifts', 'Yes', 'Change window size', 'No', 'Yes');
-        if strcmp(fixDrifts, 'No')
+        mibQuestDlgOpt.ButtonWidth = [70 90 90];
+        mibQuestDlgOpt.WindowHeight = 70;
+        fixDrifts = mibQuestDlg({}, 'Align the stack using detected displacements?', ...
+            {'Quit alignment'; 'Change window size'; 'Apply current values'}, 'Align dataset', mibQuestDlgOpt);
+
+        if strcmp(fixDrifts, 'Quit alignment')
             if isdeployed == 0
                 assignin('base', 'shiftX', shiftXOut);
                 assignin('base', 'shiftY', shiftYOut);
@@ -89,7 +93,7 @@ while notOk
             return;
         end
         
-        if strcmp(fixDrifts, 'Yes')
+        if strcmp(fixDrifts, 'Apply current values')
             notOk = 0;
         end
         %delete(155);

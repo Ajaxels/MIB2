@@ -196,14 +196,18 @@ if ismember(options.Format, {'TIF format LZW compression (*.tif)', 'TIF format u
             options.Saving3DPolicy = '3D stack';
             options.FilenameGenerator = 'Use sequential filename';
         else
-            prompts = {'Filename generator'; 'Multidimensional saving policy'};
-            defAns = {{'Use original filename', 'Use sequential filename', 2}; ...
+            prompts = {'Filename generator'; 'Multi-dimensional saving policy'};
+            defAns = {{'Use original filename', 'Use new provided or sequential filename', 2}; ...
                 {'3D stack', '2D sequence', 1}};
             dlgTitle = 'TIF saving settings';
             options.WindowStyle = 'normal';       % [optional] style of the window
             answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
             if isempty(answer); return; end
+            if strcmp(answer{1}, 'Use new provided or sequential filename')
+                answer{1} = 'Use sequential filename';
+            end
             options.FilenameGenerator = answer{1};
+           
             options.Saving3DPolicy = answer{2};
         end
     end

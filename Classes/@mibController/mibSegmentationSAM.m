@@ -571,4 +571,13 @@ pyrun('masks, _, low_res_logits = ort_session.run(None, ort_inputs)');
 imgOut = pyrun('masks = masks > predictor.model.mask_threshold', 'masks');   % do not remove ";", it hangs matlab
 imgOut = uint8(squeeze(imgOut));
 
+% clear GPU memory
+pyrun([
+    "import torch", ...
+    "import gc", ...
+    "torch.cuda.empty_cache()", ...
+    "torch.cuda.synchronize()", ...
+    "gc.collect()"
+]);
+
 end

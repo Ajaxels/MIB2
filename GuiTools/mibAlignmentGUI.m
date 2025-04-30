@@ -196,7 +196,7 @@ if strcmp(tagId, 'TwoStacks')
     handles.CorrelateWith.Enable = 'off';
     handles.correlateWithText.Enable = 'off';
 else
-    handles.Algorithm.String = {'Drift correction','Template matching','Automatic feature-based','AMST: median-smoothed template', ...
+    handles.Algorithm.String = {'Drift correction','Template matching','Automatic feature-based','Automatic feature-based v2','AMST: median-smoothed template', ...
             'Single landmark point', 'Landmarks, multi points', 'Three landmark points', 'Color channels, multi points'};
     handles.secondDatasetPanel.Visible = 'off';
     handles.saveShiftsPanel.Visible = 'on';
@@ -261,93 +261,8 @@ end
 
 % --- Executes on selection change in Algorithm.
 function Algorithm_Callback(hObject, eventdata, handles)
-methodsList = handles.Algorithm.String;
-methodSelected = methodsList{handles.Algorithm.Value};
-textStr = '';
-handles.ColorChannel.Enable = 'off';
-handles.IntensityGradient.Enable = 'off';
-handles.TransformationType.Enable = 'off';
-handles.TransformationMode.Enable = 'off';
-handles.CorrelateWith.Enable = 'off';
-handles.TransformationDegree.Enable = 'off';
-handles.FeatureDetectorType.Enable = 'off';
-handles.previewFeaturesBtn.Enable = 'off';
-handles.MedianSize.Enable = 'off';
-handles.UseParallelComputing.Enable = 'off';
-handles.previewFeaturesBtn.String = 'Preview';
-handles.Subarea.Enable = 'on';
-handles.HDD_Mode.Enable = 'off';
-HDD_ModeValue = handles.HDD_Mode.Value;     % store current value of the HDD_Mode
-handles.HDD_Mode.Value = false; 
-
-switch methodSelected
-    case 'Drift correction'
-        textStr = sprintf('Use the Drift correction mode for small shifts or comparably sized images');
-        handles.ColorChannel.Enable = 'on';
-        handles.IntensityGradient.Enable = 'on';
-        handles.CorrelateWith.Enable = 'on';
-        handles.HDD_Mode.Enable = 'on';
-        handles.HDD_Mode.Value = HDD_ModeValue;     % restore the value
-    case 'Template matching'
-        textStr = sprintf('Use the Template matching mode for when aligning two stacks with one of the stacks smaller in size');
-        handles.ColorChannel.Enable = 'on';
-        handles.IntensityGradient.Enable = 'on';
-        handles.CorrelateWith.Enable = 'on';
-    case 'Automatic feature-based'
-        if handles.TransformationType.Value > 3; handles.TransformationType.Value = 1; end
-        textStr = sprintf('Use automatic feature detection to align slices');
-        handles.TransformationType.Enable = 'on';
-        handles.TransformationMode.Enable = 'on';
-        handles.FeatureDetectorType.Enable = 'on';
-        handles.TransformationType.String = {'similarity', 'affine', 'projective'};
-        handles.previewFeaturesBtn.Enable = 'on';
-        handles.ColorChannel.Enable = 'on';
-        handles.winController.updateBatchOptFromGUI(handles.TransformationType);   % update BatchOpt parameters
-        handles.HDD_Mode.Enable = 'on';
-        handles.HDD_Mode.Value = HDD_ModeValue;     % restore the value
-        handles.UseParallelComputing.Enable = 'on';
-    case 'AMST: median-smoothed template'
-        if handles.TransformationType.Value > 3; handles.TransformationType.Value = 1; end
-        textStr = sprintf('Align dataset to a median smoothed in Z version of itself which compensate for local deformations, the dataset has to be prealigned with Drift correction');
-        handles.TransformationType.Enable = 'on';
-        %handles.TransformationMode.Enable = 'on';
-        handles.TransformationMode.Value = 2;
-        handles.TransformationType.String = {'similarity', 'affine', 'projective'};
-        handles.TransformationType.Value = 2;
-        handles.previewFeaturesBtn.Enable = 'on';
-        handles.ColorChannel.Enable = 'on';
-        handles.MedianSize.Enable = 'on';
-        handles.UseParallelComputing.Enable = 'on';
-        handles.previewFeaturesBtn.String = 'Settings';
-        handles.Subarea.Enable = 'off';
-        handles.winController.updateBatchOptFromGUI(handles.TransformationType);   % update BatchOpt parameters
-        handles.winController.updateBatchOptFromGUI(handles.TransformationMode);   % update BatchOpt parameters
-    case 'Single landmark point'
-        textStr = sprintf('Use the Brush or Annotation tool to mark two corresponding spots on consecutive slices. The dataset will be translated to align the marked spots');
-    case 'Three landmark points'
-        textStr = sprintf('Use the Brush tool to mark corresponding spots on two consecutive slices. The dataset will be transformed to align the marked spots. The Landmark mode recommended instead!');
-    case 'Landmarks, multi points'
-        textStr = sprintf('Use annotations or selection with brush to mark corresponding spots on consecutive slices. The dataset will be transformed to align the marked areas');
-        handles.TransformationType.Enable = 'on';
-        handles.TransformationMode.Enable = 'on';
-        handles.TransformationType.String = {'non reflective similarity', 'similarity', 'affine', 'projective'};
-        %handles.TransformationDegree.Enable = 'on';
-        handles.winController.updateBatchOptFromGUI(handles.TransformationType);   % update BatchOpt parameters
-    case 'Color channels, multi points'
-        textStr = sprintf('Select the color channel to be moved and use annotations identify corresponding spots, text for id of a point and value for id of the color channel (1 and 2)');
-        handles.TransformationType.Enable = 'on';
-        handles.TransformationMode.Enable = 'on';
-        handles.TransformationType.String = {'non reflective similarity', 'similarity', 'affine', 'projective'};
-        %handles.TransformationDegree.Enable = 'on';
-        handles.winController.updateBatchOptFromGUI(handles.TransformationType);   % update BatchOpt parameters        
-        handles.ColorChannel.Enable = 'on';
-        handles.TransformationMode.Value = 2;
-        handles.winController.updateBatchOptFromGUI(handles.TransformationMode);   % update BatchOpt parameters        
-end
-handles.landmarkHelpText.String = textStr;
-handles.landmarkHelpText.TooltipString = textStr;
+handles.winController.algorithm_Callback();
 HDD_Mode_Callback(handles.HDD_Mode, eventdata, handles);
-handles.winController.updateBatchOptFromGUI(hObject);   % update BatchOpt parameters
 end
 
 
@@ -370,9 +285,7 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_dataset_alignment.html'), '-helpbrowser');
-
-%web('http://mib.helsinki.fi/help/main/ug_gui_menu_dataset_alignment.html', '-helpbrowser');
+web(fullfile(mibPath, 'techdoc/html/user-interface/menu/dataset/dataset-alignment.html'), '-browser');
 end
 
 % --- Executes on button press in continueBtn.

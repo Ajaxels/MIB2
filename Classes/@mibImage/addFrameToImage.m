@@ -56,6 +56,7 @@ if nargin < 2 || ~isfield(BatchOpt, 'Position') || ~isfield(BatchOpt, 'NewImageW
     options.WindowStyle = 'normal';       % [optional] style of the window
     options.PromptLines = [1, 1, 1, 1];   % [optional] number of lines for widget titles
     options.Focus = 1;      % [optional] define index of the widget to get focus
+    options.HelpUrl = fullfile(mibPath, 'techdoc/html/user-interface/menu/dataset/dataset-transform.html');
     [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
     if isempty(answer); return; end 
     

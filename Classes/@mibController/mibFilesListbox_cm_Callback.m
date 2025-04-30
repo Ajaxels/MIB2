@@ -176,6 +176,7 @@ options.waitbar = BatchOpt.showWaitbar;
 options.mibPath = mibPath;
 options.id = BatchOpt.id;   % id of the current dataset
 options.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
+options.customSections = 0; % load a part from datasets
 if batchModeSwitch == 1    % batch mode is used
     options.BackgroundColorIntensity = str2double(BatchOpt.BackgroundColorIntensity);   % add background color intensity, for cases when size of the combined slices mismatch; see more in mibLoadImages 
     options.silentMode = true;  % do not ask any questions in the subfunctions, i.e. insertSlice
@@ -203,12 +204,17 @@ switch BatchOpt.Mode{1}
             notify(obj.mibModel, 'stopProtocol');
             return;
         end
-        
+
+        if obj.mibModel.I{obj.mibModel.Id}.modelExist == 1 && nargin < 3
+            button = questdlg(sprintf('!!! Warning !!!\nYou are going to load a new dataset!\nMeanwhile you have an open model; would you like to continue?\n'), 'Load dataset', 'Continue', 'Cancel', 'Cancel');
+            if strcmp(button, 'Cancel'); return; end
+        end
+
         if strcmp(BatchOpt.Mode{1}, 'Load part of dataset')
             options.customSections = 1;     % to load part of the dataset, for AM only
             % check for correct extensions
             [~,~,extList] = fileparts(BatchOpt.Filenames);
-            if sum(~ismember(lower(unique(extList)), {'.tif', '.tiff', '.am'})) > 0
+            if sum(~ismember(lower(unique(extList)), {'.tif', '.tiff', '.am'})) > 0 && ~options.mibBioformatsCheck
                 errordlg(sprintf('!!! Error !!!\n\nIt is only possible to load part of the dataset for TIF and AM formats!'), 'Wrong format', 'modal');
                 notify(obj.mibModel, 'stopProtocol');
                 return;
@@ -223,13 +229,26 @@ switch BatchOpt.Mode{1}
             end
         end
         
-        if ~strcmp(BatchOpt.Mode{1}, 'Combine files as color channels') 
-            [img, img_info, pixSize] = mibLoadImages(BatchOpt.Filenames, options);
+        if ~strcmp(BatchOpt.Mode{1}, 'Combine files as color channels')
+            if options.customSections && isfield(obj.mibModel.sessionSettings, 'customSections')
+                options.customSectionsSettings = obj.mibModel.sessionSettings.customSections;
+            end
+            [img, img_info, pixSize, files] = mibLoadImages(BatchOpt.Filenames, options);
             if isempty(img)
                 errordlg(sprintf('!!! Error !!!\n\nIt is not possible to load the dataset...\nDimensions mismatch or not an image or cancelled?'), 'Wrong file', 'modal');
                 notify(obj.mibModel, 'stopProtocol');
                 return;
             end
+            if options.customSections && isfield(files, 'xMin')
+                obj.mibModel.sessionSettings.customSections.xMin = files(1).xMin;
+                obj.mibModel.sessionSettings.customSections.xMax = files(1).xMax;
+                obj.mibModel.sessionSettings.customSections.yMin = files(1).yMin;
+                obj.mibModel.sessionSettings.customSections.yMax = files(1).yMax;
+                obj.mibModel.sessionSettings.customSections.zMin = files(1).zMin;
+                obj.mibModel.sessionSettings.customSections.zMax = files(1).zMax;
+                obj.mibModel.sessionSettings.customSections.xyStep = files(1).xyStep;
+            end
+
             if isKey(img_info, 'lutColors')
                 currColors = img_info('lutColors');
                 lutColors = currColors;

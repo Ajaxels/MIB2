@@ -153,7 +153,12 @@ classdef mibPreferencesAppController < handle
                     obj.View.handles.LeftMouseActionDropDown.Value = 'Selection/drawing';
                 end
                 obj.View.handles.ImageResizeMethodDropDown.Value = obj.preferences.System.ImageResizeMethod;
-
+                
+                if obj.preferences.System.AltWithScrollWheel
+                    obj.View.handles.AltWithScrollWheel.Value = 'Scroll time points';
+                else
+                    obj.View.handles.AltWithScrollWheel.Value = 'Return to the slice';
+                end
 
                 if obj.mibModel.I{obj.mibModel.Id}.enableSelection == 1
                     obj.View.handles.EnableSelectionDropDown.Value = 'yes';
@@ -311,13 +316,29 @@ classdef mibPreferencesAppController < handle
                 obj.View.handles.InterpolationNumberOfPoints.Value = obj.preferences.SegmTools.Interpolation.NoPoints;
                 obj.View.handles.InterpolationLineWidth.Value = obj.preferences.SegmTools.Interpolation.LineWidth;
 
+                obj.View.handles.FavoriteToolA.Value = obj.preferences.SegmTools.FavoriteToolA;
+                obj.View.handles.FavoriteToolB.Value = obj.preferences.SegmTools.FavoriteToolB;
+
                 obj.renderedPanels(6) = 1; 
             end
         end
         
         function helpBtnCallback(obj)
             global mibPath;
-            web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_file_preferences.html'), '-helpbrowser');
+            switch obj.View.handles.CategoriesTree.SelectedNodes.Text
+                case 'User interface'
+                    web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-preferences.html#user-interface'), '-browser');
+                case 'Colors and styles'
+                    web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-preferences.html#colors-and-styles'), '-browser');
+                case 'Backup and undo'
+                    web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-preferences.html#backup-and-undo'), '-browser');
+                case 'External directories'
+                    web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-preferences.html#external-directories'), '-browser');
+                case 'Keyboard shortcuts'
+                    web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-preferences.html#keyboard-shortcuts'), '-browser');
+                case 'Segmentation tools'
+                    web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-preferences.html#segmentation-tools'), '-browser');
+            end
         end
 
         function status = ApplyButtonPushedCallback(obj)
@@ -343,7 +364,7 @@ classdef mibPreferencesAppController < handle
             end
             
             data = obj.View.handles.shortcutsTable.Data;
-            obj.preferences.preferences.KeyShortcuts.Action = data(:, 2)';
+            obj.preferences.KeyShortcuts.Action = data(:, 2)';
             obj.preferences.KeyShortcuts.Key = data(:, 3)';
             obj.preferences.KeyShortcuts.shift = cell2mat(data(:, 4))';
             obj.preferences.KeyShortcuts.control = cell2mat(data(:, 5))';
@@ -568,6 +589,10 @@ classdef mibPreferencesAppController < handle
                     obj.preferences.SegmTools.Interpolation.NoPoints = obj.View.handles.InterpolationNumberOfPoints.Value;
                 case 'InterpolationLineWidth'
                     obj.preferences.SegmTools.Interpolation.LineWidth = obj.View.handles.InterpolationLineWidth.Value;
+                case 'FavoriteToolA'
+                    obj.preferences.SegmTools.FavoriteToolA = obj.View.handles.FavoriteToolA.Value;
+                case 'FavoriteToolB'
+                    obj.preferences.SegmTools.FavoriteToolB = obj.View.handles.FavoriteToolB.Value;
             end
         end
         
@@ -634,6 +659,12 @@ classdef mibPreferencesAppController < handle
                             return; 
                         end
                         obj.preferences.System.EnableSelection = 0;
+                    end
+                case 'AltWithScrollWheel'
+                    if strcmp(obj.View.handles.AltWithScrollWheel.Value, 'Scroll time points')
+                        obj.preferences.System.AltWithScrollWheel = true;
+                    else
+                        obj.preferences.System.AltWithScrollWheel = false;
                     end
                 case 'RecentDirsNumber'
                     obj.preferences.System.Dirs.RecentDirsNumber = obj.View.handles.RecentDirsNumber.Value;

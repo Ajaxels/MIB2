@@ -29,7 +29,7 @@ function fnOut = saveModel(obj, filename, saveModelOptions)
 % sequential filename'' -> the filenames are generated in sequence using
 % the first filename of the loaded dataset as template
 % @li .DestinationDirectory - string, with destination directory, if filename has no full path
-% @li .MaterialIndex - numeric, index of the material to save, when 0 save all materials; NaN - save currently selected material
+% @li .MaterialIndex - numeric, index of the material to save, when [] save all materials; NaN - save currently selected material
 % @li .Saving3DPolicy - string, [TIF, mibCat only] save images as 3D file or as a sequence of 2D files ('3D stack', '2D sequence')
 % @li .FilenamePolicy - string, [mibCat, TIF, PNG only] policy for generation of filenames ('Use existing name', 'Use new provided name')
 % @li .showWaitbar - logical, show or not the waitbar
@@ -157,13 +157,17 @@ else
 end
 
 if isfield(saveModelOptions, 'MaterialIndex')
-    if isnan(saveModelOptions.MaterialIndex)
-        selMaterial = obj.selectedMaterial - 2;
+    if isempty(saveModelOptions.MaterialIndex)
+        selMaterial = NaN;    % save all materials
     else
-        selMaterial = saveModelOptions.MaterialIndex;
+        if isnan(saveModelOptions.MaterialIndex)
+            selMaterial = obj.selectedMaterial - 2;
+        else
+            selMaterial = saveModelOptions.MaterialIndex;
+        end
     end
 else
-    selMaterial = 0;    % save all materials
+    selMaterial = NaN;    % save all materials
 end
 
 tic
@@ -190,13 +194,25 @@ if strcmp(saveModelOptions.Format, 'Matlab format (*.model)') ...
         waitbar(0, wb, sprintf('%s\n%s', pathnameStr, [filenameStr extStr]));
         drawnow;
     end
-    
+
+    % update modelMaterialNames / modelMaterialColors
+    modelMaterialNames = obj.modelMaterialNames;
+    modelMaterialColors = obj.modelMaterialColors;
+    if ~isnan(selMaterial)
+        if selMaterial < 1
+            modelMaterialNames = {'Exterior'}; 
+            modelMaterialColors = obj.modelMaterialColors(1, :);
+        else
+            modelMaterialNames = obj.modelMaterialNames(selMaterial); 
+            modelMaterialColors = obj.modelMaterialColors(selMaterial, :); 
+        end
+    end
+
     switch saveModelOptions.Format
         case 'Matlab format (*.model)'     % models for MIB2
-            str1 = strcat(obj.modelVariable, ' = obj.getData(''model'', 4, NaN);');
+            str1 = sprintf('%s = obj.getData(''model'', 4, %d);', obj.modelVariable, selMaterial);
             eval(str1);
-            modelMaterialNames = obj.modelMaterialNames; %#ok<NASGU>
-            modelMaterialColors = obj.modelMaterialColors; %#ok<NASGU>
+           
             BoundingBox = obj.getBoundingBox(); %#ok<NASGU>
             modelVariable = obj.modelVariable; %#ok<NASGU>    % name of a variable that has the dataset
             modelType = obj.modelType;  %#ok<NASGU> % type of the model
@@ -212,10 +228,10 @@ if strcmp(saveModelOptions.Format, 'Matlab format (*.model)') ...
             eval(str1);
             obj.modelFilename = fnOut;
         case 'Matlab format for MIB ver. 1 (*.mat)'
-            str1 = strcat(obj.modelVariable, ' = obj.getData(''model'', 4, NaN);');
+            str1 = sprintf('%s = obj.getData(''model'', 4, %d);', obj.modelVariable, selMaterial);
             eval(str1);
-            material_list = obj.modelMaterialNames; %#ok<NASGU>
-            color_list = obj.modelMaterialColors; %#ok<NASGU>
+            material_list = modelMaterialNames; %#ok<NASGU>
+            color_list = modelMaterialColors; %#ok<NASGU>
             bounding_box = obj.getBoundingBox(); %#ok<NASGU>
             model_var = obj.modelVariable;  %#ok<NASGU>    % name of a variable that has the dataset
             if obj.hLabels.getLabelsNumber() > 1  % save annotations
@@ -310,7 +326,7 @@ else
     color_list = color_list(1:numel(obj.modelMaterialNames),:);
     modelMaterialNames = obj.modelMaterialNames;
     
-    if selMaterial > 0
+    if selMaterial >= 0
         button = 'Proceed, set as 1';
         if saveModelOptions.silent == 0
             button = questdlg(sprintf('You are going to export only material No:%d (%s) !\nProceed?', ...
@@ -457,7 +473,7 @@ else
                     savingOptions.pixSize = obj.pixSize;
                     savingOptions.zScaleFactor = 1;
                     
-                    if selMaterial == 0 || isnan(selMaterial)
+                    if isnan(selMaterial)
                         savingOptions.colorList = color_list;
                         savingOptions.ModelMaterialNames = obj.modelMaterialNames; % names for materials;
                     else
@@ -495,10 +511,24 @@ else
                     wb2.Children.Title.Interpreter = 'none';
                     drawnow;
                 end
-                modelMaterialNames = obj.modelMaterialNames; %#ok<NASGU>
+
+                % update modelMaterialNames / modelMaterialColors
+                modelMaterialNames = obj.modelMaterialNames;
                 modelMaterialColors = obj.modelMaterialColors; %#ok<NASGU>
+                if ~isnan(selMaterial)
+                    if selMaterial < 1
+                        modelMaterialNames = {'Exterior'};
+                        modelMaterialColors = obj.modelMaterialColors(1, :); %#ok<NASGU>
+                    else
+                        modelMaterialNames = obj.modelMaterialNames(selMaterial);
+                        modelMaterialColors = obj.modelMaterialColors(selMaterial, :); %#ok<NASGU>
+                    end
+                end
+
+                %modelMaterialNames = obj.modelMaterialNames; %#ok<NASGU>
+                %modelMaterialColors = obj.modelMaterialColors; %#ok<NASGU>
                 BoundingBox = obj.getBoundingBox(); %#ok<NASGU>
-                modelVariable = 'mibModel'; %#ok<NASGU> % name of a variable that has the dataset 
+                modelVariable = 'mibModel'; %#ok<NASGU> % name of a variable that has the dataset
                 modelType = obj.modelType;  %#ok<NASGU> % type of the model
                 
                 zMax = size(model, 3);
@@ -572,7 +602,7 @@ else
                     savingOptions.slice = 0;
                 end
 
-                if selMaterial == 0 || isnan(selMaterial)
+                if isnan(selMaterial)
                     p = mibRenderModel(model, selMaterial, obj.pixSize, bounding_box, obj.modelMaterialColors, NaN, savingOptions);
                     for i=1:numel(p)
                         % check whether the material exists

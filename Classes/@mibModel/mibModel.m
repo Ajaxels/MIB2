@@ -86,7 +86,7 @@ classdef mibModel < handle
     events
         modelNotify
         % generic notification event to make the list of listners smaller,
-        % call it as notify(obj, 'modelNotify', eventdata); see in mibModel.renameMaterial 
+        % call it as notify(obj, 'modelNotify', eventdata); see in mibModel.renameMaterial, mibModel.materialActions
         % eventdata; motifyEvent.Name = has description of the event
         changeSlice
         % change of a slice number using the slider
@@ -210,9 +210,15 @@ classdef mibModel < handle
         
         loadModel(obj, model, BatchOptIn)           % load model from a file or import when model variable is provided
         
+        status = materialsActions(obj, action, BatchOptIn)     % actions with materials of a model
+
+        status = materialsSwapColors(obj, BatchOptIn) % swap two colors of two materials in the model
+        
         mibDoBackup(obj, type, switch3d, storeOptions)        % store the dataset for Undo
         
         mibImg = mibImageDeepCopy(obj, fromId, toId, options)        % copy mibImage class from one container to another; used in mibBufferToggleContext_Callback, duplicate
+        
+        status = modelExport(obj, BatchOptIn)   % export model or material of the model from MIB
         
         moveLayers(obj, SourceLayer, DestinationLayer, DatasetType, ActionType, BatchOptIn)  % to move datasets between the layers (image, model, mask, selection)
         

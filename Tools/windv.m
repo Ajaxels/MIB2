@@ -14,8 +14,8 @@
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
 % Date: 25.04.2023
 
-function vector2 = windv(vector1, w_size, AsInSmooth)
-% windv(vector, window size, AsInSmooth)
+function vector2 = windv(vector1, w_size, asInSmooth)
+% windv(vector, window size, asInSmooth)
 % vectorized version of windv()
 % smooths a vector using a window of +/- window size
 % window size is reduced at the edges
@@ -24,8 +24,8 @@ function vector2 = windv(vector1, w_size, AsInSmooth)
 % vector1: vector to smooth
 % w_size: a number with a window size to use; w_size==1 gives average window of 3
 % points, w_size==2 gives average window of 5 points
-% AsInSmooth: an optional switch how to handle the end points. When
-% AsInSmooth == 1 the results are similar to the Matlab smooth function of
+% asInSmooth: an optional switch how to handle the end points. When
+% asInSmooth == 1 the results are similar to the Matlab smooth function of
 % the curve fitting toolbox
 
 % When AsInSmooth == 1
@@ -39,10 +39,9 @@ function vector2 = windv(vector1, w_size, AsInSmooth)
 % Updates
 % 20.09.2017 IB added AsInSmooth switch
 
-if nargin < 3; AsInSmooth = 0; end
+if nargin < 3; asInSmooth = 0; end
 
 vl = length(vector1);
-
 vector2 = vector1;
 for index = 1:w_size
     vector2(1:vl-index) = vector2(1:vl-index) + vector1(index+1:vl);
@@ -51,7 +50,7 @@ end
 
 vector2=vector2./(2*w_size+1);
 
-if AsInSmooth == 0
+if asInSmooth == 0
     for index = 1:w_size
         vector2(index) = mean(vector1(1:w_size+index));
         vector2(vl+1-index) = mean(vector1(vl+1-index-w_size:vl));

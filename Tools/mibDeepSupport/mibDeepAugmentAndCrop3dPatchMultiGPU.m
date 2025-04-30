@@ -75,6 +75,15 @@ end
 if strcmp(mode, 'show')
     inpVol = patchIn.InputImage;
     inpResponse = patchIn.(fieldId);
+
+    if size(outputPatchSize, 2) == 3    % Z2C 2.5D semantic segmentation
+        % crop out response to have only the middle slice for 2.5D
+        inpResponse = cellfun(@(x) x(:,:,ceil(inputPatchSize(3)/2)), inpResponse, 'UniformOutput', false);
+        % for i=1:numel(inpResponse)
+        %     inpResponse{i} = inpResponse{i}(:,:,ceil(inputPatchSize(3)/2));
+        % end
+    end
+
 else
     numAugFunc = numel(options.Aug3DFuncNames);    % number of functions to be used
     inpVol = cell(size(patchIn, 1), 1);

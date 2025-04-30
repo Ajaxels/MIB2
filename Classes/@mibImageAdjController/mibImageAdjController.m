@@ -640,7 +640,7 @@ classdef mibImageAdjController < handle
             global mibPath;
             
             % start help page
-            web(fullfile(mibPath, 'techdoc/html/ug_panel_adjustments.html'), '-helpbrowser');
+            web(fullfile(mibPath, 'techdoc/html/user-interface/panels/viewsettings/viewsettings-adjustments.html'), '-browser');
         end
         
         % --- Executes on button press in applyBtn.

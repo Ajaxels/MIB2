@@ -1,0 +1,6 @@
+Please convert the attached ug_panel_dir.m file from MATLAB/HTML format to Markdown format for MkDocs, 
+matching the style of the attached examples (ug_gui_menu_dataset.m converted to index.md), mkdocs.yml config, css-styles (styles.css).
+Include navigation links, corrected widget classes (e.g., <span class="widget widget-dropdown">), 
+image references with lightbox support, abstract blocks for details, and lowercase capitalization after colons, 
+but keep capital letter after dots.
+Provide the result as a complete .md file

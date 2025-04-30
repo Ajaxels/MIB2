@@ -171,7 +171,7 @@ end
 % --- Executes on button press in helpButton.
 function helpButton_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_file_makesnapshot.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-makesnapshot.html'), '-browser');
 end
 
 % --- Executes on key press with focus on mibSnapshotGUI and none of its controls.

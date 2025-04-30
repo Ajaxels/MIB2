@@ -44,6 +44,19 @@ classdef mibMeasureToolController < handle
     end
     
     methods (Static)
+        function ViewListner_Callback(obj, src, evnt)
+            switch evnt.Parameter.Name
+                case 'addMeasurement'
+                    obj.addBtn_Callback();
+                case 'updatePosition'
+                    % position of measurement was updated
+                    if obj.View.handles.previewIntensityCheck.Value == 1
+                        % show preview of the intensity profile
+                        obj.previewIntensityProfile();
+                    end
+            end
+        end
+
         function ViewListner_Callback2(obj, src, evnt)
             switch evnt.EventName
                 case {'updateGuiWidgets'}
@@ -84,7 +97,8 @@ classdef mibMeasureToolController < handle
             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
             obj.listener{2} = addlistener(obj.mibModel, 'undoneBackup', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
             obj.listener{3} = addlistener(obj.mibModel.I{obj.mibModel.Id}.hMeasure, 'updatePosition', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
-            obj.listener{4} = addlistener(obj.mibModel.I{obj.mibModel.Id}.hMeasure, 'addMeasurement', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
+            %obj.listener{4} = addlistener(obj.mibModel.I{obj.mibModel.Id}.hMeasure, 'addMeasurement', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
+            obj.listener{4} = addlistener(obj.mibModel, 'modelNotify', @(src,evnt) obj.ViewListner_Callback(obj, src, evnt));    % listen changes in number of ROIs
         end
         
         function closeWindow(obj)

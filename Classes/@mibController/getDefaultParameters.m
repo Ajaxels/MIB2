@@ -42,7 +42,7 @@ obj.mibModel.preferences = obj.generateDefaultPreferences();
 prefdir = getPrefDir();
 prefsFn = fullfile(prefdir, 'mib.mat');
 if exist(prefsFn, 'file') ~= 0
-    load(prefsFn); %#ok<LOAD>
+    load(prefsFn); %#ok<LOAD> load mib_pars structure
     disp(['MIB parameters file: ', prefsFn]);
 else
     % check for preference override file ('mib_prefs_override.mat') located at the same
@@ -51,6 +51,16 @@ else
     if exist(overridePreferencesFile, 'file') ~= 0
         overridePrefs = load(overridePreferencesFile); %#ok<LOAD>
         disp(['MIB override global parameters file: ', overridePreferencesFile]);
+        % remove some fields that should not be used in the override settings
+        if isfield(overridePrefs.mib_pars.preferences, 'Users')
+            % Users field has Users.Tiers structure to track user's movements
+            overridePrefs.mib_pars.preferences = rmfield(overridePrefs.mib_pars.preferences, 'Users');
+        end
+        % fix the keyshortcuts
+        if numel(overridePrefs.mib_pars.preferences.KeyShortcuts.Action) < numel(obj.mibModel.preferences.KeyShortcuts.Action)
+            overridePrefs.mib_pars.preferences.KeyShortcuts = obj.mibModel.preferences.KeyShortcuts;
+        end
+
         obj.mibModel.preferences = mibConcatenateStructures(obj.mibModel.preferences, overridePrefs.mib_pars.preferences);
     end
 end
@@ -75,13 +85,17 @@ if exist('mib_pars', 'var') && isfield(mib_pars, 'mibVersion')  %#ok<NODEF> % % 
         if numel(mib_pars.preferences.KeyShortcuts.Action) < numel(obj.mibModel.preferences.KeyShortcuts.Action)
             mib_pars.preferences.KeyShortcuts = obj.mibModel.preferences.KeyShortcuts;
         end
-
+        
         obj.mibModel.preferences = mibConcatenateStructures(obj.mibModel.preferences, mib_pars.preferences);
     elseif mib_pars.mibVersion == obj.mibVersionNumeric
+        % .Users.Tiers is not stored with the preferences and has to be reinitialized 
+        mib_pars.preferences.Users.Tiers = obj.mibModel.preferences.Users.Tiers; 
         obj.mibModel.preferences = mib_pars.preferences; 
-        %obj.mibModel.preferences = mibConcatenateStructures(obj.mibModel.preferences, mib_pars.preferences);
     end
 end
+
+% remove old field ImageNoise
+if isfield(obj.mibModel.preferences.Deep.AugOpt2D, 'ImageNoise'); obj.mibModel.preferences.Deep.AugOpt2D =  rmfield(obj.mibModel.preferences.Deep.AugOpt2D, 'ImageNoise'); end
 
 % restore user's brushTravelDistance
 brushFn = fullfile(prefdir, 'mib_user.mat');

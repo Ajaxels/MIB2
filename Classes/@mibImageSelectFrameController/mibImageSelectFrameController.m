@@ -138,6 +138,11 @@ classdef mibImageSelectFrameController < handle
             obj.View.handles.colorChannelPopoup.String = colCh;
         end
         
+        function helpBtn_Callback(obj)
+            global mibPath;
+            web(fullfile(mibPath, 'techdoc/html/user-interface/menu/image/image-tools-selectframe.html'), '-browser');
+        end
+        
         function continueBtn_Callback(obj)
             % function continueBtn_Callback(obj)
             % callback for press of obj.View.handles.continueBtn

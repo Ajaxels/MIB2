@@ -103,6 +103,7 @@ if nargin < 2
     mibInputMultiDlgOptions.Title = sprintf('Please enter the slice number (1:%d) and background intensity', maxSlice);
     mibInputMultiDlgOptions.TitleLines = 2;
     mibInputMultiDlgOptions.PromptLines = [1, 2, 1, 1];
+    mibInputMultiDlgOptions.HelpUrl = fullfile(mibPath, 'techdoc/html/user-interface/menu/dataset/dataset-slice.html#insert-empty-slices');
     answer = mibInputMultiDlg({mibPath}, prompt, defAns, 'Insert empty slice(s)', mibInputMultiDlgOptions);
     if isempty(answer); return; end
     

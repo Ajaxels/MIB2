@@ -51,6 +51,10 @@ classdef mibAlignmentController < handle
         % .detectSURFFeatures.MetricThreshold = 1000; % non-negative scalar, strongest feature threshold; to return more blobs, decrease the value of this threshold
         % .detectSURFFeatures.NumOctaves = 3; % scalar, greater than or equal to 1, increase this value to detect larger blobs. Recommended values are between 1 and 4.
         % .detectSURFFeatures.NumScaleLevels = 4; % integer scalar, greater than or equal to 3; Number of scale levels per octave to compute, increase this number to detect more blobs at finer scale increments. Recommended values are between 3 and 6.
+        % .detectSIFTFeatures.ContrastThreshold = 0.0133; % Contrast threshold for selecting the strongest features, specified as a non-negative scalar in the range [0,1]. The threshold is used to filter out weak features in low-contrast regions of the image. Increase the contrast threshold to decrease the number of returned features.
+        % .detectSIFTFeatures.EdgeThreshold = 10; % Edge threshold, specified as a non-negative scalar greater than or equal to 1. The threshold is used to filter out unstable edge-like features in the image that are susceptible to noise. Increase the edge threshold to decrease the number of features removed by filtering.
+        % .detectSIFTFeatures.NumLayersInOctave = 3; % Number of layers in each octave, specified as an integer scalar greater than or equal to 1. The number of octaves is computed automatically from the image resolution. Increase the number of layers in each octave to detect larger features in the image.
+        % .detectSIFTFeatures.Sigma = 1.6; % Sigma of the Gaussian, specified as a scalar. The sigma of the Gaussian is applied to the input image at the initial octave. Sigma values are typically in the range [1,2]. Lower the sigma value if the image is blurry.
         % .detectMSERFeatures.ThresholdDelta = 2; % percent numeric value; step size between intensity threshold levels, decrease this value to return more regions. Typical values range from 0.8 to 4.
         % .detectMSERFeatures.RegionAreaRange = [30 14000]; % two-element vector, size of the region in pixels, allows the selection of regions containing pixels between the provided range
         % .detectMSERFeatures.MaxAreaVariation = 0.25; % positive scalar, maximum area variation between extremal regions at varying intensity thresholds; Increasing this value returns a greater number of regions, but they may be less stable. Stable regions are very similar in size over varying intensity thresholds. Typical values range from 0.1 to 1.0.
@@ -162,6 +166,10 @@ classdef mibAlignmentController < handle
                 obj.automaticOptions.detectSURFFeatures.MetricThreshold = 1000; % non-negative scalar, strongest feature threshold; to return more blobs, decrease the value of this threshold
                 obj.automaticOptions.detectSURFFeatures.NumOctaves = 3; % scalar, greater than or equal to 1, increase this value to detect larger blobs. Recommended values are between 1 and 4.
                 obj.automaticOptions.detectSURFFeatures.NumScaleLevels = 4; % integer scalar, greater than or equal to 3; Number of scale levels per octave to compute, increase this number to detect more blobs at finer scale increments. Recommended values are between 3 and 6.
+                obj.automaticOptions.detectSIFTFeatures.ContrastThreshold = 0.0133; % Contrast threshold for selecting the strongest features, specified as a non-negative scalar in the range [0,1]. The threshold is used to filter out weak features in low-contrast regions of the image. Increase the contrast threshold to decrease the number of returned features.
+                obj.automaticOptions.detectSIFTFeatures.EdgeThreshold = 10; % Edge threshold, specified as a non-negative scalar greater than or equal to 1. The threshold is used to filter out unstable edge-like features in the image that are susceptible to noise. Increase the edge threshold to decrease the number of features removed by filtering.
+                obj.automaticOptions.detectSIFTFeatures.NumLayersInOctave = 3; % Number of layers in each octave, specified as an integer scalar greater than or equal to 1. The number of octaves is computed automatically from the image resolution. Increase the number of layers in each octave to detect larger features in the image.
+                obj.automaticOptions.detectSIFTFeatures.Sigma = 1.6; % Sigma of the Gaussian, specified as a scalar. The sigma of the Gaussian is applied to the input image at the initial octave. Sigma values are typically in the range [1,2]. Lower the sigma value if the image is blurry.
                 obj.automaticOptions.detectMSERFeatures.ThresholdDelta = 2; % percent numeric value; step size between intensity threshold levels, decrease this value to return more regions. Typical values range from 0.8 to 4.
                 obj.automaticOptions.detectMSERFeatures.RegionAreaRange = [30 14000]; % two-element vector, size of the region in pixels, allows the selection of regions containing pixels between the provided range
                 obj.automaticOptions.detectMSERFeatures.MaxAreaVariation = 0.25; % positive scalar, maximum area variation between extremal regions at varying intensity thresholds; Increasing this value returns a greater number of regions, but they may be less stable. Stable regions are very similar in size over varying intensity thresholds. Typical values range from 0.1 to 1.0.
@@ -192,7 +200,7 @@ classdef mibAlignmentController < handle
             obj.BatchOpt.Mode{2} = {'CurrentDataset', 'TwoStacks'};  % only the single option is available for the batch mode so far
             obj.BatchOpt.SecondDatasetPath = fullfile(obj.mibModel.myPath, '*.tif');
             obj.BatchOpt.Algorithm = {'Drift correction'};   % algorithm for the alignment
-            obj.BatchOpt.Algorithm{2} = {'Drift correction', 'Template matching', 'Automatic feature-based','AMST: median-smoothed template',...
+            obj.BatchOpt.Algorithm{2} = {'Drift correction', 'Template matching', 'Automatic feature-based','Automatic feature-based v2','AMST: median-smoothed template',...
                                          'Single landmark point', 'Landmarks, multi points', 'Three landmark points', 'Color channels, multi points'};
             obj.BatchOpt.CorrelateWith = {'Previous slice'};   % selection of slice for the correlation
             obj.BatchOpt.CorrelateWith{2} = {'Previous slice','First slice','Relative to'};                     
@@ -201,13 +209,14 @@ classdef mibAlignmentController < handle
             obj.BatchOpt.ColorChannel{2} = arrayfun(@(x) sprintf('ColCh %d', x), 1:obj.mibModel.I{obj.mibModel.Id}.colors, 'UniformOutput', false);
             obj.BatchOpt.IntensityGradient = false;     % use intensity gradient instead of intensities for the correlation
             obj.BatchOpt.TransformationType = {'non reflective similarity'};   % transformation type for the automatic alignment
-            obj.BatchOpt.TransformationType{2} = {'non reflective similarity', 'similarity','affine','projective'};                     
+            obj.BatchOpt.TransformationType{2} = {'translate', 'rigid', 'non reflective similarity', 'similarity','affine','projective'};                     
             obj.BatchOpt.TransformationMode = {'extended'};   % transformation mode, the cropped mode limits the area to the view of view of the first slice; extended includes complete images
             obj.BatchOpt.TransformationMode{2} = {'extended', 'cropped'};                     
             obj.BatchOpt.TransformationDegree = {'2 (min: 6 pnt)'};   % degree of the polynomial transformation degree
             obj.BatchOpt.TransformationDegree{2} = {'2 (min: 6 pnt)', '3 (min: 10 pnt)', '4 (min: 15 pnt)'};
             obj.BatchOpt.FeatureDetectorType = {'Blobs: Speeded-Up Robust Features (SURF) algorithm'};  % feature detector for automatic alignment
-            obj.BatchOpt.FeatureDetectorType{2}  = {'Blobs: Speeded-Up Robust Features (SURF) algorithm', 'Regions: Maximally Stable Extremal Regions (MSER) algorithm', ...
+            obj.BatchOpt.FeatureDetectorType{2}  = {'Blobs: Speeded-Up Robust Features (SURF) algorithm', 'Blobs: Detect scale invariant feature transform (SIFT)', ...
+                'Regions: Maximally Stable Extremal Regions (MSER) algorithm', ...
                 'Corners: Harris-Stephens algorithm', 'Corners: Binary Robust Invariant Scalable Keypoints (BRISK)', ...
                 'Corners: Features from Accelerated Segment Test (FAST)', 'Corners: Minimum Eigenvalue algorithm', 'Oriented FAST and rotated BRIEF (ORB)'};
             obj.BatchOpt.MedianSize = '15';
@@ -607,9 +616,23 @@ classdef mibAlignmentController < handle
                 if isfield(var, 'shiftsX')
                     obj.shiftsX = var.shiftsX;
                     obj.shiftsY = var.shiftsY;
-                else
+                elseif isfield(var, 'tformMatrix')
                     obj.shiftsX = var.tformMatrix;
                     obj.shiftsY = var.rbMatrix;
+                else
+                    % Load parameters for the updated Automatic
+                    % Feature-based registration
+                    %
+                    % These fields will be assigned to obj.shiftsX
+                    % .pairwiseTforms: {51×1 cell}
+                    % .cumulativeTforms: {51×1 cell}
+                    % .translations: [51×2 double]
+                    % .rotations: [51×1 double]
+                    % .scales: [51×1 double]
+                    % .affine_params: [51×4 double]
+                    % .rbMatrix: {51×1 cell}
+                    obj.shiftsX = var;
+                    obj.shiftsY = [];
                 end
             else
                 obj.View.handles.loadShiftsXYpath.Enable = 'off';
@@ -660,7 +683,8 @@ classdef mibAlignmentController < handle
             % --- Executes on button press in continueBtn and does alignment
             % Parameters:
             % useBatchMode: a logical switch indicating that the alignment started in the batch mode
-          
+            
+            global mibPath;
             if nargin < 2;  useBatchMode = 0; end
 
             if useBatchMode == 0     % update shiftsX/shiftsY coefficients
@@ -670,9 +694,23 @@ classdef mibAlignmentController < handle
                     if isfield(var, 'shiftsX')
                         obj.shiftsX = var.shiftsX;
                         obj.shiftsY = var.shiftsY;
-                    else
+                    elseif isfield(var, 'tformMatrix')
                         obj.shiftsX = var.tformMatrix;
                         obj.shiftsY = var.rbMatrix;
+                    else
+                        % Load parameters for the updated Automatic
+                        % Feature-based registration
+                        %
+                        % These fields will be assigned to obj.shiftsX
+                        % .pairwiseTforms: {51×1 cell}
+                        % .cumulativeTforms: {51×1 cell}
+                        % .translations: [51×2 double]
+                        % .rotations: [51×1 double]
+                        % .scales: [51×1 double]
+                        % .affine_params: [51×4 double]
+                        % .rbMatrix: {51×1 cell}
+                        obj.shiftsX = var;
+                        obj.shiftsY = [];
                     end
                 end
             else
@@ -791,7 +829,7 @@ classdef mibAlignmentController < handle
                     
                     if useBatchMode == 0
                         figure(155);
-                        plot(1:length(obj.shiftsX), obj.shiftsX, 1:length(obj.shiftsY), obj.shiftsY);
+                        plot(1:length(obj.shiftsX), obj.shiftsX, '.-', 1:length(obj.shiftsY), obj.shiftsY, '.-');
                         legend('Shift X', 'Shift Y');
                         grid;
                         xlabel('Frame number');
@@ -804,8 +842,11 @@ classdef mibAlignmentController < handle
                             fprintf('Shifts between images were exported to the Matlab workspace (shiftX, shiftY)\nThese variables can be modified and saved to a disk using the following command:\nsave ''myfile.mat'' shiftX shiftY;\n');
                         end
                     
-                        fixDrifts = questdlg('Align the stack using detected displacements?', 'Fix drifts', 'Yes', 'No', 'Yes');
-                        if strcmp(fixDrifts, 'No')
+                        mibQuestDlgOpt.ButtonWidth = [70 90 90];
+                        mibQuestDlgOpt.WindowHeight = 70;
+                        fixDrifts = mibQuestDlg({mibPath}, 'Align the stack using detected displacements?', ...
+                            {'Quit alignment'; 'Apply current values'}, 'Align dataset', mibQuestDlgOpt);
+                        if isempty(fixDrifts) || strcmp(fixDrifts, 'Quit alignment')
                             if obj.BatchOpt.showWaitbar
                                 delete(parameters.waitbar);
                                 return;
@@ -927,9 +968,20 @@ classdef mibAlignmentController < handle
                     % dataset. 
                     obj.LandmarkMultiPointColorAlignment(parameters);
                     return;
+                elseif strcmp(parameters.method, 'Automatic feature-based v2')
+                    % Automatic alignment using detected features
+                    parameters.detectPointsType = obj.BatchOpt.FeatureDetectorType{1};
+                    if obj.BatchOpt.HDD_Mode
+                        result = obj.automaticFeatureBasedAlignmentHDDv2(parameters);
+                        if result == 0
+                            if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
+                        end
+                    else
+                        obj.AutomaticFeatureBasedAlignmentV2(parameters);
+                    end
+                    return;
                 elseif strcmp(parameters.method, 'Automatic feature-based')
                     % Automatic alignment using detected features
-                    
                     parameters.detectPointsType = obj.BatchOpt.FeatureDetectorType{1};
                     if obj.BatchOpt.HDD_Mode
                         result = obj.automaticFeatureBasedAlignmentHDD(parameters);
@@ -1108,38 +1160,44 @@ classdef mibAlignmentController < handle
 
                             %             % ---- start of drift problems correction
                             fixDrifts = '';
+                            if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
+
                             if useBatchMode == 0
                                 figure(155);
+                                clf;
                                 %subplot(2,1,1);
-                                plot(1:length(shiftX), shiftX, 1:length(shiftY), shiftY);
+                                plot(1:length(shiftX), shiftX, '.-', 1:length(shiftY), shiftY, '.-');
                                 %plot(1:length(shiftX), shiftX, 1:length(shiftX), windv(shiftX, 25), 1:length(shiftX), shiftX2);
-                                legend('Shift X', 'Shift Y');
+                                legend('Shift X', 'Shift Y', 'Location', 'best');
                                 %legend('Shift X', 'Smoothed 50 pnts window', 'Final shifts');
                                 grid;
                                 xlabel('Frame number');
                                 ylabel('Displacement');
                                 title('Before drift correction');
 
-                                fixDrifts = questdlg('Align the stack using detected displacements?','Fix drifts','Yes','Subtract running average','No','Yes');
-                                if strcmp(fixDrifts, 'No')
+                                %fixDrifts = questdlg('Align the stack using detected displacements?','Fix drifts','Yes','Subtract running average','No','Yes');
+
+                                mibQuestDlgOpt.ButtonWidth = [70 90 90];
+                                mibQuestDlgOpt.WindowHeight = 70;
+                                fixDrifts = mibQuestDlg({mibPath}, 'Align the stack using detected displacements?', ...
+                                    {'Quit alignment'; 'Fix drifts'; 'Apply current values'}, 'Align dataset', mibQuestDlgOpt);
+                                if isempty(fixDrifts) || strcmp(fixDrifts, 'Quit alignment')
                                     if isdeployed == 0
                                         assignin('base', 'shiftX', shiftX);
                                         assignin('base', 'shiftY', shiftY);
                                         fprintf('Shifts between images were exported to the Matlab workspace (shiftX, shiftY)\nThese variables can be modified and saved to a disk using the following command:\nsave ''myfile.mat'' shiftX shiftY;\n');
                                     end
-                                    if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
                                     return;
                                 end
                             end
 
                             % fix drifts
-                            if strcmp(fixDrifts, 'Subtract running average') || obj.BatchOpt.SubtractRunningAverage == 1
+                            if strcmp(fixDrifts, 'Fix drifts') || obj.BatchOpt.SubtractRunningAverage == 1
                                 halfwidth = str2double(obj.BatchOpt.SubtractRunningAverageStep);
                                 excludePeaks = str2double(obj.BatchOpt.SubtractRunningAverageExcludePeaks);
                                 [shiftX, shiftY, halfwidth, excludePeaks] = mibSubtractRunningAverage(shiftX, shiftY, halfwidth, excludePeaks, useBatchMode);
 
                                 if isempty(shiftX)
-                                    if obj.BatchOpt.showWaitbar; delete(parameters.waitbar); end
                                     notify(obj.mibModel, 'stopProtocol');
                                     return;    
                                 end
@@ -1160,7 +1218,8 @@ classdef mibAlignmentController < handle
                             obj.shiftsX = shiftX;
                             obj.shiftsY = shiftY;
                         end
-                        if obj.BatchOpt.showWaitbar; waitbar(0, parameters.waitbar, sprintf('Aligning the images\nPlease wait...')); end
+
+                        if obj.BatchOpt.showWaitbar; parameters.waitbar = waitbar(0, sprintf('Aligning the images\nPlease wait...')); end
 
                         %img = mib_crossShiftStack(handles.I.img, obj.shiftsX, obj.shiftsY, parameters);
                         img = mibCrossShiftStack(cell2mat(obj.mibModel.getData4D('image', NaN, 0)), obj.shiftsX, obj.shiftsY, parameters);
@@ -1997,6 +2056,103 @@ classdef mibAlignmentController < handle
             if parameters.useBatchMode == 0; obj.closeWindow(); end
         end
         
+        function algorithm_Callback(obj)
+            % function Algorithm_Callback(obj)
+            % callback on selection of algorithm to use
+            methodsList = obj.View.handles.Algorithm.String;
+            methodSelected = methodsList{obj.View.handles.Algorithm.Value};
+            textStr = '';
+            obj.View.handles.ColorChannel.Enable = 'off';
+            obj.View.handles.IntensityGradient.Enable = 'off';
+            obj.View.handles.TransformationType.Enable = 'off';
+            obj.View.handles.TransformationMode.Enable = 'off';
+            obj.View.handles.CorrelateWith.Enable = 'off';
+            obj.View.handles.TransformationDegree.Enable = 'off';
+            obj.View.handles.FeatureDetectorType.Enable = 'off';
+            obj.View.handles.previewFeaturesBtn.Enable = 'off';
+            obj.View.handles.MedianSize.Enable = 'off';
+            obj.View.handles.UseParallelComputing.Enable = 'off';
+            obj.View.handles.previewFeaturesBtn.String = 'Preview';
+            obj.View.handles.Subarea.Enable = 'on';
+            obj.View.handles.HDD_Mode.Enable = 'off';
+            HDD_ModeValue = obj.View.handles.HDD_Mode.Value;     % store current value of the HDD_Mode
+            obj.View.handles.HDD_Mode.Value = false;
+
+            switch methodSelected
+                case 'Drift correction'
+                    textStr = sprintf('Use the Drift correction mode for small shifts or comparably sized images');
+                    obj.View.handles.ColorChannel.Enable = 'on';
+                    obj.View.handles.IntensityGradient.Enable = 'on';
+                    obj.View.handles.CorrelateWith.Enable = 'on';
+                    obj.View.handles.HDD_Mode.Enable = 'on';
+                    obj.View.handles.HDD_Mode.Value = HDD_ModeValue;     % restore the value
+                case 'Template matching'
+                    textStr = sprintf('Use the Template matching mode for when aligning two stacks with one of the stacks smaller in size');
+                    obj.View.handles.ColorChannel.Enable = 'on';
+                    obj.View.handles.IntensityGradient.Enable = 'on';
+                    obj.View.handles.CorrelateWith.Enable = 'on';
+                case {'Automatic feature-based', 'Automatic feature-based v2'}
+                    if obj.View.handles.TransformationType.Value > 3; obj.View.handles.TransformationType.Value = 1; end
+                    textStr = sprintf('Use automatic feature detection to align slices');
+                    obj.View.handles.TransformationType.Enable = 'on';
+                    obj.View.handles.TransformationMode.Enable = 'on';
+                    obj.View.handles.FeatureDetectorType.Enable = 'on';
+                    if strcmp(methodSelected, 'Automatic feature-based')
+                        obj.View.handles.TransformationType.String = {'similarity', 'affine', 'projective'};
+                    else
+                        obj.View.handles.TransformationType.String = {'translation', 'rigid', 'similarity', 'affine'};
+                    end
+                    obj.BatchOpt.TransformationType{2} = obj.View.handles.TransformationType.String;
+                    obj.BatchOpt.TransformationType(1) = obj.BatchOpt.TransformationType{2}(1);
+                    obj.View.handles.previewFeaturesBtn.Enable = 'on';
+                    obj.View.handles.ColorChannel.Enable = 'on';
+                    obj.updateBatchOptFromGUI(obj.View.handles.TransformationType);   % update BatchOpt parameters
+                    obj.View.handles.HDD_Mode.Enable = 'on';
+                    obj.View.handles.HDD_Mode.Value = HDD_ModeValue;     % restore the value
+                    obj.View.handles.UseParallelComputing.Enable = 'on';
+                case 'AMST: median-smoothed template'
+                    if obj.View.handles.TransformationType.Value > 3; obj.View.handles.TransformationType.Value = 1; end
+                    textStr = sprintf('Align dataset to a median smoothed in Z version of itself which compensate for local deformations, the dataset has to be prealigned with Drift correction');
+                    obj.View.handles.TransformationType.Enable = 'on';
+                    %obj.View.handles.TransformationMode.Enable = 'on';
+                    obj.View.handles.TransformationMode.Value = 2;
+                    obj.View.handles.TransformationType.String = {'similarity', 'affine', 'projective'};
+                    obj.View.handles.TransformationType.Value = 2;
+                    obj.View.handles.previewFeaturesBtn.Enable = 'on';
+                    obj.View.handles.ColorChannel.Enable = 'on';
+                    obj.View.handles.MedianSize.Enable = 'on';
+                    obj.View.handles.UseParallelComputing.Enable = 'on';
+                    obj.View.handles.previewFeaturesBtn.String = 'Settings';
+                    obj.View.handles.Subarea.Enable = 'off';
+                    obj.updateBatchOptFromGUI(obj.View.handles.TransformationType);   % update BatchOpt parameters
+                    obj.updateBatchOptFromGUI(obj.View.handles.TransformationMode);   % update BatchOpt parameters
+                case 'Single landmark point'
+                    textStr = sprintf('Use the Brush or Annotation tool to mark two corresponding spots on consecutive slices. The dataset will be translated to align the marked spots');
+                case 'Three landmark points'
+                    textStr = sprintf('Use the Brush tool to mark corresponding spots on two consecutive slices. The dataset will be transformed to align the marked spots. The Landmark mode recommended instead!');
+                case 'Landmarks, multi points'
+                    textStr = sprintf('Use annotations or selection with brush to mark corresponding spots on consecutive slices. The dataset will be transformed to align the marked areas');
+                    obj.View.handles.TransformationType.Enable = 'on';
+                    obj.View.handles.TransformationMode.Enable = 'on';
+                    obj.View.handles.TransformationType.String = {'non reflective similarity', 'similarity', 'affine', 'projective'};
+                    %obj.View.handles.TransformationDegree.Enable = 'on';
+                    obj.updateBatchOptFromGUI(obj.View.handles.TransformationType);   % update BatchOpt parameters
+                case 'Color channels, multi points'
+                    textStr = sprintf('Select the color channel to be moved and use annotations identify corresponding spots, text for id of a point and value for id of the color channel (1 and 2)');
+                    obj.View.handles.TransformationType.Enable = 'on';
+                    obj.View.handles.TransformationMode.Enable = 'on';
+                    obj.View.handles.TransformationType.String = {'non reflective similarity', 'similarity', 'affine', 'projective'};
+                    %obj.View.handles.TransformationDegree.Enable = 'on';
+                    obj.updateBatchOptFromGUI(obj.View.handles.TransformationType);   % update BatchOpt parameters
+                    obj.View.handles.ColorChannel.Enable = 'on';
+                    obj.View.handles.TransformationMode.Value = 2;
+                    obj.updateBatchOptFromGUI(obj.View.handles.TransformationMode);   % update BatchOpt parameters
+            end
+            obj.View.handles.landmarkHelpText.String = textStr;
+            obj.View.handles.landmarkHelpText.TooltipString = textStr;
+            obj.updateBatchOptFromGUI(obj.View.handles.Algorithm);   % update BatchOpt parameters
+        end
+
         function status = updateAutomaticOptions(obj)
             % function status = updateAutomaticOptions(obj)
             % update options (obj.automaticOptions) for the automatic alignment using detected
@@ -2078,6 +2234,29 @@ classdef mibAlignmentController < handle
                         obj.automaticOptions.detectSURFFeatures.NumOctaves = str2double(answer{4});
                         obj.automaticOptions.detectSURFFeatures.NumScaleLevels = str2double(answer{5});
                         % see more in the end of switch
+
+                    case 'Blobs: Detect scale invariant feature transform (SIFT)'
+                        prompts{3} = sprintf('Contrast threshold for selecting the strongest features, specified as a non-negative scalar in the range [0,1]. The threshold is used to filter out weak features in low-contrast regions of the image.\nIncrease the contrast threshold to decrease the number of returned features');
+                        prompts{4} = sprintf('Edge threshold, specified as a non-negative scalar greater than or equal to 1. The threshold is used to filter out unstable edge-like features in the image that are susceptible to noise.\nIncrease the edge threshold to decrease the number of features removed by filtering');
+                        prompts{5} = sprintf('Number of layers in each octave, specified as an integer scalar greater than or equal to 1. The number of octaves is computed automatically from the image resolution.\nIncrease the number of layers in each octave to detect larger features in the image');
+                        prompts{6} = sprintf('Sigma of the Gaussian, specified as a scalar. The sigma of the Gaussian is applied to the input image at the initial octave. Sigma values are typically in the range [1,2].\nLower the sigma value if the image is blurry');
+                        defAns{3} = num2str(obj.automaticOptions.detectSIFTFeatures.ContrastThreshold);
+                        defAns{4} = num2str(obj.automaticOptions.detectSIFTFeatures.EdgeThreshold);
+                        defAns{5} = num2str(obj.automaticOptions.detectSIFTFeatures.NumLayersInOctave);
+                        defAns{6} = num2str(obj.automaticOptions.detectSIFTFeatures.Sigma);
+                        prompts(7:9) = estGeomPrompts;
+                        defAns(7:9) = estGeomDefAns;
+                        options.PromptLines = [3, 1, 3, 3, 3, 3, estGeomPromptLines];   % [optional] number of lines for widget titles
+                        
+                        [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                        if isempty(answer); return; end
+                        
+                        obj.automaticOptions.detectSIFTFeatures.ContrastThreshold = str2double(answer{3});
+                        obj.automaticOptions.detectSIFTFeatures.EdgeThreshold = str2double(answer{4});
+                        obj.automaticOptions.detectSIFTFeatures.NumLayersInOctave = str2double(answer{5});
+                        obj.automaticOptions.detectSIFTFeatures.Sigma = str2double(answer{6});
+                        % see more in the end of switch
+
                     case 'Regions: Maximally Stable Extremal Regions (MSER) algorithm'
                         prompts{3} = sprintf('Step size between intensity threshold levels\nused in selecting extremal regions while testing for their stability. Decrease this value to return more regions\n(percent numeric value; typical: 0.8 to 4)');
                         prompts{4} = sprintf('Size of the region in pixels\nallows the selection of regions containing pixels to be between minArea and maxArea, inclusive\n(a two-element vector: minArea, maxArea)');
@@ -2198,8 +2377,7 @@ classdef mibAlignmentController < handle
             if status == 0; return; end
             if strcmp(obj.BatchOpt.Algorithm{1}, 'AMST: median-smoothed template'); return; end
             
-            tic
-            wb = waitbar(0, 'Please wait...');
+            %wb = waitbar(0, 'Please wait...');
             optionsGetData.blockModeSwitch = 0;
             [~, Width, ~, Depth] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, NaN, optionsGetData);
             colorCh = obj.View.handles.ColorChannel.Value;
@@ -2212,73 +2390,70 @@ classdef mibAlignmentController < handle
             
             sliceNo = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
             if sliceNo == Depth; sliceNo = sliceNo - 1; end
-            waitbar(0.05, wb);
+            %waitbar(0.05, wb);
             original = cell2mat(obj.mibModel.getData2D('image', sliceNo, 4, colorCh, optionsGetData));
             distorted = cell2mat(obj.mibModel.getData2D('image', sliceNo+1, 4, colorCh, optionsGetData));
+            if isempty(original) 
+                msgbox(sprintf('The preview operation requires at least two images to be loaded in MIB!'), 'Not enough images', 'error', 'modal');
+                %delete(wb);
+                return;
+            end
             if ratio ~= 1   % resize image if needed
                 original = imresize(original, ratio, 'bicubic');
                 distorted = imresize(distorted, ratio, 'bicubic');
             end
-            waitbar(0.2, wb);
+            %waitbar(0.2, wb);
             % Detect features
             featureDetectorType = obj.View.handles.FeatureDetectorType.String{obj.View.handles.FeatureDetectorType.Value};
-            switch featureDetectorType
-                case 'Blobs: Speeded-Up Robust Features (SURF) algorithm'
-                    detectOpt = obj.automaticOptions.detectSURFFeatures;
-                    ptsOriginal  = detectSURFFeatures(original,  'MetricThreshold', detectOpt.MetricThreshold, 'NumOctaves', detectOpt.NumOctaves, 'NumScaleLevels', detectOpt.NumScaleLevels);
-                    ptsDistorted = detectSURFFeatures(distorted, 'MetricThreshold', detectOpt.MetricThreshold, 'NumOctaves', detectOpt.NumOctaves, 'NumScaleLevels', detectOpt.NumScaleLevels);
-                case 'Regions: Maximally Stable Extremal Regions (MSER) algorithm'
-                    detectOpt = obj.automaticOptions.detectMSERFeatures;
-                    ptsOriginal  = detectMSERFeatures(original, 'ThresholdDelta', detectOpt.ThresholdDelta, 'RegionAreaRange', detectOpt.RegionAreaRange, 'MaxAreaVariation', detectOpt.MaxAreaVariation);
-                    ptsDistorted  = detectMSERFeatures(distorted, 'ThresholdDelta', detectOpt.ThresholdDelta, 'RegionAreaRange', detectOpt.RegionAreaRange, 'MaxAreaVariation', detectOpt.MaxAreaVariation);
-                case 'Corners: Harris-Stephens algorithm'
-                    detectOpt = obj.automaticOptions.detectHarrisFeatures;
-                    ptsOriginal  = detectHarrisFeatures(original, 'MinQuality', detectOpt.MinQuality, 'FilterSize', detectOpt.FilterSize);
-                    ptsDistorted  = detectHarrisFeatures(distorted, 'MinQuality', detectOpt.MinQuality, 'FilterSize', detectOpt.FilterSize);
-                case 'Corners: Binary Robust Invariant Scalable Keypoints (BRISK)'
-                    detectOpt = obj.automaticOptions.detectBRISKFeatures;
-                    ptsOriginal  = detectBRISKFeatures(original, 'MinContrast', detectOpt.MinContrast, 'MinQuality', detectOpt.MinQuality, 'NumOctaves', detectOpt.NumOctaves);
-                    ptsDistorted  = detectBRISKFeatures(distorted, 'MinContrast', detectOpt.MinContrast, 'MinQuality', detectOpt.MinQuality, 'NumOctaves', detectOpt.NumOctaves);
-                case 'Corners: Features from Accelerated Segment Test (FAST)'
-                    detectOpt = obj.automaticOptions.detectFASTFeatures;
-                    ptsOriginal  = detectFASTFeatures(original, 'MinQuality', detectOpt.MinQuality, 'MinContrast', detectOpt.MinContrast);
-                    ptsDistorted  = detectFASTFeatures(distorted, 'MinQuality', detectOpt.MinQuality, 'MinContrast', detectOpt.MinContrast);   
-                case 'Corners: Minimum Eigenvalue algorithm'
-                    detectOpt = obj.automaticOptions.detectMinEigenFeatures;
-                    ptsOriginal  = detectMinEigenFeatures(original, 'MinQuality', detectOpt.MinQuality, 'FilterSize', detectOpt.FilterSize);
-                    ptsDistorted  = detectMinEigenFeatures(distorted, 'MinQuality', detectOpt.MinQuality, 'FilterSize', detectOpt.FilterSize);
-                case 'Oriented FAST and rotated BRIEF (ORB)'
-                    detectOpt = obj.automaticOptions.detectORBFeatures;
-                    ptsOriginal  = detectORBFeatures(original,  'ScaleFactor',  detectOpt.ScaleFactor, 'NumLevels', detectOpt.NumLevels);
-                    ptsDistorted = detectORBFeatures(distorted, 'ScaleFactor',  detectOpt.ScaleFactor, 'NumLevels', detectOpt.NumLevels);
-            end
-            waitbar(0.5, wb);
+            ptsOriginal = mibAlignmentDetectFeatures(original, featureDetectorType, obj.automaticOptions);
+            ptsDistorted = mibAlignmentDetectFeatures(distorted, featureDetectorType, obj.automaticOptions);
+
+            %waitbar(0.5, wb);
             % extract feature descriptors.
             if ~strcmp(featureDetectorType, 'Oriented FAST and rotated BRIEF (ORB)')
                 [featuresOriginal,  validPtsOriginal]  = extractFeatures(original,  ptsOriginal, 'Upright', obj.automaticOptions.rotationInvariance);
-                waitbar(0.6, wb);
                 [featuresDistorted, validPtsDistorted] = extractFeatures(distorted, ptsDistorted, 'Upright', obj.automaticOptions.rotationInvariance);
             else
                 [featuresOriginal,  validPtsOriginal]  = extractFeatures(original,  ptsOriginal);
-                waitbar(0.6, wb);
                 [featuresDistorted, validPtsDistorted] = extractFeatures(distorted, ptsDistorted);
             end
-            waitbar(0.7, wb);
+            %waitbar(0.7, wb);
             % Match features by using their descriptors.
+            %indexPairs = matchFeatures(featuresOriginal, featuresDistorted, Method="Approximate", MaxRatio=0.5);
             indexPairs = matchFeatures(featuresOriginal, featuresDistorted);
-            waitbar(0.8, wb);
-             % Retrieve locations of corresponding points for each image.
+            %waitbar(0.8, wb);
+
+            % Retrieve locations of corresponding points for each image.
             matchedOriginal  = validPtsOriginal(indexPairs(:,1));
             matchedDistorted = validPtsDistorted(indexPairs(:,2));
-            waitbar(0.9, wb);
-            toc
+
+            % https://se.mathworks.com/help/images/migrate-geometric-transformations-to-premultiply-convention.html?requestedDomain=
+            try
+                [~, inlierIdx] = estgeotform2d(matchedDistorted, matchedOriginal, obj.BatchOpt.TransformationType{1}, ...
+                    'MaxNumTrials', obj.automaticOptions.estGeomTransform.MaxNumTrials, ...
+                    'Confidence', obj.automaticOptions.estGeomTransform.Confidence, ...
+                    'MaxDistance', obj.automaticOptions.estGeomTransform.MaxDistance);
+            catch err
+                mibShowErrorDialog(obj.View.gui, err, 'Nor enough points');
+                %delete(wb);
+                return;
+            end
+
+            %waitbar(0.9, wb);
             
             % Show putative point matches.
-            figure;
-            showMatchedFeatures(original, distorted, matchedOriginal, matchedDistorted);
-            title('Putatively matched points (including outliers)');
-            waitbar(1, wb);
-            delete(wb);
+            figure(1234);
+            hS1 = subplot(1,2,1);
+            showMatchedFeatures(original, distorted, matchedOriginal, matchedDistorted, 'Parent', hS1);
+            title("Matched Points (with outliers)");
+            hS2 = subplot(1,2,2);
+            inlierPtsDistorted = matchedDistorted(inlierIdx,:);
+            inlierPtsOriginal  = matchedOriginal(inlierIdx,:);
+            showMatchedFeatures(original, distorted, inlierPtsOriginal, inlierPtsDistorted, 'Parent', hS2);
+            title("Matched Points (without outliers)");
+            
+            %waitbar(1, wb);
+            %delete(wb);
         end
         
         function AutomaticFeatureBasedAlignment(obj, parameters)
@@ -2340,31 +2515,9 @@ classdef mibAlignmentController < handle
                 original = cell2mat(obj.mibModel.getData2D('image', 1, 4, parameters.colorCh, optionsGetData));
                 if ratio ~= 1; original = imresize(original, ratio, 'bicubic'); end  % resize if neeeded
             
-                % Detect features
-                switch parameters.detectPointsType
-                    case 'Blobs: Speeded-Up Robust Features (SURF) algorithm'
-                        detectOpt = obj.automaticOptions.detectSURFFeatures;
-                        ptsOriginal  = detectSURFFeatures(original,  'MetricThreshold', detectOpt.MetricThreshold, 'NumOctaves', detectOpt.NumOctaves, 'NumScaleLevels', detectOpt.NumScaleLevels);
-                    case 'Regions: Maximally Stable Extremal Regions (MSER) algorithm'
-                        detectOpt = obj.automaticOptions.detectMSERFeatures;
-                        ptsOriginal  = detectMSERFeatures(original, 'ThresholdDelta', detectOpt.ThresholdDelta, 'RegionAreaRange', detectOpt.RegionAreaRange, 'MaxAreaVariation', detectOpt.MaxAreaVariation);
-                    case 'Corners: Harris-Stephens algorithm'
-                        detectOpt = obj.automaticOptions.detectHarrisFeatures;
-                        ptsOriginal  = detectHarrisFeatures(original, 'MinQuality', detectOpt.MinQuality, 'FilterSize', detectOpt.FilterSize);
-                    case 'Corners: Binary Robust Invariant Scalable Keypoints (BRISK)'
-                        detectOpt = obj.automaticOptions.detectBRISKFeatures;
-                        ptsOriginal  = detectBRISKFeatures(original, 'MinContrast', detectOpt.MinContrast, 'MinQuality', detectOpt.MinQuality, 'NumOctaves', detectOpt.NumOctaves);
-                    case 'Corners: Features from Accelerated Segment Test (FAST)'
-                        detectOpt = obj.automaticOptions.detectFASTFeatures;
-                        ptsOriginal  = detectFASTFeatures(original, 'MinQuality', detectOpt.MinQuality, 'MinContrast', detectOpt.MinContrast);
-                    case 'Corners: Minimum Eigenvalue algorithm'
-                        detectOpt = obj.automaticOptions.detectMinEigenFeatures;
-                        ptsOriginal  = detectMinEigenFeatures(original, 'MinQuality', detectOpt.MinQuality, 'FilterSize', detectOpt.FilterSize);
-                    case 'Oriented FAST and rotated BRIEF (ORB)'
-                        detectOpt = obj.automaticOptions.detectORBFeatures;
-                        ptsOriginal  = detectORBFeatures(original, 'ScaleFactor', detectOpt.ScaleFactor, 'NumLevels', detectOpt.NumLevels);
-                end
-            
+                % Detect feature points
+                ptsOriginal = mibAlignmentDetectFeatures(original, parameters.detectPointsType, obj.automaticOptions);
+
                 % extract feature descriptors.
                 if ~strcmp(parameters.detectPointsType, 'Oriented FAST and rotated BRIEF (ORB)')
                     [featuresOriginal,  validPtsOriginal]  = extractFeatures(original,  ptsOriginal, 'Upright', obj.automaticOptions.rotationInvariance); 
@@ -2379,22 +2532,7 @@ classdef mibAlignmentController < handle
                     if ratio ~= 1; distorted = imresize(distorted, ratio, 'bicubic'); end % resize if needed
 
                     % Detect features
-                    switch parameters.detectPointsType
-                        case 'Blobs: Speeded-Up Robust Features (SURF) algorithm'
-                            ptsDistorted  = detectSURFFeatures(distorted,  'MetricThreshold', detectOpt.MetricThreshold, 'NumOctaves', detectOpt.NumOctaves, 'NumScaleLevels', detectOpt.NumScaleLevels);
-                        case 'Regions: Maximally Stable Extremal Regions (MSER) algorithm'
-                            ptsDistorted  = detectMSERFeatures(distorted, 'ThresholdDelta', detectOpt.ThresholdDelta, 'RegionAreaRange', detectOpt.RegionAreaRange, 'MaxAreaVariation', detectOpt.MaxAreaVariation);
-                        case 'Corners: Harris-Stephens algorithm'
-                            ptsDistorted  = detectHarrisFeatures(distorted, 'MinQuality', detectOpt.MinQuality, 'FilterSize', detectOpt.FilterSize);
-                        case 'Corners: Binary Robust Invariant Scalable Keypoints (BRISK)'
-                            ptsDistorted  = detectBRISKFeatures(distorted, 'MinContrast', detectOpt.MinContrast, 'MinQuality', detectOpt.MinQuality, 'NumOctaves', detectOpt.NumOctaves);
-                        case 'Corners: Features from Accelerated Segment Test (FAST)'
-                            ptsDistorted  = detectFASTFeatures(distorted, 'MinQuality', detectOpt.MinQuality, 'MinContrast', detectOpt.MinContrast);
-                        case 'Corners: Minimum Eigenvalue algorithm'
-                            ptsDistorted  = detectMinEigenFeatures(distorted, 'MinQuality', detectOpt.MinQuality, 'FilterSize', detectOpt.FilterSize);
-                        case 'Oriented FAST and rotated BRIEF (ORB)'
-                            ptsDistorted  = detectORBFeatures(distorted, 'ScaleFactor', detectOpt.ScaleFactor, 'NumLevels', detectOpt.NumLevels);                        
-                    end
+                    ptsDistorted = mibAlignmentDetectFeatures(distorted, parameters.detectPointsType, obj.automaticOptions);
 
                     % Extract feature descriptors.
                     if ~strcmp(parameters.detectPointsType, 'Oriented FAST and rotated BRIEF (ORB)')
@@ -2441,6 +2579,26 @@ classdef mibAlignmentController < handle
                         'MaxNumTrials', obj.automaticOptions.estGeomTransform.MaxNumTrials, ...
                         'Confidence', obj.automaticOptions.estGeomTransform.Confidence, ...
                         'MaxDistance', obj.automaticOptions.estGeomTransform.MaxDistance);
+                    
+                    % if newVer
+                    %     % http://127.0.0.1:55708/static/help/images/migrate-geometric-transformations-to-premultiply-convention.html
+                    %     % estgeotform2d tests
+                    %     %transformationType = 'affine'; % "rigid" | "similarity" | "affine" | "projective" | "translation"
+                    %     transformationType = 'translation'; % "rigid" | "similarity" | "affine" | "projective" | "translation"
+                    %     [tform2, inlierIdx] = estgeotform2d(matchedDistorted, matchedOriginal, transformationType, ...
+                    %         'MaxNumTrials', obj.automaticOptions.estGeomTransform.MaxNumTrials, ...
+                    %         'Confidence', obj.automaticOptions.estGeomTransform.Confidence, ...
+                    %         'MaxDistance', obj.automaticOptions.estGeomTransform.MaxDistance);
+                    % 
+                    %     figure(1234);
+                    %     showMatchedFeatures(original,distorted,matchedOriginal,matchedDistorted);
+                    %     title("Matched Points");
+                    %     figure(1235);
+                    %     inlierPtsDistorted = matchedDistorted(inlierIdx,:);
+                    %     inlierPtsOriginal  = matchedOriginal(inlierIdx,:);    
+                    %     showMatchedFeatures(original,distorted,inlierPtsOriginal,inlierPtsDistorted);
+                    %     title("Removed outliers");
+                    % end
 
                     % recalculate transformations
                     % https://se.mathworks.com/help/images/matrix-representation-of-geometric-transformations.html
@@ -2470,11 +2628,11 @@ classdef mibAlignmentController < handle
                 if parameters.useBatchMode == 0
                     figure(125)
                     subplot(2,1,1)
-                    plot(2:vec_length, x_stretch, 2:vec_length, y_stretch);
+                    plot(2:vec_length, x_stretch, '.-', 2:vec_length, y_stretch, '.-');
                     title('Scaling');
                     legend('x-axis','y-axis');
                     subplot(2,1,2)
-                    plot(2:vec_length, x_shear, 2:vec_length, y_shear);
+                    plot(2:vec_length, x_shear, '.-', 2:vec_length, y_shear, '.-');
                     title('Shear');
                     legend('x-axis','y-axis');
 
@@ -2562,11 +2720,11 @@ classdef mibAlignmentController < handle
                         if parameters.useBatchMode == 0
                             figure(125)
                             subplot(2,1,1)
-                            plot(2:vec_length, x_stretch2, 2:vec_length, y_stretch2);
+                            plot(2:vec_length, x_stretch2, '.-', 2:vec_length, y_stretch2, '.-');
                             title('Scaling, fixed');
                             legend('x-axis','y-axis');
                             subplot(2,1,2)
-                            plot(2:vec_length, x_shear2, 2:vec_length, y_shear2);
+                            plot(2:vec_length, x_shear2, '.-', 2:vec_length, y_shear2, '.-');
                             title('Shear, fixed');
                             legend('x-axis','y-axis');
 

@@ -62,6 +62,7 @@ if nargin < 2
     options.TitleLines = 3;
     options.WindowStyle = 'normal';
     options.PromptLines = [1, 1, 2, 1, 1];   % [optional] number of lines for widget titles
+    options.HelpUrl = fullfile(mibPath, 'techdoc/html/user-interface/menu/dataset/dataset-transform.html#add-frame-by-dxdy');
     [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
     if isempty(answer); return; end
     

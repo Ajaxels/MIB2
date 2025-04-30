@@ -176,24 +176,24 @@ classdef mibStatisticsController < handle
             obj.BatchOpt.ColorChannel2 = PossibleColChannels(end);         % [Intensity/Correlation] specify the second color channel
             obj.BatchOpt.ColorChannel2{2} = PossibleColChannels;
             obj.BatchOpt.ExportResultsTo = {'Excel format (*.xls)'};    % export results to one of these destinations
-            obj.BatchOpt.ExportResultsTo{2} = {'Do not export', 'Export to Matlab', ...
-                        'Excel format (*.xls)', 'Comma-separated values (*.csv)', 'Matlab format (*.mat)'};
+            obj.BatchOpt.ExportResultsTo{2} = {'Do not export', 'Export to MATLAB', ...
+                        'Excel format (*.xls)', 'Comma-separated values (*.csv)', 'MATLAB format (*.mat)', 'MATLAB format minimalistic (*.mat)'};
             imgFilename = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
             [~, imgFilename] = fileparts(imgFilename);
             obj.BatchOpt.ExportFilename = [filesep imgFilename '_analysis'];    % filename or variable name for the export
-            obj.BatchOpt.CropObjectsTo = {'Do not crop'};                       % additionally crop detected objects to files or export to matlab
-            obj.BatchOpt.CropObjectsTo{2} = {'Do not crop', 'Crop to Matlab', ...
+            obj.BatchOpt.CropObjectsTo = {'Do not crop'};                       % additionally crop detected objects to files or Export to MATLAB
+            obj.BatchOpt.CropObjectsTo{2} = {'Do not crop', 'Crop to MATLAB', ...
                 'Amira Mesh binary (*.am)','MRC format for IMOD (*.mrc)','NRRD Data Format (*.nrrd)',...
                 'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)'};
             obj.BatchOpt.CropObjectsMarginXY = '0';     % margin value for the cropping of the objects in XY
             obj.BatchOpt.CropObjectsMarginZ = '0';     % margin value for the cropping of the objects in Z
             obj.BatchOpt.CropObjectsIncludeModel = {'Do not include'};
-            obj.BatchOpt.CropObjectsIncludeModel{2} = {'Do not include', 'Crop to Matlab', 'Matlab format (*.model)', ...
+            obj.BatchOpt.CropObjectsIncludeModel{2} = {'Do not include', 'Crop to MATLAB', 'MATLAB format (*.model)', ...
                     'Amira Mesh binary (*.am)', 'MRC format for IMOD (*.mrc)', 'NRRD Data Format (*.nrrd)', ...
                     'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)}'};
             obj.BatchOpt.CropObjectsIncludeModelMaterialIndex = 'NaN';  % index of the material for cropping the models, or NaN to crop all materials
             obj.BatchOpt.CropObjectsIncludeMask = {'Do not include'};
-            obj.BatchOpt.CropObjectsIncludeMask{2} = {'Do not include', 'Crop to Matlab', 'Matlab format (*.mask)', ...
+            obj.BatchOpt.CropObjectsIncludeMask{2} = {'Do not include', 'Crop to MATLAB', 'MATLAB format (*.mask)', ...
                     'Amira Mesh binary (*.am)', 'MRC format for IMOD (*.mrc)', 'NRRD Data Format (*.nrrd)', ...
                     'TIF format LZW compression (*.tif)', 'TIF format uncompressed (*.tif)'};
             obj.BatchOpt.CropObjectsOutputName = 'CropOut';     % name of the variable template or directory for the object crop
@@ -229,8 +229,8 @@ classdef mibStatisticsController < handle
             obj.BatchOpt.mibBatchTooltip.ColorChannel1 = sprintf('[Intensity only] Specify color channel for analysis');
             obj.BatchOpt.mibBatchTooltip.ColorChannel2 = sprintf('[Intensity/Correlation only] Specify the second color channel for correlation analysis');
             obj.BatchOpt.mibBatchTooltip.ExportResultsTo = sprintf('Select destination for calculated results, please provide relative filename to the ExportFilename field');
-            obj.BatchOpt.mibBatchTooltip.ExportFilename = sprintf('Name of a new variable in Matlab main workspace or relative to the dataset filename; it is possible to use template [F] that encodes the filename, as for example, [F]_analysis');
-            obj.BatchOpt.mibBatchTooltip.CropObjectsTo = sprintf('Additionally crop out detected objects from the dataset and save them to disk or export to Matlab');
+            obj.BatchOpt.mibBatchTooltip.ExportFilename = sprintf('Name of a new variable in MATLAB main workspace or relative to the dataset filename; it is possible to use template [F] that encodes the filename, as for example, [F]_analysis');
+            obj.BatchOpt.mibBatchTooltip.CropObjectsTo = sprintf('Additionally crop out detected objects from the dataset and save them to disk or Export to MATLAB');
             obj.BatchOpt.mibBatchTooltip.CropObjectsOutputName = sprintf('Specify directory name or variable for cropping detected objects');
             obj.BatchOpt.mibBatchTooltip.CropObjectsMarginXY = sprintf('Specify the XY margin in pixels for the cropping the objects out');
             obj.BatchOpt.mibBatchTooltip.CropObjectsMarginZ = sprintf('Specify the Z margin in pixels for the cropping the objects out');
@@ -463,7 +463,7 @@ classdef mibStatisticsController < handle
             % @li 'sum' - calculate a sum of all selected numbers
             % @li 'min' - find the minimum value of all selected numbers
             % @li 'max' - find the maximum value of all selected numbers
-            % @li 'crop' - crop selected objects to a file or Matlab
+            % @li 'crop' - crop selected objects to a file or MATLAB
             % @li 'hist' - show histogram distribution for the selected objects
             % @li 'newLabel', 'addLabel', 'removeLabel' - generate or update the MIB annotations
             % @li 'copyColumn' - copy selected column to the clipboard
@@ -1195,6 +1195,7 @@ classdef mibStatisticsController < handle
             else
                 obj.BatchOpt.Multiple = false;
                 obj.View.handles.multipleBtn.Enable = 'off';
+                obj.BatchOpt.Property = obj.View.handles.Property.String(obj.View.handles.Property.Value); % update property
             end
         end
         
@@ -1210,10 +1211,10 @@ classdef mibStatisticsController < handle
             
             fn_out = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
             if batchModeSwitch == 0
-                % export Statistics to Matlab or Excel
+                % export Statistics to MATLAB or Excel
                 choice = 'Save as...';
                 if ~isdeployed
-                    choice =  questdlg('Would you like to save results?', 'Export', 'Save as...', 'Export to Matlab', 'Cancel', 'Save as...');
+                    choice =  questdlg('Would you like to save results?', 'Export', 'Save as...', 'Export to MATLAB', 'Cancel', 'Save as...');
                     if strcmp(choice, 'Cancel'); return; end
                 end
                 
@@ -1228,7 +1229,8 @@ classdef mibStatisticsController < handle
                     [filename, Path, filterIndex] = uiputfile(...
                         {'*.xls',  'Excel format (*.xls)'; ...
                         '*.csv',  'Comma-separated values (*.csv)'; ...
-                        '*.mat',  'Matlab format (*.mat)'; ...
+                        '*.mat',  'MATLAB format (*.mat)'; ...
+                        '*.mat',  'MATLAB format minimalistic (*.mat)'; ...
                         '*.*',  'All Files (*.*)'}, ...
                         'Save as...',fn_out);
                     if isequal(filename, 0); return; end
@@ -1238,7 +1240,7 @@ classdef mibStatisticsController < handle
                     obj.BatchOpt.ExportResultsTo{1} = choice;
                     answer = mibInputDlg({mibPath}, ...
                         sprintf('Please name of the variable for the export:'),...
-                            'Export to Matlab', 'MIB_stats');
+                            'Export to MATLAB', 'MIB_stats');
                     if isempty(answer); return; end
                     obj.BatchOpt.ExportFilename = answer{1};
                 end
@@ -1302,12 +1304,12 @@ classdef mibStatisticsController < handle
                 exportFilenameLocal = obj.BatchOpt.ExportFilename;
             end
 
-            if strcmp(obj.BatchOpt.ExportResultsTo{1}, 'Export to Matlab')      % export to MATLAB variable
-                fprintf('"%s" structure with results was created in the Matlab workspace\n', exportFilenameLocal);
+            if strcmp(obj.BatchOpt.ExportResultsTo{1}, 'Export to MATLAB')      % Export to MATLAB variable
+                fprintf('"%s" structure with results was created in the MATLAB workspace\n', exportFilenameLocal);
                 STATSOUT = obj.STATS;
                 STATSOUT(1).OPTIONS = OPTIONS;
                 assignin('base', exportFilenameLocal, STATSOUT);
-            elseif ismember(obj.BatchOpt.ExportResultsTo{1}, obj.BatchOpt.ExportResultsTo{2}(3:5))          % export to a file
+            elseif ismember(obj.BatchOpt.ExportResultsTo{1}, obj.BatchOpt.ExportResultsTo{2}(3:6))          % export to a file
                 if exportFilenameLocal(1) ~= filesep; exportFilenameLocal = [filesep exportFilenameLocal]; end  % add slash before the filename
                 fn = [Path, exportFilenameLocal Extension];
                 if obj.BatchOpt.showWaitbar
@@ -1334,12 +1336,27 @@ classdef mibStatisticsController < handle
                     sliceNames = repmat({[sliceNames, ext]}, [obj.mibModel.I{obj.mibModel.Id}.depth, 1]);
                 end
 
-                if filterIndex == 3     % save as mat file
+                if filterIndex == 3 || filterIndex == 4    % save as mat file
                     STATS = obj.STATS; %#ok<PROPLC> 
                     centroidsMatrix = num2cell(cat(1, STATS.Centroid));     %#ok<PROPLC> 
                     zVectorArray =  cell2mat(centroidsMatrix(:, 3));
                     [STATS.Filename] = deal(sliceNames(round(zVectorArray)));      %#ok<PROPLC> 
-                    save(fn, 'OPTIONS','STATS');
+                    if obj.mibModel.I{obj.mibModel.Id}.meta('Time') == 1
+                        STATS = rmfield(STATS, 'TimePnt');
+                    end
+                    if filterIndex == 4     % save as mat file minimalistic
+                        STATS = rmfield(STATS, 'PixelIdxList');
+                        STATS = rmfield(STATS, 'BoundingBox');
+                    end
+                    % trigger an error when this warning comes
+                    warning('error', 'MATLAB:save:sizeTooBigForMATFile');
+                    try
+                        save(fn, 'OPTIONS','STATS', '-v7');
+                    catch err
+                        save(fn, 'OPTIONS','STATS', '-v7.3'); % it seems to be larger due to nature on how 
+                    end
+                    % Reset warning back to normal
+                    warning('off', 'MATLAB:save:sizeTooBigForMATFile');
                 elseif filterIndex == 1  ||  filterIndex == 2 % save as Excel file or CSV file
                     STATS = obj.STATS; %#ok<PROPLC> 
                     warning('off', 'MATLAB:xlswrite:AddSheet');
@@ -1421,7 +1438,7 @@ classdef mibStatisticsController < handle
                     if filterIndex == 1
                         xlswrite2(fn, s, 'Sheet1', 'A1');
                     else
-                        if verLessThan('Matlab','9.6')  % before R2019a
+                        if verLessThan('MATLAB','9.6')  % before R2019a
                             fid = fopen(fn, 'w');
                             for i=1:start
                                 for j=1:5+numel(fieldNames)
@@ -1483,6 +1500,9 @@ classdef mibStatisticsController < handle
                 end
             end
             
+            % clear indices of the selected rows
+            obj.indices = [];
+
             if obj.BatchOpt.Multiple == 1
                 colorChannel = 1:obj.mibModel.I{obj.mibModel.Id}.colors;
             else
@@ -2099,6 +2119,8 @@ classdef mibStatisticsController < handle
             if obj.BatchOpt.showWaitbar; waitbar(.9, wb, sprintf('Reformatting the indices\nPlease wait...')); end
             
             data = zeros(numel(obj.STATS),4);
+            
+            rowNames = {};
             if numel(data) ~= 0
                 % rename selected property MaxIntensity -> MaxIntensity_Ch3
                 if ismember(selectedProperty, intProps)
@@ -2139,16 +2161,20 @@ classdef mibStatisticsController < handle
                 
                 % add id of the detected object to row name
                 if ~batchModeSwitch
-                    obj.View.handles.statTable.RowName = {obj.sortingRowIndex};
+                    rowNames = {obj.sortingRowIndex};
                 else
-                    obj.View.handles.statTable.RowName = cellstr(num2str(obj.sortingRowIndex));
+                    rowNames = cellstr(num2str(obj.sortingRowIndex));
                 end
             end
 
             if obj.BatchOpt.showWaitbar; waitbar(1,wb); end
+            if ~isempty(rowNames); obj.View.handles.statTable.RowName = rowNames; end
+            
             data = obj.sortBtn_Callback(data);
             if batchModeSwitch==0; obj.View.handles.statTable.Data = data; end
             
+            %if ~isempty(rowNames); obj.View.handles.statTable.RowName = rowNames; end
+
             data = data(:, 3);
             [a,b] = hist(data, 256);
             obj.histLimits = [min(b) max(b)];
@@ -2198,10 +2224,11 @@ classdef mibStatisticsController < handle
                 [~, index] = sort(str2num(cell2mat(obj.View.handles.statTable.RowName)), obj.sortingDirection); %#ok<ST2NM>
             end
             data = data(index, :);
-            obj.View.handles.statTable.RowName = obj.View.handles.statTable.RowName(index);
+            %obj.View.handles.statTable.RowName = obj.View.handles.statTable.RowName(index);
             
             if nargin < 2
                 obj.View.handles.statTable.Data = data;
+                obj.View.handles.statTable.RowName = obj.View.handles.statTable.RowName(index);
             end
         end
         

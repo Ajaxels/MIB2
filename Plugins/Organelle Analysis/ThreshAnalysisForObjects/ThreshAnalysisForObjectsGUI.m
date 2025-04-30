@@ -39,7 +39,7 @@ function varargout = ThreshAnalysisForObjectsGUI(varargin)
 % Updates
 % 
 
-% Last Modified by GUIDE v2.5 25-Apr-2019 13:57:47
+% Last Modified by GUIDE v2.5 19-Apr-2025 00:09:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -208,4 +208,11 @@ else
     handles.thresholdOffsetEdit.Enable = 'on';
     handles.thresholdEdit.Enable = 'off';
 end
+end
+
+
+% --- Executes on button press in pushbutton4.
+function helpBtn_Callback(hObject, eventdata, handles)
+global mibPath;
+web(fullfile(mibPath, 'techdoc/html/user-interface/plugins/organelle-analysis/thres-analysis-for-objects.html'), '-browser');
 end

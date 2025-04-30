@@ -19,7 +19,7 @@ function KeyShortcuts = generateDefaultKeyShortcuts()
 % generate KeyShortcuts structure with defauld key shortcuts
 
 % define keyboard shortcuts
-maxShortCutIndex = 37;  % total number of shortcuts
+maxShortCutIndex = 45;  % total number of shortcuts
 
 KeyShortcuts.shift(1:maxShortCutIndex) = 0;
 KeyShortcuts.overrideShift(1:maxShortCutIndex) = 0;     % here should be indices of operations that are used with Shifts, such as shift+a, shift+s...
@@ -169,6 +169,35 @@ KeyShortcuts.overrideShift(35) = 1;
 
 KeyShortcuts.Key{36} = 'f2';
 KeyShortcuts.Action{36} = 'Rename material';
+
+KeyShortcuts.Key{37} = '1';
+KeyShortcuts.Action{37} = 'Preset 1 use for the selected segmentation tool';
+
+KeyShortcuts.Key{38} = '2';
+KeyShortcuts.Action{38} = 'Preset 2 use for the selected segmentation tool';
+
+KeyShortcuts.Key{39} = '3';
+KeyShortcuts.Action{39} = 'Preset 3 use for the selected segmentation tool';
+
+KeyShortcuts.Key{40} = '1';
+KeyShortcuts.Action{40} = 'Preset 1 update from the selected segmentation tool';
+KeyShortcuts.shift(40) = 1;
+
+KeyShortcuts.Key{41} = '2';
+KeyShortcuts.Action{41} = 'Preset 2 update from the selected segmentation tool';
+KeyShortcuts.shift(41) = 1;
+
+KeyShortcuts.Key{42} = '3';
+KeyShortcuts.Action{42} = 'Preset 3 update from the selected segmentation tool';
+KeyShortcuts.shift(42) = 1;
+
+KeyShortcuts.Key{43} = 'd';
+KeyShortcuts.Action{43} = 'Favorite tool A';
+KeyShortcuts.shift(43) = 1;
+
+KeyShortcuts.Key{44} = 'd';
+KeyShortcuts.Action{44} = 'Favorite tool B';
+KeyShortcuts.control(44) = 1;
 
 % add a new key shortcut to the end of the list
 KeyShortcuts.Key{maxShortCutIndex} = 'n';

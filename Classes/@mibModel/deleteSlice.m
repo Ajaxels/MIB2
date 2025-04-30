@@ -123,6 +123,7 @@ if nargin < 4
     mibInputMultiDlgOptions.TitleLines = 2;
     mibInputMultiDlgOptions.WindowStyle = 'normal';
     mibInputMultiDlgOptions.PromptLines = [1, 2];
+    mibInputMultiDlgOptions.HelpUrl = fullfile(mibPath, 'techdoc/html/user-interface/menu/dataset/dataset-slice.html#delete-slices');
     answer = mibInputMultiDlg({mibPath}, prompt, defAns, 'Delete slice/frame', mibInputMultiDlgOptions);
     if isempty(answer); return; end
     

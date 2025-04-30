@@ -74,11 +74,14 @@ classdef dicePixelCustomClassificationLayer < nnet.layer.ClassificationLayer
             % checks
 %             sliceNo = 32;
 %             Y2 = gather(Y);     % prediction
+%             Y2 = extractdata(Y2);
 %             T2 = gather(T);     % labels: T2(:,:,sliceNo, 1==bg); T2(:,:,sliceNo, 2==label); T2(:,:,sliceNo, 3==mask)
+%             T2 = extractdata(T2);
 %             layer.Unet2DSwitch == 1:     T2(height, width, label, batchImgId)
 %             layer.Unet2DSwitch == 0:     T2(height, width, depth, label, batchImgId)
 %             figure(1);
-%             imshowpair(Y2(:,:,sliceNo,1,1), T2(:,:,sliceNo,2,1));
+%             imshowpair(Y2(:,:,sliceNo,1,1), T2(:,:,sliceNo,1,1));
+%             imshowpair(Y2(:,:,1,1,1), T2(:,:,1,1,1));
             
             %layer.useClasses = 2;   % 1-bg, 2-material1, 3-material2...
             if ~isempty(layer.useClasses)

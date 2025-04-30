@@ -65,6 +65,7 @@ if nargin < 2
                   sprintf('%g', obj.pixSize.t),...
                   unitsList, obj.pixSize.tunits};
     dlgOptions.WindowStyle = 'normal';
+    dlgOptions.HelpUrl = fullfile(mibPath, 'techdoc/html/user-interface/menu/dataset/index.html#parameters');
     answer = mibInputMultiDlg({mibPath}, prompts, defaultAns, dlg_title, dlgOptions);
     if isempty(answer); return; end
 

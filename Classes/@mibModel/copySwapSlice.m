@@ -134,7 +134,7 @@ if nargin < 5
     
     mibInputMultiDlgOptions.Title = sprintf('Please enter the slice numbers (1:%d)', maxSlice);
     mibInputMultiDlgOptions.TitleLines = 2;
-    
+    mibInputMultiDlgOptions.HelpUrl = fullfile(mibPath, 'techdoc/html/user-interface/menu/dataset/dataset-slice.html#copy-slice');
     answer = mibInputMultiDlg({mibPath}, prompt, defAns, 'Copy slice', mibInputMultiDlgOptions);
     if isempty(answer); return; end
     

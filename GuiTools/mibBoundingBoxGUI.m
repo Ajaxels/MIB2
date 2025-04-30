@@ -169,3 +169,10 @@ function editboxes_Callback(hObject, eventdata, handles)
 % update BatchOpt structure in the controller
 handles.winController.updateBatchOptFromGUI(hObject);
 end
+
+
+% --- Executes on button press in helpButton.
+function helpButton_Callback(hObject, eventdata, handles)
+global mibPath;
+web(fullfile(mibPath, 'techdoc/html/user-interface/menu/dataset/dataset-bb.html'), '-browser');
+end

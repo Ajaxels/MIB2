@@ -343,11 +343,12 @@ classdef mibDeepAugmentSettingsController < handle
             mibDeepTrainingProgressStruct.emergencyBrake = false;
             
             if obj.View.handles.RandomSeedEdit.Value == 0
-                seedId = rng('shuffle');
+                seedId = randi(1e6);         % Pick a random seed
+                rng(seedId, 'twister');      % Set the RNG to this seed with twister (shuffles from this point)
                 obj.lastSeed = seedId;
             else
-                rng(obj.View.handles.RandomSeedEdit.Value, 'twister');
-                seedId.Seed = obj.View.handles.RandomSeedEdit.Value;
+                rng(obj.View.handles.RandomSeedEdit.Value, 'twister'); 
+                seedId = obj.View.handles.RandomSeedEdit.Value;
             end
 
             obj.mibDeep.TrainingProgress = struct();    % reset obj.TrainingProgress to make sure that it is closed
@@ -482,14 +483,14 @@ classdef mibDeepAugmentSettingsController < handle
             montage(Iout, 'BorderSize', 5);
             uicontrol(hFig, 'style', 'text', ...
                 'Position', [20, 20, 400, 20], ...
-                'String', sprintf('SeedId: %d; calculation performance: %f seconds per image', seedId.Seed, t2/obj.mibDeep.PatchPreviewOpt.noImages));
+                'String', sprintf('SeedId: %d; calculation performance: %f seconds per image', seedId, t2/obj.mibDeep.PatchPreviewOpt.noImages));
         end
 
         function restorePreviousSeed(obj)
             % function restorePreviousSeed(obj)
             % restore the previous seed used in random settings
             
-            obj.View.handles.RandomSeedEdit.Value = double(obj.lastSeed.Seed);
+            obj.View.handles.RandomSeedEdit.Value = double(obj.lastSeed);
         end
 
 

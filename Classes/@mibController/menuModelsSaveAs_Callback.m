@@ -29,11 +29,11 @@ function menuModelsSaveAs_Callback(obj, parameter)
 
 if nargin < 2; parameter = 'saveas'; end
 
-if obj.mibModel.showAllMaterials == 1
-    BatchOpt.MaterialIndex = '0';
-else
+BatchOpt = struct();
+if obj.mibModel.showAllMaterials ~= 1
     BatchOpt.MaterialIndex = num2str(obj.mibModel.I{obj.mibModel.Id}.selectedMaterial - 2);
 end
+
 switch parameter
     case 'save'
         filename = obj.mibModel.saveModel(obj.mibModel.I{obj.mibModel.Id}.modelFilename, BatchOpt);

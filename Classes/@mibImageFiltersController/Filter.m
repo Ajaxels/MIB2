@@ -281,7 +281,7 @@ toc(t1);
 %if obj.BatchOpt.showWaitbar; delete(wb); end
 
 % count user's points
-obj.mibModel.preferences.Users.Tiers.numberOfLine3D = obj.mibModel.preferences.Users.Tiers.numberOfLine3D+1;
+obj.mibModel.preferences.Users.Tiers.numberOfImageFilterings = obj.mibModel.preferences.Users.Tiers.numberOfImageFilterings+1;
 eventdata = ToggleEventData(2);    % scale scoring by factor 2
 notify(obj.mibModel, 'updateUserScore', eventdata);
 

@@ -26,7 +26,7 @@ function varargout = mibImageMorphOpsGUI(varargin)
 
 % Edit the above text to modify the response to help mibImageMorphOpsGUI
 
-% Last Modified by GUIDE v2.5 09-Dec-2021 00:26:23
+% Last Modified by GUIDE v2.5 18-Apr-2025 23:46:07
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -182,4 +182,11 @@ eventData.eventdata = eventdata;
 eventData = ToggleEventData(eventData);
 notify(handles.winController.mibModel, 'keyPressEvent', eventData);
 
+end
+
+
+% --- Executes on button press in helpBtn.
+function helpBtn_Callback(hObject, eventdata, handles)
+global mibPath;
+web(fullfile(mibPath, 'techdoc/html/user-interface/menu/image/image-morphops.html'), '-browser');
 end

@@ -14,8 +14,8 @@
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
 % Date: 25.04.2023
 
-function [img, img_info, pixSize] = mibLoadImages(filenames, options)
-% function [img, img_info, pixSize] = mibLoadImages(filenames, options)
+function [img, img_info, pixSize, files] = mibLoadImages(filenames, options)
+% function [img, img_info, pixSize, files] = mibLoadImages(filenames, options)
 % Load images from the list of files
 % 
 % Load images contained in the array of cells 'filesnames' and return 'img_info' containers.Map 
@@ -26,6 +26,13 @@ function [img, img_info, pixSize] = mibLoadImages(filenames, options)
 %     - .mibBioformatsCheck -> if @b 0 -> open standard image types, if @b 1 -> open images using BioFormats library
 %     - .waitbar -> @b 1 - show waitbar, @b 0 - do not show waitbar
 %     - .customSections -> @b 0 or @b 1, when @b 1 take some custom section(s) from the dataset
+%     - .customSectionsSettings -> optional structure to provide default values for custom sections
+%           .xMin
+%           .xMax
+%           .yMin
+%           .yMax
+%           .zMin
+%           .zMax
 %     - .mibPath [optional] a string with path to MIB directory, an optional parameter to mibInputDlg.m 
 %     - .imgStretch [optional] -> stretch or not the image if it is uint32 class
 %     - .Font -> [optional] a structure with the Font settings from mib to initialize new dialog
@@ -51,6 +58,7 @@ function [img, img_info, pixSize] = mibLoadImages(filenames, options)
 % @li .t - time between the frames for 2D movies
 % @li .tunits - time units
 % @li .units - physical units for x, y, z. Possible values: [m, cm, mm, um, nm]
+% files: - structure with files information acquired from mibGetImageMetadata
 
 % Updates
 % 
@@ -109,6 +117,7 @@ for i=1:no_files
     files(i).filename = cell2mat(filenames(i));
 end
 [img_info, files, pixSize] = mibGetImageMetadata(filenames, options); % get meta data for the datasets
+
 if isempty(keys(img_info))
     img = [];
     return;

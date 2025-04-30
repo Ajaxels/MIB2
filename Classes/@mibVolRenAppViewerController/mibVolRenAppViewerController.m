@@ -76,10 +76,12 @@ classdef mibVolRenAppViewerController < handle
             obj.View.gui = moveWindowOutside(obj.View.gui, 'right');
             
             obj.updateWidgets();
-			
+            %drawnow limitrate;
+            %pause(1);
+
 			% add listner to obj.mibModel and call controller function as a callback
             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback(obj, src, evnt));    % listen changes in number of ROIs
-            drawnow;
+			drawnow;
         end
         
         function closeWindow(obj)

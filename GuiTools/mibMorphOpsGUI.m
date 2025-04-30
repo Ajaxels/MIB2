@@ -42,7 +42,7 @@ function varargout = mibMorphOpsGUI(varargin)
 
 % Edit the above text to modify the response to help mibMorphOpsGUI
 
-% Last Modified by GUIDE v2.5 24-Mar-2018 14:11:31
+% Last Modified by GUIDE v2.5 18-Apr-2025 23:52:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -199,4 +199,11 @@ end
 handles.morphOpsPopup.String = list;
 
 handles.winController.updateWidgets();
+end
+
+
+% --- Executes on button press in helpButton.
+function helpButton_Callback(hObject, eventdata, handles)
+global mibPath;
+web(fullfile(mibPath, 'techdoc/html/user-interface/menu/selection/selection-morphops.html'), '-browser');
 end

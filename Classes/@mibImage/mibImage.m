@@ -285,6 +285,20 @@ classdef mibImage < matlab.mixin.Copyable
         
         invertColorChannel(obj, channel1, options)        % Invert color channel of the dataset
         
+        result = materialsInsert(obj, materialIndex, materialName, options)   % insert material into the model
+        
+        status = materialsRemove(obj, materialIndex, options)        % Remove material from the model
+
+        status = materialsRename(obj, materialName, materialIndex, options)  % Rename material with index materialIndex using a new materialName
+
+        status = materialsReorder(obj, newOrder, options)      % Reorder materials in the model
+
+        result = materialsSwap(obj, materialIndex1, materialIndex2, options) % Swap two materials in the model
+
+        status = materialsSwapColors(obj, material1, material2)   % Swap colors for material1 and material2 in the model
+
+        status = modelExportToMatlab(obj, materialOutputVariable, materialIndex, materialOutputIndex, options) % Export model or material of the model to MATLAB main workspace
+
         moveMaskToModelDataset(obj, action_type, options)   % move the mask layer to the model layer
         
         moveMaskToSelectionDataset(obj, action_type, options)        % move the Mask layer to the Selection layer

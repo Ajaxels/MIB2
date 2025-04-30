@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Rename Tool Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #3A2E26; /* Dark Gray Text */
+        }
+        h1, h2, h3 {
+            color: #F28C38; /* Orange Headers */
+        }
+        h1 {
+            border-bottom: 2px solid #F28C38; /* Orange Border */
+            padding-bottom: 5px;
+        }
+        h2 {
+            margin-top: 20px;
+        }
+        ul, ol {
+            margin-left: 20px;
+        }
+        .feature-list {
+            list-style-type: disc;
+        }
+        .step-list {
+            list-style-type: decimal;
+        }
+        .code {
+            background-color: #F5EDE5; /* Light Gray-Orange */
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 5px solid #2196F3;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .snapshot-placeholder {
+            background-color: #F5EDE5; /* Light Gray-Orange */
+            text-align: center;
+            padding: 20px;
+            margin: 10px 0;
+        }
+        a {
+            color: #2A7C76; /* Teal Links */
+            text-decoration: none;
+        }
+        a:hover {
+            color: #F28C38; /* Orange on Hover */
+        }
+    </style>
+</head>
+<body>
+    <h1>Multi-Rename Tool Documentation</h1>
+
+    <h2>Description</h2>
+    <p>
+        The <strong>Multi-Rename Tool</strong> is a powerful utility designed to batch rename files efficiently. 
+		Whether you're organizing a large set of images, documents, or any other file type, this tool simplifies the process 
+		by allowing you to apply custom renaming rules to multiple files at once. 
+    </p>
+
+    <h3>Key Features</h3>
+    <ul class="feature-list">
+        <li><strong>Apply Templates:</strong> use customizable templates to define the structure of new filenames.</li>
+        <li><strong>Add Counters:</strong> include counters with a specified number of digits, starting value, and increment step.</li>
+        <li><strong>Search and Replace:</strong> modify filenames by searching for specific text and replacing it with new content.</li>
+        <li><strong>Change Letter Case:</strong> adjust the case of filenames to uppercase, lowercase, or leave it unchanged.</li>
+        <li><strong>Correct Number of Digits:</strong> standardize numbers in filenames by adding leading zeros to match a specified digit count.</li>
+    </ul>
+
+	<img src="main_snapshot.png">
+    	
+    <p style="text-align: center; font-style: italic;">
+        The snapshot above would typically show the tool’s interface, including buttons, input fields, and the file list table.
+    </p>
+
+    <h2>How to Use</h2>
+    <p>
+        Follow these steps to rename files using the Multi-Rename Tool. The process is intuitive, with a preview feature to ensure accuracy before applying changes.
+    </p>
+
+    <ol class="step-list">
+        <li>
+            <strong>Select Files:</strong><br>
+            Click the <strong>Select files…</strong> button to choose the files you want to rename. The selected filenames will 
+			appear in the main table of the tool, giving you a clear overview of the files to be processed and the possible outcomes.
+			<br>
+			<img src="snap01.png">
+		</li>
+		<li>
+            <strong>Context menu for the file list table:</strong><br>
+            The right mouse click over the <strong>file list </strong> table opens a context menu with additional operations:
+			<ul>
+                <li><span class="code">Remove from the list</span>: use this operation to remove selected files from the list</li>
+			</ul>
+			<img src="snap04.png">
+			<br>
+		</li>
+        <li>
+            <strong>Define Filename Template:</strong><br>
+            Use the <strong>Filename template</strong> edit box to create a pattern for the new filenames. Incorporate these placeholders:
+            <ul>
+                <li><span class="code">[C]</span>: Adds a counter to the filename. Customize its behavior (digits, start value, step) in the Counter Settings panel.</li>
+                <li><span class="code">[E]</span>: Inserts the original file extension (e.g., <span class="code">tif</span>, <span class="code">jpg</span>).</li>
+                <li><span class="code">[N]</span>: Includes the original filename (without extension).</li>
+                <li><span class="code">[P]</span>: Adds the parent folder name to the new filename.</li>
+            </ul>
+            <div class="note">
+                <strong>Example:</strong><br>
+				A filename template like <span class="code">custom_[N]_[C]</span> and 
+				extension template <span class="code">txt</span> might produce from
+				<span class="code">custom_image_001.txt</span> from an original file named <span class="code">image.doc</span>.<br>
+				<br>
+				<img src="snap02.png">
+            </div>
+        </li>
+        <li>
+            <strong>Set Extension Template:</strong><br>
+            Use the <strong>Extension template</strong> field to modify the file extension if needed. 
+			For example, change all extensions to <span class="code">jpg</span> or use the default value <span class="code">[E]</span> 
+			to keep the existing filename extension.
+        </li>
+        <li>
+            <strong>Configure Counter Settings:</strong><br>
+            Adjust the counter parameters in the <strong>Counter Settings</strong> panel:
+            <ul>
+                <li><strong>Digits:</strong> Number of digits in the counter (e.g., 3 for <span class="code">001</span>).</li>
+                <li><strong>Start:</strong> Starting value of the counter (e.g., 1).</li>
+                <li><strong>Step:</strong> Increment between counters (e.g., 1 for 001, 002, 003; or 2 for 001, 003, 005).</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Search and Replace:</strong><br>
+            <img src="snap03.png"><br>
+			Fine-tune the generated filenames:
+            <ul>
+                <li><strong>Search:</strong> Enter text to find in the filenames.</li>
+                <li><strong>Replace:</strong> Specify the replacement text.</li>
+                <li><strong>Letter Case:</strong> Choose <em>unchanged</em>, <em>UPPERCASE</em>, or <em>lowercase</em> for the final output.</li>
+                <li><strong>Match Case:</strong> Check this box for case-sensitive search; uncheck for case-insensitive.</li>
+            </ul>
+			<br>
+        </li>
+        <li>
+            <strong>Fix Numbers:</strong><br>
+			<img src="snap05.png"><br>
+            Enable the <strong>Fix numbers by adding leading zeros</strong> checkbox to standardize numbers in filenames. 
+			The tool will adjust any numbers to match the <strong>Digits</strong> value 
+			from Counter Settings (e.g., changing <span class="code">1</span> to <span class="code">001</span> if Digits is 3).<br>
+			The Exclude prefixes edit box can be used to specify list of prefixes to exclude the numbers next to the prefexes from conversion.
+        </li>
+        <li>
+            <strong>Preview Results:</strong><br>
+            Click the <strong>Preview</strong> button to update the table with the proposed new filenames. Review them to ensure they meet your expectations.
+            <br>
+			<div class="note">
+				<p><strong>Tip:</strong> Use the Preview feature extensively to avoid errors. If something looks off, adjust the settings and preview again before renaming.</p>
+			</div>
+		</li>
+        <li>
+            <strong>Rename Files:</strong><br>
+            Press the <strong>Rename</strong> button to apply the changes to the actual files on your system.
+        </li>
+    </ol>
+
+</body>
+</html>

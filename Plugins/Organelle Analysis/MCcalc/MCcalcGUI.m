@@ -198,7 +198,7 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'Plugins', 'Organelle Analysis', 'MCcalc', 'help/MCcalc_help.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc/html/user-interface/plugins/organelle-analysis/mccalc.html'), '-browser');
 end
 
 % --- Executes on button press in detectContactsCheck.

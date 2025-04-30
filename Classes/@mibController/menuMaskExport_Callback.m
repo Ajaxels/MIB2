@@ -19,7 +19,7 @@ function menuMaskExport_Callback(obj, ExportTo, BatchOptIn)
 % callback to Menu->Mask->Export, export the Mask layer to Matlab or
 % another buffer
 %
-% ExportTos:
+% Parameters:
 % ExportTo: a string that specify the destination, where the mask layer
 % should be exported
 % @li 'Matlab' - to the main Matlab workspace

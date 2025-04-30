@@ -83,6 +83,8 @@ classdef mibController < handle
                     switch evnt.Parameter.Name
                         case 'updateSegmentationTable'  % update the segmentation table
                             obj.updateSegmentationTable();
+                        case 'mibAddMaterialBtn_Callback'
+                            obj.mibAddMaterialBtn_Callback(); % add new material callback
                     end
             end
         end
@@ -215,7 +217,7 @@ classdef mibController < handle
         
         menuModelAnn_Callback(obj, parameter)      % callback to Menu->Model->Annotations; 
         
-        menuModelsExport_Callback(obj, ExportTo, BatchOptIn)        % callback to Menu->Models->Export export the Model layer to the main Matlab workspace
+        menuModelsExport_Callback(obj, exportTo)        % callback to Menu->Models->Export export the Model layer to the main Matlab workspace
         
         menuModelsImport_Callback(obj, BatchOptIn)        % callback to Menu->Models->Import; import the Model layer from the main Matlab workspace
         
@@ -400,7 +402,11 @@ classdef mibController < handle
         mibToolbar_ZoomBtn_ClickedCallback(obj, hObject, recenterSwitch)        % modifies magnification using the zoom buttons in the toolbar of MIB
         
         mibToolbarPlaneToggle(obj, hObject, moveMouseSw)        % callback to the change orientation buttons in the toolbar of MIB; it toggles viewing plane: xy, zx, or zy direction
+       
+        mibUpdatePresetFromSegmentationSettings(obj, presetId) %  % update preset using settings of the selected segmentation tool
         
+        mibUpdateSegmentationSettingsFromPreset(obj, presetId)  % update settings of the selected segmentation tool from preset
+
         mibViewSettingsPanelCheckboxes(obj, BatchOptIn) % a function of the batch mode that allow to tweak status of checkboxes of the View Settings panel
         
         mibZoomEdit_Callback(obj, BatchOptIn)        % callback function for modification of the handles.mibZoomEdit 

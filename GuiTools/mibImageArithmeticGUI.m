@@ -111,11 +111,9 @@ end
 
 % --- Executes on button press in helpBtn
 function helpBtn_Callback(hObject, eventdata, handles)
-% hObject    handle to closeBtn (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+
 global mibPath;
-web(fullfile(mibPath, 'techdoc', 'html', 'ug_gui_menu_image.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc/html/user-interface/menu/image/image-tools-arithmetic.html'), '-browser');
 end
 
 % --- Executes on button press in runExpressionBtn.

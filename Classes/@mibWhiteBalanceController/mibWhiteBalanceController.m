@@ -211,7 +211,7 @@ classdef mibWhiteBalanceController < handle
             % show the help page
 
             global mibPath;
-            web(fullfile(mibPath, 'techdoc', 'html', 'ug_gui_menu_image.html'), '-helpbrowser');
+            web(fullfile(mibPath, 'techdoc/html/user-interface/menu/image/image-tools-whitebalance.html'), '-browser');
         end
         
         function returnBatchOpt(obj, BatchOptOut)

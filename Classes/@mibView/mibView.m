@@ -54,6 +54,10 @@ classdef mibView < handle
         % a handle to ROI point class that marks the center of the image axes
         % .handle - a handle to the spot roi class
         % .enable - a switch, 1-enable; 0-disable
+        altPressed
+        % set a variable to store slice number where mouse scroll action was triggered
+        % obj.altPressed = 0; - indicates that Alt was not preseed
+        % obj.altPressed > 0; - indicates slice number when Alt was preseed
         ctrlPressed
         % set a variable to deal with the increase of the brush size during the erasing action. Ctrl+left mouse button
         % obj.ctrlPressed:
@@ -132,7 +136,8 @@ classdef mibView < handle
             obj.trackerYXZ = [NaN;NaN;NaN];
             
             obj.imh = matlab.graphics.primitive.Image('CData', []);   
-            obj.ctrlPressed = 0;   % status of the control key (unpressed)
+            obj.ctrlPressed = 0;   % status of the Ctrl key (unpressed)
+            obj.altPressed = 0; % status ofthe Alt key (unpressed)
             
             obj.centerSpotHandle.handle = [];
             obj.centerSpotHandle.enable = 0;

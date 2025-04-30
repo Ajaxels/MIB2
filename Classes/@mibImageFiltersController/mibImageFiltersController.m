@@ -631,6 +631,11 @@ classdef mibImageFiltersController < handle
             
         end
         
+        function helpButton_Callback(obj)
+            global mibPath;
+            web(fullfile(mibPath, 'techdoc/html/user-interface/menu/image/image-filters.html'), '-browser');
+        end
+
         function Mode3DValueChanged(obj)
             % callback for Mode3D press
             val = obj.View.handles.Mode3D.Value;

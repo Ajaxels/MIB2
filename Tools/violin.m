@@ -169,7 +169,12 @@ i=1;
 for i=1:size(Y,2)
     try
         if isempty(b)==0
-            [f, u, bb]=ksdensity(Y{i}, 'bandwidth', b(i));
+            if isempty(Y{i})
+                % no numbers use 0
+                [f, u, bb]=ksdensity(0, 'bandwidth', b(i));
+            else
+                [f, u, bb]=ksdensity(Y{i}, 'bandwidth', b(i));
+            end
         elseif isempty(b)
             [f, u, bb]=ksdensity(Y{i});
         end

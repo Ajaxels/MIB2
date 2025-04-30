@@ -1,0 +1,127 @@
+/* ============= WIDGET STYLES FOR DOCUMENTATION ============= */
+
+/* Shared base styles for widgets */
+.widget {
+  font-family: monospace; /* Matches HTML example */
+  display: inline-block; /* Inline with text */
+  margin: 0.15em; /* 75% of original 0.2em */
+  padding: 0.075em 0.3em; /* 75% of original 0.1em 0.4em */
+  border-radius: 0.15em; /* 75% of original 0.2em */
+  vertical-align: middle; /* Aligns with text */
+  font-size: 0.8em; /* 75% of original 0.85em */
+  -webkit-user-select: none; /* Prevents text selection */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; /* Ensures non-interactive */
+}
+
+/* === LIGHT MODE STYLES === */
+.widget-button {
+  border: 1px solid #aaa; /* Matches .kbd border */
+  background-color: #f9f9f9; /* Matches .kbd background */
+  background-image: linear-gradient(to bottom, #eee, #f9f9f9, #eee); /* Matches .kbd gradient */
+  box-shadow: 0.075em 0.15em 0.15em #ddd; /* 75% of original */
+  color: #000; /* Black text */
+}
+
+.widget-edit {
+  background-color: #e0f5ff; /* Light blue from .dropdown */
+  color: #000; /* Black text */
+  border: 1px solid #aaa; /* Matches .dropdown border */
+  min-width: 60px; /* 75% of original 80px */
+}
+
+.widget-dropdown {
+  background-color: #e0f5ff; /* Light blue from .dropdown */
+  color: #000; /* Black text */
+  border: 1px solid #aaa; /* Matches .dropdown border */
+  padding: 0.075em 1.2em 0.075em 0.3em; /* Increased right padding from 0.9em for space */
+  position: relative; /* For arrow */
+  min-width: 75px; /* 75% of original 100px */
+}
+
+.widget-dropdown::after {
+  content: "\00A0\25BC"; /* Space (U+00A0) + Down Arrow (U+25BC) */
+  position: absolute;
+  right: 0.2em; /* Increased from 0.3em for more space */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #006633; /* Green arrow */
+}
+
+.widget-checkbox {
+  display: inline-flex;
+  align-items: center; /* Aligns checkbox and label */
+  color: #000; /* Black text */
+  padding: 0; /* No extra padding */
+}
+
+.widget-checkbox::before {
+  content: "\2714"; /* Checkmark (U+2714) */
+  display: inline-block;
+  width: 1.2em; /* Increased from 0.9em */
+  height: 1.2em; /* Increased from 0.9em */
+  border: 1px solid #aaa; /* Matches .kbd border */
+  background-color: #f9f9f9; /* Matches .kbd background */
+  background-image: linear-gradient(to bottom, #eee, #f9f9f9, #eee); /* Matches .kbd gradient */
+  box-shadow: 0.075em 0.15em 0.15em #ddd; /* 75% of original */
+  border-radius: 0.15em; /* 75% of original 0.2em */
+  margin-right: 0.3em; /* 75% of original 0.4em */
+  text-align: center;
+  line-height: 1.2em; /* Center checkmark */
+  color: #006633; /* Green checkmark */
+}
+
+/* === DARK MODE STYLES === */
+[data-md-color-scheme="slate"] .widget-button {
+  border: 1px solid #aaa; /* Keep border */
+  box-shadow: 0.075em 0.15em 0.15em #555; /* Lighter shadow */
+  color: #333333; /* Bright light blue text */
+  background-color: #e0f5ff;
+}
+
+[data-md-color-scheme="slate"] .widget-edit {
+  background-color: #333333; /* Dark gray background */
+  color: #E1F5FE; /* Bright light blue text */
+  border: 1px solid #aaa;
+}
+
+[data-md-color-scheme="slate"] .widget-dropdown {
+  background-color: #333333; /* Dark gray background */
+  color: #E1F5FE; /* Bright light blue text */
+  border: 1px solid #aaa;
+  padding: 0.075em 1.2em 0.075em 0.3em; /* Same as light mode with extra space */
+  position: relative;
+  min-width: 75px;
+}
+
+[data-md-color-scheme="slate"] .widget-dropdown::after {
+  content: "\00A0\25BC"; /* Space (U+00A0) + Down Arrow (U+25BC) */
+  position: absolute;
+  right: 0.2em; /* Increased for space */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #F28C38; /* Orange arrow */
+}
+
+[data-md-color-scheme="slate"] .widget-checkbox {
+  display: inline-flex;
+  align-items: center;
+  color: #E1F5FE; /* Bright light blue text */
+  padding: 0;
+  border-radius: 0.15em; /* Match other widgets */
+}
+
+[data-md-color-scheme="slate"] .widget-checkbox::before {
+  content: "\2714"; /* Checkmark (U+2714) */
+  width: 1.2em; /* Increased size */
+  height: 1.2em; /* Increased size */
+  border: 1px solid #aaa;
+  background-color: #333333; /* Dark gray background */
+  box-shadow: 0.075em 0.15em 0.15em #555; /* Lighter shadow */
+  border-radius: 0.15em;
+  margin-right: 0.3em;
+  text-align: center;
+  line-height: 1.2em;
+  color: #F28C38; /* Orange checkmark */
+}

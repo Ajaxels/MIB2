@@ -135,7 +135,7 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_file_chop.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-choppedimages.html'), '-browser');
 end
 
 % --- Executes on button press in chopBtn.

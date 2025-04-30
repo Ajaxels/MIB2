@@ -34,6 +34,10 @@ Prefs.System.LeftMouseButton = 'select';
 % old preferences.imageResizeMethod
 Prefs.System.ImageResizeMethod = 'auto';
 
+% Hold Alt + mouse scoll wheel to change time points (when true)
+% Hold Alt + mouse scoll wheel to return back to the slice when Alt+scroll was triggered (when false)
+Prefs.System.AltWithScrollWheel = false;
+
 % enable selection with the mouse
 % old preferences.disableSelection
 Prefs.System.EnableSelection = 1;
@@ -313,6 +317,129 @@ Prefs.SegmTools.SAM2.crop_n_points_downscale_factor = 1;
 Prefs.SegmTools.SAM2.min_mask_region_area = 0;
 Prefs.SegmTools.SAM2.use_m2m = false;
 
+% Presets
+Prefs.SegmTools.Presets.Annotations.Set1.ShowPrompt = true;
+Prefs.SegmTools.Presets.Annotations.Set1.FocusOnValue = false;
+Prefs.SegmTools.Presets.Annotations.Set1.Size = 2;     % '1 (pt 8)', '2 (pt 10)', '3 (pt 12)', '4 (pt 14)', '5 (pt 16)', '6 (pt 18)', '7 (pt 20)'
+Prefs.SegmTools.Presets.Annotations.Set1.Color = [1 1 0];
+Prefs.SegmTools.Presets.Annotations.Set1.ExtraSlices = 0;
+Prefs.SegmTools.Presets.Annotations.Set1.DisplayAs = 'Label + Value'; % 'Label + Value', 'Marker', 'Label', 'Value'
+Prefs.SegmTools.Presets.Annotations.Set2.ShowPrompt = true;
+Prefs.SegmTools.Presets.Annotations.Set2.FocusOnValue = false;
+Prefs.SegmTools.Presets.Annotations.Set2.Size = 4;
+Prefs.SegmTools.Presets.Annotations.Set2.Color = [1 1 0];
+Prefs.SegmTools.Presets.Annotations.Set2.ExtraSlices = 0;
+Prefs.SegmTools.Presets.Annotations.Set2.DisplayAs = 'Label + Value'; % 'Label + Value', 'Marker', 'Label', 'Value'
+Prefs.SegmTools.Presets.Annotations.Set3.ShowPrompt = true;
+Prefs.SegmTools.Presets.Annotations.Set3.FocusOnValue = false;
+Prefs.SegmTools.Presets.Annotations.Set3.Size = 7;
+Prefs.SegmTools.Presets.Annotations.Set3.Color = [1 1 0];
+Prefs.SegmTools.Presets.Annotations.Set3.ExtraSlices = 0;
+Prefs.SegmTools.Presets.Annotations.Set3.DisplayAs = 'Label + Value'; % 'Label + Value', 'Marker', 'Label', 'Value'
+
+Prefs.SegmTools.Presets.Lines3D.Set1.Click = 'Add node';
+Prefs.SegmTools.Presets.Lines3D.Set1.ShiftClick = 'New tree';
+Prefs.SegmTools.Presets.Lines3D.Set1.CtrlClick = 'Assign active node';
+Prefs.SegmTools.Presets.Lines3D.Set1.AltClick = 'Modify active node';
+Prefs.SegmTools.Presets.Lines3D.Set2.Click = 'Add node';
+Prefs.SegmTools.Presets.Lines3D.Set2.ShiftClick = 'New tree';
+Prefs.SegmTools.Presets.Lines3D.Set2.CtrlClick = 'Assign active node';
+Prefs.SegmTools.Presets.Lines3D.Set2.AltClick = 'Modify active node';
+Prefs.SegmTools.Presets.Lines3D.Set3.Click = 'Add node';
+Prefs.SegmTools.Presets.Lines3D.Set3.ShiftClick = 'New tree';
+Prefs.SegmTools.Presets.Lines3D.Set3.CtrlClick = 'Assign active node';
+Prefs.SegmTools.Presets.Lines3D.Set3.AltClick = 'Modify active node';
+
+Prefs.SegmTools.Presets.Brush.Set1.Radius = '2';
+Prefs.SegmTools.Presets.Brush.Set1.Watershed = false;
+Prefs.SegmTools.Presets.Brush.Set1.SLIC = false;
+Prefs.SegmTools.Presets.Brush.Set1.Eraser = '1.5';
+Prefs.SegmTools.Presets.Brush.Set2.Radius = '8';
+Prefs.SegmTools.Presets.Brush.Set2.Watershed = false;
+Prefs.SegmTools.Presets.Brush.Set2.SLIC = false;
+Prefs.SegmTools.Presets.Brush.Set2.Eraser = '1.5';
+Prefs.SegmTools.Presets.Brush.Set3.Radius = '50';
+Prefs.SegmTools.Presets.Brush.Set3.Watershed = false;
+Prefs.SegmTools.Presets.Brush.Set3.SLIC = false;
+Prefs.SegmTools.Presets.Brush.Set3.Eraser = '1.5';
+
+Prefs.SegmTools.Presets.BWThresholding.Set1.Adaptive = false;
+Prefs.SegmTools.Presets.BWThresholding.Set1.BlackOnWhite = 'black-on-white';
+Prefs.SegmTools.Presets.BWThresholding.Set1.Switch3D = false;
+Prefs.SegmTools.Presets.BWThresholding.Set1.Invert = false;
+Prefs.SegmTools.Presets.BWThresholding.Set1.ParameterLo = '0';
+Prefs.SegmTools.Presets.BWThresholding.Set1.ParameterHi = '255';
+Prefs.SegmTools.Presets.BWThresholding.Set1.SliderStep = 3;
+Prefs.SegmTools.Presets.BWThresholding.Set2.Adaptive = false;
+Prefs.SegmTools.Presets.BWThresholding.Set2.BlackOnWhite = 'black-on-white';
+Prefs.SegmTools.Presets.BWThresholding.Set2.Switch3D = false;
+Prefs.SegmTools.Presets.BWThresholding.Set2.Invert = false;
+Prefs.SegmTools.Presets.BWThresholding.Set2.ParameterLo = '0';
+Prefs.SegmTools.Presets.BWThresholding.Set2.ParameterHi = '128';
+Prefs.SegmTools.Presets.BWThresholding.Set2.SliderStep = 3;
+Prefs.SegmTools.Presets.BWThresholding.Set3.Adaptive = false;
+Prefs.SegmTools.Presets.BWThresholding.Set3.BlackOnWhite = 'black-on-white';
+Prefs.SegmTools.Presets.BWThresholding.Set3.Switch3D = false;
+Prefs.SegmTools.Presets.BWThresholding.Set3.Invert = false;
+Prefs.SegmTools.Presets.BWThresholding.Set3.ParameterLo = '128';
+Prefs.SegmTools.Presets.BWThresholding.Set3.ParameterHi = '255';
+Prefs.SegmTools.Presets.BWThresholding.Set3.SliderStep = 3;
+
+Prefs.SegmTools.Presets.DragNDrop.Set1.Shift= '1';
+Prefs.SegmTools.Presets.DragNDrop.Set1.Layer= 'selection'; % 'selection', 'mask', 'model'
+Prefs.SegmTools.Presets.DragNDrop.Set2.Shift= '4';
+Prefs.SegmTools.Presets.DragNDrop.Set2.Layer= 'selection';
+Prefs.SegmTools.Presets.DragNDrop.Set3.Shift= '10';
+Prefs.SegmTools.Presets.DragNDrop.Set3.Layer= 'selection';
+
+Prefs.SegmTools.Presets.MagicWand.Set1.Method= 'Magic Wand'; % 'Magic Wand' or 'Region Grow'
+Prefs.SegmTools.Presets.MagicWand.Set1.VariationLo = '6';
+Prefs.SegmTools.Presets.MagicWand.Set1.VariationHi = '6';
+Prefs.SegmTools.Presets.MagicWand.Set1.Radius = '0';
+Prefs.SegmTools.Presets.MagicWand.Set1.Connect = 8; % 8 or 4
+Prefs.SegmTools.Presets.MagicWand.Set2.Method = 'Magic Wand'; % 'Magic Wand' or 'Region Grow'
+Prefs.SegmTools.Presets.MagicWand.Set2.VariationLo = '12';
+Prefs.SegmTools.Presets.MagicWand.Set2.VariationHi = '12';
+Prefs.SegmTools.Presets.MagicWand.Set2.Radius = '0';
+Prefs.SegmTools.Presets.MagicWand.Set2.Connect = 8; % 8 or 4
+Prefs.SegmTools.Presets.MagicWand.Set3.Method = 'Region Grow'; % 'Magic Wand' or 'Region Grow'
+Prefs.SegmTools.Presets.MagicWand.Set3.VariationLo = '24';
+Prefs.SegmTools.Presets.MagicWand.Set3.VariationHi = '24';
+Prefs.SegmTools.Presets.MagicWand.Set3.Radius = '0';
+Prefs.SegmTools.Presets.MagicWand.Set3.Connect = 8; % 8 or 4
+
+Prefs.SegmTools.Presets.MembraClickTracker.Set1.Scale = '0.2';
+Prefs.SegmTools.Presets.MembraClickTracker.Set1.Width = '2';
+Prefs.SegmTools.Presets.MembraClickTracker.Set1.StraightLine = false;
+Prefs.SegmTools.Presets.MembraClickTracker.Set1.BlackSignal = true;
+Prefs.SegmTools.Presets.MembraClickTracker.Set1.RecenterView= true;
+Prefs.SegmTools.Presets.MembraClickTracker.Set2.Scale = '0.2';
+Prefs.SegmTools.Presets.MembraClickTracker.Set2.Width = '4';
+Prefs.SegmTools.Presets.MembraClickTracker.Set2.StraightLine = false;
+Prefs.SegmTools.Presets.MembraClickTracker.Set2.BlackSignal = true;
+Prefs.SegmTools.Presets.MembraClickTracker.Set2.RecenterView= true;
+Prefs.SegmTools.Presets.MembraClickTracker.Set3.Scale = '0.2';
+Prefs.SegmTools.Presets.MembraClickTracker.Set3.Width = '4';
+Prefs.SegmTools.Presets.MembraClickTracker.Set3.StraightLine = true;
+Prefs.SegmTools.Presets.MembraClickTracker.Set3.BlackSignal = true;
+Prefs.SegmTools.Presets.MembraClickTracker.Set3.RecenterView= true;
+
+Prefs.SegmTools.Presets.SAM.Set1.Method = 'Interactive';
+Prefs.SegmTools.Presets.SAM.Set1.Dataset = '2D, Slice'; % '2D, Slice', '3D, Stack', 4D, Dataset'
+Prefs.SegmTools.Presets.SAM.Set1.Destination = 'selection'; % 'selection', 'mask', 'model'
+Prefs.SegmTools.Presets.SAM.Set1.Mode = 'replace'; % 'replace', 'add', 'subtract', 'add, +next material'
+Prefs.SegmTools.Presets.SAM.Set2.Method = 'Interactive';
+Prefs.SegmTools.Presets.SAM.Set2.Dataset = '3D, Stack'; % '2D, Slice', '3D, Stack', 4D, Dataset'
+Prefs.SegmTools.Presets.SAM.Set2.Destination = 'model'; % 'selection', 'mask', 'model'
+Prefs.SegmTools.Presets.SAM.Set2.Mode = 'add'; % 'replace', 'add', 'subtract', 'add, +next material'
+Prefs.SegmTools.Presets.SAM.Set3.Method = 'Landmarks';
+Prefs.SegmTools.Presets.SAM.Set3.Dataset = '3D, Stack'; % '2D, Slice', '3D, Stack', 4D, Dataset'
+Prefs.SegmTools.Presets.SAM.Set3.Destination = 'selection'; % 'selection', 'mask', 'model'
+Prefs.SegmTools.Presets.SAM.Set3.Mode = 'replace'; % 'replace', 'add', 'subtract', 'add, +next material'
+
+% two favorite tools available via Ctrl+D and Shift+D key shortcuts
+Prefs.SegmTools.FavoriteToolA = 'Brush';    % Shift+D, one of tools within the Segmentation panel
+Prefs.SegmTools.FavoriteToolB = 'Segment-anything model'; % Ctrl+D, one of tools within the Segmentation panel
 
 %% -------------  IMAGE PROCESSING TOOLS ----------
 

@@ -140,7 +140,7 @@ classdef SpacialControlPointsController < handle
                              '2. set of annotations indicating the objects of interest'};
             options.TitleLines = 9;                  
             options.WindowWidth = 1.4; 
-            options.HelpUrl = 'https://andreapaterlini.github.io/Plasmodesmata_dist_wall/distributions.html';
+            options.HelpUrl = fullfile(mibPath, 'techdoc/html/user-interface/plugins/plasmodesmata/spacial-control-points.html');
             answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
             if isempty(answer); return; end
             

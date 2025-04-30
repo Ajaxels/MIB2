@@ -25,6 +25,9 @@ function View = updateGUIFromBatchOpt_Shared(View, BatchOpt)
 
 fieldNames = fieldnames(BatchOpt);
 for fieldId = 1:numel(fieldNames)
+    % if fieldId==45
+    %     0
+    % end
     if ~isempty(View.Figure)        % for GUIs made with AppDesigner
         if isprop(View.Figure, fieldNames{fieldId})
             switch View.Figure.(fieldNames{fieldId}).Type

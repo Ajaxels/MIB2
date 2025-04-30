@@ -1,0 +1,494 @@
+/* Link to colors:
+https://github.com/squidfunk/mkdocs-material/blob/master/src/templates/assets/stylesheets/main/_colors.scss
+Requires addition in mkdocs.yml
+extra_css:    # location for additional css styles
+  - css/styles.css  # Relative to the docs/ directory
+*/
+
+/* ============= DEFINE LIGHT DEFAULT THEME ============= */
+[data-md-color-scheme="default"] {
+   /* Primary and accent colors */
+  --md-primary-fg-color:            #006633;
+  --md-accent-fg-color:             #F28C38;
+  /* Colors and spacing around H-tags */
+  h1, h2, h3, h4, h5, h6 {
+    color: #F28C38 !important;  /* Your orange from palette.primary */
+    margin-bottom: 0;       /* Reduced space after (default is ~1.33rem) */
+    padding-bottom: 0;      /* Space for underline effect */
+  }
+  /* Additional styling for H1 */
+  h1 {
+      font-weight: 500;            /* Bold for emphasis */
+      font-size: 1.3rem;           /* Make a bit smaller */
+      line-height: 1.1;            /* Tight line height */
+      border-bottom: 2px solid #F28C38; /* Subtle orange underline */
+      //display: inline-block;       /* Keeps underline tight to text */
+      //text-transform: uppercase;   /* All letters capitalized */
+  }
+  h2 { font-size: 1rem;}           /* Make a bit smaller */
+  h3 { font-size: 0.82rem;}           /* Make a bit smaller */
+  h4 { font-size: 0.75rem;}           /* Make a bit smaller */
+
+  /* h3-like same as h3, but it does not references in the table of contents
+  <div class="h3-like">Demonstration</div> */
+.h3-like {
+    color: #F28C38 !important;  /* Your orange from palette.primary */
+    margin-bottom: 0;       /* Reduced space after (default is ~1.33rem) */
+    padding-bottom: 0;      /* Space for underline effect */
+    display: block;
+    margin: 1em 0 0.5em 0;
+    font-size: 0.82rem;
+}
+
+  .h4-like {
+    color: #F28C38 !important;  /* Your orange from palette.primary */
+    margin-bottom: 0;       /* Reduced space after (default is ~1.33rem) */
+    padding-bottom: 0;      /* Space for underline effect */
+    display: block;
+    margin: 1em 0 0.5em 0;
+    font-size: 0.75rem;
+}
+
+  /* Mouse hover over the links */
+  a:hover {
+    color: #F9A825 !important;
+  }
+
+  /* Inline code style, to be used as `inline code` */
+  :not(pre) > code {
+    /*color: #F28C38;
+    background-color: #FFF3E0;    */
+    color: #8c6546;
+    background-color: #FFF3E0;
+    font-family: "Roboto Mono", monospace; /* Matches your theme */
+    padding: 0.1em 0.3em;         /* Slight padding for readability */
+    border-radius: 3px;           /* Rounded corners */
+    font-size: 0.9em;             /* Slightly smaller than body text */
+  }
+
+  /* Tooltip balloon when hover over the object */
+  .help-balloon {
+  background-color: #F0F7FA;    /* Light blue for light mode (from table header) */
+  color: #01579B;              /* Dark blue text for contrast */
+  padding: 0.8em;              /* Increased padding */
+  border-radius: 5px;          /* Rounded corners */
+  font-size: 1.1em;            /* Larger font */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  z-index: 1000;               /* Above other content */
+  max-width: 250px;            /* Wider for larger text */
+  white-space: normal;         /* Allow wrapping */
+}
+
+/* Optional title bar */
+.help-balloon .title-bar {
+  background-color: #B3E5FC;    /* Slightly darker light blue shade */
+  color: #01579B;              /* Dark blue text */
+  font-weight: 700;            /* Bold */
+  font-size: 1.2em;            /* Larger than body */
+  padding: 0.3em 0.6em;        /* Compact padding */
+  margin: -0.8em -0.8em 0.5em -0.8em; /* Offset outer padding */
+  border-top-left-radius: 5px; /* Match balloon corners */
+  border-top-right-radius: 5px;
+}
+
+  /* ============= Light mode: table styling ============= */
+  .md-typeset table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0 auto;          /* Center the table */
+  }
+
+  /* Header styling */
+  .md-typeset thead tr {
+    background-color: #B3E5FC; /* Light blue (default option) */
+  }
+  .md-typeset th {
+    color: #01579B;          /* Dark blue text color for contrast */
+    font-weight: 700;
+    padding: 0.6em;
+    border-bottom: 2px solid #0288D1; /* Medium blue underline */
+  }
+
+  /* Striped rows - lighter colors */
+  .md-typeset tbody tr:nth-child(odd) {
+    /*background-color: #F0F7FA; /* Lighter very light blue */
+    background-color: #FFFFFF; /* Lighter very light blue */
+  }
+  .md-typeset tbody tr:nth-child(even) {
+    background-color: #E8F2F6; /* Lighter light blue */
+  }
+  .md-typeset tbody tr:hover {
+    /*background-color: #B3E5FC !important; /* Medium light blue on hover */
+    background-color: #FFFFFF !important; /* Medium light blue on hover */
+  }
+  .md-typeset td {
+    padding: 0;
+    border-bottom: 1px solid #B0BEC5; /* Light blue-gray separator */
+    color: #01579B;          /* Dark blue text color for consistency */
+  }
+}
+
+/* ============= DEFINE DARK SLATE THEME ============= */
+[data-md-color-scheme="slate"] {
+  /* Primary and accent colors */
+  --md-primary-fg-color:            #006633;
+  --md-accent-fg-color:             #F28C38;
+  /* Colors and spacing around H-tags */
+  h1, h2, h3, h4, h5, h6 {
+    color: #F28C38 !important;  /* Your orange from palette.primary */
+    margin-bottom: 0;       /* Reduced space after (default is ~1.33rem) */
+    padding-bottom: 0;      /* Space for underline effect */
+  }
+  /* Additional styling for H1 */
+  h1 {
+      font-weight: 500;            /* Bold for emphasis */
+      font-size: 1.3rem;           /* Make a bit smaller */
+      line-height: 1.1;            /* Tight line height */
+      border-bottom: 2px solid #F28C38; /* Subtle orange underline */
+      /*display: inline-block;       /* Keeps underline tight to text */
+  }
+  h2 { font-size: 1rem;}           /* Make a bit smaller */
+  h3 { font-size: 0.82rem;}           /* Make a bit smaller */
+  h4 { font-size: 0.75rem;}           /* Make a bit smaller */
+
+    /* h3-like same as h3, but it does not references in the table of contents
+  <div class="h3-like">Demonstration</div> */
+.h3-like {
+    color: #F28C38 !important;  /* Your orange from palette.primary */
+    margin-bottom: 0;       /* Reduced space after (default is ~1.33rem) */
+    padding-bottom: 0;      /* Space for underline effect */
+    display: block;
+    margin: 1em 0 0.5em 0;
+    font-size: 0.82rem;
+}
+
+.h4-like {
+    color: #F28C38 !important;  /* Your orange from palette.primary */
+    margin-bottom: 0;       /* Reduced space after (default is ~1.33rem) */
+    padding-bottom: 0;      /* Space for underline effect */
+    display: block;
+    margin: 1em 0 0.5em 0;
+    font-size: 0.75rem;
+}
+
+  /* Mouse hover over the links */
+  a:hover {
+    color: #F9A825 !important;
+  }
+  /* Inline code style, to be used as `inline code` */
+  :not(pre) > code {
+    /* color: #FF9800;
+    background-color: #3E2723; */
+    color: #e38603;
+    background-color: #392825;
+    font-family: "Roboto Mono", monospace;
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+
+  /* Tooltip balloon when hover over the object */
+  .help-balloon {
+  background-color: #78909C;    /* Light blue for light mode (from table header) */
+  color: #E1F5FE;              /* Dark blue text for contrast */
+  padding: 0.8em;              /* Increased padding */
+  border-radius: 5px;          /* Rounded corners */
+  font-size: 1.1em;            /* Larger font */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  z-index: 1000;               /* Above other content */
+  max-width: 250px;            /* Wider for larger text */
+  white-space: normal;         /* Allow wrapping */
+}
+
+/* Optional title bar */
+.help-balloon .title-bar {
+  background-color: #607D8B;    /* Slightly darker light blue shade */
+  color: orange;              /* Dark blue text */
+  font-weight: 700;            /* Bold */
+  font-size: 1.2em;            /* Larger than body */
+  padding: 0.3em 0.6em;        /* Compact padding */
+  margin: -0.8em -0.8em 0.5em -0.8em; /* Offset outer padding */
+  border-top-left-radius: 5px; /* Match balloon corners */
+  border-top-right-radius: 5px;
+}
+
+    /* ============= Dark mode: table styling ============= */
+  .md-typeset table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Header styling */
+  .md-typeset thead tr {
+    background-color: #23607d; /* Dark slate blue (default option) */
+  }
+  .md-typeset th {
+    color: #E1F5FE;          /* Very light blue for contrast */
+    font-weight: 700;
+    padding: 0.6em;
+    border-bottom: 2px solid #90CAF9; /* Medium light blue underline */
+  }
+
+  /* Striped rows - inverted and lighter */
+  .md-typeset tbody tr:nth-child(odd) {
+    background-color: #607D8B; /* Lighter dark blue-gray (was darker) */
+  }
+  .md-typeset tbody tr:nth-child(even) {
+    background-color: #78909C; /* Even lighter blue-gray (was less dark) */
+  }
+  .md-typeset tbody tr:hover {
+    background-color: #23607d !important; /* Medium light blue on hover */
+  }
+  .md-typeset td {
+    padding: 0.6em;
+    border-bottom: 1px solid #90A4AE; /* Lighter blue-gray separator */
+    color: #E1F5FE;          /* Very light blue text for contrast */
+  }
+
+}
+
+
+/* ============= WIDGET STYLES FOR DOCUMENTATION ============= */
+
+/* Shared base styles for widgets */
+.widget {
+  font-family: monospace; /* Matches HTML example */
+  display: inline-block; /* Inline with text */
+  margin: 0.15em; /* 75% of original 0.2em */
+  padding: 0.075em 0.3em; /* 75% of original 0.1em 0.4em */
+  border-radius: 0.15em; /* 75% of original 0.2em */
+  vertical-align: middle; /* Aligns with text */
+  font-size: 0.8em; /* 75% of original 0.85em */
+  -webkit-user-select: none; /* Prevents text selection */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; /* Ensures non-interactive */
+  box-shadow: 0.075em 0.15em 0.15em #ddd; /* 75% of original */
+}
+
+/* === LIGHT MODE STYLES === */
+.widget-button {
+  border: 1px solid #aaa; /* Matches .kbd border */
+  background-color: #f9f9f9; /* Matches .kbd background */
+  background-image: linear-gradient(to bottom, #eee, #f9f9f9, #eee); /* Matches .kbd gradient */
+  color: #000; /* Black text */
+}
+
+.widget-edit {
+  background-color: #e0f5ff; /* Light blue from .dropdown */
+  color: #000; /* Black text */
+  border: 1px solid #aaa; /* Matches .dropdown border */
+  min-width: 60px; /* 75% of original 80px */
+}
+
+.widget-dropdown {
+  background-color: #e0f5ff; /* Light blue from .dropdown */
+  color: #000; /* Black text */
+  border: 1px solid #aaa; /* Matches .dropdown border */
+  padding: 0.075em 1.2em 0.075em 0.3em; /* Increased right padding from 0.9em for space */
+  position: relative; /* For arrow */
+  min-width: 75px; /* 75% of original 100px */
+}
+
+.widget-dropdown::after {
+  content: "\00A0\25BC"; /* Space (U+00A0) + Down Arrow (U+25BC) */
+  position: absolute;
+  right: 0.2em; /* Increased from 0.3em for more space */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #006633; /* Green arrow */
+}
+
+.widget-checkbox {
+  display: inline-flex;
+  align-items: center; /* Aligns checkbox and label */
+  color: #000; /* Black text */
+  padding: 0; /* No extra padding */
+  background-color: #e0f5ff; /* Light blue from .dropdown */
+}
+
+.widget-checkbox::before {
+  content: "\2714"; /* Checkmark (U+2714) */
+  display: inline-block;
+  width: 1.2em; /* Increased from 0.9em */
+  height: 1.2em; /* Increased from 0.9em */
+  border: 1px solid #aaa; /* Matches .kbd border */
+  background-color: #f9f9f9; /* Matches .kbd background */
+  background-image: linear-gradient(to bottom, #eee, #f9f9f9, #eee); /* Matches .kbd gradient */
+  box-shadow: 0.075em 0.15em 0.15em #ddd; /* 75% of original */
+  border-radius: 0.15em; /* 75% of original 0.2em */
+  margin-right: 0.3em; /* 75% of original 0.4em */
+  text-align: center;
+  line-height: 1.2em; /* Center checkmark */
+  color: #006633; /* Green checkmark */
+}
+
+.widget-checkbox-unchecked::before {
+  content: ""; /* No checkmark */
+  color: transparent; /* Make sure nothing shows */
+}
+
+.widget-radio {
+  font-family: monospace;
+  display: inline-flex;
+  align-items: center;
+  color: #000;
+  padding-right: 0.15em;
+  margin: 0.15em;
+  border-radius: 0.15em;
+  vertical-align: middle;
+  font-size: 0.8em;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: #e0f5ff; /* Light blue from .dropdown */
+}
+
+.widget-radio::before {
+  content: "";
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  margin-right: 0.3em;
+  background-image: url('../assets/radiobox-marked.svg');
+  background-size: 80%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+/* === DARK MODE STYLES === */
+[data-md-color-scheme="slate"] .widget-button {
+  border: 1px solid #aaa; /* Keep border */
+  box-shadow: 0.075em 0.15em 0.15em #555; /* Lighter shadow */
+  color: #333333; /* Bright light blue text */
+  background-color: #6c767a;
+}
+
+[data-md-color-scheme="slate"] .widget-edit {
+  background-color: #333333; /* Dark gray background */
+  color: #a4c5d5; /* Bright light blue text */
+  border: 1px solid #aaa;
+}
+
+[data-md-color-scheme="slate"] .widget-dropdown {
+  background-color: #333333; /* Dark gray background */
+  color: #a4c5d5; /* Bright light blue text */
+  border: 1px solid #aaa;
+  padding: 0.075em 1.2em 0.075em 0.3em; /* Same as light mode with extra space */
+  position: relative;
+  min-width: 75px;
+}
+
+[data-md-color-scheme="slate"] .widget-radio {
+  background-color: #333333; /* Dark gray background */
+  color: #a4c5d5; /* Bright light blue text */
+}
+
+[data-md-color-scheme="slate"] .widget-radio::before {
+   background-image: url('../assets/radiobox-marked-orange.png');
+}
+
+[data-md-color-scheme="slate"] .widget-dropdown::after {
+  content: "\00A0\25BC"; /* Space (U+00A0) + Down Arrow (U+25BC) */
+  position: absolute;
+  right: 0.2em; /* Increased for space */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #F28C38; /* Orange arrow */
+}
+
+[data-md-color-scheme="slate"] .widget-checkbox {
+  display: inline-flex;
+  align-items: center;
+  color: #a4c5d5; /* Bright light blue text */
+  background-color: #333333; /* Bright light blue text */
+  padding: 0;
+  border-radius: 0.15em; /* Match other widgets */
+}
+
+[data-md-color-scheme="slate"] .widget-checkbox::before {
+  content: "\2714"; /* Checkmark (U+2714) */
+  width: 1.2em; /* Increased size */
+  height: 1.2em; /* Increased size */
+  border: 1px solid #aaa;
+  background-color: #333333; /* Dark gray background */
+  box-shadow: 0.075em 0.15em 0.15em #555; /* Lighter shadow */
+  border-radius: 0.15em;
+  margin-right: 0.3em;
+  text-align: center;
+  line-height: 1.2em;
+  color: #F28C38; /* Orange checkmark */
+}
+
+[data-md-color-scheme="slate"] .widget-checkbox-unchecked::before {
+  content: ""; /* No checkmark */
+  color: transparent; /* Make sure nothing shows */
+}
+
+/* define class to stop floating, so that next paragraph is shown after the block
+use as <div class="clear-float"></div> */
+.clear-float {
+  clear: both;
+}
+.md-typeset .clear-float + * {
+  text-align: left;
+}
+
+
+/* additional color definitions for icons, use as :fontawesome-brands-youtube:{.red-color} */
+.orange-color {
+    color: #F28C38; /* Orange */
+}
+.red-color {
+  color: #EE0F0F;
+}
+
+/* =============== Base style for the <mouse> tag =============== */
+/* Base style for the <mouse> tag */
+mouse {
+    display: inline-flex; /* Use flexbox to align icon and text horizontally */
+    align-items: center; /* Vertically center icon and text */
+    height: 1.2em; /* Height of the container */
+    vertical-align: middle;
+}
+
+/* Icon styling (applied via a pseudo-element) */
+
+mouse.left::before {
+    content: '';
+    display: inline-block;
+    width: 1.1em;
+    height: 1.1em;
+    background-color: #f28c38; /* Tint color */
+    -webkit-mask: url('../assets/mouse-left-click.svg') no-repeat center / contain;
+    mask: url('../assets/mouse-left-click.svg') no-repeat center / contain;
+}
+
+
+mouse.left::after {
+    content: "LMB";
+    font-family: monospace;
+    font-size: 1em;
+    vertical-align: middle;
+}
+
+/* Right mouse click */
+mouse.right::before {
+    content: '';
+    display: inline-block;
+    width: 1.1em;
+    height: 1.1em;
+    background-color: #f28c38; /* Tint color */
+    -webkit-mask: url('../assets/mouse-left-click.svg') no-repeat center / contain;
+    mask: url('../assets/mouse-left-click.svg') no-repeat center / contain;
+}
+
+mouse.right::after {
+    content: "RMB";
+    font-family: monospace;
+    font-size: 1em;
+    vertical-align: middle;
+}

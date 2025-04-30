@@ -32,6 +32,9 @@ for i=numel(obj.childControllers):-1:1
     end
 end
 
+% terminate python session to release GPU memory
+if ~isempty(obj.mibModel.mibPython); terminate(pyenv); end
+
 if isprop(obj, 'DragNDrop') && ~isempty(obj.DragNDrop)
     delete(obj.DragNDrop);  % delete class and make property empty
     obj.DragNDrop = [];
@@ -57,8 +60,9 @@ mib_pars.mibVersion = obj.mibVersionNumeric;   % define version of MIB for which
 
 prefdir = getPrefDir();
 try
+    mib_pars.preferences.Users = rmfield(mib_pars.preferences.Users, 'Tiers'); % remove user's stats from the output preferences structure
     save(fullfile(prefdir, 'mib.mat'), 'mib_pars');
-    % additionally save preferences.Users.Tiers
+    % additionally save preferences.Users.Tiers to mib_user.mat
     Tiers = obj.mibModel.preferences.Users.Tiers;
     save(fullfile(prefdir, 'mib_user.mat'), 'Tiers');
 catch err

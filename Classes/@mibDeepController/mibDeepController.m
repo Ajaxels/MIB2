@@ -11,7 +11,7 @@
 % along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 % Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi
 % Date: 25.04.2023
 
 classdef mibDeepController < handle
@@ -56,11 +56,19 @@ classdef mibDeepController < handle
         % a cell array with names of initialized child controllers
         availableArchitectures
         % containers.Map with available architectures
-        % keySet = {'2D Semantic', '2.5D Semantic', '3D Semantic', '2D Patch-wise'};
-        % valueSet{1} = {'U-net', 'SegNet', 'DLv3 Resnet18', 'DLv3 Resnet50', 'DLv3 Xception', 'DLv3 Inception-ResNet-v2'}
-        % valueSet{2} = {'3DC + DLv3 Resnet18', 'Z2C + U-net', 'Z2C + DLv3 Resnet18', 'Z2C + DLv3 Resnet50'}
+        % keySet = {'2D Semantic', '2.5D Semantic', '3D Semantic', '2D Patch-wise', '2D Instance'};
+        % valueSet{1} = {'DeepLab v3+', 'SegNet', 'U-net', 'U-net +Encoder'}; old: {'U-net', 'SegNet', 'DLv3 Resnet18', 'DLv3 Resnet50', 'DLv3 Xception', 'DLv3 Inception-ResNet-v2'}
+        % valueSet{2} = {'Z2C + DLv3', 'Z2C + DLv3', 'Z2C + U-net', 'Z2C + U-net +Encoder'}; % 3DC + DLv3 Resnet18'
         % valueSet{3} = {'U-net', 'U-net Anisotropic'}
         % valueSet{4} = {'Resnet18', 'Resnet50', 'Resnet101', 'Xception'}
+        % valueSet{5} = {'SOLOv2'} old: {'SOLOv2 Resnet18', 'SOLOv2 Resnet50'};
+        availableEncoders
+        % containers.Map with available encoders
+        % keySet - is a mixture of workflow -space- architecture {'2D Semantic DeepLab v3+', '2D Semantic U-net +Encoder'}
+        % encoders for each "workflow -space- architecture" combination, the last value shows the selected encoder
+        % encodersList{1} = {'Resnet18', 'Resnet50', 'Xception', 'InceptionResnetv2', 1}; % for '2D Semantic DeepLab v3+'
+        % encodersList{2} = {'Classic', 'Resnet18', 'Resnet50', 2}; % for '2D Semantic U-net +Encoder'
+        % encodersList{3} = {'Resnet18', 'Resnet50', 1}; % for '2D Instance SOLOv2''
         BatchOpt
         % a structure compatible with batch operation
         % name of each field should be displayed in a tooltip of GUI
@@ -237,7 +245,7 @@ classdef mibDeepController < handle
 
             batchSizeDimension = numel(block.BlockSize) + 1;
             batchSize = size(block.Data, batchSizeDimension);
-            
+
             % permute dataset for grayscale images when the batch size is
             % more than 1, otherwise give error for batch size>1 in the
             % patchwise mode
@@ -257,6 +265,9 @@ classdef mibDeepController < handle
                             [outputLabeledImageBlock, ~, scoreBlock] = semanticseg(block.Data, net, ...
                                 'OutputType', 'uint8',...
                                 'ExecutionEnvironment', executionEnvironment);
+
+                            %scores = predict(net, single(block.Data));
+                            %[label,score] = scores2label(scores, {'bg', 'mito'});
                         end
 
                         % crop the output
@@ -304,7 +315,7 @@ classdef mibDeepController < handle
                             'ExecutionEnvironment', executionEnvironment);
                     end
 
-                    %[scores, pixelLabels] = max(scoreBlock(:,:,3,:,1,:), [], 4); 
+                    %[scores, pixelLabels] = max(scoreBlock(:,:,3,:,1,:), [], 4);
 
                     % crop the output
                     z = ceil(block.BlockSize(3)/2);
@@ -323,7 +334,7 @@ classdef mibDeepController < handle
                         end
                     else
                         outputLabeledImageBlock = outputLabeledImageBlock(:, :, z, :, :);   % get a single slice
-                         if generateScoreFiles > 0
+                        if generateScoreFiles > 0
                             scoreBlock = scoreBlock(:, :, z, :, :);
                         end
                     end
@@ -399,12 +410,17 @@ classdef mibDeepController < handle
 
     methods
         % declaration of functions in the external files, keep empty line in between for the doc generator
+
+        [lgraph, outputPatchSize] = createNetwork(obj, previewSwitch) % generate network
+
         net = generateDeepLabV3Network(obj, imageSize, numClasses, targetNetwork) % generate DeepLab v3+ convolutional neural network for semantic image segmentation of 2D RGB images
 
         net = generate3DDeepLabV3Network(obj, imageSize, numClasses, downsamplingFactor, targetNetwork) % generate DeepLab v3+ convolutional neural network for semantic image segmentation of 2D RGB images
 
+        [net, outputSize] = generateUnet2DwithEncoder(obj, imageSize, encoderNetwork) % enerate Unet convolutional neural network for semantic image segmentation of 2D RGB images using a specified encoder
+
         [patchOut, info, augList, augPars] = mibDeepAugmentAndCrop3dPatchMultiGPU(patchIn, info, inputPatchSize, outputPatchSize, mode, options) % augment patches for 3D in multi-gpu mode
-        
+
         [patchOut, info, augList, augPars] = mibDeepAugmentAndCrop2dPatchMultiGPU(patchIn, info, inputPatchSize, outputPatchSize, mode, options) %  augment patches for 2D in multi-gpu mode
 
         TrainingOptions = preprareTrainingOptionsInstances(obj, valDS);     % prepare options for training of instance segmentation network
@@ -421,20 +437,33 @@ classdef mibDeepController < handle
             % indicates field of the BatchOpt structure that defines value
             % for this widget
 
+            obj.TrainEngine = 'trainNetwork'; % original training engine
+
             % define available architectures
             workflowsList = {'2D Semantic', '2.5D Semantic', '3D Semantic', '2D Patch-wise', '2D Instance'};
-            architectureList{1} = {'U-net', 'SegNet', 'DLv3 Resnet18', 'DLv3 Resnet50', 'DLv3 Xception', 'DLv3 Inception-ResNet-v2'};
-            architectureList{2} = {'3DC + DLv3 Resnet18', 'Z2C + U-net', 'Z2C + DLv3 Resnet18', 'Z2C + DLv3 Resnet50'};
+            architectureList{1} = {'DeepLab v3+', 'SegNet', 'U-net', 'U-net +Encoder'};
+            %architectureList{2} = {'3DC + DLv3 Resnet18', 'Z2C + DLv3 Resnet18', 'Z2C + DLv3 Resnet50', 'Z2C + U-net', 'Z2C + U-net +Encoder'};
+            architectureList{2} = {'Z2C + DLv3', 'Z2C + U-net', 'Z2C + U-net +Encoder'}; % 3DC + DLv3 Resnet18'
             architectureList{3} = {'U-net', 'U-net Anisotropic'};
             architectureList{4} = {'Resnet18', 'Resnet50', 'Resnet101', 'Xception'};
-            architectureList{5} = {'SOLOv2 Resnet18', 'SOLOv2 Resnet50'};
+            architectureList{5} = {'SOLOv2'};
             obj.availableArchitectures = containers.Map(workflowsList, architectureList);
+            % define list of encoders for different architectures
+            %workflowsArchList = {'2D Semantic DeepLab v3+', '2D Semantic U-net +Encoder', '2D Instance SOLOv2', '2.5D Semantic Z2C + U-net +Encoder', '2.5D Semantic Z2C + DLv3'};
+            encodersList{1} = {'Resnet18', 'Resnet50', 'Xception', 'InceptionResnetv2', 1}; % for '2D Semantic DeepLab v3+'
+            encodersList{2} = {'Classic', 'Resnet18', 'Resnet50', 2}; % for '2D Semantic U-net +Encoder'
+            encodersList{3} = {'Resnet18', 'Resnet50', 1}; % for '2D Instance SOLOv2''
+            encodersList{4} = {'Classic', 'Resnet18', 'Resnet50', 2}; % for '2D Semantic U-net +Encoder'
+            encodersList{5} = {'Resnet18', 'Resnet50', 1}; % for '2.5D Semantic Z2C + DLv3'
+            workflowsArchList = ["2D Semantic DeepLab v3+", "2D Semantic U-net +Encoder", "2D Instance SOLOv2", ...
+                "2.5D Semantic Z2C + U-net +Encoder", "2.5D Semantic Z2C + DLv3"];
+            %obj.availableEncoders = dictionary(workflowsArchList, encodersList); % dictionary available only from R2022b
+            obj.availableEncoders = containers.Map(workflowsArchList, encodersList);
 
             obj.BatchOpt.NetworkFilename = fullfile(obj.mibModel.myPath, 'myLovelyNetwork.mibDeep');
-
             obj.BatchOpt.Workflow = {'2D Semantic'};
-            obj.BatchOpt.Workflow{2} = {'2D Semantic', '2.5D Semantic', '3D Semantic', '2D Patch-wise', '2D Instance'};  % {'2D U-net', '2D SegNet', '2D DLv3 Resnet18', '3D U-net', '3D U-net Anisotropic', '2D Patch-wise Resnet18', '2D Patch-wise Resnet50'}
-            obj.BatchOpt.Architecture = {'DLv3 Resnet18'};
+            obj.BatchOpt.Workflow{2} = workflowsList;
+            obj.BatchOpt.Architecture = {'DeepLab v3+'};
             obj.BatchOpt.Architecture{2} = obj.availableArchitectures('2D Semantic');
             % 2D Semantic: {'U-net', 'SegNet', 'DLv3 Resnet18'}
             % 2.5D Semantic: {'3DC + DLv3 Resnet18', 'Z2C + U-net', 'Z2C + DLv3 Resnet18', 'Z2C + DLv3 Resnet50'}
@@ -442,9 +471,11 @@ classdef mibDeepController < handle
             % 2D Patch-wise: {'Resnet18', 'Resnet50', 'Resnet101', 'Xception'}
             obj.BatchOpt.Mode = {'Train'};
             obj.BatchOpt.Mode{2} = {'Train', 'Predict'};
+            obj.BatchOpt.T_EncoderNetwork = {'Resnet18'};
+            obj.BatchOpt.T_EncoderNetwork{2} = {'Classic', 'Resnet18', 'Resnet50'};
             obj.BatchOpt.T_ConvolutionPadding = {'same'};
             obj.BatchOpt.T_ConvolutionPadding{2} = {'same', 'valid'};
-            obj.BatchOpt.T_InputPatchSize = '64 64 1 1';
+            obj.BatchOpt.T_InputPatchSize = '256 256 1 1';
             obj.BatchOpt.T_NumberOfClasses{1} = 2;
             obj.BatchOpt.T_NumberOfClasses{2} = [1 Inf];
             obj.BatchOpt.T_SegmentationLayer = {'dicePixelCustomClassificationLayer'};
@@ -462,7 +493,7 @@ classdef mibDeepController < handle
             obj.BatchOpt.T_FilterSize{1} = 3;
             obj.BatchOpt.T_FilterSize{2} = [3 Inf];
             obj.BatchOpt.T_UseImageNetWeights = false;
-            obj.BatchOpt.T_PatchesPerImage{1} = 32;
+            obj.BatchOpt.T_PatchesPerImage{1} = 1;
             obj.BatchOpt.T_PatchesPerImage{2} = [1 Inf];
             obj.BatchOpt.T_MiniBatchSize{1} = obj.mibModel.preferences.Deep.MiniBatchSize;
             obj.BatchOpt.T_MiniBatchSize{2} = [1 Inf];
@@ -473,7 +504,7 @@ classdef mibDeepController < handle
             obj.BatchOpt.T_RandomGeneratorSeed{1} = obj.mibModel.preferences.Deep.RandomGeneratorSeed;  % random seed generator for training
             obj.BatchOpt.T_RandomGeneratorSeed{2} = [0 Inf];
             obj.BatchOpt.T_RandomGeneratorSeed{3} = true;
-            
+
             obj.BatchOpt.Bioformats = false;    % use bioformats file reader for prediction images
             obj.BatchOpt.BioformatsTraining = false;    % use bioformats file reader for training images
             obj.BatchOpt.BioformatsTrainingIndex{1} = 1;    % index of a serie to be used with bio-formats reader for training
@@ -560,6 +591,7 @@ classdef mibDeepController < handle
             obj.BatchOpt.mibBatchTooltip.NetworkFilename = 'Network filename, a new filename for training or existing filename for prediction';
             obj.BatchOpt.mibBatchTooltip.Workflow = 'Targeted workflow to perform';
             obj.BatchOpt.mibBatchTooltip.Architecture = 'Architecture of the network';
+            obj.BatchOpt.mibBatchTooltip.T_EncoderNetwork = 'Select backbone to modify the encoder part of the network';
             obj.BatchOpt.mibBatchTooltip.T_ConvolutionPadding = '"same": zero padding is applied to the inputs to convolution layers such that the output and input feature maps are the same size; "valid" - zero padding is not applied; the output feature map is smaller than the input feature map';
             obj.BatchOpt.mibBatchTooltip.Mode = 'Use tool in the training or prediction mode';
             obj.BatchOpt.mibBatchTooltip.T_InputPatchSize = 'Network input image size as [height width depth colors]';
@@ -591,7 +623,7 @@ classdef mibDeepController < handle
             obj.BatchOpt.mibBatchTooltip.ValidationFraction = 'Fraction of images used for validation during training';
             obj.BatchOpt.mibBatchTooltip.RandomGeneratorSeed = 'Seed for random number generator used during splitting of test and validation datasets';
             obj.BatchOpt.mibBatchTooltip.T_RandomGeneratorSeed = 'Seed for random number generator used during initialization of training. Use 0 for random initialization each time or any other number for reproducibility';
-            obj.BatchOpt.mibBatchTooltip.MaskAway = 'Mask away areas that should not be used for training, requires MIB *.mask files next to the model files or use of 0s to mask out the areas';
+            obj.BatchOpt.mibBatchTooltip.MaskAway = 'Mask away areas that should not be used for training, requires MIB *.mask files under Mask subfolder for preprocessing or use of 0s (Exterior) to specify mask out areas in models';
             obj.BatchOpt.mibBatchTooltip.SingleModelTrainingFile = 'When checked a single Model file with labels is used, when unchecked each image should have a corresponding model file with labels';
             obj.BatchOpt.mibBatchTooltip.ModelFilenameExtension = 'Extension for model filenames with labels, the files should be placed under "Labels" subfolder';
             obj.BatchOpt.mibBatchTooltip.MaskFilenameExtension = 'Extension for mask filenames, the files should be placed under "Masks" subfolder; when "Use 0-s IN LABELS" is selected mask is encoded with 0-indices, no preprocessing is required';
@@ -655,7 +687,7 @@ classdef mibDeepController < handle
 
             % sending reports settings
             obj.SendReports = obj.mibModel.preferences.Deep.SendReports;
-            
+
             obj.TrainingProgress = struct;
             obj.Aug2DFuncNames = [];    % names of augmentation functions for 2D
             obj.Aug3DFuncNames = [];    % names of augmentation functions for 3D
@@ -742,12 +774,12 @@ classdef mibDeepController < handle
 
             % add drag-and-drop of the project config to the Network,
             % Preprocess, Train, Predict, Options panels
-            DnD_uifigure(obj.View.handles.NetworkPanel, @(o, dat)obj.dnd_files_callback(o, dat));    % make sure that shashes are corrected to OS
+            DnD_uifigure(obj.View.handles.NetworkPanel, @(o, dat)obj.dnd_files_callback(o, dat));    % make sure that slashes are corrected to OS
             DnD_uifigure(obj.View.handles.Preprocess, @(o, dat)obj.dnd_files_callback(o, dat));
             DnD_uifigure(obj.View.handles.Train, @(o, dat)obj.dnd_files_callback(o, dat));
             DnD_uifigure(obj.View.handles.Predict, @(o, dat)obj.dnd_files_callback(o, dat));
             DnD_uifigure(obj.View.handles.Options, @(o, dat)obj.dnd_files_callback(o, dat));
-            
+
             if gpuDeviceCount == 0
                 obj.View.Figure.GPUDropDown.Items = {'CPU only', 'Parallel'};
                 uialert(obj.View.gui, ...
@@ -792,6 +824,9 @@ classdef mibDeepController < handle
 
             obj.mibModel.preferences.Deep.SendReports = obj.SendReports;
 
+            % switch off warning for unetLayers
+            warning('off', 'vision:semanticseg:unetLayersDeprecation')
+
             %obj.mibModel.preferences.Deep.AugOpt2D = obj.AugOpt2D;
             % close gpu into window if it is open
             if ~isempty(obj.gpuInfoFig) && isvalid(obj.gpuInfoFig)
@@ -825,7 +860,7 @@ classdef mibDeepController < handle
             % .names - cell array with filenames
 
             fullFilenameIn = dragIn.names{1};
-            % fix the slash characters 
+            % fix the slash characters
             %fullFilenameIn = strrep(fullFilenameIn, '/', filesep);
             %fullFilenameIn = strrep(fullFilenameIn, '\', filesep);
 
@@ -861,6 +896,11 @@ classdef mibDeepController < handle
                 obj.View.Figure.P_OverlappingTiles.Value = false;
                 obj.BatchOpt.P_OverlappingTiles = false;
                 obj.View.Figure.P_OverlappingTilesPercentage.Enable = 'off';
+            end
+
+            if strcmp(obj.BatchOpt.Workflow{1}, obj.View.handles.Workflow.Value) == 0
+                obj.View.handles.Workflow.Value = obj.BatchOpt.Workflow{1};
+                obj.selectWorkflow();
             end
 
             % when elements GIU needs to be updated, update obj.BatchOpt
@@ -961,7 +1001,7 @@ classdef mibDeepController < handle
                     'Wrong directories', 'icon', 'warning');
             end
 
-            obj.View.handles.T_SendReports.Value = obj.SendReports.T_SendReports; 
+            obj.View.handles.T_SendReports.Value = obj.SendReports.T_SendReports;
         end
 
         function activationLayerChangeCallback(obj)
@@ -1037,6 +1077,18 @@ classdef mibDeepController < handle
                         obj.BatchOpt.P_OverlappingTiles = false;
                         obj.View.Figure.P_OverlappingTilesPercentage.Enable = 'off';
                     end
+                case 'T_EncoderNetwork'
+                    selectedEncoder = obj.BatchOpt.T_EncoderNetwork{1};
+                    encoderKeyValue = [obj.BatchOpt.Workflow{1} ' ' obj.BatchOpt.Architecture{1}];
+                    if isKey(obj.availableEncoders, encoderKeyValue)
+                        if isa(obj.availableEncoders, 'containers.Map')
+                            encodersList = obj.availableEncoders(encoderKeyValue);
+                            selectedEncoderValue = find(ismember(encodersList(1:end-1), selectedEncoder));
+                            obj.availableEncoders(encoderKeyValue) = [encodersList(1:end-1) {selectedEncoderValue}];
+                        else % dictionary
+                            obj.availableEncoders{encoderKeyValue}{end} = find(ismember(obj.availableEncoders{encoderKeyValue}(1:end-1), selectedEncoder));
+                        end
+                    end
             end
         end
 
@@ -1049,6 +1101,7 @@ classdef mibDeepController < handle
             obj.updateBatchOptFromGUI(event);
             obj.View.handles.NumberOfClassesPreprocessing.Enable = 'on';
             if obj.BatchOpt.SingleModelTrainingFile
+                
                 obj.View.handles.ModelFilenameExtension.Enable = 'off';
                 %obj.View.handles.MaskFilenameExtension.Enable = 'off';
                 %obj.View.handles.NumberOfClassesPreprocessing.Enable = 'off';
@@ -1073,7 +1126,7 @@ classdef mibDeepController < handle
 
             obj.View.handles.T_UseImageNetWeights.Enable = 'off';
             obj.View.handles.MaskAway.Enable = 'on';
-            obj.View.handles.MaskFilenameExtension.Enable = 'on';    
+            obj.View.handles.MaskFilenameExtension.Enable = 'on';
 
             switch obj.BatchOpt.Workflow{1}
                 case '2D Semantic'
@@ -1086,7 +1139,7 @@ classdef mibDeepController < handle
                     obj.BatchOpt.Architecture{2} = obj.availableArchitectures(obj.BatchOpt.Workflow{1});
                     obj.View.handles.T_UseImageNetWeights.Enable = 'on';
                     obj.View.handles.MaskAway.Enable = 'off';
-                    obj.View.handles.MaskFilenameExtension.Enable = 'off'; 
+                    obj.View.handles.MaskFilenameExtension.Enable = 'off';
                 case '2D Instance'
                     obj.BatchOpt.Architecture{2} = obj.availableArchitectures(obj.BatchOpt.Workflow{1});
             end
@@ -1103,7 +1156,8 @@ classdef mibDeepController < handle
 
             obj.View.handles.ModelFilenameExtension.Enable = 'on';
             obj.View.handles.SingleModelTrainingFile.Enable = 'on';
-            
+
+            obj.View.handles.T_EncoderNetwork.Enable = 'off';
             obj.View.handles.T_EncoderDepth.Enable = 'on';
             obj.View.handles.T_NumFirstEncoderFilters.Enable = 'on';
             obj.View.handles.T_FilterSize.Enable = 'on';
@@ -1115,17 +1169,21 @@ classdef mibDeepController < handle
             obj.View.handles.P_OverlappingTilesPercentage.Enable = 'on';
             obj.View.handles.P_PatchWiseUpsample.Enable = 'off';
             obj.View.handles.P_ExtraPaddingPercentage.Enable = 'on';
+            obj.View.handles.T_EncoderNetwork.Enable = 'off';
+
+            obj.TrainEngine = 'trainNetwork'; % original method
 
             switch obj.BatchOpt.Workflow{1}
                 case '2D Semantic'
                     obj.View.handles.SingleModelTrainingFile.Enable = 'on';
                     switch obj.BatchOpt.Architecture{1}
-                        case {'DLv3 Resnet18', 'DLv3 Resnet50', 'DLv3 Xception', 'DLv3 Inception-ResNet-v2'}
+                        case {'DeepLab v3+'}
                             obj.View.handles.T_EncoderDepth.Enable = 'off';
                             obj.View.handles.T_EncoderDepth.Value = 4;
                             obj.BatchOpt.T_EncoderDepth{1} = 4;
                             obj.View.handles.T_NumFirstEncoderFilters.Enable = 'off';
                             obj.View.handles.T_FilterSize.Enable = 'off';
+                            obj.View.handles.T_EncoderNetwork.Enable = 'on';
                         case 'SegNet'
                             if obj.View.handles.SingleModelTrainingFile.Value == false
                                 obj.View.handles.ModelFilenameExtension.Enable = 'on';
@@ -1138,6 +1196,13 @@ classdef mibDeepController < handle
                             if obj.View.handles.SingleModelTrainingFile.Value == false
                                 obj.View.handles.ModelFilenameExtension.Enable = 'on';
                             end
+                        case 'U-net +Encoder'
+                            obj.View.handles.T_EncoderNetwork.Enable = 'on';
+                            obj.View.handles.SingleModelTrainingFile.Enable = 'on';
+                            if obj.View.handles.SingleModelTrainingFile.Value == false
+                                obj.View.handles.ModelFilenameExtension.Enable = 'on';
+                            end
+                            obj.TrainEngine = 'trainnet'; % new method for dlnetwork
                     end
                 case '2.5D Semantic'
                     obj.View.handles.SingleModelTrainingFile.Enable = 'on';
@@ -1146,15 +1211,21 @@ classdef mibDeepController < handle
                             obj.View.handles.T_EncoderDepth.Enable = 'off';
                             obj.View.handles.T_EncoderDepth.Value = 4;
                             obj.BatchOpt.T_EncoderDepth{1} = 4;
-                        case {'Z2C + DLv3 Resnet18', 'Z2C + DLv3 Resnet50'}
+                        case {'Z2C + DLv3'}
                             obj.View.handles.T_EncoderDepth.Enable = 'off';
                             obj.View.handles.T_EncoderDepth.Value = 4;
                             obj.BatchOpt.T_EncoderDepth{1} = 4;
                             obj.View.handles.T_NumFirstEncoderFilters.Enable = 'off';
+                            obj.View.handles.T_EncoderNetwork.Enable = 'on';
                         case {'Z2C + U-net'}
                             obj.View.handles.T_EncoderDepth.Enable = 'on';
                             obj.View.handles.T_EncoderDepth.Value = 3;
                             obj.BatchOpt.T_EncoderDepth{1} = 3;
+                        case {'Z2C + U-net +Encoder'}
+                            obj.View.handles.T_EncoderDepth.Enable = 'on';
+                            obj.View.handles.T_EncoderDepth.Value = 3;
+                            obj.BatchOpt.T_EncoderDepth{1} = 3;
+                            obj.View.handles.T_EncoderNetwork.Enable = 'on';
                     end
                     obj.View.handles.SingleModelTrainingFile.Enable = 'off';
                     obj.View.handles.SingleModelTrainingFile.Value = false;
@@ -1181,11 +1252,30 @@ classdef mibDeepController < handle
                     % Prediction tab settings
                     obj.View.handles.P_PatchWiseUpsample.Enable = 'on';
                     obj.View.handles.P_ExtraPaddingPercentage.Enable = 'off';
+                case '2D Instance'
+                    obj.View.handles.T_EncoderNetwork.Enable = 'on';
             end
 
             if strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'valid')
                 obj.View.Figure.P_OverlappingTiles.Enable = 'off';
                 obj.View.Figure.P_OverlappingTilesPercentage.Enable = 'off';
+            end
+
+            % update encoders list
+            encoderKeyValue = [obj.BatchOpt.Workflow{1} ' ' obj.BatchOpt.Architecture{1}];
+            if isKey(obj.availableEncoders, encoderKeyValue)
+                if isa(obj.availableEncoders, 'containers.Map')
+                    encodersList = obj.availableEncoders(encoderKeyValue);
+                    obj.BatchOpt.T_EncoderNetwork{2} = encodersList(1:end-1); % as the last value is the selected encoder
+                    obj.BatchOpt.T_EncoderNetwork{1} = encodersList{encodersList{end}}; % as the last value is the selected encoder
+                    obj.View.handles.T_EncoderNetwork.Items = obj.BatchOpt.T_EncoderNetwork{2};
+                    obj.View.handles.T_EncoderNetwork.Value = obj.BatchOpt.T_EncoderNetwork{1};
+                else % dictionary
+                    obj.BatchOpt.T_EncoderNetwork{2} = obj.availableEncoders{encoderKeyValue}(1:end-1); % as the last value is the selected encoder
+                    obj.BatchOpt.T_EncoderNetwork{1} = obj.availableEncoders{encoderKeyValue}{obj.availableEncoders{encoderKeyValue}{end}}; % as the last value is the selected encoder
+                    obj.View.handles.T_EncoderNetwork.Items = obj.BatchOpt.T_EncoderNetwork{2};
+                    obj.View.handles.T_EncoderNetwork.Value = obj.BatchOpt.T_EncoderNetwork{1};
+                end
             end
         end
 
@@ -1280,14 +1370,14 @@ classdef mibDeepController < handle
                     end
 
                     obj.wb = uiprogressdlg(obj.View.gui, 'Message', sprintf('Loading the network\nPlease wait...'), ...
-                                'Title', 'Load network');
+                        'Title', 'Load network');
 
                     res = load(networkName, '-mat');     % loading 'net', 'TrainingOptions', 'classNames' variables
                     net = res.net;   % generate output network
-                    
+
                     % update waitbar
                     obj.wb.Value = 0.5;
-                    
+
                     % add/update BatchOpt with the provided fields in BatchOptIn
                     % combine fields from input and default structures
                     res.BatchOpt = rmfield(res.BatchOpt, ...
@@ -1388,7 +1478,7 @@ classdef mibDeepController < handle
         function checkNetwork(obj, fn)
             % function checkNetwork(obj, fn)
             % generate and check network using settings in the Train tab
-            % 
+            %
             % Parameters:
             % fn: optional string with filename (*.mibDeep) to preview its
             % configuration
@@ -1400,7 +1490,7 @@ classdef mibDeepController < handle
                     'Network file is missing!');
                 return;
             end
-            
+
             if isempty(fn)
                 obj.wb = uiprogressdlg(obj.View.gui, 'Message', sprintf('Generating network\nPlease wait...'), ...
                     'Title', 'Generating network', 'Cancelable','on');
@@ -1427,8 +1517,8 @@ classdef mibDeepController < handle
                 catch err
                     %obj.showErrorDialog(err, 'Missing net-variable');
                     mibShowErrorDialog(obj.View.gui, err, 'Missing net-variable');
-                    delete(obj.wb); 
-                    return; 
+                    delete(obj.wb);
+                    return;
                 end
             end
 
@@ -1493,278 +1583,6 @@ classdef mibDeepController < handle
             delete(obj.wb);
         end
 
-        %%
-        function [lgraph, outputPatchSize] = createNetwork(obj, previewSwitch)
-            % function lgraph = createNetwork(obj, previewSwitch)
-            % generate network
-            % Parameters:
-            % previewSwitch: logical switch, when 1 - the generated network
-            % is only for preview, i.e. weights of classes won't be
-            % calculated
-            %
-            % Return values:
-            % lgraph: network object
-            % outputPatchSize: output patch size as [height, width, depth, color]
-
-            if nargin < 2; previewSwitch = 0; end
-            lgraph = [];
-            outputPatchSize = [];
-            inputPatchSize = str2num(obj.BatchOpt.T_InputPatchSize);    % as [height, width, depth, color]
-
-            % debug 2.5D
-            %obj.BatchOpt.Workflow{1} = '2.5D Semantic';
-            %obj.BatchOpt.Architecture{1} = '3DC + DLv3 Resnet18';  
-            
-            selectedArchitecture = obj.BatchOpt.Architecture{1};
-
-            try
-                switch obj.BatchOpt.Workflow{1}
-                    case {'2D Semantic', '2.5D Semantic'}
-                        if strcmp(obj.BatchOpt.Workflow{1}, '2D Semantic') || ...
-                            strcmp(obj.BatchOpt.Architecture{1}(1:3), 'Z2C')
-
-                            if strcmp(obj.BatchOpt.Workflow{1}, '2D Semantic')
-                                colorDimension = 4; % index of the color dimension in inputPatch
-                            else
-                                selectedArchitecture = obj.BatchOpt.Architecture{1}(7:end);
-                                colorDimension = 3; % index of the color dimension in inputPatch
-                            end
-
-                            switch selectedArchitecture
-                                case 'U-net'
-                                    %if obj.mibModel.matlabVersion < 24.1 % earlier than R2024a
-                                        [lgraph, outputPatchSize] = unetLayers(...
-                                            inputPatchSize([1 2 colorDimension]), obj.BatchOpt.T_NumberOfClasses{1}, ...
-                                            'NumFirstEncoderFilters', obj.BatchOpt.T_NumFirstEncoderFilters{1}, 'FilterSize', obj.BatchOpt.T_FilterSize{1}, ...
-                                            'ConvolutionPadding', obj.BatchOpt.T_ConvolutionPadding{1}, 'EncoderDepth', obj.BatchOpt.T_EncoderDepth{1}); %#ok<*ST2NM>
-                                    %else
-                                    %    [lgraph, outputPatchSize] = unet(...
-                                    %        inputPatchSize([1 2 colorDimension]), obj.BatchOpt.T_NumberOfClasses{1}, ...
-                                    %        'NumFirstEncoderFilters', obj.BatchOpt.T_NumFirstEncoderFilters{1}, 'FilterSize', obj.BatchOpt.T_FilterSize{1}, ...
-                                    %        'ConvolutionPadding', obj.BatchOpt.T_ConvolutionPadding{1}, 'EncoderDepth', obj.BatchOpt.T_EncoderDepth{1}); %#ok<*ST2NM>
-                                    %end
-                                    outputPatchSize = [outputPatchSize(1), outputPatchSize(2), 1, outputPatchSize(3)];  % reformat to [height, width, depth, color]
-                                case 'SegNet'
-                                    lgraph = segnetLayers(inputPatchSize([1 2 colorDimension]), obj.BatchOpt.T_NumberOfClasses{1}, obj.BatchOpt.T_EncoderDepth{1}, ...
-                                        'NumOutputChannels', obj.BatchOpt.T_NumFirstEncoderFilters{1}, ...
-                                        'FilterSize', obj.BatchOpt.T_FilterSize{1});
-                                    outputPatchSize = inputPatchSize;  % as [height, width, depth, color]
-                                case {'DLv3 Resnet18', 'DLv3 Resnet50', 'DLv3 Xception', 'DLv3 Inception-ResNet-v2'}
-                                    if strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'valid') 
-                                        uialert(obj.View.gui, ...
-                                            sprintf('!!! Error !!!\n\n"%s" network architecture requires:\n - input patch size of at least [224 224]\n- 1 or 3 color channels\n- "same" padding', obj.BatchOpt.Architecture{1}), ...
-                                            'Wrong configuration!');
-                                        return;
-                                    end
-                                    switch selectedArchitecture
-                                        case 'DLv3 Resnet18'
-                                            targetNetwork = 'resnet18';
-                                        case 'DLv3 Resnet50'
-                                            targetNetwork = 'resnet50';
-                                        case 'DLv3 Xception'
-                                            if isdeployed
-                                                uialert(obj.View.gui, ...
-                                                    sprintf('!!! Error !!!\n\nCurrently %s network is only available in MIB for MATLAB\nTry to use DLv3-Resnet18/50 instead!', obj.BatchOpt.Architecture{1}), ...
-                                                    'Now available');
-                                                return;
-                                            end
-                                            targetNetwork = 'xception';
-                                        case 'DLv3 Inception-ResNet-v2'
-                                            if isdeployed
-                                                uialert(obj.View.gui, ...
-                                                    sprintf('!!! Error !!!\n\nCurrently %s network is only available in MIB for MATLAB\nTry to use DLv3-Resnet18/50 instead!', obj.BatchOpt.Architecture{1}), ...
-                                                    'Now available');
-                                                return;
-                                            end
-                                            targetNetwork = 'inceptionresnetv2';
-                                    end
-                                    lgraph = obj.generateDeepLabV3Network(inputPatchSize([1 2 colorDimension]), obj.BatchOpt.T_NumberOfClasses{1}, targetNetwork);
-    
-                                    if isempty(lgraph); return; end
-                                    outputPatchSize = inputPatchSize([1 2 4]);
-                            end
-                        elseif strcmp(obj.BatchOpt.Workflow{1}, '2.5D Semantic') % '2.5D Semantic'
-                            switch selectedArchitecture
-                                case {'3DC + DLv3 Resnet18'}
-                                    if strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'valid')
-                                        uialert(obj.View.gui, ...
-                                            sprintf('!!! Error !!!\n\n"%s" network architecture requires:\n - input patch size of at least [224 224]\n- 1 or 3 color channels\n- "same" padding', obj.BatchOpt.Architecture{1}), ...
-                                            'Wrong configuration!');
-                                        return;
-                                    end
-                                    switch selectedArchitecture
-                                        case '3DC + DLv3 Resnet18'
-                                            targetNetwork = 'resnet18';
-                                        case '3DC + DLv3 Resnet50'
-                                            targetNetwork = 'resnet50';
-                                    end
-                                    lgraph = obj.generate3DDeepLabV3Network(inputPatchSize, obj.BatchOpt.T_NumberOfClasses{1}, targetNetwork);
-    
-                                    if isempty(lgraph); return; end
-                                    outputPatchSize = inputPatchSize([1 2 3 4]);
-                            end
-                        end
-                    case '3D Semantic'
-                        switch selectedArchitecture
-                            case 'U-net'
-                                %lgraph = obj.generate3DDeepLabV3Network(inputPatchSize([1 2 4]), obj.BatchOpt.T_NumberOfClasses{1}, 8, 'resnet50');
-
-
-                                [lgraph, outputPatchSize] = unet3dLayers(...
-                                    inputPatchSize, obj.BatchOpt.T_NumberOfClasses{1}, ...
-                                    'NumFirstEncoderFilters', obj.BatchOpt.T_NumFirstEncoderFilters{1}, 'FilterSize', obj.BatchOpt.T_FilterSize{1}, ...
-                                    'ConvolutionPadding', obj.BatchOpt.T_ConvolutionPadding{1}, 'EncoderDepth', obj.BatchOpt.T_EncoderDepth{1}); %#ok<*ST2NM>
-                            case 'U-net Anisotropic'
-                                % 3D U-net for anisotropic datasets, the first
-                                % convolutional and max pooling layers are 2D
-                                switch obj.BatchOpt.T_ConvolutionPadding{1}
-                                    case 'same'
-                                        PaddingValue = 'same';
-                                    case 'valid'
-                                        PaddingValue = 0;
-                                end
-
-                                % generate standard 3D Unet
-                                [lgraph, outputPatchSize] = unet3dLayers(...
-                                    inputPatchSize, obj.BatchOpt.T_NumberOfClasses{1}, ...
-                                    'NumFirstEncoderFilters', obj.BatchOpt.T_NumFirstEncoderFilters{1}, 'FilterSize', obj.BatchOpt.T_FilterSize{1}, ...
-                                    'ConvolutionPadding', obj.BatchOpt.T_ConvolutionPadding{1}, 'EncoderDepth', obj.BatchOpt.T_EncoderDepth{1});
-
-                                % replace first convolution layers of the 1 lvl of the net
-                                %lgraph.Layers(2).Name
-                                layerId = find(ismember({lgraph.Layers.Name}, 'Encoder-Stage-1-Conv-1')==1);
-                                layer = convolution3dLayer([obj.BatchOpt.T_FilterSize{1} obj.BatchOpt.T_FilterSize{1} 1], obj.BatchOpt.T_NumFirstEncoderFilters{1}, ...
-                                    'Padding', PaddingValue, 'Name', lgraph.Layers(layerId).Name);
-                                lgraph = replaceLayer(lgraph, lgraph.Layers(layerId).Name, layer);
-
-                                layerId = find(ismember({lgraph.Layers.Name}, 'Encoder-Stage-1-Conv-2')==1);
-                                layer = convolution3dLayer([obj.BatchOpt.T_FilterSize{1} obj.BatchOpt.T_FilterSize{1} 1], obj.BatchOpt.T_NumFirstEncoderFilters{1}, ...
-                                    'Padding', PaddingValue, 'Name', lgraph.Layers(layerId).Name);
-                                lgraph = replaceLayer(lgraph, lgraph.Layers(layerId).Name, layer);
-
-                                layerId = find(ismember({lgraph.Layers.Name}, 'Encoder-Stage-1-MaxPool')==1);
-                                layer = maxPooling3dLayer([2 2 1], ...
-                                    'Padding', PaddingValue, 'Name', lgraph.Layers(layerId).Name, ...
-                                    'Stride', [2 2 1]);
-                                lgraph = replaceLayer(lgraph, lgraph.Layers(layerId).Name, layer);
-
-                                %analyzeNetwork(lgraph);
-                                % get index of the final convolution layer
-                                finalConvId = find(ismember({lgraph.Layers.Name}, 'Final-ConvolutionLayer')==1);
-                                % using name of the previous level find index of the last decoder stage
-                                layerName = lgraph.Layers(finalConvId-1).Name;  % 'Decoder-Stage-2-ReLU-2'
-                                dashIds = strfind(layerName, '-');  % positions of dashes
-                                stageId = layerName(dashIds(2)+1:dashIds(3)-1);     % get stage id
-
-                                layerId = find(ismember({lgraph.Layers.Name}, sprintf('Decoder-Stage-%s-UpConv', stageId))==1);
-                                layer = transposedConv3dLayer([2 2 1], lgraph.Layers(layerId).NumFilters, ...
-                                    'Stride', [2 2 1], 'Name', lgraph.Layers(layerId).Name);
-                                lgraph = replaceLayer(lgraph, lgraph.Layers(layerId).Name, layer);
-
-                                layerId = find(ismember({lgraph.Layers.Name}, sprintf('Decoder-Stage-%s-Conv-1', stageId))==1);
-                                layer = convolution3dLayer([obj.BatchOpt.T_FilterSize{1} obj.BatchOpt.T_FilterSize{1} 1], obj.BatchOpt.T_NumFirstEncoderFilters{1}, ...
-                                    'Padding', PaddingValue, 'Name', lgraph.Layers(layerId).Name);
-                                lgraph = replaceLayer(lgraph, lgraph.Layers(layerId).Name, layer);
-
-                                layerId = find(ismember({lgraph.Layers.Name}, sprintf('Decoder-Stage-%s-Conv-2', stageId))==1);
-                                layer = convolution3dLayer([obj.BatchOpt.T_FilterSize{1} obj.BatchOpt.T_FilterSize{1} 1], obj.BatchOpt.T_NumFirstEncoderFilters{1}, ...
-                                    'Padding', PaddingValue, 'Name', lgraph.Layers(layerId).Name);
-                                lgraph = replaceLayer(lgraph, lgraph.Layers(layerId).Name, layer);
-
-                                if strcmp(obj.BatchOpt.T_ConvolutionPadding{1}, 'valid')
-                                    outputPatchSize = [];
-                                end
-                        end
-                    case '2D Patch-wise'
-                        if obj.BatchOpt.T_UseImageNetWeights
-                            if isdeployed
-                                uialert(obj.View.gui,...
-                                    sprintf('!!! Warning !!!\n\nInitialization of the network with imagenet weights is only available in MIB for MATLAB!\n\nPlease uncheck the "use ImageNet weights" checkbox to initialize the network using empty weights and try again.'), ...
-                                    'Not available', 'Icon', 'warning');
-                                return;
-                            end
-                            if inputPatchSize(4) ~= 3
-                                uialert(obj.View.gui,...
-                                    sprintf('!!! Warning !!!\n\nInitialization of the network with imagenet weights is only available for images with 3 color channels!\n\nPlease change "Input patch size" to [%d %d %d 3] and try again.', ...
-                                    inputPatchSize(1), inputPatchSize(2), inputPatchSize(3)), ...
-                                    'Not available', 'Icon', 'warning');
-                                return;
-                            end
-                            weightsValue = 'imagenet';
-                        else
-                            weightsValue = 'none';
-                        end
-                        try
-                            switch selectedArchitecture
-                                case 'Resnet18'
-                                    lgraph = resnet18('Weights', weightsValue);
-                                    outputPatchSize = [1 1 inputPatchSize(4)];
-                                case 'Resnet50'
-                                    lgraph = resnet50('Weights', weightsValue);
-                                    outputPatchSize = [1 1 inputPatchSize(4)];
-                                case 'Resnet101'
-                                    lgraph = resnet101('Weights', weightsValue);
-                                    outputPatchSize = [1 1 inputPatchSize(4)];
-                                case 'Xception'
-                                    lgraph = xception('Weights', weightsValue);
-                                    outputPatchSize = [1 1 inputPatchSize(4)];
-                            end
-                            % convert from 'DAGNetwork' to 'LayerGraph'
-                            % when init with imagenet weights
-                            if isa(lgraph, 'DAGNetwork')
-                                lgraph = layerGraph(lgraph);
-                            end
-                        catch err
-                            %obj.showErrorDialog(err, 'Missing packages', '', 'Most likely required package is missing!');
-                            mibShowErrorDialog(obj.View.gui, err, 'Missing packages', '', 'Most likely required package is missing!');
-                            return;
-                        end
-                end     % end of "switch obj.BatchOpt.Workflow"
-            catch err
-                v = ver('matlab');
-                if str2double(v.Version) >= 9.11
-                    uialert(obj.View.gui, ...
-                    sprintf('%s', err.message), 'Network configuration error', 'Icon', 'error', 'Interpreter', 'html');
-                else
-                    uialert(obj.View.gui, ...
-                        sprintf('%s', err.message), 'Network configuration error', 'Icon', 'error');
-                end
-                return;
-            end
-
-            % update the input layer
-            lgraph = obj.updateNetworkInputLayer(lgraph, inputPatchSize);
-            if isempty(lgraph); return; end
-
-            % update the activation layers
-            lgraph = obj.updateActivationLayers(lgraph);
-
-            % update the initialization weight for convolutional layers
-            % lgraph = updateConvolutionLayers(obj, lgraph);
-
-            % update maxPool and TransposedConvolution layers depending on network downsampling factor
-            if obj.View.handles.T_DownsamplingFactor.Value ~=2 && ismember(selectedArchitecture, {'U-net', 'SegNet'})
-                lgraph = obj.updateMaxPoolAndTransConvLayers(lgraph);
-            end
-
-            if strcmp(obj.BatchOpt.Workflow{1}, '2D Patch-wise') % 2D Patch-wise Resnet18 or 2D Patch-wise Resnet50
-                % update last 3 layers to adapt them to the new number of output classes
-                fullConnLayer = fullyConnectedLayer(obj.BatchOpt.T_NumberOfClasses{1}-1, 'Name', 'FullyConnectedLayer');
-                switch obj.BatchOpt.Architecture{1}
-                    case {'Resnet18', 'Resnet50', 'Resnet101'}
-                        lgraph = replaceLayer(lgraph, 'fc1000', fullConnLayer);
-                    case 'Xception'
-                        lgraph = replaceLayer(lgraph, 'predictions', fullConnLayer);
-                end
-                if obj.BatchOpt.T_UseImageNetWeights % replace classification output layer
-                    classificationOutputLayer = classificationLayer('Name', 'ClassificationLayer_predictions');
-                    lgraph = replaceLayer(lgraph, lgraph.Layers(end).Name, classificationOutputLayer); % 'ClassificationLayer_predictions'
-                end
-            else    % semantic segmentation
-                lgraph = obj.updateSegmentationLayer(lgraph);
-            end
-        end
-
         function lgraph = updateNetworkInputLayer(obj, lgraph, inputPatchSize)
             % function lgraph = updateNetworkInputLayer(obj, lgraph, inputPatchSize)
             % update the input layer settings for lgraph
@@ -1806,7 +1624,7 @@ classdef mibDeepController < handle
                             return;
                     end
                     switch obj.BatchOpt.Architecture{1}
-                        case {'U-net', 'DLv3 Resnet18', 'DLv3 Resnet50', 'DLv3 Xception', 'DLv3 Inception-ResNet-v2'}
+                        case {'U-net', 'DeepLab v3+', 'Z2C + DLv3'}
                             try
                                 %inputLayer.Name = 'data';
                                 lgraph = replaceLayer(lgraph, lgraph.Layers(1).Name, inputLayer);
@@ -1822,7 +1640,8 @@ classdef mibDeepController < handle
                             lgraph = replaceLayer(lgraph, 'data', inputLayer);
                         case {'Resnet50', 'Xception'}
                             lgraph = replaceLayer(lgraph, 'input_1', inputLayer);
-
+                        case 'U-net +Encoder'
+                            lgraph = replaceLayer(lgraph, lgraph.Layers(1).Name, inputLayer);
                     end
                 case {'3D Semantic', '2.5D Semantic'}   % '2.5D Semantic' and '3D Semantic'
                     % update the input layer settings
@@ -1883,8 +1702,8 @@ classdef mibDeepController < handle
                             layer = swishLayer('Name', sprintf('Swish-%d', id));
                         case 'tanhLayer'
                             layer = tanhLayer('Name', sprintf('Tahn-%d', id));
-                        %case 'reluLayer'
-                        %    layer = reluLayer('Name', sprintf('ReLU-%d', id));
+                            %case 'reluLayer'
+                            %    layer = reluLayer('Name', sprintf('ReLU-%d', id));
                     end
                     lgraph = replaceLayer(lgraph, lgraph.Layers(layerId).Name, layer);
                 end
@@ -1925,7 +1744,7 @@ classdef mibDeepController < handle
                             'NumChannels', lgraph.Layers(layerId).NumChannels, ...
                             'WeightsInitializer', weightsInitializer);
                     end
-                     
+
                     lgraph = replaceLayer(lgraph, lgraph.Layers(layerId).Name, layer);
                 end
             end
@@ -2057,9 +1876,9 @@ classdef mibDeepController < handle
             switch obj.BatchOpt.Workflow{1}
                 case {'2D Semantic', '2.5D Semantic'}
                     switch obj.BatchOpt.Architecture{1}
-                        case {'U-net', 'DLv3 Resnet18', 'DLv3 Resnet50', 'DLv3 Xception', 'DLv3 Inception-ResNet-v2', ...
+                        case {'U-net', 'DeepLab v3+', ...
                                 '3DC + DLv3 Resnet18', ...
-                                'Z2C + U-net', 'Z2C + DLv3 Resnet18', 'Z2C + DLv3 Resnet50'}
+                                'Z2C + U-net', 'Z2C + DLv3'}
                             try
                                 lgraph = replaceLayer(lgraph, 'Segmentation-Layer', outputLayer);
                             catch err
@@ -2136,7 +1955,7 @@ classdef mibDeepController < handle
 
             obj.(AugFuncNamesField) = [];
             obj.(AugFuncProbabilityField) = [];  % probability of each augmentation to be triggered
-            
+
             augmentationNames = fieldnames(augOptions);
             for augId=1:numel(augmentationNames)
                 switch augmentationNames{augId}
@@ -2244,7 +2063,7 @@ classdef mibDeepController < handle
                     prompts = {sprintf('Exclude the Exterior (default: false)')};
                     defAns = {obj.SegmentationLayerOpt.dicePixelCustom.ExcludeExerior};
                     options.PromptLines = 3;
-                    options.TitleLines = 4; 
+                    options.TitleLines = 4;
                     options.Title = sprintf('EXPERIMENTAL!\nExclude the Exterior (background) class\nfrom calculation of the loss function\n(disabled when 0-pixels used as mask)');
             end
             dlgTitle = 'Segmentation layer options';
@@ -2377,7 +2196,7 @@ classdef mibDeepController < handle
             % function start(obj, event)
             % start calcualtions, depending on the selected tab
             % preprocessing, training, or prediction is initialized
-            
+
             global mibPath
             global mibDeepStopTraining     % variable to define stop of training (when true)
 
@@ -2385,10 +2204,9 @@ classdef mibDeepController < handle
                 uialert(obj.View.gui, ...
                     'Coming soon...', 'In progress', 'Icon','info');
                 return;
-                return;
             end
-            
-            
+
+
             switch event.Source.Tag
                 case 'PreprocessButton'
                     obj.startPreprocessing();
@@ -2413,7 +2231,7 @@ classdef mibDeepController < handle
                             prompts = {'Follow the training progress using:'};
                             defAns = {{'Console printout', 'MATLAB progress window (requires MATLAB)', 1}};
                             dlgTitle = 'Progress window';
-                            options.WindowStyle = 'normal';       
+                            options.WindowStyle = 'normal';
                             options.Title = sprintf(['!!! Warning !!!\n\n' ...
                                 'Multi-GPU training is not compatible with the custom MIB progress window!\n' ...
                                 'Would you like to use any of these options?']);
@@ -2522,7 +2340,7 @@ classdef mibDeepController < handle
             if nargin < 2; uialert(obj.View.gui, 'processImages: the second parameter is required!', 'Preprocessing error'); return; end
 
             % init preprocessing images for the instance segmentation
-            if strcmp(obj.BatchOpt.Workflow{1}, '2D Instance') 
+            if strcmp(obj.BatchOpt.Workflow{1}, '2D Instance')
                 obj.processImagesForInstanceSegmentation(preprocessFor);
                 selection = uiconfirm(obj.View.gui, ...
                     sprintf('The labels were preprocessed!\n\nNow the preprocessed images needs to be split for training and validation.\nDo you want to do that now?'), ...
@@ -2573,7 +2391,7 @@ classdef mibDeepController < handle
             if obj.BatchOpt.showWaitbar
                 pwb = PoolWaitbar(1, sprintf('Creating image datastore\nPlease wait...'), [], ...
                     sprintf('%s %s: processing for %s', obj.BatchOpt.Workflow{1}, obj.BatchOpt.Architecture{1}, preprocessFor), ...
-                    obj.View.gui); 
+                    obj.View.gui);
             else
                 pwb = [];
             end
@@ -2652,7 +2470,7 @@ classdef mibDeepController < handle
 
             if obj.BatchOpt.showWaitbar
                 if pwb.getCancelState(); delete(pwb); return; end
-                pwb.updateText(sprintf('Acquiring class names\nPlease wait...')); 
+                pwb.updateText(sprintf('Acquiring class names\nPlease wait...'));
             end
 
             GroundTruthModelSwitch = 0;     % models exists
@@ -2715,7 +2533,7 @@ classdef mibDeepController < handle
             % define usage of parallel computing
             if obj.BatchOpt.UseParallelComputing
                 parforArg = obj.View.handles.PreprocessingParForWorkers.Value;    % Maximum number of workers running in parallel
-                if isempty(gcp('nocreate')); parpool(parforArg); end % create parpool   
+                if isempty(gcp('nocreate')); parpool(parforArg); end % create parpool
             else
                 parforArg = 0;      % Maximum number of workers running in parallel, when 0 a single core used without parallel
             end
@@ -2852,7 +2670,7 @@ classdef mibDeepController < handle
             saveModelOpt.modelMaterialColors = classColors;
 
             if SingleModelTrainingFileParFor && ~isempty(modDS)
-                if size(modDS.(modDS.modelVariable), 3) < NumFiles
+                if numel(modDS.Files) < NumFiles
                     uialert(obj.View.gui, ...
                         sprintf('!!! Error !!!\n\nNumber of slices in the model file is smaller than number of images\n\nYou may want to uncheck the "Single MIB model file" checkbox!'), ...
                         'Wrong model file');
@@ -2862,21 +2680,21 @@ classdef mibDeepController < handle
             end
 
             convertToRGB = 0;
-            %             if strcmp(obj.BatchOpt.Architecture{1}, 'DLv3 Resnet18')
+            %             if strcmp(obj.BatchOpt.Architecture{1}, 'DeepLab v3+')
             %                 mibImg = readimage(imgDS, 1);   % read image as [height, width, color, depth]
             %                 if size(mibImg,3) == 1 % grayscale image needs to be converted to RGB
             %                     convertToRGB = 1;
             %                 end
             %                 reset(imgDS);
             %             end
-            
+
             if showWaitbarParFor
                 pwb.setCurrentIteration(0);
-                pwb.updateMaxNumberOfIterations(NumFiles); 
+                pwb.updateMaxNumberOfIterations(NumFiles);
             end
-            
+
             parfor (imgId=1:NumFiles, parforArg)
-            %for imgId=1:NumFiles
+                %for imgId=1:NumFiles
                 % Define output directories
                 % Split data into training, validation and test sets based
                 % on obj.BatchOpt.ValidationFraction{1} value
@@ -2988,7 +2806,7 @@ classdef mibDeepController < handle
                     res2 = toc(t2);
                     fprintf('Prediction images preprocessing time: %f seconds\n', res2);
                 case 'Split files for training/validation'
-                    if strcmp(obj.BatchOpt.Workflow{1}, '2D Instance') 
+                    if strcmp(obj.BatchOpt.Workflow{1}, '2D Instance')
                         sourceLabelDir = 'LabelsInstances';
                         labelsFilenameExt = '*.mat';
                         labelsSourceDir = 'LabelsInstances';
@@ -3000,7 +2818,7 @@ classdef mibDeepController < handle
                         splitForInstanceSegmentation = false;
                     end
                     msg = sprintf('!!! Attention !!!\nThe following operation will split files in\n"%s"\n\n- Images\n- %s\n\nto\n- TrainImages, TrainLabels\n- ValidationImages, ValidationLabels', obj.BatchOpt.OriginalTrainingImagesDir, sourceLabelDir);
-                    
+
                     selection = uiconfirm(obj.View.gui, ...
                         msg, 'Split files',...
                         'Options',{'Split and copy', 'Split and move', 'Cancel'},...
@@ -3056,7 +2874,7 @@ classdef mibDeepController < handle
                         end
 
                         wb = uiprogressdlg(obj.View.gui, 'Message', sprintf('Splitting and copying files\nPlease wait...'), ...
-                                'Title', 'Split files', 'Cancelable','on');
+                            'Title', 'Split files', 'Cancelable','on');
 
                         noFiles = numel(imds_train.Files) + numel(imds_val.Files);
                         for fileId = 1:numel(imds_train.Files)
@@ -3080,7 +2898,7 @@ classdef mibDeepController < handle
                     else            % split images for semantic segmentation
                         imageFiles = dir(fullfile(obj.BatchOpt.OriginalTrainingImagesDir, 'Images', lower(['*.' obj.BatchOpt.ImageFilenameExtensionTraining{1}])));
                         labelsFiles = dir(fullfile(obj.BatchOpt.OriginalTrainingImagesDir, labelsSourceDir, labelsFilenameExt));
-                        
+
                         if numel(imageFiles) ~= numel(labelsFiles) || numel(imageFiles) == 0
                             uialert(obj.View.gui, ...
                                 sprintf('!!! Error !!!\n\nThere are no files or number of files mismatch in\n\n%s\n\n- Images\n- Labels', obj.BatchOpt.OriginalTrainingImagesDir), ...
@@ -3280,14 +3098,20 @@ classdef mibDeepController < handle
                     "'CheckpointPath', CheckpointPath,"
                     "'ExecutionEnvironment', executionEnvironment,"
                     ], ' ');
-    
-                % To calculate AccuracyMetric, Metrics='accuracy' is required
-                % for trainnet
+
+                % Accuracy metric is only used in the classification tasks
+                % for semantic segmentation tasks TrainAccuracy is empty
                 if strcmp(obj.TrainEngine, 'trainnet')
                     evalTrainingOptions = join([evalTrainingOptions, ...
-                            "'Metrics', 'accuracy',"
-                            ], ' ');
+                        "'Metrics', 'accuracy',"
+                        ], ' ');
                 end
+
+                % if strcmp(obj.TrainEngine, 'trainnet')
+                %     evalTrainingOptions = join([evalTrainingOptions, ...
+                %         "'Metrics', 'rmse',"
+                %         ], ' ');
+                % end
 
                 if mibDeepTrainingProgressStruct.useCustomProgressPlot
                     % add output function and dispatch in background option
@@ -3311,9 +3135,16 @@ classdef mibDeepController < handle
                                 trainingProgressOptions.sendReportToEmail = obj.SendReports.TO_email;
                             end
 
-                            evalTrainingOptions = join([evalTrainingOptions
-                                "'OutputFcn', @(info)mibDeepCustomTrainingProgressDisplay(info, trainingProgressOptions),"
-                                ], ' ');
+                            switch obj.TrainEngine
+                                case 'trainNetwork'
+                                    evalTrainingOptions = join([evalTrainingOptions
+                                        "'OutputFcn', @(info)mibDeepCustomTrainingProgressDisplay(info, trainingProgressOptions),"
+                                        ], ' ');
+                                case 'trainnet'
+                                    evalTrainingOptions = join([evalTrainingOptions
+                                        "'OutputFcn', @(info)mibDeepCustomTrainingProgressDisplayTrainNet(info, trainingProgressOptions),"
+                                        ], ' ');
+                            end
                         otherwise
                             trainingProgressOptions = struct();
                             trainingProgressOptions.O_NumberOfPoints = obj.BatchOpt.O_NumberOfPoints{1};
@@ -3333,9 +3164,16 @@ classdef mibDeepController < handle
                                 trainingProgressOptions.sendReportToEmail = obj.SendReports.TO_email;
                             end
 
-                            evalTrainingOptions = join([evalTrainingOptions
-                                "'OutputFcn', @(info)mibDeepCustomTrainingProgressDisplay(info, trainingProgressOptions),"
-                                ], ' ');
+                            switch obj.TrainEngine
+                                case 'trainNetwork'
+                                    evalTrainingOptions = join([evalTrainingOptions
+                                        "'OutputFcn', @(info)mibDeepCustomTrainingProgressDisplay(info, trainingProgressOptions),"
+                                        ], ' ');
+                                case 'trainnet'
+                                    evalTrainingOptions = join([evalTrainingOptions
+                                        "'OutputFcn', @(info)mibDeepCustomTrainingProgressDisplayTrainNet(info, trainingProgressOptions),"
+                                        ], ' ');
+                            end
 
                             % testing DispatchInBackground
                             % compatible only with matlab progress plot and
@@ -3346,7 +3184,7 @@ classdef mibDeepController < handle
                             % evalTrainingOptions = join([evalTrainingOptions
                             %    "'DispatchInBackground', false,"
                             %    ], ' ');
-                            
+
                     end
                 else
                     evalTrainingOptions = join([evalTrainingOptions
@@ -3425,7 +3263,7 @@ classdef mibDeepController < handle
             %     obj.BatchOpt.MaskAway = false;
             %     obj.BatchOpt.SingleModelTrainingFile = false;
             % else
-            % 
+            %
             % end
             obj.updateWidgets();
         end
@@ -3469,16 +3307,20 @@ classdef mibDeepController < handle
             DynamicMaskOpt = obj.DynamicMaskOpt;
 
             % try to export path as relatives
-            BatchOpt.NetworkFilename = convertAbsoluteToRelativePath(BatchOpt.NetworkFilename, projectPath, '[RELATIVE]'); 
+            BatchOpt.NetworkFilename = convertAbsoluteToRelativePath(BatchOpt.NetworkFilename, projectPath, '[RELATIVE]');
             BatchOpt.OriginalTrainingImagesDir = convertAbsoluteToRelativePath(BatchOpt.OriginalTrainingImagesDir, projectPath, '[RELATIVE]');
             BatchOpt.OriginalPredictionImagesDir = convertAbsoluteToRelativePath(BatchOpt.OriginalPredictionImagesDir, projectPath, '[RELATIVE]');
             BatchOpt.ResultingImagesDir = convertAbsoluteToRelativePath(BatchOpt.ResultingImagesDir, projectPath, '[RELATIVE]');
+
+            % add MIB version to the saved config
+            mibVersion.mibVersion = obj.mibController.mibVersion;
+            mibVersion.mibVersionNumeric = obj.mibController.mibVersionNumeric;
 
             % generate config file; the config file is the same as *.mibDeep but without 'net' field
             save(configName, ...
                 'TrainingOptStruct', 'AugOpt2DStruct', 'AugOpt3DStruct', ...
                 'SegmentationLayerOpt', 'ActivationLayerOpt', 'DynamicMaskOpt',...
-                'InputLayerOpt', 'BatchOpt', '-mat', '-v7.3');
+                'InputLayerOpt', 'BatchOpt', 'mibVersion', '-mat', '-v7.3');
         end
 
         function res = correctBatchOpt(obj, res)
@@ -3489,19 +3331,11 @@ classdef mibDeepController < handle
             % Parameters:
             % res: BatchOpt structure loaded from a file
 
-            % correct Architecture names
-            % replace DeepLabV3 to DLv3 from MIB v2.85
-            res.BatchOpt.Architecture{1} = strrep(res.BatchOpt.Architecture{1}, 'DeepLabV3', 'DLv3');
-            switch res.BatchOpt.Architecture{1}
-                case {'3DC+DLv3 Resnet18', '3DUnet+DLv3 Resnet18'}
-                    res.BatchOpt.Architecture{1} = '3DC + DLv3 Resnet18';
-            end
-
             % update res.BatchOpt to be compatible with DeepMIB v2.83
             if ~isfield(res.BatchOpt, 'Workflow')
                 %obj.BatchOpt.Architecture = {};
                 switch res.BatchOpt.Architecture{1}
-                    case {'2D U-net', '2D SegNet', '2D DLv3 Resnet18'}
+                    case {'2D U-net', '2D SegNet', '2D DLv3 Resnet18', '2D DeepLabV3 Resnet18', '2D DeepLabV3 Resnet50'}
                         res.BatchOpt.Workflow = {'2D Semantic'};
                         res.BatchOpt.Architecture{1} = res.BatchOpt.Architecture{1}(4:end);
                         res.BatchOpt.Architecture{2} = obj.availableArchitectures('2D Semantic');
@@ -3514,7 +3348,53 @@ classdef mibDeepController < handle
                         res.BatchOpt.Architecture{1} = res.BatchOpt.Architecture{1}(15:end);
                         res.BatchOpt.Architecture{2} = obj.availableArchitectures('2D Patch-wise');
                 end
-                res.BatchOpt.Workflow{2} = {'2D Semantic', '3D Semantic', '2D Patch-wise'}; % {'2D U-net', '2D SegNet', '2D DLv3 Resnet18', '3D U-net', '3D U-net Anisotropic', '2D Patch-wise Resnet18', '2D Patch-wise Resnet50'}
+                res.BatchOpt.Workflow{2} = obj.BatchOpt.Workflow{2}; % {'2D U-net', '2D SegNet', '2D DLv3 Resnet18', '3D U-net', '3D U-net Anisotropic', '2D Patch-wise Resnet18', '2D Patch-wise Resnet50'}
+            end
+
+            % correct Architecture names
+            if obj.mibController.mibVersionNumeric > 2.9020
+                % replace DeepLabV3 to DeepLabV3+ from MIB v2.9020
+                switch res.BatchOpt.Architecture{1}
+                    case {'Segnet', 'Unet'}
+
+                    case {'DLv3 Resnet18', 'DeepLabV3 Resnet18'}
+                        res.BatchOpt.Architecture{1} = 'DeepLab v3+';
+                        res.BatchOpt.Architecture{2} = obj.availableArchitectures('2D Semantic');
+                        res.BatchOpt.T_EncoderNetwork{1} = 'Resnet18';
+                        res.BatchOpt.T_EncoderNetwork{2} = {'Resnet18', 'Resnet50', 'Xception', 'InceptionResnetv2'};
+                    case {'DLv3 Resnet50', 'DeepLabV3 Resnet50'}
+                        res.BatchOpt.Architecture{1} = 'DeepLab v3+';
+                        res.BatchOpt.Architecture{2} = obj.availableArchitectures('2D Semantic');
+                        res.BatchOpt.T_EncoderNetwork{1} = 'Resnet50';
+                        res.BatchOpt.T_EncoderNetwork{2} = {'Resnet18', 'Resnet50', 'Xception', 'InceptionResnetv2'};
+                    case {'DLv3 Xception', 'DeepLabV3 Xception'}
+                        res.BatchOpt.Architecture{1} = 'DeepLab v3+';
+                        res.BatchOpt.Architecture{2} = obj.availableArchitectures('2D Semantic');
+                        res.BatchOpt.T_EncoderNetwork{1} = 'Xception';
+                        res.BatchOpt.T_EncoderNetwork{2} = {'Resnet18', 'Resnet50', 'Xception', 'InceptionResnetv2'};
+                    case {'DLv3 Inception-ResNet-v2', 'DeepLabV3 Inception-ResNet-v2'}
+                        res.BatchOpt.Architecture{1} = 'DeepLab v3+';
+                        res.BatchOpt.Architecture{2} = obj.availableArchitectures('2D Semantic');
+                        res.BatchOpt.T_EncoderNetwork{1} = 'InceptionResnetv2';
+                        res.BatchOpt.T_EncoderNetwork{2} = {'Resnet18', 'Resnet50', 'Xception', 'InceptionResnetv2'};
+                    case {'Z2C + DLv3 Resnet18', 'Z2C + DLv3 Resnet50'}
+                        res.BatchOpt.T_EncoderNetwork{1} = res.BatchOpt.Architecture{1}(end-7:end);
+                        res.BatchOpt.T_EncoderNetwork{2} = {'Resnet18', 'Resnet50'};
+                        res.BatchOpt.Architecture{1} = 'Z2C + DLv3';
+                        res.BatchOpt.Architecture{2} = obj.availableArchitectures('2.5D Semantic');
+                end
+            elseif obj.mibController.mibVersionNumeric >= 2.85
+                % replace DeepLabV3 to DLv3 from MIB v2.85
+                res.BatchOpt.Architecture{1} = strrep(res.BatchOpt.Architecture{1}, 'DeepLabV3', 'DLv3');
+            end
+
+            switch res.BatchOpt.Architecture{1}
+                case {'3DC+DLv3 Resnet18', '3DUnet+DLv3 Resnet18'}
+                    uialert(obj.View.gui, ...
+                        sprintf('!!! Error !!!\n\nThis architecture (%s) is not available in the current version of MIB', res.BatchOpt.Architecture{1}), ...
+                        'Wrong architecture', 'Icon', 'error');
+                    return;
+                    % res.BatchOpt.Architecture{1} = '3DC + DLv3 Resnet18';
             end
 
             if ~isfield(res.AugOpt2DStruct, 'RandScale') || ~isstruct(res.AugOpt2DStruct.RandScale)
@@ -3537,7 +3417,7 @@ classdef mibDeepController < handle
                     '*.mat', 'Mat files (*.mat)'}, 'Open network file', ...
                     obj.BatchOpt.NetworkFilename);
                 if isequal(file, 0); return; end
-                file = file{1}; 
+                file = file{1};
                 configName = fullfile(projectPath, file);
             else
                 projectPath = fileparts(configName);
@@ -3547,10 +3427,11 @@ classdef mibDeepController < handle
             if strcmp(projectPath(end), filesep); projectPath = projectPath(1:end-1); end
 
             obj.wb = uiprogressdlg(obj.View.gui, 'Message', sprintf('Loading config file\nPlease wait...'), ...
-                                'Title', 'Load config');
+                'Title', 'Load config');
 
             res = load(configName, '-mat');
             obj.wb.Value = 0.2;
+            
             % correct the slash characters depending on OS
             if ispc
                 res.BatchOpt.NetworkFilename = strrep(res.BatchOpt.NetworkFilename, '/', filesep);
@@ -3567,14 +3448,14 @@ classdef mibDeepController < handle
             % restore full paths from relative
             if isempty(strfind(res.BatchOpt.NetworkFilename, '[RELATIVE]\'))
                 % older version of configs, where the relative path encoded
-                % as "[RELATIVE]subdir", i.e. without slash 
+                % as "[RELATIVE]subdir", i.e. without slash
                 res.BatchOpt.NetworkFilename = strrep(res.BatchOpt.NetworkFilename, '[RELATIVE]', [projectPath filesep]); %#ok<*PROP>
                 res.BatchOpt.OriginalTrainingImagesDir = strrep(res.BatchOpt.OriginalTrainingImagesDir, '[RELATIVE]', [projectPath filesep]);
                 res.BatchOpt.OriginalPredictionImagesDir = strrep(res.BatchOpt.OriginalPredictionImagesDir, '[RELATIVE]', [projectPath filesep]);
                 res.BatchOpt.ResultingImagesDir = strrep(res.BatchOpt.ResultingImagesDir, '[RELATIVE]', [projectPath filesep]);
             else
                 % newer version of configs, where the relative path encoded
-                % as "[RELATIVE]\subdir", i.e. with slash 
+                % as "[RELATIVE]\subdir", i.e. with slash
                 res.BatchOpt.NetworkFilename = convertRelativeToAbsolutePath(res.BatchOpt.NetworkFilename, projectPath, '[RELATIVE]'); %#ok<*PROP>
                 res.BatchOpt.OriginalTrainingImagesDir = convertRelativeToAbsolutePath(res.BatchOpt.OriginalTrainingImagesDir, projectPath, '[RELATIVE]');
                 res.BatchOpt.OriginalPredictionImagesDir = convertRelativeToAbsolutePath(res.BatchOpt.OriginalPredictionImagesDir, projectPath, '[RELATIVE]');
@@ -3588,19 +3469,33 @@ classdef mibDeepController < handle
 
             % update res.BatchOpt to be compatible with DeepMIB v2.83
             res = correctBatchOpt(obj, res);
-            
+            if isempty(res); delete(obj.wb); return; end
             obj.wb.Value = 0.4;
+
+            % remove ImageNoise that may somehow sneak when importing old projects
+            if isfield(res.AugOpt2DStruct, 'ImageNoise');  res.AugOpt2DStruct = rmfield(res.AugOpt2DStruct, 'ImageNoise'); end
 
             % compare current vs the loaded workflow
             if ~strcmp(obj.BatchOpt.Workflow{1}, res.BatchOpt.Workflow{1})
                 obj.View.handles.Workflow.Value = res.BatchOpt.Workflow{1};
                 obj.selectWorkflow();
             end
+            % compare current vs the loaded architecture
+            if ~strcmp(obj.BatchOpt.Architecture{1}, res.BatchOpt.Architecture{1})
+                obj.View.handles.Architecture.Value = res.BatchOpt.Architecture{1};
+                obj.selectArchitecture();
+            end
 
             % add/update BatchOpt with the provided fields in BatchOptIn
             % combine fields from input and default structures
             obj.BatchOpt = updateBatchOptCombineFields_Shared(obj.BatchOpt, res.BatchOpt);
+            if ~strcmp(obj.View.handles.T_EncoderNetwork.Value, obj.BatchOpt.T_EncoderNetwork{1})
+                obj.View.handles.T_EncoderNetwork.Value = obj.BatchOpt.T_EncoderNetwork{1};
+                event.Source = obj.View.handles.T_EncoderNetwork;
+                obj.updateBatchOptFromGUI(event);
+            end
             obj.wb.Value = 0.8;
+
             try
                 if isstruct(obj.AugOpt2D.RandScale)
                     obj.AugOpt2D = mibConcatenateStructures(obj.AugOpt2D, res.AugOpt2DStruct);
@@ -3645,7 +3540,7 @@ classdef mibDeepController < handle
             % requires R2021a or newer
 
             % detect 2D or 3D architecture
-            if ismember(obj.BatchOpt.Workflow{1}, {'3D Semantic'}) 
+            if ismember(obj.BatchOpt.Workflow{1}, {'3D Semantic'})
                 if obj.BatchOpt.P_DynamicMasking == true
                     uialert(obj.View.gui, ...
                         sprintf('!!! Error !!!\n\nUnfortunately, the dynamic masking mode is not yet implemented for 3D architectures!\n\nPlease uncheck "Dynamic masking" checkbox in the Predict tab'), ...
@@ -3715,13 +3610,13 @@ classdef mibDeepController < handle
                 % 2-> 'Use Matlab non-compressed format'
                 % 3-> 'Use Matlab compressed format'
                 % 4-> 'Use Matlab non-compressed format (range 0-1)'
-                
+
                 saveImageOpt.dimOrder = 'yxczt';    % for 2D or saveImageOpt.dimOrder = 'yxzct'; for 3D
             end
 
             if obj.BatchOpt.showWaitbar
                 % make uiprogressdlg based waitbar
-                pwb = PoolWaitbar(1, 'Creating image store for prediction...', [], 'Predicting dataset', obj.View.gui); 
+                pwb = PoolWaitbar(1, 'Creating image store for prediction...', [], 'Predicting dataset', obj.View.gui);
             end
 
             % creating output directories
@@ -3781,9 +3676,9 @@ classdef mibDeepController < handle
                         else
                             if isfolder(fullfile(obj.BatchOpt.OriginalPredictionImagesDir, 'Images'))
                                 imgDS = imageDatastore(fullfile(obj.BatchOpt.OriginalPredictionImagesDir, 'Images'), ...
-                                'FileExtensions', fnExtention, ...
-                                'IncludeSubfolders', false, ...
-                                'ReadFcn', @(fn)mibDeepStoreLoadImages(fn, mibDeepStoreLoadImagesOpt));
+                                    'FileExtensions', fnExtention, ...
+                                    'IncludeSubfolders', false, ...
+                                    'ReadFcn', @(fn)mibDeepStoreLoadImages(fn, mibDeepStoreLoadImagesOpt));
                             else
                                 % patch-wise segmentation of individual patches
                                 % stored under subfolders
@@ -3807,9 +3702,9 @@ classdef mibDeepController < handle
                         if ~isfolder(fullfile(obj.BatchOpt.OriginalPredictionImagesDir, 'Images'))
                             res = uiconfirm(obj.View.gui, ...
                                 sprintf(['It is recommended to keep images for prediction under "Images" subfolder within the directory specified in \n\n' ...
-                                    '"Directories and Preprocessing" -> \n\t\t\t"Directory with images for prediction"\n\n' ...
-                                    'However "Images" subfolder was not found!\n\nWould you like to continue and predict images that are located under:\n' ...
-                                    '%s'], obj.BatchOpt.OriginalPredictionImagesDir), ...
+                                '"Directories and Preprocessing" -> \n\t\t\t"Directory with images for prediction"\n\n' ...
+                                'However "Images" subfolder was not found!\n\nWould you like to continue and predict images that are located under:\n' ...
+                                '%s'], obj.BatchOpt.OriginalPredictionImagesDir), ...
                                 'Missing Images subfolder', ...
                                 'Options', {'Predict images','Cancel'}, ...
                                 'Icon', 'warning');
@@ -3823,7 +3718,7 @@ classdef mibDeepController < handle
                             'IncludeSubfolders', false, ...
                             'ReadFcn', @(fn)mibDeepStoreLoadImages(fn, mibDeepStoreLoadImagesOpt));
                     end
-                      
+
                     % if isfolder(fullfile(obj.BatchOpt.OriginalPredictionImagesDir, 'Images'))
                     %     % semantic segmentation or patch-wise segmentation of large images
                     %     imgDS = imageDatastore(fullfile(obj.BatchOpt.OriginalPredictionImagesDir, 'Images'), ...
@@ -3886,7 +3781,7 @@ classdef mibDeepController < handle
             % of the network and compensates for the effects of valid convolution.
             % The overlap-tile algorithm selects overlapping patches, predicts the labels
             % for each patch by using the semanticseg function, and then recombines the patches.
-            
+
             noFiles = numel(imgDS.Files);
             if obj.BatchOpt.showWaitbar
                 if pwb.getCancelState(); delete(pwb); return; end   % check for cancel
@@ -3917,7 +3812,7 @@ classdef mibDeepController < handle
                         % not compatible with multi-gpu
                         executionEnvironment = 'gpu';
                     end
-                    
+
                 case 'Parallel'
                     executionEnvironment = 'parallel';
                 otherwise
@@ -3947,13 +3842,14 @@ classdef mibDeepController < handle
             % for each file the progress bar will be updated 20 times to
             % follow the progress
             %if strcmp(obj.BatchOpt.Workflow{1}, '2.5D Semantic') && obj.BatchOpt.showWaitbar
+            progressUpdatesPerFile = 1;
             if obj.BatchOpt.showWaitbar
                 progressUpdatesPerFile = 20;
                 pwb.updateMaxNumberOfIterations(noFiles*progressUpdatesPerFile);
             end
-            
+
             t1 = tic;
-            
+
             while hasdata(imgDS)
                 % check for Cancel
                 if obj.BatchOpt.showWaitbar && pwb.getCancelState(); delete(pwb); return; end
@@ -4043,7 +3939,7 @@ classdef mibDeepController < handle
 
                         % check for Cancel
                         if obj.BatchOpt.showWaitbar && pwb.getCancelState(); delete(pwb); return; end
-                        
+
                         % update progress bar
                         if obj.BatchOpt.showWaitbar && zValue >= nextWaitbarIterationFromZ
                             elapsedTime = toc(t1);
@@ -4092,7 +3988,7 @@ classdef mibDeepController < handle
                             if generateScoreFiles > 0
                                 scoreImg(:,:,:,zValue) = scoreImgCurrent;
                             end
-                            
+
                             % check for Cancel
                             if obj.BatchOpt.showWaitbar && pwb.getCancelState(); delete(pwb); return; end
                             % update progress bar
@@ -4111,7 +4007,7 @@ classdef mibDeepController < handle
                             inputPatchSize, outputPatchSize, blockSize, padShift, ...
                             dataDimension, patchwiseWorkflowSwitch, patchwisePatchesPredictSwitch, ...
                             classNames, generateScoreFiles, executionEnvironment, fn);
-                        
+
                         % check for Cancel
                         if obj.BatchOpt.showWaitbar && pwb.getCancelState(); delete(pwb); return; end
                         % update progress bar
@@ -4140,7 +4036,7 @@ classdef mibDeepController < handle
                         smoothOptions.fitType = 'Gaussian';
                         smoothOptions.showWaitbar = false;
                         smoothOptions.sigma = obj.BatchOpt.P_ImageDownsamplingFactor{1}+1;
-                        if dataDimension == 3 
+                        if dataDimension == 3
                             smoothOptions.filters3DCheck = 1;
                             smoothOptions.hSize = [obj.BatchOpt.P_ImageDownsamplingFactor{1}*2+1 obj.BatchOpt.P_ImageDownsamplingFactor{1}*2+1];
                         else
@@ -4149,7 +4045,7 @@ classdef mibDeepController < handle
                         end
                         outputLabels = mibDoImageFiltering(outputLabels, smoothOptions);
                     end
-                    
+
                     if generateScoreFiles > 0
                         imResizeOpt.imgType = '4D';
                         scoreImg = mibResize3d(scoreImg, [], imResizeOpt);
@@ -4262,7 +4158,7 @@ classdef mibDeepController < handle
                 noColors = size(vol, numel(blockSize));
                 dataDimension = 2;
             else
-                noColors = size(vol, numel(blockSize)+1); 
+                noColors = size(vol, numel(blockSize)+1);
             end
 
             vol = blockedImage(vol, ...     % % [height, width, color] or  [height, width, depth, color]
@@ -4404,7 +4300,7 @@ classdef mibDeepController < handle
                         filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', sprintf('Labels_%s.csv', fn));
                     end
                     writematrix(outputLabels, filename, 'FileType' , 'Text');
-                    
+
                     % upscale the resulting labels
                     if obj.BatchOpt.P_PatchWiseUpsample
                         if obj.BatchOpt.P_OverlappingTiles
@@ -4555,7 +4451,7 @@ classdef mibDeepController < handle
 
             mkdir(fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores'));
             mkdir(fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels'));
-            
+
             % prepare options for loading of images
             mibDeepStoreLoadImagesOpt.mibBioformatsCheck = obj.BatchOpt.Bioformats;
             mibDeepStoreLoadImagesOpt.BioFormatsIndices = obj.BatchOpt.BioformatsIndex{1};
@@ -4581,7 +4477,7 @@ classdef mibDeepController < handle
 
             if obj.BatchOpt.showWaitbar
                 if pwb.getCancelState(); delete(pwb); return; end
-                pwb.updateText('Loading network...'); 
+                pwb.updateText('Loading network...');
             end
             % loading: 'net', 'TrainingOptStruct', 'classNames',
             % 'inputPatchSize', 'outputPatchSize', 'BatchOpt' variables
@@ -4659,7 +4555,7 @@ classdef mibDeepController < handle
                                 'OutputType', 'uint8', 'ExecutionEnvironment', executionEnvironment, ...
                                 'MiniBatchSize', obj.BatchOpt.P_MiniBatchSize{1});
                             if generateScoreFiles > 0 && generateScoreFiles < 4
-                                scoreImg = uint8(scoreImg*255); 
+                                scoreImg = uint8(scoreImg*255);
                             end
                         else
                             % find padding size for the dataset to match
@@ -4693,7 +4589,7 @@ classdef mibDeepController < handle
                     else        % the section below is for obj.BatchOpt.P_OverlappingTiles == true
                         % pad the image to include extended areas due to
                         % the overlapping strategy
-                        if strcmp(obj.BatchOpt.Architecture{1}, {'DLv3 Resnet18', 'DLv3 Resnet50', 'DLv3 Xception', 'DLv3 Inception-ResNet-v2'})
+                        if strcmp(obj.BatchOpt.Architecture{1}, 'DeepLab v3+')
                             obj.BatchOpt.T_EncoderDepth{1} = 4;
                         end
 
@@ -4714,10 +4610,10 @@ classdef mibDeepController < handle
                         [heightPad, widthPad, colorPad] = size(volPadded);
                         outputLabels = zeros([heightPad, widthPad], 'uint8');
                         if generateScoreFiles > 0 && generateScoreFiles < 4
-                            scoreImg = zeros([heightPad, widthPad, numClasses], 'uint8'); 
+                            scoreImg = zeros([heightPad, widthPad, numClasses], 'uint8');
                             multiplyScoreFactor = 255;
                         elseif generateScoreFiles == 4
-                            scoreImg = zeros([heightPad, widthPad, numClasses], 'single'); 
+                            scoreImg = zeros([heightPad, widthPad, numClasses], 'single');
                             multiplyScoreFactor = 1;
                         end
 
@@ -4827,7 +4723,7 @@ classdef mibDeepController < handle
                     elseif generateScoreFiles == 4   %  4=='Use Matlab non-compressed format (range 0-1)'
                         filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores', ['Score_' fn '.mat']);
                         saveImageParFor(filename, scoreImg, false, saveImageOpt);
-                    else  % 2=='Use Matlab non-compressed format', 3=='Use Matlab compressed format', 
+                    else  % 2=='Use Matlab non-compressed format', 3=='Use Matlab compressed format',
                         filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores', ['Score_' fn '.mibImg']);
                         saveImageParFor(filename, scoreImg, generateScoreFiles, saveImageOpt);
                     end
@@ -4849,7 +4745,7 @@ classdef mibDeepController < handle
             obj.mibModel.preferences.Users.Tiers.numberOfInferencedDeepNetworks = obj.mibModel.preferences.Users.Tiers.numberOfInferencedDeepNetworks+1;
             eventdata = ToggleEventData(4);    % scale scoring by factor 5
             notify(obj.mibModel, 'updateUserScore', eventdata);
-            
+
             if obj.BatchOpt.showWaitbar; delete(pwb); end
         end
 
@@ -4928,7 +4824,7 @@ classdef mibDeepController < handle
 
             mkdir(fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores'));
             mkdir(fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels'));
-            
+
             % prepeare options for loading of images
             mibDeepStoreLoadImagesOpt.mibBioformatsCheck = obj.BatchOpt.Bioformats;
             mibDeepStoreLoadImagesOpt.BioFormatsIndices = obj.BatchOpt.BioformatsIndex{1};
@@ -4955,7 +4851,7 @@ classdef mibDeepController < handle
 
             if obj.BatchOpt.showWaitbar
                 if pwb.getCancelState(); delete(pwb); return; end
-                pwb.updateText('Loading network...'); 
+                pwb.updateText('Loading network...');
             end
             % loading: 'net', 'TrainingOptStruct', 'classNames',
             % 'inputPatchSize', 'outputPatchSize', 'BatchOpt' variables
@@ -5045,10 +4941,10 @@ classdef mibDeepController < handle
 
                             outputLabels = zeros([heightPad, widthPad, depthPad], 'uint8');
                             if generateScoreFiles > 1 && generateScoreFiles < 4
-                                scoreImg = zeros([heightPad, widthPad, depthPad, numClasses], 'uint8'); 
+                                scoreImg = zeros([heightPad, widthPad, depthPad, numClasses], 'uint8');
                                 multipleScoreFactor = 255;
                             elseif generateScoreFiles == 4
-                                scoreImg = zeros([heightPad, widthPad, depthPad, numClasses], 'single'); 
+                                scoreImg = zeros([heightPad, widthPad, depthPad, numClasses], 'single');
                                 multipleScoreFactor = 1;
                             end
 
@@ -5125,10 +5021,10 @@ classdef mibDeepController < handle
                         [heightPad, widthPad, depthPad, colorPad] = size(volPadded);
                         outputLabels = zeros([heightPad, widthPad, depthPad], 'uint8');
                         if generateScoreFiles > 0 && multipleScoreFactor < 4
-                            scoreImg = zeros([heightPad, widthPad, depthPad, numClasses], 'uint8'); 
+                            scoreImg = zeros([heightPad, widthPad, depthPad, numClasses], 'uint8');
                             multipleScoreFactor = 255;
                         elseif generateScoreFiles == 4
-                            scoreImg = zeros([heightPad, widthPad, depthPad, numClasses], 'single'); 
+                            scoreImg = zeros([heightPad, widthPad, depthPad, numClasses], 'single');
                             multipleScoreFactor = 1;
                         end
 
@@ -5326,10 +5222,10 @@ classdef mibDeepController < handle
                             imwrite(outputLabels(:,:,sliceId), filename, 'tif', 'WriteMode', 'append', 'Compression', tifCompression);
                         end
                 end
-                
+
                 % check for cancel
                 if obj.BatchOpt.showWaitbar && pwb.getCancelState(); delete(pwb); return; end
-                
+
                 % save score map
                 if generateScoreFiles > 0
                     if generateScoreFiles == 1    % 'Use AM format'
@@ -5343,7 +5239,7 @@ classdef mibDeepController < handle
                         bitmap2amiraMesh(filename, scoreImg, [], amiraOpt);
                     elseif generateScoreFiles == 4   %  4=='Use Matlab non-compressed format (range 0-1)'
                         filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores', ['Score_' fn '.mat']);
-                        saveImageParFor(filename, scoreImg, false, saveImageOpt);    
+                        saveImageParFor(filename, scoreImg, false, saveImageOpt);
                     else    % 2=='Use Matlab non-compressed format', 3=='Use Matlab compressed format'
                         filename = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores', ['Score_' fn '.mibImg']);
                         saveImageParFor(filename, scoreImg, generateScoreFiles-2, saveImageOpt);
@@ -5367,7 +5263,7 @@ classdef mibDeepController < handle
             obj.mibModel.preferences.Users.Tiers.numberOfInferencedDeepNetworks = obj.mibModel.preferences.Users.Tiers.numberOfInferencedDeepNetworks+1;
             eventdata = ToggleEventData(4);    % scale scoring by factor 5
             notify(obj.mibModel, 'updateUserScore', eventdata);
-            
+
             if obj.BatchOpt.showWaitbar; delete(pwb); end
         end
 
@@ -5424,7 +5320,7 @@ classdef mibDeepController < handle
             % load images of prediction scores into MIB
 
             scoreDir = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsScores');
-            
+
             switch obj.BatchOpt.P_ScoreFiles{1}
                 case 'Use AM format'
                     fnList = dir(fullfile(scoreDir, '*.am'));
@@ -5433,7 +5329,7 @@ classdef mibDeepController < handle
                 otherwise
                     fnList = [];
             end
-            
+
             if isempty(fnList)
                 uialert(obj.View.gui, ...
                     sprintf('!!! Error !!!\n\nNo files with predictions were found in\n%s\n\nPlease update the Directory with resulting images field of the Directories and Preprocessing tab!', scoreDir), ...
@@ -5783,7 +5679,7 @@ classdef mibDeepController < handle
                 if obj.BatchOpt.UseParallelComputing
                     parforArg = obj.View.handles.PreprocessingParForWorkers.Value;    % Maximum number of workers running in parallel
                     TitleTest = 'Evaluate segmentation (parallel)';
-                    if isempty(gcp('nocreate')); parpool(parforArg); end % create parpool   
+                    if isempty(gcp('nocreate')); parpool(parforArg); end % create parpool
                 else
                     parforArg = 0;      % Maximum number of workers running in parallel
                     TitleTest = 'Evaluate segmentation (single)';
@@ -5866,7 +5762,7 @@ classdef mibDeepController < handle
             end
             if answer{3}    % save in Excel format
                 wbar = uiprogressdlg(obj.View.gui, 'Message', sprintf('Saving to Excel\nPlease wait...'), ...
-                                'Title', 'Export');
+                    'Title', 'Export');
 
                 clear excelHeader;
                 fn = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', 'EvaluationResults.xls');
@@ -5906,7 +5802,7 @@ classdef mibDeepController < handle
 
             if answer{4}    % save in CSV format
                 wbar = uiprogressdlg(obj.View.gui, 'Message', sprintf('Saving to CSV format\nPlease wait...'), ...
-                                'Title', 'Export');
+                    'Title', 'Export');
                 fn = fullfile(obj.BatchOpt.ResultingImagesDir, 'PredictionImages', 'ResultsModels', 'EvaluationClassMetrics.csv');
                 if exist(fn, 'file') == 2; delete(fn); end
                 try
@@ -5962,7 +5858,7 @@ classdef mibDeepController < handle
         function gpuInfo(obj)
             % function gpuInfo(obj)
             % display information about the selected GPU
-            
+
             selectedIndex = find(ismember(obj.View.Figure.GPUDropDown.Items, obj.View.Figure.GPUDropDown.Value));
             switch obj.View.Figure.GPUDropDown.Value
                 case 'CPU only'
@@ -6037,12 +5933,18 @@ classdef mibDeepController < handle
                     outoutFilename = uigetdir(currDir, 'TensorFlow: define model package name');
                     if outoutFilename == 0; return; end
             end
-            
+
             wb = uiprogressdlg(obj.View.gui, 'Message', sprintf('Exporting to %s\nPlease wait...', exportFormat), ...
-                                'Title', 'Export network');
+                'Title', 'Export network');
             % load the model
             Model = load(obj.BatchOpt.NetworkFilename, '-mat');
             wb.Value = 0.4;
+
+            % correct for dlnetwork that final layer (softmax) should be
+            % kept as it is
+            if isa(Model.net, 'dlnetwork')
+                finalSegmentationLayer = 'Keep as it is';
+            end
 
             if ~strcmp(finalSegmentationLayer, 'Keep as it is')
                 lgraph = layerGraph(Model.net);
@@ -6092,7 +5994,12 @@ classdef mibDeepController < handle
                         end
                     end
                 case 'TensorFlow'
-                    exportNetworkToTensorFlow(lgraph, outoutFilename);
+                    try
+                        exportNetworkToTensorFlow(lgraph, outoutFilename);
+                    catch err
+                        mibShowErrorDialog(obj.View.gui, err, 'Export to TensorFlow');
+                        delete(wb); return;
+                    end
             end
             wb.Value = 1;
             delete(wb);
@@ -6109,6 +6016,8 @@ classdef mibDeepController < handle
             obj.BatchOpt.Mode{1} = 'Predict';   % change the mode, so that selectNetwork function loads the network
             net = obj.selectNetwork();
             if isempty(net); return; end
+            dlnetwork_flag = false; % type of the loaded model
+            if isa(net, 'dlnetwork'); dlnetwork_flag = true; end
             obj.BatchOpt.Mode{1} =  'Train';    % restore the mode
 
             [outPath, outNetworkName, outExt] = fileparts(obj.BatchOpt.NetworkFilename);
@@ -6134,7 +6043,7 @@ classdef mibDeepController < handle
             if isempty(answer); return; end
 
             obj.wb = uiprogressdlg(obj.View.gui, 'Message', sprintf('Performing transfer learning\nPlease wait...'), ...
-                                'Title', 'Transfer learning');
+                'Title', 'Transfer learning');
 
             newNoClasses = str2double(answer{1});
             newSegLayer = answer{2};
@@ -6157,8 +6066,10 @@ classdef mibDeepController < handle
             switch obj.BatchOpt.Architecture{1}
                 case 'SegNet'
                     layerName = 'decoder1_conv1';   % 2D segnet
-                case {'DLv3 Resnet18', 'DLv3 Resnet50', 'DLv3 Xception', 'DLv3 Inception-ResNet-v2'}
+                case {'DeepLab v3+', 'Z2C + DLv3'}
                     layerName = 'scorer';   % 2D DeepLabV3
+                case {'U-net +Encoder', 'Z2C + U-net +Encoder'}
+                    layerName = 'encoderDecoderFinalConvLayer'; % 2D Unet with encoders
                 otherwise
                     layerName = 'Final-ConvolutionLayer';
             end
@@ -6191,6 +6102,7 @@ classdef mibDeepController < handle
             obj.wb.Value = 0.6;
 
             obj.BatchOpt.NetworkFilename = outNetworkName;
+            if dlnetwork_flag; net = dlnetwork(net); end
             save(outNetworkName, 'net', '-mat', '-v7.3');
             obj.saveConfig(outConfigName);
             obj.wb.Value = 0.9;
@@ -6234,7 +6146,7 @@ classdef mibDeepController < handle
                 '*.*', 'All files (*.*)'};
             [filenameIn, pathIn, selectedIndx] = mib_uigetfile(fileFilters, 'Select network file', obj.mibModel.myPath);
             if isequal(filenameIn, 0); return; end
-            filenameIn = filenameIn{1}; 
+            filenameIn = filenameIn{1};
 
             switch fileFilters{selectedIndx, 2}
                 case 'Matlab format (*.mat)'
@@ -6254,12 +6166,12 @@ classdef mibDeepController < handle
                         if isempty(answer); return; end
 
                         wb = uiprogressdlg(obj.View.gui, 'Message', sprintf('Importing the network\nPlease wait...'), ...
-                                'Title', 'Import network');
+                            'Title', 'Import network');
 
                         net = import.(fieldNames{selIndex});
                     else
                         wb = uiprogressdlg(obj.View.gui, 'Message', sprintf('Importing the network\nPlease wait...'), ...
-                                'Title', 'Import network');
+                            'Title', 'Import network');
                         net = import.(fieldNames{1});
                     end
 
@@ -6406,7 +6318,7 @@ classdef mibDeepController < handle
             % preview results for the dynamic mode
 
             wb = uiprogressdlg(obj.View.gui, 'Message', 'Please wait...', ...
-                                'Title', 'Generating blocks');
+                'Title', 'Generating blocks');
 
             % get current image
             getDataOpt.blockModeSwitch = true;
@@ -6518,7 +6430,7 @@ classdef mibDeepController < handle
             if obj.BatchOpt.UseParallelComputing
                 parforArg = obj.View.handles.PreprocessingParForWorkers.Value;    % Maximum number of workers running in parallel
                 TitleTest = 'Count labels (parallel)';
-                if isempty(gcp('nocreate')); parpool(parforArg); end  % create parpool  
+                if isempty(gcp('nocreate')); parpool(parforArg); end  % create parpool
             else
                 parforArg = 0;      % Maximum number of workers running in parallel
                 TitleTest = 'Count labels (single)';
@@ -6766,7 +6678,7 @@ classdef mibDeepController < handle
         function previewImagePatches_Callback(obj, event)
             % function previewImagePatches_Callback(obj, event)
             % callback for value change of obj.View.handles.O_PreviewImagePatches
-            
+
             if obj.View.handles.O_PreviewImagePatches.Value && strcmp(obj.View.handles.O_PreviewImagePatches.Enable, 'on')
                 obj.View.handles.O_FractionOfPreviewPatches.Enable = 'on';
             else
@@ -6849,6 +6761,22 @@ classdef mibDeepController < handle
 
         end
 
+        % function updateEncoderNetwork(obj)
+        %     % function updateEncoderNetwork(obj)
+        %     % update encoder network upon user selection
+        %
+        %     selectedEncoder = obj.View.handles.T_EncoderNetwork.Value;
+        %     encoderKeyValue = [obj.BatchOpt.Workflow{1} ' ' obj.BatchOpt.Architecture{1}];
+        %
+        %     obj.availableEncoders{encoderKeyValue}{end} = find(ismember(obj.availableEncoders{encoderKeyValue}(1:end-1), selectedEncoder));
+        %
+        %     %encodersList = obj.availableEncoders(encoderKeyValue);
+        %     %encodersList{end} = find(ismember(encodersList(1:end-1), selectedEncoder));
+        %     %obj.availableEncoders(encoderKeyValue) = encodersList;
+        %     obj.BatchOpt.T_EncoderNetwork{1} = selectedEncoder;
+        %
+        % end
+
         function helpButton_callback(obj)
             % function helpButton_callback(obj)
             % show Help sections
@@ -6869,25 +6797,25 @@ classdef mibDeepController < handle
         function duplicateConfigAndNetwork(obj)
             % function duplicateConfigAndNetwork(obj)
             % copy the network file and its config to a new filename
-            
+
             currPath = fileparts(obj.BatchOpt.NetworkFilename);
             [currFile, currPath] = mib_uigetfile({'*.mibDeep', 'mibDeep Files (*.mibDeep)'}, ...
                 'Select source network', currPath);
             if isequal(currFile, 0); return; end
-            currFile = currFile{1}; 
-            
+            currFile = currFile{1};
+
             [newFile, newPath]  = uiputfile({'*.mibDeep', 'mibDeep files (*.mibDeep)';
                 '*.mat', 'Mat files (*.mat)'}, 'Set target network name', ...
                 fullfile(currPath, currFile));
             if newFile == 0; return; end
-            
+
             wb = uiprogressdlg(obj.View.gui, 'Message', 'Please wait...', ...
-                                'Title', 'Saving network and config');
+                'Title', 'Saving network and config');
 
             % copy network file
             newNetworkFile = fullfile(newPath, newFile);
             if isfile(fullfile(currPath, currFile))
-                copyfile(fullfile(currPath, currFile), newNetworkFile); 
+                copyfile(fullfile(currPath, currFile), newNetworkFile);
             else
                 uialert(obj.View.gui, ...
                     sprintf('!!! Error !!!\n\nThe network file to copy is missing!\nPlease select the network file and try again'), ...
@@ -6901,7 +6829,7 @@ classdef mibDeepController < handle
             oldConfigName = fullfile(currPath, replace(currFile,'.mibDeep', '.mibCfg'));
             newConfigName = replace(newNetworkFile,'.mibDeep', '.mibCfg');
             if isfile(oldConfigName)
-                copyfile(oldConfigName, newConfigName); 
+                copyfile(oldConfigName, newConfigName);
                 % update network filename in the new config file
                 matObj = matfile(newConfigName, 'Writable', true);
                 BatchOpt = matObj.BatchOpt;
@@ -6921,7 +6849,7 @@ classdef mibDeepController < handle
                 obj.loadConfig(newConfigName);
             end
 
-            
+
         end
 
     end

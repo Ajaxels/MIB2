@@ -83,10 +83,12 @@ if ~isempty(DestinationDirectory)
 else
     BatchOpt.DestinationDirectory = '';
 end
-BatchOpt.MaterialIndex = '0'; 
+BatchOpt.MaterialIndex = ''; 
 BatchOpt.Saving3DPolicy = {'3D stack'};
 BatchOpt.Saving3DPolicy{2} = {'3D stack', '2D sequence'};
 BatchOpt.showWaitbar = true;   % show or not the waitbar
+% additional
+BatchOpt.batchModeFlag =  false; % indicate that the function was not started from batch processing
 
 BatchOpt.mibBatchSectionName = 'Menu -> Models';    % section name for the Batch
 BatchOpt.mibBatchActionName = 'Save model';
@@ -95,7 +97,7 @@ BatchOpt.mibBatchTooltip.FilenamePolicy = sprintf('Use existing name: the filena
 BatchOpt.mibBatchTooltip.Format = sprintf('Available file formats for saving models');
 BatchOpt.mibBatchTooltip.OutputDirectoryPolicy = sprintf('Subfolder: to a subfolder, relative to the image path; Full path: in the DestinationDirectory path; Same as image: to the image dataset folder');
 BatchOpt.mibBatchTooltip.DestinationDirectory = sprintf('Destination directory without the leading slash for the Subfolder policy, or the full path for the Provided full path policy');
-BatchOpt.mibBatchTooltip.MaterialIndex = sprintf('[Not for *.model] Index of the material to save, when 0 save all materials; when NaN - save the currently selected');
+BatchOpt.mibBatchTooltip.MaterialIndex = sprintf('[Not for *.model] Index of the material to save, when [] (empty) save all materials; when NaN - save the currently selected');
 BatchOpt.mibBatchTooltip.Saving3DPolicy = sprintf('[TIF only] save images as 3D TIF file or as a sequence of 2D files');
 BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the waitbar');
 
@@ -144,8 +146,8 @@ else
     return;
 end
 %% when used in standard mode with parameters
-if ~isfield(BatchOptIn, 'mibBatchTooltip')  % not using the batch mode
-    if isfield(BatchOptIn, 'MaterialIndex'); BatchOptIn.MaterialIndex = str2double(BatchOptIn.MaterialIndex); end
+if ~BatchOpt.batchModeFlag  % not using the batch mode
+    if isfield(BatchOptIn, 'MaterialIndex') && ~isempty(BatchOptIn.MaterialIndex); BatchOptIn.MaterialIndex = str2double(BatchOptIn.MaterialIndex); end
     fnOut = obj.I{BatchOpt.id}.saveModel(filename, BatchOptIn);
     return;
 end
@@ -180,7 +182,9 @@ end
 
 saveImageOptions.Format = BatchOpt.Format{1};
 saveImageOptions.DestinationDirectory = BatchOpt.DestinationDirectory;
-saveImageOptions.MaterialIndex = str2double(BatchOptIn.MaterialIndex);
+if ~isempty(BatchOptIn.MaterialIndex)
+    saveImageOptions.MaterialIndex = str2double(BatchOptIn.MaterialIndex);
+end
 saveImageOptions.Saving3DPolicy = BatchOpt.Saving3DPolicy{1};
 saveImageOptions.FilenamePolicy = BatchOpt.FilenamePolicy{1};
 saveImageOptions.showWaitbar = BatchOpt.showWaitbar;

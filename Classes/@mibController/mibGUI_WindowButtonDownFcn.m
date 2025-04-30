@@ -32,12 +32,21 @@ switch3d = obj.mibView.handles.mibActions3dCheck.Value;     % use filters in 3d
 xy = obj.mibView.handles.mibImageAxes.CurrentPoint;
 seltype = obj.mibView.gui.SelectionType;
 modifier = obj.mibView.gui.CurrentModifier;
+%character = obj.mibView.gui.CurrentCharacter; 
+%fprintf('seltype: %s modifier: "%s" char: "%s"\n', seltype, cell2mat(modifier), character)
+%fprintf('seltype: %s modifier: "%s"\n', seltype, cell2mat(modifier))
 
 % define operation depending on the state of obj.mibView.handles.toolbarSwapMouse.State
 if strcmp(obj.mibView.handles.toolbarSwapMouse.State, 'on')
     switch seltype
         case 'normal'   % LMB
-            operation = 'interact';
+            if ~isempty(modifier) && sum(ismember(modifier, {'shift', 'alt', 'control'})) == 3
+                % a tweak for the drawing pan
+                % shift+alt+control+click for pan eraser
+                operation = 'pan';
+            else
+                operation = 'interact';
+            end
         case 'alt'  % RMB, Ctrl+LMB
             if isempty(modifier)
                 operation = 'pan';
@@ -46,11 +55,6 @@ if strcmp(obj.mibView.handles.toolbarSwapMouse.State, 'on')
             end
         case 'extend'   % Shift+RMB, Shift+LMB, MMB, LMB+RMB
             operation = 'interact';
-            if ~isempty(modifier) && sum(ismember(modifier, {'shift', 'alt'})) == 2
-                % a tweak for the drawing pan
-                % the panning mode is enabled when Shift+Alt are used
-                operation = 'pan';
-            end
         case 'open'     % double click
             return
         otherwise
@@ -59,16 +63,17 @@ if strcmp(obj.mibView.handles.toolbarSwapMouse.State, 'on')
 else
     switch seltype
         case 'normal'   % LMB
-            operation = 'pan';
+            if ~isempty(modifier) && sum(ismember(modifier, {'shift', 'alt', 'control'})) == 3
+                % a tweak for the drawing pan
+                % the panning mode is enabled when Shift+Alt+Ctrl are used
+                operation = 'interact';
+            else
+                operation = 'pan';
+            end
         case 'alt'  % RMB, Ctrl+LMB
             operation = 'interact';
         case 'extend'   % Shift+RMB, Shift+LMB, MMB, LMB+RMB
             operation = 'interact';
-            if ~isempty(modifier) && sum(ismember(modifier, {'shift', 'alt'})) == 2
-                % a tweak for the drawing pan
-                % the panning mode is enabled when Shift+Alt are used
-                operation = 'pan';
-            end
         case 'open'     % double click
             return
         otherwise 
@@ -319,13 +324,18 @@ elseif strcmp(operation, 'interact')
                 obj.mibModel.I{obj.mibModel.Id}.moveView(w, h);
             end
         case 'Segment-anything model'
-            % add labels
-            %[w, h, z, t] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 0);
-            [w, h, z, t] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 1); % to enable the interactive mode also in YZ/XZ
+            % check that Interactive 3D mode is used only for SAM2
+            if obj.mibView.handles.mibSegmSAMMethod.Value == 2 && ~obj.mibView.handles.mibSAM2checkbox.Value
+                errordlg(sprintf('!!! Error !!!\n\nThe Interactive 3D mode is not available for SAM1!\nCheck the SAM2 checkbox or use the 3D mode for the Interactive mode!'), ...
+                    'Interactive 3D');
+                return;
+            end
 
-            if obj.mibView.handles.mibSegmSAMMethod.Value == 1    %     'Interactive'
+            % add labels
+            [w, h, z, t] = obj.mibModel.convertMouseToDataCoordinates(xy(1,1), xy(1,2), 'shown', 1); % to enable the interactive mode also in YZ/XZ
+            if obj.mibView.handles.mibSegmSAMMethod.Value == 1 || obj.mibView.handles.mibSegmSAMMethod.Value == 2   %     'Interactive' or 'Interactive 3D'
                 % remove shift modifier
-                if ~isempty(modifier) && strcmp(modifier, 'shift') && isempty(obj.mibModel.sessionSettings.SAMsegmenter.Points.Value)
+                if ~isempty(modifier) && max(strcmp(modifier, 'shift')) && isempty(obj.mibModel.sessionSettings.SAMsegmenter.Points.Value)
                     modifier = [];
                 end
                 extraOptions.addNextMaterial = false;    % add next material after adding the current one only for "add, +next material" mode
@@ -335,31 +345,32 @@ elseif strcmp(operation, 'interact')
                     samMode = 'add';
                 end
 
+                destinationLayer = obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value};
                 if isempty(modifier)    % start new segmentation
                     obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [w, h, z];
                     obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = 1;
-                    destinationLayer = obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value};
                     
                     % limit to the selected material of the model
                     if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1
                         % update selected material state
                         selectedFixToMaterial = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
-                        getData2Doptions.blockModeSwitch = false;
+                        getData2Doptions.blockModeSwitch = true;
                         obj.mibModel.sessionSettings.SAMsegmenter.initialImageSelected = ...
                             uint8(cell2mat(obj.mibModel.getData2D('model', NaN, NaN, selectedFixToMaterial, getData2Doptions)));
                     end
 
                     switch samMode
                         case 'add'
-                            % store the current state
-                            %obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
-                            %    cell2mat(obj.mibModel.getData2D(destinationLayer, NaN, NaN, obj.mibModel.I{obj.mibModel.Id}.selectedMaterial-2));
-                            obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
-                                cell2mat(obj.mibModel.getData2D(destinationLayer, NaN, NaN, obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo')));
-
-                            % do backup
-                            destinationStr = obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value};     % {'selection', 'mask', 'model'}'
-                            obj.mibModel.mibDoBackup(destinationStr, 0);
+                            % % store the current state
+                            % %obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
+                            % %    cell2mat(obj.mibModel.getData2D(destinationLayer, NaN, NaN, obj.mibModel.I{obj.mibModel.Id}.selectedMaterial-2));
+                            % getData2Doptions.blockModeSwitch = true;
+                            % obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
+                            %     cell2mat(obj.mibModel.getData2D(destinationLayer, NaN, NaN, obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'), getData2Doptions));
+                            % 
+                            % % do backup
+                            % destinationStr = obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value};     % {'selection', 'mask', 'model'}'
+                            % obj.mibModel.mibDoBackup(destinationStr, 0);
                         case 'add, +next material'
                             if obj.mibModel.I{obj.mibModel.Id}.modelType < 256 || ...
                                 ~strcmp(obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value}, 'model')
@@ -381,70 +392,22 @@ elseif strcmp(operation, 'interact')
                                 obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial = 4;
                             end
 
-                            obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
-                                uint8(cell2mat(obj.mibModel.getData2D(destinationLayer, NaN, NaN, obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'))));
+                            % getData2Doptions.blockModeSwitch = true;
+                            % obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
+                            %     uint8(cell2mat(obj.mibModel.getData2D(destinationLayer, NaN, NaN, obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'), getData2Doptions)));
                             extraOptions.addNextMaterial = true;
 
-                            % do backup
-                            destinationStr = obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value};     % {'selection', 'mask', 'model'}'
+                            % % do backup
+                            % destinationStr = obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value};     % {'selection', 'mask', 'model'}'
                             backupOptions.LinkedVariable.modelMaterialNames = 'obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames';
                             backupOptions.LinkedData.modelMaterialNames = obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames;
-                            obj.mibModel.mibDoBackup(destinationStr, 0, backupOptions);
+                            obj.mibModel.mibDoBackup(destinationLayer, 0, backupOptions);
                         otherwise
                             obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = [];
                     end
-                % elseif strcmp(modifier, 'control')
-                %     switch samMode
-                %         case 'add, +next material'
-                %             % select the first material row in the table
-                %             if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 4
-                %                 eventdata2.Indices = [3, 3];
-                %                 obj.mibSegmentationTable_CellSelectionCallback(eventdata2);     % update mibSegmentationTable
-                %             end
-                %     end
-                % 
-                %     % remove area from segmentation
-                %     obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
-                %     obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, 0];
-                % elseif strcmp(modifier, 'shift')
-                %     switch samMode
-                %         case 'add, +next material'
-                %             % select the first material row in the table
-                %             if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial == 4
-                %                 eventdata2.Indices = [3, 3];
-                %                 obj.mibSegmentationTable_CellSelectionCallback(eventdata2);     % update mibSegmentationTable
-                %             end
-                %     end
-                % 
-                %     if obj.mibView.handles.mibSegmSAMDataset.Value == 1 % 2D, Slice
-                %         % add point to segmentation
-                %         obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
-                %         obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, 1];
-                %     else % 3D, Dataset
-                %         % interpolate the points between the current and
-                %         % the previous points when z-value was changed
-                %         if obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(end) == 1 && ...
-                %                 obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3) ~= z
-                % 
-                %             % range vector between min and max Z
-                %             z_range = min([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3), z]):max([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3), z]);  
-                %             % Interpolate x and y values for each z value
-                %             x_interp = interp1([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3); z], [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 1); w], z_range, 'linear');     % x_interp = interp1([z1 z2], [x1 x2], z_range);
-                %             y_interp = interp1([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3); z], [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 2); h], z_range, 'linear');     % y_interp = interp1([z1 z2], [y1 y2], z_range);
-                %             id1 = size(obj.mibModel.sessionSettings.SAMsegmenter.Points.Position,1);
-                %             id2 = id1+numel(x_interp)-1;
-                %             obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 1) = x_interp;
-                %             obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 2) = y_interp;
-                %             obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 3) = z_range;
-                %             obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(id1:id2) = 1;
-                %         else
-                %             % add point to segmentation
-                %             obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
-                %             obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, 1];
-                %         end
-                %     end
-                else
+                else  % second click with Shift or Ctrl modifiers
                     if strcmp(modifier, 'control')
+                        if isempty(obj.mibModel.sessionSettings.SAMsegmenter.Points.Position); return; end
                         markerValue = 0;
                     elseif strcmp(modifier, 'shift')
                         markerValue = 1;
@@ -461,39 +424,81 @@ elseif strcmp(operation, 'interact')
                             end
                     end
 
-                    if obj.mibView.handles.mibSegmSAMDataset.Value == 1 % 2D, Slice
-                        % add point to segmentation
-                        obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
-                        obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, markerValue];
-                    else % 3D, Dataset
-                        % interpolate the points between the current and
-                        % the previous points when z-value was changed
-                        if obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(end) == markerValue && ...
-                                obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3) ~= z
-                            
-                            % range vector between min and max Z
-                            %z_range = min([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3), z]):max([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3), z]);  
-                            if obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3) < z
-                                z_range = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3):z;
-                            else
-                                z_range = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3):-1:z;
+                    if obj.mibView.handles.mibSegmSAMMethod.Value == 2  % 'Interactive 3D'
+                        if obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end) == z
+                            % use NaN value to specify end of the dataset for automatic cropping
+                            obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, markerValue];
+                        else
+                            % use NaN value to specify end of the dataset for automatic cropping
+                            obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, NaN];
+
+                            % limit to the selected material of the model
+                            if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1
+                                % update selected material state
+                                selectedFixToMaterial = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex();
+                                getData3Doptions.blockModeSwitch = true;
+                                getData3Doptions.z = [min([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(:,3); z]), max([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(:,3); z])];
+                                obj.mibModel.sessionSettings.SAMsegmenter.initialImageSelected = ...
+                                    uint8(cell2mat(obj.mibModel.getData3D('model', NaN, NaN, selectedFixToMaterial, getData3Doptions)));
                             end
 
-                            % Interpolate x and y values for each z value
-                            x_interp = interp1([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3); z], [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 1); w], z_range, 'linear');     % x_interp = interp1([z1 z2], [x1 x2], z_range);
-                            y_interp = interp1([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3); z], [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 2); h], z_range, 'linear');     % y_interp = interp1([z1 z2], [y1 y2], z_range);
-                            id1 = size(obj.mibModel.sessionSettings.SAMsegmenter.Points.Position, 1);
-                            id2 = id1+numel(x_interp)-1;
-                            obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 1) = x_interp;
-                            obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 2) = y_interp;
-                            obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 3) = z_range;
-                            obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(id1:id2) = markerValue;
-                        else
+                        end
+                        obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
+                    else   % 'Interactive', 'Landmarks', 'Automatic everything'
+                        if obj.mibView.handles.mibSegmSAMDataset.Value == 1 % 2D, Slice
                             % add point to segmentation
                             obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
                             obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, markerValue];
+                        else % 3D, Dataset
+                            % interpolate the points between the current and
+                            % the previous points when z-value was changed
+                            if obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(end) == markerValue && ...
+                                    obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3) ~= z
+
+                                % range vector between min and max Z
+                                %z_range = min([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3), z]):max([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end,3), z]);
+                                if obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3) < z
+                                    z_range = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3):z;
+                                else
+                                    z_range = obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3):-1:z;
+                                end
+
+                                % Interpolate x and y values for each z value
+                                x_interp = interp1([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3); z], [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 1); w], z_range, 'linear');     % x_interp = interp1([z1 z2], [x1 x2], z_range);
+                                y_interp = interp1([obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 3); z], [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(end, 2); h], z_range, 'linear');     % y_interp = interp1([z1 z2], [y1 y2], z_range);
+                                id1 = size(obj.mibModel.sessionSettings.SAMsegmenter.Points.Position, 1);
+                                id2 = id1+numel(x_interp)-1;
+                                obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 1) = x_interp;
+                                obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 2) = y_interp;
+                                obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(id1:id2, 3) = z_range;
+                                obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(id1:id2) = markerValue;
+                            else
+                                % add point to segmentation
+                                obj.mibModel.sessionSettings.SAMsegmenter.Points.Position = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Position; w, h, z];
+                                obj.mibModel.sessionSettings.SAMsegmenter.Points.Value = [obj.mibModel.sessionSettings.SAMsegmenter.Points.Value, markerValue];
+                            end
                         end
                     end
+                end
+
+                % do backup and store states
+                z1 = min(obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(:,3));
+                z2 = max(obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(:,3));
+                getDataOptions.blockModeSwitch = true;
+                getDataOptions.z = [z1 z2];
+                switch samMode
+                    case 'add'
+                        % store the current state
+                        obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
+                            cell2mat(obj.mibModel.getData3D(destinationLayer, t, NaN, obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'), getDataOptions));
+
+                        % done in mibSegmentationSAM2
+                        obj.mibModel.mibDoBackup(destinationLayer, 1, getDataOptions);
+                    case 'add, +next material'
+                        if isempty(modifier) % store initial state for the initial selection of the object
+                            obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
+                                uint8(cell2mat(obj.mibModel.getData3D(destinationLayer, NaN, NaN, obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'), getDataOptions)));
+                        end
                 end
 
                 if obj.mibModel.preferences.SegmTools.SAM.samVersion == 1
@@ -504,7 +509,7 @@ elseif strcmp(operation, 'interact')
                     obj.mibSegmentationSAM2(extraOptions);
                 end
                 return;
-            elseif obj.mibView.handles.mibSegmSAMMethod.Value == 2    %     'Landmarks'
+            elseif obj.mibView.handles.mibSegmSAMMethod.Value == 3    %     'Landmarks'
                 obj.mibSegmentationAnnotation(h, w, z, t, modifier);
             end
         case 'Spot'

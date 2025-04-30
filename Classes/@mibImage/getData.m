@@ -30,7 +30,8 @@ function dataset = getData(obj, type, orient, col_channel, options, custom_img) 
 % col_channel: [@em optional],
 % @li when @b type is 'image', @b col_channel is a vector with color numbers to take, when @b NaN [@e default] take the colors
 % selected in the imageData.slices{3} variable, when @b 0 - take all colors of the dataset.
-% @li when @b type is 'model' @b col_channel may be @em NaN - to take all materials of the model or an integer to take specific material. In the later case the selected material will have index = 1.
+% @li when @b type is 'model' @b col_channel may be @em NaN - to take all materials of the model or an integer to take specific material. 
+% In the later case the selected material will have index = 1.
 % options: [@em optional], a structure with extra parameters
 % @li .y -> [@em optional], [ymin, ymax] coordinates of the dataset to take
 % after transpose for level=1, when @b 0 takes 1:obj.height; can be a single number

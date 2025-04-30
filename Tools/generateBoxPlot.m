@@ -39,6 +39,8 @@ function handles = generateBoxPlot(dataset, label, options)
 % options.figIndex = 1024;
 % hFig = generateBoxPlot(dataset, label, options);
 
+% Updates
+% 06.02.2025 - fix of the plot when data bin is empty
 
 if nargin < 1
     dataset{1} = normrnd(50,2,200,1);
@@ -96,12 +98,17 @@ end
 samplesValues = [];
 sampleIds = [];
 for id = 1:numel(dataset)
-    if size(dataset{id}, 1) > size(dataset{id},2)
-        samplesValues = [samplesValues, dataset{id}']; %#ok<AGROW>
+    if ~isempty(dataset{id})
+        if size(dataset{id}, 1) > size(dataset{id},2)
+            samplesValues = [samplesValues, dataset{id}']; %#ok<AGROW>
+        else
+            samplesValues = [samplesValues, dataset{id}]; %#ok<AGROW>
+        end
+        sampleIds = [sampleIds; repmat(label(id, :), numel(dataset{id}), 1)]; %#ok<AGROW>
     else
-        samplesValues = [samplesValues, dataset{id}]; %#ok<AGROW>
+        samplesValues = [samplesValues, NaN]; %#ok<AGROW>
+        sampleIds = [sampleIds; label(id, :)]; %#ok<AGROW>
     end
-    sampleIds = [sampleIds; repmat(label(id, :), numel(dataset{id}), 1)]; %#ok<AGROW>
 end
 boxplot(handles.plotAxes, samplesValues, sampleIds);
 

@@ -156,10 +156,12 @@ drawnow;    % set delay
     Item = jModelMenu.getMenuComponent(8);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'saveas.png')));    
     Item = jModelMenu.getMenuComponent(10);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'edit_node.png')));        
+    Item = jModelMenu.getMenuComponent(11);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'render.png')));        
-    Item = jModelMenu.getMenuComponent(12);
-    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'notes.png'))); 
     Item = jModelMenu.getMenuComponent(13);
+    Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'notes.png'))); 
+    Item = jModelMenu.getMenuComponent(14);
     Item.setIcon(javax.swing.ImageIcon(fullfile(resourcesPath, 'statistics.png'))); 
 
 jMaskMenu = jMenuBar.getComponent(4);

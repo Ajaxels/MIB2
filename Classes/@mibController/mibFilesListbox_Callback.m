@@ -67,7 +67,12 @@ switch obj.mibView.handles.mibGUI.SelectionType
             options.virtual = obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual;  % to use or not the virtual stacking
             options.id = obj.mibModel.Id;   % id of the current dataset
             options.BioFormatsMemoizerMemoDir = obj.mibModel.preferences.ExternalDirs.BioFormatsMemoizerMemoDir;  % path to temp folder for Bioformats
-            
+
+            if obj.mibModel.I{obj.mibModel.Id}.modelExist == 1
+                button = questdlg(sprintf('!!! Warning !!!\nYou are going to load a new dataset!\nMeanwhile you have an open model; would you like to continue?\n'), 'Load dataset', 'Continue', 'Cancel', 'Cancel');
+                if strcmp(button, 'Cancel'); return; end
+            end
+
             %obj.mibModel.I{obj.mibModel.Id}.clearContents();  % remove the current dataset
             obj.mibModel.U.clearContents();  % clear Undo history
             

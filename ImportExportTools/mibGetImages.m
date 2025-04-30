@@ -40,6 +40,8 @@ function [img, img_info] = mibGetImages(files, img_info, options)
 %		   - .xMax -> optional for loading of a region within the image, max X coordinate of the region to load%
 %		   - .yMin -> optional for loading of a region within the image, min Y coordinate of the region to load
 %		   - .yMax -> optional for loading of a region within the image, max Y coordinate of the region to load
+%          - .zMin -> optional for loading of a region within the image, min Z coordinate of the region to load
+%		   - .zMax -> optional for loading of a region within the image, max Z coordinate of the region to load
 %		   - .xyStep -> optional for loading of a region within the image, XY step, pixels between are skipped
 %       img_info: -> containers.Map with details of the dataset from getImageMetadata()
 %       options: -> structure with options
@@ -69,9 +71,16 @@ height = max([files(:).height]);
 width = max([files(:).width]);
 color = max([files(:).color]);
 time = max([files(:).time]);
+% calculate the total number of sections in the dataset
 maxZ = 0;
-for i=1:numel(files)
-    maxZ = maxZ + files(i).noLayers;
+if isfield(files, 'zMin')
+    for i=1:numel(files)
+        maxZ = maxZ + files(i).zMax - files(i).zMin + 1;
+    end
+else
+    for i=1:numel(files)
+        maxZ = maxZ + files(i).noLayers;
+    end
 end
 
 if strcmp(files(1).object_type,'bioformats')    % adjust number of sections, for bio-formats, when more than one serie was selected
@@ -323,6 +332,7 @@ for fn_index = 1:no_files
                             [files(fn_index).xMin files(fn_index).xyStep files(fn_index).xMax]});
                     end
                 else
+                    if subLayer < files(fn_index).zMin || subLayer > files(fn_index).zMax; continue; end
                     I = imread(files(fn_index).filename, subLayer, ...
                             'PixelRegion', ...
                             {[files(fn_index).yMin files(fn_index).xyStep files(fn_index).yMax], ...
@@ -334,7 +344,7 @@ for fn_index = 1:no_files
                     I = bsxfun(@times, I, reshape(img_info('MaxSampleValue'), 1, 1, []));
                 end
             end
-            img(1:maxY,1:maxX,1:size(I,3),layer_id) = I(1:maxY,1:maxX,1:size(I,3));
+            img(1:maxY, 1:maxX, 1:size(I,3), layer_id) = I(1:maxY, 1:maxX, 1:size(I,3));
             % update waitbar
             if options.waitbar && mod(layer_id, waitbarUpdateFrequency)==0
                 if getappdata(wb, 'canceling')
@@ -402,6 +412,17 @@ for fn_index = 1:no_files
         if isfield(files, 'DimensionOrder')
             bfopenOptions.DimensionOrder = files(fn_index).DimensionOrder;
         end
+        
+        % update settings for custom sections, requires xMin, xMax, yMin, yMax, xyStep fields
+        if isfield(files, 'xMin')
+            bfopenOptions.x1 = files(1).xMin;
+            bfopenOptions.y1 = files(1).yMin;
+            bfopenOptions.z1 = files(1).zMin;
+            bfopenOptions.dx = files(1).xMax - files(1).xMin + 1;
+            bfopenOptions.dy = files(1).yMax - files(1).yMin + 1;
+            bfopenOptions.dz = files(1).zMax - files(1).zMin + 1;
+        end
+
         for serieIndex=1:numel(files(fn_index).seriesName)
             I  = bfopen4(files(fn_index).origFilename, files(fn_index).seriesName(serieIndex), NaN, bfopenOptions);
             if isempty(I)

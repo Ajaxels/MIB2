@@ -383,6 +383,11 @@ classdef ImageConverterController < handle
 
         % ------------------------------------------------------------------
         % % Additional functions and callbacks
+        function helpButton_Callback(obj)
+            global mibPath;
+            web(fullfile(mibPath, 'techdoc/html/user-interface/plugins/file-processing/image-converter.html'), '-browser');
+        end
+        
         function Convert(obj)
             % start main calculation of the plugin
             if strcmp(obj.BatchOpt.OutputImageFormatExtension{1}, 'xml')

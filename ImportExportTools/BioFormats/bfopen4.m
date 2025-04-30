@@ -18,8 +18,10 @@ function [result] = bfopen4(r, seriesNumber, sliceNo, options)
 %       .BioFormatsMemoizerMemoDir - directory to store Memoizer memo files
 %       .x1 - starting x position
 %       .y1 - starting y position
+%       .z1 - starting z position
 %       .dx - width
 %       .dy - height
+%       .dz - depth
 %       .waitbarHandle - optional handle to an existing waitbar, otherwise []
 %       .waitbarUpdateFrequency - optional frequency to update the waitbar
 %
@@ -87,15 +89,20 @@ end
 Colors = r.getSizeC();
 Time = 1;
 
-if isnan(sliceNo)
-    if r.getSizeZ() == 1 && r.getSizeT() > 1
-        ZStacks = r.getSizeT();
-    else
-        ZStacks = r.getSizeZ();
-        Time = r.getSizeT();
-    end
+if isfield(options, 'dz')
+    ZStacks = options.dz;
+    sliceNo = NaN; % override sliceNo when options.dz, options.z1 are provided
 else
-    ZStacks = 1;
+    if isnan(sliceNo)
+        if r.getSizeZ() == 1 && r.getSizeT() > 1
+            ZStacks = r.getSizeT();
+        else
+            ZStacks = r.getSizeZ();
+            Time = r.getSizeT();
+        end
+    else
+        ZStacks = 1;
+    end
 end
 
 bpp = r.getBitsPerPixel();
@@ -118,17 +125,24 @@ end
 pixelType = r.getPixelType();
 bpp = loci.formats.FormatTools.getBytesPerPixel(pixelType);
 
-if isnan(sliceNo)
-    numImages = r.getImageCount();
-    startSlice = 1;
-    endSlice = r.getImageCount();
-else
-    numImages = Colors;
-    startSlice = sliceNo*Colors-(Colors-1);
-    endSlice = sliceNo*Colors;
+if isfield(options, 'dz')
+    startSlice = options.z1*Colors-(Colors-1);
+    endSlice = (options.z1+options.dz-1)*Colors;
     if endSlice > r.getImageCount()
-        sprintf('bfopen3: Wrong slice number!\nCancelling!')
+        sprintf('bfopen4: Wrong slice number!\nCancelling!')
         return;
+    end
+else
+    if isnan(sliceNo)
+        startSlice = 1;
+        endSlice = r.getImageCount();
+    else
+        startSlice = sliceNo*Colors-(Colors-1);
+        endSlice = sliceNo*Colors;
+        if endSlice > r.getImageCount()
+            sprintf('bfopen4: Wrong slice number!\nCancelling!')
+            return;
+        end
     end
 end
 

@@ -113,6 +113,7 @@ if nargin < 2
     options.WindowStyle = 'normal';       % [optional] style of the window
     options.Title = 'Intensity projection parameters';   % [optional] additional text at the top of the window
     options.Focus = 1;      % [optional] define index of the widget to get focus
+    options.HelpUrl = fullfile(mibPath, 'techdoc/html/user-interface/menu/image/image-tools-projections.html');
     answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
     if isempty(answer); return; end    
    

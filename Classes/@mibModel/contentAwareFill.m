@@ -122,6 +122,7 @@ if nargin < 2
     options.Title = sprintf('Specify parameters for the content-aware fill.\nOnly the shown color channels will be affected');   % [optional] additional text at the top of the window
     options.TitleLines = 2;
     options.Focus = 1;      % [optional] define index of the widget to get focus
+    options.HelpUrl = fullfile(mibPath, 'techdoc/html/user-interface/menu/image/image-tools-awarefill.html');
     answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
     if isempty(answer); return; end    
    

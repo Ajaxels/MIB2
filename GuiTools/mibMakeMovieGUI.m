@@ -239,7 +239,7 @@ end
 % --- Executes on button press in helpButton.
 function helpButton_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile({mibPath}, 'techdoc/html/ug_gui_menu_file_makevideo.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-makevideo.html'), '-browser');
 end
 
 

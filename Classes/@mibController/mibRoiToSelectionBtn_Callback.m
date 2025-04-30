@@ -60,7 +60,7 @@ end
 CC = regionprops(selected_mask, 'BoundingBox');
 bb = CC.BoundingBox;
 
-if obj.mibModel.getImageProperty('orientation')
+if obj.mibModel.getImageProperty('orientation') == 4
     backupOptions.y = [ceil(bb(2)) ceil(bb(2))+floor(bb(4))-1];
     backupOptions.x = [ceil(bb(1)) ceil(bb(1))+floor(bb(3))-1];
 elseif obj.mibModel.getImageProperty('orientation') == 1

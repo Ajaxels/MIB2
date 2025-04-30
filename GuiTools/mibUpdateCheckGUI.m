@@ -160,15 +160,15 @@ if isdeployed
                 return;
             case 'Current'
                 try
-                    web('http://mib.helsinki.fi/web-update/MIB2_Win.exe', '-browser');
+                    web('http://mib.helsinki.fi/web-update/MIB2_Win.zip', '-browser');
                 catch err
-                    web('https://mib.helsinki.fi/web-update/MIB2_Win.exe', '-browser');
+                    web('https://mib.helsinki.fi/web-update/MIB2_Win.zip', '-browser');
                 end
             case 'Recent'
                 try
-                    web('http://mib.helsinki.fi/web-update/MIB2_Win_Recent.exe', '-browser');
+                    web('http://mib.helsinki.fi/web-update/MIB2_Win_Recent.zip', '-browser');
                 catch err    
-                    web('https://mib.helsinki.fi/web-update/MIB2_Win_Recent.exe', '-browser');
+                    web('https://mib.helsinki.fi/web-update/MIB2_Win_Recent.zip', '-browser');
                 end
         end
     end

@@ -25,6 +25,9 @@ function net = generateDeepLabV3Network(obj, imageSize, numClasses, targetNetwor
 % numClasses: number of output classes (including exterior) for the output results
 % targetNetwork: string defining the base architecture for the initialization
 %   'resnet18' - resnet18 network
+%   'resnet50' - resnet50 network
+%   'xception' - xception network (requires matlab)
+%   'inceptionresnetv2' - inceptionresnetv2 network (required matlab)
 
 % Updates
 % 

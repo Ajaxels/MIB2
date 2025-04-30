@@ -60,7 +60,7 @@ BatchOpt.mibBatchTooltip.TargetLayer = sprintf('Layer to be eroded');
 BatchOpt.mibBatchTooltip.DatasetType = sprintf('Specify whether to erode the current slice (2D, Slice), the stack (3D, Stack) or complete dataset (4D, Dataset)');
 BatchOpt.mibBatchTooltip.ErodeMode = sprintf('Type of the strel element for erosion');
 BatchOpt.mibBatchTooltip.StrelSize = sprintf('Size of the strel element in pixels; one or two numbers, when two numbers entered, the second one defines Y or Z dimension for 2D and 3D strel elements respectively');
-BatchOpt.mibBatchTooltip.MaterialIndex = sprintf('Index of material of the model to be eroded; only for TargetLayer="model"');
+BatchOpt.mibBatchTooltip.MaterialIndex = sprintf('Index of material of the model to be eroded, use NaN to erode all materials; only for TargetLayer="model"');
 BatchOpt.mibBatchTooltip.Difference = sprintf('Obtain the difference between eroded and original image');
 BatchOpt.mibBatchTooltip.Use2DParallelComputing = sprintf('Use parallel processing to erode images in 2D');
 BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');

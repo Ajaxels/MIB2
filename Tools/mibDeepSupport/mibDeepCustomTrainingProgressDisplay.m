@@ -47,7 +47,7 @@ stopState =  false;
 % get max number of points in the progress plot to show
 maxPoints = trainingProgressOptions.O_NumberOfPoints;
 
-if isempty(progressStruct.Iteration) || progressStruct.Iteration == 0
+if (isempty(progressStruct.Iteration) || progressStruct.Iteration == 0) 
     mibDeepTrainingProgressStruct.TrainXvec = zeros([maxPoints, 1]);  % vector of iteration numbers for training
     mibDeepTrainingProgressStruct.TrainLoss = zeros([maxPoints, 1]);  % training loss vector
     mibDeepTrainingProgressStruct.TrainAccuracy = zeros([maxPoints, 1]);  % training accuracy vector

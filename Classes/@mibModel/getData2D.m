@@ -96,8 +96,9 @@ if strcmp(type,'image')
     if isnan(col_channel); col_channel=obj.I{options.id}.slices{3}; end
     if col_channel(1) == 0;  col_channel = 1:obj.I{options.id}.colors; end
 end
-
-options.z = [slice_no, slice_no];
+if ~isfield(options, 'z')
+    options.z = [slice_no, slice_no];
+end
 if ~isfield(options, 't')
     options.t = [obj.I{options.id}.slices{5}(1), obj.I{options.id}.slices{5}(2)];
 end

@@ -26,13 +26,12 @@ function mibSegmSAMPanel_Callbacks(obj, tag)
 
 % Updates
 % 
-
 global mibPath;
 
 switch tag
     case 'mibSegmSAMMethod'
         switch obj.mibView.handles.mibSegmSAMMethod.String{obj.mibView.handles.mibSegmSAMMethod.Value}
-            case {'Interactive'}
+            case {'Interactive', 'Interactive 3D'}
                 obj.mibView.handles.mibSegmSAMSegment.Enable = 'off';
                 %obj.mibView.handles.mibSegmSAMDataset.Enable = 'off';
                 obj.mibView.handles.mibSegmSAMDestination.Enable = 'on';
@@ -63,6 +62,9 @@ switch tag
                 obj.mibView.handles.mibSegmSAMAnnotations.Enable = 'off';
                 obj.mibView.handles.mibSegmSAMAnnotationsClear.Enable = 'off';
         end
+        % force to reset python during next usage, to minimize GPU memory consumption
+        if ~isempty(obj.mibModel.mibPython); terminate(pyenv); end
+        obj.mibModel.mibPython = [];
     case 'mibSegmSAMSettings'
         % get settings file with links to SAM backbones
         
@@ -138,6 +140,7 @@ switch tag
                     % restore default values
                     if ~strcmp(obj.mibModel.preferences.SegmTools.SAM.backbone, 'vit_b (0.4Gb)')
                         % force to reset python during next usage
+                        if ~isempty(obj.mibModel.mibPython); terminate(pyenv); end
                         obj.mibModel.mibPython = [];
                     end
                     obj.mibModel.preferences.SegmTools.SAM.backbone = 'vit_b (0.4Gb)';     % 'vit_h (2.5Gb)', 'vit_l (1.2Gb)', 'vit_b (0.4Gb)'
@@ -170,9 +173,11 @@ switch tag
 
             if ~strcmp(obj.mibModel.preferences.SegmTools.SAM.backbone, answer{1})
                 % force to reset python during next usage
+                if ~isempty(obj.mibModel.mibPython); terminate(pyenv); end
                 obj.mibModel.mibPython = [];
             end
             if ~strcmp(answer{2}, obj.mibModel.preferences.SegmTools.SAM.environment)
+                if ~isempty(obj.mibModel.mibPython); terminate(pyenv); end
                 obj.mibModel.mibPython = [];
             end
 
@@ -300,6 +305,7 @@ switch tag
                     % restore default values
                     if ~strcmp(obj.mibModel.preferences.SegmTools.SAM2.backbone, 'sam2_hiera_t (0.15Gb)')
                         % force to reset python during next usage
+                        if ~isempty(obj.mibModel.mibPython); terminate(pyenv); end
                         obj.mibModel.mibPython = [];
                     end
                     obj.mibModel.preferences.SegmTools.SAM2.backbone = 'sam2_hiera_t (0.15Gb)';     % 'sam2_hiera_t (0.15Gb), sam2_hiera_s (0.18Gb), sam2_hiera_base_plus (0.32Gb), sam2_hiera_l (0.90Gb)'
@@ -332,9 +338,11 @@ switch tag
 
             if ~strcmp(obj.mibModel.preferences.SegmTools.SAM2.backbone, answer{1})
                 % force to reset python during next usage
+                if ~isempty(obj.mibModel.mibPython); terminate(pyenv); end
                 obj.mibModel.mibPython = [];
             end
             if ~strcmp(answer{2}, obj.mibModel.preferences.SegmTools.SAM.environment)
+                if ~isempty(obj.mibModel.mibPython); terminate(pyenv); end
                 obj.mibModel.mibPython = [];
             end
 
@@ -377,11 +385,22 @@ switch tag
                 obj.mibSegmentationSAM2();
         end
     case 'mibSAM2checkbox'
-        obj.mibModel.preferences.SegmTools.SAM.samVersion = 1;
         if obj.mibView.handles.mibSAM2checkbox.Value == 1 % use SAM2
             obj.mibModel.preferences.SegmTools.SAM.samVersion = 2;
+            obj.mibView.handles.mibSegmSAMDataset.Enable = 'on';
+            obj.mibView.handles.mibSegmSAMMethod.String = {'Interactive'; 'Interactive 3D'; 'Landmarks'; 'Automatic everything'};
+            obj.mibView.handles.mibSegmSAMMethod.Value = 2;
+        else
+            obj.mibModel.preferences.SegmTools.SAM.samVersion = 1;
+            obj.mibView.handles.mibSegmSAMDataset.Value = 1;
+            obj.mibView.handles.mibSegmSAMDataset.Enable = 'off';
+            obj.mibView.handles.mibSegmSAMMethod.String = {'Interactive'; 'Landmarks'; 'Automatic everything'};
+            obj.mibView.handles.mibSegmSAMMethod.Value = 1;
         end
-        obj.mibModel.mibPython = [];
+        obj.mibSegmSAMPanel_Callbacks('mibSegmSAMMethod');
+        %if ~isempty(obj.mibModel.mibPython); terminate(pyenv); end
+        %obj.mibModel.mibPython = [];
+        
 end
 unFocus(obj.mibView.handles.mibSegmSelectedOnlyCheck);   % remove focus from hObject
 end

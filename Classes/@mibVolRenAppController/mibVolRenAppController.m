@@ -262,7 +262,8 @@ classdef mibVolRenAppController < handle
 
             % start 3D viewer in a separate window
             obj.startController('mibVolRenAppViewerController', obj);
-
+            drawnow;
+            
             % init the viewer
             obj.viewer = viewer3d(obj.childControllers{1}.View.handles.volumeViewerPanel, ...
                 'BackgroundColor', obj.Settings.Viewer.backgroundColor, ...
@@ -1714,7 +1715,7 @@ classdef mibVolRenAppController < handle
                 return;
             end
 
-            overlay = cell2mat(obj.mibModel.getData3D(overlayType, [], 4, materialId));
+            overlay = cell2mat(obj.mibModel.getData3D(overlayType, NaN, 4, materialId));
             % resize the volume
             if obj.volumeScaleFactor ~= 1
                 rescaleOpt.imgType = '3D';
@@ -1727,7 +1728,12 @@ classdef mibVolRenAppController < handle
 
             % update volume
             obj.volume.OverlayData = overlay;
-
+            
+            % https://se.mathworks.com/help/releases/R2024b/images/ref/images.ui.graphics.image-properties.html?searchHighlight=OverlayDisplayRange&s_tid=doc_srchtitle#mw_1bf93e21-15d7-4716-93b7-d0b98195db15
+            % a new property at least in R2024b which should be set to
+            % 'data-range' or 'manual' with obj.volume.OverlayDisplayRange = [0 numberOfmaterials]
+            if isprop(obj.volume, 'OverlayDisplayRangeMode'); obj.volume.OverlayDisplayRangeMode = 'data-range'; end
+            
             obj.volume.OverlayAlphamap = [0 ones([1, obj.noOverlayMaterials])];
             obj.volume.OverlayColormap = overlayColormap;
             obj.volume.OverlayThreshold = 0.0001;
@@ -1978,7 +1984,7 @@ classdef mibVolRenAppController < handle
             % show help
 
             global mibPath;
-            web(fullfile(mibPath, 'techdoc', 'html', 'ug_gui_menu_file_3D_viewer.html'), '-helpbrowser');
+            web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-mib3Dviewer.html'), '-browser');
         end
 
     end

@@ -59,7 +59,6 @@ BatchOpt.mibBatchActionName = 'Remove material';
 BatchOpt.mibBatchTooltip.MaterialIndices = sprintf('Indices of materials to be removed from the model');
 BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');
 
-
 % do nothing is selection is disabled
 if obj.mibModel.I{BatchOpt.id}.enableSelection == 0
     warndlg(sprintf('The models are switched off!\n\nPlease make sure that the "Enable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "yes" and try again...'),'The models are disabled');

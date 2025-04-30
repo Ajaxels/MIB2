@@ -75,7 +75,6 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'ImportExportTools','nrrd'));
     addpath(fullfile(func_dir, 'Resources'));
     addpath(fullfile(func_dir, 'techdoc'));
-	addpath(fullfile(func_dir, 'techdoc', 'publish overload'));
     addpath(fullfile(func_dir, 'Tools'));
     addpath(fullfile(func_dir, 'Tools','CellMigration'));
     addpath(fullfile(func_dir, 'Tools','FastMarching'));
@@ -98,7 +97,7 @@ end
 % ATTENTION! it is important to have the version number between "ver." and "/" 
 % Release syntax example: "ver. 2.91 / 06.08.2024"
 % Beta syntax example: "ver. 2.91 (beta 08) / 06.08.2024"
-mibVersion = 'ver. 2.91 (beta 21) / 07.01.2025';
+mibVersion = 'ver. 2.91 / 29.04.2025';  
 
 % define max number of parallel workers for deployed versions
 % define workers for parallel pools
@@ -122,7 +121,11 @@ else
 end
 cpuParallelLimit = min([cpuParallelLimit, parPool.NumWorkers]);
 
-model = mibModel(cpuParallelLimit);     % initialize the model
-controller = mibController(model, mibVersion);  % initialize controller
+try
+    model = mibModel(cpuParallelLimit);     % initialize the model
+    controller = mibController(model, mibVersion);  % initialize controller
+catch err
+    err
+end
 
 toc

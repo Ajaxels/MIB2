@@ -147,7 +147,7 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_file_rename_and_shuffle.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-renameandshuffle.html'), '-browser');
 end
 
 function randomDirsList_cm_Callback(hObject, ~, parameter)

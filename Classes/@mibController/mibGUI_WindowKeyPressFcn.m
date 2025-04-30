@@ -62,7 +62,7 @@ end
 %     return;
 % end
 
-if strcmp(char, 'alt'); return; end
+if strcmp(char, 'alt');    return; end
 
 xyString = obj.mibView.handles.mibPixelInfoTxt2.String;
 colon = strfind(xyString, ':');
@@ -105,7 +105,12 @@ ActionId = find(ActionId>0);    % action id is the index of the action, obj.mibM
 if ~isempty(ActionId) % find in the list of existing shortcuts
     switch obj.mibModel.preferences.KeyShortcuts.Action{ActionId}
         case 'Add measurement (Measure tool)'   % add measurement, works with Measure Tool, default 'm'
-            notify(obj.mibModel.I{obj.mibModel.Id}.hMeasure, 'addMeasurement');
+            %notify(obj.mibModel.I{obj.mibModel.Id}.hMeasure, 'addMeasurement');
+
+            % update segmentation table
+            motifyEvent.Name = 'addMeasurement';
+            eventdata = ToggleEventData(motifyEvent);
+            notify(obj.mibModel, 'modelNotify', eventdata);
         case 'Switch dataset to XY orientation'         % default 'Alt + 1'
             if obj.mibModel.I{obj.mibModel.Id}.orientation == 4 || isnan(inImage) || obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual %|| x < 1 || x > handles.Img{handles.Id}.I.no_stacks;
                 return;
@@ -368,18 +373,24 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection = fliplr(obj.mibModel.I{obj.mibModel.Id}.lastSegmSelection);
         case 'Toggle current and previous buffer'
             obj.mibBufferToggle_Callback(obj.mibModel.mibPrevId);   % default ctrl+e, toggle buffer buttons
-        case 'Loop through the list of favourite segmentation tools'    % default 'd'
-            if numel(obj.mibModel.preferences.SegmTools.PreviousTool) == 0
-                errordlg(sprintf('The selection tools for the fast access with the "D" shortcut are not difined!\n\nPlease use the "D" button in the Segmentation panel to select them!'),'No tools defined!');
-                return;
-            end
-            toolId = obj.mibView.handles.mibSegmentationToolPopup.Value;
-            nextTool = obj.mibModel.preferences.SegmTools.PreviousTool(find(obj.mibModel.preferences.SegmTools.PreviousTool > toolId, 1));
-            if isempty(nextTool)
-                nextTool = obj.mibModel.preferences.SegmTools.PreviousTool(1);
+        case {'Loop through the list of favourite segmentation tools', 'Favorite tool A', 'Favorite tool B'}    % default 'd', or favorite tools A/B Shift+D, Ctrl+D
+            toolList = obj.mibView.handles.mibSegmentationToolPopup.String;
+            if obj.mibModel.preferences.KeyShortcuts.Action{ActionId}(1) == 'L'
+                if numel(obj.mibModel.preferences.SegmTools.PreviousTool) == 0
+                    errordlg(sprintf('The selection tools for the fast access with the "D" shortcut are not difined!\n\nPlease use the "D" button in the Segmentation panel to select them!'),'No tools defined!');
+                    return;
+                end
+                toolId = obj.mibView.handles.mibSegmentationToolPopup.Value;
+                nextTool = obj.mibModel.preferences.SegmTools.PreviousTool(find(obj.mibModel.preferences.SegmTools.PreviousTool > toolId, 1));
+                if isempty(nextTool)
+                    nextTool = obj.mibModel.preferences.SegmTools.PreviousTool(1);
+                end
+            elseif obj.mibModel.preferences.KeyShortcuts.Action{ActionId}(end) == 'A'
+                nextTool = find(ismember(toolList, obj.mibModel.preferences.SegmTools.FavoriteToolA));
+            else % 'B'
+                nextTool = find(ismember(toolList, obj.mibModel.preferences.SegmTools.FavoriteToolB));
             end
             toolList = obj.mibView.handles.mibSegmentationToolPopup.String;
-            
             fittext = annotation(obj.mibView.handles.mibViewPanel,'textbox',...
                 'Position',[0.44    0.6964    0.3    0.0534],...
                 'BackgroundColor',[0.8706 0.9216 0.9804],...
@@ -426,6 +437,10 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
                 obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames = segmList;
                 obj.updateSegmentationTable();
             end
+        case {'Preset 1 use for the selected segmentation tool', 'Preset 2 use for the selected segmentation tool', 'Preset 3 use for the selected segmentation tool'} % default 1, 2, 3
+            obj.mibUpdateSegmentationSettingsFromPreset(str2double(obj.mibModel.preferences.KeyShortcuts.Action{ActionId}(8)));
+        case {'Preset 1 update from the selected segmentation tool', 'Preset 2 update from the selected segmentation tool', 'Preset 3 update from the selected segmentation tool'}  % default Shift+1, Shift+2, Shift+3
+            obj.mibUpdatePresetFromSegmentationSettings(str2double(obj.mibModel.preferences.KeyShortcuts.Action{ActionId}(8)));
         case 'Zoom to 100% view'
             obj.mibToolbar_ZoomBtn_ClickedCallback('one2onePush');
         case 'Zoom to fit the view'

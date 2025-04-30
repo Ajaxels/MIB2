@@ -142,38 +142,11 @@ if loadShifts == 0
 
     featuresList = repmat({}, [numFiles, 1]);
     validPtsList = repmat({}, [numFiles, 1]);
-
-    % prepare variables for parfor
-    switch parameters.detectPointsType
-        case 'Blobs: Speeded-Up Robust Features (SURF) algorithm'
-            detectOpt = obj.automaticOptions.detectSURFFeatures;
-        case 'Regions: Maximally Stable Extremal Regions (MSER) algorithm'
-            detectOpt = obj.automaticOptions.detectMSERFeatures;
-        case 'Corners: Harris-Stephens algorithm'
-            detectOpt = obj.automaticOptions.detectHarrisFeatures;
-        case 'Corners: Binary Robust Invariant Scalable Keypoints (BRISK)'
-            detectOpt = obj.automaticOptions.detectBRISKFeatures;
-        case 'Corners: Features from Accelerated Segment Test (FAST)'
-            detectOpt = obj.automaticOptions.detectFASTFeatures;
-        case 'Corners: Minimum Eigenvalue algorithm'
-            detectOpt = obj.automaticOptions.detectMinEigenFeatures;
-        case 'Oriented FAST and rotated BRIEF (ORB)'
-            detectOpt = obj.automaticOptions.detectORBFeatures;
-    end
     colorCh = parameters.colorCh;
     detectPointsType = parameters.detectPointsType;
+    automaticOptions = obj.automaticOptions;
     rotationInvariance = obj.automaticOptions.rotationInvariance;
-    metricThreshold = NaN; if isfield(detectOpt, 'MetricThreshold'); metricThreshold = detectOpt.MetricThreshold; end
-    numOctaves = NaN; if isfield(detectOpt, 'NumOctaves'); numOctaves = detectOpt.NumOctaves; end
-    numScaleLevels = NaN; if isfield(detectOpt, 'NumScaleLevels'); numScaleLevels = detectOpt.NumScaleLevels; end
-    thresholdDelta = NaN; if isfield(detectOpt, 'ThresholdDelta'); thresholdDelta = detectOpt.ThresholdDelta; end
-    regionAreaRange = NaN; if isfield(detectOpt, 'RegionAreaRange'); regionAreaRange = detectOpt.RegionAreaRange; end
-    maxAreaVariation = NaN; if isfield(detectOpt, 'MaxAreaVariation'); maxAreaVariation = detectOpt.MaxAreaVariation; end
-    minQuality = NaN; if isfield(detectOpt, 'MinQuality'); minQuality = detectOpt.MinQuality; end
-    filterSize = NaN; if isfield(detectOpt, 'FilterSize'); filterSize = detectOpt.FilterSize; end
-    minContrast = NaN; if isfield(detectOpt, 'MinContrast'); minContrast = detectOpt.MinContrast; end
-    scaleFactor = NaN; if isfield(detectOpt, 'ScaleFactor'); scaleFactor = detectOpt.ScaleFactor; end
-    
+
     parfor (layer = 1:numFiles, parforArg)
         distorted = readimage(imgDS, layer);
         [heightVec(layer), widthVec(layer), colorsVec(layer)]  = size(distorted);
@@ -184,24 +157,8 @@ if loadShifts == 0
         % resize if needed
         if ratio ~= 1; distorted = imresize(distorted, ratio, 'bicubic'); end
 
-        % Detect features
-        ptsDistorted = NaN;
-        switch detectPointsType
-            case 'Blobs: Speeded-Up Robust Features (SURF) algorithm'
-                ptsDistorted  = detectSURFFeatures(distorted,  'MetricThreshold', metricThreshold, 'NumOctaves', numOctaves, 'NumScaleLevels', numScaleLevels);
-            case 'Regions: Maximally Stable Extremal Regions (MSER) algorithm'
-                ptsDistorted  = detectMSERFeatures(distorted, 'ThresholdDelta', thresholdDelta, 'RegionAreaRange', regionAreaRange, 'MaxAreaVariation', maxAreaVariation);
-            case 'Corners: Harris-Stephens algorithm'
-                ptsDistorted  = detectHarrisFeatures(distorted, 'MinQuality', minQuality, 'FilterSize', filterSize);
-            case 'Corners: Binary Robust Invariant Scalable Keypoints (BRISK)'
-                ptsDistorted  = detectBRISKFeatures(distorted, 'MinContrast', minContrast, 'MinQuality', minQuality, 'NumOctaves', numOctaves);
-            case 'Corners: Features from Accelerated Segment Test (FAST)'
-                ptsDistorted  = detectFASTFeatures(distorted, 'MinQuality', minQuality, 'MinContrast', minContrast);
-            case 'Corners: Minimum Eigenvalue algorithm'
-                ptsDistorted  = detectMinEigenFeatures(distorted, 'MinQuality', minQuality, 'FilterSize', filterSize);
-            case 'Oriented FAST and rotated BRIEF (ORB)'
-                ptsDistorted  = detectORBFeatures(distorted, 'ScaleFactor', scaleFactor, 'NumLevels', numLevels);
-        end
+        % detect feature-points
+        ptsDistorted = mibAlignmentDetectFeatures(distorted, detectPointsType, automaticOptions);
 
         % Extract feature descriptors.
         if ~strcmp(detectPointsType, 'Oriented FAST and rotated BRIEF (ORB)')
@@ -292,23 +249,28 @@ if loadShifts == 0
     if parameters.useBatchMode == 0
         figure(125)
         subplot(2,1,1)
-        plot(1:vec_length, x_stretch, 1:vec_length, y_stretch);
+        plot(1:vec_length, x_stretch, '.-', 1:vec_length, y_stretch, '.-');
         title('Scaling');
         legend('x-axis','y-axis');
         subplot(2,1,2)
-        plot(1:vec_length, x_shear, 1:vec_length, y_shear);
+        plot(1:vec_length, x_shear, '.-', 1:vec_length, y_shear, '.-');
         title('Shear');
         legend('x-axis','y-axis');
 
-        fixDrifts2 = questdlg('Align the stack using detected displacements?','Fix drifts', 'Yes', 'Subtract running average', 'Quit alignment', 'Yes');
-        if strcmp(fixDrifts2, 'Quit alignment')
+        %fixDrifts2 = questdlg('Align the stack using detected displacements?','Fix drifts', 'Yes', 'Subtract running average', 'Quit alignment', 'Yes');
+        
+        mibQuestDlgOpt.ButtonWidth = [70 90 90];
+        mibQuestDlgOpt.WindowHeight = 70;
+        fixDrifts2 = mibQuestDlg({mibPath}, 'Align the stack using detected displacements?', ...
+            {'Quit alignment'; 'Fix drifts'; 'Apply current values'}, 'Align dataset', mibQuestDlgOpt);
+        if isempty(fixDrifts2) || strcmp(fixDrifts2, 'Quit alignment')
             if isdeployed == 0
                 assignin('base', 'tformMatrix', tformMatrix);
                 fprintf('Transformation matrix (tformMatrix) was exported to the Matlab workspace\nIt can be modified and saved to disk using the following command:\nsave(''myfile.mat'', ''tformMatrix'');\n');
             end
             if showWaitbar; pw.delete(); end
             return;
-        elseif strcmp(fixDrifts2, 'Yes')
+        elseif strcmp(fixDrifts2, 'Apply current values')
             obj.BatchOpt.SubtractRunningAverage = 0;
         end
 
@@ -324,7 +286,7 @@ if loadShifts == 0
         options.PromptLines = [1, 1, 1, 2, 2];
     end
 
-    if strcmp(fixDrifts2, 'Subtract running average') || obj.BatchOpt.SubtractRunningAverage == 1
+    if strcmp(fixDrifts2, 'Fix drifts') || obj.BatchOpt.SubtractRunningAverage == 1
         notOk = 1;
         while notOk
             if parameters.useBatchMode == 0
@@ -381,16 +343,17 @@ if loadShifts == 0
             if parameters.useBatchMode == 0
                 figure(125)
                 subplot(2,1,1)
-                plot(1:vec_length, x_stretch2, 1:vec_length, y_stretch2);
+                plot(1:vec_length, x_stretch2, '.-', 1:vec_length, y_stretch2, '.-');
                 title('Scaling, fixed');
                 legend('x-axis','y-axis');
                 subplot(2,1,2)
-                plot(1:vec_length, x_shear2, 1:vec_length, y_shear2);
+                plot(1:vec_length, x_shear2, '.-', 1:vec_length, y_shear2, '.-');
                 title('Shear, fixed');
                 legend('x-axis','y-axis');
 
-                fixDrifts = questdlg('Align the stack using detected displacements?', 'Fix drifts', 'Yes', 'Change window size', 'Quit alignment', 'Yes');
-                if strcmp(fixDrifts, 'Quit alignment')
+                fixDrifts = mibQuestDlg({mibPath}, 'Align the stack using detected displacements?', ...
+                    {'Quit alignment'; 'Change window size'; 'Apply current values'}, 'Align dataset', mibQuestDlgOpt);
+                if isempty(fixDrifts) || strcmp(fixDrifts, 'Quit alignment')
                     if isdeployed == 0
                         assignin('base', 'tformMatrix', tformMatrix);
                         fprintf('Transformation matrix (tformMatrix) was exported to the Matlab workspace\nIt can be modified and saved to disk using the following command:\nsave(''myfile.mat'', ''tformMatrix'');\n');
@@ -402,7 +365,7 @@ if loadShifts == 0
                 obj.BatchOpt.SubtractRunningAverageStep = num2str(halfwidth);
             end
 
-            if strcmp(fixDrifts, 'Yes')
+            if strcmp(fixDrifts, 'Apply current values')
                 for i=2:vec_length
                     tformMatrix{i}.T(1,1) = x_stretch2(i);
                     tformMatrix{i}.T(2,2) = y_stretch2(i);
