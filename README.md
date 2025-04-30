@@ -4,6 +4,8 @@ microscopy datasets (version 1 is here https://github.com/Ajaxels/MIB)
 
 See more on http://mib.helsinki.fi
 
+Documentation: [http://mib.helsinki.fi](https://mib.helsinki.fi/help/main2/index.html)
+
 Help and support: https://forum.image.sc/tags/mib
 
 Standalone compiled releases for academic research: https://github.com/Ajaxels/MIB2/releases
