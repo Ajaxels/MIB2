@@ -809,8 +809,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             circ.R  = R;
         end
         
-        function result = AngleFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
-            % function result = AngleFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
+        function [result, info] = AngleFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity, infoDlgText)
+            % function [result, info] = AngleFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity, infoDlgText)
             % This function allows the measurement of an angle between 3 points
             %
             % Parameters:
@@ -821,17 +821,23 @@ classdef mibMeasure < matlab.mixin.Copyable
             % finetuneCheck: [@em optional] @b 1 (@em default) - allow fine-tuning during the placing of measurements; @b 0 - instant placing
             % calcIntensity: [@em optional] @b 1 (@em default) - calculate
             % intensity profile, 0 - do not calculate
+            % infoDlgText:  [string or NaN] show dialog to provide information about the measurement, when NaN no dialog is shown, 
+            % overwise use text provided in this variable
             %
             % Return values:
-            % result - 1-success, 0-cancel
+            % result: - 1-success, 0-cancel
+            % info: information text that was provided
             
             %|
             % @b Examples
             % @code obj.mibModel.I{obj.mibModel.Id}.hMeasure.AngleFun(obj, [], 1); // call from mibMeasureToolController; get points and measure the angle between them. Calculate intensity profile for color channel 1 @endcode
             % @code obj.mibModel.I{obj.mibModel.Id}.hMeasure.AngleFun(obj, 2, 1); // call from mibMeasureToolController; edit second measurement. @endcode
             
+            global mibPath;
+            
             % Credit: adapted from Image Measurement Utility by Jan Neggers
             % http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility
+            if nargin < 7; infoDlgText = NaN; end
             if nargin < 6; calcIntensity = 1; end
             if nargin < 5; finetuneCheck = 1; end
             if nargin < 4; colCh = 1; end
@@ -879,7 +885,21 @@ classdef mibMeasure < matlab.mixin.Copyable
                 % get Z-value
                 z = obj.hImg.getCurrentSliceNumber();
                 timePoint = obj.hImg.getCurrentTimePoint();
-                info = ''; % info text
+                if ischar(infoDlgText)
+                    prompts = {'Add text for the info field'};
+                    defAns = {infoDlgText};
+                    dlgTitle = 'Angle info';
+                    options.WindowStyle = 'modal';
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                    if isempty(answer) 
+                        info = ''; 
+                    else
+                        info = answer{1}; 
+                    end
+                else
+                    info = ''; % info text
+                end
+                
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -993,8 +1013,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             result = 1;
         end
         
-        function result = CaliperFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
-            % function result = CaliperFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
+        function [result, info] = CaliperFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity, infoDlgText)
+            % function [result, info] = CaliperFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity, infoDlgText)
             % measuring a distance between two opposite sides of an object
             %
             % Parameters:
@@ -1005,17 +1025,23 @@ classdef mibMeasure < matlab.mixin.Copyable
             % finetuneCheck: [@em optional] @b 1 (@em default) - allow fine-tuning during the placing of measurements; @b 0 - instant placing
             % calcIntensity: [@em optional] @b 1 (@em default) - calculate
             % intensity profile, 0 - do not calculate
+            % infoDlgText:  [string or NaN] show dialog to provide information about the measurement, when NaN no dialog is shown,
+            % overwise use text provided in this variable
             %
             % Return values:
-            % result - 1-success, 0-cancel
+            % result: 1-success, 0-cancel
+            % info: information text that was provided
             
             %|
             % @b Examples
             % @code obj.mibModel.I{obj.mibModel.Id}.hMeasure.CaliperFun(obj, [], 1); // call from mibMeasureToolController; get points and measure the distance between them. Calculate intensity profile for color channel 1 @endcode
             % @code obj.mibModel.I{obj.mibModel.Id}.hMeasure.CaliperFun(obj, 2, 1); // call from mibMeasureToolController; edit second measurement. @endcode
             
+            global mibPath;
+            
             % Credit: adapted from Image Measurement Utility by Jan Neggers
             % http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility
+            if nargin < 7; infoDlgText = NaN; end
             if nargin < 6; calcIntensity = 1; end
             if nargin < 5; finetuneCheck = 1; end
             if nargin < 4; colCh = 1; end
@@ -1086,7 +1112,21 @@ classdef mibMeasure < matlab.mixin.Copyable
                 % get Z-value
                 z = obj.hImg.getCurrentSliceNumber();
                 timePoint = obj.hImg.getCurrentTimePoint();
-                info = ''; % info text
+                if ischar(infoDlgText)
+                    prompts = {'Add text for the info field'};
+                    defAns = {infoDlgText};
+                    dlgTitle = 'Caliper info';
+                    options.WindowStyle = 'modal';
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                    if isempty(answer)
+                        info = '';
+                    else
+                        info = answer{1};
+                    end
+                else
+                    info = ''; % info text
+                end
+                
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -1243,8 +1283,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             result = 1;
         end
         
-        function result = CircleFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
-            % function result = CircleFun(obj, mibController, index, colCh, finetuneCheck)
+        function [result, info] = CircleFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity, infoDlgText)
+            % function [result, info] = CircleFun(obj, mibController, index, colCh, finetuneCheck, infoDlgText)
             % This function allows the measurement of a radius
             %
             % Parameters:
@@ -1255,17 +1295,23 @@ classdef mibMeasure < matlab.mixin.Copyable
             % finetuneCheck: [@em optional] @b 1 (@em default) - allow fine-tuning during the placing of measurements; @b 0 - instant placing
             % calcIntensity: [@em optional] @b 1 (@em default) - calculate
             % intensity profile, 0 - do not calculate
+            % infoDlgText:  [string or NaN] show dialog to provide information about the measurement, when NaN no dialog is shown,
+            %               overwise use text provided in this variable
             %
             % Return values:
-            % result - 1-success, 0-cancel
+            % result: 1-success, 0-cancel
+            % info: information text that was provided
             
             %|
             % @b Examples
             % @code obj.mibModel.I{obj.mibModel.Id}.hMeasure.CircleFun(obj, [], 1); // call from mibMeasureToolController; get points and measure the radius. Calculate intensity profile for color channel 1 @endcode
             % @code obj.mibModel.I{obj.mibModel.Id}.hMeasure.CircleFun(obj, 2, 1); // call from mibMeasureToolController; edit second measurement. @endcode
             
+            global mibPath;
+            
             % Credit: adapted from Image Measurement Utility by Jan Neggers
             % http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility
+            if nargin < 7; infoDlgText = NaN; end
             if nargin < 6; calcIntensity = 1; end
             if nargin < 5; finetuneCheck = 1; end
             if nargin < 4; colCh = 1; end
@@ -1304,7 +1350,20 @@ classdef mibMeasure < matlab.mixin.Copyable
                 % get Z-value
                 z = obj.hImg.getCurrentSliceNumber();
                 timePoint = obj.hImg.getCurrentTimePoint();
-                info = ''; % info text
+                if ischar(infoDlgText)
+                    prompts = {'Add text for the info field'};
+                    defAns = {infoDlgText};
+                    dlgTitle = 'Circle info';
+                    options.WindowStyle = 'modal';
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                    if isempty(answer)
+                        info = '';
+                    else
+                        info = answer{1};
+                    end
+                else
+                    info = ''; % info text
+                end
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -1404,8 +1463,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             result = 1;
         end
         
-        function result = DistanceFreeFun(obj, mibController, colCh, finetuneCheck, calcIntensity, freehandOptions)
-            % function result = DistanceFreeFun(obj, mibController, colCh, finetuneCheck, calcIntensity, freehandOptions)
+        function [result, info] = DistanceFreeFun(obj, mibController, colCh, finetuneCheck, calcIntensity, freehandOptions)
+            % function [result, info] = DistanceFreeFun(obj, mibController, colCh, finetuneCheck, calcIntensity, freehandOptions)
             % measuring of distance along the free-hand path. The path is
             % converted to the impoly line
             %
@@ -1418,9 +1477,13 @@ classdef mibMeasure < matlab.mixin.Copyable
             % freehandOptions: structure with additional parameters
             % .fixNumberPoints - logical, when checked do not ask for number of points
             % .noPointsEdit - string with selected number of points to use
+            % .infoDlgText - [string or NaN] show dialog to provide information about the measurement, when NaN no dialog is shown,
+            %      overwise use text provided in this variable
+
             %
             % Return values:
-            % result - 1-success, 0-cancel
+            % result: 1-success, 0-cancel
+            % info: information text that was provided
             
             %|
             % @b Examples
@@ -1438,6 +1501,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             
             if ~isfield(freehandOptions, 'fixNumberPoints'); freehandOptions.fixNumberPoints = false; end
             if ~isfield(freehandOptions, 'noPointsEdit'); freehandOptions.noPointsEdit = '5'; end
+            if ~isfield(freehandOptions, 'infoDlgText'); freehandOptions.infoDlgText = NaN; end
+            
             info = ''; % default info text
             position = obj.drawROI(mibController, 'imfreehand');
             
@@ -1454,30 +1519,49 @@ classdef mibMeasure < matlab.mixin.Copyable
                 return;
             end
             
-            if ~freehandOptions.fixNumberPoints
+            dlgTitle = 'Convert to polyline';
+            options.WindowStyle = 'modal';
+            if ~freehandOptions.fixNumberPoints  % freehand mode
                 if isfield(mibController.mibModel.sessionSettings.measureTool, 'noPointsEdit')
                     noPointsEdit = mibController.mibModel.sessionSettings.measureTool.noPointsEdit;
                 else
                     noPointsEdit = '5';
                 end
-
-                prompts = {sprintf('There are %d vertices in the line. \n\nIf needed type a new number of vertices in range 1-%d to reduce this value', ...
-                    size(position,1), size(position,1)); ...
-                    'Add text for the info field'};
-                defAns = {noPointsEdit; '';};
-                dlgTitle = 'Convert to polyline';
-                options.WindowStyle = 'modal';
-                options.PromptLines = [3, 1];
-                options.Focus = 2;
-                [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
-                if isempty(answer); return; end 
-
-                info = answer{2}; % update info text
-
+                
+                if ischar(freehandOptions.infoDlgText)
+                    prompts = {sprintf('There are %d vertices in the line. \n\nIf needed type a new number of vertices in range 1-%d to reduce this value', ...
+                        size(position,1), size(position,1)); ...
+                        'Add text for the info field'};
+                    defAns = {noPointsEdit; freehandOptions.infoDlgText;};
+                    options.PromptLines = [5, 1];
+                    options.Focus = 2;
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                    if isempty(answer); return; end 
+                    info = answer{2}; % update info text
+                else
+                    prompts = {sprintf('There are %d vertices in the line. \n\nIf needed type a new number of vertices in range 1-%d to reduce this value', ...
+                        size(position,1), size(position,1))};
+                    defAns = {noPointsEdit};
+                    options.PromptLines = 5;
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                    if isempty(answer); return; end 
+                    info = ''; % update info text
+                end
+                
                 noPointsInt = str2double(answer{1});
                 coef = round( size(position,1) / (noPointsInt-1) - 1);
                 mibController.mibModel.sessionSettings.measureTool.noPointsEdit = answer{1};
             else
+                if ischar(freehandOptions.Info)
+                    prompts = {'Add text for the info field'};
+                    defAns = {freehandOptions.Info;};
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                    if isempty(answer); return; end 
+                    info = answer{1}; % update info text
+                else
+                    info = ''; % info text
+                end
+                
                 noPointsInt = str2double(freehandOptions.noPointsEdit);
                 coef = round( size(position,1) / (noPointsInt-1) - 1);
             end
@@ -1510,8 +1594,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             result = 1;
         end
         
-        function result = DistancePolyFun(obj, mibController, index, colCh, noPoints, finetuneCheck, calcIntensity, options)
-            % function result = DistancePolyFun(obj, mibController, index, colCh, noPoints, modeString, finetuneCheck, calcIntensity, options)
+        function [result, info] = DistancePolyFun(obj, mibController, index, colCh, noPoints, finetuneCheck, calcIntensity, options)
+            % function [result, info] = DistancePolyFun(obj, mibController, index, colCh, noPoints, modeString, finetuneCheck, calcIntensity, options)
             % measuring of distance along the path
             %
             % Parameters:
@@ -1528,14 +1612,18 @@ classdef mibMeasure < matlab.mixin.Copyable
             %   .outputFormat - output format, 'tif', csv, mat, preview', when preview show it as a plot
             %   .calcKymograph - true/false, calculate kymograph
             %   .addScale - add scale to kymograph
+            %  .infoDlgText - [string or NaN] show dialog to provide information about the measurement, when NaN no dialog is shown,
+            %      overwise use text provided in this variable
             %
             % Return values:
-            % result - 1-success, 0-cancel
+            % result: 1-success, 0-cancel
             
             %|
             % @b Examples
             % @code obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistancePolyFun(obj, [], 1, 10); // call from mibMeasureToolController; get 10 points and measure the distance between them. Calculate intensity profile for color channel 1 @endcode
             % @code obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistancePolyFun(obj, 2, 1); // call from mibMeasureToolController; edit second measurement. @endcode
+            
+            global mibPath;
             
             % Credit: adapted from Image Measurement Utility by Jan Neggers
             % http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility
@@ -1548,6 +1636,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             result = 0;
             
             if ~isfield(options, 'addScale'); options.addScale = false; end
+            if ~isfield(options, 'infoDlgText'); options.infoDlgText = NaN; end
             
             % update number of points
             if noPoints < 2; noPoints = 2; end
@@ -1588,7 +1677,20 @@ classdef mibMeasure < matlab.mixin.Copyable
                 % get Z-value
                 z = obj.hImg.getCurrentSliceNumber();
                 timePoint = obj.hImg.getCurrentTimePoint();
-                info = ''; % info text
+                if ischar(options.infoDlgText)
+                    prompts = {'Add text for the info field'};
+                    defAns = {options.infoDlgText};
+                    dlgTitle = 'Distance Polyline info';
+                    dlgOptions.WindowStyle = 'modal';
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, dlgOptions);
+                    if isempty(answer)
+                        info = '';
+                    else
+                        info = answer{1};
+                    end
+                else
+                    info = ''; % info text
+                end
             elseif options.calcKymograph
                 xVec = round(obj.Data(index).X);
                 yVec = round(obj.Data(index).Y);
@@ -1809,8 +1911,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             result = 1;
         end
         
-        function result = PointFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
-            % function result = PointFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity)
+        function [result, info] = PointFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity, infoDlgText)
+            % function [result, info] = PointFun(obj, mibController, index, colCh, finetuneCheck, calcIntensity, infoDlgText)
             % add a point as a marker
             %
             % Parameters:
@@ -1821,9 +1923,12 @@ classdef mibMeasure < matlab.mixin.Copyable
             % finetuneCheck: [@em optional] @b 1 (@em default) - allow fine-tuning during the placing of measurements; @b 0 - instant placing
             % calcIntensity: [@em optional] @b 1 (@em default) - calculate
             % intensity profile, 0 - do not calculate
+            % infoDlgText:  [string or NaN] show dialog to provide information about the measurement, when NaN no dialog is shown,
+            %      overwise use text provided in this variable
             %
             % Return values:
-            % result - 1-success, 0-cancel
+            % result: 1-success, 0-cancel
+            % info: information text that was provided
             
             %|
             % @b Examples
@@ -1831,6 +1936,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             % @code obj.mibModel.I{obj.mibModel.Id}.hMeasure.PointFun(obj, 2, 1); // call from mibMeasureToolController; edit second measurement. @endcode
             
             global mibPath;
+            if nargin < 7; infoDlgText = NaN; end
             if nargin < 6; calcIntensity = 1; end
             if nargin < 5; finetuneCheck = 1; end
             if nargin < 4; colCh = 1; end
@@ -1848,7 +1954,6 @@ classdef mibMeasure < matlab.mixin.Copyable
                 % get Z-value
                 z = obj.hImg.getCurrentSliceNumber();
                 timePoint = obj.hImg.getCurrentTimePoint();
-                info = ''; % info text
             else                % edit existing measurement
                 tempData = obj.Data(index);     % store the current state
                 obj.removeMeasurements(index);  % remove measurement
@@ -1883,7 +1988,23 @@ classdef mibMeasure < matlab.mixin.Copyable
             end
             if isempty(index)   % add new measurement
                 n = obj.getNumberOfMeasurements + 1;
-                answer = mibInputDlg({mibPath}, 'Enter a label', 'Add point', sprintf('Feature %d', n));
+                dlgTitle = 'Point info';
+                options.WindowStyle = 'modal';
+                if ischar(infoDlgText)
+                    prompts = {'Enter a label'; 'Add text for the info field'};
+                    defAns = {sprintf('Feature %d', n); infoDlgText};
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                    if isempty(answer)
+                        info = '';
+                    else
+                        info = answer{2};
+                    end
+                else
+                    prompts = {'Enter a label'};
+                    defAns = {sprintf('Feature %d', n)};
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                    info = ''; % info text
+                end
             else                % update existing
                 n = index;
                 if finetuneCheck
@@ -1926,8 +2047,8 @@ classdef mibMeasure < matlab.mixin.Copyable
             result = 1;
         end
         
-        function result = DistanceFun(obj, mibController, index, colCh, finetuneCheck, integrateWidth, calcIntensity, options)
-            % function result = DistanceFun(obj, mibController, index, colCh, finetuneCheck, integrateWidth, calcIntensity, options)
+        function [result, info] = DistanceFun(obj, mibController, index, colCh, finetuneCheck, integrateWidth, calcIntensity, options)
+            % function [result, info] = DistanceFun(obj, mibController, index, colCh, finetuneCheck, integrateWidth, calcIntensity, options)
             % measuring distance between two points
             %
             % Parameters:
@@ -1944,18 +2065,25 @@ classdef mibMeasure < matlab.mixin.Copyable
             %   .outputFormat - output format, 'tif', csv, mat, preview', when preview show it as a plot
             %   .calcKymograph - true/false, calculate kymograph
             %   .addScale - add scale to kymograph
+            %   .infoDlgText:  [string or NaN] show dialog to provide information about the measurement, when NaN no dialog is shown,
+            %      overwise use text provided in this variable
             %
             % Return values:
-            % result - 1-success, 0-cancel
+            % result: 1-success, 0-cancel
+            % info: information text that was provided
             
             %|
             % @b Examples
             % @code obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj, [], 1); // call from mibMeasureToolController; get points and measure the distance between them. Calculate intensity profile for color channel 1 @endcode
             % @code obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj, 2, 1); // call from mibMeasureToolController; edit second measurement. @endcode
             
+            global mibPath;
+            
             % Credit: adapted from Image Measurement Utility by Jan Neggers
             % http://www.mathworks.com/matlabcentral/fileexchange/25964-image-measurement-utility
-            if nargin < 8; options.calcKymograph = false; end
+            if nargin < 8
+                options.calcKymograph = false;
+            end
             if nargin < 7; calcIntensity = 1; end
             if nargin < 6; integrateWidth = []; end
             if nargin < 5; finetuneCheck = 1; end
@@ -1964,6 +2092,7 @@ classdef mibMeasure < matlab.mixin.Copyable
             result = 0;
             
             if ~isfield(options, 'addScale'); options.addScale = false; end
+            if ~isfield(options, 'infoDlgText'); options.infoDlgText = NaN; end
             
             if isempty(index)   % add new measurement
                 % select two preliminary points
@@ -1993,7 +2122,20 @@ classdef mibMeasure < matlab.mixin.Copyable
                 % get Z-value
                 z = obj.hImg.getCurrentSliceNumber();
                 timePoint = obj.hImg.getCurrentTimePoint();
-                info = ''; % info text
+                if ischar(options.infoDlgText)
+                    prompts = {'Add text for the info field'};
+                    defAns = {options.infoDlgText};
+                    dlgTitle = 'Distance Linear info';
+                    options.WindowStyle = 'modal';
+                    answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+                    if isempty(answer)
+                        info = '';
+                    else
+                        info = answer{1};
+                    end
+                else
+                    info = ''; % info text
+                end
             elseif options.calcKymograph
                 xVec = round(obj.Data(index).X);
                 yVec = round(obj.Data(index).Y);

@@ -145,6 +145,13 @@ classdef mibMeasureToolController < handle
             if ~isfield(obj.mibModel.sessionSettings, 'measureTool')
                 obj.mibModel.sessionSettings.measureTool.integrationWidth = '5';
                 obj.mibModel.sessionSettings.measureTool.noPointsEdit = '5';
+                obj.mibModel.sessionSettings.measureTool.Angle.Info = '';
+                obj.mibModel.sessionSettings.measureTool.Caliper.Info = '';
+                obj.mibModel.sessionSettings.measureTool.Circle.Info = '';
+                obj.mibModel.sessionSettings.measureTool.DistanceFreehand.Info = '';
+                obj.mibModel.sessionSettings.measureTool.DistanceLinear.Info = '';
+                obj.mibModel.sessionSettings.measureTool.DistancePolyline.Info = '';
+                obj.mibModel.sessionSettings.measureTool.Point.Info = '';
             end
             obj.View.handles.integrationWidth.String = obj.mibModel.sessionSettings.measureTool.integrationWidth;
             obj.View.handles.noPointsEdit.String = obj.mibModel.sessionSettings.measureTool.noPointsEdit;
@@ -198,31 +205,62 @@ classdef mibMeasureToolController < handle
             integrationWidth = str2double(obj.View.handles.integrationWidth.String);
             noPoints = str2double(obj.View.handles.noPointsEdit.String);
             calcIntensity = obj.View.handles.calcIntensityCheck.Value;
+            showEditInfoDlg = obj.View.handles.showEditInfoDlg.Value;   % show dialog to provide information about the measurement
             
             obj.View.handles.addBtn.BackgroundColor = 'r';
             %disableSegmentation = obj.mibController.mibView.disableSegmentation;
             obj.mibController.mibModel.disableSegmentation = 1;
+            
             switch typeString{obj.View.handles.measureTypePopup.Value}
                 case 'Angle'
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.AngleFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity);
+                    if showEditInfoDlg
+                        [~, obj.mibModel.sessionSettings.measureTool.Angle.Info] = obj.mibModel.I{obj.mibModel.Id}.hMeasure.AngleFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity, obj.mibModel.sessionSettings.measureTool.Angle.Info);
+                    else
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.AngleFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity, NaN);
+                    end
                 case 'Caliper'
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.CaliperFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity);
+                    if showEditInfoDlg
+                        [~, obj.mibModel.sessionSettings.measureTool.Caliper.Info] = obj.mibModel.I{obj.mibModel.Id}.hMeasure.CaliperFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity, obj.mibModel.sessionSettings.measureTool.Caliper.Info);
+                    else
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.CaliperFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity, NaN);
+                    end
                 case 'Circle (R)'
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.CircleFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity);
+                    if showEditInfoDlg
+                        [~, obj.mibModel.sessionSettings.measureTool.Circle.Info] = obj.mibModel.I{obj.mibModel.Id}.hMeasure.CircleFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity, obj.mibModel.sessionSettings.measureTool.Circle.Info);
+                    else
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.CircleFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity, NaN);
+                    end
                 case 'Distance (freehand)'
                     freehandOptions.fixNumberPoints = obj.View.handles.fixNumberPoints.Value;
                     freehandOptions.noPointsEdit  = obj.View.handles.noPointsEdit.String;
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFreeFun(obj.mibController, colCh, finetuneCheck, calcIntensity, freehandOptions);
-                case 'Distance (linear)'
-                    if integrateCheck
-                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj.mibController, [], colCh, finetuneCheck, integrationWidth, calcIntensity);
+                    if showEditInfoDlg
+                        freehandOptions.infoDlgText = obj.mibModel.sessionSettings.measureTool.DistanceFreehand.Info;
+                        [~, obj.mibModel.sessionSettings.measureTool.DistanceFreehand.Info] = obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFreeFun(obj.mibController, colCh, finetuneCheck, calcIntensity, freehandOptions);
                     else
-                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj.mibController, [], colCh, finetuneCheck, [], calcIntensity);
+                        freehandOptions.Info = NaN;
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFreeFun(obj.mibController, colCh, finetuneCheck, calcIntensity, freehandOptions);
                     end
+                case 'Distance (linear)'
+                    if ~integrateCheck; integrationWidth = []; end
+                    if showEditInfoDlg
+                        distanceLinearOptions.infoDlgText = obj.mibModel.sessionSettings.measureTool.DistanceLinear.Info;
+                        [~, obj.mibModel.sessionSettings.measureTool.DistanceLinear.Info] = obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj.mibController, [], colCh, finetuneCheck, integrationWidth, calcIntensity, distanceLinearOptions);
+                    else
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistanceFun(obj.mibController, [], colCh, finetuneCheck, integrationWidth, calcIntensity);
+                    end 
                 case 'Distance (polyline)'
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistancePolyFun(obj.mibController, [], colCh, noPoints, finetuneCheck, calcIntensity);
+                    if showEditInfoDlg
+                        distancePolylineOptions.infoDlgText = obj.mibModel.sessionSettings.measureTool.DistancePolyline.Info;
+                        [~, obj.mibModel.sessionSettings.measureTool.DistancePolyline.Info] = obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistancePolyFun(obj.mibController, [], colCh, noPoints, finetuneCheck, calcIntensity, distancePolylineOptions);
+                    else
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.DistancePolyFun(obj.mibController, [], colCh, noPoints, finetuneCheck, calcIntensity);
+                    end
                 case 'Point'
-                    obj.mibModel.I{obj.mibModel.Id}.hMeasure.PointFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity);
+                    if showEditInfoDlg
+                        [~, obj.mibModel.sessionSettings.measureTool.Point.Info] = obj.mibModel.I{obj.mibModel.Id}.hMeasure.PointFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity, obj.mibModel.sessionSettings.measureTool.Point.Info);
+                    else
+                        obj.mibModel.I{obj.mibModel.Id}.hMeasure.PointFun(obj.mibController, [], colCh, finetuneCheck, calcIntensity, NaN);
+                    end
             end
             obj.mibController.mibModel.disableSegmentation = 0;
             obj.View.handles.addBtn.BackgroundColor = 'g';

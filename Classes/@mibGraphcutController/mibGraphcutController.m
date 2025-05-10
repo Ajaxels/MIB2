@@ -1105,6 +1105,7 @@ classdef mibGraphcutController  < handle
             
             switch obj.mode
                 case 'mode2dCurrentRadio'
+                    getDataOptions.z = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
                     img = cell2mat(obj.mibModel.getData2D('image', NaN, NaN, col_channel, getDataOptions));   % get slice
                     if binVal(1) ~= 1   % bin data
                         img = imresize(img, [binHeight binWidth], 'bicubic');

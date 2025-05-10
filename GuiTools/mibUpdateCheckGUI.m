@@ -154,26 +154,22 @@ if isdeployed
             web('https://mib.helsinki.fi/web-update/MIB2_Linux.zip', '-browser');
         end
     elseif ispc
-        answer = questdlg('Would you like to download MIB compiled for the current or recent release of Matlab?', 'Matlab version', 'Current', 'Recent', 'Cancel', 'Current');
-        switch answer
-            case 'Cancel' 
-                return;
-            case 'Current'
-                try
-                    web('http://mib.helsinki.fi/web-update/MIB2_Win.zip', '-browser');
-                catch err
-                    web('https://mib.helsinki.fi/web-update/MIB2_Win.zip', '-browser');
-                end
-            case 'Recent'
-                try
-                    web('http://mib.helsinki.fi/web-update/MIB2_Win_Recent.zip', '-browser');
-                catch err    
-                    web('https://mib.helsinki.fi/web-update/MIB2_Win_Recent.zip', '-browser');
-                end
+        if handles.winController.mibVersion < 2.92
+            try
+                web('http://mib.helsinki.fi/web-update/MIB2_Win.exe', '-browser');
+            catch err
+                web('https://mib.helsinki.fi/web-update/MIB2_Win.exe', '-browser');
+            end
+        else
+            try
+                web('http://mib.helsinki.fi/web-update/MIB2_Win.zip', '-browser');
+            catch err
+                web('https://mib.helsinki.fi/web-update/MIB2_Win.zip', '-browser');
+            end
         end
     end
 else
-    try 
+    try
         web('http://mib.helsinki.fi/web-update/MIB2_Matlab.zip', '-browser');
     catch err
         web('https://mib.helsinki.fi/web-update/MIB2_Matlab.zip', '-browser');
