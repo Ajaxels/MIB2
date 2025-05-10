@@ -1,9 +1,9 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="26867777" file="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v291/MIB_Linux_R2024a.prj" location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v291" name="MIB_Linux_R2024a" preferred-package-location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v291/MIB_Linux_R2024a/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="1741929570" file="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v291/MIB_Linux_R2024a.prj" location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v291" name="MIB_Linux_R2024a" preferred-package-location="/home/ad/home/i/ibelev/Matlab/MIB_deploy_v291/MIB_Linux_R2024a/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon />
     <param.icons />
-    <param.version>2.91</param.version>
+    <param.version>2.9102</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -825,7 +825,7 @@ ${LD_LIBRARY_PATH}:MR/R2024a/runtime/glnxa64:MR/R2024a/bin/glnxa64:MR/R2024a/sys
       <vista>false</vista>
       <linux>true</linux>
       <solaris>false</solaris>
-      <osver>5.15.0-136-generic</osver>
+      <osver>5.19.0-50-generic</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>glnxa64</arch>
