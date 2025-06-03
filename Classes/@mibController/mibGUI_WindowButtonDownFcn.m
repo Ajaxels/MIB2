@@ -341,8 +341,9 @@ elseif strcmp(operation, 'interact')
                 extraOptions.addNextMaterial = false;    % add next material after adding the current one only for "add, +next material" mode
                 
                 samMode = obj.mibView.handles.mibSegmSAMMode.String{obj.mibView.handles.mibSegmSAMMode.Value};
-                if strcmp(samMode, 'add, +next material') && strcmp(obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value}, 'selection')
-                    samMode = 'add';
+                if strcmp(samMode, 'add, +next material') && ~strcmp(obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value}, 'model')
+                    samMode = 'replace';
+                    obj.mibView.handles.mibSegmSAMMode.Value = 1;
                 end
 
                 destinationLayer = obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value};
@@ -490,7 +491,7 @@ elseif strcmp(operation, 'interact')
                     case 'add'
                         % store the current state
                         obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
-                            cell2mat(obj.mibModel.getData3D(destinationLayer, t, NaN, obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'), getDataOptions));
+                            uint8(cell2mat(obj.mibModel.getData3D(destinationLayer, t, NaN, obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'), getDataOptions)));
 
                         % done in mibSegmentationSAM2
                         obj.mibModel.mibDoBackup(destinationLayer, 1, getDataOptions);

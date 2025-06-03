@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="2420307503" file="C:\Matlab\MIB_deploy\MIB.prj" location="C:\Matlab\MIB_deploy" name="MIB" preferred-package-location="C:\Matlab\MIB_deploy\MIB\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="816583166" file="C:\Matlab\MIB_deploy\MIB.prj" location="C:\Matlab\MIB_deploy" name="MIB" preferred-package-location="C:\Matlab\MIB_deploy\MIB\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}\MIB_resources\icon.ico</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}\MIB_resources\icon_24.png</file>
       <file>${PROJECT_ROOT}\MIB_resources\icon_16.png</file>
     </param.icons>
-    <param.version>2.9102</param.version>
+    <param.version>2.9103</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -100,6 +100,7 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
       <file>${PROJECT_ROOT}\.mib_prefs_override.mat</file>
       <file>${PROJECT_ROOT}\jars</file>
       <file>${PROJECT_ROOT}\licenses</file>
+      <file>${PROJECT_ROOT}\MIB_resources</file>
       <file>${PROJECT_ROOT}\Plugins</file>
       <file>${PROJECT_ROOT}\Resources</file>
       <file>${PROJECT_ROOT}\techdoc</file>
@@ -126,9 +127,14 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
       <file>${PROJECT_ROOT}\Resources\preferences-segmentation.png</file>
       <file>${PROJECT_ROOT}\Resources\settings.png</file>
       <file>${PROJECT_ROOT}\Resources\up_arrow.png</file>
+      <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\asmjit.dll</file>
+      <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\c10.dll</file>
+      <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\fbgemm.dll</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\leveldb.dll</file>
+      <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\libtorch.rights</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\onnxpb.dll</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\tfkeraspb.dll</file>
+      <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\torch_cpu.dll</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\resources\nnet_cnn_onnx\en\onnx.xml</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\toolbox\nnet\supportpackages\onnx\+matlab\+addons\+internal\ONNXPackageInfo.m</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\toolbox\nnet\supportpackages\onnx\+nnet\+internal\+cnn\+coder\+onnx\ClipLayer.m</file>

@@ -136,6 +136,8 @@ if loadShifts == 0
             'Confidence', obj.automaticOptions.estGeomTransform.Confidence, ...
             'MaxDistance', obj.automaticOptions.estGeomTransform.MaxDistance);
         
+        %tform2 = fitgeotform2d(matchedDistorted.Location,matchedOriginal.Location,"lwm",6);
+        
         pairwiseTforms{layer} = affinetform2d(tform.A);
         T = tform.A;
 

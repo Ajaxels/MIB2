@@ -370,22 +370,23 @@ if t2-t1 == 0 && doBackup
         backupOptions.LinkedData.Points.Value = obj.mibModel.sessionSettings.SAMsegmenter.Points.Value(1:end-1);
     end
     backupOptions.LinkedVariable.Points = 'obj.mibModel.sessionSettings.SAMsegmenter.Points';
-    obj.mibModel.mibDoBackup(BatchOpt.Destination{1}, 0, backupOptions);  % do backup
+    obj.mibModel.mibDoBackup(BatchOpt.Destination{1}, 1, backupOptions);  % do backup
 end
 
 % define default output data type when generating data by pointsSAM and pointsVideoSAM
 % should be changed when BatchOpt.Mode{1}=='add' and Destination='model';
 castDataType = 'uint8';
-modelDataType = 'uint8';
-if obj.mibModel.I{obj.mibModel.Id}.modelType > 256 && obj.mibModel.I{obj.mibModel.Id}.modelType < 65536
-    modelDataType = 'uint16';
-elseif obj.mibModel.I{obj.mibModel.Id}.modelType > 65536
-    modelDataType = 'uint32';
-end
-if (strcmp(BatchOpt.Mode{1}, 'add') || strcmp(BatchOpt.Mode{1}, 'subtract')) ...
-        && strcmp(BatchOpt.Destination{1}, 'model') && obj.mibModel.I{obj.mibModel.Id}.modelType > 256
-    castDataType = modelDataType;
-end
+% modelDataType = 'uint8';
+% if obj.mibModel.I{obj.mibModel.Id}.modelType > 256 && obj.mibModel.I{obj.mibModel.Id}.modelType < 65536
+%     modelDataType = 'uint16';
+% elseif obj.mibModel.I{obj.mibModel.Id}.modelType > 65536
+%     modelDataType = 'uint32';
+% end
+% if (strcmp(BatchOpt.Mode{1}, 'add') || strcmp(BatchOpt.Mode{1}, 'subtract')) ...
+%         && strcmp(BatchOpt.Destination{1}, 'model') && obj.mibModel.I{obj.mibModel.Id}.modelType > 256
+%     castDataType = modelDataType;
+% end
+
 % get current contrast
 currViewPort = obj.mibModel.I{BatchOpt.id}.viewPort;
 liveStretch = obj.mibModel.mibLiveStretchCheck;
@@ -509,7 +510,7 @@ try
                     %storedImageState = obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo(obj.mibModel.I{obj.mibModel.Id}.slices{1}(1):obj.mibModel.I{obj.mibModel.Id}.slices{1}(2), ...
                     %    obj.mibModel.I{obj.mibModel.Id}.slices{2}(1):obj.mibModel.I{obj.mibModel.Id}.slices{2}(2) );
                     %obj.mibModel.setData2D(BatchOpt.Destination{1}, {bitor(storedImageState, imgOut)}, z, NaN, selMaterialIndex, getDataOpt);
-                    obj.mibModel.setData3D(BatchOpt.Destination{1}, {bitor(obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo, dataset)}, z, NaN, selMaterialIndex, getDataOpt);
+                    obj.mibModel.setData3D(BatchOpt.Destination{1}, {bitor(obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo, dataset)}, t, NaN, selMaterialIndex, getDataOpt);
 
                     % add next material
                     if extraOptions.addNextMaterial

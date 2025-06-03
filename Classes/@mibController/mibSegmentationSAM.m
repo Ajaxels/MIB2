@@ -419,9 +419,10 @@ try
                     
                     % limit to the selected material of the model
                     if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1
-                        storedImageState = obj.mibModel.sessionSettings.SAMsegmenter.initialImageSelected(obj.mibModel.I{obj.mibModel.Id}.slices{1}(1):obj.mibModel.I{obj.mibModel.Id}.slices{1}(2), ...
-                                obj.mibModel.I{obj.mibModel.Id}.slices{2}(1):obj.mibModel.I{obj.mibModel.Id}.slices{2}(2) );
-                        imgOut = bitand(imgOut, storedImageState);
+                        % storedImageState = obj.mibModel.sessionSettings.SAMsegmenter.initialImageSelected(obj.mibModel.I{obj.mibModel.Id}.slices{1}(1):obj.mibModel.I{obj.mibModel.Id}.slices{1}(2), ...
+                        %         obj.mibModel.I{obj.mibModel.Id}.slices{2}(1):obj.mibModel.I{obj.mibModel.Id}.slices{2}(2) );
+                        % imgOut = bitand(imgOut, storedImageState);
+                        imgOut = bitand(imgOut, obj.mibModel.sessionSettings.SAMsegmenter.initialImageSelected);
                     end
 
                     switch BatchOpt.Mode{1}
@@ -429,18 +430,20 @@ try
                             obj.mibModel.setData2D(BatchOpt.Destination{1}, {imgOut}, NaN, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt);
                         case 'add'
                             % crop the stored image to the current FoV
-                            storedImageState = obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo(obj.mibModel.I{obj.mibModel.Id}.slices{1}(1):obj.mibModel.I{obj.mibModel.Id}.slices{1}(2), ...
-                                obj.mibModel.I{obj.mibModel.Id}.slices{2}(1):obj.mibModel.I{obj.mibModel.Id}.slices{2}(2) );
-                            obj.mibModel.setData2D(BatchOpt.Destination{1}, {bitor(storedImageState, imgOut)}, NaN, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt);
+                            %storedImageState = obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo(obj.mibModel.I{obj.mibModel.Id}.slices{1}(1):obj.mibModel.I{obj.mibModel.Id}.slices{1}(2), ...
+                            %    obj.mibModel.I{obj.mibModel.Id}.slices{2}(1):obj.mibModel.I{obj.mibModel.Id}.slices{2}(2) );
+                            %obj.mibModel.setData2D(BatchOpt.Destination{1}, {bitor(storedImageState, imgOut)}, NaN, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt);
+                            obj.mibModel.setData2D(BatchOpt.Destination{1}, {bitor(obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo, imgOut)}, NaN, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt);
                         case 'subtract'
                             currLayer = cell2mat(obj.mibModel.getData2D(BatchOpt.Destination{1}, NaN, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt));
                             obj.mibModel.setData2D(BatchOpt.Destination{1}, {currLayer - imgOut}, NaN, NaN, obj.mibModel.I{BatchOpt.id}.selectedAddToMaterial-2, getDataOpt);
                         case 'add, +next material'
                             selMaterialIndex = obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo');
 
-                            storedImageState = obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo(obj.mibModel.I{obj.mibModel.Id}.slices{1}(1):obj.mibModel.I{obj.mibModel.Id}.slices{1}(2), ...
-                                obj.mibModel.I{obj.mibModel.Id}.slices{2}(1):obj.mibModel.I{obj.mibModel.Id}.slices{2}(2) );
-                            obj.mibModel.setData2D(BatchOpt.Destination{1}, {bitor(storedImageState, imgOut)}, NaN, NaN, selMaterialIndex, getDataOpt);
+                            %storedImageState = obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo(obj.mibModel.I{obj.mibModel.Id}.slices{1}(1):obj.mibModel.I{obj.mibModel.Id}.slices{1}(2), ...
+                            %    obj.mibModel.I{obj.mibModel.Id}.slices{2}(1):obj.mibModel.I{obj.mibModel.Id}.slices{2}(2) );
+                            %obj.mibModel.setData2D(BatchOpt.Destination{1}, {bitor(storedImageState, imgOut)}, NaN, NaN, selMaterialIndex, getDataOpt);
+                            obj.mibModel.setData2D(BatchOpt.Destination{1}, {bitor(obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo, imgOut)}, NaN, NaN, selMaterialIndex, getDataOpt);
 
                             % add next material
                             if extraOptions.addNextMaterial
