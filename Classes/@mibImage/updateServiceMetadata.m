@@ -293,3 +293,19 @@ obj.volren.viewer_matrix = makeViewMatrix(R, S, T);
 
 if obj.selectedColorChannel > obj.colors; obj.selectedColorChannel = 1; end
 
+%% update pyramid
+% populate obj.pyramid
+if isKey(obj.meta, 'Pyramid')
+    obj.pyramid = obj.meta('Pyramid');
+    % Remove Pyramid from obj.meta
+    remove(obj.meta, 'Pyramid');
+else
+    obj.pyramid = struct(); % structure to keep pyramid organization of data, convert axes to MIB order
+    obj.pyramid.levelNames = {};
+    obj.pyramid.levelImageSizes = [obj.height, obj.width obj.colors obj.depth obj.time];
+    obj.pyramid.levelImageTranslations = [0 0 0 0 0];
+    obj.pyramid.levelScaleFactors = [1 1 1];
+    obj.pyramid.levelVoxelSizes = [obj.pixSize.y obj.pixSize.x obj.pixSize.z];
+    obj.pyramid.chunkSizes = [];
+    obj.pyramid.shardSizes = [];
+end

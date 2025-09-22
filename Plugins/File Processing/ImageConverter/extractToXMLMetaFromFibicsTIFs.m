@@ -36,7 +36,10 @@ function extractToXMLMetaFromFibicsTIFs(data, writeInfo, outputType, wb)
 % 
 
 if nargin < 4; wb = []; end
-if ~isempty(wb); wb.increment(); end
+if ~isempty(wb)
+    if wb.getCancelState; delete(wb); return; end
+    wb.increment(); 
+end
 
 % return as metadata was not found
 if isempty(data); return; end

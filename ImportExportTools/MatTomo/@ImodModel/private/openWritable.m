@@ -13,16 +13,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:09:20 $
 %
-%  $Revision: ce44cef00aca $
+%  $Revision: 03a2974f77e3 $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -48,7 +48,8 @@ end
 
 % Check to see if the file is already open
 if isempty(imodModel.fid)
-  [fid msg]= fopen(imodModel.filename, format, imodModel.endianFormat);
+  [fid, msg]= fopen(imodModel.filename, format, imodModel.endianFormat, ...
+                    'UTF-8');
   if fid == -1
     disp(msg)
     PEETError(['Unable to open ' imodModel.filename ' as ' format]);
@@ -59,7 +60,8 @@ else
    case {'r', 'a', 'a+'}
     % Close and reopen the file to get a writable mode
     fclose(imodModel.fid);
-    [fid msg]= fopen(imodModel.filename, format, imodModel.endianFormat);
+    [fid, msg]= fopen(imodModel.filename, format,                      ...
+                      imodModel.endianFormat, 'UTF-8');
     if fid == -1
       disp(msg)
       PEETError(['Unable to reopen ' imodModel.filename ' as ' format]);

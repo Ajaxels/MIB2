@@ -73,7 +73,7 @@ if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer with
         y = ceil(y);
         
         modelValues = [];
-        
+        colorValues = [];
         if obj.mibModel.I{obj.mibModel.Id}.orientation == 4   % yx
             y = min([y, obj.mibModel.I{obj.mibModel.Id}.height]);
             x = min([x, obj.mibModel.I{obj.mibModel.Id}.width]);
@@ -90,7 +90,7 @@ if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer with
                     colorValues = obj.mibView.Iraw(yImg, xImg, :);
                 end
             end
-        elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 1 % zx
+        elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 1 && ~obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual % zx
             y = min([y, obj.mibModel.I{obj.mibModel.Id}.width]);
             x = min([x, obj.mibModel.I{obj.mibModel.Id}.depth]);
             colorValues = obj.mibModel.I{obj.mibModel.Id}.img{1}(sliceNo,y,...
@@ -98,7 +98,7 @@ if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer with
             if obj.mibModel.I{obj.mibModel.Id}.modelExist
                 modelValues = obj.mibModel.I{obj.mibModel.Id}.model{1}(sliceNo, y, x, obj.mibModel.I{obj.mibModel.Id}.slices{5}(1));
             end
-        elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 2 % zy
+        elseif obj.mibModel.I{obj.mibModel.Id}.orientation == 2 && ~obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual % zy
             y = min([y, obj.mibModel.I{obj.mibModel.Id}.height]);
             x = min([x, obj.mibModel.I{obj.mibModel.Id}.depth]);
             colorValues = obj.mibModel.I{obj.mibModel.Id}.img{1}(y,sliceNo,...

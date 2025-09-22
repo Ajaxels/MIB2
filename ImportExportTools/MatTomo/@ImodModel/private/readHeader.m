@@ -9,16 +9,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:09:20 $
 %
-%  $Revision: ce44cef00aca $
+%  $Revision: 03a2974f77e3 $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -30,7 +30,7 @@ end
 debugFD = 2;
 
 if debug
-  fprintf(debugFD, 'Reading ID tag and parsing version nubmer\n');
+  fprintf(debugFD, 'Reading ID tag and parsing version number\n');
 end
 
 %JMH 11/9/11: If you do as Matlab suggests and change the following freads
@@ -99,31 +99,31 @@ while nRead > 0
     fseek(imodModel.fid, -4, 'cof');
     iObj = iObj + 1;    
     imodModel.Objects{iObj} = ImodObject;
-    imodModel.Objects{iObj} = freadObject(imodModel.Objects{iObj}, imodModel.fid, debug);
+    imodModel.Objects{iObj} = freadObject(imodModel.Objects{iObj},     ...
+                                          imodModel.fid, debug);
     
   elseif strcmp(tag, 'IMAT')
     fseek(imodModel.fid, -4, 'cof');
-    imodModel.Objects{iObj}=freadObjectMat(imodModel.Objects{iObj}, imodModel.fid, debug);
+    imodModel.Objects{iObj} = freadObjectMat(imodModel.Objects{iObj},  ...
+                                            imodModel.fid, debug);
     
   elseif strcmp(tag, 'MINX')
-    length = fread(imodModel.fid, 1, 'int32');
-    [imodModel.MINX, nRead] = fread(imodModel.fid, 18, 'float32');
-    if length ~= 72 || nRead ~= 18
-      PEETError('Error reading MINX chunk!');
-    end
+    fseek(imodModel.fid, -4, 'cof');
+    imodModel.MINX = freadMINX(ImodMINX(), imodModel.fid, debug);
     
   elseif strcmp(tag, 'IEOF')
     break;
   elseif strcmp(tag, 'VIEW')
-      break;
-  else
     fseek(imodModel.fid, -4, 'cof');
-    imodChunk = ImodChunk;
-    imodChunk = freadChunk(imodChunk, imodModel.fid); %#ok<NASGU>
-    %imodObject.chunk{iChunk} = imodChunk;
-    %iChunk = iChunk + 1;
-    %PEETWarning(['Ignoring unknown object type: ' tag]);
-    %break;
+    nView = size(imodModel.Views, 1) + 1;
+    imodModel.Views{nView} = freadChunk(ImodChunk, imodModel.fid);
+  else
+    % Silently ignore other chunk types.
+    % At some point, we may want to presere these.
+    %PEETWarning(['Ignoring chunk type: ' tag]);
+    fseek(imodModel.fid, -4, 'cof');
+    freadChunk(ImodChunk, imodModel.fid);
+    clear Imodchunk
   end
   [buffer, nRead] = fread(imodModel.fid, [1 4], 'uchar');
 end

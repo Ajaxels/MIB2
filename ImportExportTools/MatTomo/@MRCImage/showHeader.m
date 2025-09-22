@@ -7,16 +7,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:09:20 $
 %
-%  $Revision: ce44cef00aca $
+%  $Revision: 03a2974f77e3 $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -57,16 +57,27 @@ fprintf('mean density:\t\t\t%d\n', mRCImage.header.meanDensity);
 fprintf('rms density:\t\t\t%d\n', mRCImage.header.densityRMS);
 fprintf('space group:\t\t\t%d\n', mRCImage.header.spaceGroup);
 
-fprintf('# symmetry bytes:\t\t%d\n', mRCImage.header.nSymmetryBytes);
-
 fprintf('# extended header bytes:\t%d\n', mRCImage.header.nBytesExtended);
 fprintf('creator ID:\t\t\t%d\n', mRCImage.header.creatorID);
+
+if strcmp(mRCImage.header.extraInfo1, char(zeros(1, 30, 'uint8')))
+  fprintf('extended header info1:');
+  fprintf('%x ', mRCImage.header.extraInfo1);
+  fprintf('\n');
+end
+
 fprintf('Extended header bytes/section:\t%d\n',                 ...
   mRCImage.header.nBytesPerSection);
 fprintf('Serial EM data type:\t\t%d\n', mRCImage.header.serialEMType);
 fprintf('IMOD stamp: \t\t\t%d\n', mRCImage.header.imodStamp);
 if mRCImage.header.imodStamp == defaultIMODStamp()
   fprintf('IMOD flags: \t\t\t%d\n', mRCImage.header.imodFlags);
+end
+
+if strcmp(mRCImage.header.extraInfo2, char(zeros(1, 20, 'uint8')))
+  fprintf('extended header info2:');
+  fprintf('%x ', mRCImage.header.extraInfo2);
+  fprintf('\n');
 end
 
 fprintf('X origin:\t\t\t%d\n', mRCImage.header.xOrigin);

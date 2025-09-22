@@ -10,16 +10,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:09:20 $
 %
-%  $Revision: ce44cef00aca $
+%  $Revision: 03a2974f77e3 $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -47,6 +47,15 @@ mRCImage = writeHeader(mRCImage);
 % Write out the volume if it is not already on the disk
 if mRCImage.flgVolume
   modeStr = getModeString(mRCImage);
+  if strcmp(modeStr, 'half')
+    PEETError('Sorry, writing half-precision files is not supported!')
+    %{
+    % fwrite doesn't yet recognize "half"
+    % typecast to uint16 before writing, then typecast back later
+    modeStr = 'uint16';
+    mRCImage.volume  = typecast(mRCImage.volume, 'uint16');
+    %}
+  end
   if strcmp(modeStr, 'int16*2') || strcmp(modeStr, 'float32*2')
     modeStr = modeStr(1 : end - 2);
     flgComplex = true;
@@ -75,9 +84,9 @@ if mRCImage.flgVolume
     nY = mRCImage.header.nY;
     nZ = mRCImage.header.nZ;
     if modeStr(1) == 'i'
-      temp = int16(zeros(2*nX, nY, nZ));
+      temp = zeros(2*nX, nY, nZ, 'int16');
     else
-      temp = single(zeros(2*nX, nY, nZ));
+      temp = zeros(2*nX, nY, nZ, 'single');
     end
     temp(1:2:2*nX-1, :, :) = real(mRCImage.volume);
     temp(2:2:2*nX, :, :) = imag(mRCImage.volume);
@@ -90,10 +99,17 @@ if mRCImage.flgVolume
   else % normal (not complex) data
     count = fwrite(mRCImage.fid, mRCImage.volume, modeStr);
     if count ~= nElements
+      %if mRCImage.header.mode == 12
+      %  mRCImage.volume = typecast(mRCImage.volume, 'half');
+      %end
       fprintf('Matrix contains %d but only wrote %d elements\n', ...
               nElements, count);
       PEETError('Failed writing matrix!');
     end
   end
 end
-close(mRCImage);
+%if mRCImage.header.mode == 12
+%  mRCImage.volume = half.typecast(mRCImage.volume);
+%end
+
+mRCImage = close(mRCImage);

@@ -12,16 +12,18 @@
 
 % Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% Date: 25.04.2023
+% Date: 19.08.2025
+% 
 
-classdef mibPluginController < handle
-    % classdef mibPluginController < handle
+
+classdef DemoPluginGuideBatchController < handle
+    % classdef DemoPluginGuideBatchController < handle
     % This a template class for making GUI windows for MIB
     % it is the second version that was designed to be compatible with
     % future macro editor
     %
     % @code
-    % obj.startController('mibPluginController'); // as GUI tool
+    % obj.startController('DemoPluginGuideBatchController'); // as GUI tool
     % @endcode
     % or 
     % @code 
@@ -31,15 +33,17 @@ classdef mibPluginController < handle
     % BatchOpt.DestinationClass = 'uint16';     // image class for results
     % BatchOpt.DestinationContainer = 'Container 3';        // destination container
     % BatchOpt.Expression = {'A = A*2'};          // expression to evaluate
-    % obj.startController('mibPluginController', [], BatchOpt); // start mibPluginController in the batch mode
+    % obj.startController('DemoPluginGuideBatchController', [], BatchOpt); // start DemoPluginGuideBatchController in the batch mode
     % @endcode
     % or
     % @code
     % // trigger return of the possible Options using returnBatchOpt function
     % // using notify syncBatch event
-    % obj.startController('mibPluginController', [], NaN);
+    % obj.startController('DemoPluginGuideBatchController', [], NaN);
     % @endcode
     
+    % YOU CAN FIND THIS PLUGIN IN MIB UNDER
+    % "MIB\Plugins\Tutorials\DemoPluginGuideBatch"
     
     properties
         mibModel
@@ -56,13 +60,8 @@ classdef mibPluginController < handle
         % .showWaitbar - logical, true - show, false - do not show the waitbar
         % .Parameter - a string for the edit box
         % .Checkbox - a logical for the check box
-        % .Popup - a cell string for the popup
-        % .ColorChannel - cell string 'Ch 1' or 'Ch 2'... the color channel for thresholding
-        % @li .Orientation, 1-zx, 2-zy, 4-yx of the dataset
-        % @li .z -> [@em optional], [zmin, zmax] coordinates of the dataset to take after transpose, depth
-        % @li .t -> [@em optional], [tmin, tmax] coordinates of the dataset to take after transpose, time
-        % @li .y -> [@em optional], [ymin, ymax] coordinates of the dataset to take after transpose for level=1, height
-        % @li .x -> [@em optional], [xmin, xmax] coordinates of the dataset to take after transpose for level=1, width
+        % see the constructor for options
+        
     end
     
     events
@@ -94,7 +93,7 @@ classdef mibPluginController < handle
     end
     
     methods
-        function obj = mibPluginController(mibModel, varargin)
+        function obj = DemoPluginGuideBatchController(mibModel, varargin)
             obj.mibModel = mibModel;    % assign model
             
             % fill the BatchOpt structure with default values
@@ -104,15 +103,28 @@ classdef mibPluginController < handle
             % tooltip starts with "Parameter:...". Text Parameter
             % indicates field of the BatchOpt structure that defines value
             % for this widget
+            obj.BatchOpt.Parameter = 'my parameter'; % edit box
+            obj.BatchOpt.Checkbox = true;   % checkbox, can be true or false
+            obj.BatchOpt.Popup{1} = 'Container 2';  % popup (dropdown) widget, with the selected value "Container 2"
+            obj.BatchOpt.Popup{2} = arrayfun(@(x) sprintf('Container %d', x), 1:obj.mibModel.maxId, 'UniformOutput', false);   % available options for the popup menu
+            obj.BatchOpt.RadioButtonsGroup{1} = 'Radio2'; % selected Radio button in a radio group RadioButtonsGroup
+            obj.BatchOpt.RadioButtonsGroup{2} = {'Radio1','Radio2'}; % available radio buttons in the radio group
+            obj.BatchOpt.RadioButton = true;    % a single radio button that is not part of a radio group, checkbox recommended instead 
             obj.BatchOpt.showWaitbar = true;   % show or not the waitbar
-            %obj.BatchOpt.ColorChannel = {'Ch 1'};    % color channel for thresholding
-            %obj.BatchOpt.Orientation = 4;   % yx
-            obj.BatchOpt.Parameter = 'my parameter';
-            obj.BatchOpt.Checkbox = true;
-            obj.BatchOpt.Popup = {'Container 1'};
-            obj.BatchOpt.Radio1 = false;
-            obj.BatchOpt.Radio2 = true;
-
+            
+            %% part below is only valid for use of the plugin from MIB batch controller
+            % comment it if intended use not from the batch mode
+            obj.BatchOpt.mibBatchSectionName = 'Menu -> Plugins';                   % section name for the Batch
+            obj.BatchOpt.mibBatchActionName = 'Demo Plugin GUIDE Batch';            % name of the plugin
+            
+            % tooltips that will accompany the BatchOpt
+            obj.BatchOpt.mibBatchTooltip.Parameter = sprintf('Provide text or number as string');
+            obj.BatchOpt.mibBatchTooltip.Checkbox = sprintf('Specify checkboxes as logicals');
+            obj.BatchOpt.mibBatchTooltip.Popup = sprintf('Popups populated using cells');
+            obj.BatchOpt.mibBatchTooltip.RadioButtonsGroup = sprintf('Selection of radio buttons');
+            obj.BatchOpt.mibBatchTooltip.RadioButton = sprintf('Status of a single radio button');
+            obj.BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not waitbar');
+            
             % check for the virtual stacking mode and close the controller if the plugin is not compatible with the virtual stacking mode
             if isprop(obj.mibModel.I{obj.mibModel.Id}, 'Virtual') && obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
                 warndlg(sprintf('!!! Warning !!!\n\nThis plugin is not compatible with the virtual stacking mode!\nPlease switch to the memory-resident mode and try again'), ...
@@ -147,14 +159,10 @@ classdef mibPluginController < handle
                 return;
             end
             
-            guiName = 'mibPluginGUI';
+            guiName = 'DemoPluginGuideBatchGUI';     % name of the plugin figure "DemoPluginGuideBatchGUI.fig" without .fig
             obj.View = mibChildView(obj, guiName); % initialize the view
             
-            % init the widgets
-            destBuffers = arrayfun(@(x) sprintf('Container %d', x), 1:obj.mibModel.maxId, 'UniformOutput', false);
-            obj.View.handles.Popup.String = destBuffers;
-            
-			% move the window to the left hand side of the main window
+            % move the window to the left hand side of the main window
             obj.View.gui = moveWindowOutside(obj.View.gui, 'left');
             
             % resize all elements of the GUI
@@ -184,7 +192,7 @@ classdef mibPluginController < handle
         end
         
         function closeWindow(obj)
-            % closing mibPluginController window
+            % closing mibImageSelectFrameController window
             if isvalid(obj.View.gui)
                 delete(obj.View.gui);   % delete childController window
             end
@@ -202,6 +210,8 @@ classdef mibPluginController < handle
             % function updateWidgets(obj)
             % update widgets of this window
             
+            % update widgets from the BatchOpt structure
+            obj.View = updateGUIFromBatchOpt_Shared(obj.View, obj.BatchOpt);
             fprintf('childController:updateWidgets: %g\n', toc);
         end
         
@@ -228,14 +238,6 @@ classdef mibPluginController < handle
             % 
             if nargin < 2; BatchOptOut = obj.BatchOpt; end
             
-            % generate cell array of containers names for popup menus
-            destBuffers = arrayfun(@(x) sprintf('Container %d', x), 1:obj.mibModel.maxId, 'UniformOutput', false);
-            BatchOptOut.Popup{2} = destBuffers;
-            
-            % add position of the Plugin in the Menu Plugins
-            BatchOptOut.mibBatchSectionName = 'Menu -> Tools';
-            BatchOptOut.mibBatchActionName = 'My plugins --> My batch plugin';
-            
             % trigger syncBatch event to send BatchOptOut to mibBatchController 
             eventdata = ToggleEventData(BatchOptOut);
             notify(obj.mibModel, 'syncBatch', eventdata);
@@ -244,6 +246,13 @@ classdef mibPluginController < handle
         
         % ------------------------------------------------------------------
         % % Additional functions and callbacks
+        function showHelp(obj)
+            % callback for press of the Help button
+        
+            global mibPath;
+            web(fullfile(mibPath, 'Plugins', 'Tutorials', 'Demo Plugin Guide Batch', 'Help', 'index.html'), '-helpbrowser');
+        end
+        
         function calculateBtn_Callback(obj)
             % start main calculation of the plugin
             if obj.BatchOpt.showWaitbar; wb = waitbar(0, 'Please wait...', 'Name', 'My plugin'); end

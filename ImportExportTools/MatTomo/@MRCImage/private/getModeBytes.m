@@ -9,16 +9,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:09:20 $
 %
-%  $Revision: ce44cef00aca $
+%  $Revision: 03a2974f77e3 $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -26,15 +26,19 @@ function nBytes = getModeBytes(mRCImage)
 
 switch  mRCImage.header.mode
  case 0
-  nBytes = 1;
+   nBytes = 1; % byte
  case 1
-  nBytes = 2;
+   nBytes = 2; % int16
  case 2
-  nBytes = 4;
+   nBytes = 4; % single
  case 3
-  nBytes = 4;
+   nBytes = 4; % complex int16
  case 4
-  nBytes = 8;
+   nBytes = 8; % complex single
+ case 6
+   nBytes = 2; % uint16
+ case 12
+   nBytes = 2; % half (16-bit float)
  otherwise
-  nBytes = -1;
+   nBytes = -1;
 end

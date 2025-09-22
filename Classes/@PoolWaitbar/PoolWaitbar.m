@@ -186,6 +186,19 @@ classdef PoolWaitbar < handle
             result = obj.N;
         end
         
+        function text = getText(obj)
+            % function text = getText(obj)
+            % get the current text from the waitbar
+            if ~obj.uiprogressdlgSwitch
+                % waitbar-based progress dialog
+                childrenList = obj.ClientHandle.Children();
+                text = childrenList(1).Title.String;
+            else
+                % uiprogressdlg-based
+                text = obj.ClientHandle.Message;
+            end
+        end
+
         function updateText(obj, newText)
             % function updateText(obj, newText)
             % update text of the waitbar

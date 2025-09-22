@@ -157,6 +157,12 @@ else
     end
     BatchOpt.Filenames = arrayfun(@(filename) fullfile(BatchOpt.DirectoryName{1}, cell2mat(filename)), filename(notDirsIndices), 'UniformOutput', false);  % generate full paths
     
+    % % handle ome-zarr
+    if numel(filename) == 1 && filename{1}(1) == '[' % trying to open a folder
+        filename{1} = filename{1}(2:end-1); % remove '['  and ']'
+        BatchOpt.Filenames = fullfile(BatchOpt.DirectoryName{1}, filename);
+    end
+
     if strcmp(BatchOpt.Mode{1}, 'Load each N-th dataset') || strcmp(BatchOpt.Mode{1}, 'Add each N-th dataset as new color channel')
         answer = mibInputDlg({mibPath}, sprintf('There are %d file selected; please enter the loading step:\n\nFor example when step is 2 \nMIB loads each second dataset', numel(BatchOpt.Filenames)),'Enter the step','2');
         if isempty(answer); return; end
@@ -203,6 +209,35 @@ switch BatchOpt.Mode{1}
                 toolname), 'Not implemented');
             notify(obj.mibModel, 'stopProtocol');
             return;
+        end
+        
+        % check that Zarr is opened in correct mode
+        if isscalar(BatchOpt.Filenames) && isfolder(BatchOpt.Filenames{1})
+            [~, ~, ext] = fileparts(BatchOpt.Filenames{1}); % get extension
+            if ismember(ext, {'.zarr', '.zarr2', '.zarr3'}) 
+                if obj.mibModel.I{BatchOpt.id}.Virtual.virtual == 0 || BatchOpt.UseBioFormats
+                    warndlg(sprintf('!!! Warning !!!\n\n%s\nOpening of Zarr files is only implemented in the virtual mode with Bio-formats reader switched off', ...
+                        'Open Zarr'), 'Open OME-Zarr');
+                    notify(obj.mibModel, 'stopProtocol');
+                    return;   
+                end
+
+                % init python environment
+                if isempty(obj.mibModel.mibPython)
+                    try
+                        obj.mibModel.mibPython = pyenv( ...
+                            'Version', obj.mibModel.preferences.ExternalDirs.PythonInstallationPath, ...
+                            'ExecutionMode', 'OutOfProcess');     % InProcess or OutOfProcess
+                    catch err
+                        if strcmp(err.identifier, 'MATLAB:Pyenv:PythonLoaded')
+                            terminate(pyenv);
+                            obj.mibModel.mibPython = pyenv( ...
+                                'Version', obj.mibModel.preferences.ExternalDirs.PythonInstallationPath, ...
+                                'ExecutionMode', 'OutOfProcess');     % InProcess or OutOfProcess
+                        end
+                    end
+                end
+            end
         end
 
         if obj.mibModel.I{obj.mibModel.Id}.modelExist == 1 && nargin < 3
@@ -306,6 +341,9 @@ switch BatchOpt.Mode{1}
             img_info('Colors') = img_info('Colors')*numel(BatchOpt.Filenames);
         end
         
+        % enable fast panning mode for ome-zarr
+        if isKey(img_info, 'Pyramid'); obj.mibView.handles.toolbarFastPanMode.State = 'on'; end
+
         obj.mibModel.I{BatchOpt.id}.clearContents(img, img_info, obj.mibModel.preferences.System.EnableSelection);
         obj.mibModel.I{BatchOpt.id}.pixSize = pixSize;
         notify(obj.mibModel, 'newDataset');   % notify mibController about a new dataset; see function obj.Listner2_Callback for details

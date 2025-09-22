@@ -120,13 +120,6 @@ classdef mibBatchController < handle
         function obj = mibBatchController(mibModel, varargin)
             obj.mibModel = mibModel;    % assign model
             obj.mibController = varargin{1};    % obtain mibController
-            % check for the virtual stacking mode and close the controller if the plugin is not compatible with the virtual stacking mode
-            if isprop(obj.mibModel.I{obj.mibModel.Id}, 'Virtual') && obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
-                warndlg(sprintf('!!! Warning !!!\n\nThis plugin is not compatible with the virtual stacking mode!\nPlease switch to the memory-resident mode and try again'), ...
-                    'Not implemented');
-                obj.closeWindow();
-                return;
-            end
             
             obj.Protocol = [];
             obj.ProtocolBackups = {};
@@ -211,6 +204,8 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''mibImageArithmeticController'', [], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Tools for Images -> Intensity projection';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.menuImageToolsProjection_Callback(Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Tools for Images -> Select Image Frame';
+            obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''mibImageSelectFrameController'', [], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Tools for Images -> White balance correction';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''mibWhiteBalanceController'', [], Batch);'; actionId = actionId + 1;
             obj.Sections(secIndex).Actions(actionId).Name = 'Morphological operations';
@@ -306,8 +301,10 @@ classdef mibBatchController < handle
             obj.Sections(secIndex).Name = 'Menu -> Plugins';
             obj.Sections(secIndex).Actions(actionId).Name = 'Convert image files';
             obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''ImageConverterController'', [], Batch);'; actionId = actionId + 1;
-			obj.Sections(secIndex).Actions(actionId).Name = 'mib App Design Plugin';
-			obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''mibAppDesignPluginController'', [], Batch);'; actionId = actionId + 1;
+			obj.Sections(secIndex).Actions(actionId).Name = 'Demo Plugin App Designer';
+			obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''DemoPluginAppDesignerController'', [], Batch);'; actionId = actionId + 1;
+            obj.Sections(secIndex).Actions(actionId).Name = 'Demo Plugin GUIDE Batch';
+			obj.Sections(secIndex).Actions(actionId).Command = 'obj.mibController.startController(''DemoPluginGuideBatchController'', [], Batch);'; actionId = actionId + 1;
 
             secIndex = secIndex + 1;
             actionId = 1;
@@ -440,6 +437,14 @@ classdef mibBatchController < handle
             guiName = 'mibBatchGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
+            % check for the virtual stacking mode and close the controller if the plugin is not compatible with the virtual stacking mode
+            if isprop(obj.mibModel.I{obj.mibModel.Id}, 'Virtual') && obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+                warndlg(sprintf('!!! Warning !!!\n\nThis plugin is not compatible with the virtual stacking mode!\nPlease switch to the memory-resident mode and try again'), ...
+                    'Not implemented');
+                obj.closeWindow();
+                return;
+            end
+
             % move the window to the left hand side of the main window
             obj.View.gui = moveWindowOutside(obj.View.gui, 'left');
             
@@ -1486,7 +1491,7 @@ classdef mibBatchController < handle
                             end
                         case 'Delete directory'
                             try
-                                rmdir(dirOut);
+                                rmdir(dirOut, 's');
                             catch err
                                 errordlg(sprintf('!!! Error !!!\n\n%s\n\n%s\n\nMost likely the following directory is not empty!\n%s', err.identifier, err.message, dirOut), 'Problem with directory');
                                 return;

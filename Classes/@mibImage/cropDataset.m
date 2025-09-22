@@ -22,6 +22,7 @@ function result = cropDataset(obj, cropF, options)
 % cropF: a vector [x1, y1, dx, dy, z1, dz, t1, dt] with parameters of the crop. @b Note! The units are pixels!
 % options: [@em optional] - structure with additional parameters
 % @li .showWaitbar - logical show or not the waitbar (default=true)
+% @li .pyramidLevel - [optional, only for zarr pyramids], desired level of the dataset for cropping
 %
 % Return values:
 % result: status of the operation, 1-success, 0-cancel
@@ -39,6 +40,7 @@ result = 0;
 
 if nargin < 3; 	options = struct(); end
 if ~isfield(options, 'showWaitbar'); options.showWaitbar = true; end
+if ~isfield(options, 'pyramidLevel'); options.pyramidLevel = 1; end
 
 if options.showWaitbar; wb = waitbar(0,'Please wait...', 'Name', 'Cropping...'); end
 
@@ -47,7 +49,8 @@ if numel(cropF) < 7; cropF(7:8) = [1, obj.time]; end
 if options.showWaitbar; waitbar(.05, wb); end
 
 %viewPort = obj.viewPort;    % store viewport information, to keep the contrast after the crop
-
+% scale factor for taking downsampling versions of the dataset
+        
 if obj.Virtual.virtual == 0
     %newI = zeros([cropF(4),cropF(3),size(obj.img,3),cropF(6) cropF(8)],class(obj.img));
     %[x1, y1, dx, dy, z1, dz, t1, dt]
@@ -80,7 +83,12 @@ else    % virtual stacking mode
     options.t = [cropF(7), cropF(7)+cropF(8)-1];
     options.replaceDatasetSwitch = 1;
     
-    img = obj.getDataVirt('image', 4, 0, options);
+    if isempty(obj.pyramid.levelNames) % standard virtual dataset
+        img = obj.getDataVirt('image', 4, 0, options);
+    else % ome-zarr virtual dataset
+        img = obj.getDataZarr('image', 4, 0, options);
+    end
+
     %obj.Virtual.virtual = 0;    % turn off virtual mode
     %obj.closeVirtualDataset();    % close open virtual datasets
     newMode = obj.switchVirtualStackingMode(0);   % switch to the memory resident mode
@@ -89,8 +97,7 @@ else    % virtual stacking mode
         return; 
     end
     
-    % to preserve meta data do not use mibImage.switchVirtualStackingMode
-    % function
+    % to preserve meta data do not use mibImage.switchVirtualStackingMode function
     obj.setData('image', img);
     
     % allocate memory for service layers
@@ -118,17 +125,17 @@ if options.showWaitbar; waitbar(.9, wb); end
 % restore view port
 %obj.viewPort = viewPort;
 
-obj.height = cropF(4);
-obj.width = cropF(3);
-obj.depth = cropF(6);
-obj.time = cropF(8);
+obj.height = size(obj.img{1}, 1); %cropF(4);
+obj.width = size(obj.img{1}, 2); %cropF(3);
+obj.depth = size(obj.img{1}, 4); %cropF(6);
+obj.time = size(obj.img{1}, 5); %cropF(8);
 
 if obj.height < obj.current_yxz(1); obj.current_yxz(1) = obj.height; end
 if obj.width < obj.current_yxz(2); obj.current_yxz(2) = obj.width; end
 if obj.depth < obj.current_yxz(3); obj.current_yxz(3) = obj.depth; end
 
-obj.meta('Height') = cropF(4);
-obj.meta('Width') = cropF(3);
+obj.meta('Height') = obj.height;
+obj.meta('Width') = obj.width;
 obj.meta('Depth') = obj.depth;
 obj.meta('Time') = obj.time;
 

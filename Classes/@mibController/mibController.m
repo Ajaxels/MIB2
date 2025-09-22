@@ -72,7 +72,7 @@ classdef mibController < handle
             % callback function for detection of mibModel callbacks
             % this function is recommended to use
             if ~ismember('Parameter', fieldnames(evnt))
-                errordlg(sprintf('!!! Listner error !!!\n\nParameter field is required!\n\nExample,\nmotifyEvent.Name = "updateSegmentationTable";\neventdata = ToggleEventData(motifyEvent);\nnotify(obj, "modelNotify", eventdata);'), ...
+                errordlg(sprintf('!!! Listner error !!!\n\nParameter field is required!\n\nExample,\nnotifyEvent.Name = "updateSegmentationTable";\neventdata = ToggleEventData(motifyEvent);\nnotify(obj, "modelNotify", eventdata);'), ...
                 'Listner error', 'non-modal');
                 return;
             end

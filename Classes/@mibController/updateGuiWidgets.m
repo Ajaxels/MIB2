@@ -324,7 +324,7 @@ end
 
 %% Virtual stacking mode related changes
 obj.mibBioformatsCheck_Callback();  % update the list of available extensions
-if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1
+if obj.mibModel.I{obj.mibModel.Id}.Virtual.virtual == 1 % && ~strcmp(obj.mibModel.I{obj.mibModel.Id}.meta('Virtual_objectType'), 'zarr')
     obj.mibView.handles.zyPlaneToggle.Enable = 'off';
     obj.mibView.handles.zxPlaneToggle.Enable = 'off';
 else

@@ -29,6 +29,17 @@ function showErrorDialog(parent, err, winTitle, optionalPrefix, optionalSuffix)
 % optionalPrefix: an optional text string that will be added before the end of the error message
 % optionalSuffix: an optional text string that will be added after the end of the error message
 
+%|
+% @b Examples:
+% @code
+% try
+% // some code
+% catch err
+%    showErrorDialog(obj.View.gui, err, 'Missing net-variable');
+%    return;
+% end
+% @endcode
+
 % Updates
 % 
 

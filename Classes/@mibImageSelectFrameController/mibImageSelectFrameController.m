@@ -37,8 +37,8 @@ classdef mibImageSelectFrameController < handle
         % handle to the view
         listener
         % a cell array with handles to listeners
-        mode
-        % morphops mode: mode2d_Slice, mode2d_Stack, mode2d_Dataset, mode3d_Stack, mode3d_Dataset
+        BatchOpt
+        % a structure compatible with batch operation, see details in the contsructor
     end
     
     events
@@ -57,10 +57,60 @@ classdef mibImageSelectFrameController < handle
     end
     
     methods
-        function obj = mibImageSelectFrameController(mibModel, parameter)
+        function obj = mibImageSelectFrameController(mibModel, varargin)
             global mibPath;
             
             obj.mibModel = mibModel;    % assign model
+            
+            obj.BatchOpt.DatasetType{1} = '3D, Stack';
+            obj.BatchOpt.DatasetType{2} = {'2D, Slice', '3D, Stack', '4D, Dataset'};
+            obj.BatchOpt.ColorChannel = {'ColCh 1'};         % specify the color channel
+            obj.BatchOpt.ColorChannel{2} = arrayfun(@(x) sprintf('ColCh %d', x), 1:obj.mibModel.I{obj.mibModel.Id}.colors, 'UniformOutput', false);
+            obj.BatchOpt.Connectivity{1} = 'connection4';
+            obj.BatchOpt.Connectivity{2} = {'connection4', 'connection8'}; % Radio
+            obj.BatchOpt.FrameIntensity = '0';
+            obj.BatchOpt.NewFrameIntensity = '0';
+            obj.BatchOpt.MinimalObjectSize = '0';
+            obj.BatchOpt.Destination{1} = 'Selection';
+            obj.BatchOpt.Destination{2} = {'Selection', 'Mask', 'Image'};
+            obj.BatchOpt.Destination{2} = {'Selection', 'Mask', 'Image'};
+            obj.BatchOpt.showWaitbar = true; % show or not the progress bar
+
+            % add section name and action name for the batch tool
+            obj.BatchOpt.mibBatchSectionName = 'Menu -> Image';
+            obj.BatchOpt.mibBatchActionName = 'Tools for Images -> Select Image Frame';
+            
+            obj.BatchOpt.mibBatchTooltip.DatasetType = 'Define type of the dataset for detection of the frame';
+            obj.BatchOpt.mibBatchTooltip.ColorChannel = 'Select a color channel to use';
+            obj.BatchOpt.mibBatchTooltip.Connectivity = 'Define connectivity parameter for detection of objects';
+            obj.BatchOpt.mibBatchTooltip.FrameIntensity = 'Intensity of the image frame to be detected';
+            obj.BatchOpt.mibBatchTooltip.NewFrameIntensity = 'New intensity value for for the detected frame';
+            obj.BatchOpt.mibBatchTooltip.MinimalObjectSize = 'Apply threshold for object detection; objects below this value will not be detected';
+            obj.BatchOpt.mibBatchTooltip.Destination = 'Destination layer for results';
+            obj.BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not a progress bar');
+
+            % add here a code for the batch mode, for example
+            % when the BatchOpt stucture is provided the controller will
+            % use it as the parameters, and performs the function in the
+            % headless mode without GUI
+            if nargin == 3
+                BatchOptInput = varargin{2};
+                if isstruct(BatchOptInput) == 0 
+                    if isnan(BatchOptInput)
+                        obj.returnBatchOpt();   % obtain Batch parameters
+                    else
+                        errordlg(sprintf('A structure as the 3rd parameter is required!')); 
+                    end
+                    return;
+                end
+                
+                % combine fields from input and default structures
+                obj.BatchOpt = updateBatchOptCombineFields_Shared(obj.BatchOpt, BatchOptInput);
+                useBatchMode = 1;
+                obj.continueBtn_Callback(useBatchMode);
+                return;
+            end
+            
             guiName = 'mibImageSelectFrameGUI';
             obj.View = mibChildView(obj, guiName); % initialize the view
             
@@ -107,6 +157,34 @@ classdef mibImageSelectFrameController < handle
             obj.listener{1} = addlistener(obj.mibModel, 'updateGuiWidgets', @(src,evnt) obj.ViewListner_Callback2(obj, src, evnt));    % listen changes in number of ROIs
         end
         
+        function returnBatchOpt(obj, BatchOptOut)
+            % return structure with Batch Options and possible configurations
+            % via the notify 'syncBatch' event
+            % Parameters:
+            % BatchOptOut: a local structure with Batch Options generated
+            % during Continue callback. It may contain more fields than
+            % obj.BatchOpt structure
+            % 
+            if nargin < 2; BatchOptOut = obj.BatchOpt; end
+            
+            % trigger syncBatch event to send BatchOptOut to mibBatchController 
+            eventdata = ToggleEventData(BatchOptOut);
+            notify(obj.mibModel, 'syncBatch', eventdata);
+        end
+        
+        function updateBatchOptFromGUI(obj, hObject)
+            % function updateBatchOptFromGUI(obj, hObject)
+            %
+            % update obj.BatchOpt from widgets of GUI
+            % use an external function (Tools\updateBatchOptFromGUI_Shared.m) that is common for all tools
+            % compatible with the Batch mode
+            %
+            % Parameters:
+            % hObject: a handle to a widget of GUI
+            
+            obj.BatchOpt = updateBatchOptFromGUI_Shared(obj.BatchOpt, hObject);
+        end
+        
         function closeWindow(obj)
             % closing mibImageSelectFrameController window
             if isvalid(obj.View.gui)
@@ -126,16 +204,8 @@ classdef mibImageSelectFrameController < handle
             % function updateWidgets(obj)
             % update widgets of this window
             
-            % updating color channels
-            colorsNo = obj.mibModel.getImageProperty('colors');
-            colCh = cell([colorsNo, 1]);
-            for i=1:colorsNo
-                colCh{i} = sprintf('Ch %d', i);
-            end
-            if colorsNo < obj.View.handles.colorChannelPopoup.Value
-                obj.View.handles.colorChannelPopoup.Value = 1;
-            end
-            obj.View.handles.colorChannelPopoup.String = colCh;
+            % update widgets from the BatchOpt structure
+            obj.View = updateGUIFromBatchOpt_Shared(obj.View, obj.BatchOpt);
         end
         
         function helpBtn_Callback(obj)
@@ -143,46 +213,48 @@ classdef mibImageSelectFrameController < handle
             web(fullfile(mibPath, 'techdoc/html/user-interface/menu/image/image-tools-selectframe.html'), '-browser');
         end
         
-        function continueBtn_Callback(obj)
-            % function continueBtn_Callback(obj)
+        function continueBtn_Callback(obj, useBatchMode)
+            % function continueBtn_Callback(obj, useBatchMode)
             % callback for press of obj.View.handles.continueBtn
             % perform the selected morph ops
             
-            wb = waitbar(0, 'Please wait...', 'Name', 'Frame selection');
+            if obj.BatchOpt.showWaitbar; wb = waitbar(0, 'Please wait...', 'Name', 'Frame selection'); end
+            datasetType = obj.BatchOpt.DatasetType{1};
             % color channel to use for detection of the frame
-            colCh = obj.View.handles.colorChannelPopoup.Value;
+            colCh = find(ismember(obj.BatchOpt.ColorChannel{2}, obj.BatchOpt.ColorChannel{1}));
             % object connectivity parameter
-            connectivity = str2double(obj.View.handles.connectivityPanel.SelectedObject.String);
+            connectivity = str2double(obj.BatchOpt.Connectivity{1}(end));
             % get the destination: selection, mask, image
-            destination = lower(obj.View.handles.destinationRadioGroup.SelectedObject.String);
-            frameIntensity = str2double(obj.View.handles.intensityInEdit.String);
-            newFrameIntensity = str2double(obj.View.handles.intensityOutEdit.String);
-            objectThreshold = str2double(obj.View.handles.minSizeEdit.String);
+            destination = lower(obj.BatchOpt.Destination{1});
+            frameIntensity = str2double(obj.BatchOpt.FrameIntensity);
+            newFrameIntensity = str2double(obj.BatchOpt.NewFrameIntensity);
+            objectThreshold = str2double(obj.BatchOpt.MinimalObjectSize);
             
             getDataOptions.blockModeSwitch = 0;
             [height, width, ~, depth] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', NaN, NaN, getDataOptions);
             
             % backup current data
-            if obj.View.handles.datasetPopup.Value == 1
-                obj.mibModel.mibDoBackup(destination, 0);
-                t1 = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1);
-                t2 = t1;
-                startSlice = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
-                endSlice = startSlice;
-                maxIndex = 1;
-            elseif obj.View.handles.datasetPopup.Value == 2
-                obj.mibModel.mibDoBackup(destination, 1);
-                t1 = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1);
-                t2 = t1;
-                startSlice = 1;
-                endSlice = depth;
-                maxIndex = obj.mibModel.I{obj.mibModel.Id}.depth;
-            else
-                t1 = 1;
-                t2 = obj.mibModel.I{obj.mibModel.Id}.time;
-                startSlice = 1;
-                endSlice = depth;
-                maxIndex = depth * obj.mibModel.I{obj.mibModel.Id}.time;
+            switch datasetType
+                case '2D, Slice'
+                    obj.mibModel.mibDoBackup(destination, 0);
+                    t1 = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1);
+                    t2 = t1;
+                    startSlice = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();
+                    endSlice = startSlice;
+                    maxIndex = 1;
+                case '3D, Stack'
+                    obj.mibModel.mibDoBackup(destination, 1);
+                    t1 = obj.mibModel.I{obj.mibModel.Id}.slices{5}(1);
+                    t2 = t1;
+                    startSlice = 1;
+                    endSlice = depth;
+                    maxIndex = obj.mibModel.I{obj.mibModel.Id}.depth;
+                case '4D, Dataset'
+                    t1 = 1;
+                    t2 = obj.mibModel.I{obj.mibModel.Id}.time;
+                    startSlice = 1;
+                    endSlice = depth;
+                    maxIndex = depth * obj.mibModel.I{obj.mibModel.Id}.time;
             end
             
             tic
@@ -220,7 +292,7 @@ classdef mibImageSelectFrameController < handle
                         M(cat(1, CC.PixelIdxList{vec})) = 1;    
                         obj.mibModel.setData2D(destination, M, z, NaN, NaN, getDataOptions);
                     end
-                    if mod(z, 10) == 0; waitbar(index/maxIndex,wb); end
+                    if obj.BatchOpt.showWaitbar && mod(z, 10) == 0; waitbar(index/maxIndex,wb); end
                     index = index + 1;
                 end
             end
@@ -230,9 +302,9 @@ classdef mibImageSelectFrameController < handle
             if strcmp(destination, 'image')
                 log_text = ['ImageFrame: ColCh=', num2str(colCh), ', orient=' num2str(obj.mibModel.I{obj.mibModel.Id}.orientation),...
                     ', NewCol=' num2str(newFrameIntensity)];
-                if obj.View.handles.datasetPopup.Value == 1
+                if obj.View.handles.DatasetType.Value == 1
                     log_text = [log_text, sprintf(',2D,Z=%d,T=%d', startSlice, t1)];
-                elseif obj.View.handles.datasetPopup.Value == 2
+                elseif obj.View.handles.DatasetType.Value == 2
                     log_text = [log_text sprintf(',3D,T=%d', t1)];
                 else
                     log_text = [log_text ',4D'];
@@ -241,9 +313,11 @@ classdef mibImageSelectFrameController < handle
             elseif strcmp(destination, 'mask')
                 obj.mibModel.mibMaskShowCheck = 1;   
             end
-            waitbar(1,wb);
+            if obj.BatchOpt.showWaitbar
+                waitbar(1,wb);
+                delete(wb);
+            end
             notify(obj.mibModel, 'plotImage');
-            delete(wb);
         end
     end
 end

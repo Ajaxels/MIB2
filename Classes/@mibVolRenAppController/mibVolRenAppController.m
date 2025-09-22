@@ -1732,7 +1732,14 @@ classdef mibVolRenAppController < handle
             % https://se.mathworks.com/help/releases/R2024b/images/ref/images.ui.graphics.image-properties.html?searchHighlight=OverlayDisplayRange&s_tid=doc_srchtitle#mw_1bf93e21-15d7-4716-93b7-d0b98195db15
             % a new property at least in R2024b which should be set to
             % 'data-range' or 'manual' with obj.volume.OverlayDisplayRange = [0 numberOfmaterials]
-            if isprop(obj.volume, 'OverlayDisplayRangeMode'); obj.volume.OverlayDisplayRangeMode = 'data-range'; end
+            if isprop(obj.volume, 'OverlayDisplayRangeMode') 
+                if obj.mibModel.matlabVersion <= 24.1
+                    obj.volume.OverlayDisplayRangeMode = 'manual';
+                    obj.volume.OverlayDisplayRange = [0 obj.noOverlayMaterials];
+                else
+                    obj.volume.OverlayDisplayRangeMode = 'data-range'; 
+                end
+            end
             
             obj.volume.OverlayAlphamap = [0 ones([1, obj.noOverlayMaterials])];
             obj.volume.OverlayColormap = overlayColormap;

@@ -480,7 +480,7 @@ classdef mibAnnotationsController < handle
                 if numel(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName')) == obj.mibModel.I{obj.mibModel.Id}.depth
                     sliceNames = obj.mibModel.I{obj.mibModel.Id}.meta('SliceName');
                 else
-                    sliceNames = repmat(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName'), [max(options.labelPosition(:,1)), 1]);
+                    sliceNames = repmat(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName'), [max(round(options.labelPosition(:,1))), 1]);
                 end
             else
                 [~, sliceNames, ext] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));

@@ -135,18 +135,59 @@ classdef mibStereologyController < handle
                 oY = round(oY/pixSize.y);
             end
             
+            if obj.View.handles.centeredGrid.Value
+                % compute coordinates of grid intersections that are evenly distributed, 
+                % leaving equal margins on all sides of the grid
+                % Stereology analysis of this grid will give overestimated
+                % values relative to the image size, but it will be
+                % corrected later in the analysis part
+                
+                % Number of steps that fit in each dimension
+                nx = floor(width  / dX);
+                ny = floor(height / dY);
+
+                % Compute offsets so grid is centered inside the image
+                offset_x = ceil((width  - nx * dX) / 2);
+                offset_y = ceil((height - ny * dY) / 2);
+
+                % Grid coordinates along each axis
+                x_coords = offset_x : dX : width; 
+                y_coords = offset_y : dY : height; 
+            else % use the provided values
+                % Coordinates along each axis
+                oX2 = ceil(dX/2); % mid-point of the grid 
+                oY2 = ceil(dY/2);
+
+                x_coords = 1+oX+oX2:dX:width;
+                y_coords = 1+oY+oY2:dY:height;
+            end
+
+            % %% Debug: preview the grid points
+            % % Make full grid
+            % [X, Y] = meshgrid(x_coords, y_coords);
+            % 
+            % % Display result (optional)
+            % figure(96541);
+            % plot(X, Y, 'k+');
+            % axis equal;
+            % xlim([0 width]);
+            % ylim([0 height]);
+            % title('Grid Crosses');
+            % xlabel('X (px)'); ylabel('Y (px)');
+
             wb = waitbar(0,sprintf('Generating the grid\nPlease wait...'), 'Name', 'Stereology grid');
             for t=1:obj.mibModel.I{obj.mibModel.Id}.time
                 % allocate space for the mask
                 mask = zeros([height, width, depth], 'uint8');
                 waitbar(0.1, wb);
                 
-                oX2 = ceil(dX/2);
-                oY2 = ceil(dY/2);
-                
-                mask(:,1+oX+oX2:dX:end,:) = 1;
+                %oX2 = ceil(dX/2);
+                %oY2 = ceil(dY/2);
+                %mask(:,1+oX+oX2:dX:end,:) = 1;
+                mask(:,x_coords,:) = 1;
                 waitbar(0.4, wb);
-                mask(1+oY+oY2:dY:end,:,:) = 1;
+                % mask(1+oY+oY2:dY:end,:,:) = 1;
+                mask(y_coords,:,:) = 1;
                 waitbar(0.8, wb);
                 
                 gridThickness = str2double(obj.View.handles.gridThickness.String);
@@ -205,7 +246,7 @@ classdef mibStereologyController < handle
                 title = 'Input variable to export';
                 [~, def] = fileparts(obj.mibModel.I{obj.mibModel.Id}.meta('Filename'));
                 prompt = {'A variable for the measurements structure:'};
-                answer = mibInputDlg({mibPath}, prompt, title, [def '_stgy']);
+                answer = mibInputDlg({mibPath}, prompt, title, sprintf('Stgy_%s', def));
                 if size(answer) == 0; return; end
                 fn_out = answer{1};
             else        % export to Excel
@@ -238,55 +279,119 @@ classdef mibStereologyController < handle
                 Occurrence = zeros([time, depth, nMat+1]);    % allocate space for results
             end
             
+            % generate round strel
+            [X, Y] = meshgrid(-pointSize:pointSize, -pointSize:pointSize);
+            % Logical mask: points inside circle
+            strelmask = (X.^2 + Y.^2) <= pointSize^2;
+            [mh, mw] = size(strelmask);
+            
             for t=1:obj.mibModel.I{obj.mibModel.Id}.time
                 options.t = [t t];
                 modelOut = zeros([height, width, depth], 'uint8');
                 
-                se = strel('disk', pointSize);
+                %se = strel('disk', pointSize);
                 for slice=1:depth
                     currMask = cell2mat(obj.mibModel.getData2D('mask', slice, NaN, NaN, options));
                     currMask = bwmorph(currMask, 'thin', 'Inf');     % thin lines to make them 1px wide
                     currMask = bwmorph(currMask, 'branchpoints', 1);        % find branch points, i.e. intersections
                     
-                    currModel = cell2mat(obj.mibModel.getData2D('model', slice, NaN, NaN, options));
-                    
-                    currModelOut = zeros(size(currModel), 'uint8');
-                    for mat = 1:nMat
-                        BW = zeros(size(currModel), 'uint8');
-                        BW(currModel==mat & currMask==1) = 1;
-                        
-                        STATS = regionprops(bwconncomp(BW, 8), 'Area', 'PixelIdxList');
-                        Occurrence(t, slice, mat) = Occurrence(t, slice, mat)+numel(STATS);
-                        
-                        currModelOut(BW==1) = mat;
+                    if slice==1
+                        % % find grid step
+                        STATS = regionprops(bwconncomp(currMask, 8), 'Area', 'Centroid');
+                        xy = cat(1, STATS.Centroid);
+
+                        dXp = diff(xy(:,1));     % get step in X
+                        dXp(dXp==0) = [];         % remove 0
+                        dXp = mode(dXp);          % find the most frequent step, when used with ROI the centers of the wide grids may be shifted
+                        dX = dXp*obj.mibModel.I{obj.mibModel.Id}.pixSize.x;   % dX in units
+
+                        dYp = diff(xy(:,1));     % get step in Y
+                        dYp(dYp==0) = [];         % remove 0
+                        dYp = mode(dYp);          % find the most frequent step, when used with ROI the centers of the wide grids may be shifted
+                        dY = dYp*obj.mibModel.I{obj.mibModel.Id}.pixSize.y;   % dY in units
+
+                        % %% Debug: preview the grid points
+                        % % Make full grid
+                        % [X, Y] = meshgrid(xy(:,1), xy(:,2));
+                        %
+                        % % Display result (optional)
+                        % figure(96542);
+                        % plot(X, Y, 'k+');
+                        % axis equal;
+                        % xlim([0 width]);
+                        % ylim([0 height]);
+                        % xlabel('X (px)'); ylabel('Y (px)');
+
+                        if obj.View.handles.scaleToImage.Value
+                            % half width
+                            halfX = ceil(dXp/2); halfY = ceil(dYp/2);
+                            Xc = xy(:,1); % x-coordinates
+                            Yc = xy(:,2); % y-coordinates
+
+                            % Cell bounds for each center
+                            left   = Xc - halfX;
+                            right  = Xc + halfX;
+                            top    = Yc - halfY;
+                            bottom = Yc + halfY;
+
+                             % Image bounds: [0, width] × [0, height]
+                            interLeft   = max(left,   0);
+                            interRight  = min(right,  width);
+                            interTop    = max(top,    0);
+                            interBottom = min(bottom, height);
+
+                            % Overlap dimensions (clipped to >= 0)
+                            overlapW = max(0, interRight  - interLeft);
+                            overlapH = max(0, interBottom - interTop);
+                            
+                            % Fractional overlap (area fraction) in [0,1]
+                            scalingFactors = (overlapW .* overlapH) / (dXp * dYp);
+                        else
+                            scalingFactors = ones([size(xy,1), 1]);
+                        end
                     end
-                    % add unassigned material
-                    BW = zeros(size(currModel), 'uint8');
-                    BW(currModel==0 & currMask==1) = 1;
-                    STATS = regionprops(bwconncomp(BW, 8), 'Area', 'PixelIdxList');
-                    Occurrence(t, slice, unassId) = Occurrence(t, slice, unassId) + numel(STATS);
-                    currModelOut(BW==1) = unassId;
-                    
-                    if pointSize > 1
-                        currModelOut = imdilate(currModelOut, se);
+                    % get a slice from the model
+                    currModel = cell2mat(obj.mibModel.getData2D('model', slice, NaN, NaN, options));
+                    % allocate space for the output model
+                    currModelOut = zeros(size(currModel), 'uint8');
+
+                    for crossId=1:size(xy, 1)
+                        x = xy(crossId, 1);
+                        y = xy(crossId, 2);
+
+                        materialIndex = currModel(y, x);
+                        if materialIndex == 0; materialIndex = unassId; end
+                        Occurrence(t, slice, materialIndex) = Occurrence(t, slice, materialIndex) + scalingFactors(crossId);
+                        currModelOut(y, x) = materialIndex;
+                        
+                        % stamp circle of radius == pointSize
+                        % using this instead of imdilate as it is faster
+                        % for large spot sizes.
+                        
+                        % top/left corner for the spot on the image
+                        x1 = max(1, x-pointSize);
+                        x2 = min(width, x+pointSize);
+                        y1 = max(1, y-pointSize);
+                        y2 = min(height, y+pointSize);
+
+                        % Corresponding region in circle mask
+                        mx1 = 1 + (x1 - (x-pointSize));
+                        mx2 = mx1 + (x2 - x1);
+                        my1 = 1 + (y1 - (y-pointSize));
+                        my2 = my1 + (y2 - y1);
+
+                        % clamp mask indices to mask size
+                        mx1 = max(mx1, 1); 
+                        my1 = max(my1, 1);
+                        mx2 = min(mx2, mw); 
+                        my2 = min(my2, mh);
+
+                        % Generate the spot
+                        currModelOut(y1:y2, x1:x2) = uint8(strelmask(my1:my2, mx1:mx2))*materialIndex;
                     end
                     modelOut(:,:,slice) = currModelOut;
                     waitbar(slice/depth, wb);
                 end
-                
-                % % find grid step
-                STATS = regionprops(bwconncomp(currMask, 8), 'Area', 'Centroid');
-                xy = cat(1, STATS.Centroid);
-                
-                dXp = diff(xy(:,1));     % get step in X
-                dXp(dXp==0) = [];         % remove 0
-                dXp = mode(dXp);          % find the most frequent step, when used with ROI the centers of the wide grids may be shifted
-                dX = dXp*obj.mibModel.I{obj.mibModel.Id}.pixSize.x;   % dX in units
-                
-                dYp = diff(xy(:,1));     % get step in Y
-                dYp(dYp==0) = [];         % remove 0
-                dYp = mode(dYp);          % find the most frequent step, when used with ROI the centers of the wide grids may be shifted
-                dY = dYp*obj.mibModel.I{obj.mibModel.Id}.pixSize.y;   % dY in units
                 
                 waitbar(0.95, wb);
                 obj.mibModel.setData3D('model', modelOut, t, NaN, NaN, options);
@@ -314,6 +419,8 @@ classdef mibStereologyController < handle
             res.GridSize.unitsType = obj.mibModel.I{obj.mibModel.Id}.pixSize.units;
             res.Filename = obj.mibModel.I{obj.mibModel.Id}.meta('Filename');
             res.ModelName = obj.mibModel.I{obj.mibModel.Id}.modelFilename;
+            res.ScaleToImage = logical(obj.View.handles.scaleToImage.Value);
+            res.CenteredGrid = logical(obj.View.handles.centeredGrid.Value);
             
             % include annotations
             if obj.View.handles.annotationCheck.Value == 1
@@ -339,7 +446,7 @@ classdef mibStereologyController < handle
                 fprintf('MIB: export measurements ("%s") to Matlab -> done!\n', fn_out);
             else    % export to Excel
                 % deleting the file
-                delete(fn_out);
+                if isfile(fn_out); delete(fn_out); end
                 
                 waitbar(0.98, wb, sprintf('Exporting to Excel\nPlease wait...'));
                 warning('off', 'MATLAB:xlswrite:AddSheet');
@@ -353,6 +460,16 @@ classdef mibStereologyController < handle
                     s(1,10:12) = {'Grid size','dX', 'dY'};
                     s(2,10:12) = {'in Pixels:' sprintf('%d', res.GridSize.pixelsX) sprintf('%d', res.GridSize.pixelsY)};
                     s(3,10:13) = {'in Units:' sprintf('%f', res.GridSize.unitsX) sprintf('%f', res.GridSize.unitsY) sprintf('%s', res.GridSize.unitsType)};
+                    if res.CenteredGrid
+                        s(4, 10:11) = {'Centered grid:' 'true'};
+                    else
+                        s(4, 10:11) = {'Centered grid:' 'false'};
+                    end
+                    if res.ScaleToImage
+                        s(5, 10:11) = {'Scale to image size:' 'true'};
+                    else
+                        s(5, 10:11) = {'Scale to image size:' 'false'};
+                    end
                     
                     s(1,15:17) = {'Pixel size','dX', 'dY'};
                     s(2,16:17) = {sprintf('%f', obj.mibModel.I{obj.mibModel.Id}.pixSize.x) sprintf('%f', obj.mibModel.I{obj.mibModel.Id}.pixSize.y)};
@@ -360,34 +477,36 @@ classdef mibStereologyController < handle
                     s(4,1:2) = {'Time point:' sprintf('%d', t)};
                     
                     nMat = numel(res.Materials);
-                    s(6,1) = {'SliceId'}; s(6,2) = {'Occurrence'}; s(6,2+nMat+2) = {'SurfaceFraction'};  s(6,2+nMat*2+2*2) = {sprintf('Surface in %s^2', res.GridSize.unitsType)};
+                    dataRowId = 7;
+                    s(dataRowId,1) = {'SliceId'}; s(dataRowId,2) = {'Occurrence'}; s(dataRowId,2+nMat+2) = {'SurfaceFraction'};  s(dataRowId,2+nMat*2+2*2) = {sprintf('Surface in %s^2', res.GridSize.unitsType)};
                     if obj.View.handles.annotationCheck.Value == 1
-                        s(6,2+nMat*3+3*2) = {'Annotation labels'};
+                        s(dataRowId,2+nMat*3+3*2) = {'Annotation labels'};
                     end
-                    s(7,2:nMat+1) = res.Materials(:);
-                    s(7,2+nMat+2:2+nMat*2+2-1) = res.Materials(:);
-                    s(7,2+nMat*2+2*2:2+nMat*3+2*2-1) = res.Materials(:);
+                    s(dataRowId+1,2:nMat+1) = res.Materials(:);
+                    s(dataRowId+1,2+nMat+2:2+nMat*2+2-1) = res.Materials(:);
+                    s(dataRowId+1,2+nMat*2+2*2:2+nMat*3+2*2-1) = res.Materials(:);
                     
                     % add slice IDs
+                    currDataRowId = dataRowId+2;
                     if numel(obj.mibModel.I{obj.mibModel.Id}.meta('SliceName')) ~= depth
                         list = 1:depth;
-                        s(8:8+depth-1,1) = cellstr(num2str(list'));
+                        s(currDataRowId:currDataRowId+depth-1,1) = cellstr(num2str(list'));
                     else
-                        s(8:8+depth-1,1) = obj.mibModel.I{obj.mibModel.Id}.meta('SliceName');
+                        s(currDataRowId:currDataRowId+depth-1,1) = obj.mibModel.I{obj.mibModel.Id}.meta('SliceName');
                     end
                     
                     % saving results
-                    s(8:8+depth-1,2:nMat+1) = num2cell(res.Occurrence(t,:,:));
-                    s(8:8+depth-1,2+nMat+2:2+nMat*2+2-1) = num2cell(res.SurfaceFraction(t,:,:));
-                    s(8:8+depth-1,2+nMat*2+2*2:2+nMat*3+2*2-1) = num2cell(res.Surface_in_units(t,:,:));
+                    s(currDataRowId:currDataRowId+depth-1,2:nMat+1) = num2cell(res.Occurrence(t,:,:));
+                    s(currDataRowId:currDataRowId+depth-1,2+nMat+2:2+nMat*2+2-1) = num2cell(res.SurfaceFraction(t,:,:));
+                    s(currDataRowId:currDataRowId+depth-1,2+nMat*2+2*2:2+nMat*3+2*2-1) = num2cell(res.Surface_in_units(t,:,:));
                     
                     if obj.View.handles.annotationCheck.Value == 1
                         nLabels = numel(res.Annotations.Labels);
-                        s(7,2+nMat*3+3*2:2+nMat*3+nLabels+3*2-1) = res.Annotations.Labels(:);
-                        s(8:8+depth-1, 2+nMat*3+3*2:2+nMat*3+nLabels+3*2-1) = num2cell(res.Annotations.Occurrence(t,:,:));
+                        s(dataRowId+1,2+nMat*3+3*2:2+nMat*3+nLabels+3*2-1) = res.Annotations.Labels(:);
+                        s(currDataRowId:currDataRowId+depth-1, 2+nMat*3+3*2:2+nMat*3+nLabels+3*2-1) = num2cell(res.Annotations.Occurrence(t,:,:));
                     end
                     
-                    s(depth+10, nMat*5) = {''};
+                    s(depth+11, nMat*5) = {''};
                     sheetId = sprintf('Sheet_%d', t);
                     xlswrite2(fn_out, s, sheetId, 'A1');
                     waitbar(t/time, wb);

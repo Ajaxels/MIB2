@@ -372,6 +372,20 @@ elseif strcmp(operation, 'interact')
                             % % do backup
                             % destinationStr = obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value};     % {'selection', 'mask', 'model'}'
                             % obj.mibModel.mibDoBackup(destinationStr, 0);
+
+                            % do backup and store states
+                            z1 = min(obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(:,3));
+                            z2 = max(obj.mibModel.sessionSettings.SAMsegmenter.Points.Position(:,3));
+                            getDataOptions.blockModeSwitch = true;
+                            getDataOptions.z = [z1 z2];
+
+                            % store the current state
+                            obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
+                                uint8(cell2mat(obj.mibModel.getData3D(destinationLayer, t, NaN, obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'), getDataOptions)));
+    
+                            % done in mibSegmentationSAM2
+                            obj.mibModel.mibDoBackup(destinationLayer, 1, getDataOptions);
+
                         case 'add, +next material'
                             if obj.mibModel.I{obj.mibModel.Id}.modelType < 256 || ...
                                 ~strcmp(obj.mibView.handles.mibSegmSAMDestination.String{obj.mibView.handles.mibSegmSAMDestination.Value}, 'model')
@@ -489,12 +503,12 @@ elseif strcmp(operation, 'interact')
                 getDataOptions.z = [z1 z2];
                 switch samMode
                     case 'add'
-                        % store the current state
-                        obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
-                            uint8(cell2mat(obj.mibModel.getData3D(destinationLayer, t, NaN, obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'), getDataOptions)));
-
-                        % done in mibSegmentationSAM2
-                        obj.mibModel.mibDoBackup(destinationLayer, 1, getDataOptions);
+                        % % store the current state
+                        % obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...
+                        %     uint8(cell2mat(obj.mibModel.getData3D(destinationLayer, t, NaN, obj.mibModel.I{obj.mibModel.Id}.getSelectedMaterialIndex('AddTo'), getDataOptions)));
+                        % 
+                        % % done in mibSegmentationSAM2
+                        % obj.mibModel.mibDoBackup(destinationLayer, 1, getDataOptions);
                     case 'add, +next material'
                         if isempty(modifier) % store initial state for the initial selection of the object
                             obj.mibModel.sessionSettings.SAMsegmenter.initialImageAddTo = ...

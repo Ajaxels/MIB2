@@ -156,11 +156,13 @@ if options.virtual == 1
     % desired slice number of the combined dataset:
     % readerId(5) = 3; indicates that slice number 5 is stored in the reader 3
     readerId = zeros([img_info('Depth'), 1]);   
-    index = 0;
-    for id=1:numel(slicesPerFile)
-        for sliceId = 1:slicesPerFile(id)
-            index = index + 1;
-            readerId(index) = id;
+    if ~strcmp(files(1).object_type, 'zarr')
+        index = 0;
+        for id=1:numel(slicesPerFile)
+            for sliceId = 1:slicesPerFile(id)
+                index = index + 1;
+                readerId(index) = id;
+            end
         end
     end
     img_info('Virtual_slicesPerFile') = slicesPerFile;
@@ -182,6 +184,8 @@ if options.virtual == 1
                 img{i} = files(i).filename;   % get readers
             %case 'amiramesh'
             %    img{i} = files(i).filename;   % get readers
+            case 'zarr'
+                img{i} = files(i).filename;   % get readers
             otherwise
                 errordlg('This format is not yet implemented for the virtual mode!');
                 img = [];

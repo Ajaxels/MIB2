@@ -68,12 +68,17 @@ switch hObject.Type
             case 'radiobutton'
                 % find parent for the radio button
                 radioParent = hObject.Parent;
-                hRadios = findobj(radioParent, 'Style', 'radiobutton');
-                for i=1:numel(hRadios)
-                    BatchOpt.(hRadios(i).Tag) = false;
+                if strcmp(radioParent.Type, 'uibuttongroup') % radio button group
+                    BatchOpt.(radioParent.Tag){1} = hObject.Tag;
+                    % updated in MIB 2.9105 to make it better compatible with Batch processing
+                    %hRadios = findobj(radioParent, 'Style', 'radiobutton');
+                    %for i=1:numel(hRadios)
+                    %    BatchOpt.(hRadios(i).Tag) = false;
+                    %end
+                    %BatchOpt.(hObject.Tag) = logical(hObject.Value);
+                else % single radio button
+                     BatchOpt.(hObject.Tag) = logical(hObject.Value);
                 end
-                BatchOpt.(hObject.Tag) = logical(hObject.Value);
         end
-        
 end
 end

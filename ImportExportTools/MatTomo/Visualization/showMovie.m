@@ -13,27 +13,27 @@
 %         is the image oriented correctly
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:09:20 $
 %
-%  $Revision: ce44cef00aca $
+%  $Revision: 03a2974f77e3 $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [et fps] = showMovie(volume, nCycle)
+function [et, fps] = showMovie(volume, nCycle)
 
 if nargin < 2
   nCycle = 1;
 end 
 set(gcf, 'Renderer', 'opengl')
 if isa(volume, 'double')
-  %nz = size(volume, 3);
+  nz = size(volume, 3);
   vMax = max(volume(:));
   vMin = min(volume(:));
   cidx = uint8((volume - vMin) ./ (vMax - vMin) * 255);
@@ -44,7 +44,7 @@ else
   
   cidx = uint8((getVolume(volume, [], [], []) - vMin) ./ (vMax - vMin) * 255);
 end 
-hImage = image(flipud(rot90(cidx(:, :, 1))), 'EraseMode','none');
+hImage = image(flipud(rot90(cidx(:, :, 1))));
 set(gca, 'ydir', 'normal');
 
 set(gca, 'units', 'pixels')
@@ -52,7 +52,7 @@ axis('image')
 
 st = clock;
 for iCylce = 1:nCycle
-  for iz = 1:10
+  for iz = 1:nz
     set(hImage, 'CData', flipud(rot90(cidx(:, :, iz))))
     drawnow
   end 

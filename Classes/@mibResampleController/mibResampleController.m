@@ -486,7 +486,7 @@ classdef mibResampleController  < handle
             
             if ~strcmp(modelDataType, 'everything')
                 obj.mibModel.I{obj.mibModel.Id}.clearSelection();     % will not resample selection
-                obj.mibModel.I{obj.mibModel.Id}.clearMask();          % will not resample mask
+                obj.mibModel.I{obj.mibModel.Id}.clearMask(BatchOptLoc);          % will not resample mask
             end
             if BatchOptLoc.showWaitbar
                 waitbar(1,wb);

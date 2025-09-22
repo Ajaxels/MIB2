@@ -26,7 +26,7 @@ function varargout = mibImageSelectFrameGUI(varargin)
 
 % Edit the above text to modify the response to help mibImageSelectFrameGUI
 
-% Last Modified by GUIDE v2.5 18-Apr-2025 23:49:12
+% Last Modified by GUIDE v2.5 19-Aug-2025 20:41:52
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -96,14 +96,15 @@ function cancelBtn_Callback(hObject, eventdata, handles)
 handles.winController.closeWindow();
 end
 
-% --- Executes when selected object is changed in destinationRadioGroup.
-function destinationRadioGroup_SelectionChangedFcn(hObject, eventdata, handles)
+% --- Executes when selected object is changed in Destination.
+function Destination_SelectionChangedFcn(hObject, eventdata, handles)
 switch hObject.String
     case {'Selection', 'Mask'}
-        handles.intensityOutEdit.Enable = 'off';
+        handles.NewFrameIntensity.Enable = 'off';
     case 'Image'
-        handles.intensityOutEdit.Enable = 'on';
+        handles.NewFrameIntensity.Enable = 'on';
 end
+handles.winController.updateBatchOptFromGUI(hObject);
 end
 
 function continueBtn_Callback(hObject, eventdata, handles)
@@ -114,4 +115,9 @@ end
 % --- Executes on button press in helpButton.
 function helpButton_Callback(hObject, eventdata, handles)
 handles.winController.helpBtn_Callback();
+end
+
+function updateBatchOpt(hObject, eventdata, handles)
+% callback for multiple widgets of GUI to update BatchOpt
+handles.winController.updateBatchOptFromGUI(hObject);
 end

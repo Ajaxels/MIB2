@@ -9,21 +9,20 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:09:20 $
 %
-%  $Revision: ce44cef00aca $
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  $Revision: 03a2974f77e3 $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [mRCImage, vol] = loadVolume(mRCImage)
-
 
 % Move the file pointer to the start of the volume data
 if fseek(mRCImage.fid, mRCImage.dataIndex, 'bof')
@@ -32,6 +31,11 @@ end
 
 nVoxels = mRCImage.header.nX * mRCImage.header.nY * mRCImage.header.nZ;
 modeStr = getModeString(mRCImage);
+% Matlab doesn't currently allow half (float*2) in compiled exes. To permit
+% reading mode 12 files, read as uint16 and convert to single later
+if strcmp(modeStr, 'half')
+  modeStr = 'uint16';
+end
 if strcmp(modeStr, 'int16*2') || strcmp(modeStr, 'float32*2')
   % handle reading complex volume
   modeStr = modeStr(1 : end - 2);
@@ -63,9 +67,13 @@ end
   
 mRCImage.flgVolume = 1;
 
-mRCImage.volume = reshape(mRCImage.volume, ...
-                          mRCImage.header.nX, ...
-                          mRCImage.header.nY, ...
+if mRCImage.header.mode == 12
+  % Have read float*2 as uint16. Convert to single (float*4).
+  mRCImage.volume = asIEEEHalf(mRCImage.volume);
+end
+mRCImage.volume = reshape(mRCImage.volume,                             ...
+                          mRCImage.header.nX,                          ...
+                          mRCImage.header.nY,                          ...
                           mRCImage.header.nZ);
 
 if nargout > 1

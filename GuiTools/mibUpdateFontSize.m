@@ -68,6 +68,7 @@ if ~isprop(hFig, 'RunningAppInstance')  % guide type of figure
 
         % combine text and tooltip
         textStr = tempList(i).String;
+        if iscell(textStr); textStr = textStr{1}; end
         TooltipStr = tempList(i).TooltipString;
         tempList(i).TooltipString = sprintf('%s; %s', textStr, TooltipStr);
     end

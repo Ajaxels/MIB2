@@ -99,8 +99,13 @@ else
     if ~iscell(img)
         obj.img{1} = img; % initialize with an image
     else
-        obj.img = img;
+        if strcmp(metaIn('Virtual_objectType'), 'zarr')
+            obj.img = strrep(img,'\','/'); % replace slashed to be used with Python zarr reader
+        else
+            obj.img = img;
+        end
     end
+
 end
 obj.enableSelection = enableSelection;
 

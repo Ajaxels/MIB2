@@ -94,7 +94,7 @@ if strcmp(imgClass, 'int16'); imgClass = 'uint16'; end
 if isfield(files, 'backgroundColor')
     img = zeros([height, width, color, maxZ, time],imgClass)+files(1).backgroundColor;
 else
-    img = zeros([height, width, color, maxZ, time],imgClass);
+    img = zeros([height, width, color, maxZ, time], imgClass);
 end
 
 % calculate coefficient to update the waitbar 
@@ -306,7 +306,6 @@ for fn_index = 1:no_files
 %                 files(fn_index).color = maxC;
 %             end
 %         end
-        
         for subLayer=1:files(fn_index).noLayers
             if ~isfield(files, 'xMin')
                 if files(fn_index).noLayers == 1
@@ -344,6 +343,8 @@ for fn_index = 1:no_files
                     I = bsxfun(@times, I, reshape(img_info('MaxSampleValue'), 1, 1, []));
                 end
             end
+            %if min(I(:))<minV; minV=min(I(:)); end
+            %I = I+666370048;
             img(1:maxY, 1:maxX, 1:size(I,3), layer_id) = I(1:maxY, 1:maxX, 1:size(I,3));
             % update waitbar
             if options.waitbar && mod(layer_id, waitbarUpdateFrequency)==0

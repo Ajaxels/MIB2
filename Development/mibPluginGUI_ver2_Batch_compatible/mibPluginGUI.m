@@ -38,7 +38,7 @@ function varargout = mibPluginGUI(varargin)
 
 % Edit the above text to modify the response to help mibPluginGUI
 
-% Last Modified by GUIDE v2.5 19-Feb-2019 15:24:24
+% Last Modified by GUIDE v2.5 19-Aug-2025 17:14:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -113,8 +113,7 @@ function helpBtn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-global mibPath;
-web(fullfile(mibPath, 'Plugins', 'MyPlugins', 'mibPlugin', 'Help', 'index.html'), '-helpbrowser');
+handles.winController.showHelp();
 
 
 % --- Executes on button press in closeBtn.
@@ -126,12 +125,8 @@ function closeBtn_Callback(hObject, eventdata, handles)
 
 handles.winController.closeWindow();
 
-
-
-function Parameter_Callback(hObject, eventdata, handles)
-% callback for multiple widgets of GUI to update BatchOpt
-% this function handles updates of BatchOpt structure in the controller
-
+function updateBatchOpt(hObject, eventdata, handles)
+% callback for multiple widgets of GUI to update BatchOpt structure
 handles.winController.updateBatchOptFromGUI(hObject);
 
 

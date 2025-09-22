@@ -69,6 +69,7 @@ if ~isempty(newMode)
             obj.enableSelection = enableSelection;
         end
         obj.closeVirtualDataset();    % close the virtual datasets
+        obj.pyramid.levelNames = [];  % clear level names for zarr pyramid
     end
 end
 end

@@ -13,16 +13,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:08:49 $
 %
-%  $Revision: ce44cef00aca $
+%  $Revision: 7ee2c13c5371 $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -48,7 +48,8 @@ end
 
 % Check to see if the file is already open
 if isempty(mRCImage.fid)
-  [fid, msg]= fopen(mRCImage.filename, format, mRCImage.endianFormat);
+  [fid, msg]= fopen(mRCImage.filename, format, mRCImage.endianFormat, ...
+                    'UTF-8');
   if fid == -1
     disp(msg)
     PEETError(['Unable to open ' mRCImage.filename ' as ' format]);
@@ -56,18 +57,43 @@ if isempty(mRCImage.fid)
 
 else
   [~, permission] = fopen(mRCImage.fid);
-  switch permission
-   case {'r', 'a', 'a+'}
-    % Close and reopen the file to get a writable mode
-    fclose(mRCImage.fid);
-    [fid, msg]= fopen(mRCImage.filename, format, mRCImage.endianFormat);
-    if fid == -1
-      disp(msg)
-      PEETError(['Unable to reopen ' mRCImage.filename ' as ' format]);
-    end
+
+  % Note: the following if ~ispc block could probably be collapsed by
+  % uncondidtionally adding 'rb' (and possibly 'ab' and 'ab+'). I haven't
+  % tested this since the problem only occurs on Windows, and we don't 
+  % typically use append modes.
+  if ~ispc
+    switch permission
+      case {'r', 'a', 'a+'}
+        % Close and reopen the file to get a writable mode
+        fclose(mRCImage.fid);
+        [fid, msg]= fopen(mRCImage.filename, format,                   ...
+                          mRCImage.endianFormat, 'UTF-8');
+        if fid == -1
+          disp(msg)
+          PEETError(['Unable to reopen ' mRCImage.filename ' as ' format]);
+        end
    
-   otherwise
-    % The file is already open for writing, just return the current fid
-    fid = mRCImage.fid;
+      otherwise
+        % The file is already open for writing, just return the current fid
+        fid = mRCImage.fid;
+    end 
+  else  % Windows is now returning 'rb'instead of 'r' for binary files
+    switch permission
+      case {'r', 'rb', 'a', 'a+'}
+        % Close and reopen the file to get a writable mode
+        fclose(mRCImage.fid);
+        [fid, msg]= fopen(mRCImage.filename, format,                   ...
+                          mRCImage.endianFormat, 'UTF-8');
+        if fid == -1
+          disp(msg)
+          PEETError(['Unable to reopen ' mRCImage.filename ' as ' format]);
+        end
+   
+      otherwise
+        % The file is already open for writing, just return the current fid
+        fid = mRCImage.fid;
+    end
   end
+ 
 end

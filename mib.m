@@ -73,6 +73,7 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'ImportExportTools','IMOD'));
     addpath(fullfile(func_dir, 'ImportExportTools','Omero'));
     addpath(fullfile(func_dir, 'ImportExportTools','nrrd'));
+	addpath(fullfile(func_dir, 'ImportExportTools','Zarr'));
     addpath(fullfile(func_dir, 'Resources'));
     addpath(fullfile(func_dir, 'techdoc'));
     addpath(fullfile(func_dir, 'Tools'));
@@ -97,7 +98,7 @@ end
 % ATTENTION! it is important to have the version number between "ver." and "/" 
 % Release syntax example: "ver. 2.91 / 06.08.2024"
 % Beta syntax example: "ver. 2.91 (beta 08) / 06.08.2024"
-mibVersion = 'ver. 2.9103 / 03.06.2025';  
+mibVersion = 'ver. 2.92 (beta 09) / 23.09.2025';  
 
 % define max number of parallel workers for deployed versions
 % define workers for parallel pools
@@ -120,6 +121,16 @@ else
     cpuParallelLimit = Inf;
 end
 cpuParallelLimit = min([cpuParallelLimit, parPool.NumWorkers]);
+
+% Enable GPU Future compatibility
+% https://se.mathworks.com/help/parallel-computing/parallel.gpu.enablecudaforwardcompatibility.html
+% define system environment: MW_CUDA_FORWARD_COMPATIBILITY=1 to preserve forward compatibility between MATLAB sessions.
+fprintf('MIB future GPU compatibility: enabled\n');
+
+if ~verLessThan('matlab','9.9') % 2020b or newer
+    parallel.gpu.enableCUDAForwardCompatibility(true);
+    setenv("CUDA_CACHE_MAXSIZE ", "536870912");
+end
 
 try
     model = mibModel(cpuParallelLimit);     % initialize the model

@@ -12,7 +12,7 @@
 
 % Author: Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
-% Date: 25.04.2023
+% Date: 19.08.2025
 
 classdef mibPluginController < handle
     % @type mibPluginController class is a template class for using with
@@ -40,6 +40,9 @@ classdef mibPluginController < handle
     
 	% Updates
 	%     
+	
+	% THIS PLUGIN IS AVAILABLE IN MIB under
+	% MIB\PLUGINS\TUTORIALS\DemoPluginAppDesigner
     
     properties
         mibModel
@@ -57,10 +60,12 @@ classdef mibPluginController < handle
         % .Checkbox - [checkbox], logical value true or false
         % .Dropdown{1} - [dropdown],  cell string for the dropdown
         % .Dropdown{2} - [optional], an array with possible options
-        % .Radio - [radiobuttons], cell string 'Radio1' or 'Radio2'...
+        % .RadioButtonGroup{1} - selected Radio button
+        % .RadioButtonGroup{2} - available radio buttons
         % .ParameterNumeric{1} - [numeric editbox], cell with a number 
         % .ParameterNumeric{2} - [optional], vector with limits [min, max]
         % .ParameterNumeric{3} - [optional], string 'on' - to round the value, 'off' to do not round the value
+		% see constructor for details
     end
     
     events
@@ -89,15 +94,16 @@ classdef mibPluginController < handle
             % tooltip starts with "Parameter:...". Text Parameter
             % indicates field of the BatchOpt structure that defines value
             % for this widget
-            obj.BatchOpt.Parameter = 'my parameter';
-            obj.BatchOpt.Checkbox = true;
-            obj.BatchOpt.Dropdown = {'Option 3'};
-            obj.BatchOpt.Dropdown{2} = {'Option 1', 'Option 2', 'Option 3'};
-            obj.BatchOpt.Radio = {'Radio2'};
-            obj.BatchOpt.ParameterNumeric{1} = 512.125;     % numeric value
+            obj.BatchOpt.Parameter = 'my parameter';    % edit box
+            obj.BatchOpt.Checkbox = true;   % checkbox
+            obj.BatchOpt.Dropdown = {'Option 3'}; % dropdown menu
+            obj.BatchOpt.Dropdown{2} = {'Option 1', 'Option 2', 'Option 3'}; % options for the dropdown menu
+            obj.BatchOpt.RadioButtonGroup{1} = 'Radio2';    % selected radio button
+            obj.BatchOpt.RadioButtonGroup{2} = {'Radio1', 'Radio2', 'Radio3'}; % list of available radio buttons
+            obj.BatchOpt.ParameterNumeric{1} = 512.125;     % numeric value  for numeric edit or spinner box
             obj.BatchOpt.ParameterNumeric{2} = [0 1024];    % possible limits value
             obj.BatchOpt.ParameterNumeric{3} = 'off';    % round the numeric value
-            obj.BatchOpt.showWaitbar = true;
+            obj.BatchOpt.showWaitbar = true;    % show or not the waitbar
             obj.BatchOpt.id = obj.mibModel.Id;  % optional
             
             %% part below is only valid for use of the plugin from MIB batch controller

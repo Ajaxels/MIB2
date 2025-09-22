@@ -25,6 +25,7 @@ function clearMask(obj, options)
 % @li .x -> [@em optional], [xmin, xmax] coordinates of the dataset to take after transpose for level=1, width
 % @li .z -> [@em optional], [zmin, zmax] coordinates of the dataset to take after transpose, depth
 % @li .t -> [@em optional], [tmin, tmax] coordinates of the dataset to take after transpose, time
+% @li .showWaitbar - [@em optional], [true, false] show or not the waitbar
 %
 % Return values:
 %
@@ -44,7 +45,10 @@ if obj.Virtual.virtual == 1
 end
 
 if nargin < 2; options = []; end
-wb = waitbar(0, sprintf('Clearing the mask layer\nPlease wait...'), 'Name', 'Clear mask');
+if ~isfield(options, 'showWaitbar'); options.showWaitbar = true; end
+if options.showWaitbar
+    wb = waitbar(0, sprintf('Clearing the mask layer\nPlease wait...'), 'Name', 'Clear mask');
+end
 
 if isempty(options) % clear the whole mask
     if obj.modelType == 63  % 63 materials model type
@@ -52,7 +56,7 @@ if isempty(options) % clear the whole mask
     else
         obj.maskImg{1} = zeros(size(obj.selection{1}), 'uint8');
     end
-    waitbar(.95, wb);
+    if options.showWaitbar; waitbar(.95, wb); end
     % extra things after clearing the whole Mask
     obj.maskExist = 0;
     [pathstr, fileName] = fileparts(obj.meta('Filename'));
@@ -76,7 +80,7 @@ else
     options.z(2) = min([obj.depth options.z(2)]);
     options.t(1) = max([1 options.t(1)]);
     options.t(2) = min([obj.time options.t(2)]);
-    waitbar(.05, wb);
+    if options.showWaitbar; waitbar(.05, wb); end
     if obj.modelType == 63  % 63 materials model type
         obj.model{1}(options.y(1):options.y(2), options.x(1):options.x(2),options.z(1):options.z(2),options.t(1):options.t(2)) = ...
             bitset(obj.model{1}(options.y(1):options.y(2), options.x(1):options.x(2),options.z(1):options.z(2),options.t(1):options.t(2)), 7, 0);
@@ -84,6 +88,8 @@ else
         obj.maskImg{1}(options.y(1):options.y(2), options.x(1):options.x(2),options.z(1):options.z(2),options.t(1):options.t(2)) = 0;
     end
 end
-waitbar(1, wb);
-delete(wb);
+if options.showWaitbar
+    waitbar(1, wb);
+    delete(wb);
+end
 end

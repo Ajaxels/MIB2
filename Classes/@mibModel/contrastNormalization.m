@@ -190,7 +190,7 @@ if nargin < 3
             BatchOpt.Mode(1) = answer(3);
             BatchOpt.Mean = answer{4};
             BatchOpt.Std = answer{5};
-            BatchOpt.ReferenceSliceNo = answer(6);
+            BatchOpt.ReferenceSliceNo = answer{6};
             BatchOpt.Exculude(1) = answer(7);
         case 'Background'
             prompts = {'Mask layer:';

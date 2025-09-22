@@ -12,16 +12,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:09:20 $
 %
-%  $Revision: ce44cef00aca $
+%  $Revision: 03a2974f77e3 $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -49,7 +49,7 @@ if verbose
 end
 writeHeader(imodModel);
 
-% Loop over each object writting it out to the file
+% Write objects
 for idxObject = 1:imodModel.nObjects
   if verbose
     fprintf('Writing object %d\n', idxObject);
@@ -57,11 +57,14 @@ for idxObject = 1:imodModel.nObjects
   write(imodModel.Objects{idxObject}, imodModel.fid);
 end
 
+% Write views
+for idxView = 1:length(imodModel.Views)
+  fwriteChunk(imodModel.Views{idxView}, imodModel.fid);
+end
+
 % Optionally write a MINX record. Last since it applies to the whole model.
 if ~isempty(imodModel.MINX)
-  writeAndCheck(imodModel.fid, 'MINX', 'uchar');
-  writeAndCheck(imodModel.fid, 72, 'int32');
-  writeAndCheck(imodModel.fid, imodModel.MINX, 'float32');
+  write(imodModel.MINX, imodModel.fid);
 end
 
 writeAndCheck(imodModel.fid, 'IEOF', 'uchar');

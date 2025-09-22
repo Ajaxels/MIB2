@@ -59,7 +59,7 @@ orientation = obj.I{obj.Id}.orientation;
 if strcmp(options.resize, 'no')
     magnificationFactor = 1;
 else
-    magnificationFactor = obj.getMagFactor();
+    magnificationFactor = obj.getMagFactor(); % as datasetVoxels / shownVoxel; zoom 200% == 0.5 magFactor
 end
 
 if strcmp(obj.preferences.System.ImageResizeMethod, 'auto')
@@ -73,7 +73,8 @@ else
 end
 
 panModeException = 0; % otherwise in the pan mode the image may be huge
-if options.blockModeSwitch == 0 && magnificationFactor < 1 % to use with the pan mode
+if (options.blockModeSwitch == 0 && magnificationFactor < 1) || ...   % to use with the pan mode
+        ~isempty(obj.I{obj.Id}.pyramid.levelNames) % to use with pyramids
     panModeException = 1;
 end
 if isfield(options, 'sliceNo')      % overwrite current slice number with the provided
@@ -104,9 +105,9 @@ else
 end
 
 % resize image to show, except the 'full' case with magFactor > 1
-if panModeException == 1 % to use with the pan mode
+if panModeException == 1 % to use with the pan mode or with pyramids, where the image already resized to match desired magnification
     sImg = sImgIn;
-else
+else 
     if magnificationFactor > 1  % do not upscale images until the end of procedure
         if strcmp(imageResizeMethod, 'nearest') || strcmp(colortype, 'indexed') % tweak to make resizing faster in the nearest mode, may result in different image sizes compared to imresize method
             sImg = sImgIn(round(.51:magnificationFactor:end+.49),round(.51:magnificationFactor:end+.49),:);     % NOTE! the image size may be different from the imresize method
@@ -119,7 +120,7 @@ else
                 end
             end
         end
-    else
+    else % pyramid
         sImg = sImgIn;
     end
 end

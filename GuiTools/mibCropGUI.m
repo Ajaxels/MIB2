@@ -161,3 +161,10 @@ function helpButton_Callback(hObject, eventdata, handles)
 global mibPath;
 web(fullfile(mibPath, 'techdoc/html/user-interface/menu/dataset/dataset-crop.html'), '-browser');
 end
+
+
+% --- Executes on selection change in ZarrPyramidLevel.
+function ZarrPyramidLevel_Callback(hObject, eventdata, handles)
+handles.winController.selectZarrLevel();
+handles.winController.updateBatchOptFromGUI(hObject);
+end

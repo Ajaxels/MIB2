@@ -11,7 +11,7 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 % TODO:
@@ -22,9 +22,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:09:20 $
 %
-%  $Revision: ce44cef00aca $
+%  $Revision: 03a2974f77e3 $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -58,6 +58,12 @@ if  mRCImage.header.nX < 0 || mRCImage.header.nY < 0 ||                ...
   [fname, perm, fileEndianFormat] = fopen(mRCImage.fid); %#ok<ASGLU>
   if strcmp('ieee-be', fileEndianFormat) == 1
     mRCImage.endianFormat = 'ieee-le';
+  elseif strcmp('ieee-be.l64', fileEndianFormat) == 1
+    mRCImage.endianFormat = 'ieee-le.l64';
+  elseif strcmp('ieee-le', fileEndianFormat) == 1
+    mRCImage.endianFormat = 'ieee-be';
+  elseif strcmp('ieee-le.l64', fileEndianFormat) == 1
+    mRCImage.endianFormat = 'ieee-be.l64';
   else
     mRCImage.endianFormat = 'ieee-be';
   end
@@ -66,7 +72,8 @@ if  mRCImage.header.nX < 0 || mRCImage.header.nY < 0 ||                ...
             fileEndianFormat, mRCImage.endianFormat);
   end
   fclose(mRCImage.fid);
-  mRCImage.fid = fopen(mRCImage.filename, 'r', mRCImage.endianFormat);
+  mRCImage.fid = fopen(mRCImage.filename, 'r', mRCImage.endianFormat,  ...
+                       'UTF-8');
 
   % reread the data dimensions in the correct endian format
   mRCImage.header.nX = fread(mRCImage.fid, 1, 'int32');
@@ -100,15 +107,19 @@ mRCImage.header.cellAngleZ = fread(mRCImage.fid, 1, 'float32');
 mRCImage.header.mapColumns = fread(mRCImage.fid, 1, 'int32');
 mRCImage.header.mapRows = fread(mRCImage.fid, 1, 'int32');
 mRCImage.header.mapSections = fread(mRCImage.fid, 1, 'int32');
+if mRCImage.header.mapColumns ~= 1 || mRCImage.header.mapRows ~= 2 ||  ...
+   mRCImage.header.mapSections ~= 3
+  PEETWarning([                                                        ...
+    'Unsupported MRC header option. Volume will be read incorrectly!\n',      ...
+    '         MAPC, MAPR, MAPS = %d, %d, %d but MRCImage always ',     ...
+    'assumes 1, 2, 3.'], mRCImage.header.mapColumns,                   ...
+    mRCImage.header.mapRows, mRCImage.header.mapSections);
+end
 mRCImage.header.minDensity = fread(mRCImage.fid, 1, 'float32');
 mRCImage.header.maxDensity = fread(mRCImage.fid, 1, 'float32');
 mRCImage.header.meanDensity = fread(mRCImage.fid, 1, 'float32');
-mRCImage.header.spaceGroup = fread(mRCImage.fid, 1, 'int16');
-mRCImage.header.nSymmetryBytes = fread(mRCImage.fid, 1, 'int16');
-if debug
-  fprintf(debugFD, 'nSymmetry bytes %d\n', mRCImage.header.nSymmetryBytes);
-end
-
+mRCImage.header.spaceGroup = fread(mRCImage.fid, 1, 'int32');
+% nBytesExtended is called nsymbt in the 2014 MRC Standard
 mRCImage.header.nBytesExtended = fread(mRCImage.fid, 1, 'int32');
 if debug
   fprintf(debugFD, 'nBytesExtended %d\n', mRCImage.header.nBytesExtended);
@@ -116,7 +127,7 @@ end
 
 % MRC EXTRA section
 mRCImage.header.creatorID = fread(mRCImage.fid, 1, 'int16');
-junk = fread(mRCImage.fid, 30, 'uchar'); %#ok<NASGU>
+mRCImage.header.extraInfo1 = fread(mRCImage.fid, 30, 'uchar');
 mRCImage.header.nBytesPerSection = fread(mRCImage.fid, 1, 'int16');
 if debug
   fprintf(debugFD, 'nBytesPerSection %d\n', mRCImage.header.nBytesPerSection);
@@ -125,7 +136,7 @@ mRCImage.header.serialEMType = fread(mRCImage.fid, 1, 'int16');
 if debug
   fprintf(debugFD, 'serialEMType %d\n', mRCImage.header.serialEMType);
 end
-junk = fread(mRCImage.fid, 20, 'uchar');   %#ok<NASGU>
+mRCImage.header.extraInfo2 = fread(mRCImage.fid, 20, 'uchar');
   
 % IMOD stamp / flags for deciding whether to read / write mode 0 files
 % as signed or unsigned bytes (added in PEET 1.8.0)

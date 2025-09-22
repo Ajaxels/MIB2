@@ -529,6 +529,56 @@ for fn_index = 1:no_files
             end
             img_info('ImageDescription') = '';
         end
+    elseif ismember(ext, {'.zarr', '.zarr2', '.zarr3'}) && options.mibBioformatsCheck == 0     % zarr
+        meta = readZarrMetadata(cell2mat(filenames(fn_index)));
+
+        files(fn_index).extension = '.zarr';
+        files(fn_index).filename = cell2mat(filenames(fn_index));
+        [~, fn] = fileparts(filenames{fn_index});
+        files(fn_index).seriesName = {fn};
+        files(fn_index).object_type = 'zarr';
+        
+        files(fn_index).noLayers = meta.imageSize(3);   % z
+        files(fn_index).height = meta.imageSize(4);     % y
+        files(fn_index).width = meta.imageSize(5);      % x
+        files(fn_index).color = meta.numChannels;       % c
+        files(fn_index).time = meta.numTimePoints;      % t
+        files(fn_index).imgClass = meta.dataTypes(1);   % 'uint8', 'unit16', etc
+        files(fn_index).dim_xyczt = [files(fn_index).width files(fn_index).height files(fn_index).color files(fn_index).noLayers files(fn_index).time];
+
+        if fn_index == 1
+            img_info = containers.Map;
+            img_info('imgClass') = meta.dataTypes(1);
+            if meta.numChannels > 1
+                img_info('ColorType') = 'truecolor';
+            else
+                img_info('ColorType') = 'grayscale';
+            end
+            img_info('ImageDescription') = '';
+            Pyramid = struct(); % structure to keep pyramid organization of data, convert axes to MIB order
+            Pyramid.levelNames = meta.levelNames;
+            Pyramid.levelImageSizes = meta.levelImageSizes(:, [2, 3, 1]);
+            Pyramid.levelImageTranslations = meta.levelImageTranslations(:, [2, 3, 1]);
+            Pyramid.levelScaleFactors = meta.levelScaleFactors(:, [2, 3, 1]);
+            Pyramid.levelVoxelSizes = meta.levelVoxelSizes(:, [2, 3, 1]);
+            Pyramid.chunkSizes = meta.chunkSizes(:, [4, 5, 2, 3, 1]);
+            Pyramid.shardSizes = meta.shardSizes(:, [4, 5, 2, 3, 1]);
+            img_info('Pyramid') = Pyramid; % assign to img_info
+
+            pixSize.x = Pyramid.levelVoxelSizes(1,2);
+            pixSize.y = Pyramid.levelVoxelSizes(1,1);
+            pixSize.z = Pyramid.levelVoxelSizes(1,3);
+            pixSize.units = meta.imageUnits{end};
+            
+            if isfield(meta, 'levelImageTranslations') && ~isnan(meta.levelImageTranslations(1,1))
+                shiftsXYZ = -meta.levelImageTranslations(1, [3, 2, 1]); 
+            else
+                shiftsXYZ = [0; 0; 0];
+            end
+            img_info('ImageDescription') = sprintf('BoundingBox %.5f %.5f %.5f %.5f %.5f %.5f', shiftsXYZ(1),shiftsXYZ(1)+pixSize.y*max([1 (files(fn_index).dim_xyczt(1)-1)]),...
+                shiftsXYZ(2),shiftsXYZ(2)+pixSize.x*max([1 (files(fn_index).dim_xyczt(2)-1)]),...
+                shiftsXYZ(3),shiftsXYZ(3)+pixSize.z*max([1 (files(fn_index).dim_xyczt(4)-1)]));
+        end
     elseif strfind(cell2mat([image_formats.ext]), ext(2:end)) > 0 & options.mibBioformatsCheck == 0 %#ok<AND2> % standard image types
         files(fn_index).filename = cell2mat(filenames(fn_index));
         files(fn_index).object_type = 'image';
@@ -1048,6 +1098,29 @@ for fn_index = 1:no_files
                 if ~isempty(tVal)
                     pixSize.t = double(tVal.value(ome.units.UNITS.SECOND));   % in seconds
                 end
+                % stage coordinates from the stage center
+                % stageCenterX = double(omeMeta.getStageLabelX(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));
+                % from the image center
+                stageCenterX = double(omeMeta.getPlanePositionX(filesTemp.seriesIndex(fileSubIndex)-1, 0).value(ome.units.UNITS.MICROM));
+                stageCenterY = double(omeMeta.getPlanePositionY(filesTemp.seriesIndex(fileSubIndex)-1, 0).value(ome.units.UNITS.MICROM));
+                stageCenterZ = double(omeMeta.getPlanePositionZ(filesTemp.seriesIndex(fileSubIndex)-1, 0).value(ome.units.UNITS.MICROM));
+                % add xMin xMax yMin yMax zMin zMax to use them later for calculation of the bounding box
+                % files(fn_index).xMin = stageCenterX - files(fn_index).dim_xyczt(1)/2*pixSize.x;
+                % files(fn_index).xMax = stageCenterX + files(fn_index).dim_xyczt(1)/2*pixSize.x;
+                % files(fn_index).yMin = stageCenterY - files(fn_index).dim_xyczt(2)/2*pixSize.y;
+                % files(fn_index).yMax = stageCenterY + files(fn_index).dim_xyczt(2)/2*pixSize.y;
+                % files(fn_index).zMin = stageCenterZ - files(fn_index).dim_xyczt(4)/2*pixSize.z;
+                % files(fn_index).zMax = stageCenterZ + files(fn_index).dim_xyczt(4)/2*pixSize.z;
+                % add ImageDescription
+                files(fn_index).boundingBoxVector = [0 0 0 0 0 0];  % [xMin xMax yMin yMax zMin zMax]
+                files(fn_index).boundingBoxVector(1) = stageCenterX - files(fn_index).dim_xyczt(1)/2*pixSize.x; % xMin
+                files(fn_index).boundingBoxVector(2) = stageCenterX + files(fn_index).dim_xyczt(1)/2*pixSize.x; % xMax
+                files(fn_index).boundingBoxVector(3) = stageCenterY - files(fn_index).dim_xyczt(2)/2*pixSize.y; % yMin
+                files(fn_index).boundingBoxVector(4) = stageCenterY + files(fn_index).dim_xyczt(2)/2*pixSize.y; % yMax
+                files(fn_index).boundingBoxVector(5) = stageCenterZ - files(fn_index).dim_xyczt(4)/2*pixSize.z; % zMin
+                files(fn_index).boundingBoxVector(6) = stageCenterZ + files(fn_index).dim_xyczt(4)/2*pixSize.z; % zMax
+                %bbString = sprintf('BoundingBox %.5f %.5f %.5f %.5f %.5f %.5f ', bb(1), bb(2), bb(3), bb(4), bb(5), bb(6));
+                %img_info('ImageDescription') = bbString;
             catch err
                 continue;
             end
@@ -1223,6 +1296,10 @@ elseif isfield(files, 'xMin') % no img_info('ImageDescription'), but custom sect
     bb(4) = bb(3) + (files(1).yMax-files(1).yMin)*pixSize.y; % yMax
     bb(5) = bb(5) + (files(1).zMin-1)*pixSize.z; % zMin
     bb(6) = bb(5) + (files(1).zMax-files(1).zMin)*pixSize.z; % zMax
+    bbString = sprintf('BoundingBox %.5f %.5f %.5f %.5f %.5f %.5f ', bb(1), bb(2), bb(3), bb(4), bb(5), bb(6));
+    img_info('ImageDescription') = bbString;
+elseif isfield(files, 'boundingBoxVector') % when bounding box is provided as a vertor [xMin xMax yMin yMax zMin zMax]
+    bb = files(1).boundingBoxVector;  % [xMin xMax yMin yMax zMin zMax]
     bbString = sprintf('BoundingBox %.5f %.5f %.5f %.5f %.5f %.5f ', bb(1), bb(2), bb(3), bb(4), bb(5), bb(6));
     img_info('ImageDescription') = bbString;
 end

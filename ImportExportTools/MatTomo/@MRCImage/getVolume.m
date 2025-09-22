@@ -21,16 +21,16 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:09:20 $
 %
-%  $Revision: ce44cef00aca $
+%  $Revision: 03a2974f77e3 $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -108,7 +108,12 @@ if strcmp(modeStr, 'int16*2') || strcmp(modeStr, 'float32*2')
   modeStr = modeStr(1 : end - 2);
 else
   flgComplex = false;
-end 
+end
+% Matlab doesn't currently allow half (float*2) in compiled exes. To permit
+% reading mode 12 files, read as uint16 and convert to single later
+if strcmp(modeStr, 'half')
+  modeStr = 'uint16';
+end
 if strcmp(modeStr, 'float32')
   matlabModeStr = 'single';
 else
@@ -168,4 +173,8 @@ if flgComplex
                         nZElements),                                   ...
                 reshape(vol(2:2:end, :, :), nXElements, nYElements,    ...
                         nZElements));
+end
+
+if mRCImage.header.mode == 12
+  mRCImage.volume = asIEEEHalf(mRCImage.volume);
 end

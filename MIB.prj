@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}\MIB_resources\icon_24.png</file>
       <file>${PROJECT_ROOT}\MIB_resources\icon_16.png</file>
     </param.icons>
-    <param.version>2.9103</param.version>
+    <param.version>2.9108</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>

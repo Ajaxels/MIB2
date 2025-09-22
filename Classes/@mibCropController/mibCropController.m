@@ -87,6 +87,8 @@ classdef mibCropController  < handle
             %obj.BatchOpt.Destination = {sprintf('Container %d', obj.mibModel.Id)};  % destination for the crop
             obj.BatchOpt.Destination = {'Current'};  % destination for the crop
             obj.BatchOpt.Destination{2} = destBuffers;
+            obj.BatchOpt.ZarrPyramidLevel{2} = arrayfun(@(x) sprintf('s%d', x), 0:9, 'UniformOutput', false);
+            obj.BatchOpt.ZarrPyramidLevel(1) = obj.BatchOpt.ZarrPyramidLevel{2}(1);
             obj.BatchOpt.SelectROI = {'All'};
             obj.BatchOpt.SelectROI{2} = ROIlist;
             obj.BatchOpt.showWaitbar = true;   % show or not the waitbar
@@ -103,6 +105,7 @@ classdef mibCropController  < handle
             obj.BatchOpt.mibBatchTooltip.ROI = sprintf('Use ROI for the cropping');
             obj.BatchOpt.mibBatchTooltip.Manual = sprintf('Width, Height, Depth, Time fields to crop the image');
             obj.BatchOpt.mibBatchTooltip.Destination = sprintf('Destination container');
+            obj.BatchOpt.mibBatchTooltip.ZarrPyramidLevel = sprintf('[Zarr only] Level of the Zarr dataset to generate the crop operation');
             obj.BatchOpt.mibBatchTooltip.SelectROI = sprintf('[ROI mode only]\nSelected ROI for the cropping');
             obj.BatchOpt.mibBatchTooltip.showWaitbar = sprintf('Show or not the progress bar during execution');
             
@@ -259,6 +262,21 @@ classdef mibCropController  < handle
             else
                 obj.View.handles.SelectROI.Value = 1;
             end
+
+            % update zarr dropdown
+            if isempty(obj.mibModel.I{obj.mibModel.Id}.pyramid.levelNames) % normal dataset
+                obj.BatchOpt.ZarrPyramidLevel(1) = obj.BatchOpt.ZarrPyramidLevel{2}(1);
+                %obj.BatchOpt.ZarrPyramidLevel = {'s0'}; % level of the pyramid for zarr images
+                %obj.BatchOpt.ZarrPyramidLevel{2} = {'s0'};
+                obj.View.handles.ZarrPyramidLevel.Enable = "off";
+            else  % zarr dataset
+                %obj.BatchOpt.ZarrPyramidLevel = obj.mibModel.I{obj.mibModel.Id}.pyramid.levelNames(1);
+                %obj.BatchOpt.ZarrPyramidLevel{2} = obj.mibModel.I{obj.mibModel.Id}.pyramid.levelNames;
+                obj.View.handles.ZarrPyramidLevel.Enable = "on";
+            end
+            obj.View.handles.ZarrPyramidLevel.String = obj.BatchOpt.ZarrPyramidLevel{2};
+            obj.View.handles.ZarrPyramidLevel.Value = 1;
+            obj.selectZarrLevel();
         end
         
         function radio_Callback(obj, hObject)
@@ -283,19 +301,25 @@ classdef mibCropController  < handle
             else
                 obj.View.handles.Time.Enable = 'off';
             end
+            obj.BatchOpt.Interactive =  false;
+            obj.BatchOpt.Manual =  false;
+            obj.BatchOpt.ROI =  false;
             if strcmp(mode,'Interactive')
                 text = sprintf('Interactive mode allows to draw a rectangle that will be used for cropping.To start, press the Crop button and use the left mouse button to draw an area, double click over the area to crop');
                 obj.editboxes_Callback();
+                obj.BatchOpt.Interactive = true;
             elseif strcmp(mode,'Manual')
                 obj.View.handles.Width.Enable = 'on';
                 obj.View.handles.Height.Enable = 'on';
                 obj.View.handles.Depth.Enable = 'on';
                 text = sprintf('In the manual mode the numbers entered in the edit boxes below will be used for cropping');
                 obj.editboxes_Callback();
+                obj.BatchOpt.Manual =  true;
             elseif strcmp(mode,'ROI')
                 obj.View.handles.SelectROI.Enable = 'on';
                 text = sprintf('Use existing ROIs to crop the image');
                 obj.SelectROI_Callback();
+                obj.BatchOpt.ROI =  true;
             end
             obj.View.handles.descriptionText.String = text;
             obj.View.handles.descriptionText.TooltipString = text;
@@ -378,6 +402,17 @@ classdef mibCropController  < handle
             obj.radio_Callback(obj.View.handles.Manual);
         end
         
+        function selectZarrLevel(obj)
+            % function selectZarrLevel(obj)
+            % select desired Zarr level
+            
+            if obj.View.handles.ZarrPyramidLevel.Value > size(obj.mibModel.I{obj.mibModel.Id}.pyramid.levelScaleFactors,1)
+                obj.View.handles.ZarrPyramidLevel.Value = size(obj.mibModel.I{obj.mibModel.Id}.pyramid.levelScaleFactors,1);
+            end
+            scales = obj.mibModel.I{obj.mibModel.Id}.pyramid.levelScaleFactors(obj.View.handles.ZarrPyramidLevel.Value, :);
+            obj.View.handles.zarrBinningFactors.String = sprintf('Zarr downsampling scales (XYZ): %d x %d x %d', scales(2), scales(1), scales(3));
+        end
+        
         function cropToBtn_Callback(obj)
             % function cropToBtn_Callback(obj)
             % select destination buffer for the cropping
@@ -428,6 +463,12 @@ classdef mibCropController  < handle
             
             BatchOptLoc = obj.BatchOpt;
             
+            % if isempty(obj.pyramid.levelNames) % standard virtual dataset
+            %     img = obj.getDataVirt('image', 4, 0, options);
+            % else % ome-zarr virtual dataset
+            %     img = obj.getDataZarr('image', 4, 0, options);
+            % end
+
             if BatchOptLoc.Interactive    % interactive
                 obj.View.gui.Visible = 'off';
                 
@@ -515,6 +556,10 @@ classdef mibCropController  < handle
             obj.mibModel.I{bufferId}.enableSelection = obj.mibModel.preferences.System.EnableSelection;  % should be before cropDataset
             
             % do the crop
+            % get pyramid downsampling scale
+            if strcmp(obj.View.handles.ZarrPyramidLevel.Enable, 'on')
+                BatchOptLoc.pyramidLevel = obj.View.handles.ZarrPyramidLevel.Value;
+            end
             result = obj.mibModel.I{bufferId}.cropDataset(crop_factor, BatchOptLoc);
             if result == 0; notify(obj.mibModel, 'stopProtocol'); return; end
             

@@ -20,6 +20,20 @@ function mibShowErrorDialog(guiHandle, err, winTitle, optionalPrefix, optionalSu
 % optionalPrefix: an optional text string that will be added before the end of the error message
 % optionalSuffix: an optional text string that will be added after the end of the error message
 
+%|
+% @b Examples:
+% @code
+% try
+% // some code
+% catch err
+%    mibShowErrorDialog(obj.View.gui, err, 'Missing net-variable');
+%    return;
+% end
+% @endcode
+
+% Updates
+% 
+
 if nargin < 5; optionalSuffix = ''; end
 if nargin < 4; optionalPrefix = ''; end
 if nargin < 3; winTitle = 'Error'; end
@@ -34,7 +48,7 @@ end
 
 matlabVersion = ver('matlab');
 
-if isa(guiHandle, 'matlab.ui.Figure') % guide figure
+if isempty(guiHandle) || isa(guiHandle, 'matlab.ui.Figure') % guide figure
     errordlg(errText, winTitle);
 else % appdesigner figure
     if str2num(matlabVersion.Version) < 9.11 % 'Interpreter' is available only from R2021b

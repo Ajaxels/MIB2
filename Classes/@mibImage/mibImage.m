@@ -134,6 +134,16 @@ classdef mibImage < matlab.mixin.Copyable
         % @li .t - time between the frames for 2D movies
         % @li .tunits - time units
         % @li .units - physical units for x, y, z. Possible values: [m, cm, mm, um, nm]
+        pyramid
+        % a structure with specifications of the image pyramid downsampling levels, order of dimensions as in MIB
+        % pyramid = struct(); % structure to keep pyramid organization of data, convert axes to MIB order
+        % pyramid.levelNames = meta.levelNames;
+        % pyramid.levelImageSizes = meta.levelImageSizes(:, [2, 3, 1]);
+        % pyramid.levelImageTranslations = meta.levelImageTranslations(:, [2, 3, 1]);
+        % pyramid.levelScaleFactors = meta.levelScaleFactors(:, [2, 3, 1]);
+        % pyramid.levelVoxelSizes = meta.levelVoxelSizes(:, [2, 3, 1]);
+        % pyramid.chunkSizes = meta.chunkSizes(:, [4, 5, 2, 3, 1]);
+        % pyramid.shardSizes = meta.shardSizes(:, [4, 5, 2, 3, 1]);
         selectedAddToMaterial
         % index of selected Add to Material, where the Selection layer
         % should be targeted, assigned in the AddTo column of the mibView.handles.mibSegmentationTable
@@ -264,6 +274,8 @@ classdef mibImage < matlab.mixin.Copyable
         dataset = getData(obj, type, orient, col_channel, options, custom_img)        % get dataset from the class
         
         dataset = getDataVirt(obj, type, orient, col_channel, options, custom_img)        % get virtual dataset from the class
+
+        dataset = getDataZarr(obj, type, orient, col_channel, options) % get subvolume from a Zarr dataset
         
         [height, width, color, depth, time] = getDatasetDimensions(obj, type, orient, color, options)        % Get dimensions of the dataset
         

@@ -98,7 +98,7 @@ StdImgFormats = [StdImgFormats.ext 'mrc' 'rec' 'am' 'nrrd' 'h5' 'xml' 'st' 'prea
 Prefs.System.Files.StdExt = sort(StdImgFormats);
 % standard image extensions, virtual mode
 % old: preferences.Filefilter.stdVirtExt
-Prefs.System.Files.StdVirtExt = sort({'h5','hdf5','xml'});
+Prefs.System.Files.StdVirtExt = sort({'h5','hdf5','xml', 'zarr', 'zarr2', 'zarr3'});
 % bioformats
 % old: preferences.Filefilter.bioExt
 Prefs.System.Files.BioFormatsExt = sort(BioFormats);

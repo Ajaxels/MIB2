@@ -4,22 +4,22 @@
 %
 %   imodObject  The ImodObject
 %
-%   fid         A file ID of an open file with the pointer at the start of an
-%               IMOD Object object.
+%   fid         A file ID of an open file with the pointer at the start of 
+%               an IMODObject object.
 %
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:09:20 $
 %
-%  $Revision: ce44cef00aca $
+%  $Revision: 03a2974f77e3 $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -86,9 +86,9 @@ while iContour <= imodObject.nContours || iMesh <= imodObject.nMeshes
     imodContour = freadContour(imodContour, fid, debug);
     % A contour can optionally be followed by a point SIZE structure
     id = char(fread(fid, [1 4], 'uchar'));
-    if strcmp(id, 'SIZE');
+    if strcmp(id, 'SIZE')
       nPoints = fread(fid, 1, 'int32') / 4;
-      if (nPoints ~= getNPoints(imodContour));
+      if (nPoints ~= getNPoints(imodContour))
         PEETError('SIZE record contains incorrect number of points!');
       end
       pointSizes = fread(fid, nPoints,'float32');

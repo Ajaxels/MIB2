@@ -14,7 +14,7 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 % TODO:
@@ -25,9 +25,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:09:20 $
 %
-%  $Revision: ce44cef00aca $
+%  $Revision: 03a2974f77e3 $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -49,7 +49,7 @@ mRCImage.fid = openWritable(mRCImage);
 status = fseek(mRCImage.fid, 0, 'bof');
 if status
   disp('Could not move the file pointer to the begining ');
-  PEETError('Could not seek to beginning of file id %d!', mRCImage.fid);
+  PEETError('Could not seek to beginning of file id %d', mRCImage.fid);
 end
 
 % Write out the dimensions of the data
@@ -76,20 +76,19 @@ writeAndCheck(mRCImage.fid, mRCImage.header.minDensity, 'float32');
 writeAndCheck(mRCImage.fid, mRCImage.header.maxDensity, 'float32');
 writeAndCheck(mRCImage.fid, mRCImage.header.meanDensity, 'float32');
 
-writeAndCheck(mRCImage.fid, mRCImage.header.spaceGroup, 'int16');
-writeAndCheck(mRCImage.fid, mRCImage.header.nSymmetryBytes, 'int16');
+writeAndCheck(mRCImage.fid, mRCImage.header.spaceGroup, 'int32');
 writeAndCheck(mRCImage.fid, mRCImage.header.nBytesExtended, 'int32');
 % MRC EXTRA section
 writeAndCheck(mRCImage.fid, mRCImage.header.creatorID, 'int16');
-writeAndCheck(mRCImage.fid, char(zeros(1, 30)), 'uchar');
+writeAndCheck(mRCImage.fid, mRCImage.header.extraInfo1, 'uchar');
   
 writeAndCheck(mRCImage.fid, mRCImage.header.nBytesPerSection, 'int16');
 writeAndCheck(mRCImage.fid, mRCImage.header.serialEMType, 'int16');
-writeAndCheck(mRCImage.fid, char(zeros(1, 20)), 'uchar');
+writeAndCheck(mRCImage.fid, mRCImage.header.extraInfo2, 'uchar');
   
 mRCImage.header.imodStamp = defaultIMODStamp();
 writeAndCheck(mRCImage.fid, mRCImage.header.imodStamp, 'int32');
-if getWriteBytesAsSigned(mRCImage);
+if getWriteBytesAsSigned(mRCImage)
   mRCImage.header.imodFlags =                                          ...
     int32(bitor(uint32(mRCImage.header.imodFlags), 1));
 end

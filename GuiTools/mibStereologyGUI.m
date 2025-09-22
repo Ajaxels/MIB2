@@ -39,7 +39,7 @@ function varargout = mibStereologyGUI(varargin)
 % Updates
 %
 
-% Last Modified by GUIDE v2.5 09-Dec-2021 00:30:07
+% Last Modified by GUIDE v2.5 22-Sep-2025 15:28:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -135,5 +135,14 @@ if isempty(eventdata.Character); return; end    % when only modifiers are presse
 eventData.eventdata = eventdata;
 eventData = ToggleEventData(eventData);
 notify(handles.winController.mibModel, 'keyPressEvent', eventData);
+
+end
+
+
+% --- Executes on button press in helpBtn.
+function helpBtn_Callback(hObject, eventdata, handles)
+
+global mibPath;
+web(fullfile(mibPath, 'techdoc/html/user-interface/menu/tools/tools-stereology.html'), '-browser');
 
 end

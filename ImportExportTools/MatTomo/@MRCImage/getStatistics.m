@@ -16,21 +16,25 @@
 %   Bugs: none known
 %
 % This file is part of PEET (Particle Estimation for Electron Tomography).
-% Copyright 2000-2020 The Regents of the University of Colorado.
+% Copyright 2000-2025 The Regents of the University of Colorado.
 % See PEETCopyright.txt for more details.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  $Author: John Heumann $
 %
-%  $Date: 2020/01/02 23:33:44 $
+%  $Date: 2025/01/02 17:09:20 $
 %
-%  $Revision: ce44cef00aca $
+%  $Revision: 03a2974f77e3 $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function stat = getStatistics(mRCImage, statistic, domain)
 this=mRCImage;
+
+if ~isVolumeLoaded(this)
+  this = loadVolume(this);
+end
 
 %  Permute/stack the data if according to the domain selection
 if nargin < 3
@@ -64,13 +68,13 @@ switch lower(statistic)
  case 'max'
    stat = max(data);
  
- case 'mean',
+ case 'mean'
    stat = mean(double(data));
  
- case 'std',
+ case 'std'
    stat = std(double(data));
  
- case 'median',
+ case 'median'
     stat = median(data);
  
  otherwise

@@ -67,8 +67,15 @@ level = 2^(options.level-1);    % resampling factor
 
 if obj.Virtual.virtual == 1
     % get virtual dataset
-    dataset = obj.getDataVirt(type, orient, col_channel, options);
-    return;
+    if isempty(obj.pyramid.levelNames)
+        dataset = obj.getDataVirt(type, orient, col_channel, options);
+        return;
+    else
+        % load zarr-type of dataset
+        % calculate required level
+        dataset = obj.getDataZarr(type, orient, col_channel, options);
+        return;
+    end
 end
 
 blockModeSwitchLocal = 0;
@@ -276,4 +283,5 @@ else            % ************ uint6 model type with 63 materials
         end
     end
 end
+
 end
