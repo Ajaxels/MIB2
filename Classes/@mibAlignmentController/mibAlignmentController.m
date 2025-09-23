@@ -162,6 +162,7 @@ classdef mibAlignmentController < handle
                 obj.automaticOptions = obj.mibModel.sessionSettings.automaticAlignmentOptions;
             else
                 obj.automaticOptions.imgWidthForAnalysis = round(width/4);    % size of the image used to detect features, decrease to make it faster, but compromising the precision
+                obj.automaticOptions.imgDownsamplingFactorForAnalysis = 4;    % downsample the full resolution in 4 times for processing
                 obj.automaticOptions.rotationInvariance = true;  % Rotation invariance flag, specified a logical scalar; When you set this property to true, the orientation of the feature vectors are not estimated and the feature orientation is set to pi/2. 
                 obj.automaticOptions.detectSURFFeatures.MetricThreshold = 1000; % non-negative scalar, strongest feature threshold; to return more blobs, decrease the value of this threshold
                 obj.automaticOptions.detectSURFFeatures.NumOctaves = 3; % scalar, greater than or equal to 1, increase this value to detect larger blobs. Recommended values are between 1 and 4.
@@ -2168,10 +2169,26 @@ classdef mibAlignmentController < handle
             getDataOpt.blockModeSwitch = 0;
             [~, imgWidth] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', NaN, NaN, getDataOpt);
             
+            % Automatic feature-based v2 is using downsampling scale factor
+            % instead of providing exact image width
+            imageDownsamplingField = 'imgWidthForAnalysis';
+            firstInfoText = sprintf(['Width of the image used to detect features\n' ...
+                'decrease to make it faster, but compromising the precision\n' ...
+                'Image width = %d pixels\n' ...
+                'type "0" - to use full resolution'], imgWidth);
+            if strcmp(obj.BatchOpt.Algorithm{1}, 'Automatic feature-based v2')
+                imageDownsamplingField = 'imgDownsamplingFactorForAnalysis';
+                firstInfoText = sprintf(['Downsampling factor for images used to detect features\n' ...
+                    'increase to make detection faster, but compromising the precision\n' ...
+                    'Image width = %d pixels\n' ...
+                    'type "1" - to use full resolution;\n' ...
+                    'type "4" to downsample the images in x4 times'], imgWidth);
+            end
+
             if strcmp(obj.BatchOpt.Algorithm{1}, 'AMST: median-smoothed template')
                 dlgTitle = 'AMST settings';
                 prompts = {...
-                    sprintf('Width of the image used to detect features\ndecrease to make it faster, but compromising the precision\nImage width = %d pixels, type 0 - to use full resolution', imgWidth),...
+                    firstInfoText,...
                     'Number of multi-level image pyramid levels used during the registration process', ...
                     'Maximum number of iterations',...
                     'Gradient magnitude tolerance',...
@@ -2180,7 +2197,7 @@ classdef mibAlignmentController < handle
                     'Step length reduction factor, defines the rate at which the optimizer reduces step size during convergence'
                     };
                 
-                defAns = {num2str(obj.automaticOptions.imgWidthForAnalysis), num2str(obj.automaticOptions.amst.PyramidLevels), ...
+                defAns = {num2str(obj.automaticOptions.(imageDownsamplingField)), num2str(obj.automaticOptions.amst.PyramidLevels), ...
                     num2str(obj.automaticOptions.amst.MaximumIterations),...
                     num2str(obj.automaticOptions.amst.GradientMagnitudeTolerance), num2str(obj.automaticOptions.amst.MinimumStepLength), ...
                     num2str(obj.automaticOptions.amst.MaximumStepLength), num2str(obj.automaticOptions.amst.RelaxationFactor)};
@@ -2196,14 +2213,15 @@ classdef mibAlignmentController < handle
                 obj.automaticOptions.amst.MinimumStepLength = str2double(answer{5});
                 obj.automaticOptions.amst.MaximumStepLength = str2double(answer{6});
                 obj.automaticOptions.amst.RelaxationFactor = str2double(answer{7});
+                
+                obj.automaticOptions.(imageDownsamplingField) = str2double(answer{1}); % Width of the image used to detect features
             else
                 dlgTitle = 'Feature detection options';
                 featureDetectorType = obj.View.handles.FeatureDetectorType.String{obj.View.handles.FeatureDetectorType.Value};
                 options.Title = featureDetectorType;
-                prompts = {...
-                    sprintf('Width of the image used to detect features\ndecrease to make it faster, but compromising the precision\nImage width = %d pixels, type 0 - to use full resolution', imgWidth),...
+                prompts = {firstInfoText,...
                     sprintf('Rotation invariance')};
-                defAns = {num2str(obj.automaticOptions.imgWidthForAnalysis), obj.automaticOptions.rotationInvariance};
+                defAns = {num2str(obj.automaticOptions.(imageDownsamplingField)), obj.automaticOptions.rotationInvariance};
                 
                 % define parameters for estimate geometric transform function
                 estGeomPrompts{1} = sprintf('Estimate Geometric Transform settings:\nMaximum number of random trials for finding the inliers, increasing this value improves the robustness (positive integer)');
@@ -2225,7 +2243,7 @@ classdef mibAlignmentController < handle
                         defAns{5} = num2str(obj.automaticOptions.detectSURFFeatures.NumScaleLevels);
                         prompts(6:8) = estGeomPrompts;
                         defAns(6:8) = estGeomDefAns;
-                        options.PromptLines = [3, 1, 3, 4, 4, estGeomPromptLines];   % [optional] number of lines for widget titles
+                        options.PromptLines = [5, 1, 3, 4, 4, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
@@ -2246,7 +2264,7 @@ classdef mibAlignmentController < handle
                         defAns{6} = num2str(obj.automaticOptions.detectSIFTFeatures.Sigma);
                         prompts(7:9) = estGeomPrompts;
                         defAns(7:9) = estGeomDefAns;
-                        options.PromptLines = [3, 1, 3, 3, 3, 3, estGeomPromptLines];   % [optional] number of lines for widget titles
+                        options.PromptLines = [5, 1, 3, 3, 3, 3, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
@@ -2266,7 +2284,7 @@ classdef mibAlignmentController < handle
                         defAns{5} = num2str(obj.automaticOptions.detectMSERFeatures.MaxAreaVariation);
                         prompts(6:8) = estGeomPrompts;
                         defAns(6:8) = estGeomDefAns;
-                        options.PromptLines = [2, 1, 4, 4, 3, estGeomPromptLines];   % [optional] number of lines for widget titles
+                        options.PromptLines = [5, 1, 4, 4, 3, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
@@ -2284,7 +2302,7 @@ classdef mibAlignmentController < handle
                         prompts(5:7) = estGeomPrompts;
                         defAns(5:7) = estGeomDefAns;
                         
-                        options.PromptLines = [2, 3, 5, 3, estGeomPromptLines];   % [optional] number of lines for widget titles
+                        options.PromptLines = [5, 3, 5, 3, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
@@ -2301,7 +2319,7 @@ classdef mibAlignmentController < handle
                         defAns{5} = num2str(obj.automaticOptions.detectBRISKFeatures.NumOctaves);
                         prompts(6:8) = estGeomPrompts;
                         defAns(6:8) = estGeomDefAns;
-                        options.PromptLines = [2, 3, 4, 4, 4, estGeomPromptLines];   % [optional] number of lines for widget titles
+                        options.PromptLines = [5, 3, 4, 4, 4, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
@@ -2317,7 +2335,7 @@ classdef mibAlignmentController < handle
                         defAns{4} = num2str(obj.automaticOptions.detectFASTFeatures.MinContrast);
                         prompts(5:7) = estGeomPrompts;
                         defAns(5:7) = estGeomDefAns;
-                        options.PromptLines = [2, 3, 4, 4, estGeomPromptLines];   % [optional] number of lines for widget titles
+                        options.PromptLines = [5, 3, 4, 4, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
@@ -2332,7 +2350,7 @@ classdef mibAlignmentController < handle
                         defAns{4} = num2str(obj.automaticOptions.detectMinEigenFeatures.FilterSize);
                         prompts(5:7) = estGeomPrompts;
                         defAns(5:7) = estGeomDefAns;
-                        options.PromptLines = [2, 3, 4, 3, estGeomPromptLines];   % [optional] number of lines for widget titles
+                        options.PromptLines = [5, 3, 4, 3, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
@@ -2347,7 +2365,7 @@ classdef mibAlignmentController < handle
                         defAns{3} = num2str(obj.automaticOptions.detectORBFeatures.NumLevels);
                         prompts(4:6) = estGeomPrompts;
                         defAns(4:6) = estGeomDefAns;
-                        options.PromptLines = [2, 2, 2, estGeomPromptLines];   % [optional] number of lines for widget titles
+                        options.PromptLines = [5, 2, 2, estGeomPromptLines];   % [optional] number of lines for widget titles
                         
                         [answer, selIndex] = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
                         if isempty(answer); return; end
@@ -2363,8 +2381,13 @@ classdef mibAlignmentController < handle
                 if ~strcmp(featureDetectorType, 'Oriented FAST and rotated BRIEF (ORB)')
                     obj.automaticOptions.rotationInvariance = logical(answer{2});  % Rotation invariance flag, specified a logical scalar; When you set this property to true, the orientation of the feature vectors are not estimated and the feature orientation is set to pi/2.
                 end
+                % check for entering 0
+                if strcmp(obj.BatchOpt.Algorithm{1}, 'Automatic feature-based v2') && str2double(answer{1}) == 0
+                    answer{1} = '1';
+                end
+
+                obj.automaticOptions.(imageDownsamplingField) = str2double(answer{1}); % Downsampling factor for images used to detect features
             end
-            obj.automaticOptions.imgWidthForAnalysis = str2double(answer{1}); % Width of the image used to detect features
             status = 1;
         end
         
@@ -2382,10 +2405,14 @@ classdef mibAlignmentController < handle
             [~, Width, ~, Depth] = obj.mibModel.I{obj.mibModel.Id}.getDatasetDimensions('image', 4, NaN, optionsGetData);
             colorCh = obj.View.handles.ColorChannel.Value;
             
-            if obj.automaticOptions.imgWidthForAnalysis == 0
-                ratio = 1;
-            else
-                ratio = obj.automaticOptions.imgWidthForAnalysis/Width;    
+            if strcmp(obj.BatchOpt.Algorithm{1}, 'Automatic feature-based')
+                if obj.automaticOptions.imgWidthForAnalysis == 0
+                    ratio = 1;
+                else
+                    ratio = obj.automaticOptions.imgWidthForAnalysis/Width;
+                end
+            elseif strcmp(obj.BatchOpt.Algorithm{1}, 'Automatic feature-based v2')
+                ratio = 1/obj.automaticOptions.imgDownsamplingFactorForAnalysis;
             end
             
             sliceNo = obj.mibModel.I{obj.mibModel.Id}.getCurrentSliceNumber();

@@ -138,16 +138,12 @@ heightVec = zeros([numFiles, 1]);
 widthVec = zeros([numFiles, 1]);
 colorsVec = zeros([numFiles, 1]);
 
-if obj.automaticOptions.imgWidthForAnalysis == 0
-    parameters.imgWidthForAnalysis = width;
-else
-    parameters.imgWidthForAnalysis = obj.automaticOptions.imgWidthForAnalysis;  % resize image to this size to speed-up the process
-end
+parameters.imgDownsamplingFactor = obj.automaticOptions.imgDownsamplingFactorForAnalysis;
 
 if loadShifts == 0
     if showWaitbar; pw.updateText(sprintf('Step 1: detecting features\nPlease wait...')); end
     
-    ratio = parameters.imgWidthForAnalysis/width;
+    ratio = 1/parameters.imgDownsamplingFactor;
     %original = cell2mat(obj.mibModel.getData2D('image', 1, 4, parameters.colorCh, optionsGetData));
     %[heightVec(1), widthVec(1), colorsVec(1)]  = size(original);
     

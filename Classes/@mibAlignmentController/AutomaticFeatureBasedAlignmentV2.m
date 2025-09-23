@@ -59,14 +59,10 @@ else
     end
 end
 
-if obj.automaticOptions.imgWidthForAnalysis == 0
-    parameters.imgWidthForAnalysis = width;
-else
-    parameters.imgWidthForAnalysis = obj.automaticOptions.imgWidthForAnalysis;  % resize image to this size to speed-up the process
-end
+parameters.imgDownsamplingFactor = obj.automaticOptions.imgDownsamplingFactorForAnalysis;
 
 if loadShifts == 0
-    ratio = parameters.imgWidthForAnalysis/width;
+    ratio = 1/parameters.imgDownsamplingFactor; %parameters.imgWidthForAnalysis/width;
     optionsGetData.blockModeSwitch = 0;
     original = cell2mat(obj.mibModel.getData2D('image', 1, 4, parameters.colorCh, optionsGetData));
     if ratio ~= 1; original = imresize(original, ratio, 'bicubic'); end  % resize if neeeded
@@ -503,7 +499,6 @@ else
     load(fn, '-mat'); % Load these veriables: 'pairwiseTforms', 'cumulativeTforms', 'translations', 'rotations', 'scales', 'affine_params', 'rbMatrix'
 end
 
-
 % Determine output size and reference for warping
 if strcmp(parameters.TransformationMode, 'extended')
     corners = [1, 1; width, 1; width, height; 1, height];
@@ -677,7 +672,7 @@ if ~isdeployed
 end
 
 if loadShifts == 0
-    logText = sprintf('Aligned using %s; relative to %d, type=%s, mode=%s, points=%s, imgWidth=%d, rotation=%d', parameters.method, parameters.refFrame, parameters.TransformationType, parameters.TransformationMode, parameters.detectPointsType, parameters.imgWidthForAnalysis, 1-obj.automaticOptions.rotationInvariance);
+    logText = sprintf('Aligned using %s; relative to %d, type=%s, mode=%s, points=%s, imgScale=%d, rotation=%d', parameters.method, parameters.refFrame, parameters.TransformationType, parameters.TransformationMode, parameters.detectPointsType, parameters.imgDownsamplingFactor, 1-obj.automaticOptions.rotationInvariance);
     if strcmp(fixDriftsQuestion, 'Fix drifts')
         logText = sprintf('%s, runaverage half-width:%d', logText, halfwidth);
     end

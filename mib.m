@@ -98,7 +98,7 @@ end
 % ATTENTION! it is important to have the version number between "ver." and "/" 
 % Release syntax example: "ver. 2.91 / 06.08.2024"
 % Beta syntax example: "ver. 2.91 (beta 08) / 06.08.2024"
-mibVersion = 'ver. 2.92 (beta 09) / 23.09.2025';  
+mibVersion = 'ver. 2.92 (beta 100) / 23.09.2025';  
 
 % define max number of parallel workers for deployed versions
 % define workers for parallel pools
