@@ -1,4 +1,4 @@
 bioformats_package.jar
-version 8.2.0
+version 8.3.0
 Corresponding MATLAB files are located in 
 MIB\ImportExportTools\BioFormats\

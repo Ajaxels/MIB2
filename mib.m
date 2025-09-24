@@ -71,6 +71,7 @@ if ~isdeployed
     addpath(fullfile(func_dir, 'ImportExportTools','HDF5'));
 	addpath(fullfile(func_dir, 'ImportExportTools','Imaris'));
     addpath(fullfile(func_dir, 'ImportExportTools','IMOD'));
+	addpath(fullfile(func_dir, 'ImportExportTools','IMOD', 'MatTomo'));
     addpath(fullfile(func_dir, 'ImportExportTools','Omero'));
     addpath(fullfile(func_dir, 'ImportExportTools','nrrd'));
 	addpath(fullfile(func_dir, 'ImportExportTools','Zarr'));
@@ -98,7 +99,7 @@ end
 % ATTENTION! it is important to have the version number between "ver." and "/" 
 % Release syntax example: "ver. 2.91 / 06.08.2024"
 % Beta syntax example: "ver. 2.91 (beta 08) / 06.08.2024"
-mibVersion = 'ver. 2.92 (beta 10) / 23.09.2025';  
+mibVersion = 'ver. 2.92 (beta 11) / 24.09.2025';  
 
 % define max number of parallel workers for deployed versions
 % define workers for parallel pools
@@ -110,11 +111,13 @@ catch err
 end
 
 if isdeployed
-    if ispc()
-        cpuParallelLimit = 12;
+    if ispc() 
+        cpuParallelLimit = 8;
     elseif ismac()
         cpuParallelLimit = 4;
-    else
+    elseif isunix()
+		cpuParallelLimit = 4;
+	else
         cpuParallelLimit = 2;
     end
 else

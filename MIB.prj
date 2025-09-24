@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="816583166" file="C:\Matlab\MIB_deploy\MIB.prj" location="C:\Matlab\MIB_deploy" name="MIB" preferred-package-location="C:\Matlab\MIB_deploy\MIB\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="121665180" file="C:\Matlab\Scripts\MIB_deploy\MIB.prj" location="C:\Matlab\Scripts\MIB_deploy" name="MIB" preferred-package-location="C:\Matlab\Scripts\MIB_deploy\MIB\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}\MIB_resources\icon.ico</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}\MIB_resources\icon_24.png</file>
       <file>${PROJECT_ROOT}\MIB_resources\icon_16.png</file>
     </param.icons>
-    <param.version>2.9108</param.version>
+    <param.version>2.9111</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -23,11 +23,11 @@ The corresponding license files are also included into the MIB distribution unde
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
 IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.</param.description>
-    <param.screenshot>${PROJECT_ROOT}\Resources\mib_about.jpg</param.screenshot>
+    <param.screenshot>${PROJECT_ROOT}\techdoc\im_browser_splash_sm3.jpg</param.screenshot>
     <param.guid />
     <param.installpath.string>\University of Helsinki\MIB\</param.installpath.string>
     <param.installpath.combo>option.installpath.programfiles</param.installpath.combo>
-    <param.logo>${PROJECT_ROOT}\Resources\im_browser_splash_short.jpg</param.logo>
+    <param.logo>${PROJECT_ROOT}\techdoc\im_browser_splash_vert.jpg</param.logo>
     <param.install.notes />
     <param.target.install.notes />
     <param.intermediate>${PROJECT_ROOT}\MIB\for_testing</param.intermediate>
@@ -41,8 +41,6 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
     <param.target.type>subtarget.standalone</param.target.type>
     <param.support.packages>
       <item>&lt;package displayname="Deploy Imported Models for ONNX Model Format Deep Learning Toolbox Converter" enabled="true" name="Deep Learning Toolbox Converter for ONNX Model Format" product="Deep Learning Toolbox"/&gt;</item>
-      <item>&lt;package displayname="Deep Learning Toolbox Model for ResNet-50 Network" enabled="false" name="Deep Learning Toolbox Model for ResNet-50 Network" product="Deep Learning Toolbox"/&gt;</item>
-      <item>&lt;package displayname="Deep Learning Toolbox Model for ResNet-18 Network" enabled="false" name="Deep Learning Toolbox Model for ResNet-18 Network" product="Deep Learning Toolbox"/&gt;</item>
       <item>&lt;package displayname="Deploy Imported Models for Deep Learning Toolbox Converter for TensorFlow Models" enabled="true" name="Deep Learning Toolbox Converter for TensorFlow Models" product="Deep Learning Toolbox"/&gt;</item>
     </param.support.packages>
     <param.web.mcr>true</param.web.mcr>
@@ -62,8 +60,20 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
 	 
  Input Arguments 
 	 -?  print help on how to use the application 
-	 input arguments</param.help.text>
+	 input arguments 
+ Description 
+ 	 You are going to install MIB that has been compiled to stand-alone executables (exe-files). By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to 
+- the terms of the disclaimer below, 
+- the Matlab Compiler Runtime (MCR) libraries license (http://mib.helsinki.fi/Matlab_MCR_license.txt) 
+- applicable parts of the MathWorks, Inc. Software License Agreement (http://mib.helsinki.fi/Matlab_license.txt)
+- as Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited
+
+The corresponding license files are also included into the MIB distribution under techdoc directory.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.</param.help.text>
     <unset>
+      <param.company />
       <param.guid />
       <param.installpath.string />
       <param.installpath.combo />
@@ -91,13 +101,16 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
     </fileset.main>
     <fileset.resources>
       <file>${PROJECT_ROOT}\Classes</file>
+      <file>${PROJECT_ROOT}\Development</file>
       <file>${PROJECT_ROOT}\GuiTools</file>
       <file>${PROJECT_ROOT}\ImportExportTools</file>
+      <file>${PROJECT_ROOT}\MIB_resources</file>
       <file>${PROJECT_ROOT}\Plugins</file>
+      <file>${PROJECT_ROOT}\Resources</file>
       <file>${PROJECT_ROOT}\Tools</file>
     </fileset.resources>
     <fileset.package>
-      <file>${PROJECT_ROOT}\.mib_prefs_override.mat</file>
+      <file>${PROJECT_ROOT}\Development</file>
       <file>${PROJECT_ROOT}\jars</file>
       <file>${PROJECT_ROOT}\licenses</file>
       <file>${PROJECT_ROOT}\MIB_resources</file>
@@ -106,35 +119,10 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
       <file>${PROJECT_ROOT}\techdoc</file>
     </fileset.package>
     <fileset.depfun>
-      <file>C:\Matlab\BMxD\BM3D\BM3D.m</file>
-      <file>C:\Matlab\BMxD\BM3D\bm3d_thr.mexw64</file>
-      <file>C:\Matlab\BMxD\BM3D\bm3d_wiener.mexw64</file>
-      <file>C:\Matlab\BMxD\BM4D\bm4d.m</file>
-      <file>C:\Matlab\BMxD\BM4D\bm4d_thr_mex.mexw64</file>
-      <file>C:\Matlab\BMxD\BM4D\bm4d_wie_mex.mexw64</file>
-      <file>C:\Matlab\BMxD\BM4D\Transforms.mat</file>
       <file>${PROJECT_ROOT}\mib.m</file>
-      <file>${PROJECT_ROOT}\Resources\DejaVuSansMono.png</file>
-      <file>${PROJECT_ROOT}\Resources\down_arrow.png</file>
-      <file>${PROJECT_ROOT}\Resources\enter-key.png</file>
-      <file>${PROJECT_ROOT}\Resources\eye.png</file>
-      <file>${PROJECT_ROOT}\Resources\lamp.png</file>
-      <file>${PROJECT_ROOT}\Resources\mib_question.png</file>
-      <file>${PROJECT_ROOT}\Resources\preferences-backup.png</file>
-      <file>${PROJECT_ROOT}\Resources\preferences-colors.png</file>
-      <file>${PROJECT_ROOT}\Resources\preferences-external.png</file>
-      <file>${PROJECT_ROOT}\Resources\preferences-interface.png</file>
-      <file>${PROJECT_ROOT}\Resources\preferences-segmentation.png</file>
-      <file>${PROJECT_ROOT}\Resources\settings.png</file>
-      <file>${PROJECT_ROOT}\Resources\up_arrow.png</file>
-      <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\asmjit.dll</file>
-      <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\c10.dll</file>
-      <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\fbgemm.dll</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\leveldb.dll</file>
-      <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\libtorch.rights</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\onnxpb.dll</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\tfkeraspb.dll</file>
-      <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\bin\win64\torch_cpu.dll</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\resources\nnet_cnn_onnx\en\onnx.xml</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\toolbox\nnet\supportpackages\onnx\+matlab\+addons\+internal\ONNXPackageInfo.m</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\toolbox\nnet\supportpackages\onnx\+nnet\+internal\+cnn\+coder\+onnx\ClipLayer.m</file>
@@ -577,18 +565,15 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\toolbox\nnet\supportpackages\onnx\resources\helpOptions.json</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\toolbox\nnet\supportpackages\onnx\shufflenet-9.onnx</file>
       <file>C:\ProgramData\MATLAB\SupportPackages\R2024b\toolbox\nnet\supportpackages\onnx\thirdpartylicenses\onnx-license.txt</file>
-      <file>D:\Tools\Science\Fiji.app\scripts\InstallJava3D.m</file>
-      <file>D:\Tools\Science\Fiji.app\scripts\IsJava3DInstalled.m</file>
-      <file>D:\Tools\Science\Fiji.app\scripts\Miji.m</file>
     </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}\MIB\for_testing" name="splash.png" optional="false">C:\Matlab\MIB_deploy\MIB\for_testing\splash.png</file>
-      <file location="${PROJECT_ROOT}\MIB\for_testing" name="readme.txt" optional="true">C:\Matlab\MIB_deploy\MIB\for_testing\readme.txt</file>
-      <file location="${PROJECT_ROOT}\MIB\for_testing" name="MIB.exe" optional="false">C:\Matlab\MIB_deploy\MIB\for_testing\MIB.exe</file>
+      <file location="${PROJECT_ROOT}\MIB\for_testing" name="readme.txt" optional="true">C:\Matlab\Scripts\MIB_deploy\MIB\for_testing\readme.txt</file>
+      <file location="${PROJECT_ROOT}\MIB\for_testing" name="splash.png" optional="false">C:\Matlab\Scripts\MIB_deploy\MIB\for_testing\splash.png</file>
+      <file location="${PROJECT_ROOT}\MIB\for_testing" name="MIB.exe" optional="false">C:\Matlab\Scripts\MIB_deploy\MIB\for_testing\MIB.exe</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>D:\Matlab\R2024b</root>
+      <root>C:\Matlab\R2024b</root>
       <toolboxes>
         <toolbox name="matlabcoder" />
         <toolbox name="neuralnetwork" />

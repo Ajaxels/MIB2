@@ -1102,8 +1102,11 @@ for fn_index = 1:no_files
                 % stageCenterX = double(omeMeta.getStageLabelX(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));
                 % from the image center
                 stageCenterX = double(omeMeta.getPlanePositionX(filesTemp.seriesIndex(fileSubIndex)-1, 0).value(ome.units.UNITS.MICROM));
+                if isempty(stageCenterX); stageCenterX = 0; end
                 stageCenterY = double(omeMeta.getPlanePositionY(filesTemp.seriesIndex(fileSubIndex)-1, 0).value(ome.units.UNITS.MICROM));
+                if isempty(stageCenterY); stageCenterY = 0; end
                 stageCenterZ = double(omeMeta.getPlanePositionZ(filesTemp.seriesIndex(fileSubIndex)-1, 0).value(ome.units.UNITS.MICROM));
+                if isempty(stageCenterZ); stageCenterZ = 0; end
                 % add xMin xMax yMin yMax zMin zMax to use them later for calculation of the bounding box
                 % files(fn_index).xMin = stageCenterX - files(fn_index).dim_xyczt(1)/2*pixSize.x;
                 % files(fn_index).xMax = stageCenterX + files(fn_index).dim_xyczt(1)/2*pixSize.x;

@@ -149,6 +149,43 @@ classdef ImageConverterController < handle
             % factor (scaleFactor)
             blockedImageOut = imresize(blockedImageIn.Data, scaleFactor, 'bicubic');
         end
+
+
+        function processZChunk(idx, zStarts, zChunk, maxZ, imageSwitch, ...
+                imageSize, imageType, imgDS, ...
+                levelNames, scaleZYX, zarrPath)
+
+            % Python imports
+            pyrun(["import zarr", "import numpy as np"]);
+
+            % allocate space for a zChunk
+            zStart = zStarts(idx);
+            zEnd = min(zStart + zChunk - 1, maxZ);
+            if imageSwitch
+                subvol = zeros([1, imageSize(2), zEnd-zStart+1, imageSize(end-1), imageSize(end)], imageType);
+                for i = zStart:zEnd
+                    subvol(:, :, i-zStart+1, :, :) = permute(imgDS.readimage(i), [5, 3, 4, 1, 2]); % [y,x,c]->[t,c,z,y,x]
+                end
+            else
+                subvol = zeros([1, zEnd-zStart+1, imageSize(end-1), imageSize(end)], imageType);
+                for i = zStart:zEnd
+                    subvol(:, i-zStart+1, :, :) = permute(imgDS.readimage(i), [4, 3, 1, 2]); % [y,x,c]->[t,z,y,x]
+                end
+            end
+
+            % Cascaded downsampling
+            for lvl = 1:numel(levelNames)
+                if lvl > 1
+                    rel = scaleZYX(lvl,:) ./ scaleZYX(lvl-1,:);
+                    subvol = downsampleBlock(subvol, rel, imageSwitch);
+                end
+
+                % Z offset
+                zOutStart = floor((zStart-1)/scaleZYX(lvl,1)) + 1;
+                writeSubvolumeToLevel(subvol, zarrPath, levelNames{lvl}, 1, zOutStart, imageSwitch);
+            end
+        end
+
     end
     
     methods
@@ -185,12 +222,16 @@ classdef ImageConverterController < handle
             obj.BatchOpt.Prefix = '';
             obj.BatchOpt.Suffix = '';
             obj.BatchOpt.ParallelProcessing = false;
+            obj.BatchOpt.ParallelWorkersNumber{1} = 1;
+            obj.BatchOpt.ParallelWorkersNumber{2} = [0 obj.mibModel.cpuParallelLimit];
+            obj.BatchOpt.ParallelWorkersNumber{3} = 'on';
             % Zarr settings
             obj.BatchOpt.ZarrVersion = {'Zarr v2'};
             obj.BatchOpt.ZarrVersion{2} = {'Zarr v2', 'Zarr v3'};
             obj.BatchOpt.ZarrImageType = {'image'};
             obj.BatchOpt.ZarrImageType{2} = {'image', 'labels'};
             obj.BatchOpt.ZarrChunkSizes = '128, 128, 64, 1, 1';
+            obj.BatchOpt.ZarrUseSharding = false;
             obj.BatchOpt.ZarrShardXFactorsXYZ = '4, 4, 4, 1, 1';
             obj.BatchOpt.ZarrDownsampleLimitXYZ = '512, 512, 256';
             obj.BatchOpt.ZarrCompression = {'blosc'};
@@ -224,10 +265,12 @@ classdef ImageConverterController < handle
             obj.BatchOpt.mibBatchTooltip.Prefix = 'Prefix to the output filename';
             obj.BatchOpt.mibBatchTooltip.Suffix = 'Suffix to the output filename';
             obj.BatchOpt.mibBatchTooltip.ParallelProcessing = 'Use parallel processing during image conversion';
+            obj.BatchOpt.mibBatchTooltip.ParallelWorkersNumber = 'Number of workers to use for parallel processing';
 
             obj.BatchOpt.mibBatchTooltip.ZarrVersion = 'Version of Zarr';
             obj.BatchOpt.mibBatchTooltip.ZarrImageType = 'Image type: image or model, image has 5 dimensions (width, height, depth, colors, time), while model only 4 (width, height, depth, time)';
             obj.BatchOpt.mibBatchTooltip.ZarrChunkSizes = 'Vector of chunk sizes, 5 values (x,y,z,c,d) for images and 4 values (x,y,z,t) for models';
+            obj.BatchOpt.mibBatchTooltip.ZarrUseSharding = 'Select to enable merging of chunks into large files';
             obj.BatchOpt.mibBatchTooltip.ZarrShardXFactorsXYZ = 'Vector of shard x-factors defining how many chunks are merged into a single shard file, 5 values (x,y,z,c,d) for images and 4 values (x,y,z,t) for models';
             obj.BatchOpt.mibBatchTooltip.ZarrDownsampleLimitXYZ = 'Target size for image downsampling during calculation of pyramid of magnifications, the scale factors are calculated automatically';
             obj.BatchOpt.mibBatchTooltip.ZarrCompression = 'Compression algorithm or do not use compression, when none';
@@ -337,6 +380,9 @@ classdef ImageConverterController < handle
             % following function
             obj.View = updateGUIFromBatchOpt_Shared(obj.View, obj.BatchOpt);
             obj.updateOutputFormat();
+            obj.zarrVersionValueChanged();
+            obj.useShardingCallback();
+            obj.parallelProcessingCallback();
         end
         
         function updateBatchOptFromGUI(obj, event)
@@ -435,6 +481,54 @@ classdef ImageConverterController < handle
             end
         end
 
+        function parallelProcessingCallback(obj, event)
+            % function parallelProcessingCallback(obj, event)
+            % callback on press of the parallel processing checkbox
+            obj.BatchOpt.ParallelProcessing = obj.View.handles.ParallelProcessing.Value;
+            if obj.BatchOpt.ParallelProcessing % enable parallel processing
+                obj.View.handles.ParallelWorkersNumber.Enable = 'on';
+            else % disable parallel processing
+                obj.View.handles.ParallelWorkersNumber.Enable = 'off';
+            end
+        end
+
+        function zarrVersionValueChanged(obj, event)
+            % function zarrVersionValueChanged(obj, event)
+            % callback on change of the zarr version
+            
+            if strcmp(obj.View.handles.ZarrVersion.Value, 'Zarr v2')
+                obj.View.handles.ZarrUseSharding.Value = false;
+            else
+                obj.View.handles.ZarrUseSharding.Value = obj.BatchOpt.ZarrUseSharding;
+            end
+            obj.BatchOpt.ZarrVersion{1} = obj.View.handles.ZarrVersion.Value;
+            obj.useShardingCallback();
+
+        end
+
+        function useShardingCallback(obj, event)
+            % function useShardingCallback(obj, event)
+            % callback on selection of sharding for Zarr3
+            
+            if nargin < 2; event = []; end
+
+            if obj.View.handles.ZarrUseSharding.Value
+                if ~strcmp(obj.View.handles.ZarrVersion.Value, 'Zarr v3')
+                    obj.View.handles.ZarrUseSharding.Value = false;
+                    uialert(obj.View.gui, ...
+                        sprintf('!!! Warning !!!\n\nSharding is available only for Zarr version 3!'), ...
+                        'Not available', 'Icon', 'warning');
+                    return;
+                end
+                obj.View.handles.ZarrShardXFactorsXYZ.Enable = true;
+                obj.BatchOpt.ZarrUseSharding = true;
+            else
+                obj.View.handles.ZarrShardXFactorsXYZ.Enable = false;
+                obj.BatchOpt.ZarrUseSharding = false;
+            end
+        
+        end
+
         % ------------------------------------------------------------------
         % % Additional functions and callbacks
         function helpButton_Callback(obj)
@@ -470,11 +564,32 @@ classdef ImageConverterController < handle
                     if strcmp(choice, 'Cancel')
                         return;
                     end
+                    if obj.BatchOpt.showWaitbar
+                        wb = uiprogressdlg(obj.View.gui, 'Title','Removing files',...
+                            'Message', 'Please wait...');
+                    end
                     rmdir(zarrPath, 's');
                     mkdir(zarrPath);
+                    if obj.BatchOpt.showWaitbar; wb.Value = 1; delete(wb); end
                 end
             end
-            
+
+            % init python environment
+            if isempty(obj.mibModel.mibPython)
+                try
+                    obj.mibModel.mibPython = pyenv( ...
+                        'Version', obj.mibModel.preferences.ExternalDirs.PythonInstallationPath, ...
+                        'ExecutionMode', 'OutOfProcess');     % InProcess or OutOfProcess
+                catch err
+                    if strcmp(err.identifier, 'MATLAB:Pyenv:PythonLoaded')
+                        terminate(pyenv);
+                        obj.mibModel.mibPython = pyenv( ...
+                            'Version', obj.mibModel.preferences.ExternalDirs.PythonInstallationPath, ...
+                            'ExecutionMode', 'OutOfProcess');     % InProcess or OutOfProcess
+                    end
+                end
+            end
+
             t1 = tic;
             wb = [];
             if obj.BatchOpt.showWaitbar
@@ -587,12 +702,28 @@ classdef ImageConverterController < handle
             
             % define usage of parallel computing
             if obj.BatchOpt.ParallelProcessing
-                parforArg = obj.mibModel.cpuParallelLimit;    % Maximum number of workers running in parallel
-                if isempty(gcp('nocreate')); parpool(parforArg); end % create parpool
+                parforArg = obj.BatchOpt.ParallelWorkersNumber{1};    % Maximum number of workers running in parallel
+                pool = gcp('nocreate');
+                if isempty(pool)
+                    if ~isempty(wb)
+                        wbText = wb.getText();
+                        wb.updateText(sprintf('Starting the parallel pool\nPlease wait...'));
+                    end
+                    pool = parpool(parforArg);
+                    if ~isempty(wb); wb.updateText(wbText); end
+                elseif pool.NumWorkers ~= parforArg
+                    if ~isempty(wb)
+                        wbText = wb.getText();
+                        wb.updateText(sprintf('Restrating the parallel pool\nPlease wait...'));
+                    end
+                    delete(pool);
+                    pool = parpool(parforArg);
+                    if ~isempty(wb); wb.updateText(wbText); end
+                end % create parpool
             else
                 parforArg = 0;      % Maximum number of workers running in parallel, when 0 a single core used without parallel
             end
-            
+
             zarrPath = obj.BatchOpt.OutputDirectory;
             zarrPath = strrep(zarrPath, '\', '/');
             % get settings
@@ -610,15 +741,18 @@ classdef ImageConverterController < handle
             end
             Options.chunks = flip(Options.chunks); % convert from (x,y,z) to (z,y,x)
             % shard sizes, only for zarr3
+            
             Options.shards = [];
-            if Options.zarrFormat == 3
+            if Options.zarrFormat == 3 && obj.BatchOpt.ZarrUseSharding
                 Options.shards = str2num(obj.BatchOpt.ZarrShardXFactorsXYZ); %#ok<ST2NM>
-                Options.shards = flip(Options.shards); 
-                Options.shards = Options.chunks .* Options.shards; % calculate the shards size
-                if ~isempty(Options.shards) && numel(Options.shards) ~= 5
-                    if ~isempty(wb); delete(wb); end
-                    uialert(obj.View.gui, sprintf('!!! Error !!!\nThe Shard sizes (x,y,z,c,t) parameter should contain 5 numbers'), 'Wrong parameters');
-                    return;
+                if ~isempty(Options.shards)
+                    Options.shards = flip(Options.shards); 
+                    Options.shards = Options.chunks .* Options.shards; % calculate the shards size
+                    if numel(Options.shards) ~= 5
+                        if ~isempty(wb); delete(wb); end
+                        uialert(obj.View.gui, sprintf('!!! Error !!!\nThe Shard sizes (x,y,z,c,t) parameter should contain 5 numbers'), 'Wrong parameters');
+                        return;
+                    end
                 end
             end
             % minimal size of images during downsampling to calculate
@@ -686,7 +820,7 @@ classdef ImageConverterController < handle
             % - first to isotropic
             % - downsample until reaching downsampleImageLimit
             % note: levelImageTranslations is introduced due to rounding during unevendownsampling steps
-            [levelNames, scaleXYZ, levelImageTranslations, levelImageSizes] = calculateMultiscaleLevels(imageSize(end-2:end), voxelSize, downsampleImageLimit);
+            [levelNames, scaleZYX, levelImageTranslations, levelImageSizes] = calculateMultiscaleLevels(imageSize(end-2:end), voxelSize, downsampleImageLimit);
 
             % bring the bounding box shifts
             levelImageTranslations = levelImageTranslations+boundingBoxShiftsZYX;
@@ -706,75 +840,148 @@ classdef ImageConverterController < handle
             end
             % import zarr and numpy
             pyrun(["import zarr", ...
+                "import json", ...
                 "import numpy as np"]);
 
             %% CREATE DATASETS + TOP LEVEL METADATA
-            createMultiscaleDataset(zarrPath, imageSize, imageType, levelNames, scaleXYZ, Options);
+            Options.voxelSize = voxelSize;
+            Options.voxelUnits = voxelUnits;
+            Options.levelImageTranslations = levelImageTranslations;
+            Options.customAttributes = struct();
+            createMultiscaleDataset(zarrPath, imageSize, imageType, levelNames, scaleZYX, Options);
 
             maxZ = imageSize(end-2);
             maxT = imageSize(1);
             zChunk = Options.chunks(3);
+            % for parallel processing the whole depth of a shard should be
+            % read for processing
+            if parforArg > 0 && ~isempty(Options.shards)
+                zChunk = Options.shards(3);
+            end
             %dataType = Options.dataType;
+
+            %% Implementation with parfor loop
+            % for tIdx = 1:maxT
+            %     zStarts = 1:zChunk:maxZ;
+            %     if ~isempty(wb); wb.updateMaxNumberOfIterations(numel(zStarts)); end
+            % 
+            %     parfor (idx = 1:numel(zStarts), parforArg)
+            %         if ~isempty(wb) && parforArg == 0 && wb.getCancelState()
+            %             continue;  % skip all operations
+            %         end
+            % 
+            %         %for idx = 1:numel(zStarts)
+            %         pyrun(["import zarr", ...
+            %             "import numpy as np"]);
+            %         % allocate space for a zChunk
+            %         zStart = zStarts(idx);
+            %         zEnd = min(zStart + zChunk - 1, maxZ);
+            %         if imageSwitch
+            %             subvol = zeros([1, imageSize(2), zEnd-zStart+1, imageSize(end-1), imageSize(end)], imageType);
+            %             % read zChunk
+            %             for i = zStart:zEnd
+            %                 subvol(:, :, i-zStart+1, :, :) = permute(imgDS.readimage(i), [5, 3, 4, 1, 2]); % [y,x,c]->[t,c,z,y,x]
+            %             end
+            %         else % labels
+            %             subvol = zeros([1, zEnd-zStart+1, imageSize(end-1), imageSize(end)], imageType);
+            %             % read zChunk
+            %             for i = zStart:zEnd
+            %                 subvol(:, i-zStart+1, :, :) = permute(imgDS.readimage(i), [4, 3, 1, 2]); % [y,x,c]->[t,z,y,x]
+            %             end
+            %         end
+            % 
+            %         % Cascaded downsampling
+            %         for lvl = 1:numel(levelNames)
+            %             if lvl > 1
+            %                 rel = scaleZYX(lvl,:) ./ scaleZYX(lvl-1,:);
+            %                 try
+            %                     subvol = downsampleBlock(subvol, rel, imageSwitch);
+            %                 catch err
+            %                     err
+            %                 end
+            %             end
+            % 
+            %             % Z offset
+            %             zOutStart = floor((zStart-1)/scaleZYX(lvl,1)) + 1;
+            %             writeSubvolumeToLevel(subvol, zarrPath, levelNames{lvl}, 1, zOutStart, imageSwitch);
+            %         end
+            % 
+            %         % check for Cancel press, the parfor loop can not be broken
+            %         % so fast-forward to end
+            %         if ~isempty(wb)
+            %             wb.increment();
+            %             % if wb.getCancelState; continue; end % skip all operations
+            %         end
+            %     end
+            % end
+            
+            %% implementation with parfeval
+            % open parallel pool
+            
+            % pool = gcp('nocreate');
+            % %delete(pool);
+            % if isempty(pool)
+            %     pool = parpool(parforArg); %#ok<NASGU>
+            % end
+            zStarts = 1:zChunk:maxZ;
             for tIdx = 1:maxT
-                fprintf('Time %d / %d\n', tIdx, maxT);
-
-                zStarts = 1:zChunk:maxZ;
                 if ~isempty(wb); wb.updateMaxNumberOfIterations(numel(zStarts)); end
-
-                %parfor (idx = 1:numel(zStarts), parforArg) % use parfor idx = 1:numel(zStarts)
-                for idx = 1:numel(zStarts)
-                    pyrun(["import zarr", ...
-                        "import numpy as np"]);
-                    % allocate space for a zChunk
-                    zStart = zStarts(idx);
-                    zEnd = min(zStart + zChunk - 1, maxZ);
-                    if imageSwitch
-                        subvol = zeros([1, imageSize(2), zEnd-zStart+1, imageSize(end-1), imageSize(end)], imageType);
-                        % read zChunk
-                        for i = zStart:zEnd
-                            subvol(:, :, i-zStart+1, :, :) = permute(imgDS.readimage(i), [5, 3, 4, 1, 2]); % [y,x,c]->[t,c,z,y,x]
+                if parforArg == 0 % standard for-loop
+                    for idx = 1:numel(zStarts)
+                        ImageConverterController.processZChunk(idx, zStarts, zChunk, maxZ, imageSwitch, ...
+                            imageSize, imageType, imgDS, ...
+                            levelNames, scaleZYX, zarrPath);
+                        if ~isempty(wb)
+                            wb.increment(); 
+                            if wb.getCancelState()
+                                break;
+                            end
                         end
-                    else % labels
-                        subvol = zeros([1, zEnd-zStart+1, imageSize(end-1), imageSize(end)], imageType);
-                        % read zChunk
-                        for i = zStart:zEnd
-                            subvol(:, i-zStart+1, :, :) = permute(imgDS.readimage(i), [4, 3, 1, 2]); % [y,x,c]->[t,z,y,x]
-                        end
+                    end
+                else  % parallel processing loop
+                    % submit jobs
+                    futures = parallel.FevalFuture.empty(numel(zStarts),0);
+                    for idx = 1:numel(zStarts)
+                        futures(idx) = parfeval(@ImageConverterController.processZChunk, 0, ...
+                            idx, zStarts, zChunk, maxZ, imageSwitch, ...
+                            imageSize, imageType, imgDS, ...
+                            levelNames, scaleZYX, zarrPath);
                     end
                     
-                    % % Extract subvolume
-                    % if strcmp(dataType,'image')
-                    %     subvol = I(1, :, zStart:zEnd, :, :);
-                    % else
-                    %     subvol = I(1, zStart:zEnd, :, :);
-                    %     subvol = reshape(subvol, [1,1,size(subvol)]);
-                    % end
-
-                    % Cascaded downsampling
-                    for lvl = 1:numel(levelNames)
-                        if lvl > 1
-                            rel = scaleXYZ(lvl,:) ./ scaleXYZ(lvl-1,:);
-                            subvol = downsampleBlock(subvol, rel, imageSwitch);
+                    for idx = 1:numel(futures)
+                        try
+                            fetchNext(futures);   % wait for next job to complete
+                        catch err
+                            disp(err.getReport());  % show the real error
                         end
-
-                        % Z offset
-                        zOutStart = floor((zStart-1)/scaleXYZ(lvl,1)) + 1;
-                        writeSubvolumeToLevel(subvol, zarrPath, levelNames{lvl}, 1, zOutStart, imageSwitch);
-                    end
-                    if ~isempty(wb)
-                        if wb.getCancelState; delete(wb); return; end
-                        wb.increment(); 
+                        if ~isempty(wb)
+                            wb.increment();        % update progress bar safely here
+                            if wb.getCancelState()
+                                cancel(futures);   % cancel remaining futures
+                                break;
+                            end
+                        end
                     end
                 end
+
             end
-                
-            writeTopLevelZattrs(zarrPath, levelNames, scaleXYZ, levelImageTranslations, voxelSize, voxelUnits, Options.zarrFormat);
 
-            toc(t2)
-            fprintf('Done. Multiscale Zarr written to: %s\n', zarrPath);
+            if ~isempty(wb) && wb.getCancelState
+                delete(wb);
+                uialert(obj.View.gui, 'Zarr conversion cancelled!', 'Cancelled', 'Icon', 'warning');
+                return;
+            end
 
+            t2 = toc(t2);
             if ~isempty(wb); delete(wb); end
-
+            scalesText = 'Level    Scales (ZYX)    Image sizes(ZYX)';
+            for scaleId = 1:numel(levelNames)
+                scalesText = sprintf('%s\n%s     -> %d x %d x %d       ->  %d %d %d', scalesText, levelNames{scaleId}, scaleZYX(scaleId, :), levelImageSizes(scaleId, :));
+            end
+            reportText = sprintf('Multiscale Zarr written to: %s\n\n%s\n\nElapsed time is %f seconds', zarrPath, scalesText, t2);
+            uialert(obj.View.gui, reportText, 'Zarr conversion done!', 'Icon', 'success');
+            
+            fprintf('Multiscale Zarr written to: %s\nElapsed time is %f seconds\n', zarrPath, t2);
         end
         
     end

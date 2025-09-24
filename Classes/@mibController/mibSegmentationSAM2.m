@@ -139,6 +139,7 @@ if isempty(obj.mibModel.mibPython)
 
     checkpointFilename = obj.mibModel.sessionSettings.SAMsegmenter.Links.checkpointFilename;
     modelCfgFilename = obj.mibModel.sessionSettings.SAMsegmenter.Links.modelCfgFilename;
+    if ~ispc; modelCfgFilename = strrep(modelCfgFilename, '%2B', '+'); end % swap %2B with + for Linux
     %model_type = obj.mibModel.sessionSettings.SAMsegmenter.Links.backbone;
 
     % path to segment-anything package from github, https://github.com/facebookresearch/segment-anything
