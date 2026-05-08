@@ -291,8 +291,15 @@ catch err
 end
 
 % define limits
-t1 = 1;
-t2 = obj.mibModel.I{BatchOpt.id}.time;
+if strcmp(BatchOpt.Dataset{1}, '4D, Dataset')
+    % process all time points
+    t1 = 1;
+    t2 = obj.mibModel.I{BatchOpt.id}.time;
+else
+    t1 = obj.mibModel.I{BatchOpt.id}.getCurrentTimePoint();
+    t2 = t1;
+end
+
 if strcmp(BatchOpt.Dataset{1}, '2D, Slice') && methodToUse ~= 2  % not for Interactive 3D
     z1 = obj.mibModel.I{BatchOpt.id}.getCurrentSliceNumber();
     z2 = z1;

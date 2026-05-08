@@ -193,7 +193,7 @@ for timePnt=t(1):t(2)
     timeIndex = timePnt + offsetIndex - 1;  % index in the HDF5 file
     timeCount = timeCount + 1;
     % assuming 1 setup
-    for ch=c
+    for ch = c
         groupName = info.Groups(timeIndex).Groups(ch).Groups(level).Name;
         datasetName = info.Groups(timeIndex).Groups(ch).Groups(level).Datasets.Name;
         dummy = h5read(filename, [groupName '/' datasetName], [x(1), y(1), z(1)], [width, height, depth]);

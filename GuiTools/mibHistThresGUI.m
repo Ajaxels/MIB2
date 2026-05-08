@@ -155,7 +155,7 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_tools_global_thresholding.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'tools', 'tools-globalthres.html'), '-browser');
 end
 
 

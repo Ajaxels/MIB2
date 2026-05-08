@@ -413,15 +413,19 @@ handles.mibSegmentationTable.ColumnEditable = logical([0, 0, 0]);
 userData.unlink = 0;       % switch to unlink selected material from the Add to
 
 % find java object for the segmentation table
-userData.jScroll = findjobj(handles.mibSegmentationTable);
-try
-    userData.jTable = userData.jScroll.getViewport.getComponent(0);
-catch err
-    warndlg('Please wait for MIB to load completely before interacting with the main window!');
+if verLessThan('matlab', '25.1') % not compatible with R2025a or newer
+    userData.jScroll = findjobj(handles.mibSegmentationTable);
+    try
+        userData.jTable = userData.jScroll.getViewport.getComponent(0);
+    catch err
+        warndlg('Please wait for MIB to load completely before interacting with the main window!');
+    end
+    userData.jScroll.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);  % add vertical scroll bar
+    userData.jTable.setAutoResizeMode(userData.jTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+else
+    userData.jScroll = [];
+    userData.jTable = [];
 end
-userData.jScroll.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);  % add vertical scroll bar
-userData.jTable.setAutoResizeMode(userData.jTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
-
 handles.mibSegmentationTable.UserData = userData;
 
 % resize the column width
@@ -489,17 +493,21 @@ obj.mibSegmHighSliderListener = addlistener(handles.mibSegmHighSlider, 'Continuo
 
 % add right mouse click callbacks for the sliders of the widgets,
 % see more http://undocumentedmatlab.com/blog/setting-listbox-mouse-actions
-try
-    jFilesListbox = findjobj(handles.mibFilesListbox); % jScrollPane
-    jFilesListbox = jFilesListbox.getVerticalScrollBar;
-    jFilesListbox = handle(jFilesListbox, 'CallbackProperties');
-    set(jFilesListbox, 'MousePressedCallback',{@scrollbarClick_Callback, handles.mibFilesListbox, 1});
-catch err
-    err;
+if verLessThan('matlab', '25.1') % not compatible with R2025a or newer
+    try
+        jFilesListbox = findjobj(handles.mibFilesListbox); % jScrollPane
+        jFilesListbox = jFilesListbox.getVerticalScrollBar;
+        jFilesListbox = handle(jFilesListbox, 'CallbackProperties');
+        set(jFilesListbox, 'MousePressedCallback',{@scrollbarClick_Callback, handles.mibFilesListbox, 1});
+    catch err
+        err;
+    end
 end
 
 % add icons to menu entries
-mibAddIcons(handles);
+if verLessThan('matlab', '25.1') % not compatible with R2025a or newer
+    mibAddIcons(handles);
+end
 
 %% Update handles structure
 guidata(hObject, handles);
@@ -2314,7 +2322,7 @@ global mibPath;
 
 switch parameter
     case 'mainhelp'
-        web(fullfile(mibPath, 'techdoc/html/index.html'), '-browser');
+        web(fullfile(mibPath, 'techdoc', 'html', 'index.html'), '-browser');
     case 'tip'
         handles.mibController.mibModel.preferences.Tips.ShowTips = 1;
         if verLessThan('matlab','9.12')
@@ -2356,7 +2364,7 @@ switch parameter
     case 'about'
         handles.mibController.startController('mibAboutController', handles.mibGUI.Name);
     case 'licenses'
-        web(fullfile(mibPath, 'techdoc/html/getting-started/licenses/index.html'), '-browser');
+        web(fullfile(mibPath, 'techdoc', 'html', 'getting-started', 'licenses', 'index.html'), '-browser');
     case 'enthusiasm'
         % show the user's stats
         handles.mibController.mibShowMilestoneDialog('currentStats');
@@ -2380,45 +2388,45 @@ browserText = '-browser';
 switch hObject.Tag
     case 'menuHelpClassRef'
         if exist(fullfile(mibPath, 'techdoc', 'ClassReference','index.html'), 'file')
-            web(fullfile(mibPath, 'techdoc/ClassReference/index.html'), browserText);
+            web(fullfile(mibPath, 'techdoc', 'ClassReference', 'index.html'), browserText);
         else
-            web('http://mib.helsinki.fi/help/api2/index.html', browserText);
+            web('https://mib.helsinki.fi/help/api2/index.html', browserText);
         end
-    case 'mibDirPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/user-interface/panels/dircontents/index.html'), browserText);
-    case 'mibFijiPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/user-interface/panels/fijiconnect/index.html'), browserText);
-    case 'mibImageFiltersPanelHelpBtn';             web(fullfile(mibPath, 'techdoc/html/user-interface/panels/imfilters/index.html'), browserText);
-    case 'mibMaskGeneratorsPanelHelpBtn';             web(fullfile(mibPath, 'techdoc/html/user-interface/panels/maskgen/index.html'), browserText);
-    case 'mibPathPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/user-interface/panels/path/index.html'), browserText);
-    case 'mibRoiPanelHelpBtn';            web(fullfile(mibPath, 'techdoc/html/user-interface/panels/roi/index.html'), browserText);
+    case 'mibDirPanelHelpBtn';            web(fullfile(mibPath, 'techdoc', 'html', 'user-interface','panels','dircontents','index.html'), browserText);
+    case 'mibFijiPanelHelpBtn';            web(fullfile(mibPath, 'techdoc','html','user-interface','panels','fijiconnect','index.html'), browserText);
+    case 'mibImageFiltersPanelHelpBtn';             web(fullfile(mibPath, 'techdoc','html','user-interface','panels','imfilters','index.html'), browserText);
+    case 'mibMaskGeneratorsPanelHelpBtn';             web(fullfile(mibPath, 'techdoc','html','user-interface','panels','maskgen','index.html'), browserText);
+    case 'mibPathPanelHelpBtn';            web(fullfile(mibPath, 'techdoc','html','user-interface','panels','path','index.html'), browserText);
+    case 'mibRoiPanelHelpBtn';            web(fullfile(mibPath, 'techdoc','html','user-interface','panels','roi','index.html'), browserText);
     case 'mibSegmentationPanelHelpBtn'
         switch handles.mibSegmentationToolPopup.String{handles.mibSegmentationToolPopup.Value}
             case '3D ball'
-                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-3dball.html'), browserText);
+                web(fullfile(mibPath, 'techdoc','html','user-interface','panels','segm','segm-3dball.html'), browserText);
             case '3D lines'
-                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-3dlines.html'), browserText);
+                web(fullfile(mibPath, 'techdoc','html','user-interface','panels','segm','segm-3dlines.html'), browserText);
             case 'Annotations'
-                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-annotations.html'), browserText);
+                web(fullfile(mibPath, 'techdoc','html','user-interface','panels','segm','segm-annotations.html'), browserText);
             case 'Brush'
-                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-brush.html'), browserText);
+                web(fullfile(mibPath, 'techdoc','html','user-interface','panels','segm','segm-brush.html'), browserText);
             case 'BW Thresholding'
-                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-bwthres.html'), browserText);
+                web(fullfile(mibPath, 'techdoc','html','user-interface','panels','segm','segm-bwthres.html'), browserText);
             case 'Drag & Drop materials'
-                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-dragdrop.html'), browserText);
+                web(fullfile(mibPath, 'techdoc','html','user-interface','panels','segm','segm-dragdrop.html'), browserText);
             case 'Lasso'
-                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-lasso.html'), browserText);
+                web(fullfile(mibPath, 'techdoc','html','user-interface','panels','segm','segm-lasso.html'), browserText);
             case 'MagicWand-RegionGrowing'
-                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-magicwand.html'), browserText);
+                web(fullfile(mibPath, 'techdoc','html','user-interface','panels','segm','segm-magicwand.html'), browserText);
             case 'Membrane ClickTracker'
-                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-membrtracker.html'), browserText);
+                web(fullfile(mibPath, 'techdoc','html','user-interface','panels','segm','segm-membrtracker.html'), browserText);
             case 'Object Picker'
-                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-objpick.html'), browserText);
+                web(fullfile(mibPath, 'techdoc','html','user-interface','panels','segm','segm-objpick.html'), browserText);
             case 'Segment-anything model'
-                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-sam.html'), browserText);
+                web(fullfile(mibPath, 'techdoc','html','user-interface','panels','segm','segm-sam.html'), browserText);
             case 'Spot'
-                web(fullfile(mibPath, 'techdoc/html/user-interface/panels/segm/segm-spot.html'), browserText);
+                web(fullfile(mibPath, 'techdoc','html','user-interface','panels','segm','segm-spot.html'), browserText);
         end
     case 'mibSelectionPanelHelpBtn'            
-         web(fullfile(mibPath, 'techdoc/html/user-interface/panels/selection/index.html'), browserText);
-    case 'mibViewSettingsPanelHelpBtn';             web(fullfile(mibPath, 'techdoc/html/user-interface/panels/viewsettings/index.html'), browserText);
+         web(fullfile(mibPath, 'techdoc','html','user-interface','panels','selection','index.html'), browserText);
+    case 'mibViewSettingsPanelHelpBtn';             web(fullfile(mibPath, 'techdoc','html','user-interface','panels','viewsettings','index.html'), browserText);
 end
 end

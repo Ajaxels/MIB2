@@ -47,6 +47,7 @@ if obj.mibModel.disableSegmentation == 1; return; end
 global mibPath;
 defaultAnnotationText = obj.mibModel.getImageProperty('defaultAnnotationText');
 defaultAnnotationValue = obj.mibModel.getImageProperty('defaultAnnotationValue');
+if isnan(defaultAnnotationValue); defaultAnnotationValue = 1; end
 obj.mibModel.mibDoBackup('labels', 0);
 
 if isempty(modifier)   % add annotation

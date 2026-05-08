@@ -203,7 +203,7 @@ obj.colors = metaOut('Colors');
 obj.depth = metaOut('Depth');
 obj.time = metaOut('Time');
 
-obj.dim_yxczt = [obj.height, obj.width, obj.colors obj.depth obj.time];     % needed for virtual datasets as replacement of size(obj.img{1})
+obj.dim_yxczt = [obj.height obj.width obj.colors obj.depth obj.time];     % needed for virtual datasets as replacement of size(obj.img{1})
 
 obj.viewPort.min = zeros([obj.colors, 1]);
 obj.viewPort.max = zeros([obj.colors, 1]) + double(metaOut('MaxInt'));

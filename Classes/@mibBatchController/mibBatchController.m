@@ -508,7 +508,7 @@ classdef mibBatchController < handle
             % function helpBtn_Callback(obj)
             % show help page
             global mibPath;
-            web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-batchprocessing.html'), '-browser');
+            web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'file', 'file-batchprocessing.html'), '-browser');
         end
         
         % ------------------------------------------------------------------

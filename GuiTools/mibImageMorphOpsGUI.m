@@ -188,5 +188,5 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/user-interface/menu/image/image-morphops.html'), '-browser');
+web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'image', 'image-morphops.html'), '-browser');
 end

@@ -154,8 +154,6 @@ else
     obj.mibView.handles.toolbarBlockModeSwitch.State = 'on';
 end
 
-
-
 %% Update sliders
 max_val = obj.mibModel.I{obj.mibModel.Id}.meta('MaxInt');
 % update sliders and checkboxes in the black-and-white thresholding panel (handles.mibSegmThresPanel)

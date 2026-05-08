@@ -61,20 +61,39 @@ height = img_info('Height');
 depth = img_info('Depth');
 bb_info_exist = strfind(curr_text,'BoundingBox');
 if bb_info_exist > 0   % use information from the BoundingBox parameter for pixel sizes if it is exist
-    spaces = strfind(curr_text,' ');
-    if numel(spaces) < 7; spaces(7) = numel(curr_text); end
-    tab_pos = strfind(curr_text,sprintf('|'));
-    pos = min([spaces(7) tab_pos]);
-    bb_coord = str2num(curr_text(spaces(1):pos)); %#ok<ST2NM>
-    dx = bb_coord(2)-bb_coord(1);
-    dy = bb_coord(4)-bb_coord(3);
-    dz = bb_coord(6)-bb_coord(5);
-    pixSize.x = dx/(max([width 2])-1);  % tweek for saving single layered tifs for Amira
-    pixSize.y = dy/(max([height 2])-1);
-    pixSize.z = dz/(max([depth 2])-1);
-    if isnan(pixSize.z);   pixSize.z = pixSize.x; end  % fix to do not get errors for setting of DataAspectRatio
-    pixSize.units = 'um';
-    resolution = mibCalculateResolution(pixSize);
+    bb_match = regexp(curr_text, ...
+        'BoundingBox\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)', ...
+        'tokens', 'once');
+    if ~isempty(bb_match)
+        bb_coord = cellfun(@str2double, bb_match);
+        % bb_coord = [x1, x2, y1, y2, z1, z2]
+        dx = bb_coord(2) - bb_coord(1);  % 16.76 - 10.0  = 6.76
+        dy = bb_coord(4) - bb_coord(3);  % 24.823 - 20.0 = 4.823
+        dz = bb_coord(6) - bb_coord(5);  % 32.22 - 30.0  = 2.22
+
+        pixSize.x = dx / (max([width 2]) - 1);
+        pixSize.y = dy / (max([height 2]) - 1);
+        pixSize.z = dz / (max([depth 2]) - 1);
+
+        if isnan(pixSize.z); pixSize.z = pixSize.x; end
+        pixSize.units = 'um';
+        resolution = mibCalculateResolution(pixSize);
+    end
+    
+    % spaces = strfind(curr_text,' ');
+    % if numel(spaces) < 7; spaces(7) = numel(curr_text); end
+    % tab_pos = strfind(curr_text,sprintf('|'));
+    % pos = min([spaces(7) tab_pos]);
+    % bb_coord = str2num(curr_text(spaces(1):pos)); %#ok<ST2NM>
+    % dx = bb_coord(2)-bb_coord(1);
+    % dy = bb_coord(4)-bb_coord(3);
+    % dz = bb_coord(6)-bb_coord(5);
+    % pixSize.x = dx/(max([width 2])-1);  % tweek for saving single layered tifs for Amira
+    % pixSize.y = dy/(max([height 2])-1);
+    % pixSize.z = dz/(max([depth 2])-1);
+    % if isnan(pixSize.z);   pixSize.z = pixSize.x; end  % fix to do not get errors for setting of DataAspectRatio
+    % pixSize.units = 'um';
+    % resolution = mibCalculateResolution(pixSize);
 else
     if ~isKey(img_info,'XResolution') || nargin == 2
         resolution = mibCalculateResolution(pixSize);

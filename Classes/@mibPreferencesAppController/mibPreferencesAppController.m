@@ -327,17 +327,17 @@ classdef mibPreferencesAppController < handle
             global mibPath;
             switch obj.View.handles.CategoriesTree.SelectedNodes.Text
                 case 'User interface'
-                    web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-preferences.html#user-interface'), '-browser');
+                    web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'file', 'file-preferences.html#user-interface'), '-browser');
                 case 'Colors and styles'
-                    web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-preferences.html#colors-and-styles'), '-browser');
+                    web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'file', 'file-preferences.html#colors-and-styles'), '-browser');
                 case 'Backup and undo'
-                    web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-preferences.html#backup-and-undo'), '-browser');
+                    web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'file', 'file-preferences.html#backup-and-undo'), '-browser');
                 case 'External directories'
-                    web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-preferences.html#external-directories'), '-browser');
+                    web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'file', 'file-preferences.html#external-directories'), '-browser');
                 case 'Keyboard shortcuts'
-                    web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-preferences.html#keyboard-shortcuts'), '-browser');
+                    web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'file', 'file-preferences.html#keyboard-shortcuts'), '-browser');
                 case 'Segmentation tools'
-                    web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-preferences.html#segmentation-tools'), '-browser');
+                    web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'file', 'file-preferences.html#segmentation-tools'), '-browser');
             end
         end
 

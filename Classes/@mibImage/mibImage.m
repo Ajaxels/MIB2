@@ -75,8 +75,7 @@ classdef mibImage < matlab.mixin.Copyable
         % magnification factor for the datasets, 1=100%,
         % 1.5 = 150%; use @code mibModel.getMagFactor() @endcode to read this property
         maskExist
-        % a switch to indicate presense of the 'Mask' layer. Can be 0 (no
-        % model) or 1 (model exist)
+        % a switch to indicate presence of the 'Mask' layer. Can be 0 (no mask) or 1 (mask exist)
         maskImg
         % a property to keep the 'Mask' layer
         % @note The 'Mask' dimensions are: @code [1:height, 1:width, 1:no_stacks] @endcode
@@ -88,10 +87,10 @@ classdef mibImage < matlab.mixin.Copyable
         meta
         % information about the dataset, an instance of the 'containers'.'Map' class
         % Default keys:
-        % @li @b ColorType - a string witg type of colors - grayscale, truecolor, hsvcolor, indexed
+        % @li @b ColorType - a string with type of colors - grayscale, truecolor, hsvcolor, indexed
         % @li @b ImageDescription - ''''
         % @li @b Filename - ''none.tif''
-        % @li @b SliceName - @em [optional] a cell array with names of the slices; for combined Z-stack, it is a name of the file that corresponds to the slice. Dimensions of the array should be equal to the  obj.no_stacks
+        % @li @b SliceName - @em [optional] a cell array with names of the slices; for combined Z-stack, it is a name of the file that corresponds to the slice. Dimensions of the array should be equal to the  obj.depth
         % @li @b Height
         % @li @b Width
         % @li @b Depth
@@ -157,7 +156,7 @@ classdef mibImage < matlab.mixin.Copyable
         % Exterior; @b 3 - first material of the model, @b 4 - second
         % material etc
         selectedROI
-        % a vector of indeces (as stored in mibRoiRegion class) of the
+        % a vector of indices (as stored in mibRoiRegion class) of the
         % selected ROI in the mibView.handles.mibRoiList table; -1 -> roi is not shown; [1, 3] -> first and third...
         selection
         % a property to keep the Selection layer

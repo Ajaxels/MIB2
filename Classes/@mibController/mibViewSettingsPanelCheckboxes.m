@@ -16,8 +16,7 @@
 
 function mibViewSettingsPanelCheckboxes(obj, BatchOptIn)
 % function mibViewSettingsPanelCheckboxes(obj, BatchOptIn)
-% a function of the batch mode that allow to tweak status of checkboxes
-% of the View Settings panel
+% function of the batch mode that allows to change status of checkboxes of the View Settings panel
 %
 %
 % Parameters:

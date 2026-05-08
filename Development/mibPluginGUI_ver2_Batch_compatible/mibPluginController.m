@@ -250,7 +250,7 @@ classdef DemoPluginGuideBatchController < handle
             % callback for press of the Help button
         
             global mibPath;
-            web(fullfile(mibPath, 'Plugins', 'Tutorials', 'Demo Plugin Guide Batch', 'Help', 'index.html'), '-helpbrowser');
+            web(fullfile(mibPath, 'Plugins', 'Tutorials', 'Demo Plugin Guide Batch', 'Help', 'index.html'), '-browser');
         end
         
         function calculateBtn_Callback(obj)

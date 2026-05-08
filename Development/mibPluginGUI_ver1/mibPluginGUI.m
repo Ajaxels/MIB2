@@ -114,7 +114,7 @@ function helpBtn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 global mibPath;
-web(fullfile(mibPath, 'Plugins', 'MyPlugins', 'mibPlugin', 'Help', 'index.html'), '-helpbrowser');
+web(fullfile(mibPath, 'Plugins', 'MyPlugins', 'mibPlugin', 'Help', 'index.html'), '-browser');
 
 
 % --- Executes on button press in calculateBtn.

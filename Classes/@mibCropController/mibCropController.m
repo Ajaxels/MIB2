@@ -557,7 +557,7 @@ classdef mibCropController  < handle
             
             % do the crop
             % get pyramid downsampling scale
-            if strcmp(obj.View.handles.ZarrPyramidLevel.Enable, 'on')
+            if ~obj.batchProcessingSwitch && strcmp(obj.View.handles.ZarrPyramidLevel.Enable, 'on')
                 BatchOptLoc.pyramidLevel = obj.View.handles.ZarrPyramidLevel.Value;
             end
             result = obj.mibModel.I{bufferId}.cropDataset(crop_factor, BatchOptLoc);

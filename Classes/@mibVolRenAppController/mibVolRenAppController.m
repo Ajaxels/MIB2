@@ -1991,7 +1991,7 @@ classdef mibVolRenAppController < handle
             % show help
 
             global mibPath;
-            web(fullfile(mibPath, 'techdoc/html/user-interface/menu/file/file-mib3Dviewer.html'), '-browser');
+            web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'file', 'file-mib3Dviewer.html'), '-browser');
         end
 
     end

@@ -37,6 +37,8 @@ userData = obj.mibView.handles.mibSegmentationTable.UserData;
 prevMaterial = obj.mibModel.I{obj.mibModel.Id}.selectedMaterial;   % index of the previously selected material
 prevAddTo =obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial;         % index of the previously selected add to material
 jTable = userData.jTable;   % jTable is initializaed in the beginning of mibGUI.m
+if isempty(jTable); return; end % R2025a or newer
+
 unlink = userData.unlink;   % unlink selection of material from Add to (does not apply for the Fix selection to material mode)
 % fix selection to material checkbox
 if obj.mibModel.I{obj.mibModel.Id}.fixSelectionToMaterial == 1

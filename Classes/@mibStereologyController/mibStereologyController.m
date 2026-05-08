@@ -148,7 +148,9 @@ classdef mibStereologyController < handle
 
                 % Compute offsets so grid is centered inside the image
                 offset_x = ceil((width  - nx * dX) / 2);
+                if offset_x == 0; offset_x = 1; end
                 offset_y = ceil((height - ny * dY) / 2);
+                if offset_y == 0; offset_y = 1; end
 
                 % Grid coordinates along each axis
                 x_coords = offset_x : dX : width; 

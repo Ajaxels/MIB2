@@ -14,6 +14,13 @@
 % part of Microscopy Image Browser, http:\\mib.helsinki.fi 
 % Date: 25.04.2023
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% USE obj.I{obj.id}.magFactor instead
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function magFactor = getMagFactor(obj, id)
 % function mag = getMagFactor(obj, id)
 % get magnification for the currently shown or id dataset

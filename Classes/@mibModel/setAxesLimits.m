@@ -28,8 +28,8 @@ function setAxesLimits(obj, axesX, axesY, id)
 
 %| 
 % @b Examples:
-% @code [axesX, axesY] = obj.mibModel.getAxesLimits();     // call from mibController: get axes limits for the currently shown dataset @endcode
-% @code [axesX, axesY] = obj.mibModel.getAxesLimits(2);     // call from mibController: get axes limits for dataset 2 @endcode
+% @code [axesX, axesY] = obj.mibModel.setAxesLimits([1 512],  [1 512]);     // call from mibController: set axes limits for the currently shown dataset @endcode
+% @code [axesX, axesY] = obj.mibModel.setAxesLimits([1 512],  [1 512], 2);     // call from mibController: set axes limits for dataset 2 @endcode
 
 % Updates
 % 

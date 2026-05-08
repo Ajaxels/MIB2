@@ -119,12 +119,16 @@ if ~isfield(userData, 'jTable')  % stop here during starting up of MIB
 end
 
 %%
-jScrollPosition = userData.jScroll.getViewport.getViewPosition(); % store the view position of the table
-w1 = userData.jTable.getColumnModel.getColumn(0).getWidth;
-w2 = userData.jTable.getColumnModel.getColumn(1).getWidth;
-w3 = userData.jTable.getColumnModel.getColumn(2).getWidth;
-obj.mibView.handles.mibSegmentationTable.Data = tableData;
-obj.mibView.handles.mibSegmentationTable.ColumnWidth = {w1, w2, w3};
+if verLessThan('matlab', '25.1') % not compatible with R2025a or newer
+    jScrollPosition = userData.jScroll.getViewport.getViewPosition(); % store the view position of the table
+    w1 = userData.jTable.getColumnModel.getColumn(0).getWidth;
+    w2 = userData.jTable.getColumnModel.getColumn(1).getWidth;
+    w3 = userData.jTable.getColumnModel.getColumn(2).getWidth;
+    obj.mibView.handles.mibSegmentationTable.Data = tableData;
+    obj.mibView.handles.mibSegmentationTable.ColumnWidth = {w1, w2, w3};
+else
+    obj.mibView.handles.mibSegmentationTable.Data = tableData;
+end
 
 if obj.mibModel.I{obj.mibModel.Id}.selectedMaterial > max_color+2;     obj.mibModel.I{obj.mibModel.Id}.selectedMaterial = 1;   end
 if obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial > max_color+2;     obj.mibModel.I{obj.mibModel.Id}.selectedAddToMaterial = 1;   end
@@ -138,18 +142,22 @@ obj.mibSegmentationTable_CellSelectionCallback(eventdata);     % update Material
 
 % restore the view position of the table
 drawnow;
-% scroll the table
-switch position
-    case 'current'
-        userData.jScroll.getViewport.setViewPosition(jScrollPosition);
-    case 'end'
-        VerticalScrollBar = userData.jScroll.getVerticalScrollBar();
-        VerticalScrollBar.setValue(VerticalScrollBar.getMaximum());
-    case 'first'
-        VerticalScrollBar = userData.jScroll.getVerticalScrollBar();
-        VerticalScrollBar.setValue(0);
+
+if verLessThan('matlab', '25.1') % not compatible with R2025a or newer
+    % scroll the table
+    switch position
+        case 'current'
+            userData.jScroll.getViewport.setViewPosition(jScrollPosition);
+        case 'end'
+            VerticalScrollBar = userData.jScroll.getVerticalScrollBar();
+            VerticalScrollBar.setValue(VerticalScrollBar.getMaximum());
+        case 'first'
+            VerticalScrollBar = userData.jScroll.getVerticalScrollBar();
+            VerticalScrollBar.setValue(0);
+    end
+    userData.jScroll.repaint;
 end
-userData.jScroll.repaint;
+
 % update callback for key press
 obj.mibView.gui.WindowKeyPressFcn = (@(hObject, eventdata, handles) obj.mibGUI_WindowKeyPressFcn(hObject, eventdata)); % turn ON callback for the keys
 end

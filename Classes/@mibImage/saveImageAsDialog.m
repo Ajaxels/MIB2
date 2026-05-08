@@ -543,17 +543,8 @@ function fn = generateSequentialFilename(name, num, files_no, ext)
 % ext - string with extension
 if files_no == 1
     fn = [name ext];
-elseif files_no < 100
-    fn = [name '_' sprintf('%02i',num) ext];
-elseif files_no < 1000
-    fn = [name '_' sprintf('%03i',num) ext];
-elseif files_no < 10000
-    fn = [name '_' sprintf('%04i',num) ext];
-elseif files_no < 100000
-    fn = [name '_' sprintf('%05i',num) ext];
-elseif files_no < 1000000
-    fn = [name '_' sprintf('%06i',num) ext];
-elseif files_no < 10000000
-    fn = [name '_' sprintf('%07i',num) ext];
+else
+    digits = max(2, floor(log10(files_no)) + 1);
+    fn = sprintf('%s_%0*i%s', name, digits, num, ext);
 end
 end

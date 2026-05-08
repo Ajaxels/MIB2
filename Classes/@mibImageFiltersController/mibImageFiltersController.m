@@ -633,7 +633,7 @@ classdef mibImageFiltersController < handle
         
         function helpButton_Callback(obj)
             global mibPath;
-            web(fullfile(mibPath, 'techdoc/html/user-interface/menu/image/image-filters.html'), '-browser');
+            web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'image', 'image-filters.html'), '-browser');
         end
 
         function Mode3DValueChanged(obj)

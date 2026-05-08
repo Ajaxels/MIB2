@@ -32,17 +32,12 @@ pause(0.1);
 maxColors = obj.mibModel.getImageProperty('colors');
 slices = obj.mibModel.getImageProperty('slices');
 lutColors = obj.mibModel.getImageProperty('lutColors');
-data = logical(zeros(size(maxColors,1))); %#ok<LOGL>
 
-col_channels(1) = cellstr('All'); %#ok<AGROW>
-for col_ch=1:maxColors
-    col_channels(col_ch+1) = cellstr(['Ch ' num2str(col_ch)]); %#ok<AGROW>
-    if isempty(find(slices{3}==col_ch, 1))
-        data(col_ch) = false;
-    else
-        data(col_ch) = true;
-    end
-end
+% Create channel names
+col_channels = ['All', arrayfun(@(x) sprintf('Ch %d', x), 1:maxColors, 'UniformOutput', false)];
+% Check which channels are visualized using slices{3}
+data = ismember(1:maxColors, slices{3})';
+
 obj.mibView.handles.mibColChannelCombo.String = col_channels;
 obj.mibView.handles.mibColChannelCombo.Value = obj.mibModel.I{obj.mibModel.Id}.selectedColorChannel+1;
 

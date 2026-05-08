@@ -128,7 +128,7 @@ elseif strcmp(mode, 'zoom')
             yLim = yLim - yLim(1);
         end
         
-        obj.mibModel.setAxesLimits(xLim, yLim, index)
+        obj.mibModel.setAxesLimits(xLim, yLim, index);
     else
         scaleRatio = newMagFactor/magFactor;
         S = makehgtform('scale', 1/scaleRatio);

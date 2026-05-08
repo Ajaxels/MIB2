@@ -108,7 +108,7 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_tools_objseparation.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_tools_objseparation.html'), '-browser');
 end
 
 function aspectRatio_Callback(hObject, eventdata, handles)

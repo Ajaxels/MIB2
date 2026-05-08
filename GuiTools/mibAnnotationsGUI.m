@@ -180,7 +180,7 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/ug_panel_segm_tools.html#3'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'panels', 'segm', 'index.html'), '-browser');
 end
 
 function precisionEdit_Callback(hObject, eventdata, handles)

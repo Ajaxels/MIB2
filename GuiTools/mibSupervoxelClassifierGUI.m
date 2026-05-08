@@ -192,7 +192,7 @@ end
 
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_tools_random_forest_superpixels.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_tools_random_forest_superpixels.html'), '-browser');
 end
 
 

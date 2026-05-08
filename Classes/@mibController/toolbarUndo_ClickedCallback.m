@@ -25,7 +25,7 @@ function toolbarUndo_ClickedCallback(obj)
 % 
 
 index = obj.mibModel.U.undoIndex - 1;
-if index == 0; return; end;
+if index == 0; return; end
 
 obj.mibDoUndo(index);
 end

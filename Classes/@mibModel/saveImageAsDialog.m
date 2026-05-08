@@ -49,12 +49,14 @@ if isfield(BatchOptIn, 'id')
 else
     BatchOpt.id = obj.Id;   % optional, id    
 end
+
 if ~isempty(filename)
     BatchOpt.Filename = filename;
 else
     [path, fn, ext] = fileparts(obj.I{BatchOpt.id}.meta('Filename'));
     BatchOpt.Filename = fn;
 end
+
 BatchOpt.FilenamePolicy = {'Use existing name'};
 BatchOpt.FilenamePolicy{2} = {'Use existing name', 'Use new provided name'};
 BatchOpt.Format = {'TIF format uncompressed (*.tif)'};

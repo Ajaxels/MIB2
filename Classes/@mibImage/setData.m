@@ -33,10 +33,10 @@ function result = setData(obj, type, dataset, orient, col_channel, options)
 % selected in the imageData.slices{3} variable, when @b 0 - take all colors of the dataset.
 % @li when @b type is 'model' @b col_channel may be @em NaN - to take all materials of the model or an integer to take specific material. In the later case the selected material will have index = 1.
 % options: [@em optional], a structure with extra parameters
-% @li .y -> [@em optional], [ymin, ymax] coordinates of the dataset to take after transpose for level=1, when @b 0 takes 1:obj.height; can be a single number
-% @li .x -> [@em optional], [xmin, xmax] coordinates of the dataset to take after transpose for level=1, when @b 0 takes 1:obj.width; can be a single number
-% @li .z -> [@em optional], [zmin, zmax] coordinates of the dataset to take after transpose, when @b 0 takes 1:obj.depth; can be a single number
-% @li .t -> [@em optional], [tmin, tmax] coordinates of the dataset to take after transpose, when @b 0 takes 1:obj.time; can be a single number
+% @li .y -> [@em optional], [ymin, ymax] coordinates of the dataset to set after transpose for level=1, when @b 0 takes 1:obj.height; can be a single number
+% @li .x -> [@em optional], [xmin, xmax] coordinates of the dataset to set after transpose for level=1, when @b 0 takes 1:obj.width; can be a single number
+% @li .z -> [@em optional], [zmin, zmax] coordinates of the dataset to set after transpose, when @b 0 takes 1:obj.depth; can be a single number
+% @li .t -> [@em optional], [tmin, tmax] coordinates of the dataset to set after transpose, when @b 0 takes 1:obj.time; can be a single number
 % @li .level -> [@em optional], index of image level from the image pyramid
 % @li .replaceDatasetSwitch -> [@em optional], force to replace dataset completely with a new dataset
 % @li .keepModel -> [@em optional], do not resize the model/selection

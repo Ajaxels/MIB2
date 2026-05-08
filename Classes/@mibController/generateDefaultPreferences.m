@@ -34,8 +34,8 @@ Prefs.System.LeftMouseButton = 'select';
 % old preferences.imageResizeMethod
 Prefs.System.ImageResizeMethod = 'auto';
 
-% Hold Alt + mouse scoll wheel to change time points (when true)
-% Hold Alt + mouse scoll wheel to return back to the slice when Alt+scroll was triggered (when false)
+% Hold Alt + mouse scroll wheel to change time points (when true)
+% Hold Alt + mouse scroll wheel to return back to the slice when Alt+scroll was triggered (when false)
 Prefs.System.AltWithScrollWheel = false;
 
 % enable selection with the mouse
@@ -49,7 +49,7 @@ Prefs.System.Font.FontUnits = 'points';
 Prefs.System.Font.FontSize = 8;
 Prefs.System.FontSizeDirView = 9;      % old fontSizeDir!  % font size for files and directories
 
-% define gui scaling settings
+% define GUI scaling settings
 % old: preferences.gui.
 Prefs.System.GUI.scaling = 1;   % scaling factor
 Prefs.System.GUI.systemscaling = 1;   % scaling factor for the operating system (on Windows->Screen resolution->Make text and other items larger or smaller->
@@ -69,7 +69,7 @@ Prefs.System.Dirs.LastPath = '';
 Prefs.System.Dirs.RecentDirs = {};
 Prefs.System.Dirs.RecentDirsNumber = 14;
 
-% time in days since the previus update check
+% time in days since the previous update check
 % old: preferences.updateChecked
 Prefs.System.Update.SinceLastCheck = 0; 
 % old: was not encoded, 30 days
@@ -538,6 +538,9 @@ Prefs.Deep.AugOpt3D = mibDeepGenerateDefaultAugmentationSettings('3D');
 Prefs.Deep.DynamicMaskOpt.Method = 'Keep above threshold';  % 'Keep above threshold' or 'Keep below threshold'
 Prefs.Deep.DynamicMaskOpt.ThresholdValue = 0;
 Prefs.Deep.DynamicMaskOpt.InclusionThreshold = 0;     % Inclusion threshold for mask blocks
+
+Prefs.Deep.ScoreExportOpt.Precision = 'uint8';   % define precision for the output scores, ''uint8'' or ''uint16''
+Prefs.Deep.ScoreExportOpt.IncludeExterior = true;  % when false scores for exterior material are excluded from file output
 
 Prefs.Deep.Metrics.Accuracy = true;  % parameters for metrics evaluation
 Prefs.Deep.Metrics.BFscore = false;

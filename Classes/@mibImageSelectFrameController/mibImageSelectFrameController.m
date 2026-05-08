@@ -210,7 +210,7 @@ classdef mibImageSelectFrameController < handle
         
         function helpBtn_Callback(obj)
             global mibPath;
-            web(fullfile(mibPath, 'techdoc/html/user-interface/menu/image/image-tools-selectframe.html'), '-browser');
+            web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'image', 'image-tools-selectframe.html'), '-browser');
         end
         
         function continueBtn_Callback(obj, useBatchMode)

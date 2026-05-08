@@ -159,7 +159,7 @@ end
 % --- Executes on button press in helpButton.
 function helpButton_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/user-interface/menu/dataset/dataset-crop.html'), '-browser');
+web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'dataset', 'dataset-crop.html'), '-browser');
 end
 
 

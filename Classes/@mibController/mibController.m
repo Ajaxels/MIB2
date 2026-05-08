@@ -657,8 +657,8 @@ classdef mibController < handle
             end
             
             obj.mibModel.mibHideImageCheck = obj.mibView.handles.mibHideImageCheck.Value;   % define whether or not display the image layer
-            obj.mibModel.mibModelShowCheck = obj.mibView.handles.mibModelShowCheck.Value; % define whether or not dispay the model layer (used in obj.mibModel.getRGBimage)
-            obj.mibModel.mibMaskShowCheck = obj.mibView.handles.mibMaskShowCheck.Value; % define whether or not dispay the mask layer (used in obj.mibModel.getRGBimage)
+            obj.mibModel.mibModelShowCheck = obj.mibView.handles.mibModelShowCheck.Value; % define whether or not display the model layer (used in obj.mibModel.getRGBimage)
+            obj.mibModel.mibMaskShowCheck = obj.mibView.handles.mibMaskShowCheck.Value; % define whether or not display the mask layer (used in obj.mibModel.getRGBimage)
 
             obj.mibModel.mibLiveStretchCheck = obj.mibView.handles.mibLiveStretchCheck.Value;   % enable/disable live stretching of image intensities
             obj.mibModel.mibShowAnnotationsCheck = obj.mibView.handles.mibShowAnnotationsCheck.Value;   % enable/disable live stretching of image intensities
@@ -741,6 +741,9 @@ classdef mibController < handle
             % store default positions of some panels
             obj.mibView.guiPositions.mibPathPanel = obj.mibView.handles.mibPathPanel.Position;
             obj.mibView.guiPositions.mibToolsPanel = obj.mibView.handles.mibToolsPanel.Position;
+
+            % disable toolbar for the axes
+            obj.mibView.handles.mibImageAxes.Toolbar.Visible = 'off';
 
             if exist('frame','var')     % close splash window
                 %frame.hide;

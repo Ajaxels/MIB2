@@ -278,7 +278,7 @@ classdef mibModel < handle
             for i=1:obj.maxId   % initialize mibImage 
                 obj.I{i}= mibImage();
             end
-            obj.U = mibImageUndo();    % create instanse for keeping undo information
+            obj.U = mibImageUndo();    % create instance for keeping undo information
             obj.mibPython = [];     % Python environment for MIB
         end
     end

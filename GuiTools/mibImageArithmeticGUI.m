@@ -113,7 +113,7 @@ end
 function helpBtn_Callback(hObject, eventdata, handles)
 
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/user-interface/menu/image/image-tools-arithmetic.html'), '-browser');
+web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'image', 'image-tools-arithmetic.html'), '-browser');
 end
 
 % --- Executes on button press in runExpressionBtn.

@@ -212,7 +212,7 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/ug_panel_segm_tools.html#2'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'panels', 'segm', 'segm-3dlines.html'), '-browser');
 end
 
 % --- Executes on button press in settingsBtn.

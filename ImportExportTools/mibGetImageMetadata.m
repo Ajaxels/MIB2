@@ -859,11 +859,12 @@ for fn_index = 1:no_files
                     [filesTemp.seriesIndex, filesTemp.hDataset, metaSwitch, filesTemp.dim_xyczt, filesTemp.seriesRealName] = ...
                         selectLociSeries(filenames(fn_index), options.Font, filesTemp.hDataset);  % select series with BioFormats
                 else
-                    if isempty(options.BioFormatsIndices) || options.BioFormatsIndices == 0
+                    if isempty(options.BioFormatsIndices) || (numel(options.BioFormatsIndices) && options.BioFormatsIndices(1) == 0)
                         filesTemp.seriesIndex = 1:numSeries;
                     else
-                        if options.BioFormatsIndices > numSeries    % index is too large
-                            return;
+                        if max(options.BioFormatsIndices) > numSeries    % index is too large
+                            options.BioFormatsIndices(options.BioFormatsIndices>numSeries) = [];
+                            if numel(options.BioFormatsIndices) == 0; return; end
                         end
                         filesTemp.seriesIndex = options.BioFormatsIndices;
                     end

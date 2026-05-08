@@ -578,15 +578,17 @@ else
                 bitmap2nrrd(fullfile(path, fnOutLocal), model, bb, Options);
             case 'Isosurface as binary STL (*.stl)'  % STL isosurface for Blinder (*.stl)
                 bounding_box = obj.getBoundingBox();  % get bounding box
+                quantifySwitch = true;
                 if exist('savingOptions', 'var') == 0   % define parameters for the first time use
                     if saveModelOptions.silent == 0
                         prompt = {'Reduce the volume down to, width pixels (no volume reduction when 0)?',...
                             'Smoothing 3d kernel, width (no smoothing when 0):',...
-                            'Maximal number of faces (no limit when 0):'};
+                            'Maximal number of faces (no limit when 0):', ...
+                            'Quantify the models:'};
                         if obj.width > 500
-                            defAns = {'500', '5', '300000'};
+                            defAns = {'500', '5', '300000', true};
                         else
-                            defAns = {'0', '5', '300000'};
+                            defAns = {'0', '5', '300000', true};
                         end
                         mibInputMultiDlgOpt.PromptLines = [2, 1, 1];
                         answer = mibInputMultiDlg({mibPath}, prompt, defAns, 'Isosurface parameters', mibInputMultiDlgOpt);
@@ -594,6 +596,7 @@ else
                         savingOptions.reduce = str2double(answer{1});
                         savingOptions.smooth = str2double(answer{2});
                         savingOptions.maxFaces = str2double(answer{3});
+                        quantifySwitch = logical(answer{4});
                     else
                         savingOptions.reduce = 500;
                         savingOptions.smooth = 5;
@@ -602,21 +605,34 @@ else
                     savingOptions.slice = 0;
                 end
 
+                measureOptions.units = obj.pixSize.units;
                 if isnan(selMaterial)
                     p = mibRenderModel(model, selMaterial, obj.pixSize, bounding_box, obj.modelMaterialColors, NaN, savingOptions);
+                    if showWaitbar; wb = waitbar(0, sprintf('Saving models\nPlease wait...')); end
+
+                    fvArray = {};
+                    matNamesArr = {};
                     for i=1:numel(p)
-                        % check whether the material exists
-                        if isa(p(i), 'matlab.graphics.GraphicsPlaceholder')
-                            continue; 
-                        end
+                        if isa(p(i), 'matlab.graphics.GraphicsPlaceholder'); continue; end
                         fv = struct('faces', p(i).Faces, 'vertices', p(i).Vertices);
                         stlwrite(sprintf('%s_%s.stl', fnOut(1:end-4), obj.modelMaterialNames{i}), fv, 'FaceColor', p(i).FaceColor*255);
+                        fvArray{end+1} = fv; %#ok<AGROW>
+                        matNamesArr{end+1} = obj.modelMaterialNames{i}; %#ok<AGROW>
+                        if showWaitbar; waitbar(i/numel(p), wb); end
                     end
+                    if ~isempty(fvArray) && quantifySwitch
+                        mibMeasureSurfVol(fvArray, matNamesArr, fnOut(1:end-4), measureOptions);
+                    end
+                    if showWaitbar; delete(wb); end
                 else
                     p = mibRenderModel(model, 1, obj.pixSize, bounding_box, color_list, NaN, savingOptions);
-                    fv.faces = p.Faces;
-                    fv.vertices = p.Vertices;
+                    if showWaitbar; wb = waitbar(0, sprintf('Saving models\nPlease wait...')); end
+                    fv = struct('faces', p.Faces, 'vertices', p.Vertices);
                     stlwrite(sprintf('%s_%s.stl', fnOut(1:end-4), obj.modelMaterialNames{selMaterial}), fv, 'FaceColor', p.FaceColor*255);
+                    if quantifySwitch
+                        mibMeasureSurfVol({fv}, obj.modelMaterialNames(selMaterial), fnOut(1:end-4), measureOptions);
+                    end
+                    if showWaitbar; waitbar(1, wb); delete(wb); end
                 end
             case 'PNG format (*.png)'    % PNG format
                 ImageDescription = {obj.meta('ImageDescription')};

@@ -87,7 +87,7 @@ BatchOpt.mibBatchSectionName = 'Menu -> File';    % section name for the Batch
 BatchOpt.mibBatchActionName = 'Load and combine images';
 BatchOpt.mibBatchTooltip.Mode = sprintf('Desired mode to combine the images, use "Series-by-series" to process each dataset in a file-container individually (bio-formats only)');
 BatchOpt.mibBatchTooltip.DirectoryName = sprintf('Directory name, where the files are located, use the right mouse click over the Parameters table to modify the directory');
-BatchOpt.mibBatchTooltip.FilenameFilter = sprintf('Filter for filenames: *.* - process all files in the directory; *.tif - process only the TIF files; could also be a filename');
+BatchOpt.mibBatchTooltip.FilenameFilter = sprintf('Filter for filenames: *.* - process all files in the directory; *.tif - process only the TIF files; could also be a filename, template with [F] - indicates filename of the open dataset');
 BatchOpt.mibBatchTooltip.UseBioFormats = sprintf('When checked the Bio-Formats reader will be used');
 BatchOpt.mibBatchTooltip.BioFormatsIndices = sprintf('[BioFormats only] indices of images to be opened for file containers, when empty load all');
 BatchOpt.mibBatchTooltip.EachNthStep = sprintf('Define step to be used for combining images using each N-th option');
@@ -120,11 +120,20 @@ if nargin == 3  % batch mode
     end
     if ~isfield(BatchOptIn, 'Filenames')
         if ~strcmp(BatchOpt.DirectoryName{1}, 'Selected files in Directory Contents')
-            filename = dir(fullfile(BatchOpt.DirectoryName{1}, BatchOpt.FilenameFilter));   % get list of files
-            filename2 = arrayfun(@(filename) fullfile(BatchOpt.DirectoryName{1}, filename.name), filename, 'UniformOutput', false);  % generate full paths
-            notDirsIndices = arrayfun(@(filename2) ~isdir(cell2mat(filename2)), filename2);     % get indices of not directories
-            BatchOpt.Filenames = filename2(notDirsIndices);     % generate full path file names
-            %filename = {filename(notDirsIndices).name}';
+            
+            templateDetection = strfind(BatchOpt.FilenameFilter, '[');  % detect [F] template
+            if ~isempty(templateDetection)
+                [path, fn] = fileparts(obj.mibModel.I{BatchOpt.id}.meta('Filename'));
+                filename = sprintf('%s%s%s', ...
+                    BatchOpt.FilenameFilter(1:templateDetection(1)-1), fn, BatchOpt.FilenameFilter(templateDetection(1)+3:end));
+                BatchOpt.Filenames = {fullfile(BatchOpt.DirectoryName{1}, filename)};
+            else
+                filename = dir(fullfile(BatchOpt.DirectoryName{1}, BatchOpt.FilenameFilter));   % get list of files
+                filename2 = arrayfun(@(filename) fullfile(BatchOpt.DirectoryName{1}, filename.name), filename, 'UniformOutput', false);  % generate full paths
+                notDirsIndices = arrayfun(@(filename2) ~isdir(cell2mat(filename2)), filename2);     % get indices of not directories
+                BatchOpt.Filenames = filename2(notDirsIndices);     % generate full path file names
+                %filename = {filename(notDirsIndices).name}';
+            end
         else
             selectedIndices = obj.mibView.handles.mibFilesListbox.Value;
             % remove accidentally selected top two rows
@@ -186,7 +195,11 @@ options.customSections = 0; % load a part from datasets
 if batchModeSwitch == 1    % batch mode is used
     options.BackgroundColorIntensity = str2double(BatchOpt.BackgroundColorIntensity);   % add background color intensity, for cases when size of the combined slices mismatch; see more in mibLoadImages 
     options.silentMode = true;  % do not ask any questions in the subfunctions, i.e. insertSlice
-    options.BioFormatsIndices = str2num(BatchOpt.BioFormatsIndices);    % get indices of images to load using bioformats
+    if strfind(BatchOpt.BioFormatsIndices, 'end')
+        BatchOpt.BioFormatsIndices = [BatchOpt.BioFormatsIndices(1:end-3) '1000'];
+    else
+        options.BioFormatsIndices = str2num(BatchOpt.BioFormatsIndices);    % get indices of images to load using bioformats
+    end
 end
 if isfield(BatchOpt, 'verbose'); options.verbose = BatchOpt.verbose; end
 

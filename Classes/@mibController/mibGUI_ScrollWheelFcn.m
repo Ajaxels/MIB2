@@ -50,7 +50,6 @@ else
     verticalScrollAmount = eventdata.VerticalScrollAmount;
 end
 
-
 if strcmp(modifier, 'control') | strcmp(cell2mat(modifier), 'shiftcontrol') | strcmp(cell2mat(modifier), 'controlalt') | strcmp(cell2mat(modifier), 'shiftcontrolalt') %#ok<OR2>
     step = 1;   % step of the brush size change
     if strcmp(cell2mat(modifier), 'shiftcontrol') || strcmp(cell2mat(modifier), 'shiftcontrolalt')
@@ -180,7 +179,7 @@ elseif strcmp(obj.mibView.handles.mouseWheelToolbarSw.State,'off')              
     curPt(2) = curPt(2)*magFactor + max([0 axesY(1)]);
     xl = axesX;
     yl = axesY;
-    % zoom will work only when the mouse is above the image
+    % zoom will work only when the mouse is above the image axes
     if curPt(1)<xl(1) || curPt(1)>xl(2); return; end
     if curPt(2)<yl(1) || curPt(2)>yl(2); return; end
     

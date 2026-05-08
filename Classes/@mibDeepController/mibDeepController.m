@@ -139,6 +139,10 @@ classdef mibDeepController < handle
         % .labelColor = 'black', color of the label
         % .labelBgColor = 'yellow', color of the label background
         % .labelBgOpacity = 0.6;   % opacity of the background
+        ScoreExportOpt
+        % structure with settings to export score files
+        % .Precision = 8;   % define precision for the output scores, '8' or '16' bit
+        % .IncludeExterior = false;  % when false the scores will also have probability for the background material
         SendReports
         % send email reports with progress of the training process
         % .T_SendReports = false;
@@ -666,8 +670,9 @@ classdef mibDeepController < handle
                 obj.TrainingOpt.SquaredGradientDecayFactor = 0.9;
                 obj.TrainingOpt.ValidationPatience = Inf;
             end
-            % dynamic masking properties
+            % dynamic masking and score export properties
             obj.DynamicMaskOpt = obj.mibModel.preferences.Deep.DynamicMaskOpt;
+            obj.ScoreExportOpt = obj.mibModel.preferences.Deep.ScoreExportOpt;
 
             if isfield(obj.mibModel.preferences.Deep, 'ActivationLayerOpt')
                 obj.ActivationLayerOpt = obj.mibModel.preferences.Deep.ActivationLayerOpt;
@@ -774,12 +779,14 @@ classdef mibDeepController < handle
 
             % add drag-and-drop of the project config to the Network,
             % Preprocess, Train, Predict, Options panels
-            DnD_uifigure(obj.View.handles.NetworkPanel, @(o, dat)obj.dnd_files_callback(o, dat));    % make sure that slashes are corrected to OS
-            DnD_uifigure(obj.View.handles.Preprocess, @(o, dat)obj.dnd_files_callback(o, dat));
-            DnD_uifigure(obj.View.handles.Train, @(o, dat)obj.dnd_files_callback(o, dat));
-            DnD_uifigure(obj.View.handles.Predict, @(o, dat)obj.dnd_files_callback(o, dat));
-            DnD_uifigure(obj.View.handles.Options, @(o, dat)obj.dnd_files_callback(o, dat));
-
+            if verLessThan('matlab', '25.1') % not compatible with R2025a or newer
+                DnD_uifigure(obj.View.handles.NetworkPanel, @(o, dat)obj.dnd_files_callback(o, dat));    % make sure that slashes are corrected to OS
+                DnD_uifigure(obj.View.handles.Preprocess, @(o, dat)obj.dnd_files_callback(o, dat));
+                DnD_uifigure(obj.View.handles.Train, @(o, dat)obj.dnd_files_callback(o, dat));
+                DnD_uifigure(obj.View.handles.Predict, @(o, dat)obj.dnd_files_callback(o, dat));
+                DnD_uifigure(obj.View.handles.Options, @(o, dat)obj.dnd_files_callback(o, dat));
+            end
+            
             if gpuDeviceCount == 0
                 obj.View.Figure.GPUDropDown.Items = {'CPU only', 'Parallel'};
                 uialert(obj.View.gui, ...
@@ -3305,6 +3312,7 @@ classdef mibDeepController < handle
             ActivationLayerOpt = obj.ActivationLayerOpt;
             SegmentationLayerOpt = obj.SegmentationLayerOpt;
             DynamicMaskOpt = obj.DynamicMaskOpt;
+            ScoreExportOpt = obj.ScoreExportOpt;
 
             % try to export path as relatives
             BatchOpt.NetworkFilename = convertAbsoluteToRelativePath(BatchOpt.NetworkFilename, projectPath, '[RELATIVE]');
@@ -3319,7 +3327,7 @@ classdef mibDeepController < handle
             % generate config file; the config file is the same as *.mibDeep but without 'net' field
             save(configName, ...
                 'TrainingOptStruct', 'AugOpt2DStruct', 'AugOpt3DStruct', ...
-                'SegmentationLayerOpt', 'ActivationLayerOpt', 'DynamicMaskOpt',...
+                'SegmentationLayerOpt', 'ActivationLayerOpt', 'DynamicMaskOpt', 'ScoreExportOpt', ...
                 'InputLayerOpt', 'BatchOpt', 'mibVersion', '-mat', '-v7.3');
         end
 
@@ -3518,6 +3526,9 @@ classdef mibDeepController < handle
                 if isfield(res, 'DynamicMaskOpt')   % new in MIB 2.83
                     obj.DynamicMaskOpt = mibConcatenateStructures(obj.DynamicMaskOpt, res.DynamicMaskOpt);
                 end
+                if isfield(res, 'ScoreExportOpt')   % new in MIB 2.9113
+                    obj.ScoreExportOpt = mibConcatenateStructures(obj.ScoreExportOpt, res.ScoreExportOpt);
+                end
             catch err
                 % when the training was stopped before finish,
                 % those structures are not stored
@@ -3577,7 +3588,7 @@ classdef mibDeepController < handle
                 if strcmp(selection, 'Cancel'); return; end
             else
                 preprocessedSwitch = true;
-                msg = sprintf('Have images for prediction were preprocessed?\n\nIf not, please switch to the Directories and Preprocessing tab and preprocess images for prediction');
+                msg = sprintf('Have images for prediction been preprocessed?\n\nIf not, please switch to the Directories and Preprocessing tab and preprocess images for prediction');
                 selection = uiconfirm(obj.View.gui, ...
                     msg, 'Preprocessing',...
                     'Options',{'Yes', 'No'},...
@@ -3927,13 +3938,20 @@ classdef mibDeepController < handle
                         if zValue == 1
                             outputLabels = zeros([size(outputLabelsCurrent,1), size(outputLabelsCurrent,2), volDepth], 'uint8');
                             if generateScoreFiles > 0
-                                scoreImg = zeros([size(scoreImgCurrent,1), size(scoreImgCurrent,2), size(scoreImgCurrent,3), volDepth], 'uint8');
+                                if obj.ScoreExportOpt.IncludeExterior
+                                    noOutputClasses = size(scoreImgCurrent,3);
+                                else
+                                    noOutputClasses = size(scoreImgCurrent,3)-1;
+                                end
+                                scoreImg = zeros([size(scoreImgCurrent,1), size(scoreImgCurrent,2), noOutputClasses, volDepth], class(scoreImgCurrent));
                             else
                                 scoreImg = 0;
                             end
                         end
                         outputLabels(:,:,zValue) = outputLabelsCurrent; % (:,:,paddingValue+1);
                         if generateScoreFiles > 0
+                            % remove exterior
+                            if ~obj.ScoreExportOpt.IncludeExterior; scoreImgCurrent = scoreImgCurrent(:,:,2:end,:); end
                             scoreImg(:,:,:,zValue) = scoreImgCurrent; % (:,:,:,paddingValue+1);
                         end
 
@@ -3979,13 +3997,20 @@ classdef mibDeepController < handle
                             if zValue == 1
                                 outputLabels = zeros([size(outputLabelsCurrent,1), size(outputLabelsCurrent,2), volDepth], 'uint8');
                                 if generateScoreFiles > 0
-                                    scoreImg = zeros([size(scoreImgCurrent,1), size(scoreImgCurrent,2), size(scoreImgCurrent,3), volDepth], 'uint8');
+                                    if obj.ScoreExportOpt.IncludeExterior
+                                        noOutputClasses = size(scoreImgCurrent,3);
+                                    else
+                                        noOutputClasses = size(scoreImgCurrent,3)-1;
+                                    end
+                                    scoreImg = zeros([size(scoreImgCurrent,1), size(scoreImgCurrent,2), noOutputClasses, volDepth], class(scoreImgCurrent));
                                 else
                                     scoreImg = 0;
                                 end
                             end
                             outputLabels(:,:,zValue) = outputLabelsCurrent;
                             if generateScoreFiles > 0
+                                % remove exterior
+                                if ~obj.ScoreExportOpt.IncludeExterior; scoreImgCurrent = scoreImgCurrent(:,:,2:end,:); end
                                 scoreImg(:,:,:,zValue) = scoreImgCurrent;
                             end
 
@@ -4007,6 +4032,11 @@ classdef mibDeepController < handle
                             inputPatchSize, outputPatchSize, blockSize, padShift, ...
                             dataDimension, patchwiseWorkflowSwitch, patchwisePatchesPredictSwitch, ...
                             classNames, generateScoreFiles, executionEnvironment, fn);
+                        
+                        % remove exterior
+                        if generateScoreFiles > 0 && ~obj.ScoreExportOpt.IncludeExterior
+                            scoreImg = scoreImg(:,:,2:end,:);
+                        end
 
                         % check for Cancel
                         if obj.BatchOpt.showWaitbar && pwb.getCancelState(); delete(pwb); return; end
@@ -4398,7 +4428,7 @@ classdef mibDeepController < handle
                 if strcmp(selection, 'Cancel'); return; end
             else
                 preprocessedSwitch = true;
-                msg = sprintf('Have images for prediction were preprocessed?\n\nIf not, please switch to the Directories and Preprocessing tab and preprocess images for prediction');
+                msg = sprintf('Have images for prediction been preprocessed?\n\nIf not, please switch to the Directories and Preprocessing tab and preprocess images for prediction');
                 selection = uiconfirm(obj.View.gui, ...
                     msg, 'Preprocessing',...
                     'Options',{'Yes', 'No'},...
@@ -4771,7 +4801,7 @@ classdef mibDeepController < handle
                 if strcmp(selection, 'Cancel'); return; end
             else
                 preprocessedSwitch = true;
-                msg = sprintf('Have images for prediction were preprocessed?\n\nIf not, please switch to the Directories and Preprocessing tab and preprocess images for prediction');
+                msg = sprintf('Have images for prediction been preprocessed?\n\nIf not, please switch to the Directories and Preprocessing tab and preprocess images for prediction');
                 selection = uiconfirm(obj.View.gui, ...
                     msg, 'Preprocessing',...
                     'Options',{'Yes', 'No'},...
@@ -6244,13 +6274,22 @@ classdef mibDeepController < handle
                     BatchOpt = importedParameters.BatchOpt;
                     ActivationLayerOpt = importedParameters.ActivationLayerOpt;
                     SegmentationLayerOpt = importedParameters.SegmentationLayerOpt;
-                    DynamicMaskOpt = importedParameters.DynamicMaskOpt;
-
+                    if isfield(importedParameters, 'DynamicMaskOpt')
+                        DynamicMaskOpt = importedParameters.DynamicMaskOpt;
+                    else
+                        DynamicMaskOpt = obj.DynamicMaskOpt;
+                    end
+                    if isfield(importedParameters, 'ScoreExportOpt')
+                        ScoreExportOpt = importedParameters.ScoreExportOpt;
+                    else
+                        ScoreExportOpt = obj.ScoreExportOpt;
+                    end
+                    
                     wb.Value = 0.7;
 
                     % save network
                     save(networkFileName, 'net', 'TrainingOptStruct', 'AugOpt2DStruct', 'AugOpt3DStruct', 'InputLayerOpt', ...
-                        'ActivationLayerOpt', 'SegmentationLayerOpt', 'DynamicMaskOpt', ...
+                        'ActivationLayerOpt', 'SegmentationLayerOpt', 'DynamicMaskOpt', 'ScoreExportOpt', ...
                         'classNames', 'classColors', 'inputPatchSize', 'outputPatchSize', 'BatchOpt', '-mat', '-v7.3');
                     wb.Value = 1;
                     delete(wb);
@@ -6258,6 +6297,43 @@ classdef mibDeepController < handle
                     uialert(obj.View.gui, 'Please select correct file format for the network to import!', 'Wrong format');
                     return;
             end
+        end
+
+        function updateScoreExportSettings(obj)
+            % function updateScoreExportSettings(obj)
+            % update export settings for score files
+
+            global mibPath;
+
+            prompts = {sprintf('Export exterior material')};
+            defAns = {obj.ScoreExportOpt.IncludeExterior};
+            dlgTitle = 'Export scores settings';
+            
+            options.WindowStyle = 'normal';
+            options.Title = sprintf('Additional settings for export of score files\nOnly for Blocked-image engine'); 
+            options.TitleLines = 2;                  
+
+            answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+            if isempty(answer); return; end
+            obj.ScoreExportOpt.IncludeExterior = logical(answer{1});
+
+            % % Precistion is not implemented yet
+
+            % prompts = {...
+            %     sprintf('Export precision:') ...
+            %     sprintf('Export exterior material')};
+            % 
+            % defAns = {{'uint8', 'uint16', find(ismember({'uint8', 'uint16'}, obj.ScoreExportOpt.Precision))}; ...
+            %            obj.ScoreExportOpt.IncludeExterior;};
+            % dlgTitle = 'Export scores settings';
+            % options.WindowStyle = 'normal';
+            % %options.PromptLines = [1, 1];
+            % options.WindowWidth = 1.0;
+            % answer = mibInputMultiDlg({mibPath}, prompts, defAns, dlgTitle, options);
+            % if isempty(answer); return; end
+            % 
+            % obj.ScoreExportOpt.Precision = answer{1};
+            % obj.ScoreExportOpt.IncludeExterior = logical(answer{2});
         end
 
         function updateDynamicMaskSettings(obj)
@@ -6784,13 +6860,13 @@ classdef mibDeepController < handle
 
             switch obj.View.handles.Mode.SelectedTab.Title
                 case 'Directories and Preprocessing'
-                    web(fullfile(mibPath, 'techdoc', 'html', 'ug_gui_menu_tools_deeplearning_dirs.html'), '-helpbrowser');
+                    web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'deepmib', 'deepmib-dirs.html'), '-browser');
                 case 'Train'
-                    web(fullfile(mibPath, 'techdoc', 'html', 'ug_gui_menu_tools_deeplearning_train.html'), '-helpbrowser');
+                    web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'deepmib', 'deepmib-train.html'), '-browser');
                 case 'Predict'
-                    web(fullfile(mibPath, 'techdoc', 'html', 'ug_gui_menu_tools_deeplearning_predict.html'), '-helpbrowser');
+                    web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'deepmib', 'deepmib-predict.html'), '-browser');
                 case 'Options'
-                    web(fullfile(mibPath, 'techdoc', 'html', 'ug_gui_menu_tools_deeplearning_options.html'), '-helpbrowser');
+                    web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'deepmib', 'deepmib-options.html'), '-browser');
             end
         end
 

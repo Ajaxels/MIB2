@@ -108,7 +108,8 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_tools_graphcut.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc','html','ug_gui_menu_tools_graphcut.html'), '-browser');
+web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'tools', 'tools-graphcut.html'), '-browser');
 end
 
 % --- Executes on button press in clearPreprocessBtn.

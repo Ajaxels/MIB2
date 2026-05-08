@@ -285,7 +285,7 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath;
-web(fullfile(mibPath, 'techdoc/html/user-interface/menu/dataset/dataset-alignment.html'), '-browser');
+web(fullfile(mibPath, 'techdoc', 'html', 'user-interface', 'menu', 'dataset', 'idataset-alignment.html'), '-browser');
 end
 
 % --- Executes on button press in continueBtn.

@@ -269,6 +269,7 @@ function seriesTable_CellSelectionCallback(hObject, eventdata, handles)
 % eventdata  structure with the following fields (see UITABLE)
 %	Indices: row and column indices of the cell(s) currently selecteds
 % handles    structure with handles and user data (see GUIDATA)
+
 tableData = handles.seriesTable.Data;
 rowData = tableData(eventdata.Indices(1),:);
 handles.selectedSeriesText.String = rowData(1);

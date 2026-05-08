@@ -73,8 +73,7 @@ end
 
 %% update preferences
 if exist('mib_pars', 'var') && isfield(mib_pars, 'mibVersion')  %#ok<NODEF> % % detection for new preferences from MIB 2.72
-    % concatenate stored with default preference structures only when
-    % versions dismatch
+    % concatenate stored with default preference structures only when versions mismatch
     if mib_pars.mibVersion < obj.mibVersionNumeric
         if isfield(mib_pars.preferences.ExternalDirs, 'fijiInstallationPath')
             % fix of field names used before 2.80, where

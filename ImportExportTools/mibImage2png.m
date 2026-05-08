@@ -168,17 +168,13 @@ function fn = generateSequentialFilename(name, num, files_no)
 % name - a filename template
 % num - sequential number to generate
 % files_no - total number of files in sequence
+
+ext = '.png';
+
 if files_no == 1
-    fn = [name '.png'];
-elseif files_no < 100
-    fn = [name '_' sprintf('%02i',num) '.png'];
-elseif files_no < 1000
-    fn = [name '_' sprintf('%03i',num) '.png'];
-elseif files_no < 10000
-    fn = [name '_' sprintf('%04i',num) '.png'];
-elseif files_no < 100000
-    fn = [name '_' sprintf('%05i',num) '.png'];
-elseif files_no < 1000000
-    fn = [name '_' sprintf('%06i',num) '.png'];
+    fn = [name ext];
+else
+    digits = max(2, floor(log10(files_no)) + 1);
+    fn = sprintf('%s_%0*i%s', name, digits, num, ext);
 end
 end

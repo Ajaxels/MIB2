@@ -266,7 +266,7 @@ end
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
 global mibPath
-web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_tools_measure.html'), '-helpbrowser');
+web(fullfile(mibPath, 'techdoc/html/ug_gui_menu_tools_measure.html'), '-browser');
 end
 
 

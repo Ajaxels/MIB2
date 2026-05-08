@@ -43,7 +43,7 @@ function devTest_ClickedCallback(obj)
 % TO DO:
 % 1. test inversion of EM datasets when padding is 'same', since it is
 % extended with 0s, which are signal on EM images
-
+%showErrorDialog(obj.mibView.gui, [], 'Missing net-variable');
 return
 
 % Restore specific image regions

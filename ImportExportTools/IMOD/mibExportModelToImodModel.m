@@ -72,14 +72,24 @@ if Options.showWaitbar
     waitbar(0, wb);
 end
 
+noOfProvidedColor = size(Options.colorList, 1);
+maxInt = double(intmax(class(Objects)));
 for objectLoop=1:noObjects  % first loop for number of objects in the model
     object = Objects(objectLoop);
 
     imodObject = ImodObject;
-    imodObject = setColor(imodObject, Options.colorList(objectLoop,:));
+    if objectLoop > noOfProvidedColor
+        imodObject = setColor(imodObject, rand([1 3]));
+    else
+        imodObject = setColor(imodObject, Options.colorList(objectLoop, :));
+    end
+    if maxInt > 255
+        imodObject = setName(imodObject, num2str(objectLoop));
+    else
+        imodObject = setName(imodObject, Options.ModelMaterialNames{objectLoop});
+    end
     imodObject = setType(imodObject, 'closed');
-    imodObject = setName(imodObject, Options.ModelMaterialNames{objectLoop});
-    
+
     BW = zeros(size(O),'uint8');
     BW(O==object) = 1;
     CC = bwconncomp(BW, 6);
