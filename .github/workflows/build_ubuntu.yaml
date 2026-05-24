@@ -1,0 +1,27 @@
+name: Build Ubuntu
+
+on:
+  push:
+    # not specifying any branches means triggering on all of them
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup MATLAB
+      uses: matlab-actions/setup-matlab@v1
+
+    - name: Test MATLAB
+      # crashes here as the MATLAB Compiler is currently not supported with GitHub Actions...
+      run: |
+        mcc
+
+    # for more information about what is possible using GitHub Actions with MATLAB, see here:
+    # https://github.com/matlab-actions/overview
+    
