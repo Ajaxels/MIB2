@@ -1279,7 +1279,11 @@ classdef mibStatisticsController < handle
             else
                 OPTIONS.model_fn = obj.mibModel.getImageProperty('modelFilename');
                 if ~strcmp(obj.BatchOpt.MaterialIndex, '-2')  %
-                    OPTIONS.material_id = sprintf('%s (%s)', obj.BatchOpt.MaterialIndex, obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{str2double(obj.BatchOpt.MaterialIndex)});
+                    if obj.mibModel.I{obj.mibModel.Id}.modelType < 65535
+                        OPTIONS.material_id = sprintf('%s (%s)', obj.BatchOpt.MaterialIndex, obj.mibModel.I{obj.mibModel.Id}.modelMaterialNames{str2double(obj.BatchOpt.MaterialIndex)});
+                    else
+                        OPTIONS.material_id = sprintf('%s (%s)', obj.BatchOpt.MaterialIndex, obj.BatchOpt.MaterialIndex);
+                    end
                 else
                     OPTIONS.material_id = 'Full model';
                 end
@@ -2160,11 +2164,7 @@ classdef mibStatisticsController < handle
                 data(:, 4) = [obj.STATS(obj.sortingRowIndex).TimePnt]';
                 
                 % add id of the detected object to row name
-                if ~batchModeSwitch
-                    rowNames = {obj.sortingRowIndex};
-                else
-                    rowNames = cellstr(num2str(obj.sortingRowIndex));
-                end
+                rowNames = cellstr(num2str(obj.sortingRowIndex));
             end
 
             if obj.BatchOpt.showWaitbar; waitbar(1,wb); end
@@ -2224,11 +2224,10 @@ classdef mibStatisticsController < handle
                 [~, index] = sort(str2num(cell2mat(obj.View.handles.statTable.RowName)), obj.sortingDirection); %#ok<ST2NM>
             end
             data = data(index, :);
-            %obj.View.handles.statTable.RowName = obj.View.handles.statTable.RowName(index);
-            
+            obj.View.handles.statTable.RowName = obj.View.handles.statTable.RowName(index);
+
             if nargin < 2
                 obj.View.handles.statTable.Data = data;
-                obj.View.handles.statTable.RowName = obj.View.handles.statTable.RowName(index);
             end
         end
         
