@@ -1,9 +1,9 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="291851320" file="/tmp/MATLAB/MIB_deploy_mat/MIB_Linux_R2024b.prj" location="/tmp/MATLAB/MIB_deploy_mat" name="MIB_Linux_R2024b" preferred-package-location="/tmp/MATLAB/MIB_deploy_mat/MIB_Linux_R2024b/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="291851320" file="/home/ad/home/i/ibelev/Matlab/MIB293/MIB_Linux_R2024b.prj" location="/home/ad/home/i/ibelev/Matlab/MIB293" name="MIB_Linux_R2024b" preferred-package-location="/tmp/MATLAB/MIB_deploy_mat/MIB_Linux_R2024b/for_redistribution" preferred-package-type="package.type.install" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon />
     <param.icons />
-    <param.version>2.9111</param.version>
+    <param.version>2.93</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -68,18 +68,7 @@ ${LD_LIBRARY_PATH}:MR/R2024b/runtime/glnxa64:MR/R2024b/bin/glnxa64:MR/R2024b/sys
 	 
  Input Arguments 
 	 -?  print help on how to use the application 
-	 input arguments 
- Description 
- 	 You are going to install MIB that has been compiled to stand-alone executables (exe-files). By using the deployed compiled, standalone version of Microscopy Image Browser (MIB), you agree to 
-- the terms of the disclaimer below, 
-- the Matlab Compiler Runtime (MCR) libraries license (http://mib.helsinki.fi/Matlab_MCR_license.txt) 
-- applicable parts of the MathWorks, Inc. Software License Agreement (http://mib.helsinki.fi/Matlab_license.txt)
-- as Microscopy Image Browser (MIB) was compiled using Academic license, its usage for for commercial purposes is prohibited
-
-The corresponding license files are also included into the MIB distribution under techdoc directory.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. MATHWORKS AND ITS LICENSORS ARE EXCLUDED FROM ALL LIABILITY FOR DAMAGES OR ANY OBLIGATION TO PROVIDE REMEDIAL ACTIONS.</param.help.text>
+	 input arguments</param.help.text>
     <unset>
       <param.icon />
       <param.icons />
@@ -112,6 +101,7 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
       <file>${PROJECT_ROOT}/mib_deploy.m</file>
     </fileset.main>
     <fileset.resources>
+      <file>/home/ad/home/i/ibelev/Matlab/BMxD</file>
       <file>${PROJECT_ROOT}/Classes</file>
       <file>${PROJECT_ROOT}/Development</file>
       <file>${PROJECT_ROOT}/GuiTools</file>
@@ -119,6 +109,7 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
       <file>${PROJECT_ROOT}/Plugins</file>
       <file>${PROJECT_ROOT}/Resources</file>
       <file>${PROJECT_ROOT}/Tools</file>
+      <file>/home/ad/home/i/ibelev/Matlab/OMERO</file>
     </fileset.resources>
     <fileset.package>
       <file>${PROJECT_ROOT}/Development</file>
@@ -358,6 +349,7 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
       <file>/home/ad/home/i/ibelev/Documents/MATLAB/SupportPackages/R2024b/toolbox/nnet/supportpackages/onnx/+nnet/+onnx/+layer/PreluLayer.m</file>
       <file>/home/ad/home/i/ibelev/Documents/MATLAB/SupportPackages/R2024b/toolbox/nnet/supportpackages/onnx/+nnet/+onnx/+layer/VerifyBatchSizeLayer.m</file>
       <file>/home/ad/home/i/ibelev/Documents/MATLAB/SupportPackages/R2024b/toolbox/nnet/supportpackages/onnx/ONNXParameters.m</file>
+      <file>${PROJECT_ROOT}/mib.m</file>
       <file>/home/ibelev/Documents/MATLAB/SupportPackages/R2024b/bin/glnxa64/libmwonnxpb.so</file>
       <file>/home/ibelev/Documents/MATLAB/SupportPackages/R2024b/bin/glnxa64/libmwtfkeraspb.so</file>
       <file>/home/ibelev/Documents/MATLAB/SupportPackages/R2024b/resources/nnet_cnn_onnx/en/onnx.xml</file>
@@ -802,13 +794,12 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
       <file>/home/ibelev/Documents/MATLAB/SupportPackages/R2024b/toolbox/nnet/supportpackages/onnx/resources/helpOptions.json</file>
       <file>/home/ibelev/Documents/MATLAB/SupportPackages/R2024b/toolbox/nnet/supportpackages/onnx/shufflenet-9.onnx</file>
       <file>/home/ibelev/Documents/MATLAB/SupportPackages/R2024b/toolbox/nnet/supportpackages/onnx/thirdpartylicenses/onnx-license.txt</file>
-      <file>${PROJECT_ROOT}/mib.m</file>
     </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}/MIB_Linux_R2024b/for_testing" name="run_MIB.sh" optional="false">/tmp/MATLAB/MIB_deploy_mat/MIB_Linux_R2024b/for_testing/run_MIB.sh</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux_R2024b/for_testing" name="MIB" optional="false">/tmp/MATLAB/MIB_deploy_mat/MIB_Linux_R2024b/for_testing/MIB</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux_R2024b/for_testing" name="readme.txt" optional="true">/tmp/MATLAB/MIB_deploy_mat/MIB_Linux_R2024b/for_testing/readme.txt</file>
-      <file location="${PROJECT_ROOT}/MIB_Linux_R2024b/for_testing" name="splash.png" optional="false">/tmp/MATLAB/MIB_deploy_mat/MIB_Linux_R2024b/for_testing/splash.png</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux_R2024b/for_testing" name="run_MIB.sh" optional="false">/home/ad/home/i/ibelev/Matlab/MIB293/MIB_Linux_R2024b/for_testing/run_MIB.sh</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux_R2024b/for_testing" name="readme.txt" optional="true">/home/ad/home/i/ibelev/Matlab/MIB293/MIB_Linux_R2024b/for_testing/readme.txt</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux_R2024b/for_testing" name="MIB" optional="false">/home/ad/home/i/ibelev/Matlab/MIB293/MIB_Linux_R2024b/for_testing/MIB</file>
+      <file location="${PROJECT_ROOT}/MIB_Linux_R2024b/for_testing" name="splash.png" optional="false">/home/ad/home/i/ibelev/Matlab/MIB293/MIB_Linux_R2024b/for_testing/splash.png</file>
     </build-deliverables>
     <workflow />
     <matlab>
@@ -861,7 +852,7 @@ IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
       <vista>false</vista>
       <linux>true</linux>
       <solaris>false</solaris>
-      <osver>6.14.0-29-generic</osver>
+      <osver>6.17.0-35-generic</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>glnxa64</arch>
